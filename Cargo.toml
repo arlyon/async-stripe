@@ -1,0 +1,12 @@
+[package]
+name = "stripe"
+version = "0.1.0"
+authors = ["Kevin Stenerson <kevin@rapiditynetworks.com>"]
+
+[dependencies]
+hyper = "0.10"
+hyper-openssl = "0.2"
+serde = "^0.9"
+serde_derive = "^0.9"
+serde_json = "^0.9"
+serde_urlencoded = "0.4.2"
