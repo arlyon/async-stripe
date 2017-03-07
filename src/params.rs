@@ -9,3 +9,4 @@ pub struct List<T> {
 }
 
 pub type Metadata = HashMap<String, String>;
+pub type Timestamp = i64;

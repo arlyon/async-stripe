@@ -11,35 +11,31 @@ use hyper_openssl::OpensslClient;
 use std::io::Read;
 
 pub fn get<T: serde::Deserialize>(path: &str, key: &str) -> Result<T, Error> {
-    let mut headers = Headers::new();
-    headers.set(Authorization(Basic{username: key.to_owned(), password: None}));
-    headers.set(ContentType::form_url_encoded());
-
-    let url = String::from("https://api.stripe.com/v1") + path;
-    let client = https_client();
+    let client = get_client();
+    let url = get_url(path);
+    let headers = get_headers(key);
     let request = client.get(&url).headers(headers);
-    return send(request);
+    send(request)
 }
 
 pub fn post<T: serde::Deserialize, P: serde::Serialize>(path: &str, key: &str, params: P) -> Result<T, Error> {
-    let mut headers = Headers::new();
-    headers.set(Authorization(Basic{username: key.to_owned(), password: None}));
-    headers.set(ContentType::form_url_encoded());
-
+    let client = get_client();
+    let url = get_url(path);
+    let headers = get_headers(key);
     let body = match urlencoded::to_string(&params) {
         Err(err) => { return Err(Error::from_encode(err)); },
         Ok(data) => data,
     };
-    let url = String::from("https://api.stripe.com/v1") + path;
-    let client = https_client();
     let request = client.post(&url).headers(headers).body(&body);
-    return send(request);
+    send(request)
 }
 
-fn https_client() -> Client {
-    let ssl = OpensslClient::new().unwrap();
-    let connector = HttpsConnector::new(ssl);
-    return Client::with_connector(connector);
+pub fn delete<T: serde::Deserialize>(path: &str, key: &str) -> Result<T, Error> {
+    let client = get_client();
+    let url = get_url(path);
+    let headers = get_headers(key);
+    let request = client.delete(&url).headers(headers);
+    send(request)
 }
 
 fn send<T: serde::Deserialize>(request: RequestBuilder) -> Result<T, Error> {
@@ -66,7 +62,24 @@ fn send<T: serde::Deserialize>(request: RequestBuilder) -> Result<T, Error> {
     }
 
     match json::from_str(&body_string) {
-        Err(err) => { return Err(Error::from_decode(err)); },
-        Ok(data) => { return Ok(data); },
+        Err(err) => Err(Error::from_decode(err)),
+        Ok(data) => Ok(data),
     }
+}
+
+fn get_client() -> Client {
+    let ssl = OpensslClient::new().unwrap();
+    let connector = HttpsConnector::new(ssl);
+    Client::with_connector(connector)
+}
+
+fn get_url(path: &str) -> String {
+    String::from("https://api.stripe.com/v1") + path
+}
+
+fn get_headers(key: &str) -> Headers {
+    let mut headers = Headers::new();
+    headers.set(Authorization(Basic{username: key.to_owned(), password: None}));
+    headers.set(ContentType::form_url_encoded());
+    headers
 }

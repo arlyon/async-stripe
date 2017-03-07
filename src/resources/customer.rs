@@ -1,6 +1,6 @@
 use error::Error;
 use http;
-use resources::{Address, Discount, Source, Subscription};
+use resources::{Address, Deleted, Discount, Source, Subscription};
 use params::{List, Metadata};
 
 #[derive(Deserialize, Serialize)]
@@ -17,6 +17,7 @@ pub struct CustomerParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")] pub description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")] pub email: Option<String>,
+    // NOTE: serde_urlencoded doesn't yet support struct/map style serialization
     // #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
     // #[serde(skip_serializing_if = "Option::is_none")] pub shipping: Option<CustomerShippingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<String>,
@@ -52,5 +53,9 @@ impl Customer {
 
     pub fn update(customer_id: &str, params: CustomerParams, key: &str) -> Result<Customer, Error> {
         return http::post(&format!("/customers/{}", customer_id), key, params);
+    }
+
+    pub fn delete(customer_id: &str, key: &str) -> Result<Deleted, Error> {
+        return http::delete(&format!("/customers/{}", customer_id), key);
     }
 }
