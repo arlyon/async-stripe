@@ -1,7 +1,10 @@
 [package]
-name = "stripe"
+name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
 version = "0.1.1"
 authors = ["Kevin Stenerson <kevin@rapiditynetworks.com>"]
+
+[lib]
+name = "stripe"
 
 [dependencies]
 hyper = "0.10"
