@@ -1,6 +1,6 @@
 use error::Error;
 use http;
-use resources::{Address, Deleted, Discount, Source, Subscription};
+use resources::{Address, CardParams, Deleted, Discount, Source, Subscription};
 use params::{List, Metadata};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -8,6 +8,13 @@ pub struct CustomerShippingDetails {
     pub address: Address,
     pub name: String,
     pub phone: String,
+}
+
+#[derive(Serialize)]
+#[serde(untagged)]
+pub enum CustomerSource {
+    Token(String),
+    Card(CardParams),
 }
 
 #[derive(Serialize)]
@@ -19,7 +26,7 @@ pub struct CustomerParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")] pub shipping: Option<CustomerShippingDetails>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<CustomerSource>,
 }
 
 #[derive(Debug, Deserialize)]
