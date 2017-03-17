@@ -1,6 +1,7 @@
 [package]
 name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
-version = "0.1.1"
+version = "0.2.0"
+description = "API bindings for the Stripe v1 HTTP API"
 authors = ["Kevin Stenerson <kevin@rapiditynetworks.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
@@ -8,9 +9,6 @@ repository = "https://github.com/rapiditynetworks/stripe-rust"
 homepage = "https://github.com/rapiditynetworks/stripe-rust"
 keywords = ["stripe", "v1", "api"]
 categories = ["api-bindings"]
-description = """
-A rust wrapper for the Stripe HTTP API
-"""
 
 [lib]
 name = "stripe"
