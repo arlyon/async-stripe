@@ -33,3 +33,18 @@ fn main() {
     ..
 }}", customer.id, customer.created, customer.default_source, customer.email);
 }
+
+/* Creating a customer without using default:
+
+    let customer = Customer::create(CustomerParams{
+        email: Some("jdoe@example.org"),
+        source: Some(CustomerSource::Token("token_from_checkout")),
+
+        account_balance: None,
+        business_vat_id: None,
+        coupon: None,
+        description: None,
+        metadata: None,
+        shipping: None,
+    }, &secret_key).unwrap();
+*/
