@@ -1,12 +1,25 @@
-#[derive(Default, Serialize)]
+#[derive(Serialize)]
 pub struct CardParams {
     pub object: &'static str, // must be "card"
     pub exp_month: String,    // eg. "12"
     pub exp_year: String,     // eg. "17" or 2017"
 
     pub number: String,       // card number
-    pub cvc: Option<String>,  // card security code
     pub name: Option<String>, // cardholder's full name
+    pub cvc: Option<String>,  // card security code
+}
+
+impl Default for CardParams {
+    fn default() -> Self {
+        CardParams{
+            object: "card",
+            exp_month: String::new(),
+            exp_year: String::new(),
+            number: String::new(),
+            name: None,
+            cvc: None,
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
