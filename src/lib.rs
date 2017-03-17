@@ -11,7 +11,7 @@ extern crate hyper_openssl;
 extern crate serde;
 #[macro_use] extern crate serde_derive;
 extern crate serde_json;
-extern crate serde_urlencoded;
+extern crate serde_qs;
 
 mod error;
 mod resources;

@@ -14,9 +14,8 @@ pub struct SubscriptionParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")] pub application_fee_percent: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<String>,
-    // NOTE: serde_urlencoded doesn't yet support array or struct/map style serialization
-    // #[serde(skip_serializing_if = "Option::is_none")] pub items: Option<Vec<SubscriptionItemParams>,
-    // #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub items: Option<Vec<SubscriptionItemParams>>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")] pub plan: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")] pub prorate: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")] pub proration_date: Option<Timestamp>,

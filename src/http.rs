@@ -1,6 +1,6 @@
 extern crate serde;
 extern crate serde_json as json;
-extern crate serde_urlencoded as urlencoded;
+extern crate serde_qs as query;
 
 use error::Error;
 use hyper::Client;
@@ -22,7 +22,7 @@ pub fn post<T: serde::Deserialize, P: serde::Serialize>(path: &str, key: &str, p
     let client = get_client();
     let url = get_url(path);
     let headers = get_headers(key);
-    let body = match urlencoded::to_string(&params) {
+    let body = match query::to_string(&params) {
         Err(err) => { return Err(Error::from_encode(err)); },
         Ok(data) => data,
     };

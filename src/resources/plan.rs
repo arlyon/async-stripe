@@ -12,8 +12,7 @@ pub struct PlanParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")] pub interval_count: Option<u64>,
-    // NOTE: serde_urlencoded doesn't yet support struct/map style serialization
-    // #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")] pub statement_descriptor: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")] pub trial_period_days: Option<u64>,
 }
