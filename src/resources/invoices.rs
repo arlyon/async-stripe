@@ -4,12 +4,12 @@ use params::{List, Metadata, Timestamp};
 use resources::{Discount, Plan};
 
 #[derive(Default, Serialize)]
-pub struct InvoiceParams {
+pub struct InvoiceParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")] pub application_fee: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub statement_descriptor: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub subscription: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub statement_descriptor: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub subscription: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub tax_percent: Option<f64>,
 
     #[serde(skip_serializing_if = "Option::is_none")] pub closed: Option<bool>,

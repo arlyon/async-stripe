@@ -4,23 +4,23 @@ use resources::{Discount, Plan};
 use params::{List, Metadata, Timestamp};
 
 #[derive(Serialize)]
-pub struct SubscriptionItemParams {
-    pub plan: String,
+pub struct SubscriptionItemParams<'a> {
+    pub plan: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")] pub quantity: Option<u64>,
 }
 
 #[derive(Default, Serialize)]
-pub struct SubscriptionParams {
-    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<String>,
+pub struct SubscriptionParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub application_fee_percent: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub items: Option<Vec<SubscriptionItemParams>>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub items: Option<Vec<SubscriptionItemParams<'a>>>,
     #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub plan: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub plan: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub prorate: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")] pub proration_date: Option<Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")] pub quantity: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub tax_percent: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")] pub trial_end: Option<Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")] pub trial_period_days: Option<u64>,

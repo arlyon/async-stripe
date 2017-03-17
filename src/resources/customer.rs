@@ -12,21 +12,21 @@ pub struct CustomerShippingDetails {
 
 #[derive(Serialize)]
 #[serde(untagged)]
-pub enum CustomerSource {
-    Token(String),
-    Card(CardParams),
+pub enum CustomerSource<'a> {
+    Token(&'a str),
+    Card(CardParams<'a>),
 }
 
 #[derive(Default, Serialize)]
-pub struct CustomerParams {
+pub struct CustomerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")] pub account_balance: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub business_vat_id: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub email: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub business_vat_id: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub email: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")] pub shipping: Option<CustomerShippingDetails>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<CustomerSource>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<CustomerSource<'a>>,
 }
 
 #[derive(Debug, Deserialize)]

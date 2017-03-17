@@ -4,16 +4,16 @@ use params::{Metadata, Timestamp};
 use resources::Deleted;
 
 #[derive(Default, Serialize)]
-pub struct PlanParams {
-    #[serde(skip_serializing_if = "Option::is_none")] pub id: Option<String>,
+pub struct PlanParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")] pub id: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub amount: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub currency: Option<String>, // eg. "usd"
-    #[serde(skip_serializing_if = "Option::is_none")] pub interval: Option<String>, // (day, week, month, year)
-    #[serde(skip_serializing_if = "Option::is_none")] pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub currency: Option<&'a str>, // eg. "usd"
+    #[serde(skip_serializing_if = "Option::is_none")] pub interval: Option<&'a str>, // (day, week, month, year)
+    #[serde(skip_serializing_if = "Option::is_none")] pub name: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")] pub interval_count: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub statement_descriptor: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub statement_descriptor: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub trial_period_days: Option<u64>,
 }
 
