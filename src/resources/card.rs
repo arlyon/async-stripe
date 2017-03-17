@@ -1,15 +1,15 @@
 #[derive(Serialize)]
 pub struct CardParams {
-    object: String,    // must be "card"
-    exp_month: String, // eg. "12"
-    exp_year: String,  // eg. "17" or 2017"
+    pub object: &'static str, // must be "card"
+    pub exp_month: String,    // eg. "12"
+    pub exp_year: String,     // eg. "17" or 2017"
 
-    number: String,       // card number
-    cvc: Option<String>,  // card security code
-    name: Option<String>, // cardholder's full name
+    pub number: String,       // card number
+    pub cvc: Option<String>,  // card security code
+    pub name: Option<String>, // cardholder's full name
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Card {
     pub id: String,
     pub address_city: Option<String>,

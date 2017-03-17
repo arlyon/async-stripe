@@ -1,4 +1,4 @@
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Address {
     line1: String,
     line2: String,

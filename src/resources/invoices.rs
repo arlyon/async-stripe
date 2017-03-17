@@ -27,13 +27,13 @@ pub struct InvoiceListLinesParams {
 }
 */
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Period {
     pub start: Timestamp,
     pub end: Timestamp,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct InvoiceLine {
     pub id: String,
     pub amount: u64,
@@ -51,7 +51,7 @@ pub struct InvoiceLine {
     #[serde(rename = "type")] pub item_type: String, // (invoiceitem, subscription)
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Invoice {
     pub id: String,
     pub amount_due: u64,

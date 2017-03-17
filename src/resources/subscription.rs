@@ -26,7 +26,7 @@ pub struct SubscriptionParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub trial_period_days: Option<u64>,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct SubscriptionItem {
     pub id: String,
     pub created: Timestamp,
@@ -34,7 +34,7 @@ pub struct SubscriptionItem {
     pub quantity: u64,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Subscription {
     pub id: String,
     pub application_fee_percent: f64,

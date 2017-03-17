@@ -1,6 +1,6 @@
 use params::{Metadata, Timestamp};
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Coupon {
     pub id: String,
     pub amount_off: Option<u64>,

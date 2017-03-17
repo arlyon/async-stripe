@@ -3,7 +3,7 @@ use http;
 use resources::{Address, Deleted, Discount, Source, Subscription};
 use params::{List, Metadata};
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct CustomerShippingDetails {
     pub address: Address,
     pub name: String,
@@ -22,7 +22,7 @@ pub struct CustomerParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<String>,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Customer {
     pub id: String,
     pub account_balance: i64,

@@ -1,7 +1,7 @@
 use params::Timestamp;
 use resources::Coupon;
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Discount {
     pub coupon: Coupon,
     pub customer: String,

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct List<T> {
     pub data: Vec<T>,
     pub has_more: bool,

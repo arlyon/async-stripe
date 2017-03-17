@@ -17,7 +17,7 @@ pub struct PlanParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub trial_period_days: Option<u64>,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Plan {
     pub id: String,
     pub amount: u64,
