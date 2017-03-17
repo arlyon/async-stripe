@@ -1,5 +1,5 @@
 use error::Error;
-use http;
+use client::Client;
 use resources::{Address, CardParams, Currency, Deleted, Discount, Source, Subscription};
 use params::{List, Metadata};
 
@@ -49,19 +49,19 @@ pub struct Customer {
 }
 
 impl Customer {
-    pub fn create(params: CustomerParams, key: &str) -> Result<Customer, Error> {
-        return http::post("/customers", key, params);
+    pub fn create(c: &Client, params: CustomerParams) -> Result<Customer, Error> {
+        return c.post("/customers", params);
     }
 
-    pub fn get(customer_id: &str, key: &str) -> Result<Customer, Error> {
-        return http::get(&format!("/customers/{}", customer_id), key);
+    pub fn get(c: &Client, customer_id: &str) -> Result<Customer, Error> {
+        return c.get(&format!("/customers/{}", customer_id));
     }
 
-    pub fn update(customer_id: &str, params: CustomerParams, key: &str) -> Result<Customer, Error> {
-        return http::post(&format!("/customers/{}", customer_id), key, params);
+    pub fn update(c: &Client, customer_id: &str, params: CustomerParams) -> Result<Customer, Error> {
+        return c.post(&format!("/customers/{}", customer_id), params);
     }
 
-    pub fn delete(customer_id: &str, key: &str) -> Result<Deleted, Error> {
-        return http::delete(&format!("/customers/{}", customer_id), key);
+    pub fn delete(c: &Client, customer_id: &str) -> Result<Deleted, Error> {
+        return c.delete(&format!("/customers/{}", customer_id));
     }
 }

@@ -1,5 +1,5 @@
 use error::Error;
-use http;
+use client::Client;
 use resources::{Discount, Plan};
 use params::{List, Metadata, Timestamp};
 
@@ -59,20 +59,20 @@ pub struct Subscription {
 }
 
 impl Subscription {
-    pub fn create(params: SubscriptionParams, key: &str) -> Result<Subscription, Error> {
-        return http::post("/subscriptions", key, params);
+    pub fn create(c: &Client, params: SubscriptionParams) -> Result<Subscription, Error> {
+        return c.post("/subscriptions", params);
     }
 
-    pub fn get(subscription_id: &str, key: &str) -> Result<Subscription, Error> {
-        return http::get(&format!("/subscriptions/{}", subscription_id), key);
+    pub fn get(c: &Client, subscription_id: &str) -> Result<Subscription, Error> {
+        return c.get(&format!("/subscriptions/{}", subscription_id));
     }
 
-    pub fn update(subscription_id: &str, params: SubscriptionParams, key: &str) -> Result<Subscription, Error> {
-        return http::post(&format!("/subscriptions/{}", subscription_id), key, params);
+    pub fn update(c: &Client, subscription_id: &str, params: SubscriptionParams) -> Result<Subscription, Error> {
+        return c.post(&format!("/subscriptions/{}", subscription_id), params);
     }
 
-    pub fn cancel(subscription_id: &str, at_period_end: bool, key: &str) -> Result<Subscription, Error> {
+    pub fn cancel(c: &Client, subscription_id: &str, at_period_end: bool) -> Result<Subscription, Error> {
         let path = format!("/subscriptions/{}/cancel?at_period_end={}", subscription_id, at_period_end);
-        return http::post(&path, key, ());
+        return c.post(&path, ());
     }
 }

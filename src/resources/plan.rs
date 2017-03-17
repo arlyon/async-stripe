@@ -1,5 +1,5 @@
 use error::Error;
-use http;
+use client::Client;
 use params::{Metadata, Timestamp};
 use resources::{Currency, Deleted};
 
@@ -33,19 +33,19 @@ pub struct Plan {
 }
 
 impl Plan {
-    pub fn create(params: PlanParams, key: &str) -> Result<Plan, Error> {
-        return http::post("/plans", key, params);
+    pub fn create(c: &Client, params: PlanParams) -> Result<Plan, Error> {
+        return c.post("/plans", params);
     }
 
-    pub fn get(plan_id: &str, key: &str) -> Result<Plan, Error> {
-        return http::get(&format!("/plans/{}", plan_id), key);
+    pub fn get(c: &Client, plan_id: &str) -> Result<Plan, Error> {
+        return c.get(&format!("/plans/{}", plan_id));
     }
 
-    pub fn update(plan_id: &str, params: PlanParams, key: &str) -> Result<Plan, Error> {
-        return http::post(&format!("/plans/{}", plan_id), key, params);
+    pub fn update(c: &Client, plan_id: &str, params: PlanParams) -> Result<Plan, Error> {
+        return c.post(&format!("/plans/{}", plan_id), params);
     }
 
-    pub fn delete(plan_id: &str, key: &str) -> Result<Deleted, Error> {
-        return http::delete(&format!("/plans/{}", plan_id), key);
+    pub fn delete(c: &Client, plan_id: &str) -> Result<Deleted, Error> {
+        return c.delete(&format!("/plans/{}", plan_id));
     }
 }

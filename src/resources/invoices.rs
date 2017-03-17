@@ -1,5 +1,5 @@
 use error::Error;
-use http;
+use client::Client;
 use params::{List, Metadata, Timestamp};
 use resources::{Currency, Discount, Plan};
 
@@ -87,30 +87,30 @@ pub struct Invoice {
 }
 
 impl Invoice {
-    pub fn create(params: InvoiceParams, key: &str) -> Result<Invoice, Error> {
-        return http::post("/invoices", key, params);
+    pub fn create(c: &Client, params: InvoiceParams) -> Result<Invoice, Error> {
+        return c.post("/invoices", params);
     }
 
-    pub fn get(invoice_id: &str, key: &str) -> Result<Invoice, Error> {
-        return http::get(&format!("/invoices/{}", invoice_id), key);
+    pub fn get(c: &Client, invoice_id: &str) -> Result<Invoice, Error> {
+        return c.get(&format!("/invoices/{}", invoice_id));
     }
 
     // TODO: Implement InvoiceListLinesParams
-    // pub fn get_lines(invoice_id: &str, params: InvoiceListLinesParams, key: &str) -> Result<List<InvoiceLine>, Error> {
-    //     return http::get(&format!("/invoices/{}/lines", invoice_id), key);
+    // pub fn get_lines(c: &Client, invoice_id: &str, params: InvoiceListLinesParams) -> Result<List<InvoiceLine>, Error> {
+    //     return c.get(&format!("/invoices/{}/lines", invoice_id));
     // }
 
     // TODO: Implement InvoiceUpcomingParams
-    // pub fn get_upcoming(params: InvoiceUpcomingParams, key: &str) -> Result<Invoice, Error> {
-    //     return http::get(&format!("/invoices/upcoming?customer={}", invoice_id), key);
+    // pub fn get_upcoming(c: &Client, params: InvoiceUpcomingParams) -> Result<Invoice, Error> {
+    //     return c.get(&format!("/invoices/upcoming?customer={}", invoice_id));
     // }
 
-    pub fn pay(invoice_id: &str, key: &str) -> Result<Invoice, Error> {
-        return http::post(&format!("/invoices/{}/pay", invoice_id), key, ());
+    pub fn pay(c: &Client, invoice_id: &str) -> Result<Invoice, Error> {
+        return c.post(&format!("/invoices/{}/pay", invoice_id), ());
     }
 
     // TODO: Implement InvoiceListParams
-    // pub fn list(params: InvoiceListParams, key: &str) -> Result<List<InvoiceLine>, Error> {
-    //     return http::get(&format!("/invoices/{}/lines", invoice_id), key);
+    // pub fn list(c: &Client, params: InvoiceListParams) -> Result<List<InvoiceLine>, Error> {
+    //     return c.get(&format!("/invoices/{}/lines", invoice_id));
     // }
 }

@@ -13,11 +13,12 @@ extern crate serde;
 extern crate serde_json;
 extern crate serde_qs;
 
+mod client;
 mod error;
 mod resources;
 mod params;
 
-pub mod http;
+pub use client::Client;
 pub use error::{Blame, Error};
 pub use params::{List, Metadata};
 pub use resources::*;

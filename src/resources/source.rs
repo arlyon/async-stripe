@@ -1,5 +1,5 @@
 use error::Error;
-use http;
+use client::Client;
 use resources::{Address, Card, Currency};
 use params::Metadata;
 
@@ -42,15 +42,15 @@ pub enum Source {
 }
 
 impl Source {
-    pub fn create(params: SourceParams, key: &str) -> Result<Source, Error> {
-        return http::post("/sources", key, params);
+    pub fn create(c: &Client, params: SourceParams) -> Result<Source, Error> {
+        return c.post("/sources", params);
     }
 
-    pub fn get(source_id: &str, key: &str) -> Result<Source, Error> {
-        return http::get(&format!("/sources/{}", source_id), key);
+    pub fn get(c: &Client, source_id: &str) -> Result<Source, Error> {
+        return c.get(&format!("/sources/{}", source_id));
     }
 
-    pub fn update(source_id: &str, params: SourceParams, key: &str) -> Result<Source, Error> {
-        return http::post(&format!("/source/{}", source_id), key, params);
+    pub fn update(c: &Client, source_id: &str, params: SourceParams) -> Result<Source, Error> {
+        return c.post(&format!("/source/{}", source_id), params);
     }
 }
