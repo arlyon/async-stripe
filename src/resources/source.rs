@@ -1,6 +1,6 @@
 use error::Error;
 use http;
-use resources::{Address, Card, CardParams};
+use resources::{Address, Card};
 use params::Metadata;
 
 #[derive(Serialize)]
