@@ -1,6 +1,6 @@
 [root]
 name = "stripe-rust"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "hyper 0.10.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "hyper-openssl 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
