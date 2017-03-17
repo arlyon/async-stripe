@@ -1,6 +1,7 @@
 mod address;
 mod card;
 mod coupon;
+mod currency;
 mod customer;
 mod deleted;
 mod discount;
@@ -12,6 +13,7 @@ mod subscription;
 pub use resources::address::*;
 pub use resources::card::*;
 pub use resources::coupon::*;
+pub use resources::currency::*;
 pub use resources::customer::*;
 pub use resources::deleted::*;
 pub use resources::discount::*;

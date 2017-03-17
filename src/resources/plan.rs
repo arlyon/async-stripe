@@ -1,13 +1,13 @@
 use error::Error;
 use http;
 use params::{Metadata, Timestamp};
-use resources::Deleted;
+use resources::{Currency, Deleted};
 
 #[derive(Default, Serialize)]
 pub struct PlanParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")] pub id: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub amount: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub currency: Option<&'a str>, // eg. "usd"
+    #[serde(skip_serializing_if = "Option::is_none")] pub currency: Option<Currency>,
     #[serde(skip_serializing_if = "Option::is_none")] pub interval: Option<&'a str>, // (day, week, month, year)
     #[serde(skip_serializing_if = "Option::is_none")] pub name: Option<&'a str>,
 
@@ -22,7 +22,7 @@ pub struct Plan {
     pub id: String,
     pub amount: u64,
     pub created: Timestamp,
-    pub currency: String, // eg. "usd"
+    pub currency: Currency,
     pub interval: String, // (day, week, month, year)
     pub interval_count: u64,
     pub livemode: bool,

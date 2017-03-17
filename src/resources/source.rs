@@ -1,6 +1,6 @@
 use error::Error;
 use http;
-use resources::{Address, Card};
+use resources::{Address, Card, Currency};
 use params::Metadata;
 
 #[derive(Serialize)]
@@ -23,7 +23,7 @@ pub struct SourceParams<'a> {
     pub source_type: Option<&'static str>,
 
     #[serde(skip_serializing_if = "Option::is_none")] pub amount: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub currency: Option<&'a str>, // eg. "usd"
+    #[serde(skip_serializing_if = "Option::is_none")] pub currency: Option<Currency>,
     #[serde(skip_serializing_if = "Option::is_none")] pub flow: Option<&'a str>, // (redirect, receiver, code_verification, none)
     #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")] pub owner: Option<OwnerParams<'a>>,

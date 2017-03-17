@@ -1,7 +1,7 @@
 use error::Error;
 use http;
 use params::{List, Metadata, Timestamp};
-use resources::{Discount, Plan};
+use resources::{Currency, Discount, Plan};
 
 #[derive(Default, Serialize)]
 pub struct InvoiceParams<'a> {
@@ -37,7 +37,7 @@ pub struct Period {
 pub struct InvoiceLine {
     pub id: String,
     pub amount: u64,
-    pub current: String, // eg. "usd"
+    pub currency: Currency,
     pub description: Option<String>,
     pub discountable: bool,
     pub livemode: bool,
@@ -60,7 +60,7 @@ pub struct Invoice {
     pub attempted: bool,
     pub charge: Option<String>,
     pub closed: bool,
-    pub currency: String, // eg. "usd"
+    pub currency: Currency,
     pub customer: String,
     pub date: Timestamp,
     pub description: Option<String>,

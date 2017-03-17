@@ -1,6 +1,6 @@
 use error::Error;
 use http;
-use resources::{Address, CardParams, Deleted, Discount, Source, Subscription};
+use resources::{Address, CardParams, Currency, Deleted, Discount, Source, Subscription};
 use params::{List, Metadata};
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -35,7 +35,7 @@ pub struct Customer {
     pub account_balance: i64,
     pub business_vat_id: Option<String>,
     pub created: u64,
-    pub currency: String,
+    pub currency: Option<Currency>,
     pub default_source: String,
     pub delinquent: bool,
     pub desc: Option<String>,

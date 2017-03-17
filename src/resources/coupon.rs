@@ -1,11 +1,12 @@
 use params::{Metadata, Timestamp};
+use resources::Currency;
 
 #[derive(Debug, Deserialize)]
 pub struct Coupon {
     pub id: String,
     pub amount_off: Option<u64>,
     pub created: Timestamp,
-    pub currency: Option<String>, // eg. "usd"
+    pub currency: Option<Currency>,
     pub duration: String, // (forever, once, repeating)
     pub duration_in_months: Option<u64>,
     pub livemode: bool,
