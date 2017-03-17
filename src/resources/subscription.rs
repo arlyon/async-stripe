@@ -9,7 +9,7 @@ pub struct SubscriptionItemParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub quantity: Option<u64>,
 }
 
-#[derive(Serialize)]
+#[derive(Default, Serialize)]
 pub struct SubscriptionParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")] pub application_fee_percent: Option<f64>,

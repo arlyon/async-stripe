@@ -17,7 +17,7 @@ pub enum CustomerSource {
     Card(CardParams),
 }
 
-#[derive(Serialize)]
+#[derive(Default, Serialize)]
 pub struct CustomerParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub account_balance: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")] pub business_vat_id: Option<String>,

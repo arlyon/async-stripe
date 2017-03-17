@@ -16,7 +16,7 @@ pub struct RedirectParams {
     return_url: String,
 }
 
-#[derive(Serialize)]
+#[derive(Default, Serialize)]
 pub struct SourceParams {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]

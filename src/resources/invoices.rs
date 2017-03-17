@@ -3,7 +3,7 @@ use http;
 use params::{List, Metadata, Timestamp};
 use resources::{Discount, Plan};
 
-#[derive(Serialize)]
+#[derive(Default, Serialize)]
 pub struct InvoiceParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub application_fee: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<String>,

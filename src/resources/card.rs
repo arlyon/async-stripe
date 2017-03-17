@@ -1,4 +1,4 @@
-#[derive(Serialize)]
+#[derive(Default, Serialize)]
 pub struct CardParams {
     pub object: &'static str, // must be "card"
     pub exp_month: String,    // eg. "12"

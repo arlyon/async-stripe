@@ -3,7 +3,7 @@ use http;
 use params::{Metadata, Timestamp};
 use resources::Deleted;
 
-#[derive(Serialize)]
+#[derive(Default, Serialize)]
 pub struct PlanParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")] pub amount: Option<u64>,
