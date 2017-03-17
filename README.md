@@ -1,4 +1,4 @@
-stripe-rust 0.1.1
+stripe-rust 0.2.0
 =================
 
 Rust API bindings for the Stripe v1 HTTP API
@@ -8,7 +8,7 @@ Put this in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stripe-rust = "0.1.1"
+stripe-rust = "0.2.0"
 ```
 
 And this in your crate root:
