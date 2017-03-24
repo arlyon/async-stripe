@@ -1,3 +1,4 @@
+use params::to_snakecase;
 use std::fmt;
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
@@ -151,6 +152,6 @@ impl Default for Currency {
 
 impl fmt::Display for Currency {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", format!("{:?}", self).to_lowercase())
+        write!(f, "{}", to_snakecase(&format!("{:?}", self)))
     }
 }

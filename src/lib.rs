@@ -19,6 +19,6 @@ mod resources;
 mod params;
 
 pub use client::Client;
-pub use error::{Blame, Error};
-pub use params::{List, Metadata};
+pub use error::{Error, ErrorCode, ErrorType, RequestError};
+pub use params::{List, Metadata, Timestamp};
 pub use resources::*;

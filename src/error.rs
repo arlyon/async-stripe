@@ -2,93 +2,170 @@ extern crate hyper;
 extern crate serde_json as json;
 extern crate serde_qs as query;
 
-use std::error::Error as StandardError;
+use params::to_snakecase;
+use std::error;
 use std::fmt;
 use std::io;
 
+/// An error encountered when communicating with the Stripe API.
 #[derive(Debug)]
 pub enum Error {
-    BadStatus { code: u16, body: String },
-
-    // These imply the stripe client had an error
-    Decode(json::Error),
-    Encode(query::ser::Error),
-
-    // These imply the stripe service had an error
+    /// An error reported by Stripe.
+    Stripe(RequestError),
+    /// A networking error communicating with the Stripe server.
     Http(hyper::Error),
+    /// An error reading the response body.
     Io(io::Error),
-}
-
-#[derive(Debug)]
-pub enum Blame {
-    Client,
-    Server,
-}
-
-impl Error {
-    pub fn from_status(code: u16, body: String) -> Error {
-        Error::BadStatus{code: code, body: body}
-    }
-    pub fn from_encode(err: query::ser::Error) -> Error {
-        Error::Encode(err)
-    }
-    pub fn from_decode(err: json::Error) -> Error {
-        Error::Decode(err)
-    }
-    pub fn from_http(err: hyper::Error) -> Error {
-        Error::Http(err)
-    }
-    pub fn from_io(err: io::Error) -> Error {
-        Error::Io(err)
-    }
-
-    pub fn blame(&self) -> Blame {
-        match self {
-            &Error::BadStatus { code, .. } => match code {
-                400...499 => Blame::Client,
-                500...599 => Blame::Server,
-                _ => Blame::Client,
-            },
-            &Error::Decode(_) => Blame::Client,
-            &Error::Encode(_) => Blame::Client,
-            &Error::Http(_) => Blame::Server,
-            &Error::Io(_) => Blame::Server,
-        }
-    }
+    /// An error converting between wire format and Rust types.
+    Conversion(Box<error::Error + Sync + Send>),
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let message = match self {
-            &Error::BadStatus { code, ref body } => format!("stripe: bad http status {}: {}", code, body),
-            &Error::Decode(ref err) => format!("stripe: {}", err),
-            &Error::Encode(ref err) => format!("stripe: {}", err),
-            &Error::Http(ref err) => format!("stripe: {}", err),
-            &Error::Io(ref err) => format!("stripe: {}", err),
-        };
-
-        write!(f, "{}", message)
+        f.write_str(error::Error::description(self))?;
+        match *self {
+            Error::Stripe(ref err) => write!(f, ": {}", err),
+            Error::Http(ref err) => write!(f, ": {}", err),
+            Error::Io(ref err) => write!(f, ": {}", err),
+            Error::Conversion(ref err) => write!(f, ": {}", err),
+        }
     }
 }
 
-impl StandardError for Error {
+impl error::Error for Error {
     fn description(&self) -> &str {
-        match self {
-            &Error::BadStatus { .. } => "bad http status",
-            &Error::Decode(ref err) => err.description(),
-            &Error::Encode(ref err) => err.description(),
-            &Error::Http(ref err) => err.description(),
-            &Error::Io(ref err) => err.description(),
+        match *self {
+            Error::Stripe(_) => "error reported by stripe",
+            Error::Http(_) => "error communicating with stripe",
+            Error::Io(_) => "error reading response from stripe",
+            Error::Conversion(_) => "error converting between wire format and Rust types",
         }
     }
 
-    fn cause(&self) -> Option<&StandardError> {
-        match self {
-            &Error::BadStatus { .. } => None,
-            &Error::Decode(ref err) => Some(err),
-            &Error::Encode(ref err) => Some(err),
-            &Error::Http(ref err) => Some(err),
-            &Error::Io(ref err) => Some(err),
+    fn cause(&self) -> Option<&error::Error> {
+        match *self {
+            Error::Stripe(ref err) => Some(err),
+            Error::Http(ref err) => Some(err),
+            Error::Io(ref err) => Some(err),
+            Error::Conversion(ref err) => Some(&**err),
         }
+    }
+}
+
+impl From<RequestError> for Error {
+    fn from(err: RequestError) -> Error {
+        Error::Stripe(err)
+    }
+}
+
+impl From<hyper::Error> for Error {
+    fn from(err: hyper::Error) -> Error {
+        Error::Http(err)
+    }
+}
+
+impl From<io::Error> for Error {
+    fn from(err: io::Error) -> Error {
+        Error::Io(err)
+    }
+}
+
+impl From<query::ser::Error> for Error {
+    fn from(err: query::ser::Error) -> Error {
+        Error::Conversion(Box::new(err))
+    }
+}
+
+impl From<json::Error> for Error {
+    fn from(err: json::Error) -> Error {
+        Error::Conversion(Box::new(err))
+    }
+}
+
+
+/// The list of possible values for a RequestError's type.
+#[derive(Debug, PartialEq, Deserialize)]
+pub enum ErrorType {
+    #[serde(rename = "api_error")] Api,
+    #[serde(rename = "api_connection_error")] Connection,
+    #[serde(rename = "authentication_error")] Authentication,
+    #[serde(rename = "card_error")] Card,
+    #[serde(rename = "invalid_request_error")] InvalidRequest,
+    #[serde(rename = "rate_limit_error")] RateLimit,
+    #[serde(rename = "validation_error")] Validation,
+}
+
+impl Default for ErrorType {
+    fn default() -> ErrorType {
+        ErrorType::Api
+    }
+}
+
+impl fmt::Display for ErrorType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", to_snakecase(&format!("{:?}Error", self)))
+    }
+}
+
+/// The list of possible values for a RequestError's code.
+#[derive(Debug, PartialEq, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ErrorCode {
+    InvalidNumber,
+    InvalidExpiryMonth,
+    InvalidExpiryYear,
+    InvalidCvc,
+    InvalidSwipeData,
+    IncorrectNumber,
+    ExpiredCard,
+    IncorrectCvc,
+    IncorrectZip,
+    CardDeclined,
+    Missing,
+    ProcessingError,
+}
+
+impl fmt::Display for ErrorCode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", to_snakecase(&format!("{:?}", self)))
+    }
+}
+
+/// An error reported by stripe in a request's response.
+/// For more details see https://stripe.com/docs/api#errors.
+#[derive(Debug, Default, Deserialize)]
+pub struct RequestError {
+    /// The HTTP status in the response.
+    #[serde(skip_deserializing)]
+    pub http_status: u16,
+
+    /// The type of error returned.
+    #[serde(rename = "type")]
+    pub error_type: ErrorType,
+
+    /// A human-readable message providing more details about the error.
+    /// For card errors, these messages can be shown to end users.
+    #[serde(default)] pub message: String,
+
+    /// For card errors, a value describing the kind of card error that occured.
+    pub code: Option<ErrorCode>,
+
+    /// For card errors resulting from a bank decline, a string indicating the
+    /// bank's reason for the decline if they provide one.
+    pub decline_code: Option<String>,
+
+    /// The ID of the failed charge, if applicable.
+    pub charge: Option<String>,
+}
+
+impl fmt::Display for RequestError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}({}): {}", self.error_type, self.http_status, self.message)
+    }
+}
+
+impl error::Error for RequestError {
+    fn description(&self) -> &str {
+        &self.message
     }
 }
