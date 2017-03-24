@@ -2,7 +2,7 @@ extern crate serde;
 extern crate serde_json as json;
 extern crate serde_qs as query;
 
-use error::{Error, RequestError};
+use error::{Error, ErrorObject, RequestError};
 use hyper::Client as HttpClient;
 use hyper::client::RequestBuilder;
 use hyper::header::{Authorization, Basic, ContentType, Headers};
@@ -16,12 +16,12 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new(secret_key: String) -> Client {
+    pub fn new(secret_key: &str) -> Client {
         let ssl = OpensslClient::new().unwrap();
         let connector = HttpsConnector::new(ssl);
         Client{
             client: HttpClient::with_connector(connector),
-            secret_key: secret_key,
+            secret_key: secret_key.to_owned(),
         }
     }
 
@@ -65,9 +65,13 @@ fn send<T: serde::Deserialize>(request: RequestBuilder) -> Result<T, Error> {
     match status {
         200...299 => {},
         _ => {
-            let mut err = json::from_str(&body).unwrap_or(RequestError::default());
-            err.http_status = status;
-            return Err(Error::from(err));
+            let mut err = json::from_str(&body).unwrap_or_else(|err| {
+                let mut req = ErrorObject{error: RequestError::default()};
+                req.error.message = format!("failed to deserialize error: {}", err);
+                req
+            });
+            err.error.http_status = status;
+            return Err(Error::from(err.error));
         },
     }
 

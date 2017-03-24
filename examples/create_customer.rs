@@ -5,7 +5,7 @@ use std::env;
 fn main() {
     // Create a new client
     let secret_key = env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
-    let client = stripe::Client::new(secret_key);
+    let client = stripe::Client::new(&secret_key);
 
     // TODO: Keep track of https://github.com/rust-lang/rust-roadmap/issues/17
     //       so we can use default struct field value syntax eventually

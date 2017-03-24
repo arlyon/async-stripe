@@ -86,6 +86,8 @@ impl From<json::Error> for Error {
 /// The list of possible values for a RequestError's type.
 #[derive(Debug, PartialEq, Deserialize)]
 pub enum ErrorType {
+    #[serde(skip_deserializing)] Unknown,
+
     #[serde(rename = "api_error")] Api,
     #[serde(rename = "api_connection_error")] Connection,
     #[serde(rename = "authentication_error")] Authentication,
@@ -97,7 +99,7 @@ pub enum ErrorType {
 
 impl Default for ErrorType {
     fn default() -> ErrorType {
-        ErrorType::Api
+        ErrorType::Unknown
     }
 }
 
@@ -168,4 +170,10 @@ impl error::Error for RequestError {
     fn description(&self) -> &str {
         &self.message
     }
+}
+
+#[doc(hidden)]
+#[derive(Deserialize)]
+pub struct ErrorObject {
+    pub error: RequestError
 }

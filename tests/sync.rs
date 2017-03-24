@@ -5,7 +5,7 @@ use std::thread;
 
 #[test]
 fn sync() {
-    let client = Arc::new(stripe::Client::new("".to_string()));
+    let client = Arc::new(stripe::Client::new("sk_key"));
     let clone1 = client.clone();
     let clone2 = client.clone();
     thread::spawn(move || {
