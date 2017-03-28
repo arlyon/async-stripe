@@ -1,3 +1,27 @@
+# Version 0.3.0 (Mar 28, 2017)
+
+## New Features
+
+  * Implemented the [charges resource](https://stripe.com/docs/api#charges) and added the `Charge` type.
+
+## Breaking Changes
+
+  * The `Resource::get` requests have been renamed to `Resource::retrieve`.
+  * The `Subscription::cancel` request now expects `CancelParams` instead of
+    expecting a one-off function argument.
+  * Removed the `blame` method and `Blame` type from errors.
+  * The `Error::Decode` and `Error::Encode` variants have been combined into a
+    single `Error::Conversion` variant.
+
+## General Improvements
+
+ * The `Error` type now has easier to read error messages and will parses JSON
+   errors returned by Stripe into a structured error type (`RequestError`).
+ * Added Travis CI for automated testing on GitHub.
+ * Added reference documentation to implemented resources (but still no docs at
+   crate/module level nor a "Getting started" guide)
+
+
 # Version 0.2.0 (Mar 17, 2017)
 
 ## New Features

@@ -1,4 +1,4 @@
-stripe-rust 0.2.0
+stripe-rust 0.3.0
 =================
 
 [![stripe-rust on Travis CI](https://travis-ci.org/rapiditynetworks/stripe-rust.svg?branch=master)](https://travis-ci.org/rapiditynetworks/stripe-rust)
@@ -12,7 +12,7 @@ Put this in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stripe-rust = "0.2.0"
+stripe-rust = "0.3.0"
 ```
 
 And this in your crate root:
