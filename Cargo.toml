@@ -6,7 +6,7 @@ authors = ["Kevin Stenerson <kevin@rapiditynetworks.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/rapiditynetworks/stripe-rust"
-homepage = "https://github.com/rapiditynetworks/stripe-rust"
+documentation = "https://docs.rs/stripe-rust"
 keywords = ["stripe", "v1", "api"]
 categories = ["api-bindings"]
 
