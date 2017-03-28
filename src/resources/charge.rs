@@ -16,25 +16,25 @@ pub struct ChargeOutcome {
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct FraudDetails {
-    pub user_report: Option<String>,
-    pub stripe_report: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub user_report: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub stripe_report: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ShippingDetails {
+    pub name: String,
     pub address: Address,
-    pub carrier: Option<String>, // eg. Fedex, UPS, USPS
-    pub name: String, // TODO: Is this possibly null?
-    pub phone: Option<String>,
-    pub tracking_number: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub carrier: Option<String>, // eg. Fedex, UPS, USPS
+    #[serde(skip_serializing_if = "Option::is_none")] pub phone: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub tracking_number: Option<String>,
 }
 
 #[derive(Default, Serialize)]
 pub struct CaptureParams<'a> {
-    pub amount: Option<u64>,
-    pub application_fee: Option<u64>,
-    pub receipt_email: Option<&'a str>,
-    pub statement_descriptor: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub amount: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub application_fee: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub receipt_email: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub statement_descriptor: Option<&'a str>,
 }
 
 #[derive(Serialize)]
