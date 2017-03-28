@@ -96,34 +96,34 @@ pub struct Invoice {
 impl Invoice {
     /// Creates a new invoice.
     /// For more details see https://stripe.com/docs/api#create_invoice.
-    pub fn create(c: &Client, params: InvoiceParams) -> Result<Invoice, Error> {
-        return c.post("/invoices", params);
+    pub fn create(client: &Client, params: InvoiceParams) -> Result<Invoice, Error> {
+        client.post("/invoices", params)
     }
 
     /// Retrieves the details of an invoice.
     /// For more details see https://stripe.com/docs/api#retrieve_invoice.
-    pub fn retrieve(c: &Client, invoice_id: &str) -> Result<Invoice, Error> {
-        return c.get(&format!("/invoices/{}", invoice_id));
+    pub fn retrieve(client: &Client, invoice_id: &str) -> Result<Invoice, Error> {
+        client.get(&format!("/invoices/{}", invoice_id))
     }
 
     // TODO: Implement InvoiceListLinesParams
-    // pub fn get_lines(c: &Client, invoice_id: &str, params: InvoiceListLinesParams) -> Result<List<InvoiceLine>, Error> {
-    //     return c.get(&format!("/invoices/{}/lines", invoice_id));
+    // pub fn get_lines(client: &Client, invoice_id: &str, params: InvoiceListLinesParams) -> Result<List<InvoiceLine>, Error> {
+    //     client.get(&format!("/invoices/{}/lines", invoice_id))
     // }
 
     // TODO: Implement InvoiceUpcomingParams
-    // pub fn get_upcoming(c: &Client, params: InvoiceUpcomingParams) -> Result<Invoice, Error> {
-    //     return c.get(&format!("/invoices/upcoming?customer={}", invoice_id));
+    // pub fn get_upcoming(client: &Client, params: InvoiceUpcomingParams) -> Result<Invoice, Error> {
+    //     client.get(&format!("/invoices/upcoming?customer={}", invoice_id))
     // }
 
     /// Pays an invoice.
     /// For more details see https://stripe.com/docs/api#pay_invoice.
-    pub fn pay(c: &Client, invoice_id: &str) -> Result<Invoice, Error> {
-        return c.post(&format!("/invoices/{}/pay", invoice_id), ());
+    pub fn pay(client: &Client, invoice_id: &str) -> Result<Invoice, Error> {
+        client.post(&format!("/invoices/{}/pay", invoice_id), ())
     }
 
     // TODO: Implement InvoiceListParams
-    // pub fn list(c: &Client, params: InvoiceListParams) -> Result<List<InvoiceLine>, Error> {
-    //     return c.get(&format!("/invoices/{}/lines", invoice_id));
+    // pub fn list(client: &Client, params: InvoiceListParams) -> Result<List<InvoiceLine>, Error> {
+    //     client.get(&format!("/invoices/{}/lines", invoice_id))
     // }
 }

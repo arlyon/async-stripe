@@ -67,26 +67,26 @@ pub struct Subscription {
 impl Subscription {
     /// Creates a new subscription for a customer.
     /// For more details see https://stripe.com/docs/api#create_subscription.
-    pub fn create(c: &Client, params: SubscriptionParams) -> Result<Subscription, Error> {
-        return c.post("/subscriptions", params);
+    pub fn create(client: &Client, params: SubscriptionParams) -> Result<Subscription, Error> {
+        client.post("/subscriptions", params)
     }
 
     /// Retrieves the details of a subscription.
     /// For more details see https://stripe.com/docs/api#retrieve_subscription.
-    pub fn retrieve(c: &Client, subscription_id: &str) -> Result<Subscription, Error> {
-        return c.get(&format!("/subscriptions/{}", subscription_id));
+    pub fn retrieve(client: &Client, subscription_id: &str) -> Result<Subscription, Error> {
+        client.get(&format!("/subscriptions/{}", subscription_id))
     }
 
     /// Updates a subscription's properties.
     /// For more details see https://stripe.com/docs/api#update_subscription.
-    pub fn update(c: &Client, subscription_id: &str, params: SubscriptionParams) -> Result<Subscription, Error> {
-        return c.post(&format!("/subscriptions/{}", subscription_id), params);
+    pub fn update(client: &Client, subscription_id: &str, params: SubscriptionParams) -> Result<Subscription, Error> {
+        client.post(&format!("/subscriptions/{}", subscription_id), params)
     }
 
     /// Cancels a subscription.
     /// For more details see https://stripe.com/docs/api#cancel_subscription.
-    pub fn cancel(c: &Client, subscription_id: &str, at_period_end: bool) -> Result<Subscription, Error> {
+    pub fn cancel(client: &Client, subscription_id: &str, at_period_end: bool) -> Result<Subscription, Error> {
         let path = format!("/subscriptions/{}/cancel?at_period_end={}", subscription_id, at_period_end);
-        return c.post(&path, ());
+        client.post(&path, ())
     }
 }

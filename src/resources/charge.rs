@@ -108,25 +108,25 @@ pub struct Charge {
 impl Charge {
     /// Creates a new charge.
     /// For more details see https://stripe.com/docs/api#create_charge.
-    pub fn create(c: &Client, params: ChargeParams) -> Result<Charge, Error> {
-        return c.post("/charges", params);
+    pub fn create(client: &Client, params: ChargeParams) -> Result<Charge, Error> {
+        client.post("/charges", params)
     }
 
     /// Retrieves the details of a charge.
     /// For more details see https://stripe.com/docs/api#retrieve_charge.
-    pub fn retrieve(c: &Client, charge_id: &str) -> Result<Charge, Error> {
-        return c.get(&format!("/charges/{}", charge_id));
+    pub fn retrieve(client: &Client, charge_id: &str) -> Result<Charge, Error> {
+        client.get(&format!("/charges/{}", charge_id))
     }
 
     /// Updates a charge's properties.
     /// For more details see https://stripe.com/docs/api#update_charge.
-    pub fn update(c: &Client, charge_id: &str, params: ChargeParams) -> Result<Charge, Error> {
-        return c.post(&format!("/charges/{}", charge_id), params);
+    pub fn update(client: &Client, charge_id: &str, params: ChargeParams) -> Result<Charge, Error> {
+        client.post(&format!("/charges/{}", charge_id), params)
     }
 
     /// Capture captures a previously created charge with capture set to false.
     /// For more details see https://stripe.com/docs/api#charge_capture.
-    pub fn capture(c: &Client, charge_id: &str, params: CaptureParams) -> Result<Charge, Error> {
-        return c.post(&format!("/charges/{}/capture", charge_id), params);
+    pub fn capture(client: &Client, charge_id: &str, params: CaptureParams) -> Result<Charge, Error> {
+        client.post(&format!("/charges/{}/capture", charge_id), params)
     }
 }

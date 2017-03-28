@@ -42,15 +42,15 @@ pub enum Source {
 }
 
 impl Source {
-    pub fn create(c: &Client, params: SourceParams) -> Result<Source, Error> {
-        return c.post("/sources", params);
+    pub fn create(client: &Client, params: SourceParams) -> Result<Source, Error> {
+        client.post("/sources", params)
     }
 
-    pub fn get(c: &Client, source_id: &str) -> Result<Source, Error> {
-        return c.get(&format!("/sources/{}", source_id));
+    pub fn get(client: &Client, source_id: &str) -> Result<Source, Error> {
+        client.get(&format!("/sources/{}", source_id))
     }
 
-    pub fn update(c: &Client, source_id: &str, params: SourceParams) -> Result<Source, Error> {
-        return c.post(&format!("/source/{}", source_id), params);
+    pub fn update(client: &Client, source_id: &str, params: SourceParams) -> Result<Source, Error> {
+        client.post(&format!("/source/{}", source_id), params)
     }
 }

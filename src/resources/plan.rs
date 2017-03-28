@@ -33,19 +33,19 @@ pub struct Plan {
 }
 
 impl Plan {
-    pub fn create(c: &Client, params: PlanParams) -> Result<Plan, Error> {
-        return c.post("/plans", params);
+    pub fn create(client: &Client, params: PlanParams) -> Result<Plan, Error> {
+        client.post("/plans", params)
     }
 
-    pub fn get(c: &Client, plan_id: &str) -> Result<Plan, Error> {
-        return c.get(&format!("/plans/{}", plan_id));
+    pub fn get(client: &Client, plan_id: &str) -> Result<Plan, Error> {
+        client.get(&format!("/plans/{}", plan_id))
     }
 
-    pub fn update(c: &Client, plan_id: &str, params: PlanParams) -> Result<Plan, Error> {
-        return c.post(&format!("/plans/{}", plan_id), params);
+    pub fn update(client: &Client, plan_id: &str, params: PlanParams) -> Result<Plan, Error> {
+        client.post(&format!("/plans/{}", plan_id), params)
     }
 
-    pub fn delete(c: &Client, plan_id: &str) -> Result<Deleted, Error> {
-        return c.delete(&format!("/plans/{}", plan_id));
+    pub fn delete(client: &Client, plan_id: &str) -> Result<Deleted, Error> {
+        client.delete(&format!("/plans/{}", plan_id))
     }
 }
