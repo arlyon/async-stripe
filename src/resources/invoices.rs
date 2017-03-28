@@ -3,6 +3,8 @@ use client::Client;
 use params::{List, Metadata, Timestamp};
 use resources::{Currency, Discount, Plan};
 
+/// The set of parameters that can be used when creating or updating an invoice.
+/// For more details see https://stripe.com/docs/api#create_invoice, https://stripe.com/docs/api#update_invoice.
 #[derive(Default, Serialize)]
 pub struct InvoiceParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")] pub application_fee: Option<u64>,
@@ -27,12 +29,15 @@ pub struct InvoiceListLinesParams {
 }
 */
 
+/// Period is a structure representing a start and end dates.
 #[derive(Debug, Deserialize)]
 pub struct Period {
     pub start: Timestamp,
     pub end: Timestamp,
 }
 
+/// The resource representing a Stripe invoice line item.
+/// For more details see https://stripe.com/docs/api#invoice_line_item_object.
 #[derive(Debug, Deserialize)]
 pub struct InvoiceLine {
     pub id: String,
@@ -51,6 +56,8 @@ pub struct InvoiceLine {
     #[serde(rename = "type")] pub item_type: String, // (invoiceitem, subscription)
 }
 
+/// The resource representing a Stripe invoice.
+/// For more details see https://stripe.com/docs/api#invoice_object.
 #[derive(Debug, Deserialize)]
 pub struct Invoice {
     pub id: String,
@@ -87,11 +94,15 @@ pub struct Invoice {
 }
 
 impl Invoice {
+    /// Creates a new invoice.
+    /// For more details see https://stripe.com/docs/api#create_invoice.
     pub fn create(c: &Client, params: InvoiceParams) -> Result<Invoice, Error> {
         return c.post("/invoices", params);
     }
 
-    pub fn get(c: &Client, invoice_id: &str) -> Result<Invoice, Error> {
+    /// Retrieves the details of an invoice.
+    /// For more details see https://stripe.com/docs/api#retrieve_invoice.
+    pub fn retrieve(c: &Client, invoice_id: &str) -> Result<Invoice, Error> {
         return c.get(&format!("/invoices/{}", invoice_id));
     }
 
@@ -105,6 +116,8 @@ impl Invoice {
     //     return c.get(&format!("/invoices/upcoming?customer={}", invoice_id));
     // }
 
+    /// Pays an invoice.
+    /// For more details see https://stripe.com/docs/api#pay_invoice.
     pub fn pay(c: &Client, invoice_id: &str) -> Result<Invoice, Error> {
         return c.post(&format!("/invoices/{}/pay", invoice_id), ());
     }

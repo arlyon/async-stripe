@@ -1,6 +1,8 @@
 use params::to_snakecase;
 use std::fmt;
 
+/// Currency is the list of supported currencies.
+/// For more details see https://support.stripe.com/questions/which-currencies-does-stripe-support.
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum Currency {
 	#[serde(rename = "aed")] AED, // United Arab Emirates Dirham

@@ -17,6 +17,8 @@ pub enum CustomerSource<'a> {
     Card(CardParams<'a>),
 }
 
+/// The set of parameters that can be used when creating or updating a customer.
+/// For more details see https://stripe.com/docs/api#create_customer and https://stripe.com/docs/api#update_customer.
 #[derive(Default, Serialize)]
 pub struct CustomerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")] pub account_balance: Option<i64>,
@@ -29,6 +31,8 @@ pub struct CustomerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<CustomerSource<'a>>,
 }
 
+/// The resource representing a Stripe customer.
+/// For more details see https://stripe.com/docs/api#customers.
 #[derive(Debug, Deserialize)]
 pub struct Customer {
     pub id: String,
@@ -49,18 +53,26 @@ pub struct Customer {
 }
 
 impl Customer {
+    /// Creates a new customer.
+    /// For more details see https://stripe.com/docs/api#create_customer.
     pub fn create(c: &Client, params: CustomerParams) -> Result<Customer, Error> {
         return c.post("/customers", params);
     }
 
-    pub fn get(c: &Client, customer_id: &str) -> Result<Customer, Error> {
+    /// Retrieves the details of a customer.
+    /// For more details see https://stripe.com/docs/api#retrieve_customer.
+    pub fn retrieve(c: &Client, customer_id: &str) -> Result<Customer, Error> {
         return c.get(&format!("/customers/{}", customer_id));
     }
 
+    /// Updates a customer's properties.
+    /// For more details see https://stripe.com/docs/api#update_customer.
     pub fn update(c: &Client, customer_id: &str, params: CustomerParams) -> Result<Customer, Error> {
         return c.post(&format!("/customers/{}", customer_id), params);
     }
 
+    /// Deletes a customer.
+    /// For more details see https://stripe.com/docs/api#delete_customer.
     pub fn delete(c: &Client, customer_id: &str) -> Result<Deleted, Error> {
         return c.delete(&format!("/customers/{}", customer_id));
     }
