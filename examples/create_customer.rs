@@ -1,6 +1,7 @@
 extern crate stripe;
 
 use std::env;
+use stripe::{Customer, CustomerParams, CustomerSource};
 
 fn main() {
     // Create a new client
