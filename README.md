@@ -1,5 +1,5 @@
-stripe-rust 0.3.0
-=================
+stripe-rust
+===========
 
 [![stripe-rust on Travis CI](https://travis-ci.org/rapiditynetworks/stripe-rust.svg?branch=master)](https://travis-ci.org/rapiditynetworks/stripe-rust)
 [![stripe-rust on crates.io](https://img.shields.io/crates/v/stripe-rust.svg)](https://crates.io/crates/stripe-rust)
