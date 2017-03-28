@@ -1,9 +1,9 @@
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Address {
-    line1: String,
-    line2: String,
-    city: String,
-    state: String,
-    postal_code: String,
-    country: String,
+    pub line1: String,
+    pub line2: String,
+    pub city: String,
+    pub state: String,
+    pub postal_code: String,
+    pub country: String,
 }

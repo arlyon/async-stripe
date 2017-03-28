@@ -98,7 +98,7 @@ pub enum ErrorType {
 }
 
 impl Default for ErrorType {
-    fn default() -> ErrorType {
+    fn default() -> Self {
         ErrorType::Unknown
     }
 }
