@@ -3,6 +3,11 @@ use client::Client;
 use resources::{Discount, Plan};
 use params::{List, Metadata, Timestamp};
 
+#[derive(Default, Serialize)]
+pub struct CancelParams {
+    #[serde(skip_serializing_if = "Option::is_none")] pub at_period_end: Option<bool>,
+}
+
 #[derive(Serialize)]
 pub struct ItemParams<'a> {
     pub plan: &'a str,
@@ -85,8 +90,7 @@ impl Subscription {
 
     /// Cancels a subscription.
     /// For more details see https://stripe.com/docs/api#cancel_subscription.
-    pub fn cancel(client: &Client, subscription_id: &str, at_period_end: bool) -> Result<Subscription, Error> {
-        let path = format!("/subscriptions/{}/cancel?at_period_end={}", subscription_id, at_period_end);
-        client.post(&path, ())
+    pub fn cancel(client: &Client, subscription_id: &str, params: CancelParams) -> Result<Subscription, Error> {
+        client.post(&format!("/subscriptions/{}/cancel", subscription_id), params)
     }
 }
