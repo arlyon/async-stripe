@@ -55,25 +55,25 @@ pub struct Customer {
 impl Customer {
     /// Creates a new customer.
     /// For more details see https://stripe.com/docs/api#create_customer.
-    pub fn create(c: &Client, params: CustomerParams) -> Result<Customer, Error> {
-        return c.post("/customers", params);
+    pub fn create(client: &Client, params: CustomerParams) -> Result<Customer, Error> {
+        client.post("/customers", params)
     }
 
     /// Retrieves the details of a customer.
     /// For more details see https://stripe.com/docs/api#retrieve_customer.
-    pub fn retrieve(c: &Client, customer_id: &str) -> Result<Customer, Error> {
-        return c.get(&format!("/customers/{}", customer_id));
+    pub fn retrieve(client: &Client, customer_id: &str) -> Result<Customer, Error> {
+        client.get(&format!("/customers/{}", customer_id))
     }
 
     /// Updates a customer's properties.
     /// For more details see https://stripe.com/docs/api#update_customer.
-    pub fn update(c: &Client, customer_id: &str, params: CustomerParams) -> Result<Customer, Error> {
-        return c.post(&format!("/customers/{}", customer_id), params);
+    pub fn update(client: &Client, customer_id: &str, params: CustomerParams) -> Result<Customer, Error> {
+        client.post(&format!("/customers/{}", customer_id), params)
     }
 
     /// Deletes a customer.
     /// For more details see https://stripe.com/docs/api#delete_customer.
-    pub fn delete(c: &Client, customer_id: &str) -> Result<Deleted, Error> {
-        return c.delete(&format!("/customers/{}", customer_id));
+    pub fn delete(client: &Client, customer_id: &str) -> Result<Deleted, Error> {
+        client.delete(&format!("/customers/{}", customer_id))
     }
 }
