@@ -18,6 +18,7 @@ pub enum CustomerSource<'a> {
 }
 
 /// The set of parameters that can be used when creating or updating a customer.
+///
 /// For more details see https://stripe.com/docs/api#create_customer and https://stripe.com/docs/api#update_customer.
 #[derive(Default, Serialize)]
 pub struct CustomerParams<'a> {
@@ -32,6 +33,7 @@ pub struct CustomerParams<'a> {
 }
 
 /// The resource representing a Stripe customer.
+///
 /// For more details see https://stripe.com/docs/api#customers.
 #[derive(Debug, Deserialize)]
 pub struct Customer {
@@ -54,24 +56,28 @@ pub struct Customer {
 
 impl Customer {
     /// Creates a new customer.
+    ///
     /// For more details see https://stripe.com/docs/api#create_customer.
     pub fn create(client: &Client, params: CustomerParams) -> Result<Customer, Error> {
         client.post("/customers", params)
     }
 
     /// Retrieves the details of a customer.
+    ///
     /// For more details see https://stripe.com/docs/api#retrieve_customer.
     pub fn retrieve(client: &Client, customer_id: &str) -> Result<Customer, Error> {
         client.get(&format!("/customers/{}", customer_id))
     }
 
     /// Updates a customer's properties.
+    ///
     /// For more details see https://stripe.com/docs/api#update_customer.
     pub fn update(client: &Client, customer_id: &str, params: CustomerParams) -> Result<Customer, Error> {
         client.post(&format!("/customers/{}", customer_id), params)
     }
 
     /// Deletes a customer.
+    ///
     /// For more details see https://stripe.com/docs/api#delete_customer.
     pub fn delete(client: &Client, customer_id: &str) -> Result<Deleted, Error> {
         client.delete(&format!("/customers/{}", customer_id))

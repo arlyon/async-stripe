@@ -4,6 +4,7 @@ use params::{Metadata, Timestamp};
 use resources::{Currency, Deleted};
 
 /// The set of parameters that can be used when creating or updating a plan.
+///
 /// For more details see https://stripe.com/docs/api#create_plan and https://stripe.com/docs/api#update_plan.
 #[derive(Default, Serialize)]
 pub struct PlanParams<'a> {
@@ -20,6 +21,7 @@ pub struct PlanParams<'a> {
 }
 
 /// The resource representing a Stripe plan.
+///
 /// For more details see https://stripe.com/docs/api#plans.
 #[derive(Debug, Deserialize)]
 pub struct Plan {
@@ -38,24 +40,28 @@ pub struct Plan {
 
 impl Plan {
     /// Creates a new plan.
+    ///
     /// For more details see https://stripe.com/docs/api#create_plan.
     pub fn create(client: &Client, params: PlanParams) -> Result<Plan, Error> {
         client.post("/plans", params)
     }
 
     /// Retrieves the details of a plan.
+    ///
     /// For more details see https://stripe.com/docs/api#retrieve_plan.
     pub fn retrieve(client: &Client, plan_id: &str) -> Result<Plan, Error> {
         client.get(&format!("/plans/{}", plan_id))
     }
 
     /// Updates a plan's properties.
+    ///
     /// For more details see https://stripe.com/docs/api#update_plan.
     pub fn update(client: &Client, plan_id: &str, params: PlanParams) -> Result<Plan, Error> {
         client.post(&format!("/plans/{}", plan_id), params)
     }
 
     /// Deletes a plan.
+    ///
     /// For more details see https://stripe.com/docs/api#delete_plan.
     pub fn delete(client: &Client, plan_id: &str) -> Result<Deleted, Error> {
         client.delete(&format!("/plans/{}", plan_id))

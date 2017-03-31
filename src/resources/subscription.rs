@@ -15,6 +15,7 @@ pub struct ItemParams<'a> {
 }
 
 /// The set of parameters that can be used when creating or updating a subscription.
+///
 /// For more details see https://stripe.com/docs/api#create_subscription and https://stripe.com/docs/api#update_subscription.
 #[derive(Default, Serialize)]
 pub struct SubscriptionParams<'a> {
@@ -34,6 +35,7 @@ pub struct SubscriptionParams<'a> {
 }
 
 /// The resource representing a Stripe subscription item.
+///
 /// For more details see https://stripe.com/docs/api#subscription_items.
 #[derive(Debug, Deserialize)]
 pub struct SubscriptionItem {
@@ -44,6 +46,7 @@ pub struct SubscriptionItem {
 }
 
 /// The resource representing a Stripe subscription.
+///
 /// For more details see https://stripe.com/docs/api#subscriptions.
 #[derive(Debug, Deserialize)]
 pub struct Subscription {
@@ -71,12 +74,14 @@ pub struct Subscription {
 
 impl Subscription {
     /// Creates a new subscription for a customer.
+    ///
     /// For more details see https://stripe.com/docs/api#create_subscription.
     pub fn create(client: &Client, params: SubscriptionParams) -> Result<Subscription, Error> {
         client.post("/subscriptions", params)
     }
 
     /// Retrieves the details of a subscription.
+    ///
     /// For more details see https://stripe.com/docs/api#retrieve_subscription.
     pub fn retrieve(client: &Client, subscription_id: &str) -> Result<Subscription, Error> {
         client.get(&format!("/subscriptions/{}", subscription_id))
@@ -89,6 +94,7 @@ impl Subscription {
     }
 
     /// Cancels a subscription.
+    ///
     /// For more details see https://stripe.com/docs/api#cancel_subscription.
     pub fn cancel(client: &Client, subscription_id: &str, params: CancelParams) -> Result<Subscription, Error> {
         client.post(&format!("/subscriptions/{}/cancel", subscription_id), params)

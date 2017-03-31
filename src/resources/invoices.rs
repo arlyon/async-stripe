@@ -4,6 +4,7 @@ use params::{List, Metadata, Timestamp};
 use resources::{Currency, Discount, Plan};
 
 /// The set of parameters that can be used when creating or updating an invoice.
+///
 /// For more details see https://stripe.com/docs/api#create_invoice, https://stripe.com/docs/api#update_invoice.
 #[derive(Default, Serialize)]
 pub struct InvoiceParams<'a> {
@@ -37,6 +38,7 @@ pub struct Period {
 }
 
 /// The resource representing a Stripe invoice line item.
+///
 /// For more details see https://stripe.com/docs/api#invoice_line_item_object.
 #[derive(Debug, Deserialize)]
 pub struct InvoiceLine {
@@ -57,6 +59,7 @@ pub struct InvoiceLine {
 }
 
 /// The resource representing a Stripe invoice.
+///
 /// For more details see https://stripe.com/docs/api#invoice_object.
 #[derive(Debug, Deserialize)]
 pub struct Invoice {
@@ -95,12 +98,14 @@ pub struct Invoice {
 
 impl Invoice {
     /// Creates a new invoice.
+    ///
     /// For more details see https://stripe.com/docs/api#create_invoice.
     pub fn create(client: &Client, params: InvoiceParams) -> Result<Invoice, Error> {
         client.post("/invoices", params)
     }
 
     /// Retrieves the details of an invoice.
+    ///
     /// For more details see https://stripe.com/docs/api#retrieve_invoice.
     pub fn retrieve(client: &Client, invoice_id: &str) -> Result<Invoice, Error> {
         client.get(&format!("/invoices/{}", invoice_id))
@@ -117,6 +122,7 @@ impl Invoice {
     // }
 
     /// Pays an invoice.
+    ///
     /// For more details see https://stripe.com/docs/api#pay_invoice.
     pub fn pay(client: &Client, invoice_id: &str) -> Result<Invoice, Error> {
         client.post(&format!("/invoices/{}/pay", invoice_id), ())
