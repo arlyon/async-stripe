@@ -12,7 +12,7 @@ Put this in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stripe-rust = "0.3.0"
+stripe-rust = "0.3.1"
 ```
 
 And this in your crate root:
@@ -31,7 +31,7 @@ Put this in your `Cargo.toml` to explicitly prefer `native-tls` if the default c
 
 ```toml
 [dependencies.stripe-rust]
-version = "0.3.0"
+version = "0.3.1"
 features = ["with-native-tls"]
 default_features = false
 ```
@@ -42,7 +42,7 @@ and [hyper-openssl](https://github.com/sfackler/hyper-openssl) instead of the de
 
 ```toml
 [dependencies.stripe-rust]
-version = "0.3.0"
+version = "0.3.1"
 features = ["with-openssl"]
 default_features = false
 ```

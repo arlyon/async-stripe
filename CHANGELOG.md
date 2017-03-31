@@ -1,3 +1,11 @@
+# Version 0.3.1 (Mar 31, 2017)
+
+## Changes
+
+ * Made rust docs slightly easier to read
+ * Fixed incorrect method name for `Plan` resource
+ * Use `native-tls` by default and add feature-flag supporting `openssl`
+
 # Version 0.3.0 (Mar 28, 2017)
 
 ## New Features
