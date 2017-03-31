@@ -33,7 +33,7 @@ Put this in your `Cargo.toml` to explicitly prefer `native-tls` if the default c
 [dependencies.stripe-rust]
 version = "0.3.1"
 features = ["with-native-tls"]
-default_features = false
+default-features = false
 ```
 
 ### OpenSSL
@@ -44,5 +44,5 @@ and [hyper-openssl](https://github.com/sfackler/hyper-openssl) instead of the de
 [dependencies.stripe-rust]
 version = "0.3.1"
 features = ["with-openssl"]
-default_features = false
+default-features = false
 ```
