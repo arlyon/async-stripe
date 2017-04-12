@@ -41,4 +41,5 @@ pub struct Card {
     pub exp_year: u32,
     pub fingerprint: String,
     pub funding: String, // (credit, debit, prepaid, unknown)
+    pub last4: String,
 }
