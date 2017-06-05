@@ -8,7 +8,7 @@ pub struct CancelParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub at_period_end: Option<bool>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct ItemParams<'a> {
     pub plan: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")] pub quantity: Option<u64>,
@@ -17,7 +17,7 @@ pub struct ItemParams<'a> {
 /// The set of parameters that can be used when creating or updating a subscription.
 ///
 /// For more details see https://stripe.com/docs/api#create_subscription and https://stripe.com/docs/api#update_subscription.
-#[derive(Default, Serialize)]
+#[derive(Default, Serialize, Debug)]
 pub struct SubscriptionParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub application_fee_percent: Option<f64>,
@@ -51,7 +51,7 @@ pub struct SubscriptionItem {
 #[derive(Debug, Deserialize)]
 pub struct Subscription {
     pub id: String,
-    pub application_fee_percent: f64,
+    pub application_fee_percent: Option<f64>,
     pub cancel_at_period_end: bool,
     pub canceled_at: Option<Timestamp>,
     pub created: Option<Timestamp>,
@@ -67,9 +67,9 @@ pub struct Subscription {
     pub quantity: u64,
     pub start: Timestamp,
     pub status: String, // (trialing, active, past_due, canceled, unpaid)
-    pub tax_percent: f64,
-    pub trial_start: Timestamp,
-    pub trial_end: Timestamp,
+    pub tax_percent: Option<f64>,
+    pub trial_start: Option<Timestamp>,
+    pub trial_end: Option<Timestamp>,
 }
 
 impl Subscription {
