@@ -1,12 +1,11 @@
-extern crate serde;
-extern crate serde_json as json;
-extern crate serde_qs as query;
-
 use error::{Error, ErrorObject, RequestError};
 use hyper::Client as HttpClient;
 use hyper::client::RequestBuilder;
 use hyper::header::{Authorization, Basic, ContentType, Headers};
 use hyper::net::HttpsConnector;
+use serde;
+use serde_json as json;
+use serde_qs as query;
 use std::io::Read;
 
 pub struct Client {

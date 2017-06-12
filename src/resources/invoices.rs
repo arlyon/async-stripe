@@ -2,6 +2,7 @@ use error::Error;
 use client::Client;
 use params::{List, Metadata, Timestamp};
 use resources::{Currency, Discount, Plan};
+use serde_qs as query;
 
 /// The set of parameters that can be used when creating or updating an invoice.
 ///
@@ -75,7 +76,7 @@ pub struct Invoice {
     pub date: Timestamp,
     pub description: Option<String>,
     pub discount: Option<Discount>,
-    pub ending_balance: i64,
+    pub ending_balance: Option<i64>,
     pub forgiven: bool,
     pub lines: List<InvoiceLine>,
     pub livemode: bool,
@@ -94,6 +95,12 @@ pub struct Invoice {
     pub tax_percent: Option<f64>,
     pub total: i64,
     pub webhooks_delivered_at: Option<Timestamp>,
+}
+
+#[derive(Default, Serialize)]
+pub struct InvoiceListParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")] pub limit: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<&'a str>,
 }
 
 impl Invoice {
@@ -128,14 +135,10 @@ impl Invoice {
         client.post_empty(&format!("/invoices/{}/pay", invoice_id))
     }
 
-    // Lists all invoices
-    pub fn summary(client: &Client, ) -> Result<List<Invoice>, Error> {
-        client.get(&format!("/invoices?limit=30"))
-    }
-
-    // Lists all invoices for one customer
+    // Lists all invoices with optional customer_id and limit params
     // TODO: Implement InvoiceListParams
-    pub fn list(client: &Client, customer_id: &str) -> Result<List<Invoice>, Error> {
-        client.get(&format!("/invoices?customer={}", customer_id))
+    pub fn list(client: &Client, params: InvoiceListParams) -> Result<List<Invoice>, Error> {
+        client.get(&format!("/invoices?{}", query::to_string(&params)?))
+        // client.get(&format!("/invoices?customer={}", customer_id))
     }
 }
