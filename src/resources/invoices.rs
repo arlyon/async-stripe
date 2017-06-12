@@ -2,6 +2,7 @@ use error::Error;
 use client::Client;
 use params::{List, Metadata, Timestamp};
 use resources::{Currency, Discount, Plan};
+use serde_qs as query;
 
 /// The set of parameters that can be used when creating or updating an invoice.
 ///
@@ -96,6 +97,12 @@ pub struct Invoice {
     pub webhooks_delivered_at: Option<Timestamp>,
 }
 
+#[derive(Default, Serialize)]
+pub struct InvoiceListParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")] pub limit: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<&'a str>,
+}
+
 impl Invoice {
     /// Creates a new invoice.
     ///
@@ -125,11 +132,13 @@ impl Invoice {
     ///
     /// For more details see https://stripe.com/docs/api#pay_invoice.
     pub fn pay(client: &Client, invoice_id: &str) -> Result<Invoice, Error> {
-        client.post(&format!("/invoices/{}/pay", invoice_id), ())
+        client.post_empty(&format!("/invoices/{}/pay", invoice_id))
     }
 
+    // Lists all invoices with optional customer_id and limit params
     // TODO: Implement InvoiceListParams
-    // pub fn list(client: &Client, params: InvoiceListParams) -> Result<List<InvoiceLine>, Error> {
-    //     client.get(&format!("/invoices/{}/lines", invoice_id))
-    // }
+    pub fn list(client: &Client, params: InvoiceListParams) -> Result<List<Invoice>, Error> {
+        client.get(&format!("/invoices?{}", query::to_string(&params)?))
+        // client.get(&format!("/invoices?customer={}", customer_id))
+    }
 }
