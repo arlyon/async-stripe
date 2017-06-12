@@ -48,6 +48,12 @@ impl Client {
         send(request)
     }
 
+    pub fn post_empty<T: serde::Deserialize>(&self, path: &str) -> Result<T, Error> {
+        let url = get_url(path);
+        let request = self.client.post(&url).headers(self.headers());
+        send(request)
+    }
+
     pub fn delete<T: serde::Deserialize>(&self, path: &str) -> Result<T, Error> {
         let url = get_url(path);
         let request = self.client.delete(&url).headers(self.headers());

@@ -75,7 +75,7 @@ pub struct Invoice {
     pub date: Timestamp,
     pub description: Option<String>,
     pub discount: Option<Discount>,
-    pub ending_balance: Option<i64>,
+    pub ending_balance: i64,
     pub forgiven: bool,
     pub lines: List<InvoiceLine>,
     pub livemode: bool,
@@ -125,11 +125,17 @@ impl Invoice {
     ///
     /// For more details see https://stripe.com/docs/api#pay_invoice.
     pub fn pay(client: &Client, invoice_id: &str) -> Result<Invoice, Error> {
-        client.post(&format!("/invoices/{}/pay", invoice_id), ())
+        client.post_empty(&format!("/invoices/{}/pay", invoice_id))
     }
 
+    // Lists all invoices
+    pub fn summary(client: &Client) -> Result<List<Invoice>, Error> {
+        client.get(&format!("/invoices"))
+    }
+
+    // Lists all invoices for one customer
     // TODO: Implement InvoiceListParams
-    // pub fn list(client: &Client, params: InvoiceListParams) -> Result<List<InvoiceLine>, Error> {
-    //     client.get(&format!("/invoices/{}/lines", invoice_id))
-    // }
+    pub fn list(client: &Client, customer_id: &str) -> Result<List<Invoice>, Error> {
+        client.get(&format!("/invoices?customer={}", customer_id))
+    }
 }
