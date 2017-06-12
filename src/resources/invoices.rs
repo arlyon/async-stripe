@@ -129,8 +129,8 @@ impl Invoice {
     }
 
     // Lists all invoices
-    pub fn summary(client: &Client) -> Result<List<Invoice>, Error> {
-        client.get(&format!("/invoices"))
+    pub fn summary(client: &Client, ) -> Result<List<Invoice>, Error> {
+        client.get(&format!("/invoices?limit=30"))
     }
 
     // Lists all invoices for one customer
