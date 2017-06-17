@@ -1,3 +1,13 @@
+# Version 0.3.2 (June 17, 2017)
+
+## Changes
+
+ * Implemented the `Invoice::list` API (ie. "/invoices")
+ * Fixed a request encoding error for `Invoice::pay` (ie. "/invoices/{invoice_id}/pay")
+ * Fixed fields on `Subscription` that could be null but were missing `Optional<..>`
+ * Added missing `last4` field to `Card` resource
+ * Changed the repository URL
+
 # Version 0.3.1 (Mar 31, 2017)
 
 ## Changes
