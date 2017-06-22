@@ -135,10 +135,17 @@ impl Invoice {
         client.post_empty(&format!("/invoices/{}/pay", invoice_id))
     }
 
-    // Lists all invoices with optional customer_id and limit params
-    // TODO: Implement InvoiceListParams
+    /// Updates an invoice.
+    ///
+    /// For more details see https://stripe.com/docs/api#update_invoice.
+    pub fn update(client: &Client, invoice_id: &str, params: InvoiceParams) -> Result<Invoice, Error> {
+        client.post(&format!("/invoices/{}", invoice_id), &params)
+    }
+
+    /// Lists all invoices with optional customer_id and limit params
+    ///
+    /// For more details see https://stripe.com/docs/api#list_invoices.
     pub fn list(client: &Client, params: InvoiceListParams) -> Result<List<Invoice>, Error> {
         client.get(&format!("/invoices?{}", query::to_string(&params)?))
-        // client.get(&format!("/invoices?customer={}", customer_id))
     }
 }
