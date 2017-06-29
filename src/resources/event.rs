@@ -6,6 +6,7 @@ use resources::{Charge, Invoice};
 pub enum EventType {
     #[serde(rename = "invoice.created")] InvoiceCreated,
     #[serde(rename = "invoice.updated")] InvoiceUpdated,
+    #[serde(rename = "charge.succeeded")] ChargeSucceeded,
 }
 
 #[derive(Debug, Deserialize)]
