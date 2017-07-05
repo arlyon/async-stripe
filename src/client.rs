@@ -3,9 +3,10 @@ use hyper::Client as HttpClient;
 use hyper::client::RequestBuilder;
 use hyper::header::{Authorization, Basic, ContentType, Headers};
 use hyper::net::HttpsConnector;
+use hyper_rustls::TlsClient;
 use serde;
 use serde_json as json;
-use serde_qs as query;
+use serde_qs as qs;
 use std::io::Read;
 
 pub struct Client {
@@ -14,46 +15,33 @@ pub struct Client {
 }
 
 impl Client {
-    #[cfg(feature = "with-native-tls")]
     pub fn new(secret_key: &str) -> Client {
-        use hyper_native_tls::NativeTlsClient;
-
-        let tls = NativeTlsClient::new().unwrap();
+        let tls = TlsClient::new();
         let connector = HttpsConnector::new(tls);
         let client = HttpClient::with_connector(connector);
         Client{client: client, secret_key: secret_key.to_owned()}
     }
 
-    #[cfg(feature = "with-openssl")]
-    pub fn new(secret_key: &str) -> Client {
-        use hyper_openssl::OpensslClient;
-
-        let tls = NativeTlsClient::new().unwrap();
-        let connector = HttpsConnector::new(tls);
-        let client = HttpClient::with_connector(connector);
-        Client{client: client, secret_key: secret_key.to_owned()}
-    }
-
-    pub fn get<T: serde::Deserialize>(&self, path: &str) -> Result<T, Error> {
+    pub fn get<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
         let url = get_url(path);
         let request = self.client.get(&url).headers(self.headers());
         send(request)
     }
 
-    pub fn post<T: serde::Deserialize, P: serde::Serialize>(&self, path: &str, params: P) -> Result<T, Error> {
+    pub fn post<T: serde::de::DeserializeOwned, P: serde::Serialize>(&self, path: &str, params: P) -> Result<T, Error> {
         let url = get_url(path);
-        let body = query::to_string(&params)?;
+        let body = qs::to_string(&params)?;
         let request = self.client.post(&url).headers(self.headers()).body(&body);
         send(request)
     }
 
-    pub fn post_empty<T: serde::Deserialize>(&self, path: &str) -> Result<T, Error> {
+    pub fn post_empty<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
         let url = get_url(path);
         let request = self.client.post(&url).headers(self.headers());
         send(request)
     }
 
-    pub fn delete<T: serde::Deserialize>(&self, path: &str) -> Result<T, Error> {
+    pub fn delete<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
         let url = get_url(path);
         let request = self.client.delete(&url).headers(self.headers());
         send(request)
@@ -71,7 +59,7 @@ fn get_url(path: &str) -> String {
     String::from("https://api.stripe.com/v1") + path
 }
 
-fn send<T: serde::Deserialize>(request: RequestBuilder) -> Result<T, Error> {
+fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Error> {
     let mut response = request.send()?;
     let mut body = String::with_capacity(4096);
     response.read_to_string(&mut body)?;

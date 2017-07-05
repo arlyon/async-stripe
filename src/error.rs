@@ -1,6 +1,6 @@
 extern crate hyper;
 extern crate serde_json as json;
-extern crate serde_qs as query;
+extern crate serde_qs as qs;
 
 use params::to_snakecase;
 use std::error;
@@ -17,7 +17,7 @@ pub enum Error {
     /// An error reading the response body.
     Io(io::Error),
     /// An error converting between wire format and Rust types.
-    Conversion(Box<error::Error + Sync + Send>),
+    Conversion(Box<error::Error + Send>),
 }
 
 impl fmt::Display for Error {
@@ -70,8 +70,8 @@ impl From<io::Error> for Error {
     }
 }
 
-impl From<query::ser::Error> for Error {
-    fn from(err: query::ser::Error) -> Error {
+impl From<qs::Error> for Error {
+    fn from(err: qs::Error) -> Error {
         Error::Conversion(Box::new(err))
     }
 }

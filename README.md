@@ -20,29 +20,3 @@ And this in your crate root:
 ```rust
 extern crate stripe;
 ```
-
-## HTTPS Options
-This crate uses [native-tls](https://github.com/sfackler/rust-native-tls) and
-[hyper-native-tls](https://github.com/sfackler/hyper-native-tls/blob/master/Cargo.toml)
-by default to communicate with the Stripe API over HTTPS.
-
-### Native TLS
-Put this in your `Cargo.toml` to explicitly prefer `native-tls` if the default changes:
-
-```toml
-[dependencies.stripe-rust]
-version = "0.3.2"
-features = ["with-native-tls"]
-default-features = false
-```
-
-### OpenSSL
-Put this in your `Cargo.toml` to use [openssl](https://github.com/sfackler/hyper-openssl)
-and [hyper-openssl](https://github.com/sfackler/hyper-openssl) instead of the default:
-
-```toml
-[dependencies.stripe-rust]
-version = "0.3.2"
-features = ["with-openssl"]
-default-features = false
-```
