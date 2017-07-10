@@ -2,6 +2,7 @@ use error::Error;
 use client::Client;
 use resources::{Discount, Plan};
 use params::{List, Metadata, Timestamp};
+use serde_qs as query;
 
 #[derive(Default, Serialize)]
 pub struct CancelParams {
@@ -97,6 +98,6 @@ impl Subscription {
     ///
     /// For more details see https://stripe.com/docs/api#cancel_subscription.
     pub fn cancel(client: &Client, subscription_id: &str, params: CancelParams) -> Result<Subscription, Error> {
-        client.post(&format!("/subscriptions/{}/cancel", subscription_id), params)
+        client.delete(&format!("/subscriptions/{}?{}", subscription_id, query::to_string(&params)?))
     }
 }
