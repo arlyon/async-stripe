@@ -20,6 +20,18 @@ pub struct InvoiceParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")] pub forgiven: Option<bool>,
 }
 
+#[derive(Default, Serialize)]
+pub struct InvoiceItemParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")] pub amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub currency: Option<Currency>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub discountable: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub invoice: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub subscription: Option<bool>,
+}
+
 /*
 #[derive(Serialize)]
 pub struct InvoiceListLinesParams {
@@ -148,4 +160,14 @@ impl Invoice {
     pub fn list(client: &Client, params: InvoiceListParams) -> Result<List<Invoice>, Error> {
         client.get(&format!("/invoices?{}", query::to_string(&params)?))
     }
+}
+
+impl InvoiceLine {
+    /// Creates an invoice line item.
+    ///
+    /// For more details see https://stripe.com/docs/api/node#invoice_line_item_object
+    pub fn create(client: &Client, params: InvoiceItemParams) -> Result<InvoiceLine, Error> {
+        client.post(&format!("/invoiceitems"), &params)
+    }
+
 }
