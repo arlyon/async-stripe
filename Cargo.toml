@@ -1,6 +1,6 @@
 [package]
 name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
-version = "0.3.2"
+version = "0.3.3-dev"
 description = "API bindings for the Stripe v1 HTTP API"
 authors = ["Kevin Stenerson <kevin@rapiditynetworks.com>"]
 license = "MIT/Apache-2.0"
