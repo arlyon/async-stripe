@@ -8,30 +8,64 @@ use serde_json as json;
 use serde_qs as query;
 use std::io::Read;
 
+#[derive(Clone, Default)]
+pub struct Params {
+    pub stripe_account: Option<String>,
+}
+
+// TODO: #[derive(Clone)]
 pub struct Client {
     client: HttpClient,
     secret_key: String, // <-- not to be modified (b.c. Sync)
+    params: Params,
+}
+
+// TODO: With Hyper 0.11.x, hyper::Client implements clone, and we can just derive this
+impl Clone for Client {
+    fn clone(&self) -> Self {
+        let mut client = Client::new(self.secret_key.as_str());
+        client.params = self.params.clone();
+        client
+    }
 }
 
 impl Client {
     #[cfg(feature = "with-native-tls")]
-    pub fn new(secret_key: &str) -> Client {
+    pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
         use hyper_native_tls::NativeTlsClient;
 
         let tls = NativeTlsClient::new().unwrap();
         let connector = HttpsConnector::new(tls);
         let client = HttpClient::with_connector(connector);
-        Client{client: client, secret_key: secret_key.to_owned()}
+        Client{client: client, secret_key: secret_key.into(), params: Params::default()}
     }
 
     #[cfg(feature = "with-openssl")]
-    pub fn new(secret_key: &str) -> Client {
+    pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
         use hyper_openssl::OpensslClient;
 
         let tls = NativeTlsClient::new().unwrap();
         let connector = HttpsConnector::new(tls);
         let client = HttpClient::with_connector(connector);
-        Client{client: client, secret_key: secret_key.to_owned()}
+        Client{client: client, secret_key: secret_key.into(), params: Params::default()}
+    }
+
+    /// Builds a new client with different params.
+    ///
+    /// This is the recommended way to send requests for many different Stripe accounts
+    /// or with different Meta, Extra, and Expand params while using the same secret key.
+    pub fn with(&self, params: Params) -> Client {
+        let mut client = self.clone();
+        client.params = params;
+        client
+    }
+
+    /// Sets a value for the Stripe-Account header
+    ///
+    /// This is recommended if you are acting as only one Account for the lifetime of the client.
+    /// Otherwise, prefer `client.with(Params{stripe_account: "acct_ABC", ..})`.
+    pub fn set_stripe_account<Str: Into<String>>(&mut self, account_id: Str) {
+        self.params.stripe_account = Some(account_id.into());
     }
 
     pub fn get<T: serde::Deserialize>(&self, path: &str) -> Result<T, Error> {
@@ -61,7 +95,7 @@ impl Client {
 
     fn headers(&self) -> Headers {
         let mut headers = Headers::new();
-        headers.set(Authorization(Basic{username: self.secret_key.to_owned(), password: None}));
+        headers.set(Authorization(Basic{username: self.secret_key.clone(), password: None}));
         headers.set(ContentType::form_url_encoded());
         headers
     }
