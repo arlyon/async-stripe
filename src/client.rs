@@ -97,6 +97,9 @@ impl Client {
         let mut headers = Headers::new();
         headers.set(Authorization(Basic{username: self.secret_key.clone(), password: None}));
         headers.set(ContentType::form_url_encoded());
+        if let Some(ref account) = self.params.stripe_account {
+            headers.set_raw("Stripe-Account", vec![account.as_bytes().to_vec()]);
+        }
         headers
     }
 }
