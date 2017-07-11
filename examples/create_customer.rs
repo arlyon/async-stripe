@@ -6,7 +6,7 @@ use stripe::{Customer, CustomerParams, CustomerSource};
 fn main() {
     // Create a new client
     let secret_key = env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
-    let client = stripe::Client::new(&secret_key);
+    let client = stripe::Client::new(secret_key);
 
     // Create the customer
     let customer = Customer::create(&client, CustomerParams{
