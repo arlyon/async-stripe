@@ -1,5 +1,3 @@
-use error::Error;
-use client::Client;
 use resources::{Charge, Invoice};
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
