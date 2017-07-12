@@ -22,7 +22,7 @@ mod error;
 mod resources;
 mod params;
 
-pub use client::Client;
+pub use client::{Client, Params};
 pub use error::{Error, ErrorCode, ErrorType, RequestError};
 pub use params::{List, Metadata, Timestamp};
 pub use resources::*;
