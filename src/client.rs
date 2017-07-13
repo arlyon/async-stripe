@@ -16,7 +16,7 @@ pub struct Params {
 // TODO: #[derive(Clone)]
 pub struct Client {
     client: HttpClient,
-    secret_key: String, // <-- not to be modified (b.c. Sync)
+    secret_key: String,
     params: Params,
 }
 
@@ -30,27 +30,21 @@ impl Clone for Client {
 }
 
 impl Client {
-    #[cfg(feature = "with-native-tls")]
-    pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
-        use hyper_native_tls::NativeTlsClient;
-
-        let tls = NativeTlsClient::new().unwrap();
-        let connector = HttpsConnector::new(tls);
-        let client = HttpClient::with_connector(connector);
-        Client{client: client, secret_key: secret_key.into(), params: Params::default()}
+    fn url(path: &str) -> String {
+        format!("https://api.stripe.com/v1/{}", &path[1..])
     }
 
     #[cfg(feature = "with-openssl")]
     pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
         use hyper_openssl::OpensslClient;
 
-        let tls = NativeTlsClient::new().unwrap();
+        let tls = OpensslClient::new().unwrap();
         let connector = HttpsConnector::new(tls);
         let client = HttpClient::with_connector(connector);
         Client{client: client, secret_key: secret_key.into(), params: Params::default()}
     }
 
-    /// Builds a new client with different params.
+    /// Clones a new client with different params.
     ///
     /// This is the recommended way to send requests for many different Stripe accounts
     /// or with different Meta, Extra, and Expand params while using the same secret key.
@@ -69,26 +63,26 @@ impl Client {
     }
 
     pub fn get<T: serde::Deserialize>(&self, path: &str) -> Result<T, Error> {
-        let url = get_url(path);
+        let url = Client::url(path);
         let request = self.client.get(&url).headers(self.headers());
         send(request)
     }
 
     pub fn post<T: serde::Deserialize, P: serde::Serialize>(&self, path: &str, params: P) -> Result<T, Error> {
-        let url = get_url(path);
+        let url = Client::url(path);
         let body = query::to_string(&params)?;
         let request = self.client.post(&url).headers(self.headers()).body(&body);
         send(request)
     }
 
     pub fn post_empty<T: serde::Deserialize>(&self, path: &str) -> Result<T, Error> {
-        let url = get_url(path);
+        let url = Client::url(path);
         let request = self.client.post(&url).headers(self.headers());
         send(request)
     }
 
     pub fn delete<T: serde::Deserialize>(&self, path: &str) -> Result<T, Error> {
-        let url = get_url(path);
+        let url = Client::url(path);
         let request = self.client.delete(&url).headers(self.headers());
         send(request)
     }
@@ -102,10 +96,6 @@ impl Client {
         }
         headers
     }
-}
-
-fn get_url(path: &str) -> String {
-    String::from("https://api.stripe.com/v1") + path
 }
 
 fn send<T: serde::Deserialize>(request: RequestBuilder) -> Result<T, Error> {

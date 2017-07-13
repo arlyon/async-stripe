@@ -11,9 +11,9 @@ keywords = ["stripe", "v1", "api"]
 categories = ["api-bindings"]
 
 [features]
-default = ["with-native-tls"]
+#default = ["with-rustls"]
+default = ["with-openssl"]
 with-openssl = ["hyper-openssl"]
-with-native-tls = ["hyper-native-tls"]
 
 [lib]
 name = "stripe"
@@ -21,7 +21,6 @@ name = "stripe"
 [dependencies]
 hyper = "^0.10"
 hyper-openssl = { version = "^0.2", optional = true }
-hyper-native-tls = { version = "^0.2", optional = true }
 serde = "^0.9"
 serde_derive = "^0.9"
 serde_json = "^0.9"
