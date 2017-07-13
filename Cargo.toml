@@ -10,6 +10,9 @@ documentation = "https://docs.rs/stripe-rust"
 keywords = ["stripe", "v1", "api"]
 categories = ["api-bindings"]
 
+[badges]
+travis-ci = {repository = "rapiditynetworks/stripe-rs"}
+
 [lib]
 name = "stripe"
 
