@@ -7,8 +7,6 @@
 // except according to those terms.
 
 extern crate hyper;
-#[cfg(feature = "with-native-tls")]
-extern crate hyper_native_tls;
 #[cfg(feature = "with-openssl")]
 extern crate hyper_openssl;
 extern crate serde;
