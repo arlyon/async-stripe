@@ -54,9 +54,9 @@ pub struct Period {
 ///
 /// For more details see https://stripe.com/docs/api#invoice_line_item_object.
 #[derive(Debug, Deserialize)]
-pub struct InvoiceLine {
+pub struct InvoiceItem {
     pub id: String,
-    pub amount: u64,
+    pub amount: i64,
     pub currency: Currency,
     pub description: Option<String>,
     pub discountable: bool,
@@ -90,7 +90,7 @@ pub struct Invoice {
     pub discount: Option<Discount>,
     pub ending_balance: Option<i64>,
     pub forgiven: bool,
-    pub lines: List<InvoiceLine>,
+    pub lines: List<InvoiceItem>,
     pub livemode: bool,
     pub metadata: Metadata,
     pub next_payment_attempt: Option<Timestamp>,
@@ -131,7 +131,7 @@ impl Invoice {
     }
 
     // TODO: Implement InvoiceListLinesParams
-    // pub fn get_lines(client: &Client, invoice_id: &str, params: InvoiceListLinesParams) -> Result<List<InvoiceLine>, Error> {
+    // pub fn get_lines(client: &Client, invoice_id: &str, params: InvoiceListLinesParams) -> Result<List<InvoiceItem>, Error> {
     //     client.get(&format!("/invoices/{}/lines", invoice_id))
     // }
 
@@ -162,11 +162,11 @@ impl Invoice {
     }
 }
 
-impl InvoiceLine {
+impl InvoiceItem {
     /// Creates an invoice line item.
     ///
     /// For more details see https://stripe.com/docs/api/node#invoice_line_item_object
-    pub fn create(client: &Client, params: InvoiceItemParams) -> Result<InvoiceLine, Error> {
+    pub fn create(client: &Client, params: InvoiceItemParams) -> Result<InvoiceItem, Error> {
         client.post(&format!("/invoiceitems"), &params)
     }
 
