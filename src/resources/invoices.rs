@@ -68,7 +68,9 @@ pub struct InvoiceItem {
     pub quantity: Option<u64>,
     pub subscription: Option<String>,
     pub subscription_item: Option<String>,
-    #[serde(rename = "type")] pub item_type: String, // (invoiceitem, subscription)
+    #[serde(default)] // NOTE: Missing in response to InvoiceItem create
+    #[serde(rename = "type")]
+    pub item_type: String, // (invoiceitem, subscription)
 }
 
 /// The resource representing a Stripe invoice.
