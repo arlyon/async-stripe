@@ -1,3 +1,13 @@
+# Version 0.3.3 (August 1, 2017)
+
+## Changes
+
+ * Add support for authentication using the Stripe-Account header
+ * Implement `Event` struct for implementing a Stripe Webhook (only some events)
+ * Implement `Invoice::update` request (ie. POST "/invoices/{invoice_id}")
+ * Implement `InvoiceItem::create` request (ie. POST "/invoiceitems")
+ * Fix `Subscription::cancel` request (previously used wrong method/path)
+
 # Version 0.3.2 (June 17, 2017)
 
 ## Changes
@@ -20,7 +30,8 @@
 
 ## New Features
 
-  * Implemented the [charges resource](https://stripe.com/docs/api#charges) and added the `Charge` type.
+  * Implemented the [charges resource](https://stripe.com/docs/api#charges) and
+    added the `Charge` type.
 
 ## Breaking Changes
 

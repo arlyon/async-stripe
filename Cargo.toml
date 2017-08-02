@@ -13,12 +13,18 @@ categories = ["api-bindings"]
 [badges]
 travis-ci = {repository = "rapiditynetworks/stripe-rs"}
 
+[features]
+default = ["with-rustls"]
+with-rustls = ["hyper-rustls"]
+with-openssl = ["hyper-openssl"]
+
 [lib]
 name = "stripe"
 
 [dependencies]
 hyper = "^0.10"
-hyper-rustls = "^0.6"
+hyper-rustls = { version = "^0.6", optional = true }
+hyper-openssl = { version = "^0.2", optional = true }
 serde = "^1.0"
 serde_derive = "^1.0"
 serde_json = "^1.0"

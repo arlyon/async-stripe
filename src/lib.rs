@@ -7,7 +7,10 @@
 // except according to those terms.
 
 extern crate hyper;
+#[cfg(feature = "with-rustls")]
 extern crate hyper_rustls;
+#[cfg(feature = "with-openssl")]
+extern crate hyper_openssl;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -19,7 +22,7 @@ mod error;
 mod resources;
 mod params;
 
-pub use client::Client;
+pub use client::{Client, Params};
 pub use error::{Error, ErrorCode, ErrorType, RequestError};
 pub use params::{List, Metadata, Timestamp};
 pub use resources::*;
