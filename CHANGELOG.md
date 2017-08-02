@@ -1,3 +1,9 @@
+# Version 0.4.0 (August 2, 2017)
+
+## Breaking Changes
+
+ * Upgrade Serde to v1.0
+
 # Version 0.3.3 (August 1, 2017)
 
 ## Changes
