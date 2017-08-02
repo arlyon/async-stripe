@@ -12,7 +12,7 @@ Put this in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stripe-rust = "0.3.2"
+stripe-rust = "0.3.3"
 ```
 
 And this in your crate root:
