@@ -118,7 +118,7 @@ fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Er
         _ => {
             let mut err = json::from_str(&body).unwrap_or_else(|err| {
                 let mut req = ErrorObject{error: RequestError::default()};
-                req.error.message = format!("failed to deserialize error: {}", err);
+                req.error.message = Some(format!("failed to deserialize error: {}", err));
                 req
             });
             err.error.http_status = status;

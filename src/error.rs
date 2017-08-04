@@ -148,7 +148,8 @@ pub struct RequestError {
 
     /// A human-readable message providing more details about the error.
     /// For card errors, these messages can be shown to end users.
-    #[serde(default)] pub message: String,
+    #[serde(default)]
+    pub message: Option<String>,
 
     /// For card errors, a value describing the kind of card error that occured.
     pub code: Option<ErrorCode>,
@@ -163,13 +164,17 @@ pub struct RequestError {
 
 impl fmt::Display for RequestError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}({}): {}", self.error_type, self.http_status, self.message)
+        write!(f, "{}({})", self.error_type, self.http_status)?;
+        if let Some(ref message) = self.message {
+            write!(f, ": {}", message)?;
+        }
+        Ok(())
     }
 }
 
 impl error::Error for RequestError {
     fn description(&self) -> &str {
-        &self.message
+        self.message.as_ref().map(|s| s.as_str()).unwrap_or("request error")
     }
 }
 

@@ -9,8 +9,8 @@ pub struct ChargeOutcome {
     pub outcome_type: String, // (authorized, manual_review, issuer_declined, blocked, invalid)
     pub network_status: String, // (approved_by_network, declined_by_network, not_sent_to_network, reversed_after_approval)
     #[serde(default)] pub reason: Option<String>,
-    #[serde(default)] pub risk_level: String, // (normal, elevated, highest, not_assessed, unknown)
-    #[serde(default)] pub seller_message: String,
+    #[serde(default)] pub risk_level: Option<String>, // (normal, elevated, highest, not_assessed, unknown)
+    #[serde(default)] pub seller_message: Option<String>,
     #[serde(default)] pub rule: Option<String>,
 }
 
