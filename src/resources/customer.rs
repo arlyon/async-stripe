@@ -42,7 +42,7 @@ pub struct Customer {
     pub business_vat_id: Option<String>,
     pub created: u64,
     pub currency: Option<Currency>,
-    pub default_source: String,
+    pub default_source: Option<String>,
     pub delinquent: bool,
     pub desc: Option<String>,
     pub discount: Option<Discount>,
