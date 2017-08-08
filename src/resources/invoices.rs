@@ -2,7 +2,7 @@ use error::Error;
 use client::Client;
 use params::{List, Metadata, Timestamp};
 use resources::{Currency, Discount, Plan};
-use serde_qs as query;
+use serde_qs as qs;
 
 /// The set of parameters that can be used when creating or updating an invoice.
 ///
@@ -179,7 +179,7 @@ impl Invoice {
     ///
     /// For more details see https://stripe.com/docs/api#list_invoices.
     pub fn list(client: &Client, params: InvoiceListParams) -> Result<List<Invoice>, Error> {
-        client.get(&format!("/invoices?{}", query::to_string(&params)?))
+        client.get(&format!("/invoices?{}", qs::to_string(&params)?))
     }
 }
 
