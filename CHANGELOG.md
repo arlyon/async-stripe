@@ -1,3 +1,11 @@
+# Version 0.4.1 (August 8, 2017)
+
+## Changes
+
+ * Add RangeQuery struct for created/date filters in list requests 
+ * Implement `Customer::list` request (ie. "GET /customers"); Thanks @pocket7878
+ * Add missing params to `InvoiceListParams` for `Invoice::list`
+
 # Version 0.4.0 (August 2, 2017)
 
 ## Breaking Changes
