@@ -1,7 +1,7 @@
 use error::Error;
 use client::Client;
 use resources::{Address, CardParams, Currency, Deleted, Discount, Source, Subscription};
-use params::{List, Metadata, RangeQuery};
+use params::{List, Metadata, RangeQuery, Timestamp};
 use serde_qs as qs;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -47,7 +47,7 @@ pub struct CustomerParams<'a> {
 #[derive(Default, Serialize)]
 pub struct CustomerListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<RangeQuery<i64>>,
+    pub created: Option<RangeQuery<Timestamp>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ending_before: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
