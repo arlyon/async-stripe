@@ -1,6 +1,6 @@
 use error::Error;
 use client::Client;
-use params::{List, Metadata, Timestamp};
+use params::{List, Metadata, RangeQuery, Timestamp};
 use resources::{Currency, Discount, Plan};
 use serde_qs as qs;
 
@@ -131,9 +131,17 @@ pub struct Invoice {
 #[derive(Default, Serialize)]
 pub struct InvoiceListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<RangeQuery<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
+    pub starting_after: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<&'a str>,
 }
 
 impl Invoice {
@@ -175,7 +183,7 @@ impl Invoice {
         client.post(&format!("/invoices/{}", invoice_id), &params)
     }
 
-    /// Lists all invoices with optional customer_id and limit params
+    /// Lists all invoices.
     ///
     /// For more details see https://stripe.com/docs/api#list_invoices.
     pub fn list(client: &Client, params: InvoiceListParams) -> Result<List<Invoice>, Error> {
