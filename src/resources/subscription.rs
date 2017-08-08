@@ -6,13 +6,15 @@ use serde_qs as query;
 
 #[derive(Default, Serialize)]
 pub struct CancelParams {
-    #[serde(skip_serializing_if = "Option::is_none")] pub at_period_end: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub at_period_end: Option<bool>,
 }
 
 #[derive(Serialize, Debug)]
 pub struct ItemParams<'a> {
     pub plan: &'a str,
-    #[serde(skip_serializing_if = "Option::is_none")] pub quantity: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
 }
 
 /// The set of parameters that can be used when creating or updating a subscription.
@@ -20,19 +22,32 @@ pub struct ItemParams<'a> {
 /// For more details see https://stripe.com/docs/api#create_subscription and https://stripe.com/docs/api#update_subscription.
 #[derive(Default, Serialize, Debug)]
 pub struct SubscriptionParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub application_fee_percent: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub items: Option<Vec<ItemParams<'a>>>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub plan: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub prorate: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub proration_date: Option<Timestamp>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub quantity: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub tax_percent: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub trial_end: Option<Timestamp>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub trial_period_days: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee_percent: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<ItemParams<'a>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prorate: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_date: Option<Timestamp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_percent: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_end: Option<Timestamp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_period_days: Option<u64>,
 }
 
 /// The resource representing a Stripe subscription item.

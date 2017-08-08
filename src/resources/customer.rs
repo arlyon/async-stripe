@@ -22,14 +22,22 @@ pub enum CustomerSource<'a> {
 /// For more details see https://stripe.com/docs/api#create_customer and https://stripe.com/docs/api#update_customer.
 #[derive(Default, Serialize)]
 pub struct CustomerParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")] pub account_balance: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub business_vat_id: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub description: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub email: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub shipping: Option<CustomerShippingDetails>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub source: Option<CustomerSource<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_balance: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_vat_id: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<CustomerShippingDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<CustomerSource<'a>>,
 }
 
 /// The resource representing a Stripe customer.

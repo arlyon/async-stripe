@@ -41,7 +41,11 @@ impl Client {
         let tls = TlsClient::new();
         let connector = HttpsConnector::new(tls);
         let client = hyper::Client::with_connector(connector);
-        Client{client: client, secret_key: secret_key.into(), params: Params::default()}
+        Client {
+            client: client,
+            secret_key: secret_key.into(),
+            params: Params::default(),
+        }
     }
 
     #[cfg(feature = "with-openssl")]
@@ -51,7 +55,11 @@ impl Client {
         let tls = OpensslClient::new().unwrap();
         let connector = HttpsConnector::new(tls);
         let client = hyper::Client::with_connector(connector);
-        Client{client: client, secret_key: secret_key.into(), params: Params::default()}
+        Client {
+            client: client,
+            secret_key: secret_key.into(),
+            params: Params::default(),
+        }
     }
 
     /// Clones a new client with different params.
@@ -99,7 +107,10 @@ impl Client {
 
     fn headers(&self) -> Headers {
         let mut headers = Headers::new();
-        headers.set(Authorization(Basic{username: self.secret_key.clone(), password: None}));
+        headers.set(Authorization(Basic {
+            username: self.secret_key.clone(),
+            password: None,
+        }));
         headers.set(ContentType::form_url_encoded());
         if let Some(ref account) = self.params.stripe_account {
             headers.set_raw("Stripe-Account", vec![account.as_bytes().to_vec()]);
@@ -114,16 +125,16 @@ fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Er
     response.read_to_string(&mut body)?;
     let status = response.status_raw().0;
     match status {
-        200...299 => {},
+        200...299 => {}
         _ => {
             let mut err = json::from_str(&body).unwrap_or_else(|err| {
-                let mut req = ErrorObject{error: RequestError::default()};
+                let mut req = ErrorObject { error: RequestError::default() };
                 req.error.message = Some(format!("failed to deserialize error: {}", err));
                 req
             });
             err.error.http_status = status;
             return Err(Error::from(err.error));
-        },
+        }
     }
 
     json::from_str(&body).map_err(|err| Error::from(err))

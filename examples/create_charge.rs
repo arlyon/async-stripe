@@ -22,11 +22,17 @@ fn main() {
     let charge = stripe::Charge::create(&client, params).unwrap();
 
     // Output in a ~prettyprint format
-    println!("Charge {{
+    println!(
+        "Charge {{
     id: {:?},
     amount: {:?},
     created: {:?},
     status: {:?},
     ..
-}}", charge.id, charge.amount, charge.created, charge.status);
+}}",
+        charge.id,
+        charge.amount,
+        charge.created,
+        charge.status
+    );
 }

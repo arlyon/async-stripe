@@ -22,11 +22,17 @@ fn main() {
     let customer = stripe::Customer::create(&client, params).unwrap();
 
     // Output in a ~prettyprint format
-    println!("Customer {{
+    println!(
+        "Customer {{
     id: {:?},
     created: {:?},
     default_source: {:?},
     email: {:?},
     ..
-}}", customer.id, customer.created, customer.default_source, customer.email);
+}}",
+        customer.id,
+        customer.created,
+        customer.default_source,
+        customer.email
+    );
 }

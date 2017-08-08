@@ -20,7 +20,7 @@ pub fn to_snakecase(camel: &str) -> String {
     let mut chars = camel.chars().peekable();
     while let Some(ch) = chars.next() {
         if ch.is_uppercase() {
-            if i > 0 && !chars.peek().unwrap_or(& 'A').is_uppercase() {
+            if i > 0 && !chars.peek().unwrap_or(&'A').is_uppercase() {
                 snake.push('_');
             }
             snake.push(ch.to_lowercase().next().unwrap_or(ch));

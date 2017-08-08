@@ -9,27 +9,43 @@ use serde_qs as query;
 /// For more details see https://stripe.com/docs/api#create_invoice, https://stripe.com/docs/api#update_invoice.
 #[derive(Default, Serialize)]
 pub struct InvoiceParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")] pub application_fee: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub description: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub statement_descriptor: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub subscription: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub tax_percent: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_percent: Option<f64>,
 
-    #[serde(skip_serializing_if = "Option::is_none")] pub closed: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub forgiven: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub closed: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub forgiven: Option<bool>,
 }
 
 #[derive(Default, Serialize)]
 pub struct InvoiceItemParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")] pub amount: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub currency: Option<Currency>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub description: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub discountable: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub invoice: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub metadata: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub subscription: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discountable: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<bool>,
 }
 
 /*
@@ -68,7 +84,8 @@ pub struct InvoiceItem {
     pub quantity: Option<u64>,
     pub subscription: Option<String>,
     pub subscription_item: Option<String>,
-    #[serde(default)] // NOTE: Missing in response to InvoiceItem create
+    #[serde(default)]
+    // NOTE: Missing in response to InvoiceItem create
     #[serde(rename = "type")]
     pub item_type: String, // (invoiceitem, subscription)
 }
@@ -113,8 +130,10 @@ pub struct Invoice {
 
 #[derive(Default, Serialize)]
 pub struct InvoiceListParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")] pub limit: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<&'a str>,
 }
 
 impl Invoice {
@@ -171,5 +190,4 @@ impl InvoiceItem {
     pub fn create(client: &Client, params: InvoiceItemParams) -> Result<InvoiceItem, Error> {
         client.post(&format!("/invoiceitems"), &params)
     }
-
 }

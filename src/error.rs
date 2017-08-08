@@ -86,15 +86,23 @@ impl From<json::Error> for Error {
 /// The list of possible values for a RequestError's type.
 #[derive(Debug, PartialEq, Deserialize)]
 pub enum ErrorType {
-    #[serde(skip_deserializing)] Unknown,
+    #[serde(skip_deserializing)]
+    Unknown,
 
-    #[serde(rename = "api_error")] Api,
-    #[serde(rename = "api_connection_error")] Connection,
-    #[serde(rename = "authentication_error")] Authentication,
-    #[serde(rename = "card_error")] Card,
-    #[serde(rename = "invalid_request_error")] InvalidRequest,
-    #[serde(rename = "rate_limit_error")] RateLimit,
-    #[serde(rename = "validation_error")] Validation,
+    #[serde(rename = "api_error")]
+    Api,
+    #[serde(rename = "api_connection_error")]
+    Connection,
+    #[serde(rename = "authentication_error")]
+    Authentication,
+    #[serde(rename = "card_error")]
+    Card,
+    #[serde(rename = "invalid_request_error")]
+    InvalidRequest,
+    #[serde(rename = "rate_limit_error")]
+    RateLimit,
+    #[serde(rename = "validation_error")]
+    Validation,
 }
 
 impl Default for ErrorType {
@@ -174,12 +182,14 @@ impl fmt::Display for RequestError {
 
 impl error::Error for RequestError {
     fn description(&self) -> &str {
-        self.message.as_ref().map(|s| s.as_str()).unwrap_or("request error")
+        self.message.as_ref().map(|s| s.as_str()).unwrap_or(
+            "request error",
+        )
     }
 }
 
 #[doc(hidden)]
 #[derive(Deserialize)]
 pub struct ErrorObject {
-    pub error: RequestError
+    pub error: RequestError,
 }

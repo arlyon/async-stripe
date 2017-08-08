@@ -1,17 +1,17 @@
 #[derive(Serialize)]
 pub struct CardParams<'a> {
     pub object: &'static str, // must be "card"
-    pub exp_month: &'a str,    // eg. "12"
-    pub exp_year: &'a str,     // eg. "17" or 2017"
+    pub exp_month: &'a str, // eg. "12"
+    pub exp_year: &'a str, // eg. "17" or 2017"
 
-    pub number: &'a str,       // card number
+    pub number: &'a str, // card number
     pub name: Option<&'a str>, // cardholder's full name
-    pub cvc: Option<&'a str>,  // card security code
+    pub cvc: Option<&'a str>, // card security code
 }
 
 impl<'a> Default for CardParams<'a> {
     fn default() -> Self {
-        CardParams{
+        CardParams {
             object: "card",
             exp_month: "",
             exp_year: "",
