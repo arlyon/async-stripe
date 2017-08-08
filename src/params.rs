@@ -11,6 +11,23 @@ pub struct List<T> {
 pub type Metadata = HashMap<String, String>;
 pub type Timestamp = i64;
 
+// Define general range query parameter
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum RangeOp<T> {
+    Gt(T),
+    Gte(T),
+    Lt(T),
+    Lte(T),
+}
+
+#[derive(Debug, Serialize)]
+#[serde(untagged)]
+pub enum RangeQuery<T> {
+    Exact(T),
+    Op(RangeOp<T>),
+}
+
 // NOTE: Only intended to handle conversion from ASCII CamelCase to SnakeCase
 //   This function is used to convert static Rust identifiers to snakecase
 // TODO: pub(crate) fn

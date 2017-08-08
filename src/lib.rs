@@ -24,5 +24,5 @@ mod params;
 
 pub use client::{Client, Params};
 pub use error::{Error, ErrorCode, ErrorType, RequestError};
-pub use params::{List, Metadata, Timestamp};
+pub use params::{List, RangeQuery, RangeOp, Metadata, Timestamp};
 pub use resources::*;
