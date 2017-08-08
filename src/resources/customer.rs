@@ -1,7 +1,8 @@
 use error::Error;
 use client::Client;
 use resources::{Address, CardParams, Currency, Deleted, Discount, Source, Subscription};
-use params::{List, Metadata};
+use params::{List, Metadata, RangeQuery};
+use serde_qs as qs;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct CustomerShippingDetails {
@@ -40,6 +41,21 @@ pub struct CustomerParams<'a> {
     pub source: Option<CustomerSource<'a>>,
 }
 
+/// The set of parameters that can be used when listing customers.
+///
+/// For more details see https://stripe.com/docs/api#list_customers
+#[derive(Default, Serialize)]
+pub struct CustomerListParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<RangeQuery<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+}
+
 /// The resource representing a Stripe customer.
 ///
 /// For more details see https://stripe.com/docs/api#customers.
@@ -54,7 +70,7 @@ pub struct Customer {
     pub delinquent: bool,
     pub desc: Option<String>,
     pub discount: Option<Discount>,
-    pub email: String,
+    pub email: Option<String>,
     pub livemode: bool,
     pub metadata: Metadata,
     pub shipping: Option<CustomerShippingDetails>,
@@ -89,5 +105,12 @@ impl Customer {
     /// For more details see https://stripe.com/docs/api#delete_customer.
     pub fn delete(client: &Client, customer_id: &str) -> Result<Deleted, Error> {
         client.delete(&format!("/customers/{}", customer_id))
+    }
+
+    /// List customers.
+    ///
+    /// For more details see https://stripe.com/docs/api#list_customers.
+    pub fn list(client: &Client, params: CustomerListParams) -> Result<List<Customer>, Error> {
+        client.get(&format!("/customers?{}", qs::to_string(&params)?))
     }
 }
