@@ -1,7 +1,8 @@
 use client::Client;
 use error::{Error, ErrorCode};
-use params::{List, Metadata, Timestamp};
+use params::{List, Metadata, RangeQuery, Timestamp};
 use resources::{Address, Currency, CustomerSource, Refund, Source};
+use serde_qs as qs;
 
 #[derive(Debug, Deserialize)]
 pub struct ChargeOutcome {
@@ -94,6 +95,60 @@ pub struct ChargeParams<'a> {
     pub statement_descriptor: Option<&'a str>,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceType {
+    All,
+    AlipayAccount,
+    BankAccount,
+    BitcoinReceiver,
+    Card,
+}
+
+#[derive(Serialize)]
+pub struct SourceFilter {
+    pub object: SourceType,
+}
+
+impl SourceFilter {
+    pub fn all() -> SourceFilter {
+        SourceFilter { object: SourceType::All }
+    }
+    pub fn alipay() -> SourceFilter {
+        SourceFilter { object: SourceType::AlipayAccount }
+    }
+    pub fn bank() -> SourceFilter {
+        SourceFilter { object: SourceType::BankAccount }
+    }
+    pub fn bitcoin() -> SourceFilter {
+        SourceFilter { object: SourceType::BitcoinReceiver }
+    }
+    pub fn card() -> SourceFilter {
+        SourceFilter { object: SourceType::Card }
+    }
+}
+
+/// The set of parameters that can be used when listing charges.
+///
+/// For more details see https://stripe.com/docs/api#list_charges
+#[derive(Default, Serialize)]
+pub struct ChargeListParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<RangeQuery<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<SourceFilter>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_group: Option<&'a str>,
+}
+
 /// The resource representing a Stripe charge.
 ///
 /// For more details see https://stripe.com/docs/api#charges.
@@ -161,5 +216,12 @@ impl Charge {
     /// For more details see https://stripe.com/docs/api#charge_capture.
     pub fn capture(client: &Client, charge_id: &str, params: CaptureParams) -> Result<Charge, Error> {
         client.post(&format!("/charges/{}/capture", charge_id), params)
+    }
+
+    /// List all charges.
+    ///
+    /// For more details see https://stripe.com/docs/api#list_charges.
+    pub fn list(client: &Client, params: ChargeListParams) -> Result<Vec<Charge>, Error> {
+        client.get(&format!("/charges?{}", qs::to_string(&params)?))
     }
 }

@@ -59,7 +59,8 @@ fn serialize_range_query() {
     let mut params = CustomerListParams::default();
     params.created = Some(query);
     params.limit = Some(3);
-    assert_eq!(urldecode(qs::to_string(&params).unwrap()), "created[gte]=1501598702&created[lt]=1504233902&limit=3");
+    let encoded = urldecode(qs::to_string(&params).unwrap());
+    assert_eq!(encoded, "created[gte]=1501598702&created[lt]=1504233902&limit=3");
 }
 
 fn urldecode(input: String) -> String {
