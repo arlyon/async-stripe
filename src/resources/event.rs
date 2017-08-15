@@ -10,6 +10,8 @@ pub enum EventType {
     InvoiceCreated,
     #[serde(rename = "invoice.updated")]
     InvoiceUpdated,
+    #[serde(rename = "invoice.upcoming")]
+    InvoiceUpcoming,
 }
 
 #[derive(Debug, Deserialize)]

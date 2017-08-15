@@ -175,7 +175,7 @@ pub struct Charge {
     pub metadata: Metadata,
     pub on_behalf_of: Option<String>,
     pub order: Option<String>,
-    pub outcome: ChargeOutcome,
+    pub outcome: Option<ChargeOutcome>,
     pub paid: bool,
     pub receipt_email: Option<String>,
     pub receipt_number: Option<String>,
