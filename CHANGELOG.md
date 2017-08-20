@@ -1,8 +1,15 @@
+# Version 0.4.2 (August 20, 2017)
+
+## Changes
+
+ * Added basic crate documentation
+ * Added the `invoice.upcoming` event
+
 # Version 0.4.1 (August 8, 2017)
 
 ## Changes
 
- * Add RangeQuery struct for created/date filters in list requests 
+ * Add RangeQuery struct for created/date filters in list requests
  * Implement `Customer::list` request (ie. "GET /customers"); Thanks @pocket7878
  * Add missing params to `InvoiceListParams` for `Invoice::list`
 
