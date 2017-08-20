@@ -32,7 +32,7 @@ To see how the library is used, look through the [examples](examples) folder.
 To get started, we need to create a client:
 
 ```rust
-  let client = stripe::Client("sk_test_YOUR_STRIPE_SECRET");
+  let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 ```
 
 Then we can begin making requests as we'd like.  Most Stripe requests accept

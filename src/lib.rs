@@ -15,7 +15,7 @@
 //! To get started, we need to create a client:
 //!
 //! ```rust
-//!   let client = stripe::Client("sk_test_YOUR_STRIPE_SECRET");
+//!   let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! ```
 //!
 //! Then we can begin making requests as we'd like.  Most Stripe requests accept
@@ -26,7 +26,7 @@
 //! so you may frequently need to refer to the [official API docs](https://stripe.com/docs/api)
 //! to determine which fields are required for either request.
 //!
-//! ```rust
+//! ```rust,ignore
 //! /* Creating a Stripe Charge */
 //!
 //! let token = "TOKEN_FROM_CHECKOUT";
@@ -41,7 +41,7 @@
 //! println!("{:?}", charge); // =>  Charge { id: "ch_12345", amount: 1095, .. }
 //! ```
 //!
-//! ```rust
+//! ```rust,ignore
 //! /* Listing Stripe Charges */
 //!
 //! let params = stripe::ChargeListParams::default();
