@@ -5,7 +5,10 @@ stripe-rust
 [![stripe-rust on crates.io](https://img.shields.io/crates/v/stripe-rust.svg)](https://crates.io/crates/stripe-rust)
 [![stripe-rust on docs.rs](https://docs.rs/stripe-rust/badge.svg)](https://docs.rs/stripe-rust)
 
-Rust API bindings for the Stripe v1 HTTP API
+Rust API bindings for the Stripe v1 HTTP API.
+
+This is compatible with all currently supported versions of Stripe's client-side
+libraries including https://js.stripe.com/v2/ and https://js.stripe.com/v3/.
 
 ## Usage
 Put this in your `Cargo.toml`:
