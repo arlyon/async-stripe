@@ -63,5 +63,19 @@ to determine which fields are required for either request.
 
   let params = stripe::ChargeListParams::default();
   let charges = stripe::Charge::list(&client, params).unwrap();
-  println!("{}", charges.data.len()); // => 1
+  println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
+```
+
+### Using Custom Connect accounts
+This crate supports impersonating a custom connect account.
+
+To impersonate the account get a new Client and pass in the account id.
+
+```rust
+  let client = client.with(stripe::Params{stripe_account: Some("acct_ABC")});
+
+  // Then, all requests can be made normally
+  let params = stripe::CustomerListParams::default();
+  let customers = stripe::Customer::list(&client, params).unwrap();
+  println!("{:?}", customers); // =>  List { data: [Customer { .. }] }
 ```
