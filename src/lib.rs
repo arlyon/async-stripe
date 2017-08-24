@@ -49,6 +49,8 @@
 //! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
 //! ```
 
+extern crate chrono;
+extern crate hmac;
 extern crate hyper;
 #[cfg(feature = "with-rustls")]
 extern crate hyper_rustls;
@@ -59,6 +61,7 @@ extern crate serde;
 extern crate serde_derive;
 extern crate serde_json;
 extern crate serde_qs;
+extern crate sha2;
 
 mod client;
 mod error;
