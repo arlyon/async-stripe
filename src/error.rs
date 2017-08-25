@@ -6,6 +6,7 @@ use params::to_snakecase;
 use std::error;
 use std::fmt;
 use std::io;
+use std::num::ParseIntError;
 
 /// An error encountered when communicating with the Stripe API.
 #[derive(Debug)]
@@ -192,4 +193,45 @@ impl error::Error for RequestError {
 #[derive(Deserialize)]
 pub struct ErrorObject {
     pub error: RequestError,
+}
+
+/// An error encountered when communicating with the Stripe API webhooks.
+#[derive(Debug)]
+pub enum WebhookError {
+    BadHeader(ParseIntError),
+    BadSignature,
+    BadTimestamp(i64),
+    BadParse(json::Error),
+}
+
+impl fmt::Display for WebhookError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str(error::Error::description(self))?;
+        match *self {
+            WebhookError::BadHeader(ref err) => write!(f, ": {}", err),
+            WebhookError::BadSignature => write!(f, "Signatures do not match"),
+            WebhookError::BadTimestamp(ref err) => write!(f, ": {}", err),
+            WebhookError::BadParse(ref err) => write!(f, ": {}", err),
+        }
+    }
+}
+
+impl error::Error for WebhookError {
+    fn description(&self) -> &str {
+        match *self {
+            WebhookError::BadHeader(_) => "error parsing timestamp",
+            WebhookError::BadSignature => "error comparing signatures",
+            WebhookError::BadTimestamp(_) => "error comparing timestamps - over tolerance",
+            WebhookError::BadParse(_) => "error parsing event object",
+        }
+    }
+
+    fn cause(&self) -> Option<&error::Error> {
+        match *self {
+            WebhookError::BadHeader(ref err) => Some(err),
+            WebhookError::BadSignature => None,
+            WebhookError::BadTimestamp(_) => None,
+            WebhookError::BadParse(ref err) => Some(err),
+        }
+    }
 }
