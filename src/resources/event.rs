@@ -1,8 +1,8 @@
 use chrono::{Utc};
-pub use error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
+use error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
 use resources::{Charge, Invoice, Subscription};
 use hmac::{Hmac, Mac, MacResult};
-use serde_json;
+use serde_json as json;
 use sha2::Sha256;
 use std::str;
 
@@ -80,6 +80,6 @@ impl Webhook {
         }
 
         // return Event
-        return serde_json::from_str(&payload).map_err(|err| WebhookError::BadParse(err));
+        return json::from_str(&payload).map_err(|err| WebhookError::BadParse(err));
     }
 }
