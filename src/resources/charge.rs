@@ -90,6 +90,8 @@ pub struct ChargeParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<ShippingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<CustomerSource<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
