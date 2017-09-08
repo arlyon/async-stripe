@@ -59,7 +59,7 @@ pub struct InvoiceListLinesParams {
 }
 */
 
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, Serialize)]
 pub struct InvoiceUpcomingParams<'a> {
     pub customer: &'a str,   //this is a required param
     #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<&'a str>,
