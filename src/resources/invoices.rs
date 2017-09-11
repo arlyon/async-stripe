@@ -59,6 +59,32 @@ pub struct InvoiceListLinesParams {
 }
 */
 
+#[derive(Debug, Default, Serialize)]
+pub struct InvoiceUpcomingParams<'a> {
+    pub customer: &'a str,   //this is a required param
+    #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub subscription: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub subscription_items: Option<SubscriptionItemParams<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub subscription_prorate: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub subscription_proration_date: Option<Timestamp>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub subscription_tax_percent: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")] pub subscription_trial_end: Option<Timestamp>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct SubscriptionItemParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deleted: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+}
+
 /// Period is a structure representing a start and end dates.
 #[derive(Debug, Deserialize)]
 pub struct Period {
@@ -95,7 +121,7 @@ pub struct InvoiceItem {
 /// For more details see https://stripe.com/docs/api#invoice_object.
 #[derive(Debug, Deserialize)]
 pub struct Invoice {
-    pub id: String,
+    pub id: Option<String>, // id field is not present when retrieving upcoming invoices
     pub amount_due: u64,
     pub application_fee: Option<u64>,
     pub attempt_count: u64,
@@ -164,10 +190,12 @@ impl Invoice {
     //     client.get(&format!("/invoices/{}/lines", invoice_id))
     // }
 
-    // TODO: Implement InvoiceUpcomingParams
-    // pub fn get_upcoming(client: &Client, params: InvoiceUpcomingParams) -> Result<Invoice, Error> {
-    //     client.get(&format!("/invoices/upcoming?customer={}", invoice_id))
-    // }
+    /// Retrieves the details of an upcoming invoice_id
+    ///
+    /// For more details see https://stripe.com/docs/api#upcoming_invoice
+    pub fn upcoming(client: &Client, params: InvoiceUpcomingParams) -> Result<Invoice, Error> {
+        client.get(&format!("/invoices/upcoming?{}", qs::to_string(&params)?))
+    }
 
     /// Pays an invoice.
     ///

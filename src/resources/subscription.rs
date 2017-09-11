@@ -45,9 +45,17 @@ pub struct SubscriptionParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_percent: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_end: Option<Timestamp>,
+    pub trial_end: Option<TrialEnd<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u64>,
+}
+
+
+#[derive(Serialize, Debug)]
+#[serde(untagged)]
+pub enum TrialEnd<'a> {
+    Timestamp(Timestamp),
+    Special(&'a str)
 }
 
 /// The resource representing a Stripe subscription item.

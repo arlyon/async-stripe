@@ -123,6 +123,7 @@ fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Er
     let mut response = request.send()?;
     let mut body = String::with_capacity(4096);
     response.read_to_string(&mut body)?;
+
     let status = response.status_raw().0;
     match status {
         200...299 => {}
