@@ -121,7 +121,7 @@ pub struct InvoiceItem {
 /// For more details see https://stripe.com/docs/api#invoice_object.
 #[derive(Debug, Deserialize)]
 pub struct Invoice {
-    pub id: String,
+    pub id: Option<String>, // id field is not present when retrieving upcoming invoices
     pub amount_due: u64,
     pub application_fee: Option<u64>,
     pub attempt_count: u64,
