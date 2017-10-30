@@ -1,3 +1,4 @@
+mod account;
 mod address;
 mod card;
 mod charge;
@@ -13,6 +14,7 @@ mod refund;
 mod source;
 mod subscription;
 
+pub use resources::account::*;
 pub use resources::address::*;
 pub use resources::card::*;
 pub use resources::charge::*;

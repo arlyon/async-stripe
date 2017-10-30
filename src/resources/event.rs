@@ -1,6 +1,6 @@
 use chrono::{Utc};
-use error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
-use resources::{Charge, Invoice, Subscription};
+use error::{ErrorType, RequestError, WebhookError};
+use resources::{Account, Charge, Invoice, Subscription};
 use hmac::{Hmac, Mac, MacResult};
 use serde_json as json;
 use sha2::Sha256;
@@ -8,6 +8,16 @@ use std::str;
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum EventType {
+    #[serde(rename = "account.updated")]
+    AccountUpdated,
+    #[serde(rename = "account.application.deauthorized")] // has child parameters - describes application
+    AccountApplicationDeauthorized,
+    #[serde(rename = "account.external_account.created")]
+    AccountExternalAccountCreated,
+    #[serde(rename = "account.external_account.deleted")]
+    AccountExternalAccountDeleted,
+    #[serde(rename = "account.external_account.updated")]
+    AccountExternalAccountUpdated,
     #[serde(rename = "charge.succeeded")]
     ChargeSucceeded,
     #[serde(rename = "customer.subscription.created")]
@@ -37,6 +47,8 @@ pub struct EventData {
 #[derive(Debug, Deserialize)]
 #[serde(tag = "object")]
 pub enum EventObject {
+    #[serde(rename = "account")]
+    Account(Account),
     #[serde(rename = "charge")]
     Charge(Charge),
     #[serde(rename = "invoice")]
