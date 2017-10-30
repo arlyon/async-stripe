@@ -3,7 +3,7 @@ use resources::{Currency, Refund};
 
 /// The resource representing a Stripe application fee.
 ///
-/// For more details see https://stripe.com/docs/api#application_fee_object
+/// For more details see https://stripe.com/docs/api#application_fees.
 #[derive(Debug, Deserialize)]
 pub struct ApplicationFee {
     pub id: String,
@@ -17,7 +17,7 @@ pub struct ApplicationFee {
     pub created: Timestamp,
     pub currency: Currency,
     pub livemode: bool,
-    pub originating_transaction: String,
+    pub originating_transaction: Option<String>,
     pub refunded: bool,
     pub refunds: List<Refund>,
 }

@@ -44,7 +44,7 @@ pub struct AccountParams<'a> {
 
 /// The resource representing a Stripe account.
 ///
-/// For more details see https://stripe.com/docs/api#account_object.
+/// For more details see https://stripe.com/docs/api#account.
 #[derive(Debug, Deserialize)]
 pub struct Account {
     pub id: String,

@@ -1,6 +1,6 @@
 use chrono::{Utc};
 use error::{WebhookError};
-use resources::{Account, Charge, Invoice, Subscription};
+use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Invoice, Subscription};
 use hmac::{Hmac, Mac, MacResult};
 use serde_json as json;
 use sha2::Sha256;
@@ -10,7 +10,7 @@ use std::str;
 pub enum EventType {
     #[serde(rename = "account.updated")]
     AccountUpdated,
-    #[serde(rename = "account.application.deauthorized")] // has child parameters - describes application
+    #[serde(rename = "account.application.deauthorized")]
     AccountApplicationDeauthorized,
     #[serde(rename = "account.external_account.created")]
     AccountExternalAccountCreated,
@@ -20,6 +20,12 @@ pub enum EventType {
     AccountExternalAccountUpdated,
     #[serde(rename = "application_fee.created")]
     ApplicationFeeCreated,
+    #[serde(rename = "application_fee.refunded")]
+    ApplicationFeeRefunded,
+    #[serde(rename = "application_fee.refund.updated")]
+    ApplicationFeeRefundUpdated,
+    #[serde(rename = "balance.available")]
+    BalanceAvailable,
     #[serde(rename = "charge.succeeded")]
     ChargeSucceeded,
     #[serde(rename = "customer.subscription.created")]
@@ -51,6 +57,14 @@ pub struct EventData {
 pub enum EventObject {
     #[serde(rename = "account")]
     Account(Account),
+    #[serde(rename = "application_fee")]
+    ApplicationFee(ApplicationFee),
+    #[serde(rename = "application_refund")]
+    ApplicationFeeRefund(ApplicationFeeRefund),
+    #[serde(rename = "balance")]
+    Balance(Balance),
+    #[serde(rename = "bank_account")]
+    BankAccount(BankAccount),
     #[serde(rename = "charge")]
     Charge(Charge),
     #[serde(rename = "invoice")]
