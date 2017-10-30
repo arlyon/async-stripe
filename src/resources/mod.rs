@@ -1,5 +1,7 @@
 mod account;
 mod address;
+mod application_fee;
+mod bank_account;
 mod card;
 mod charge;
 mod coupon;
@@ -16,6 +18,8 @@ mod subscription;
 
 pub use resources::account::*;
 pub use resources::address::*;
+pub use resources::application_fee::*;
+pub use resources::bank_account::*;
 pub use resources::card::*;
 pub use resources::charge::*;
 pub use resources::coupon::*;

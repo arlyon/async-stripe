@@ -1,3 +1,37 @@
+use params::{List, Metadata, Timestamp};
+use resources::BankAccount;
+
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct DeclineChargeDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub avs_failure: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc_failure: Option<bool>,
+}
+
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct PayoutScheduleDetails {
+    pub delay_days: u64,
+    pub interval: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub monthly_anchor: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub weekly_anchor: Option<String>,
+}
+
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct TOSAcceptanceDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Timestamp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+}
+
+/// The set of parameters that can be used when creating an account for users.
+///
+/// For more details see https://stripe.com/docs/api#create_account.
 #[derive(Serialize)]
 pub struct AccountParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8,6 +42,9 @@ pub struct AccountParams<'a> {
     pub account_type: &'static str,
 }
 
+/// The resource representing a Stripe account.
+///
+/// For more details see https://stripe.com/docs/api#account_object.
 #[derive(Debug, Deserialize)]
 pub struct Account {
     pub id: String,
@@ -17,15 +54,15 @@ pub struct Account {
     pub charges_enabed: bool,
     pub country: String,
     pub debit_negative_balances: Option<bool>,
-    pub decline_charge_on: Option<bool>, // hash
+    pub decline_charge_on: Option<DeclineChargeDetails>,
     pub default_currency: String,
     pub details_submitted: bool,
     pub display_name: String,
     pub email: String,
-    pub external_accounts: Option<bool>, // list
-    pub legal_entity: Option<bool>, // hash
-    pub metadata: bool, // hash
-    pub payout_schedule: Option<bool>, // hash
+    pub external_accounts: Option<List<BankAccount>>,
+    pub legal_entity: Option<Metadata>, // TODO: Hash
+    pub metadata: Option<Metadata>,
+    pub payout_schedule: Option<PayoutScheduleDetails>,
     pub payout_statement_descriptor: Option<String>,
     pub payouts_enabled: bool,
     pub product_description: Option<String>,
@@ -33,8 +70,8 @@ pub struct Account {
     pub support_email: String,
     pub support_phone: String,
     pub timezone: String,
-    pub tos_acceptance: Option<String>, // hash
+    pub tos_acceptance: Option<TOSAcceptanceDetails>, // (who accepted Stripe's terms of service)
     #[serde(rename = "type")]
-    pub account_type: String, // Stripe, custom, or express
-    pub verification: Option<String>, // hash
+    pub account_type: String, // (Stripe, Custom, or Express)
+    pub verification: Option<Metadata>, // TODO: Hash
 }

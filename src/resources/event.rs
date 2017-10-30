@@ -1,5 +1,5 @@
 use chrono::{Utc};
-use error::{ErrorType, RequestError, WebhookError};
+use error::{WebhookError};
 use resources::{Account, Charge, Invoice, Subscription};
 use hmac::{Hmac, Mac, MacResult};
 use serde_json as json;
@@ -18,6 +18,8 @@ pub enum EventType {
     AccountExternalAccountDeleted,
     #[serde(rename = "account.external_account.updated")]
     AccountExternalAccountUpdated,
+    #[serde(rename = "application_fee.created")]
+    ApplicationFeeCreated,
     #[serde(rename = "charge.succeeded")]
     ChargeSucceeded,
     #[serde(rename = "customer.subscription.created")]
