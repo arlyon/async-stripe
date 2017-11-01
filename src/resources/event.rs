@@ -1,6 +1,6 @@
 use chrono::{Utc};
 use error::{WebhookError};
-use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Invoice, Subscription};
+use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, Invoice, Refund, Subscription};
 use hmac::{Hmac, Mac, MacResult};
 use serde_json as json;
 use sha2::Sha256;
@@ -26,16 +26,86 @@ pub enum EventType {
     ApplicationFeeRefundUpdated,
     #[serde(rename = "balance.available")]
     BalanceAvailable,
+    #[serde(rename = "charge.captured")]
+    ChargeCaptured,
+    #[serde(rename = "charge.failed")]
+    ChargeFailed,
+    #[serde(rename = "charge.pending")]
+    ChargePending,
+    #[serde(rename = "charge.refunded")]
+    ChargeRefunded,
     #[serde(rename = "charge.succeeded")]
     ChargeSucceeded,
+    #[serde(rename = "charge.updated")]
+    ChargeUpdated,
+    #[serde(rename = "charge.dispute.closed")]
+    ChargeDisputeClosed,
+    #[serde(rename = "charge.dispute.created")]
+    ChargeDisputeCreated,
+    #[serde(rename = "charge.dispute.funds_reinstated")]
+    ChargeDisputeFundsReinstated,
+    #[serde(rename = "charge.dispute.funds_withdrawn")]
+    ChargeDisputeFundsWithdrawn,
+    #[serde(rename = "charge.dispute.updated")]
+    ChargeDisputeUpdated,
+    #[serde(rename = "charge.refund.updated")]
+    ChargeRefundUpdated,
+    #[serde(rename = "coupon.created")]
+    CouponCreated,
+    #[serde(rename = "coupon.deleted")]
+    CouponDeleted,
+    #[serde(rename = "coupon.updated")]
+    CouponUpdated,
+    #[serde(rename = "customer.created")]
+    CustomerCreated,
+    #[serde(rename = "customer.deleted")]
+    CustomerDeleted,
+    #[serde(rename = "customer.updated")]
+    CustomerUpdated,
+    #[serde(rename = "customer.discount.created")]
+    CustomerDiscountCreated,
+    #[serde(rename = "customer.discount.deleted")]
+    CustomerDiscountDeleted,
+    #[serde(rename = "customer.discount.updated")]
+    CustomerDiscountUpdated,
+    #[serde(rename = "customer.source.created")]
+    CustomerSourceCreated,
+    #[serde(rename = "customer.source.deleted")]
+    CustomerSourceDeleted,
+    #[serde(rename = "customer.source.updated")]
+    CustomerSourceUpdated,
     #[serde(rename = "customer.subscription.created")]
     CustomerSubscriptionCreated,
+    #[serde(rename = "customer.subscription.deleted")]
+    CustomerSubscriptionDeleted,
+    #[serde(rename = "customer.subscription.trial_will_end")]
+    CustomerSubscriptionTrialWillEnd,
+    #[serde(rename = "customer.subscription.updated")]
+    CustomerSubscriptionUpdated,
     #[serde(rename = "invoice.created")]
     InvoiceCreated,
+    #[serde(rename = "invoice.payment_failed")]
+    InvoicePaymentFailed,
+    #[serde(rename = "invoice.payment_succeeded")]
+    InvoicePaymentSucceeded,
     #[serde(rename = "invoice.updated")]
     InvoiceUpdated,
     #[serde(rename = "invoice.upcoming")]
     InvoiceUpcoming,
+    #[serde(rename = "invoiceitem.created")]
+    InvoiceItemCreated,
+    #[serde(rename = "invoiceitem.deleted")]
+    InvoiceItemDeleted,
+    #[serde(rename = "invoiceitem.updated")]
+    InvoiceItemUpdated,
+    #[serde(rename = "order.created")]
+    OrderCreated,
+    #[serde(rename = "order.payment_failed")]
+    OrderPaymentFailed,
+    #[serde(rename = "order.payment_succeeded")]
+    OrderPaymentSucceeded,
+    #[serde(rename = "order.updated")]
+    OrderUpdated,
 }
 
 #[derive(Debug, Deserialize)]
@@ -67,8 +137,12 @@ pub enum EventObject {
     BankAccount(BankAccount),
     #[serde(rename = "charge")]
     Charge(Charge),
+    #[serde(rename = "dispute")]
+    Dispute(Dispute),
     #[serde(rename = "invoice")]
     Invoice(Invoice),
+    #[serde(rename = "refund")]
+    Refund(Refund),
     #[serde(rename = "subscription")]
     Subscription(Subscription),
 }

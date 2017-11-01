@@ -28,6 +28,7 @@ pub struct InvoiceParams<'a> {
     pub forgiven: Option<bool>,
 }
 
+// Invoice line item params
 #[derive(Default, Serialize)]
 pub struct InvoiceItemParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -61,7 +62,7 @@ pub struct InvoiceListLinesParams {
 
 #[derive(Debug, Default, Serialize)]
 pub struct InvoiceUpcomingParams<'a> {
-    pub customer: &'a str,   //this is a required param
+    pub customer: &'a str,   // this is a required param
     #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub subscription: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")] pub subscription_items: Option<SubscriptionItemParams<'a>>,
@@ -154,6 +155,7 @@ pub struct Invoice {
     pub webhooks_delivered_at: Option<Timestamp>,
 }
 
+// Lists all invoices
 #[derive(Default, Serialize)]
 pub struct InvoiceListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]

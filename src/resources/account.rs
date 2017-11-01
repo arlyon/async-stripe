@@ -1,5 +1,6 @@
-use params::{List, Metadata, Timestamp};
+use params::{Metadata, Timestamp};
 use resources::BankAccount;
+use serde_json as json;
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct DeclineChargeDetails {
@@ -59,8 +60,8 @@ pub struct Account {
     pub details_submitted: bool,
     pub display_name: String,
     pub email: String,
-    pub external_accounts: Option<List<BankAccount>>,
-    pub legal_entity: Option<Metadata>, // TODO: Hash
+    pub external_accounts: Option<BankAccount>,
+    pub legal_entity: Option<json::Value>,
     pub metadata: Option<Metadata>,
     pub payout_schedule: Option<PayoutScheduleDetails>,
     pub payout_statement_descriptor: Option<String>,
@@ -73,5 +74,5 @@ pub struct Account {
     pub tos_acceptance: Option<TOSAcceptanceDetails>, // (who accepted Stripe's terms of service)
     #[serde(rename = "type")]
     pub account_type: String, // (Stripe, Custom, or Express)
-    pub verification: Option<Metadata>, // TODO: Hash
+    pub verification: Option<json::Value>,
 }
