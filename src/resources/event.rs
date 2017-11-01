@@ -1,6 +1,6 @@
 use chrono::{Utc};
 use error::{WebhookError};
-use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, Invoice, InvoiceItem, Payout, Plan, Refund, Subscription};
+use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, Invoice, InvoiceItem, Payout, Plan, Product, Refund, Sku, Subscription};
 use hmac::{Hmac, Mac, MacResult};
 use serde_json as json;
 use sha2::Sha256;
@@ -122,6 +122,24 @@ pub enum EventType {
     PlanDeleted,
     #[serde(rename = "plan.updated")]
     PlanUpdated,
+    #[serde(rename = "product.created")]
+    ProductCreated,
+    #[serde(rename = "product.deleted")]
+    ProductDeleted,
+    #[serde(rename = "product.updated")]
+    ProductUpdated,
+    #[serde(rename = "sku.created")]
+    SkuCreated,
+    #[serde(rename = "sku.deleted")]
+    SkuDeleted,
+    #[serde(rename = "sku.updated")]
+    SkuUpdated,
+    #[serde(rename = "source.canceled")]
+    SourceCanceled,
+    #[serde(rename = "source.chargeable")]
+    Sourcechargeable,
+    #[serde(rename = "source.failed")]
+    SourceFailed,
 }
 
 #[derive(Debug, Deserialize)]
@@ -163,8 +181,12 @@ pub enum EventObject {
     Payout(Payout),
     #[serde(rename = "plan")]
     Plan(Plan),
+    #[serde(rename = "product")]
+    Product(Product),
     #[serde(rename = "refund")]
     Refund(Refund),
+    #[serde(rename = "sku")]
+    Sku(Sku),
     #[serde(rename = "subscription")]
     Subscription(Subscription),
 }

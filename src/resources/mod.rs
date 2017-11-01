@@ -18,7 +18,9 @@ mod invoice_item;
 mod order;
 mod payout;
 mod plan;
+mod product;
 mod refund;
+mod sku;
 mod source;
 mod subscription;
 
@@ -42,6 +44,8 @@ pub use resources::invoice_item::*;
 pub use resources::order::*;
 pub use resources::payout::*;
 pub use resources::plan::*;
+pub use resources::product::*;
 pub use resources::refund::*;
+pub use resources::sku::*;
 pub use resources::source::*;
 pub use resources::subscription::*;
