@@ -24,7 +24,6 @@ pub struct Balance {
     pub pending: Vec<json::Value>,
 }
 
-
 /// The resource representing a Stripe balance transaction.
 ///
 /// For more details see https://stripe.com/docs/api#balance_transaction_object.
