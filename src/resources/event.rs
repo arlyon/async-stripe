@@ -1,6 +1,6 @@
 use chrono::{Utc};
 use error::{WebhookError};
-use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, Invoice, Refund, Subscription};
+use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, Invoice, InvoiceItem, Refund, Subscription};
 use hmac::{Hmac, Mac, MacResult};
 use serde_json as json;
 use sha2::Sha256;
@@ -141,6 +141,8 @@ pub enum EventObject {
     Dispute(Dispute),
     #[serde(rename = "invoice")]
     Invoice(Invoice),
+    #[serde(rename = "invoice_item")]
+    InvoiceItem(InvoiceItem),
     #[serde(rename = "refund")]
     Refund(Refund),
     #[serde(rename = "subscription")]

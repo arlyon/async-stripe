@@ -28,9 +28,8 @@ pub struct InvoiceParams<'a> {
     pub forgiven: Option<bool>,
 }
 
-// Invoice line item params
 #[derive(Default, Serialize)]
-pub struct InvoiceItemParams<'a> {
+pub struct InvoiceLineItemParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -97,7 +96,7 @@ pub struct Period {
 ///
 /// For more details see https://stripe.com/docs/api#invoice_line_item_object.
 #[derive(Debug, Deserialize)]
-pub struct InvoiceItem {
+pub struct InvoiceLineItem {
     pub id: String,
     pub amount: i64,
     pub currency: Currency,
@@ -112,7 +111,7 @@ pub struct InvoiceItem {
     pub subscription: Option<String>,
     pub subscription_item: Option<String>,
     #[serde(default)]
-    // NOTE: Missing in response to InvoiceItem create
+    // NOTE: Missing in response to InvoiceLineItem create
     #[serde(rename = "type")]
     pub item_type: String, // (invoiceitem, subscription)
 }
@@ -136,7 +135,7 @@ pub struct Invoice {
     pub discount: Option<Discount>,
     pub ending_balance: Option<i64>,
     pub forgiven: bool,
-    pub lines: List<InvoiceItem>,
+    pub lines: List<InvoiceLineItem>,
     pub livemode: bool,
     pub metadata: Metadata,
     pub next_payment_attempt: Option<Timestamp>,
@@ -155,7 +154,6 @@ pub struct Invoice {
     pub webhooks_delivered_at: Option<Timestamp>,
 }
 
-// Lists all invoices
 #[derive(Default, Serialize)]
 pub struct InvoiceListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -188,7 +186,7 @@ impl Invoice {
     }
 
     // TODO: Implement InvoiceListLinesParams
-    // pub fn get_lines(client: &Client, invoice_id: &str, params: InvoiceListLinesParams) -> Result<List<InvoiceItem>, Error> {
+    // pub fn get_lines(client: &Client, invoice_id: &str, params: InvoiceListLinesParams) -> Result<List<InvoiceLineItem>, Error> {
     //     client.get(&format!("/invoices/{}/lines", invoice_id))
     // }
 
@@ -221,11 +219,11 @@ impl Invoice {
     }
 }
 
-impl InvoiceItem {
+impl InvoiceLineItem {
     /// Creates an invoice line item.
     ///
     /// For more details see https://stripe.com/docs/api/node#invoice_line_item_object
-    pub fn create(client: &Client, params: InvoiceItemParams) -> Result<InvoiceItem, Error> {
+    pub fn create(client: &Client, params: InvoiceLineItemParams) -> Result<InvoiceLineItem, Error> {
         client.post(&format!("/invoiceitems"), &params)
     }
 }
