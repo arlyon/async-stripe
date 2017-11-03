@@ -1,6 +1,6 @@
 use chrono::{Utc};
 use error::{WebhookError};
-use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, File, Invoice, InvoiceItem, Payout, Plan, Product, Refund, Review, Sku, Subscription};
+use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, File, Invoice, InvoiceItem, Order, OrderReturn, Payout, Plan, Product, Refund, Review, Sku, Subscription};
 use hmac::{Hmac, Mac, MacResult};
 use serde_json as json;
 use sha2::Sha256;
@@ -108,6 +108,8 @@ pub enum EventType {
     OrderPaymentSucceeded,
     #[serde(rename = "order.updated")]
     OrderUpdated,
+    #[serde(rename = "order_return.updated")]
+    OrderReturnUpdated,
     #[serde(rename = "payout.canceled")]
     PayoutCanceled,
     #[serde(rename = "payout.created")]
@@ -187,6 +189,10 @@ pub enum EventObject {
     Invoice(Invoice),
     #[serde(rename = "invoice_item")]
     InvoiceItem(InvoiceItem),
+    #[serde(rename = "order")]
+    Order(Order),
+    #[serde(rename = "order_return")]
+    OrderReturn(OrderReturn),
     #[serde(rename = "refund")]
     Payout(Payout),
     #[serde(rename = "plan")]
