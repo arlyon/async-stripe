@@ -27,6 +27,8 @@ mod scheduled_query;
 mod sku;
 mod source;
 mod subscription;
+mod transaction;
+mod transfer;
 
 pub use resources::account::*;
 pub use resources::address::*;
@@ -57,3 +59,5 @@ pub use resources::scheduled_query::*;
 pub use resources::sku::*;
 pub use resources::source::*;
 pub use resources::subscription::*;
+pub use resources::transaction::*;
+pub use resources::transfer::*;

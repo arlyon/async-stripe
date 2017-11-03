@@ -1,6 +1,6 @@
 use chrono::{Utc};
 use error::{WebhookError};
-use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, File, Invoice, InvoiceItem, Order, OrderReturn, Payout, Plan, Product, Refund, Review, Sku, Subscription};
+use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, File, Invoice, InvoiceItem, Order, OrderReturn, Payout, Plan, Product, Refund, Review, Sku, Subscription, Transaction, Transfer};
 use hmac::{Hmac, Mac, MacResult};
 use serde_json as json;
 use sha2::Sha256;
@@ -150,6 +150,14 @@ pub enum EventType {
     Sourcechargeable,
     #[serde(rename = "source.failed")]
     SourceFailed,
+    #[serde(rename = "source.transaction.created")]
+    SourceTransactionCreated,
+    #[serde(rename = "transfer.created")]
+    TransferCreated,
+    #[serde(rename = "transfer.reversed")]
+    TransferReversed,
+    #[serde(rename = "transfer.updated")]
+    TransferUpdated,
 }
 
 #[derive(Debug, Deserialize)]
@@ -207,6 +215,10 @@ pub enum EventObject {
     Sku(Sku),
     #[serde(rename = "subscription")]
     Subscription(Subscription),
+    #[serde(rename = "transaction")]
+    Transaction(Transaction),
+    #[serde(rename = "transfer")]
+    Transfer(Transfer),
 }
 
 pub struct Webhook {}
