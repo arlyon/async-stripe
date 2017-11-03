@@ -1,6 +1,6 @@
 use chrono::{Utc};
 use error::{WebhookError};
-use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, Invoice, InvoiceItem, Payout, Plan, Product, Refund, Sku, Subscription};
+use resources::{Account, ApplicationFee, ApplicationFeeRefund, Balance, BankAccount, Charge, Dispute, File, Invoice, InvoiceItem, Payout, Plan, Product, Refund, Review, Sku, Subscription};
 use hmac::{Hmac, Mac, MacResult};
 use serde_json as json;
 use sha2::Sha256;
@@ -82,6 +82,8 @@ pub enum EventType {
     CustomerSubscriptionTrialWillEnd,
     #[serde(rename = "customer.subscription.updated")]
     CustomerSubscriptionUpdated,
+    #[serde(rename = "file.created")]
+    FileCreated,
     #[serde(rename = "invoice.created")]
     InvoiceCreated,
     #[serde(rename = "invoice.payment_failed")]
@@ -128,6 +130,12 @@ pub enum EventType {
     ProductDeleted,
     #[serde(rename = "product.updated")]
     ProductUpdated,
+    #[serde(rename = "review.closed")]
+    ReviewClosed,
+    #[serde(rename = "review.opened")]
+    ReviewOpened,
+    #[serde(rename = "sigma.scheduled_query_run.created")]
+    SigmaScheduledQueryRunCreated,
     #[serde(rename = "sku.created")]
     SkuCreated,
     #[serde(rename = "sku.deleted")]
@@ -173,6 +181,8 @@ pub enum EventObject {
     Charge(Charge),
     #[serde(rename = "dispute")]
     Dispute(Dispute),
+    #[serde(rename = "file")]
+    File(File),
     #[serde(rename = "invoice")]
     Invoice(Invoice),
     #[serde(rename = "invoice_item")]
@@ -185,6 +195,8 @@ pub enum EventObject {
     Product(Product),
     #[serde(rename = "refund")]
     Refund(Refund),
+    #[serde(rename = "review")]
+    Review(Review),
     #[serde(rename = "sku")]
     Sku(Sku),
     #[serde(rename = "subscription")]
