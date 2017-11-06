@@ -20,7 +20,6 @@ pub struct Product {
     pub attributes: Vec<String>,
     pub caption: Option<String>,
     pub created: Timestamp,
-    pub charge: Option<String>,
     pub deactivate_on: Vec<String>,
     pub description: Option<String>,
     pub images: Vec<String>,

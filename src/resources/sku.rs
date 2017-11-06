@@ -7,7 +7,7 @@ pub struct Inventory {
     pub quantity: u64,
     #[serde(rename = "type")]
     pub inventory_type: String,
-    pub value: String,
+    pub value: Option<String>,
 }
 
 /// The resource representing a Stripe Sku.

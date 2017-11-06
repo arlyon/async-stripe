@@ -14,7 +14,7 @@ pub struct Payout {
     pub created: Timestamp,
     pub currency: Currency,
     pub description: String,
-    pub destination: String,
+    pub destination: Option<String>,
     pub failure_balance_transaction: Option<String>,
     pub failure_code: Option<String>,
     pub failure_message: Option<String>,
@@ -24,5 +24,6 @@ pub struct Payout {
     pub source_type: String, // (card, bank_account, bitcoin_receiver, alipay_account)
     pub statement_descriptor: Option<String>,
     pub status: String,
+    #[serde(rename = "type")]
     pub payout_type: String, // (bank_account, card)
 }

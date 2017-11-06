@@ -3,7 +3,7 @@ use resources::{Currency, Period, Plan};
 
 /// The resource representing a Stripe invoice item.
 ///
-/// For more details see https://stripe.com/docs/api/php#invoiceitem_object.
+/// For more details see https://stripe.com/docs/api/node#invoiceitem_object.
 #[derive(Debug, Deserialize)]
 pub struct InvoiceItem {
     pub id: String,
@@ -16,7 +16,7 @@ pub struct InvoiceItem {
     pub discountable: String,
     pub invoice: String,
     pub livemode: bool,
-    pub metadata: Option<Metadata>,
+    pub metadata: Metadata,
     pub period: Period,
     pub plan: Option<Plan>,
     pub proration: bool,

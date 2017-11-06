@@ -3,7 +3,7 @@ use resources::Currency;
 
 /// The resource representing a Stripe bank account.
 ///
-/// For more details see https://stripe.com/docs/api#bank_accounts.
+/// For more details see https://stripe.com/docs/api/node#customer_bank_account_object.
 #[derive(Debug, Deserialize)]
 pub struct BankAccount {
     pub id: String,
@@ -18,7 +18,7 @@ pub struct BankAccount {
     pub default_for_currency: bool,
     pub fingerprint: String,
     pub last4: String,
-    pub metadata: Option<Metadata>,
+    pub metadata: Metadata,
     pub routing_number: String,
     pub status: String, // (new, validated, verified, verification_failed, errored)
 }

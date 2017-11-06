@@ -10,7 +10,7 @@ pub struct ApplicationFee {
     pub object: String,
     pub account: String,
     pub amount: u64,
-    pub amount_refunded: u64,
+    pub amount_refunded: i64,
     pub application: String,
     pub balance_transaction: String,
     pub charge: String,

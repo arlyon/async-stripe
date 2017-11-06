@@ -9,7 +9,7 @@ pub struct ApplicationFeeRefund {
     pub id: String,
     pub object: String,
     pub amount: u64,
-    pub balance_transaction: String,
+    pub balance_transaction: Option<String>,
     pub created: Timestamp,
     pub currency: Currency,
     pub fee: String,

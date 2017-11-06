@@ -1,9 +1,13 @@
 use params::{Metadata, Timestamp};
 use resources::Currency;
 
+/// The resource representing a Stripe coupon.
+///
+/// For more details see https://stripe.com/docs/api/node#coupon_object.
 #[derive(Debug, Deserialize)]
 pub struct Coupon {
     pub id: String,
+    pub object: String,
     pub amount_off: Option<u64>,
     pub created: Timestamp,
     pub currency: Option<Currency>,

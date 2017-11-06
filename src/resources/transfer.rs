@@ -33,7 +33,7 @@ pub struct Transfer {
     pub destination_payment: String,
     pub livemode: bool,
     pub metadata: Metadata,
-    pub reversals: List<TransferReversal>, // TODO: look at this one again to use all keys
+    pub reversals: List<TransferReversal>,
     pub reversed: bool,
     pub source_transaction: String,
     pub source_type: String,

@@ -71,9 +71,9 @@ pub struct DisputeEvidenceObject {
     pub uncategorized_text: Option<String>,
 }
 
-/// The resource representing a Stripe account.
+/// The resource representing a Stripe dispute.
 ///
-/// For more details see https://stripe.com/docs/api#account.
+/// For more details see https://stripe.com/docs/api/node#disputes.
 #[derive(Debug, Deserialize)]
 pub struct Dispute {
     pub id: String,
@@ -87,7 +87,7 @@ pub struct Dispute {
     pub evidence_details: EvidenceDetails,
     pub is_charge_refundable: bool,
     pub livemode: bool,
-    pub metadata: Option<Metadata>,
+    pub metadata: Metadata,
     pub reason: Option<String>,
     pub status: Option<String>,
 }
