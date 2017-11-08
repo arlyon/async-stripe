@@ -3,7 +3,7 @@ use resources::Currency;
 
 /// The resource representing a Stripe payout.
 ///
-/// For more details see https://stripe.com/docs/api/php#payout_object.
+/// For more details see https://stripe.com/docs/api#payout_object.
 #[derive(Debug, Deserialize)]
 pub struct Payout {
     pub id: String,

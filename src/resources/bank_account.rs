@@ -3,7 +3,7 @@ use resources::Currency;
 
 /// The resource representing a Stripe bank account.
 ///
-/// For more details see https://stripe.com/docs/api/node#customer_bank_account_object.
+/// For more details see https://stripe.com/docs/api#customer_bank_account_object.
 #[derive(Debug, Deserialize)]
 pub struct BankAccount {
     pub id: String,

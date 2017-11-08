@@ -14,7 +14,7 @@ pub struct FeeDetails {
 
 /// The resource representing a Stripe account balance.
 ///
-/// For more details see https://stripe.com/docs/api/node#balance_object.
+/// For more details see https://stripe.com/docs/api#balance_object.
 #[derive(Debug, Deserialize)]
 pub struct Balance {
     pub object: String,

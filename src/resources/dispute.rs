@@ -73,7 +73,7 @@ pub struct DisputeEvidenceObject {
 
 /// The resource representing a Stripe dispute.
 ///
-/// For more details see https://stripe.com/docs/api/node#disputes.
+/// For more details see https://stripe.com/docs/api#disputes.
 #[derive(Debug, Deserialize)]
 pub struct Dispute {
     pub id: String,

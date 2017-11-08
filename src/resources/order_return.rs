@@ -3,7 +3,7 @@ use resources::{Currency, OrderItem};
 
 /// The resource representing a Stripe order return.
 ///
-/// For more details see https://stripe.com/docs/api/node#order_return_object.
+/// For more details see https://stripe.com/docs/api#order_return_object.
 #[derive(Debug, Deserialize)]
 pub struct OrderReturn {
     pub id: String,

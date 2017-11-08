@@ -16,7 +16,7 @@ pub struct StatusTransitions {
 
 /// The resource representing a Stripe order item.
 ///
-/// For more details see https://stripe.com/docs/api/php#order_item_object.
+/// For more details see https://stripe.com/docs/api#order_item_object.
 #[derive(Debug, Deserialize)]
 pub struct OrderItem {
     pub object: String,
@@ -31,7 +31,7 @@ pub struct OrderItem {
 
 /// The resource representing a Stripe order.
 ///
-/// For more details see https://stripe.com/docs/api/php#order_object.
+/// For more details see https://stripe.com/docs/api#order_object.
 #[derive(Debug, Deserialize)]
 pub struct Order {
     pub id: String,

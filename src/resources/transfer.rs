@@ -3,7 +3,7 @@ use resources::Currency;
 
 /// The resource representing a Stripe transfer reversal.
 ///
-/// For more details see https://stripe.com/docs/api/dotnet#transfer_reversal_object.
+/// For more details see https://stripe.com/docs/api#transfer_reversal_object.
 #[derive(Debug, Deserialize)]
 pub struct TransferReversal {
     pub id: String,
@@ -18,7 +18,7 @@ pub struct TransferReversal {
 
 /// The resource representing a Stripe transfer.
 ///
-/// For more details see https://stripe.com/docs/api/dotnet#transfer_object.
+/// For more details see https://stripe.com/docs/api#transfer_object.
 #[derive(Debug, Deserialize)]
 pub struct Transfer {
     pub id: String,

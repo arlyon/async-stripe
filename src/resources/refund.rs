@@ -3,7 +3,7 @@ use resources::Currency;
 
 /// The resource representing a Stripe refund.
 ///
-/// For more details see https://stripe.com/docs/api/node#refunds.
+/// For more details see https://stripe.com/docs/api#refunds.
 #[derive(Debug, Deserialize)]
 pub struct Refund {
     pub id: String,

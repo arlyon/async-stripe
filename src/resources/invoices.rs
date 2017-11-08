@@ -222,7 +222,7 @@ impl Invoice {
 impl InvoiceLineItem {
     /// Creates an invoice line item.
     ///
-    /// For more details see https://stripe.com/docs/api/node#invoice_line_item_object
+    /// For more details see https://stripe.com/docs/api#invoice_line_item_object
     pub fn create(client: &Client, params: InvoiceLineItemParams) -> Result<InvoiceLineItem, Error> {
         client.post(&format!("/invoiceitems"), &params)
     }

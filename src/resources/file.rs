@@ -2,7 +2,7 @@ use params::Timestamp;
 
 /// The resource representing a Stripe file.
 ///
-/// For more details see https://stripe.com/docs/api/dotnet#file_object.
+/// For more details see https://stripe.com/docs/api#file_object.
 #[derive(Debug, Deserialize)]
 pub struct File {
     pub id: String,
