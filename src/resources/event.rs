@@ -1,28 +1,6 @@
 use chrono::{Utc};
 use error::{WebhookError};
-use resources::{
-    Account,
-    ApplicationFee,
-    ApplicationFeeRefund,
-    Balance,
-    BankAccount,
-    Charge,
-    Dispute,
-    File,
-    Invoice,
-    InvoiceItem,
-    Order,
-    OrderReturn,
-    Payout,
-    Plan,
-    Product,
-    Refund,
-    Review,
-    Sku,
-    Subscription,
-    Transaction,
-    Transfer,
-};
+use resources::*;
 use hmac::{Hmac, Mac, MacResult};
 use serde_json as json;
 use sha2::Sha256;
@@ -197,49 +175,29 @@ pub struct EventData {
 }
 
 #[derive(Debug, Deserialize)]
-#[serde(tag = "object")]
+#[serde(tag = "object", rename_all = "snake_case")]
 pub enum EventObject {
-    #[serde(rename = "account")]
     Account(Account),
-    #[serde(rename = "application_fee")]
     ApplicationFee(ApplicationFee),
-    #[serde(rename = "application_refund")]
+    #[serde(rename = "fee_refund")]
     ApplicationFeeRefund(ApplicationFeeRefund),
-    #[serde(rename = "balance")]
     Balance(Balance),
-    #[serde(rename = "bank_account")]
     BankAccount(BankAccount),
-    #[serde(rename = "charge")]
     Charge(Charge),
-    #[serde(rename = "dispute")]
     Dispute(Dispute),
-    #[serde(rename = "file")]
     File(File),
-    #[serde(rename = "invoice")]
     Invoice(Invoice),
-    #[serde(rename = "invoice_item")]
     InvoiceItem(InvoiceItem),
-    #[serde(rename = "order")]
     Order(Order),
-    #[serde(rename = "order_return")]
     OrderReturn(OrderReturn),
-    #[serde(rename = "refund")]
     Payout(Payout),
-    #[serde(rename = "plan")]
     Plan(Plan),
-    #[serde(rename = "product")]
     Product(Product),
-    #[serde(rename = "refund")]
     Refund(Refund),
-    #[serde(rename = "review")]
     Review(Review),
-    #[serde(rename = "sku")]
     Sku(Sku),
-    #[serde(rename = "subscription")]
     Subscription(Subscription),
-    #[serde(rename = "transaction")]
     Transaction(Transaction),
-    #[serde(rename = "transfer")]
     Transfer(Transfer),
 }
 
