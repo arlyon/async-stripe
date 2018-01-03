@@ -161,7 +161,7 @@ pub struct Charge {
     pub amount_refunded: u64,
     pub application: Option<String>,
     pub application_fee: Option<String>,
-    pub balance_transaction: String,
+    pub balance_transaction: Option<String>,
     pub captured: bool,
     pub created: Timestamp,
     pub currency: Currency,
