@@ -1,3 +1,9 @@
+# Version 0.4.4 (Jan 4, 2018)
+
+## Breaking Changes
+
+ * The `balance_transaction` field of `Charge` is now `Option<_>`.
+
 # Version 0.4.2 (August 20, 2017)
 
 ## Changes
