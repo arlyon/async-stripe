@@ -1,3 +1,9 @@
+# Version 0.4.5 (Feb 20, 2018)
+
+# Changes
+
+ * Fixed field `nickname` of `Plan` should be `name`
+
 # Version 0.4.4 (Jan 4, 2018)
 
 ## Breaking Changes
