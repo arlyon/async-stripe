@@ -42,7 +42,7 @@ pub struct Plan {
     pub interval_count: u64,
     pub livemode: bool,
     pub metadata: Metadata,
-    pub nickname: String,
+    pub nickname: Option<String>,
     pub statement_descriptor: Option<String>,
     pub trial_period_days: Option<u64>,
 }
