@@ -1,3 +1,9 @@
+# Version 0.4.6 (Jun 9, 2018)
+
+# Changes
+
+ * Fixed field `nickname` of `Plan` can be null.
+
 # Version 0.4.5 (Feb 20, 2018)
 
 # Changes
