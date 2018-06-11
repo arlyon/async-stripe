@@ -1,3 +1,9 @@
+# Version 0.4.7 (Jun 11, 2018)
+
+# Changes
+
+ * Fix, adds all missing error code variants to `stripe::error::ErrorCode`.
+
 # Version 0.4.6 (Jun 9, 2018)
 
 # Changes
