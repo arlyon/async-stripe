@@ -125,7 +125,6 @@ pub enum ErrorCode {
     AccountAlreadyExists,
     AccountCountryInvalidAddress,
     AccountInvalid,
-    StripeAccount,
     AccountNumberInvalid,
     AlipayUpgradeRequired,
     AmountTooLarge,
@@ -137,7 +136,6 @@ pub enum ErrorCode {
     BankAccountUnverified,
     BitcoinUpgradeRequired,
     CardDeclined,
-    DeclineCode,
     ChargeAlreadyCaptured,
     ChargeAlreadyRefunded,
     ChargeDisputed,
@@ -190,7 +188,6 @@ pub enum ErrorCode {
     ShippingCalculationFailed,
     SkuInactive,
     StateUnsupported,
-    LegalEntity,
     TaxIdInvalid,
     TaxesCalculationFailed,
     TestmodeChargesOnly,
@@ -199,7 +196,8 @@ pub enum ErrorCode {
     TokenInUse,
     TransfersNotAllowed,
     UpstreamOrderCreationFailed,
-    UrlInvalid
+    UrlInvalid,
+    #[doc(hidden)] __NonExhaustive,
 }
 
 impl fmt::Display for ErrorCode {
