@@ -162,6 +162,7 @@ pub enum ErrorCode {
     InvoiceNotEditable,
     InvoiceUpcomingNone,
     LivemodeMismatch,
+    Missing,
     OrderCreationFailed,
     OrderRequiredSettings,
     OrderStatusInvalid,
