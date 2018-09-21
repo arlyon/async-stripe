@@ -14,6 +14,7 @@ pub struct CustomerShippingDetails {
 #[derive(Serialize)]
 #[serde(untagged)]
 pub enum CustomerSource<'a> {
+    Source(&'a str),
     Token(&'a str),
     Card(CardParams<'a>),
 }
@@ -27,6 +28,8 @@ pub struct CustomerParams<'a> {
     pub account_balance: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_vat_id: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_source: Option<CustomerSource<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
