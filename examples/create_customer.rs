@@ -1,7 +1,7 @@
 extern crate stripe;
 
 use std::env;
-use stripe::{Customer, CustomerParams, CustomerSource};
+use stripe::{Customer, CustomerParams, CustomerSourceParams};
 
 fn main() {
     // Create a new client
@@ -13,7 +13,8 @@ fn main() {
         &client,
         CustomerParams {
             email: Some("jdoe@example.org"),
-            source: Some(CustomerSource::Token("tok_189g322eZvKYlo2CeoPw2sdy")),
+            source: Some(CustomerSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy")),
+            default_source: None,
 
             // TODO: Keep track of https://github.com/rust-lang/rust-roadmap/issues/17
             //       so we can use default struct field value syntax eventually

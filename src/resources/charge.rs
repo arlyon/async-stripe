@@ -1,7 +1,7 @@
 use client::Client;
 use error::{Error, ErrorCode};
 use params::{List, Metadata, RangeQuery, Timestamp};
-use resources::{Address, Currency, CustomerSource, Refund, Source};
+use resources::{Address, Currency, Refund, CustomerSourceParams, PaymentSource};
 use serde_qs as qs;
 
 #[derive(Debug, Deserialize)]
@@ -92,7 +92,7 @@ pub struct ChargeParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<CustomerSource<'a>>,
+    pub source: Option<CustomerSourceParams<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 }
@@ -184,7 +184,7 @@ pub struct Charge {
     pub refunded: bool,
     pub refunds: List<Refund>,
     pub shipping: Option<ShippingDetails>,
-    pub source: Source,
+    pub source: PaymentSource,
     pub source_transfer: Option<String>,
     pub statement_descriptor: Option<String>,
     pub status: String, // (succeeded, pending, failed)

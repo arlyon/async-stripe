@@ -115,7 +115,7 @@
   * Requests used to require a `stripe_key: &str` as their final argument but
     now use a `&Client` as the first argument instead.
   * Stripe tokens used to be directly used as a source in `CustomerParams` but
-    now must be used with `CustomerSource::Token("tok_xyzABC123")`.
+    now must be used with `CustomerSourceParams::Token("tok_xyzABC123")`.
 
 ## General Improvements
 
