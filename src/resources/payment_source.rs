@@ -70,7 +70,7 @@ pub struct RedirectParams<'a> {
 pub struct SourceParams<'a> {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_type: Option<&'static str>,
+    pub source_type: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
