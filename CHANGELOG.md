@@ -1,18 +1,37 @@
+# Version 0.5.0 (Sep 26, 2018)
+
+## New Features
+
+ * Implemented the [sources resource](https://stripe.com/docs/api#sources) and
+   added the `Source` type .
+
+## Breaking Changes
+
+ * The `CustomerSourceParams` struct was renamed to `PaymentSourceParams`.
+ * The `Source` enum was renamed to `PaymentSource` (there is a new `Source` struct).
+ * Source and token fields (like `token: &str`) now use `source: SourceId` or `token: TokenId` instead.
+
+## General Improvements
+
+ * Added missing `default_source` field to `Customer`.
+ * The `Deserialize` and `Serialize` traits have now been implemented for all param and resource structs.
+ * The `Copy`, `Clone`, `Eq`, `PartialEq`, and `Hash` traits have been derived for flat enum types.
+
 # Version 0.4.7 (Jun 11, 2018)
 
-# Changes
+## Changes
 
  * Fix, adds all missing error code variants to `stripe::error::ErrorCode`.
 
 # Version 0.4.6 (Jun 9, 2018)
 
-# Changes
+## Changes
 
  * Fixed field `nickname` of `Plan` can be null.
 
 # Version 0.4.5 (Feb 20, 2018)
 
-# Changes
+## Changes
 
  * Fixed field `nickname` of `Plan` should be `name`
 

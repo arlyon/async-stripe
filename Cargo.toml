@@ -1,17 +1,20 @@
 [package]
 name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
-version = "0.4.7"
+version = "0.5.0"
 description = "API bindings for the Stripe v1 HTTP API"
-authors = ["Kevin Stenerson <kevin@rapiditynetworks.com>"]
+authors = [
+  "Anna Baldwin <abaldwin@developers.wyyerd.com>",
+  "Kevin Stenerson <kstenerson@developers.wyyerd.com>"
+]
 license = "MIT/Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/rapiditynetworks/stripe-rs"
+repository = "https://github.com/wyyerd/stripe-rs"
 documentation = "https://docs.rs/stripe-rust"
 keywords = ["stripe", "v1", "api"]
 categories = ["api-bindings"]
 
 [badges]
-travis-ci = {repository = "rapiditynetworks/stripe-rs"}
+travis-ci = {repository = "wyyerd/stripe-rs"}
 
 [features]
 default = ["with-rustls"]
