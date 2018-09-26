@@ -1,3 +1,9 @@
+# Version 0.5.1
+
+## Changes
+
+ * Bumped dependency versions
+
 # Version 0.5.0 (Sep 26, 2018)
 
 ## New Features
