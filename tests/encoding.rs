@@ -73,10 +73,10 @@ fn deserialize_customer_source_params() {
     use stripe::{CardParams, CustomerSourceParams, SourceId, TokenId};
 
     let examples = [
-        (json!("tok_189g322eZvKYlo2CeoPw2sdy"),
-         Some(CustomerSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()))),
         (json!("src_xyzABC123"),
          Some(CustomerSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()))),
+        (json!("tok_189g322eZvKYlo2CeoPw2sdy"),
+         Some(CustomerSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()))),
         (json!({"object": "card", "exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}),
          Some(CustomerSourceParams::Card(CardParams {
              exp_month: "12",
@@ -84,7 +84,7 @@ fn deserialize_customer_source_params() {
              number: "1111222233334444",
              name: None,
              cvc: None,
-         })),
+         }))),
 
          // Error: Missing `{"object": "card"}`
         (json!({"exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}), None),
@@ -92,6 +92,7 @@ fn deserialize_customer_source_params() {
 
     for (value, expected) in &examples {
         let input = json::to_string(value).unwrap();
-        assert_eq!(json::from_str(&input).ok(), expected);
+        let parsed: Option<CustomerSourceParams> = json::from_str(&input).ok();
+        assert_eq!(json!(parsed), json!(expected));
     }
 }
