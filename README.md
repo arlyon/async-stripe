@@ -50,7 +50,7 @@ to determine which fields are required for either request.
   let mut params = stripe::ChargeParams::default();
   // NOTE: Stripe represents currency in the lowest denominations (e.g. cents)
   params.amount = Some(1095); // e.g. $10.95
-  params.source = Some(stripe::CustomerSource::Token(token));
+  params.source = Some(stripe::CustomerSourceParams::Token(token));
 
   // Example: Override currency to be in Canadian Dollars
   params.currency = Some(stripe::Currency::CAD);

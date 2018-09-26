@@ -1,6 +1,6 @@
 use serde_json as json;
 use params::{List, Timestamp};
-use resources::{Currency, Source};
+use resources::{Currency, PaymentSource};
 
 #[derive(Debug, Deserialize)]
 pub struct FeeDetails {
@@ -39,7 +39,7 @@ pub struct BalanceTransaction {
     pub fee: u64,
     pub fee_details: List<FeeDetails>,
     pub net: u64,
-    pub source: Source,
+    pub source: PaymentSource,
     pub status: String,
     #[serde(rename = "type")]
     pub transaction_type: String,

@@ -1,6 +1,6 @@
 use error::Error;
 use client::Client;
-use resources::{Address, CardParams, Currency, Deleted, Discount, Source, Subscription};
+use resources::{Address, CardParams, Currency, Deleted, Discount, PaymentSource, Subscription};
 use params::{List, Metadata, RangeQuery, Timestamp};
 use serde_qs as qs;
 
@@ -13,7 +13,8 @@ pub struct CustomerShippingDetails {
 
 #[derive(Serialize)]
 #[serde(untagged)]
-pub enum CustomerSource<'a> {
+pub enum CustomerSourceParams<'a> {
+    Source(&'a str),
     Token(&'a str),
     Card(CardParams<'a>),
 }
@@ -28,6 +29,8 @@ pub struct CustomerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_vat_id: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_source: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
@@ -38,7 +41,7 @@ pub struct CustomerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<CustomerShippingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<CustomerSource<'a>>,
+    pub source: Option<CustomerSourceParams<'a>>,
 }
 
 /// The set of parameters that can be used when listing customers.
@@ -74,7 +77,7 @@ pub struct Customer {
     pub livemode: bool,
     pub metadata: Metadata,
     pub shipping: Option<CustomerShippingDetails>,
-    pub sources: List<Source>,
+    pub sources: List<PaymentSource>,
     pub subscriptions: List<Subscription>,
 }
 
