@@ -1,10 +1,10 @@
 use client::Client;
 use error::{Error, ErrorCode};
 use params::{List, Metadata, RangeQuery, Timestamp};
-use resources::{Address, Currency, Refund, CustomerSourceParams, PaymentSource};
+use resources::{Address, Currency, Refund, PaymentSourceParams, PaymentSource};
 use serde_qs as qs;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ChargeOutcome {
     #[serde(rename = "type")]
     pub outcome_type: String, // (authorized, manual_review, issuer_declined, blocked, invalid)
@@ -41,7 +41,7 @@ pub struct ShippingDetails {
 /// The set of parameters that can be used when capturing a charge.
 ///
 /// For more details see https://stripe.com/docs/api#charge_capture.
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct CaptureParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<u64>,
@@ -53,7 +53,7 @@ pub struct CaptureParams<'a> {
     pub statement_descriptor: Option<&'a str>,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct DestinationParams<'a> {
     pub account: &'a str,
     pub amount: u64,
@@ -63,7 +63,7 @@ pub struct DestinationParams<'a> {
 /// The set of parameters that can be used when creating or updating a charge.
 ///
 /// For more details see https://stripe.com/docs/api#create_charge and https://stripe.com/docs/api#update_charge.
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, /* Deserialize, */ Serialize)]
 pub struct ChargeParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<u64>,
@@ -92,12 +92,12 @@ pub struct ChargeParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<CustomerSourceParams<'a>>,
+    pub source: Option<PaymentSourceParams<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 }
 
-#[derive(Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceType {
     All,
@@ -107,7 +107,7 @@ pub enum SourceType {
     Card,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct SourceFilter {
     pub object: SourceType,
 }
@@ -133,7 +133,7 @@ impl SourceFilter {
 /// The set of parameters that can be used when listing charges.
 ///
 /// For more details see https://stripe.com/docs/api#list_charges
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct ChargeListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -154,7 +154,7 @@ pub struct ChargeListParams<'a> {
 /// The resource representing a Stripe charge.
 ///
 /// For more details see https://stripe.com/docs/api#charges.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Charge {
     pub id: String,
     pub amount: u64,

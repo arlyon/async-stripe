@@ -7,7 +7,7 @@ use serde_qs as qs;
 /// The set of parameters that can be used when creating or updating an invoice.
 ///
 /// For more details see https://stripe.com/docs/api#create_invoice, https://stripe.com/docs/api#update_invoice.
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee: Option<u64>,
@@ -28,7 +28,7 @@ pub struct InvoiceParams<'a> {
     pub forgiven: Option<bool>,
 }
 
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceLineItemParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -49,7 +49,7 @@ pub struct InvoiceLineItemParams<'a> {
 }
 
 /*
-#[derive(Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct InvoiceListLinesParams {
     #[serde(skip_serializing_if = "Option::is_none")] pub limit: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")] pub ending_before: Option<String>,
@@ -86,7 +86,7 @@ pub struct SubscriptionItemParams<'a> {
 }
 
 /// Period is a structure representing a start and end dates.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Period {
     pub start: Timestamp,
     pub end: Timestamp,
@@ -95,7 +95,7 @@ pub struct Period {
 /// The resource representing a Stripe invoice line item.
 ///
 /// For more details see https://stripe.com/docs/api#invoice_line_item_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct InvoiceLineItem {
     pub id: String,
     pub amount: i64,
@@ -119,7 +119,7 @@ pub struct InvoiceLineItem {
 /// The resource representing a Stripe invoice.
 ///
 /// For more details see https://stripe.com/docs/api#invoice_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Invoice {
     pub id: Option<String>, // id field is not present when retrieving upcoming invoices
     pub amount_due: u64,
@@ -154,7 +154,7 @@ pub struct Invoice {
     pub webhooks_delivered_at: Option<Timestamp>,
 }
 
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,

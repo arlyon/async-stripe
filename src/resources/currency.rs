@@ -1,10 +1,9 @@
 use params::to_snakecase;
-use std::fmt;
 
 /// Currency is the list of supported currencies.
 ///
 /// For more details see https://support.stripe.com/questions/which-currencies-does-stripe-support.
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 pub enum Currency {
     #[serde(rename = "aed")]
     AED, // United Arab Emirates Dirham
@@ -292,8 +291,171 @@ impl Default for Currency {
     }
 }
 
-impl fmt::Display for Currency {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl ::std::fmt::Display for Currency {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         write!(f, "{}", to_snakecase(&format!("{:?}", self)))
+    }
+}
+
+impl ::std::str::FromStr for Currency {
+    type Err = ParseCurrencyError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "aed" => Ok(Currency::AED),
+            "afn" => Ok(Currency::AFN),
+            "all" => Ok(Currency::ALL),
+            "amd" => Ok(Currency::AMD),
+            "ang" => Ok(Currency::ANG),
+            "aoa" => Ok(Currency::AOA),
+            "ars" => Ok(Currency::ARS),
+            "aud" => Ok(Currency::AUD),
+            "awg" => Ok(Currency::AWG),
+            "azn" => Ok(Currency::AZN),
+            "bam" => Ok(Currency::BAM),
+            "bbd" => Ok(Currency::BBD),
+            "bdt" => Ok(Currency::BDT),
+            "bgn" => Ok(Currency::BGN),
+            "bif" => Ok(Currency::BIF),
+            "bmd" => Ok(Currency::BMD),
+            "bnd" => Ok(Currency::BND),
+            "bob" => Ok(Currency::BOB),
+            "brl" => Ok(Currency::BRL),
+            "bsd" => Ok(Currency::BSD),
+            "bwp" => Ok(Currency::BWP),
+            "bzd" => Ok(Currency::BZD),
+            "cad" => Ok(Currency::CAD),
+            "cdf" => Ok(Currency::CDF),
+            "chf" => Ok(Currency::CHF),
+            "clp" => Ok(Currency::CLP),
+            "cny" => Ok(Currency::CNY),
+            "cop" => Ok(Currency::COP),
+            "crc" => Ok(Currency::CRC),
+            "cve" => Ok(Currency::CVE),
+            "czk" => Ok(Currency::CZK),
+            "djf" => Ok(Currency::DJF),
+            "dkk" => Ok(Currency::DKK),
+            "dop" => Ok(Currency::DOP),
+            "dzd" => Ok(Currency::DZD),
+            "eek" => Ok(Currency::EEK),
+            "egp" => Ok(Currency::EGP),
+            "etb" => Ok(Currency::ETB),
+            "eur" => Ok(Currency::EUR),
+            "fjd" => Ok(Currency::FJD),
+            "fkp" => Ok(Currency::FKP),
+            "gbp" => Ok(Currency::GBP),
+            "gel" => Ok(Currency::GEL),
+            "gip" => Ok(Currency::GIP),
+            "gmd" => Ok(Currency::GMD),
+            "gnf" => Ok(Currency::GNF),
+            "gtq" => Ok(Currency::GTQ),
+            "gyd" => Ok(Currency::GYD),
+            "hkd" => Ok(Currency::HKD),
+            "hnl" => Ok(Currency::HNL),
+            "hrk" => Ok(Currency::HRK),
+            "htg" => Ok(Currency::HTG),
+            "huf" => Ok(Currency::HUF),
+            "idr" => Ok(Currency::IDR),
+            "ils" => Ok(Currency::ILS),
+            "inr" => Ok(Currency::INR),
+            "isk" => Ok(Currency::ISK),
+            "jmd" => Ok(Currency::JMD),
+            "jpy" => Ok(Currency::JPY),
+            "kes" => Ok(Currency::KES),
+            "kgs" => Ok(Currency::KGS),
+            "khr" => Ok(Currency::KHR),
+            "kmf" => Ok(Currency::KMF),
+            "krw" => Ok(Currency::KRW),
+            "kyd" => Ok(Currency::KYD),
+            "kzt" => Ok(Currency::KZT),
+            "lak" => Ok(Currency::LAK),
+            "lbp" => Ok(Currency::LBP),
+            "lkr" => Ok(Currency::LKR),
+            "lrd" => Ok(Currency::LRD),
+            "lsl" => Ok(Currency::LSL),
+            "ltl" => Ok(Currency::LTL),
+            "lvl" => Ok(Currency::LVL),
+            "mad" => Ok(Currency::MAD),
+            "mdl" => Ok(Currency::MDL),
+            "mga" => Ok(Currency::MGA),
+            "mkd" => Ok(Currency::MKD),
+            "mnt" => Ok(Currency::MNT),
+            "mop" => Ok(Currency::MOP),
+            "mro" => Ok(Currency::MRO),
+            "mur" => Ok(Currency::MUR),
+            "mvr" => Ok(Currency::MVR),
+            "mwk" => Ok(Currency::MWK),
+            "mxn" => Ok(Currency::MXN),
+            "myr" => Ok(Currency::MYR),
+            "mzn" => Ok(Currency::MZN),
+            "nad" => Ok(Currency::NAD),
+            "ngn" => Ok(Currency::NGN),
+            "nio" => Ok(Currency::NIO),
+            "nok" => Ok(Currency::NOK),
+            "npr" => Ok(Currency::NPR),
+            "nzd" => Ok(Currency::NZD),
+            "pab" => Ok(Currency::PAB),
+            "pen" => Ok(Currency::PEN),
+            "pgk" => Ok(Currency::PGK),
+            "php" => Ok(Currency::PHP),
+            "pkr" => Ok(Currency::PKR),
+            "pln" => Ok(Currency::PLN),
+            "pyg" => Ok(Currency::PYG),
+            "qar" => Ok(Currency::QAR),
+            "ron" => Ok(Currency::RON),
+            "rsd" => Ok(Currency::RSD),
+            "rub" => Ok(Currency::RUB),
+            "rwf" => Ok(Currency::RWF),
+            "sar" => Ok(Currency::SAR),
+            "sbd" => Ok(Currency::SBD),
+            "scr" => Ok(Currency::SCR),
+            "sek" => Ok(Currency::SEK),
+            "sgd" => Ok(Currency::SGD),
+            "shp" => Ok(Currency::SHP),
+            "sll" => Ok(Currency::SLL),
+            "sos" => Ok(Currency::SOS),
+            "srd" => Ok(Currency::SRD),
+            "std" => Ok(Currency::STD),
+            "svc" => Ok(Currency::SVC),
+            "szl" => Ok(Currency::SZL),
+            "thb" => Ok(Currency::THB),
+            "tjs" => Ok(Currency::TJS),
+            "top" => Ok(Currency::TOP),
+            "try" => Ok(Currency::TRY),
+            "ttd" => Ok(Currency::TTD),
+            "twd" => Ok(Currency::TWD),
+            "tzs" => Ok(Currency::TZS),
+            "uah" => Ok(Currency::UAH),
+            "ugx" => Ok(Currency::UGX),
+            "usd" => Ok(Currency::USD),
+            "uyu" => Ok(Currency::UYU),
+            "uzs" => Ok(Currency::UZS),
+            "vef" => Ok(Currency::VEF),
+            "vnd" => Ok(Currency::VND),
+            "vuv" => Ok(Currency::VUV),
+            "wst" => Ok(Currency::WST),
+            "xaf" => Ok(Currency::XAF),
+            "xcd" => Ok(Currency::XCD),
+            "xof" => Ok(Currency::XOF),
+            "xpf" => Ok(Currency::XPF),
+            "yer" => Ok(Currency::YER),
+            "zar" => Ok(Currency::ZAR),
+            "zmw" => Ok(Currency::ZMW),
+            _ => Err(ParseCurrencyError(()))
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct ParseCurrencyError(/* private */ ());
+
+impl ::std::fmt::Display for ParseCurrencyError {
+    fn fmt(&self, fmt: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        fmt.write_str(::std::error::Error::description(self))
+    }
+}
+
+impl ::std::error::Error for ParseCurrencyError {
+    fn description(&self) -> &str {
+        "unknown currency code"
     }
 }

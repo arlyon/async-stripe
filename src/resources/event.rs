@@ -6,7 +6,7 @@ use serde_json as json;
 use sha2::Sha256;
 use std::str;
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 pub enum EventType {
     #[serde(rename = "account.updated")]
     AccountUpdated,
@@ -160,7 +160,7 @@ pub enum EventType {
     TransferUpdated,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Event {
     #[serde(rename = "type")]
     pub event_type: EventType,
@@ -168,13 +168,13 @@ pub struct Event {
     // ...
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct EventData {
     pub object: EventObject,
     // previous_attributes: ...
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
 pub enum EventObject {
     Account(Account),

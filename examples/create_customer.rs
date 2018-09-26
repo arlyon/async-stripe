@@ -1,7 +1,7 @@
 extern crate stripe;
 
 use std::env;
-use stripe::{Customer, CustomerParams, CustomerSourceParams};
+use stripe::{Customer, CustomerParams, PaymentSourceParams};
 
 fn main() {
     // Create a new client
@@ -9,11 +9,12 @@ fn main() {
     let client = stripe::Client::new(secret_key);
 
     // Create the customer
+    let token = "tok_189g322eZvKYlo2CeoPw2sdy".parse().expect("expected token to be valid");
     let customer = Customer::create(
         &client,
         CustomerParams {
             email: Some("jdoe@example.org"),
-            source: Some(CustomerSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy")),
+            source: Some(PaymentSourceParams::Token(token)),
             default_source: None,
 
             // TODO: Keep track of https://github.com/rust-lang/rust-roadmap/issues/17

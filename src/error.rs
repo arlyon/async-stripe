@@ -119,7 +119,7 @@ impl fmt::Display for ErrorType {
 }
 
 /// The list of possible values for a RequestError's code.
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum ErrorCode {
     AccountAlreadyExists,

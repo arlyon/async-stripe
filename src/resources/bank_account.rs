@@ -4,7 +4,7 @@ use resources::Currency;
 /// The resource representing a Stripe bank account.
 ///
 /// For more details see https://stripe.com/docs/api#customer_bank_account_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct BankAccount {
     pub id: String,
     pub object: String,

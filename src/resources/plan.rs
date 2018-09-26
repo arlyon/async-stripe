@@ -6,7 +6,7 @@ use resources::{Currency, Deleted};
 /// The set of parameters that can be used when creating or updating a plan.
 ///
 /// For more details see https://stripe.com/docs/api#create_plan and https://stripe.com/docs/api#update_plan.
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct PlanParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<&'a str>,
@@ -32,7 +32,7 @@ pub struct PlanParams<'a> {
 /// The resource representing a Stripe plan.
 ///
 /// For more details see https://stripe.com/docs/api#plans.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Plan {
     pub id: String,
     pub amount: u64,

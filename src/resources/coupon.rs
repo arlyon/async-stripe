@@ -4,7 +4,7 @@ use resources::Currency;
 /// The resource representing a Stripe coupon.
 ///
 /// For more details see https://stripe.com/docs/api#coupon_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Coupon {
     pub id: String,
     pub object: String,

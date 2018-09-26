@@ -4,7 +4,7 @@ use resources::{Discount, Plan};
 use params::{List, Metadata, Timestamp};
 use serde_qs as qs;
 
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct CancelParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub at_period_end: Option<bool>,
@@ -61,7 +61,7 @@ pub enum TrialEnd<'a> {
 /// The resource representing a Stripe subscription item.
 ///
 /// For more details see https://stripe.com/docs/api#subscription_items.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct SubscriptionItem {
     pub id: String,
     pub created: Timestamp,
@@ -72,7 +72,7 @@ pub struct SubscriptionItem {
 /// The resource representing a Stripe subscription.
 ///
 /// For more details see https://stripe.com/docs/api#subscriptions.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Subscription {
     pub id: String,
     pub application_fee_percent: Option<f64>,

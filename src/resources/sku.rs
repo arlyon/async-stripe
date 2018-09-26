@@ -13,7 +13,7 @@ pub struct Inventory {
 /// The resource representing a Stripe Sku.
 ///
 /// For more details see https://stripe.com/docs/api#sku_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Sku {
     pub id: String,
     pub object: String,
