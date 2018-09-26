@@ -6,6 +6,3 @@ rust:
 matrix:
   allow_failures:
     - rust: nightly
-
-    # See https://github.com/briansmith/ring/issues/598
-    - rust: beta
