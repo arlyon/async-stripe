@@ -1,5 +1,6 @@
-use error::Error;
 use client::Client;
+use error::Error;
+use ids::{SourceId, TokenId};
 use resources::{Address, CardParams, Currency, Deleted, Discount, PaymentSource, Subscription};
 use params::{List, Metadata, RangeQuery, Timestamp};
 use serde_qs as qs;
@@ -11,25 +12,67 @@ pub struct CustomerShippingDetails {
     pub phone: String,
 }
 
-#[derive(Serialize)]
-#[serde(untagged)]
+#[derive(Debug, Serialize)]
+#[serde(untagged)] // untagged for serialize, deserialize impl will check "object" tags if it is not a `SourceId` or `TokenId`
 pub enum CustomerSourceParams<'a> {
-    Source(&'a str),
-    Token(&'a str),
+    Source(SourceId),
+    Token(TokenId),
     Card(CardParams<'a>),
+}
+
+impl<'de> ::serde::Deserialize<'de> for CustomerSourceParams<'de> {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::de::Deserializer<'de>,
+    {
+        use serde::de::{Deserialize, Error};
+        use serde::private::de::{Content, ContentRefDeserializer};
+
+        #[derive(Deserialize)]
+        pub struct CardTag {}
+
+        #[derive(Deserialize)]
+        #[serde(tag = "object", rename_all = "snake_case")]
+        pub enum CustomerSourceParamsTag {
+            Card(CardTag),
+        }
+
+        // Try deserializing the untagged variants first
+        let content = <Content as Deserialize>::deserialize(deserializer)?;
+        let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
+        if let Ok(ok) = <SourceId as Deserialize>::deserialize(deserializer) {
+            return Ok(CustomerSourceParams::Source(ok));
+        }
+        let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
+        if let Ok(ok) = <TokenId as Deserialize>::deserialize(deserializer) {
+            return Ok(CustomerSourceParams::Token(ok));
+        }
+
+        // Deserialize just the tag of one of the tagged variants, then deserialize the matching variant
+        let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
+        match <CustomerSourceParamsTag as Deserialize>::deserialize(deserializer) {
+            Ok(CustomerSourceParamsTag::Card(_)) => {
+                let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
+                return <CardParams as Deserialize>::deserialize(deserializer).map(CustomerSourceParams::Card);
+            }
+            _ => {}
+        }
+
+        Err(Error::custom("data did not match any variant of enum CustomerSourceParams"))
+    }
 }
 
 /// The set of parameters that can be used when creating or updating a customer.
 ///
 /// For more details see https://stripe.com/docs/api#create_customer and https://stripe.com/docs/api#update_customer.
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, /* Deserialize, */ Serialize)]
 pub struct CustomerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_vat_id: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_source: Option<&'a str>,
+    pub default_source: Option<SourceId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -47,7 +90,7 @@ pub struct CustomerParams<'a> {
 /// The set of parameters that can be used when listing customers.
 ///
 /// For more details see https://stripe.com/docs/api#list_customers
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct CustomerListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -62,14 +105,14 @@ pub struct CustomerListParams<'a> {
 /// The resource representing a Stripe customer.
 ///
 /// For more details see https://stripe.com/docs/api#customers.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Customer {
     pub id: String,
     pub account_balance: i64,
     pub business_vat_id: Option<String>,
     pub created: u64,
     pub currency: Option<Currency>,
-    pub default_source: Option<String>,
+    pub default_source: Option<SourceId>,
     pub delinquent: bool,
     pub desc: Option<String>,
     pub discount: Option<Discount>,

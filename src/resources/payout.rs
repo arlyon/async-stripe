@@ -4,7 +4,7 @@ use resources::Currency;
 /// The resource representing a Stripe payout.
 ///
 /// For more details see https://stripe.com/docs/api#payout_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Payout {
     pub id: String,
     pub object: String,

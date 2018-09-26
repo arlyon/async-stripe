@@ -65,10 +65,12 @@ extern crate sha2;
 
 mod client;
 mod error;
+mod ids;
 mod resources;
 mod params;
 
 pub use client::{Client, Params};
 pub use error::{Error, ErrorCode, ErrorType, RequestError};
+pub use ids::{SourceId, TokenId};
 pub use params::{List, RangeQuery, RangeBounds, Metadata, Timestamp};
 pub use resources::*;

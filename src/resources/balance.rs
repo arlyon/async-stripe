@@ -2,7 +2,7 @@ use serde_json as json;
 use params::{List, Timestamp};
 use resources::{Currency, PaymentSource};
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct FeeDetails {
     pub amount: u64,
     pub application: String,
@@ -15,7 +15,7 @@ pub struct FeeDetails {
 /// The resource representing a Stripe account balance.
 ///
 /// For more details see https://stripe.com/docs/api#balance_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Balance {
     pub object: String,
     pub available: Vec<json::Value>,
@@ -27,7 +27,7 @@ pub struct Balance {
 /// The resource representing a Stripe balance transaction.
 ///
 /// For more details see https://stripe.com/docs/api#balance_transaction_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct BalanceTransaction {
     pub id: String,
     pub object: String,

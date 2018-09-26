@@ -1,4 +1,4 @@
-extern crate serde_json as json;
+#[macro_use] extern crate serde_json as json;
 extern crate serde_qs as qs;
 extern crate stripe;
 
@@ -65,4 +65,33 @@ fn serialize_range_query() {
 
 fn urldecode(input: String) -> String {
     input.replace("%5B", "[").replace("%5D", "]")
+}
+
+
+#[test]
+fn deserialize_customer_source_params() {
+    use stripe::{CardParams, CustomerSourceParams, SourceId, TokenId};
+
+    let examples = [
+        (json!("tok_189g322eZvKYlo2CeoPw2sdy"),
+         Some(CustomerSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()))),
+        (json!("src_xyzABC123"),
+         Some(CustomerSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()))),
+        (json!({"object": "card", "exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}),
+         Some(CustomerSourceParams::Card(CardParams {
+             exp_month: "12",
+             exp_year: "2017",
+             number: "1111222233334444",
+             name: None,
+             cvc: None,
+         })),
+
+         // Error: Missing `{"object": "card"}`
+        (json!({"exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}), None),
+    ];
+
+    for (value, expected) in &examples {
+        let input = json::to_string(value).unwrap();
+        assert_eq!(json::from_str(&input).ok(), expected);
+    }
 }

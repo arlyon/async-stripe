@@ -17,7 +17,7 @@ pub struct StatusTransitions {
 /// The resource representing a Stripe order item.
 ///
 /// For more details see https://stripe.com/docs/api#order_item_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct OrderItem {
     pub object: String,
     pub amount: u64,
@@ -32,7 +32,7 @@ pub struct OrderItem {
 /// The resource representing a Stripe order.
 ///
 /// For more details see https://stripe.com/docs/api#order_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Order {
     pub id: String,
     pub object: String,

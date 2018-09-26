@@ -1,9 +1,10 @@
-use error::Error;
 use client::Client;
+use error::Error;
+use ids::TokenId;
 use resources::{Address, Card, Currency};
 use params::{Metadata, Timestamp};
 
-#[derive(Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct OwnerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -61,12 +62,12 @@ pub struct Owner {
     pub redirect: Option<Redirect>,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct RedirectParams<'a> {
     return_url: &'a str,
 }
 
-#[derive(Default, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct SourceParams<'a> {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -86,25 +87,23 @@ pub struct SourceParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect: Option<RedirectParams<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub token: Option<&'a str>,
+    pub token: Option<TokenId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage: Option<&'a str>, // (reusable, single-use)
 }
 
-#[derive(Debug, Deserialize)]
-#[serde(tag = "object")]
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(tag = "object", rename_all = "snake_case")]
 pub enum PaymentSource {
     // BitcoinReceiver(...),
-    #[serde(rename = "card")]
     Card(Card),
-    #[serde(rename = "source")]
     Source(Source),
 }
 
 /// The resource representing a Stripe source.
 ///
 /// For more details see https://stripe.com/docs/api#sources.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Source {
     pub id: String,
     pub object: String, // source

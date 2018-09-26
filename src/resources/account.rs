@@ -1,4 +1,4 @@
- use params::{List, Metadata, Timestamp};
+use params::{List, Metadata, Timestamp};
 use resources::BankAccount;
 use serde_json as json;
 
@@ -33,7 +33,7 @@ pub struct TOSAcceptanceDetails {
 /// The set of parameters that can be used when creating an account for users.
 ///
 /// For more details see https://stripe.com/docs/api#create_account.
-#[derive(Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct AccountParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<&'a str>, // (country the account holder resides in)
@@ -46,7 +46,7 @@ pub struct AccountParams<'a> {
 /// The resource representing a Stripe account.
 ///
 /// For more details see https://stripe.com/docs/api#account.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Account {
     pub id: String,
     pub object: String,

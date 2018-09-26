@@ -5,7 +5,7 @@ use serde_json as json;
 /// The resource representing a Stripe scheduled query run.
 ///
 /// For more details see https://stripe.com/docs/api#scheduled_query_run_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ScheduledQueryRun {
     pub id: String,
     pub object: String,

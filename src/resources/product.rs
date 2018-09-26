@@ -12,7 +12,7 @@ pub struct PackageDimensions {
 /// The resource representing a Stripe product.
 ///
 /// For more details see https://stripe.com/docs/api#product_object.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Product {
     pub id: String,
     pub object: String,
