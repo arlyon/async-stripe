@@ -263,6 +263,7 @@ pub struct ErrorObject {
 /// An error encountered when communicating with the Stripe API webhooks.
 #[derive(Debug)]
 pub enum WebhookError {
+    BadKey,
     BadHeader(ParseIntError),
     BadSignature,
     BadTimestamp(i64),
@@ -273,8 +274,9 @@ impl fmt::Display for WebhookError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str(error::Error::description(self))?;
         match *self {
+            WebhookError::BadKey => Ok(()),
             WebhookError::BadHeader(ref err) => write!(f, ": {}", err),
-            WebhookError::BadSignature => write!(f, "Signatures do not match"),
+            WebhookError::BadSignature => Ok(()),
             WebhookError::BadTimestamp(ref err) => write!(f, ": {}", err),
             WebhookError::BadParse(ref err) => write!(f, ": {}", err),
         }
@@ -284,6 +286,7 @@ impl fmt::Display for WebhookError {
 impl error::Error for WebhookError {
     fn description(&self) -> &str {
         match *self {
+            WebhookError::BadKey => "invalid key length",
             WebhookError::BadHeader(_) => "error parsing timestamp",
             WebhookError::BadSignature => "error comparing signatures",
             WebhookError::BadTimestamp(_) => "error comparing timestamps - over tolerance",
@@ -293,6 +296,7 @@ impl error::Error for WebhookError {
 
     fn cause(&self) -> Option<&error::Error> {
         match *self {
+            WebhookError::BadKey => None,
             WebhookError::BadHeader(ref err) => Some(err),
             WebhookError::BadSignature => None,
             WebhookError::BadTimestamp(_) => None,
