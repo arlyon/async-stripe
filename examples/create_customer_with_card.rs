@@ -16,7 +16,7 @@ fn main() {
     // Define the customer
     let mut params = stripe::CustomerParams::default();
     params.email = Some("jdoe@example.org");
-    params.source = Some(stripe::CustomerSourceParams::Card(card));
+    params.source = Some(stripe::PaymentSourceParams::Card(card));
 
     // Perform request
     let customer = stripe::Customer::create(&client, params).unwrap();

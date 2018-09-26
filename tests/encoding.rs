@@ -67,18 +67,17 @@ fn urldecode(input: String) -> String {
     input.replace("%5B", "[").replace("%5D", "]")
 }
 
-
 #[test]
-fn deserialize_customer_source_params() {
-    use stripe::{CardParams, CustomerSourceParams, SourceId, TokenId};
+fn deserialize_payment_source_params() {
+    use stripe::{CardParams, PaymentSourceParams, SourceId, TokenId};
 
     let examples = [
         (json!("src_xyzABC123"),
-         Some(CustomerSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()))),
+         Some(PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()))),
         (json!("tok_189g322eZvKYlo2CeoPw2sdy"),
-         Some(CustomerSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()))),
+         Some(PaymentSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()))),
         (json!({"object": "card", "exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}),
-         Some(CustomerSourceParams::Card(CardParams {
+         Some(PaymentSourceParams::Card(CardParams {
              exp_month: "12",
              exp_year: "2017",
              number: "1111222233334444",
@@ -92,7 +91,37 @@ fn deserialize_customer_source_params() {
 
     for (value, expected) in &examples {
         let input = json::to_string(value).unwrap();
-        let parsed: Option<CustomerSourceParams> = json::from_str(&input).ok();
+        let parsed: Option<PaymentSourceParams> = json::from_str(&input).ok();
         assert_eq!(json!(parsed), json!(expected));
+    }
+}
+
+#[test]
+fn serialize_payment_source_params() {
+    use stripe::{CardParams, PaymentSourceParams, SourceId, TokenId};
+
+    let examples = [
+        (PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()), json!("src_xyzABC123")),
+        (PaymentSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()), json!("tok_189g322eZvKYlo2CeoPw2sdy")),
+        (PaymentSourceParams::Card(CardParams {
+            exp_month: "12",
+            exp_year: "2017",
+            number: "1111222233334444",
+            name: None,
+            cvc: None,
+        }),
+        json!({
+            "object": "card",
+            "exp_month": "12",
+            "exp_year": "2017",
+            "number": "1111222233334444",
+            "name": null,
+            "cvc": null
+        })),
+    ];
+
+    for (params, expected) in &examples {
+        let value = json::to_value(params).unwrap();
+        assert_eq!(&value, expected);
     }
 }
