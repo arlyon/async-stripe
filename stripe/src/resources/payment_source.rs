@@ -42,7 +42,7 @@ pub struct Receiver {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Redirect {
-    pub failure_reason: String,
+    pub failure_reason: Option<String>,
     pub return_url: String,
     pub status: String,
     pub url: String,
@@ -50,16 +50,14 @@ pub struct Redirect {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Owner {
-    pub address: Address,
-    pub email: String,
-    pub name: String,
-    pub phone: String,
-    pub verified_address: VerifiedAddress,
-    pub verified_email: String,
-    pub verified_name: String,
-    pub verified_phone: String,
-    pub receiver: Option<Receiver>,
-    pub redirect: Option<Redirect>,
+    pub address: Option<Address>,
+    pub email: Option<String>,
+    pub name: Option<String>,
+    pub phone: Option<String>,
+    pub verified_address: Option<VerifiedAddress>,
+    pub verified_email: Option<String>,
+    pub verified_name: Option<String>,
+    pub verified_phone: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -98,21 +96,22 @@ pub struct SourceParams<'a> {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Source {
     pub id: String,
-    pub object: String, // source
-    pub amount: i64,
-    pub client_secret: String,
+    pub amount: Option<i64>,
+    pub client_secret: Option<String>,
     pub code_verification: Option<CodeVerification>,
     pub created: Timestamp,
-    pub currency: Currency,
-    pub flow: String,
+    pub currency: Option<Currency>,
+    pub flow: Option<String>,
     pub livemode: bool,
-    pub metadata: Metadata,
-    pub owner: Owner,
-    pub statement_descriptor: String,
-    pub status: String,
+    pub metadata: Option<Metadata>,
+    pub owner: Option<Owner>,
+    pub receiver: Option<Receiver>,
+    pub redirect: Option<Redirect>,
+    pub statement_descriptor: Option<String>,
+    pub status: Option<String>,
     #[serde(rename = "type")]
-    pub source_type: String, // (ach_credit_transfer, card, alipay etc.)
-    pub usage: String, // (reusable, single-use)
+    pub source_type: Option<String>, // (ach_credit_transfer, card, alipay etc.)
+    pub usage: Option<String>, // (reusable, single-use)
 }
 
 #[derive(Debug)]
@@ -191,29 +190,31 @@ pub enum PaymentSource {
 }
 
 impl PaymentSource {
-    pub fn create(client: &Client, params: SourceParams) -> Result<PaymentSource, Error> {
+    pub fn create(client: &Client, params: SourceParams) -> Result<Source, Error> {
         client.post("/sources", params)
     }
 
-    pub fn get(client: &Client, source_id: &str) -> Result<PaymentSource, Error> {
+    pub fn get(client: &Client, source_id: &str) -> Result<Source, Error> {
         client.get(&format!("/sources/{}", source_id))
     }
 
-    pub fn update(client: &Client, source_id: &str, params: SourceParams) -> Result<PaymentSource, Error> {
+    pub fn update(client: &Client, source_id: &str, params: SourceParams) -> Result<Source, Error> {
         client.post(&format!("/source/{}", source_id), params)
     }
 
     /// Attaches a source to a customer, does not change default Source for the Customer
     ///
     /// For more details see https://stripe.com/docs/api#attach_source.
-    pub fn attach_source(client: &Client, customer_id: &str, source: &str) -> Result<PaymentSource, Error> {
-        client.post(&format!("/customers/{}/sources", customer_id), source)
+    pub fn attach_source(client: &Client, customer_id: &str, source_id: &str) -> Result<Source, Error> {
+        #[derive(Serialize)]
+        struct AttachSource<'a> { source: &'a str }
+        client.post(&format!("/customers/{}/sources", customer_id), AttachSource { source: source_id })
     }
 
     /// Detaches a source from a customer
     ///
     /// For more details see https://stripe.com/docs/api#detach_source.
-    pub fn detach_source(client: &Client, customer_id: &str, source_id: &str) -> Result<PaymentSource, Error> {
+    pub fn detach_source(client: &Client, customer_id: &str, source_id: &str) -> Result<Source, Error> {
         client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
     }
 }
