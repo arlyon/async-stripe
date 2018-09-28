@@ -1,6 +1,5 @@
-
-use resources::Currency;
 use params::Metadata;
+use resources::Currency;
 use serde::ser::SerializeStruct;
 
 #[derive(Debug, Default, Deserialize)]
@@ -117,4 +116,3 @@ pub enum TokenizationMethod {
     #[serde(other)]
     Other,
 }
-

@@ -1,5 +1,5 @@
-use error::Error;
 use client::Client;
+use error::Error;
 use params::{Metadata, Timestamp};
 use resources::{Currency, Deleted};
 

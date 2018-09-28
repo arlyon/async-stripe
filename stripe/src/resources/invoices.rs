@@ -1,5 +1,5 @@
-use error::Error;
 use client::Client;
+use error::Error;
 use params::{List, Metadata, RangeQuery, Timestamp};
 use resources::{Currency, Discount, Plan};
 use serde_qs as qs;
@@ -61,14 +61,21 @@ pub struct InvoiceListLinesParams {
 
 #[derive(Debug, Default, Serialize)]
 pub struct InvoiceUpcomingParams<'a> {
-    pub customer: &'a str,   // this is a required param
-    #[serde(skip_serializing_if = "Option::is_none")] pub coupon: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub subscription: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub subscription_items: Option<SubscriptionItemParams<'a>>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub subscription_prorate: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub subscription_proration_date: Option<Timestamp>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub subscription_tax_percent: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub subscription_trial_end: Option<Timestamp>,
+    pub customer: &'a str, // this is a required param
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_items: Option<SubscriptionItemParams<'a>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_prorate: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_proration_date: Option<Timestamp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_tax_percent: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_trial_end: Option<Timestamp>,
 }
 
 #[derive(Debug, Serialize)]
@@ -207,7 +214,11 @@ impl Invoice {
     /// Updates an invoice.
     ///
     /// For more details see https://stripe.com/docs/api#update_invoice.
-    pub fn update(client: &Client, invoice_id: &str, params: InvoiceParams) -> Result<Invoice, Error> {
+    pub fn update(
+        client: &Client,
+        invoice_id: &str,
+        params: InvoiceParams,
+    ) -> Result<Invoice, Error> {
         client.post(&format!("/invoices/{}", invoice_id), &params)
     }
 
@@ -223,7 +234,10 @@ impl InvoiceLineItem {
     /// Creates an invoice line item.
     ///
     /// For more details see https://stripe.com/docs/api#invoice_line_item_object
-    pub fn create(client: &Client, params: InvoiceLineItemParams) -> Result<InvoiceLineItem, Error> {
+    pub fn create(
+        client: &Client,
+        params: InvoiceLineItemParams,
+    ) -> Result<InvoiceLineItem, Error> {
         client.post(&format!("/invoiceitems"), &params)
     }
 }

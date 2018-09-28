@@ -41,7 +41,8 @@ impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams<'de> {
         match <PaymentSourceObjectType as Deserialize>::deserialize(deserializer) {
             Ok(PaymentSourceObjectType::Card(_)) => {
                 let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
-                return <CardParams as Deserialize>::deserialize(deserializer).map(PaymentSourceParams::Card);
+                return <CardParams as Deserialize>::deserialize(deserializer)
+                    .map(PaymentSourceParams::Card);
             }
             _ => {}
         }
@@ -52,7 +53,8 @@ impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams<'de> {
 
 impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: ::serde::ser::Serializer
+    where
+        S: ::serde::ser::Serializer,
     {
         #[derive(Serialize)]
         #[serde(tag = "object", rename_all = "snake_case")]
@@ -63,7 +65,9 @@ impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
         match self {
             PaymentSourceParams::Source(id) => id.serialize(serializer),
             PaymentSourceParams::Token(id) => id.serialize(serializer),
-            PaymentSourceParams::Card(card) => PaymentSourceTagged::Card(card).serialize(serializer),
+            PaymentSourceParams::Card(card) => {
+                PaymentSourceTagged::Card(card).serialize(serializer)
+            }
         }
     }
 }

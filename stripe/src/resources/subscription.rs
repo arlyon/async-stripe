@@ -1,7 +1,7 @@
-use error::Error;
 use client::Client;
-use resources::{Discount, Plan};
+use error::Error;
 use params::{List, Metadata, Timestamp};
+use resources::{Discount, Plan};
 use serde_qs as qs;
 
 #[derive(Debug, Default, Deserialize, Serialize)]
@@ -50,12 +50,11 @@ pub struct SubscriptionParams<'a> {
     pub trial_period_days: Option<u64>,
 }
 
-
 #[derive(Serialize, Debug)]
 #[serde(untagged)]
 pub enum TrialEnd<'a> {
     Timestamp(Timestamp),
-    Special(&'a str)
+    Special(&'a str),
 }
 
 /// The resource representing a Stripe subscription item.
@@ -113,14 +112,22 @@ impl Subscription {
 
     /// Updates a subscription's properties.
     /// For more details see https://stripe.com/docs/api#update_subscription.
-    pub fn update(client: &Client, subscription_id: &str, params: SubscriptionParams) -> Result<Subscription, Error> {
+    pub fn update(
+        client: &Client,
+        subscription_id: &str,
+        params: SubscriptionParams,
+    ) -> Result<Subscription, Error> {
         client.post(&format!("/subscriptions/{}", subscription_id), params)
     }
 
     /// Cancels a subscription.
     ///
     /// For more details see https://stripe.com/docs/api#cancel_subscription.
-    pub fn cancel(client: &Client, subscription_id: &str, params: CancelParams) -> Result<Subscription, Error> {
+    pub fn cancel(
+        client: &Client,
+        subscription_id: &str,
+        params: CancelParams,
+    ) -> Result<Subscription, Error> {
         client.delete(&format!("/subscriptions/{}?{}", subscription_id, qs::to_string(&params)?))
     }
 }

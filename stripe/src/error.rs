@@ -83,7 +83,6 @@ impl From<json::Error> for Error {
     }
 }
 
-
 /// The list of possible values for a RequestError's type.
 #[derive(Debug, PartialEq, Deserialize)]
 pub enum ErrorType {
@@ -198,7 +197,8 @@ pub enum ErrorCode {
     TransfersNotAllowed,
     UpstreamOrderCreationFailed,
     UrlInvalid,
-    #[doc(hidden)] __NonExhaustive,
+    #[doc(hidden)]
+    __NonExhaustive,
 }
 
 impl fmt::Display for ErrorCode {
@@ -248,9 +248,10 @@ impl fmt::Display for RequestError {
 
 impl error::Error for RequestError {
     fn description(&self) -> &str {
-        self.message.as_ref().map(|s| s.as_str()).unwrap_or(
-            "request error",
-        )
+        self.message
+            .as_ref()
+            .map(|s| s.as_str())
+            .unwrap_or("request error")
     }
 }
 

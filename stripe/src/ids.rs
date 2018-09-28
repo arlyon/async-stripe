@@ -21,7 +21,8 @@ impl ::std::str::FromStr for TokenId {
 
 impl ::serde::Serialize for TokenId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: ::serde::ser::Serializer
+    where
+        S: ::serde::ser::Serializer,
     {
         self.to_string().serialize(serializer)
     }
@@ -29,7 +30,8 @@ impl ::serde::Serialize for TokenId {
 
 impl<'de> ::serde::Deserialize<'de> for TokenId {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: ::serde::de::Deserializer<'de>
+    where
+        D: ::serde::de::Deserializer<'de>,
     {
         let s: String = ::serde::Deserialize::deserialize(deserializer)?;
         s.parse::<Self>().map_err(|e| ::serde::de::Error::custom(e))
@@ -59,7 +61,8 @@ impl ::std::str::FromStr for SourceId {
 
 impl ::serde::Serialize for SourceId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: ::serde::ser::Serializer
+    where
+        S: ::serde::ser::Serializer,
     {
         self.to_string().serialize(serializer)
     }
@@ -67,7 +70,8 @@ impl ::serde::Serialize for SourceId {
 
 impl<'de> ::serde::Deserialize<'de> for SourceId {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: ::serde::de::Deserializer<'de>
+    where
+        D: ::serde::de::Deserializer<'de>,
     {
         let s: String = ::serde::Deserialize::deserialize(deserializer)?;
         s.parse::<Self>().map_err(|e| ::serde::de::Error::custom(e))
@@ -75,7 +79,9 @@ impl<'de> ::serde::Deserialize<'de> for SourceId {
 }
 
 #[derive(Debug)]
-pub struct ParseIdError { prefix: &'static str }
+pub struct ParseIdError {
+    prefix: &'static str,
+}
 
 impl ::std::fmt::Display for ParseIdError {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {

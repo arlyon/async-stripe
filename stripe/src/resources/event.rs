@@ -1,7 +1,7 @@
-use chrono::{Utc};
-use error::{WebhookError};
-use resources::*;
+use chrono::Utc;
+use error::WebhookError;
 use hmac::{Hmac, Mac};
+use resources::*;
 use serde_json as json;
 use sha2::Sha256;
 use std::str;
@@ -204,7 +204,11 @@ pub enum EventObject {
 pub struct Webhook {}
 
 impl Webhook {
-    pub fn construct_event(payload: String, sig: String, secret: String) -> Result<Event, WebhookError> {
+    pub fn construct_event(
+        payload: String,
+        sig: String,
+        secret: String,
+    ) -> Result<Event, WebhookError> {
         let mut headers: Vec<String> = sig.split(",").map(|s| s.trim().to_string()).collect();
 
         // Prepare the signed payload
@@ -214,8 +218,10 @@ impl Webhook {
         // Get Stripe signature from header
         let ref mut signature: Vec<String> = headers[1].split("=").map(|s| s.to_string()).collect();
 
-        // Compute HMAC with the SHA256 hash function, using endpoing secret as key and signed_payload string as the message
-        let mut mac = Hmac::<Sha256>::new_varkey(secret.as_bytes()).map_err(|_| WebhookError::BadKey)?;
+        // Compute HMAC with the SHA256 hash function, using endpoing secret as key
+        // and signed_payload string as the message.
+        let mut mac = Hmac::<Sha256>::new_varkey(secret.as_bytes())
+            .map_err(|_| WebhookError::BadKey)?;
         mac.input(signed_payload.as_bytes());
         if !mac.result().is_equal(signature[1].as_bytes()) {
             return Err(WebhookError::BadSignature);
@@ -223,7 +229,8 @@ impl Webhook {
 
         // Get current timestamp to compare to signature timestamp
         let current = Utc::now().timestamp();
-        let num_timestamp = timestamp[1].parse::<i64>()
+        let num_timestamp = timestamp[1]
+            .parse::<i64>()
             .map_err(|err| WebhookError::BadHeader(err))?;
         if current - num_timestamp > 300 {
             return Err(WebhookError::BadTimestamp(num_timestamp));

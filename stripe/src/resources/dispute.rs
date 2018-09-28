@@ -1,5 +1,5 @@
 use params::{Metadata, Timestamp};
-use resources::{Currency, BalanceTransaction};
+use resources::{BalanceTransaction, Currency};
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct EvidenceDetails {

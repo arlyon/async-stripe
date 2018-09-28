@@ -440,7 +440,7 @@ impl ::std::str::FromStr for Currency {
             "yer" => Ok(Currency::YER),
             "zar" => Ok(Currency::ZAR),
             "zmw" => Ok(Currency::ZMW),
-            _ => Err(ParseCurrencyError(()))
+            _ => Err(ParseCurrencyError(())),
         }
     }
 }

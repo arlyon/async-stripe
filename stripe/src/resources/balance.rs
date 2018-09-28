@@ -1,6 +1,6 @@
-use serde_json as json;
 use params::{List, Timestamp};
 use resources::{Currency, PaymentSource};
+use serde_json as json;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct FeeDetails {

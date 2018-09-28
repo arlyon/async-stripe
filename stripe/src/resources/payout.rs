@@ -20,7 +20,7 @@ pub struct Payout {
     pub failure_message: Option<String>,
     pub livemode: bool,
     pub metadata: Metadata,
-    pub method: String, // (standard, instant)
+    pub method: String,      // (standard, instant)
     pub source_type: String, // (card, bank_account, bitcoin_receiver, alipay_account)
     pub statement_descriptor: Option<String>,
     pub status: String,

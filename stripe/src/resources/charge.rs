@@ -1,7 +1,7 @@
 use client::Client;
 use error::{Error, ErrorCode};
 use params::{List, Metadata, RangeQuery, Timestamp};
-use resources::{Address, Currency, Refund, PaymentSourceParams, PaymentSource};
+use resources::{Address, Currency, PaymentSource, PaymentSourceParams, Refund};
 use serde_qs as qs;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -59,11 +59,10 @@ pub struct DestinationParams<'a> {
     pub amount: u64,
 }
 
-
 /// The set of parameters that can be used when creating or updating a charge.
 ///
 /// For more details see https://stripe.com/docs/api#create_charge and https://stripe.com/docs/api#update_charge.
-#[derive(Debug, Default, /* Deserialize, */ Serialize)]
+#[derive(Debug, Default, Serialize)]
 pub struct ChargeParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<u64>,
@@ -114,19 +113,29 @@ pub struct SourceFilter {
 
 impl SourceFilter {
     pub fn all() -> SourceFilter {
-        SourceFilter { object: SourceType::All }
+        SourceFilter {
+            object: SourceType::All,
+        }
     }
     pub fn alipay() -> SourceFilter {
-        SourceFilter { object: SourceType::AlipayAccount }
+        SourceFilter {
+            object: SourceType::AlipayAccount,
+        }
     }
     pub fn bank() -> SourceFilter {
-        SourceFilter { object: SourceType::BankAccount }
+        SourceFilter {
+            object: SourceType::BankAccount,
+        }
     }
     pub fn bitcoin() -> SourceFilter {
-        SourceFilter { object: SourceType::BitcoinReceiver }
+        SourceFilter {
+            object: SourceType::BitcoinReceiver,
+        }
     }
     pub fn card() -> SourceFilter {
-        SourceFilter { object: SourceType::Card }
+        SourceFilter {
+            object: SourceType::Card,
+        }
     }
 }
 
@@ -216,7 +225,11 @@ impl Charge {
     /// Capture captures a previously created charge with capture set to false.
     ///
     /// For more details see https://stripe.com/docs/api#charge_capture.
-    pub fn capture(client: &Client, charge_id: &str, params: CaptureParams) -> Result<Charge, Error> {
+    pub fn capture(
+        client: &Client,
+        charge_id: &str,
+        params: CaptureParams,
+    ) -> Result<Charge, Error> {
         client.post(&format!("/charges/{}/capture", charge_id), params)
     }
 

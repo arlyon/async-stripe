@@ -86,7 +86,11 @@ impl Client {
         send(request)
     }
 
-    pub fn post<T: serde::de::DeserializeOwned, P: serde::Serialize>(&self, path: &str, params: P) -> Result<T, Error> {
+    pub fn post<T: serde::de::DeserializeOwned, P: serde::Serialize>(
+        &self,
+        path: &str,
+        params: P,
+    ) -> Result<T, Error> {
         let url = Client::url(path);
         let body = qs::to_string(&params)?;
         let request = self.client.post(&url).headers(self.headers()).body(&body);

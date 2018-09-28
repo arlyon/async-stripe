@@ -1,4 +1,4 @@
-use params::{Timestamp, Metadata};
+use params::{Metadata, Timestamp};
 use resources::Currency;
 
 /// The resource representing a Stripe application fee refund.

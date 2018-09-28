@@ -1,8 +1,8 @@
 use client::Client;
 use error::Error;
 use ids::TokenId;
-use resources::{Address, Currency};
 use params::{Metadata, Timestamp};
+use resources::{Address, Currency};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct OwnerParams<'a> {
@@ -130,16 +130,25 @@ impl Source {
     /// Attaches a source to a customer, does not change default Source for the Customer
     ///
     /// For more details see https://stripe.com/docs/api#attach_source.
-    pub fn attach_source(client: &Client, customer_id: &str, source_id: &str) -> Result<Source, Error> {
+    pub fn attach_source(
+        client: &Client,
+        customer_id: &str,
+        source_id: &str,
+    ) -> Result<Source, Error> {
         #[derive(Serialize)]
         struct AttachSource<'a> { source: &'a str }
-        client.post(&format!("/customers/{}/sources", customer_id), AttachSource { source: source_id })
+        let params = AttachSource { source: source_id };
+        client.post(&format!("/customers/{}/sources", customer_id), params)
     }
 
     /// Detaches a source from a customer
     ///
     /// For more details see https://stripe.com/docs/api#detach_source.
-    pub fn detach_source(client: &Client, customer_id: &str, source_id: &str) -> Result<Source, Error> {
+    pub fn detach_source(
+        client: &Client,
+        customer_id: &str,
+        source_id: &str,
+    ) -> Result<Source, Error> {
         client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
     }
 }

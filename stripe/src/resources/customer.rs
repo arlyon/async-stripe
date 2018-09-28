@@ -1,8 +1,10 @@
 use client::Client;
 use error::Error;
 use ids::SourceId;
-use resources::{Address, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
 use params::{List, Metadata, RangeQuery, Timestamp};
+use resources::{
+    Address, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription,
+};
 use serde_qs as qs;
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -15,7 +17,7 @@ pub struct CustomerShippingDetails {
 /// The set of parameters that can be used when creating or updating a customer.
 ///
 /// For more details see https://stripe.com/docs/api#create_customer and https://stripe.com/docs/api#update_customer.
-#[derive(Debug, Default, /* Deserialize, */ Serialize)]
+#[derive(Debug, Default, Serialize)]
 pub struct CustomerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<i64>,
@@ -92,7 +94,11 @@ impl Customer {
     /// Updates a customer's properties.
     ///
     /// For more details see https://stripe.com/docs/api#update_customer.
-    pub fn update(client: &Client, customer_id: &str, params: CustomerParams) -> Result<Customer, Error> {
+    pub fn update(
+        client: &Client,
+        customer_id: &str,
+        params: CustomerParams,
+    ) -> Result<Customer, Error> {
         client.post(&format!("/customers/{}", customer_id), params)
     }
 
