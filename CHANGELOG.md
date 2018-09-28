@@ -1,3 +1,11 @@
+# Version 0.5.2
+
+## Changes
+
+ * Fixed many issues with the `Source` object.
+ * Updated `Card` to use enum types rather than `&str` where possible.
+ * Added many new fields to `Card`.
+
 # Version 0.5.1
 
 ## Changes
