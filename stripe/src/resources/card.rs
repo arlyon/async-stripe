@@ -1,6 +1,6 @@
-use std::collections::HashMap;
 
-use super::currency::Currency;
+use resources::Currency;
+use params::Metadata;
 use serde::ser::SerializeStruct;
 
 #[derive(Debug, Default, Deserialize)]
@@ -35,7 +35,6 @@ impl<'a> ::serde::Serialize for CardParams<'a> {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Card {
     pub id: String,
-    pub object: String,
     pub account: Option<String>,
     pub address_city: Option<String>,
     pub address_country: Option<String>,
@@ -58,13 +57,13 @@ pub struct Card {
     pub fingerprint: String,
     pub funding: CardType,
     pub last4: String,
-    pub metadata: HashMap<String, String>,
+    pub metadata: Metadata,
     pub name: Option<String>,
     pub recipient: Option<String>,
     pub tokenization_method: Option<TokenizationMethod>,
 }
 
-#[derive(Deserialize, Serialize, PartialEq, Debug)]
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 pub enum CheckResult {
     #[serde(rename = "pass")]
     Pass,
@@ -76,7 +75,7 @@ pub enum CheckResult {
     Unchecked,
 }
 
-#[derive(Deserialize, Serialize, PartialEq, Debug)]
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 pub enum CardBrand {
     #[serde(rename = "American Express")]
     AmericanExpress,
@@ -93,10 +92,11 @@ pub enum CardBrand {
     #[serde(rename = "UnionPay")]
     UnionPay,
     #[serde(rename = "Unknown")]
-    Unknown,
+    #[serde(other)]
+    Other,
 }
 
-#[derive(Deserialize, Serialize, PartialEq, Debug)]
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 pub enum CardType {
     #[serde(rename = "credit")]
     Credit,
@@ -105,13 +105,16 @@ pub enum CardType {
     #[serde(rename = "prepaid")]
     Prepaid,
     #[serde(rename = "unknown")]
-    Unknown,
+    #[serde(other)]
+    Other,
 }
 
-#[derive(Deserialize, Serialize, PartialEq, Debug)]
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[serde(rename_all = "snake_case")]
 pub enum TokenizationMethod {
-    #[serde(rename = "apple_pay")]
     ApplePay,
-    #[serde(rename = "android_pay")]
     AndroidPay,
+    #[serde(other)]
+    Other,
 }
+
