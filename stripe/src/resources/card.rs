@@ -90,9 +90,10 @@ pub enum CardBrand {
     MasterCard,
     #[serde(rename = "UnionPay")]
     UnionPay,
-    #[serde(rename = "Unknown")]
+
     #[serde(other)]
-    Other,
+    #[serde(rename = "Unknown")]
+    Unknown,
 }
 
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
@@ -103,9 +104,10 @@ pub enum CardType {
     Debit,
     #[serde(rename = "prepaid")]
     Prepaid,
-    #[serde(rename = "unknown")]
+
     #[serde(other)]
-    Other,
+    #[serde(rename = "unknown")]
+    Unknown,
 }
 
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
@@ -113,6 +115,7 @@ pub enum CardType {
 pub enum TokenizationMethod {
     ApplePay,
     AndroidPay,
+
     #[serde(other)]
-    Other,
+    Unknown,
 }
