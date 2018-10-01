@@ -22,8 +22,8 @@ pub struct ChargeOutcome {
     pub rule: Option<String>,
 }
 
-/// The resource representing a Stripe charge object outcome outcome_type.
-///
+/// An enum representing the possible values of a `ChargeOutcome`'s `type` field.
+/// 
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome-type](https://stripe.com/docs/api#charge_object-outcome-type)
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -37,7 +37,7 @@ pub enum OutcomeType {
     Other,
 }
 
-/// The resource representing a Stripe charge object outcome network_status.
+/// An enum representing the possible values of a `ChargeOutcome`'s `network_status` field.
 ///
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome-network_status](https://stripe.com/docs/api#charge_object-outcome-network_status)
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
@@ -51,7 +51,7 @@ pub enum NetworkStatus {
     Other,
 }
 
-/// The resource representing a Stripe charge object outcome risk level.
+/// An enum representing the possible values of a `ChargeOutcome`'s `risk_level` field.
 ///
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome-risk_level](https://stripe.com/docs/api#charge_object-outcome-risk_level)
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
@@ -65,13 +65,13 @@ pub enum RiskLevel {
     Unknown
 }
 
-/// The resource representing a Stripe charge object outcome reason.
+/// An enum representing the possible values of a `ChargeOutcome`'s `reason` field.
 ///
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome-reason](https://stripe.com/docs/api#charge_object-outcome-reason)
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum OutcomeReason {
-    ApprovedWithID,
+    ApprovedWithId,
     CallIssuer,
     CardNotSupported,
     CardVelocityExceeded,
@@ -83,18 +83,19 @@ pub enum OutcomeReason {
     Fraudulent,
     GenericDecline,
     IncorrectNumber,
-    IncorrectCVC,
-    IncorrectPIN,
+    IncorrectCvc,
+    IncorrectPin,
     IncorrectZip,
     InsufficientFunds,
     InvalidAccount,
     InvalidAmount,
-    InvalidCVC,
+    InvalidCvc,
     InvalidExpiryYear,
     InvalidNumber,
     InvalidPin,
     IssuerNotAvailable,
     LostCard,
+    MerchantBlacklist,
     NewAccountInformationAvailable,
     NoActionTaken,
     NotPermitted,
@@ -103,16 +104,16 @@ pub enum OutcomeReason {
     ProcessingError,
     ReenterTransaction,
     RestrictedCard,
-    RevocationOfAllAuthorization,
+    RevocationOfAllAuthorizations,
     RevocationOfAuthorization,
     SecurityViolation,
     ServiceNotAllowed,
     StolenCard,
     StopPaymentOrder,
-    TestmodeDeclined,
+    TestmodeDecline,
     TransactionNotAllowed,
     TryAgainLater,
-    WithrawalCountLimitExceeded,
+    WithdrawalCountLimitExceeded,
     #[serde(other)]
     Other,
 }
