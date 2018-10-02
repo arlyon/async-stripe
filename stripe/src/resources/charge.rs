@@ -4,19 +4,118 @@ use params::{List, Metadata, RangeQuery, Timestamp};
 use resources::{Address, Currency, PaymentSource, PaymentSourceParams, Refund};
 use serde_qs as qs;
 
+/// The resource representing a Stripe charge object outcome.
+///
+/// For more details see [https://stripe.com/docs/api#charge_object-outcome](https://stripe.com/docs/api#charge_object-outcome)
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ChargeOutcome {
     #[serde(rename = "type")]
-    pub outcome_type: String, // (authorized, manual_review, issuer_declined, blocked, invalid)
-    pub network_status: String, // (approved_by_network, declined_by_network, not_sent_to_network, reversed_after_approval)
+    pub outcome_type: OutcomeType,
+    pub network_status: NetworkStatus,
     #[serde(default)]
-    pub reason: Option<String>,
+    pub reason: Option<OutcomeReason>,
     #[serde(default)]
-    pub risk_level: Option<String>, // (normal, elevated, highest, not_assessed, unknown)
+    pub risk_level: Option<RiskLevel>,
     #[serde(default)]
     pub seller_message: Option<String>,
     #[serde(default)]
     pub rule: Option<String>,
+}
+
+/// An enum representing the possible values of a `ChargeOutcome`'s `type` field.
+/// 
+/// For more details see [https://stripe.com/docs/api#charge_object-outcome-type](https://stripe.com/docs/api#charge_object-outcome-type)
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum OutcomeType {
+    Authorized,
+    ManualReview,
+    IssuerDeclined,
+    Blocked,
+    Invalid,
+    #[serde(other)]
+    Other,
+}
+
+/// An enum representing the possible values of a `ChargeOutcome`'s `network_status` field.
+///
+/// For more details see [https://stripe.com/docs/api#charge_object-outcome-network_status](https://stripe.com/docs/api#charge_object-outcome-network_status)
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum NetworkStatus {
+    ApprovedByNetwork,
+    DeclinedByNetwork,
+    NotSentToNetwork,
+    ReversedAfterApproval,
+    #[serde(other)]
+    Other,
+}
+
+/// An enum representing the possible values of a `ChargeOutcome`'s `risk_level` field.
+///
+/// For more details see [https://stripe.com/docs/api#charge_object-outcome-risk_level](https://stripe.com/docs/api#charge_object-outcome-risk_level)
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum RiskLevel {
+    Normal,
+    Elevated,
+    Highest,
+    NotAssessed,
+    #[serde(other)]
+    Unknown
+}
+
+/// An enum representing the possible values of a `ChargeOutcome`'s `reason` field.
+///
+/// For more details see [https://stripe.com/docs/api#charge_object-outcome-reason](https://stripe.com/docs/api#charge_object-outcome-reason)
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum OutcomeReason {
+    ApprovedWithId,
+    CallIssuer,
+    CardNotSupported,
+    CardVelocityExceeded,
+    CurrencyNotSupported,
+    DoNotHonor,
+    DoNotTryAgain,
+    DuplicateTransaction,
+    ExpiredCard,
+    Fraudulent,
+    GenericDecline,
+    IncorrectNumber,
+    IncorrectCvc,
+    IncorrectPin,
+    IncorrectZip,
+    InsufficientFunds,
+    InvalidAccount,
+    InvalidAmount,
+    InvalidCvc,
+    InvalidExpiryYear,
+    InvalidNumber,
+    InvalidPin,
+    IssuerNotAvailable,
+    LostCard,
+    MerchantBlacklist,
+    NewAccountInformationAvailable,
+    NoActionTaken,
+    NotPermitted,
+    PickupCard,
+    PinTryExceeded,
+    ProcessingError,
+    ReenterTransaction,
+    RestrictedCard,
+    RevocationOfAllAuthorizations,
+    RevocationOfAuthorization,
+    SecurityViolation,
+    ServiceNotAllowed,
+    StolenCard,
+    StopPaymentOrder,
+    TestmodeDecline,
+    TransactionNotAllowed,
+    TryAgainLater,
+    WithdrawalCountLimitExceeded,
+    #[serde(other)]
+    Other,
 }
 
 #[derive(Debug, Default, Deserialize, Serialize)]
@@ -38,9 +137,9 @@ pub struct ShippingDetails {
     pub tracking_number: Option<String>,
 }
 
-/// The set of parameters that can be used when capturing a charge.
+/// The set of parameters that can be used when capturing a charge object.
 ///
-/// For more details see https://stripe.com/docs/api#charge_capture.
+/// For more details see (https://stripe.com/docs/api#charge_capture](https://stripe.com/docs/api#charge_capture).
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct CaptureParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -59,9 +158,10 @@ pub struct DestinationParams<'a> {
     pub amount: u64,
 }
 
-/// The set of parameters that can be used when creating or updating a charge.
+/// The set of parameters that can be used when creating or updating a charge object.
 ///
-/// For more details see https://stripe.com/docs/api#create_charge and https://stripe.com/docs/api#update_charge.
+/// For more details see [https://stripe.com/docs/api#create_charge](https://stripe.com/docs/api#create_charge)
+/// and [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
 #[derive(Debug, Default, Serialize)]
 pub struct ChargeParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -141,7 +241,7 @@ impl SourceFilter {
 
 /// The set of parameters that can be used when listing charges.
 ///
-/// For more details see https://stripe.com/docs/api#list_charges
+/// For more details see [https://stripe.com/docs/api#list_charges](https://stripe.com/docs/api#list_charges)
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct ChargeListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -160,9 +260,9 @@ pub struct ChargeListParams<'a> {
     pub transfer_group: Option<&'a str>,
 }
 
-/// The resource representing a Stripe charge.
+/// The resource representing a Stripe charge object.
 ///
-/// For more details see https://stripe.com/docs/api#charges.
+/// For more details see [https://stripe.com/docs/api#charges](https://stripe.com/docs/api#charges).
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Charge {
     pub id: String,
@@ -188,43 +288,58 @@ pub struct Charge {
     pub order: Option<String>,
     pub outcome: Option<ChargeOutcome>,
     pub paid: bool,
+    pub payment_intent: Option<String>,
     pub receipt_email: Option<String>,
     pub receipt_number: Option<String>,
     pub refunded: bool,
     pub refunds: List<Refund>,
+    pub review: Option<String>,
     pub shipping: Option<ShippingDetails>,
     pub source: PaymentSource,
     pub source_transfer: Option<String>,
     pub statement_descriptor: Option<String>,
-    pub status: String, // (succeeded, pending, failed)
+    pub status: ChargeStatus,
     pub transfer_group: Option<String>,
+}
+
+/// The resource representing a Stripe charge object status.
+///
+/// For more details see [https://stripe.com/docs/api#charge_object-status](https://stripe.com/docs/api#charge_object-status)
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+pub enum ChargeStatus {
+    #[serde(rename = "succeeded")]
+    Succeeded,
+    #[serde(rename = "pending")]
+    Pending,
+    #[serde(rename = "failed")]
+    Failed,
 }
 
 impl Charge {
     /// Creates a new charge.
     ///
-    /// For more details see https://stripe.com/docs/api#create_charge.
+    /// For more details see [https://stripe.com/docs/api#create_charge](https://stripe.com/docs/api#create_charge).
     pub fn create(client: &Client, params: ChargeParams) -> Result<Charge, Error> {
         client.post("/charges", params)
     }
 
     /// Retrieves the details of a charge.
     ///
-    /// For more details see https://stripe.com/docs/api#retrieve_charge.
+    /// For more details see [https://stripe.com/docs/api#retrieve_charge](https://stripe.com/docs/api#retrieve_charge).
     pub fn retrieve(client: &Client, charge_id: &str) -> Result<Charge, Error> {
         client.get(&format!("/charges/{}", charge_id))
     }
 
     /// Updates a charge's properties.
     ///
-    /// For more details see https://stripe.com/docs/api#update_charge.
+    /// For more details see [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
     pub fn update(client: &Client, charge_id: &str, params: ChargeParams) -> Result<Charge, Error> {
         client.post(&format!("/charges/{}", charge_id), params)
     }
 
     /// Capture captures a previously created charge with capture set to false.
     ///
-    /// For more details see https://stripe.com/docs/api#charge_capture.
+    /// For more details see [https://stripe.com/docs/api#charge_capture](https://stripe.com/docs/api#charge_capture).
     pub fn capture(
         client: &Client,
         charge_id: &str,
@@ -235,7 +350,7 @@ impl Charge {
 
     /// List all charges.
     ///
-    /// For more details see https://stripe.com/docs/api#list_charges.
+    /// For more details see [https://stripe.com/docs/api#list_charges](https://stripe.com/docs/api#list_charges).
     pub fn list(client: &Client, params: ChargeListParams) -> Result<Vec<Charge>, Error> {
         client.get(&format!("/charges?{}", qs::to_string(&params)?))
     }
