@@ -1,3 +1,9 @@
+# Version 0.5.3
+
+## Changes
+
+ * Updated `Charge` to use enum types rather than `&str` where possible.
+
 # Version 0.5.2
 
 ## Changes
