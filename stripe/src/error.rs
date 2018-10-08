@@ -47,7 +47,7 @@ impl error::Error for Error {
             Error::Io(_) => "error reading response from stripe",
             Error::Conversion(_) => "error converting between wire format and Rust types",
             Error::Unsupported(_) => "an unsupported operation was attempted",
-            Error::Unexpected(_) => "an unsupported operation was attempted",
+            Error::Unexpected(_) => "an unexpected error has occurred",
         }
     }
 
