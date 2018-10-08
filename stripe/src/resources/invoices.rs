@@ -267,27 +267,19 @@ impl List<Invoice> {
     }
 
     pub fn next(&self, client: &Client) -> Result<List<Invoice>, Error>  {
-        if self.url.starts_with("/v1/") {
-            if let Some(last) = self.data.last() {
-                if let Some(last_id) = &last.id {
-                    let mut url = self.url.trim_left_matches("/v1/").to_string();
-                    url.push_str(&format!("?starting_after={}", last_id));
-
-                    client.get(&url)
-                } else {
-                    Err(Error::Unexpected("Cannot fetch List data - Stripe returned Invoice with no ID"))
-                }
-
+        if let Some(last) = self.data.last() {
+            if let Some(last_id) = &last.id {
+                List::get_next(client, &self.url, last_id)
             } else {
-                Ok(List {
-                    data: Vec::new(),
-                    has_more: false,
-                    total_count: self.total_count,
-                    url: self.url.clone()
-                })
+                Err(Error::Unexpected("Cannot fetch List data - Stripe returned Invoice with no ID"))
             }
         } else {
-            Err(Error::Unsupported("URL for fetching additional data uses different API version"))
+            Ok(List {
+                data: Vec::new(),
+                has_more: false,
+                total_count: self.total_count,
+                url: self.url.clone()
+            })
         }
     }
 }

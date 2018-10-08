@@ -26,7 +26,23 @@ impl<T: Clone> Clone for List<T> {
     }
 }
 
+impl<T: DeserializeOwned> List<T> {
+    /// Prefer `List::next` when possible
+    pub fn get_next(client: &Client, url: &str, last_id: &str) -> Result<List<T>, Error> {
+        if url.starts_with("/v1/") {
+            let mut url = url.trim_left_matches("/v1/").to_string();
+            url.push_str(&format!("?starting_after={}", last_id));
+
+            client.get(&url)
+        } else {
+            Err(Error::Unsupported("URL for fetching additional data uses different API version"))
+        }
+    }
+}
+
 impl<T: Identifiable + DeserializeOwned> List<T> {
+    /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
+    /// Stripe's default page size
     pub fn get_all(self, client: &Client) -> Result<Vec<T>, Error> {
         let mut data = Vec::new();
         let mut next = self;
@@ -43,23 +59,17 @@ impl<T: Identifiable + DeserializeOwned> List<T> {
         Ok(data)
     }
 
+    /// Fetch additional page of data from stripe
     pub fn next(&self, client: &Client) -> Result<List<T>, Error>  {
-        if self.url.starts_with("/v1/") {
-            if let Some(last_id) = self.data.last().map(|d| d.id()) {
-                let mut url = self.url.trim_left_matches("/v1/").to_string();
-                url.push_str(&format!("?starting_after={}", last_id));
-
-                client.get(&url)
-            } else {
-                Ok(List {
-                    data: Vec::new(),
-                    has_more: false,
-                    total_count: self.total_count,
-                    url: self.url.clone()
-                })
-            }
+        if let Some(last_id) = self.data.last().map(|d| d.id()) {
+            List::get_next(client, &self.url, last_id)
         } else {
-            Err(Error::Unsupported("URL for fetching additional data uses different API version"))
+            Ok(List {
+                data: Vec::new(),
+                has_more: false,
+                total_count: self.total_count,
+                url: self.url.clone()
+            })
         }
     }
 }
