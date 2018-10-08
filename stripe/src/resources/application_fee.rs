@@ -1,10 +1,10 @@
-use params::{List, Timestamp};
+use params::{Identifiable, List, Timestamp};
 use resources::{Currency, Refund};
 
 /// The resource representing a Stripe application fee.
 ///
 /// For more details see https://stripe.com/docs/api#application_fees.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ApplicationFee {
     pub id: String,
     pub object: String,
@@ -20,4 +20,10 @@ pub struct ApplicationFee {
     pub originating_transaction: Option<String>,
     pub refunded: bool,
     pub refunds: List<Refund>,
+}
+
+impl Identifiable for ApplicationFee {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

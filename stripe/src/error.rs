@@ -19,6 +19,10 @@ pub enum Error {
     Io(io::Error),
     /// An error converting between wire format and Rust types.
     Conversion(Box<error::Error + Send>),
+    /// Indicates an operation not supported (yet?) by this library.
+    Unsupported(&'static str),
+    /// An invariant has been violated. Either a bug in this library or Stripe
+    Unexpected(&'static str)
 }
 
 impl fmt::Display for Error {
@@ -29,6 +33,8 @@ impl fmt::Display for Error {
             Error::Http(ref err) => write!(f, ": {}", err),
             Error::Io(ref err) => write!(f, ": {}", err),
             Error::Conversion(ref err) => write!(f, ": {}", err),
+            Error::Unsupported(msg) => write!(f, "{}", msg),
+            Error::Unexpected(msg) => write!(f, "{}", msg),
         }
     }
 }
@@ -40,6 +46,8 @@ impl error::Error for Error {
             Error::Http(_) => "error communicating with stripe",
             Error::Io(_) => "error reading response from stripe",
             Error::Conversion(_) => "error converting between wire format and Rust types",
+            Error::Unsupported(_) => "an unsupported operation was attempted",
+            Error::Unexpected(_) => "an unexpected error has occurred",
         }
     }
 
@@ -49,6 +57,8 @@ impl error::Error for Error {
             Error::Http(ref err) => Some(err),
             Error::Io(ref err) => Some(err),
             Error::Conversion(ref err) => Some(&**err),
+            Error::Unsupported(_) => None,
+            Error::Unexpected(_) => None,
         }
     }
 }
@@ -118,7 +128,7 @@ impl fmt::Display for ErrorType {
 }
 
 /// The list of possible values for a RequestError's code.
-#[derive(Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 #[serde(rename_all = "snake_case")]
 pub enum ErrorCode {
     AccountAlreadyExists,

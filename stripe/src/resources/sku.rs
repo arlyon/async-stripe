@@ -1,8 +1,8 @@
-use params::{Metadata, Timestamp};
+use params::{Identifiable, Metadata, Timestamp};
 use resources::{Currency, PackageDimensions};
 use serde_json as json;
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Inventory {
     pub quantity: u64,
     #[serde(rename = "type")]
@@ -13,7 +13,7 @@ pub struct Inventory {
 /// The resource representing a Stripe Sku.
 ///
 /// For more details see https://stripe.com/docs/api#sku_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Sku {
     pub id: String,
     pub object: String,
@@ -30,3 +30,10 @@ pub struct Sku {
     pub product: String,
     pub updated: Timestamp,
 }
+
+impl Identifiable for Sku {
+    fn id(&self) -> &str {
+        &self.id
+    }
+}
+

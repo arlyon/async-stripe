@@ -1,13 +1,13 @@
 use client::Client;
 use error::{Error, ErrorCode};
-use params::{List, Metadata, RangeQuery, Timestamp};
+use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::{Address, Currency, PaymentSource, PaymentSourceParams, Refund};
 use serde_qs as qs;
 
 /// The resource representing a Stripe charge object outcome.
 ///
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome](https://stripe.com/docs/api#charge_object-outcome)
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ChargeOutcome {
     #[serde(rename = "type")]
     pub outcome_type: OutcomeType,
@@ -25,7 +25,7 @@ pub struct ChargeOutcome {
 /// An enum representing the possible values of a `ChargeOutcome`'s `type` field.
 /// 
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome-type](https://stripe.com/docs/api#charge_object-outcome-type)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Copy, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum OutcomeType {
     Authorized,
@@ -118,14 +118,14 @@ pub enum OutcomeReason {
     Other,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FraudDetails {
     pub user_report: Option<String>,
     #[serde(skip_serializing)]
     pub stripe_report: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingDetails {
     pub name: String,
     pub address: Address,
@@ -140,7 +140,7 @@ pub struct ShippingDetails {
 /// The set of parameters that can be used when capturing a charge object.
 ///
 /// For more details see (https://stripe.com/docs/api#charge_capture](https://stripe.com/docs/api#charge_capture).
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CaptureParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<u64>,
@@ -152,7 +152,7 @@ pub struct CaptureParams<'a> {
     pub statement_descriptor: Option<&'a str>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DestinationParams<'a> {
     pub account: &'a str,
     pub amount: u64,
@@ -162,7 +162,7 @@ pub struct DestinationParams<'a> {
 ///
 /// For more details see [https://stripe.com/docs/api#create_charge](https://stripe.com/docs/api#create_charge)
 /// and [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
-#[derive(Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct ChargeParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<u64>,
@@ -206,7 +206,7 @@ pub enum SourceType {
     Card,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceFilter {
     pub object: SourceType,
 }
@@ -242,7 +242,7 @@ impl SourceFilter {
 /// The set of parameters that can be used when listing charges.
 ///
 /// For more details see [https://stripe.com/docs/api#list_charges](https://stripe.com/docs/api#list_charges)
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ChargeListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -263,7 +263,7 @@ pub struct ChargeListParams<'a> {
 /// The resource representing a Stripe charge object.
 ///
 /// For more details see [https://stripe.com/docs/api#charges](https://stripe.com/docs/api#charges).
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Charge {
     pub id: String,
     pub amount: u64,
@@ -300,6 +300,12 @@ pub struct Charge {
     pub statement_descriptor: Option<String>,
     pub status: ChargeStatus,
     pub transfer_group: Option<String>,
+}
+
+impl Identifiable for Charge {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }
 
 /// The resource representing a Stripe charge object status.

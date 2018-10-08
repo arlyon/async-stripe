@@ -1,8 +1,8 @@
-use params::{List, Timestamp};
+use params::{Identifiable, List, Timestamp};
 use resources::{Currency, PaymentSource};
 use serde_json as json;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FeeDetails {
     pub amount: u64,
     pub application: String,
@@ -15,7 +15,7 @@ pub struct FeeDetails {
 /// The resource representing a Stripe account balance.
 ///
 /// For more details see https://stripe.com/docs/api#balance_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Balance {
     pub object: String,
     pub available: Vec<json::Value>,
@@ -27,7 +27,7 @@ pub struct Balance {
 /// The resource representing a Stripe balance transaction.
 ///
 /// For more details see https://stripe.com/docs/api#balance_transaction_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceTransaction {
     pub id: String,
     pub object: String,
@@ -43,4 +43,10 @@ pub struct BalanceTransaction {
     pub status: String,
     #[serde(rename = "type")]
     pub transaction_type: String,
+}
+
+impl Identifiable for BalanceTransaction {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

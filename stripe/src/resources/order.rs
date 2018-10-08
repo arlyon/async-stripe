@@ -1,8 +1,8 @@
-use params::{List, Metadata, Timestamp};
+use params::{Identifiable, List, Metadata, Timestamp};
 use resources::{Currency, ShippingDetails};
 use serde_json as json;
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct StatusTransitions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled: Option<Timestamp>,
@@ -17,7 +17,7 @@ pub struct StatusTransitions {
 /// The resource representing a Stripe order item.
 ///
 /// For more details see https://stripe.com/docs/api#order_item_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderItem {
     pub object: String,
     pub amount: u64,
@@ -32,7 +32,7 @@ pub struct OrderItem {
 /// The resource representing a Stripe order.
 ///
 /// For more details see https://stripe.com/docs/api#order_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Order {
     pub id: String,
     pub object: String,
@@ -57,4 +57,10 @@ pub struct Order {
     pub status_transitions: StatusTransitions,
     pub udpated: Timestamp,
     pub upstream_id: Option<String>,
+}
+
+impl Identifiable for Order {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

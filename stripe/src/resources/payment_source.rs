@@ -1,7 +1,7 @@
 use ids::{SourceId, TokenId};
 use resources::{Card, CardParams, Source};
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum PaymentSourceParams<'a> {
     Source(SourceId),
     Token(TokenId),
@@ -72,7 +72,7 @@ impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
 pub enum PaymentSource {
     // BitcoinReceiver(...),
