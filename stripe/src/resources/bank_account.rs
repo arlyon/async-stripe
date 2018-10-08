@@ -33,7 +33,7 @@ impl Identifiable for BankAccount {
 pub struct AchCreditTransfer {
     pub account_number: String,
     pub routing_number: String,
-    pub finterprint: String,
+    pub fingerprint: String,
     pub bank_name: String,
     pub swift_code: String,
 }
