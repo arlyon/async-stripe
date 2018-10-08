@@ -1,13 +1,11 @@
 use client::Client;
 use error::Error;
 use ids::SourceId;
-use params::{List, Metadata, RangeQuery, Timestamp};
-use resources::{
-    Address, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription,
-};
+use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
+use resources::{Address, Currency, Deleted, Discount, PaymentSourceParams, Source, Subscription};
 use serde_qs as qs;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerShippingDetails {
     pub address: Address,
     pub name: String,
@@ -17,7 +15,7 @@ pub struct CustomerShippingDetails {
 /// The set of parameters that can be used when creating or updating a customer.
 ///
 /// For more details see https://stripe.com/docs/api#create_customer and https://stripe.com/docs/api#update_customer.
-#[derive(Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct CustomerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<i64>,
@@ -42,7 +40,7 @@ pub struct CustomerParams<'a> {
 /// The set of parameters that can be used when listing customers.
 ///
 /// For more details see https://stripe.com/docs/api#list_customers
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -57,7 +55,7 @@ pub struct CustomerListParams<'a> {
 /// The resource representing a Stripe customer.
 ///
 /// For more details see https://stripe.com/docs/api#customers.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Customer {
     pub id: String,
     pub account_balance: i64,
@@ -72,7 +70,7 @@ pub struct Customer {
     pub livemode: bool,
     pub metadata: Metadata,
     pub shipping: Option<CustomerShippingDetails>,
-    pub sources: List<PaymentSource>,
+    pub sources: List<Source>,
     pub subscriptions: List<Subscription>,
 }
 
@@ -114,5 +112,11 @@ impl Customer {
     /// For more details see https://stripe.com/docs/api#list_customers.
     pub fn list(client: &Client, params: CustomerListParams) -> Result<List<Customer>, Error> {
         client.get(&format!("/customers?{}", qs::to_string(&params)?))
+    }
+}
+
+impl Identifiable for Customer {
+    fn id(&self) -> &str {
+        &self.id
     }
 }

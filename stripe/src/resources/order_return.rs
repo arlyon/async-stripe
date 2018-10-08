@@ -1,10 +1,10 @@
-use params::{List, Timestamp};
+use params::{Identifiable, List, Timestamp};
 use resources::{Currency, OrderItem};
 
 /// The resource representing a Stripe order return.
 ///
 /// For more details see https://stripe.com/docs/api#order_return_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderReturn {
     pub id: String,
     pub object: String,
@@ -16,3 +16,10 @@ pub struct OrderReturn {
     pub order: String,
     pub refund: String,
 }
+
+impl Identifiable for OrderReturn {
+    fn id(&self) -> &str {
+        &self.id
+    }
+}
+

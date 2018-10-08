@@ -1,10 +1,10 @@
 use client::Client;
 use error::Error;
 use ids::TokenId;
-use params::{Metadata, Timestamp};
-use resources::{Address, Currency};
+use params::{Identifiable, Metadata, Timestamp};
+use resources::{Address, Card, Currency};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OwnerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -16,13 +16,13 @@ pub struct OwnerParams<'a> {
     pub phone: Option<&'a str>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CodeVerification {
     pub attempts_remaining: i64,
     pub status: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct VerifiedAddress {
     pub city: Address,
     pub country: String,
@@ -32,7 +32,7 @@ pub struct VerifiedAddress {
     pub state: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Receiver {
     pub address: String,
     pub amount_charged: i64,
@@ -40,7 +40,7 @@ pub struct Receiver {
     pub amount_returned: i64,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Redirect {
     pub failure_reason: Option<String>,
     pub return_url: String,
@@ -48,7 +48,7 @@ pub struct Redirect {
     pub url: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Owner {
     pub address: Option<Address>,
     pub email: Option<String>,
@@ -60,7 +60,7 @@ pub struct Owner {
     pub verified_phone: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RedirectParams<'a> {
     return_url: &'a str,
 }
@@ -93,10 +93,11 @@ pub struct SourceParams<'a> {
 /// The resource representing a Stripe source.
 ///
 /// For more details see https://stripe.com/docs/api#sources.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Source {
     pub id: String,
     pub amount: Option<i64>,
+    pub card: Option<Card>,
     pub client_secret: Option<String>,
     pub code_verification: Option<CodeVerification>,
     pub created: Timestamp,
@@ -150,5 +151,11 @@ impl Source {
         source_id: &str,
     ) -> Result<Source, Error> {
         client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
+    }
+}
+
+impl Identifiable for Source {
+    fn id(&self) -> &str {
+        &self.id
     }
 }

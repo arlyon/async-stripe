@@ -1,16 +1,16 @@
 use client::Client;
 use error::Error;
-use params::{List, Metadata, Timestamp};
+use params::{Identifiable, List, Metadata, Timestamp};
 use resources::{Discount, Plan};
 use serde_qs as qs;
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CancelParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub at_period_end: Option<bool>,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Clone, Serialize, Debug)]
 pub struct ItemParams<'a> {
     pub plan: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -20,7 +20,7 @@ pub struct ItemParams<'a> {
 /// The set of parameters that can be used when creating or updating a subscription.
 ///
 /// For more details see https://stripe.com/docs/api#create_subscription and https://stripe.com/docs/api#update_subscription.
-#[derive(Default, Serialize, Debug)]
+#[derive(Clone, Default, Serialize, Debug)]
 pub struct SubscriptionParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,
@@ -50,7 +50,7 @@ pub struct SubscriptionParams<'a> {
     pub trial_period_days: Option<u64>,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Clone, Serialize, Debug)]
 #[serde(untagged)]
 pub enum TrialEnd<'a> {
     Timestamp(Timestamp),
@@ -60,7 +60,7 @@ pub enum TrialEnd<'a> {
 /// The resource representing a Stripe subscription item.
 ///
 /// For more details see https://stripe.com/docs/api#subscription_items.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItem {
     pub id: String,
     pub created: Timestamp,
@@ -71,7 +71,7 @@ pub struct SubscriptionItem {
 /// The resource representing a Stripe subscription.
 ///
 /// For more details see https://stripe.com/docs/api#subscriptions.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Subscription {
     pub id: String,
     pub application_fee_percent: Option<f64>,
@@ -129,5 +129,11 @@ impl Subscription {
         params: CancelParams,
     ) -> Result<Subscription, Error> {
         client.delete(&format!("/subscriptions/{}?{}", subscription_id, qs::to_string(&params)?))
+    }
+}
+
+impl Identifiable for Subscription {
+    fn id(&self) -> &str {
+        &self.id
     }
 }

@@ -1,9 +1,9 @@
-use params::Timestamp;
+use params::{Identifiable, Timestamp};
 
 /// The resource representing a Stripe file.
 ///
 /// For more details see https://stripe.com/docs/api#file_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct File {
     pub id: String,
     pub object: String,
@@ -14,4 +14,10 @@ pub struct File {
     #[serde(rename = "type")]
     pub file_type: String, // (csv, pdf, jpg, png)
     pub url: String,
+}
+
+impl Identifiable for File {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

@@ -4,7 +4,7 @@ use resources::{Currency, Period, Plan};
 /// The resource representing a Stripe invoice item.
 ///
 /// For more details see https://stripe.com/docs/api#invoiceitem_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItem {
     pub id: String,
     pub object: String,

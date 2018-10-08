@@ -1,10 +1,10 @@
-use params::{List, Metadata, Timestamp};
+use params::{Identifiable, List, Metadata, Timestamp};
 use resources::Currency;
 
 /// The resource representing a Stripe transfer reversal.
 ///
 /// For more details see https://stripe.com/docs/api#transfer_reversal_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransferReversal {
     pub id: String,
     pub object: String,
@@ -16,10 +16,16 @@ pub struct TransferReversal {
     pub transfer: String,
 }
 
+impl Identifiable for TransferReversal {
+    fn id(&self) -> &str {
+        &self.id
+    }
+}
+
 /// The resource representing a Stripe transfer.
 ///
 /// For more details see https://stripe.com/docs/api#transfer_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Transfer {
     pub id: String,
     pub object: String,
@@ -38,4 +44,10 @@ pub struct Transfer {
     pub source_transaction: String,
     pub source_type: String,
     pub transfer_group: String,
+}
+
+impl Identifiable for Transfer {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

@@ -1,8 +1,8 @@
-use params::{List, Metadata, Timestamp};
+use params::{Identifiable, List, Metadata, Timestamp};
 use resources::BankAccount;
 use serde_json as json;
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DeclineChargeDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avs_failure: Option<bool>,
@@ -10,7 +10,7 @@ pub struct DeclineChargeDetails {
     pub cvc_failure: Option<bool>,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PayoutScheduleDetails {
     pub delay_days: u64,
     pub interval: String,
@@ -20,7 +20,7 @@ pub struct PayoutScheduleDetails {
     pub weekly_anchor: Option<String>,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TOSAcceptanceDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
@@ -33,7 +33,7 @@ pub struct TOSAcceptanceDetails {
 /// The set of parameters that can be used when creating an account for users.
 ///
 /// For more details see https://stripe.com/docs/api#create_account.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<&'a str>, // (country the account holder resides in)
@@ -46,7 +46,7 @@ pub struct AccountParams<'a> {
 /// The resource representing a Stripe account.
 ///
 /// For more details see https://stripe.com/docs/api#account.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Account {
     pub id: String,
     pub object: String,
@@ -75,4 +75,10 @@ pub struct Account {
     #[serde(rename = "type")]
     pub account_type: Option<String>, // (Stripe, Custom, or Express)
     pub verification: Option<json::Value>,
+}
+
+impl Identifiable for Account {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

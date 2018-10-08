@@ -1,10 +1,10 @@
-use params::{Metadata, Timestamp};
+use params::{Identifiable, Metadata, Timestamp};
 use resources::Currency;
 
 /// The resource representing a Stripe coupon.
 ///
 /// For more details see https://stripe.com/docs/api#coupon_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Coupon {
     pub id: String,
     pub object: String,
@@ -22,3 +22,10 @@ pub struct Coupon {
     pub valid: bool,
     pub deleted: bool,
 }
+
+impl Identifiable for Coupon {
+    fn id(&self) -> &str {
+        &self.id
+    }
+}
+

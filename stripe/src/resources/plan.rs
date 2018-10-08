@@ -1,12 +1,12 @@
 use client::Client;
 use error::Error;
-use params::{Metadata, Timestamp};
+use params::{Identifiable, Metadata, Timestamp};
 use resources::{Currency, Deleted};
 
 /// The set of parameters that can be used when creating or updating a plan.
 ///
 /// For more details see https://stripe.com/docs/api#create_plan and https://stripe.com/docs/api#update_plan.
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PlanParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<&'a str>,
@@ -32,7 +32,7 @@ pub struct PlanParams<'a> {
 /// The resource representing a Stripe plan.
 ///
 /// For more details see https://stripe.com/docs/api#plans.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Plan {
     pub id: String,
     pub amount: u64,
@@ -74,5 +74,11 @@ impl Plan {
     /// For more details see https://stripe.com/docs/api#delete_plan.
     pub fn delete(client: &Client, plan_id: &str) -> Result<Deleted, Error> {
         client.delete(&format!("/plans/{}", plan_id))
+    }
+}
+
+impl Identifiable for Plan {
+    fn id(&self) -> &str {
+        &self.id
     }
 }
