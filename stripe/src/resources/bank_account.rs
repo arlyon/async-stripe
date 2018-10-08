@@ -1,10 +1,10 @@
-use params::Metadata;
+use params::{Identifiable, Metadata};
 use resources::Currency;
 
 /// The resource representing a Stripe bank account.
 ///
 /// For more details see https://stripe.com/docs/api#customer_bank_account_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BankAccount {
     pub id: String,
     pub object: String,
@@ -21,4 +21,10 @@ pub struct BankAccount {
     pub metadata: Metadata,
     pub routing_number: String,
     pub status: String, // (new, validated, verified, verification_failed, errored)
+}
+
+impl Identifiable for BankAccount {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

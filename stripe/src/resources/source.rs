@@ -1,10 +1,10 @@
 use client::Client;
 use error::Error;
 use ids::TokenId;
-use params::{Metadata, Timestamp};
-use resources::{Address, Currency};
+use params::{Identifiable, Metadata, Timestamp};
+use resources::{Address, Card, Currency};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OwnerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -19,7 +19,7 @@ pub struct OwnerParams<'a> {
 /// The resource representing a Stripe verification code.
 ///
 /// For more details see [https://stripe.com/docs/api#source_object-code_verification](https://stripe.com/docs/api#source_object-code_verification).
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CodeVerification {
     pub attempts_remaining: i64,
     pub status: VerificationStatus,
@@ -28,7 +28,7 @@ pub struct CodeVerification {
 /// An enum representing the possible values of a `CodeVerification`'s `status` field.
 /// 
 /// For more details see [https://stripe.com/docs/api#source_object-code_verification-status](https://stripe.com/docs/api#source_object-code_verification-status)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub enum VerificationStatus {
     #[serde(rename="pending")]
     Pending,
@@ -43,7 +43,7 @@ pub enum VerificationStatus {
 /// The resource representing a Stripe verified owner’s address.
 ///
 /// For more details see [https://stripe.com/docs/api#source_object-owner-verified_address](https://stripe.com/docs/api#source_object-owner-verified_address).
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct VerifiedAddress {
     pub city: Address,
     pub country: String,
@@ -56,7 +56,7 @@ pub struct VerifiedAddress {
 /// The resource representing a Stripe information related to the receiver flow.
 ///
 /// For more details see [https://stripe.com/docs/api#source_object-receiver](https://stripe.com/docs/api#source_object-receiver).
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Receiver {
     pub address: String,
     pub amount_charged: i64,
@@ -67,7 +67,7 @@ pub struct Receiver {
 /// The resource representing a Stripe information related to the redirect flow.
 ///
 /// For more details see [https://stripe.com/docs/api#source_object-redirect](https://stripe.com/docs/api#source_object-redirect).
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Redirect {
     pub failure_reason: Option<String>,
     pub return_url: String,
@@ -78,7 +78,7 @@ pub struct Redirect {
 /// The resource representing a Stripe information about the owner.
 ///
 /// For more details see [https://stripe.com/docs/api#source_object-owner](https://stripe.com/docs/api#source_object-owner).
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Owner {
     pub address: Option<Address>,
     pub email: Option<String>,
@@ -93,7 +93,7 @@ pub struct Owner {
 /// An enum representing the possible values of a `Source`'s `type` field.
 /// 
 /// For more details see [https://stripe.com/docs/api#source_object-type](https://stripe.com/docs/api#source_object-type)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceType {
     AchCreditTransfer,
@@ -119,7 +119,7 @@ pub enum SourceType {
 /// An enum representing the possible values of a `Source`'s `status` field.
 /// 
 /// For more details see [https://stripe.com/docs/api#source_object-status](https://stripe.com/docs/api#source_object-status)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceStatus {
     Canceled,
@@ -134,7 +134,7 @@ pub enum SourceStatus {
 /// An enum representing the possible values of a `Source`'s `flow` field.
 /// 
 /// For more details see [https://stripe.com/docs/api#source_object-flow](https://stripe.com/docs/api#source_object-flow)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceFlow {
     Redirect,
@@ -148,7 +148,7 @@ pub enum SourceFlow {
 /// An enum representing the possible values of a `Source`'s `usage` field.
 /// 
 /// For more details see [https://stripe.com/docs/api#source_object-usage](https://stripe.com/docs/api#source_object-usage)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceUsage {
     Reusable,
@@ -157,7 +157,7 @@ pub enum SourceUsage {
     Other,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RedirectParams<'a> {
     return_url: &'a str,
 }
@@ -190,10 +190,11 @@ pub struct SourceParams<'a> {
 /// The resource representing a Stripe source.
 ///
 /// For more details see [https://stripe.com/docs/api#sources](https://stripe.com/docs/api#sources).
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Source {
     pub id: String,
     pub amount: Option<i64>,
+    pub card: Option<Card>,
     pub client_secret: Option<String>,
     pub code_verification: Option<CodeVerification>,
     pub created: Timestamp,
@@ -247,5 +248,11 @@ impl Source {
         source_id: &str,
     ) -> Result<Source, Error> {
         client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
+    }
+}
+
+impl Identifiable for Source {
+    fn id(&self) -> &str {
+        &self.id
     }
 }

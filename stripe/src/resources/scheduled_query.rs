@@ -1,11 +1,11 @@
-use params::Timestamp;
+use params::{Identifiable, Timestamp};
 use resources::File;
 use serde_json as json;
 
 /// The resource representing a Stripe scheduled query run.
 ///
 /// For more details see https://stripe.com/docs/api#scheduled_query_run_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ScheduledQueryRun {
     pub id: String,
     pub object: String,
@@ -19,3 +19,10 @@ pub struct ScheduledQueryRun {
     pub status: String, // (completed, canceled, failed, timed_out)
     pub title: String,
 }
+
+impl Identifiable for ScheduledQueryRun {
+    fn id(&self) -> &str {
+        &self.id
+    }
+}
+

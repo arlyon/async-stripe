@@ -1,13 +1,13 @@
 use client::Client;
 use error::Error;
-use params::{List, Metadata, RangeQuery, Timestamp};
+use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::{Currency, Discount, Plan};
 use serde_qs as qs;
 
 /// The set of parameters that can be used when creating or updating an invoice.
 ///
 /// For more details see https://stripe.com/docs/api#create_invoice, https://stripe.com/docs/api#update_invoice.
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee: Option<u64>,
@@ -28,7 +28,7 @@ pub struct InvoiceParams<'a> {
     pub forgiven: Option<bool>,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceLineItemParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -59,7 +59,7 @@ pub struct InvoiceListLinesParams {
 }
 */
 
-#[derive(Debug, Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct InvoiceUpcomingParams<'a> {
     pub customer: &'a str, // this is a required param
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -78,7 +78,7 @@ pub struct InvoiceUpcomingParams<'a> {
     pub subscription_trial_end: Option<Timestamp>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct SubscriptionItemParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<&'a str>,
@@ -93,7 +93,7 @@ pub struct SubscriptionItemParams<'a> {
 }
 
 /// Period is a structure representing a start and end dates.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Period {
     pub start: Timestamp,
     pub end: Timestamp,
@@ -102,7 +102,7 @@ pub struct Period {
 /// The resource representing a Stripe invoice line item.
 ///
 /// For more details see https://stripe.com/docs/api#invoice_line_item_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceLineItem {
     pub id: String,
     pub amount: i64,
@@ -123,10 +123,16 @@ pub struct InvoiceLineItem {
     pub item_type: String, // (invoiceitem, subscription)
 }
 
+impl Identifiable for InvoiceLineItem {
+    fn id(&self) -> &str {
+        &self.id
+    }
+}
+
 /// The resource representing a Stripe invoice.
 ///
 /// For more details see https://stripe.com/docs/api#invoice_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Invoice {
     pub id: Option<String>, // id field is not present when retrieving upcoming invoices
     pub amount_due: u64,
@@ -161,7 +167,7 @@ pub struct Invoice {
     pub webhooks_delivered_at: Option<Timestamp>,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<&'a str>,
@@ -239,5 +245,41 @@ impl InvoiceLineItem {
         params: InvoiceLineItemParams,
     ) -> Result<InvoiceLineItem, Error> {
         client.post(&format!("/invoiceitems"), &params)
+    }
+}
+
+/// Since Invoice ID can be empty, special impl for fetching result from list
+impl List<Invoice> {
+    pub fn get_all(self, client: &Client) -> Result<Vec<Invoice>, Error> {
+        let mut data = Vec::new();
+        let mut next = self;
+        loop {
+            if next.has_more {
+                let resp = next.next(&client)?;
+                data.extend(next.data);
+                next = resp;
+            } else {
+                data.extend(next.data);
+                break;
+            }
+        }
+        Ok(data)
+    }
+
+    pub fn next(&self, client: &Client) -> Result<List<Invoice>, Error>  {
+        if let Some(last) = self.data.last() {
+            if let Some(last_id) = &last.id {
+                List::get_next(client, &self.url, last_id)
+            } else {
+                Err(Error::Unexpected("Cannot fetch List data - Stripe returned Invoice with no ID"))
+            }
+        } else {
+            Ok(List {
+                data: Vec::new(),
+                has_more: false,
+                total_count: self.total_count,
+                url: self.url.clone()
+            })
+        }
     }
 }

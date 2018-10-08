@@ -1,7 +1,7 @@
-use params::{List, Metadata, Timestamp};
+use params::{Identifiable, List, Metadata, Timestamp};
 use resources::Sku;
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PackageDimensions {
     pub height: f64,
     pub length: f64,
@@ -12,7 +12,7 @@ pub struct PackageDimensions {
 /// The resource representing a Stripe product.
 ///
 /// For more details see https://stripe.com/docs/api#product_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Product {
     pub id: String,
     pub object: String,
@@ -31,4 +31,10 @@ pub struct Product {
     pub skus: List<Sku>,
     pub updated: Timestamp,
     pub url: Option<String>,
+}
+
+impl Identifiable for Product {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

@@ -1,8 +1,8 @@
-use params::Metadata;
+use params::{Identifiable, Metadata};
 use resources::Currency;
 use serde::ser::SerializeStruct;
 
-#[derive(Debug, Default, Deserialize)]
+#[derive(Clone, Debug, Default, Deserialize)]
 pub struct CardParams<'a> {
     pub exp_month: &'a str, // eg. "12"
     pub exp_year: &'a str,  // eg. "17" or 2017"
@@ -31,7 +31,7 @@ impl<'a> ::serde::Serialize for CardParams<'a> {
 /// The resource representing a Stripe card object.
 ///
 /// For more details see [https://stripe.com/docs/api#card_object](https://stripe.com/docs/api#card_object).
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Card {
     pub id: String,
     pub account: Option<String>,
@@ -118,4 +118,10 @@ pub enum TokenizationMethod {
 
     #[serde(other)]
     Unknown,
+}
+
+impl Identifiable for Card {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

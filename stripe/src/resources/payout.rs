@@ -1,10 +1,10 @@
-use params::{Metadata, Timestamp};
+use params::{Identifiable, Metadata, Timestamp};
 use resources::Currency;
 
 /// The resource representing a Stripe payout.
 ///
 /// For more details see https://stripe.com/docs/api#payout_object.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Payout {
     pub id: String,
     pub object: String,
@@ -26,4 +26,10 @@ pub struct Payout {
     pub status: String,
     #[serde(rename = "type")]
     pub payout_type: String, // (bank_account, card)
+}
+
+impl Identifiable for Payout {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

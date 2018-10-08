@@ -1,7 +1,7 @@
-use params::{Metadata, Timestamp};
+use params::{Identifiable, Metadata, Timestamp};
 use resources::{BalanceTransaction, Currency};
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct EvidenceDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub due_by: Option<Timestamp>,
@@ -13,7 +13,7 @@ pub struct EvidenceDetails {
 /// The resource representing the evidence used to support a dispute.
 ///
 /// For more details see https://stripe.com/docs/api#dispute_evidence_object.
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DisputeEvidenceObject {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub access_activity_log: Option<String>,
@@ -74,7 +74,7 @@ pub struct DisputeEvidenceObject {
 /// The resource representing a Stripe dispute.
 ///
 /// For more details see https://stripe.com/docs/api#disputes.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Dispute {
     pub id: String,
     pub object: String,
@@ -90,4 +90,10 @@ pub struct Dispute {
     pub metadata: Metadata,
     pub reason: Option<String>,
     pub status: Option<String>,
+}
+
+impl Identifiable for Dispute {
+    fn id(&self) -> &str {
+        &self.id
+    }
 }

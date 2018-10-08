@@ -1,4 +1,11 @@
+use client::Client;
+use error::Error;
+use serde::de::DeserializeOwned;
 use std::collections::HashMap;
+
+pub trait Identifiable {
+    fn id(&self) -> &str;
+}
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct List<T> {
@@ -8,10 +15,69 @@ pub struct List<T> {
     pub url: String,
 }
 
+impl<T: Clone> Clone for List<T> {
+    fn clone(&self) -> Self {
+        List {
+            data: self.data.clone(),
+            has_more: self.has_more.clone(),
+            total_count: self.total_count.clone(),
+            url: self.url.clone()
+        }
+    }
+}
+
+impl<T: DeserializeOwned> List<T> {
+    /// Prefer `List::next` when possible
+    pub fn get_next(client: &Client, url: &str, last_id: &str) -> Result<List<T>, Error> {
+        if url.starts_with("/v1/") {
+            let mut url = url.trim_left_matches("/v1/").to_string();
+            url.push_str(&format!("?starting_after={}", last_id));
+
+            client.get(&url)
+        } else {
+            Err(Error::Unsupported("URL for fetching additional data uses different API version"))
+        }
+    }
+}
+
+impl<T: Identifiable + DeserializeOwned> List<T> {
+    /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
+    /// Stripe's default page size
+    pub fn get_all(self, client: &Client) -> Result<Vec<T>, Error> {
+        let mut data = Vec::new();
+        let mut next = self;
+        loop {
+            if next.has_more {
+                let resp = next.next(&client)?;
+                data.extend(next.data);
+                next = resp;
+            } else {
+                data.extend(next.data);
+                break;
+            }
+        }
+        Ok(data)
+    }
+
+    /// Fetch additional page of data from stripe
+    pub fn next(&self, client: &Client) -> Result<List<T>, Error>  {
+        if let Some(last_id) = self.data.last().map(|d| d.id()) {
+            List::get_next(client, &self.url, last_id)
+        } else {
+            Ok(List {
+                data: Vec::new(),
+                has_more: false,
+                total_count: self.total_count,
+                url: self.url.clone()
+            })
+        }
+    }
+}
+
 pub type Metadata = HashMap<String, String>;
 pub type Timestamp = i64;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub struct RangeBounds<T> {
     pub gt: Option<T>,
@@ -33,7 +99,7 @@ impl<T> Default for RangeBounds<T> {
 
 /// A set of generic request parameters that can be used on
 /// list endpoints to filter their results by some timestamp.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum RangeQuery<T> {
     Exact(T),
