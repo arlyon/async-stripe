@@ -23,7 +23,7 @@ pub struct ChargeOutcome {
 }
 
 /// An enum representing the possible values of a `ChargeOutcome`'s `type` field.
-/// 
+///
 /// For more details see [https://stripe.com/docs/api#charge_object-outcome-type](https://stripe.com/docs/api#charge_object-outcome-type)
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Copy, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -198,7 +198,7 @@ pub struct ChargeParams<'a> {
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 #[serde(rename_all = "snake_case")]
-pub enum SourceType {
+pub enum SourceFilterType {
     All,
     AlipayAccount,
     BankAccount,
@@ -208,33 +208,33 @@ pub enum SourceType {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceFilter {
-    pub object: SourceType,
+    pub object: SourceFilterType,
 }
 
 impl SourceFilter {
     pub fn all() -> SourceFilter {
         SourceFilter {
-            object: SourceType::All,
+            object: SourceFilterType::All,
         }
     }
     pub fn alipay() -> SourceFilter {
         SourceFilter {
-            object: SourceType::AlipayAccount,
+            object: SourceFilterType::AlipayAccount,
         }
     }
     pub fn bank() -> SourceFilter {
         SourceFilter {
-            object: SourceType::BankAccount,
+            object: SourceFilterType::BankAccount,
         }
     }
     pub fn bitcoin() -> SourceFilter {
         SourceFilter {
-            object: SourceType::BitcoinReceiver,
+            object: SourceFilterType::BitcoinReceiver,
         }
     }
     pub fn card() -> SourceFilter {
         SourceFilter {
-            object: SourceType::Card,
+            object: SourceFilterType::Card,
         }
     }
 }
