@@ -2,7 +2,7 @@ use client::Client;
 use error::Error;
 use ids::TokenId;
 use params::{Identifiable, Metadata, Timestamp};
-use resources::{Address, Card, Currency};
+use resources::{AchCreditTransfer, Address, Card, Currency};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OwnerParams<'a> {
@@ -193,6 +193,7 @@ pub struct SourceParams<'a> {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Source {
     pub id: String,
+    pub ach_credit_transfer: Option<AchCreditTransfer>,
     pub amount: Option<i64>,
     pub card: Option<Card>,
     pub client_secret: Option<String>,
