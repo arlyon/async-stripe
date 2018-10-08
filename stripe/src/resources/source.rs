@@ -26,7 +26,7 @@ pub struct CodeVerification {
 }
 
 /// An enum representing the possible values of a `CodeVerification`'s `status` field.
-/// 
+///
 /// For more details see [https://stripe.com/docs/api#source_object-code_verification-status](https://stripe.com/docs/api#source_object-code_verification-status)
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub enum VerificationStatus {
@@ -91,7 +91,7 @@ pub struct Owner {
 }
 
 /// An enum representing the possible values of a `Source`'s `type` field.
-/// 
+///
 /// For more details see [https://stripe.com/docs/api#source_object-type](https://stripe.com/docs/api#source_object-type)
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -101,7 +101,7 @@ pub enum SourceType {
     Alipay,
     Bancontact,
     Card,
-    CardPresent, 
+    CardPresent,
     Eps,
     Giropay,
     Ideal,
@@ -117,7 +117,7 @@ pub enum SourceType {
 }
 
 /// An enum representing the possible values of a `Source`'s `status` field.
-/// 
+///
 /// For more details see [https://stripe.com/docs/api#source_object-status](https://stripe.com/docs/api#source_object-status)
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -132,7 +132,7 @@ pub enum SourceStatus {
 }
 
 /// An enum representing the possible values of a `Source`'s `flow` field.
-/// 
+///
 /// For more details see [https://stripe.com/docs/api#source_object-flow](https://stripe.com/docs/api#source_object-flow)
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -146,9 +146,9 @@ pub enum SourceFlow {
 }
 
 /// An enum representing the possible values of a `Source`'s `usage` field.
-/// 
+///
 /// For more details see [https://stripe.com/docs/api#source_object-usage](https://stripe.com/docs/api#source_object-usage)
-#[derive(Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceUsage {
     Reusable,
