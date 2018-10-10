@@ -62,6 +62,25 @@ pub struct Card {
     pub tokenization_method: Option<TokenizationMethod>,
 }
 
+/// Card details returned as part of a `Source` object
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CardShort {
+    pub exp_month: i32,
+    pub exp_year: i32,
+    pub address_zip_check: Option<CheckResult>,
+    pub brand: String,
+    pub country: String,
+    pub cvc_check: Option<CheckResult>,
+    pub fingerprint: Option<String>,
+    pub funding: CardType,
+    pub last4: String,
+    pub three_d_secure: Option<String>,
+    pub name: Option<String>,
+    pub address_line1_check: Option<String>,
+    pub tokenization_method: Option<TokenizationMethod>,
+    pub dynamic_last4: Option<String>,
+}
+
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 pub enum CheckResult {
     #[serde(rename = "pass")]
