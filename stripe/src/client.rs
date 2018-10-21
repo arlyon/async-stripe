@@ -1,11 +1,11 @@
 use error::{Error, ErrorObject, RequestError};
-use hyper;
-use hyper::client::RequestBuilder;
-use hyper::header::{Authorization, Basic, ContentType, Headers};
-use hyper::net::HttpsConnector;
+use reqwest;
+use reqwest::RequestBuilder;
+use reqwest::header::{
+    HeaderMap, HeaderName, HeaderValue, AUTHORIZATION,
+};
 use serde;
 use serde_json as json;
-use serde_qs as qs;
 use std::io::Read;
 
 #[derive(Clone, Default)]
@@ -14,20 +14,11 @@ pub struct Params {
     pub client_id: Option<String>,
 }
 
-// TODO: #[derive(Clone)]
+#[derive(Clone)]
 pub struct Client {
-    client: hyper::Client,
+    client: reqwest::Client,
     secret_key: String,
     params: Params,
-}
-
-// TODO: With Hyper 0.11.x, hyper::Client implements clone, and we can just derive this
-impl Clone for Client {
-    fn clone(&self) -> Self {
-        let mut client = Client::new(self.secret_key.as_str());
-        client.params = self.params.clone();
-        client
-    }
 }
 
 impl Client {
@@ -35,27 +26,8 @@ impl Client {
         format!("https://api.stripe.com/v1/{}", &path[1..])
     }
 
-    #[cfg(feature = "with-rustls")]
     pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
-        use hyper_rustls::TlsClient;
-
-        let tls = TlsClient::new();
-        let connector = HttpsConnector::new(tls);
-        let client = hyper::Client::with_connector(connector);
-        Client {
-            client: client,
-            secret_key: secret_key.into(),
-            params: Params::default(),
-        }
-    }
-
-    #[cfg(feature = "with-openssl")]
-    pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
-        use hyper_openssl::OpensslClient;
-
-        let tls = OpensslClient::new().unwrap();
-        let connector = HttpsConnector::new(tls);
-        let client = hyper::Client::with_connector(connector);
+        let client = reqwest::Client::new();
         Client {
             client: client,
             secret_key: secret_key.into(),
@@ -93,8 +65,7 @@ impl Client {
         params: P,
     ) -> Result<T, Error> {
         let url = Client::url(path);
-        let body = qs::to_string(&params)?;
-        let request = self.client.post(&url).headers(self.headers()).body(&body);
+        let request = self.client.post(&url).headers(self.headers()).form(&params);
         send(request)
     }
 
@@ -110,18 +81,23 @@ impl Client {
         send(request)
     }
 
-    fn headers(&self) -> Headers {
-        let mut headers = Headers::new();
-        headers.set(Authorization(Basic {
-            username: self.secret_key.clone(),
-            password: None,
-        }));
-        headers.set(ContentType::form_url_encoded());
+    fn headers(&self) -> HeaderMap {
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            AUTHORIZATION,
+            HeaderValue::from_str(&format!("Bearer {}", self.secret_key)).unwrap(),
+        );
         if let Some(ref account) = self.params.stripe_account {
-            headers.set_raw("Stripe-Account", vec![account.as_bytes().to_vec()]);
+            headers.insert(
+                HeaderName::from_static("stripe-account"),
+                HeaderValue::from_str(account).unwrap(),
+            );
         }
         if let Some(ref client_id) = self.params.client_id {
-            headers.set_raw("Client-ID", vec![client_id.as_bytes().to_vec()]);
+            headers.insert(
+                HeaderName::from_static("client-id"),
+                HeaderValue::from_str(client_id).unwrap(),
+            );
         }
         headers
     }
@@ -132,18 +108,17 @@ fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Er
     let mut body = String::with_capacity(4096);
     response.read_to_string(&mut body)?;
 
-    let status = response.status_raw().0;
-    match status {
-        200...299 => {}
-        _ => {
-            let mut err = json::from_str(&body).unwrap_or_else(|err| {
-                let mut req = ErrorObject { error: RequestError::default() };
-                req.error.message = Some(format!("failed to deserialize error: {}", err));
-                req
-            });
-            err.error.http_status = status;
-            return Err(Error::from(err.error));
-        }
+    let status = response.status();
+    if !status.is_success() {
+        let mut err = json::from_str(&body).unwrap_or_else(|err| {
+            let mut req = ErrorObject {
+                error: RequestError::default(),
+            };
+            req.error.message = Some(format!("failed to deserialize error: {}", err));
+            req
+        });
+        err.error.http_status = status.as_u16();
+        return Err(Error::from(err.error));
     }
 
     json::from_str(&body).map_err(|err| Error::from(err))
