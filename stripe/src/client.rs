@@ -11,6 +11,7 @@ use std::io::Read;
 #[derive(Clone, Default)]
 pub struct Params {
     pub stripe_account: Option<String>,
+    pub client_id: Option<String>,
 }
 
 // TODO: #[derive(Clone)]
@@ -118,6 +119,9 @@ impl Client {
         headers.set(ContentType::form_url_encoded());
         if let Some(ref account) = self.params.stripe_account {
             headers.set_raw("Stripe-Account", vec![account.as_bytes().to_vec()]);
+        }
+        if let Some(ref client_id) = self.params.client_id {
+            headers.set_raw("Client-ID", vec![client_id.as_bytes().to_vec()]);
         }
         headers
     }
