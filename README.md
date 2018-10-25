@@ -72,7 +72,7 @@ This crate supports impersonating a custom connect account.
 To impersonate the account get a new Client and pass in the account id.
 
 ```rust
-  let client = client.with(stripe::Params{stripe_account: Some("acct_ABC")});
+  let client = client.with(stripe::Params{stripe_account: Some("acct_ABC"), client_id: Some("ca_XYZ")});
 
   // Then, all requests can be made normally
   let params = stripe::CustomerListParams::default();
