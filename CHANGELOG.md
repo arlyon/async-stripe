@@ -1,3 +1,30 @@
+# Version 0.6.0
+
+## New Features / Improvements
+
+ * The `List<T>` type has new `next` and `get_all` methods for pagination.
+ * Struct types more consistently implement `Clone`.
+ * Enum types more consistently implement `Copy`, `Eq`, and `Hash`.
+ * More source details (e.g. `ach_credit_transfer`, etc) were added to `Source`.
+ * The blocking api is now backed by `reqwest` instead of `hyper:0.10` so that
+   the library is no longer pinned to outdated dependencies.
+ * Added the "webhooks" feature flag for processing events (enabled by default)
+   to convert `hmac` and `sha2` to optional dependencies.
+
+## Breaking Changes
+
+ * (Mostly from 0.5.x series) `Charge`, `Card`, and `Source` have been updated
+   to use new enum values rather than `String`.
+ * The `SourceType` enum used by __ChargeListParams__ has been renamed to
+   `SourceFilterType` to remove a conflict with the `SourceType` enum used by
+   the type field of __Source__.
+
+## Fixes
+
+ * All `Address` fields have been updated to be optional.
+ * The `Client-Id` param has been added to params to make support for
+   impersonating __Connect Accounts__ compatible with newer stripe api versions.
+
 # Version 0.5.3
 
 ## Changes
