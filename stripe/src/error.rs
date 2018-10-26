@@ -1,4 +1,4 @@
-extern crate hyper;
+extern crate reqwest;
 extern crate serde_json as json;
 extern crate serde_qs as qs;
 
@@ -14,7 +14,7 @@ pub enum Error {
     /// An error reported by Stripe.
     Stripe(RequestError),
     /// A networking error communicating with the Stripe server.
-    Http(hyper::Error),
+    Http(reqwest::Error),
     /// An error reading the response body.
     Io(io::Error),
     /// An error converting between wire format and Rust types.
@@ -22,7 +22,7 @@ pub enum Error {
     /// Indicates an operation not supported (yet?) by this library.
     Unsupported(&'static str),
     /// An invariant has been violated. Either a bug in this library or Stripe
-    Unexpected(&'static str)
+    Unexpected(&'static str),
 }
 
 impl fmt::Display for Error {
@@ -69,8 +69,8 @@ impl From<RequestError> for Error {
     }
 }
 
-impl From<hyper::Error> for Error {
-    fn from(err: hyper::Error) -> Error {
+impl From<reqwest::Error> for Error {
+    fn from(err: reqwest::Error) -> Error {
         Error::Http(err)
     }
 }
