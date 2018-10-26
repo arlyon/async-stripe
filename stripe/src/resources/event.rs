@@ -1,10 +1,10 @@
 use chrono::Utc;
 use error::WebhookError;
-use hmac::{Hmac, Mac};
 use resources::*;
 use serde_json as json;
-use sha2::Sha256;
 use std::str;
+#[cfg(feature = "webhooks")] use hmac::{Hmac, Mac};
+#[cfg(feature = "webhooks")] use sha2::Sha256;
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 pub enum EventType {
@@ -201,8 +201,10 @@ pub enum EventObject {
     Transfer(Transfer),
 }
 
+#[cfg(feature = "webhooks")]
 pub struct Webhook {}
 
+#[cfg(feature = "webhooks")]
 impl Webhook {
     pub fn construct_event(
         payload: String,
