@@ -1,6 +1,6 @@
 use client::Client;
 use error::Error;
-use ids::SourceId;
+use ids::PaymentSourceId;
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::{Address, Currency, Deleted, Discount, PaymentSourceParams, Source, Subscription};
 use serde_qs as qs;
@@ -22,7 +22,7 @@ pub struct CustomerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_vat_id: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_source: Option<SourceId>,
+    pub default_source: Option<PaymentSourceId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -62,7 +62,7 @@ pub struct Customer {
     pub business_vat_id: Option<String>,
     pub created: u64,
     pub currency: Option<Currency>,
-    pub default_source: Option<SourceId>,
+    pub default_source: Option<PaymentSourceId>,
     pub delinquent: bool,
     pub desc: Option<String>,
     pub discount: Option<Discount>,

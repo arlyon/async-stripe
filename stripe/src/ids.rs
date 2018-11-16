@@ -1,96 +1,141 @@
-#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct TokenId(String);
+macro_rules! id {
+    ($newtype_name:ident, $prefix:expr) => {
+        #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+        pub struct $newtype_name(String);
 
-impl ::std::fmt::Display for TokenId {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl ::std::str::FromStr for TokenId {
-    type Err = ParseIdError;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if !s.starts_with("tok_") {
-            Err(ParseIdError { prefix: "tok_" })
-        } else {
-            Ok(TokenId(s.to_owned()))
+        impl $newtype_name {
+            #[inline]
+            pub fn prefix() -> &'static str {
+                $prefix
+            }
         }
-    }
-}
 
-impl ::serde::Serialize for TokenId {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::ser::Serializer,
-    {
-        self.to_string().serialize(serializer)
-    }
-}
-
-impl<'de> ::serde::Deserialize<'de> for TokenId {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::de::Deserializer<'de>,
-    {
-        let s: String = ::serde::Deserialize::deserialize(deserializer)?;
-        s.parse::<Self>().map_err(|e| ::serde::de::Error::custom(e))
-    }
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
-pub struct SourceId(String);
-
-impl ::std::fmt::Display for SourceId {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl ::std::str::FromStr for SourceId {
-    type Err = ParseIdError;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if !s.starts_with("src_") {
-            Err(ParseIdError { prefix: "src_" })
-        } else {
-            Ok(SourceId(s.to_owned()))
+        impl ::std::fmt::Display for $newtype_name {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                self.0.fmt(f)
+            }
         }
-    }
+
+        impl ::std::str::FromStr for $newtype_name {
+            type Err = ParseIdError;
+
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                if !s.starts_with($prefix) {
+                    Err(ParseIdError {
+                        typename: stringify!($newtype_name),
+                        expected: stringify!(id to start with $prefix),
+                    })
+                } else {
+                    Ok($newtype_name(s.to_owned()))
+                }
+            }
+        }
+
+        impl ::serde::Serialize for $newtype_name {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where S: ::serde::ser::Serializer
+            {
+                self.to_string().serialize(serializer)
+            }
+        }
+
+        impl<'de> ::serde::Deserialize<'de> for $newtype_name {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where D: ::serde::de::Deserializer<'de>
+            {
+                let s: String = ::serde::Deserialize::deserialize(deserializer)?;
+                s.parse::<Self>().map_err(|e| ::serde::de::Error::custom(e))
+            }
+        }
+    };
+
+    ($enum_name:ident { $( $variant_name:ident($($variant_type:tt)*) ),* $(,)* }) => {
+        #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+        pub enum $enum_name {$(
+            $variant_name($($variant_type)*),
+        )*}
+
+        impl ::std::fmt::Display for $enum_name {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                match *self {$(
+                    $enum_name::$variant_name(ref id) => id.fmt(f),
+                )*}
+            }
+        }
+
+        impl ::std::str::FromStr for $enum_name {
+            type Err = ParseIdError;
+
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                let prefix = s.find('_')
+                    .map(|i| &s[0..i+1])
+                    .ok_or_else(|| ParseIdError {
+                        typename: stringify!($enum_name),
+                        expected: "id to start with a prefix (as in 'prefix_')"
+                    })?;
+
+                match prefix {
+                    $(_ if prefix == $($variant_type)*::prefix() => {
+                        Ok($enum_name::$variant_name(s.parse()?))
+                    })*
+                    _ => {
+                        Err(ParseIdError {
+                            typename: stringify!($enum_name),
+                            expected: "unknown id prefix",
+                        })
+                    }
+                }
+            }
+        }
+
+        impl ::serde::Serialize for $enum_name {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where S: ::serde::ser::Serializer
+            {
+                self.to_string().serialize(serializer)
+            }
+        }
+
+        impl<'de> ::serde::Deserialize<'de> for $enum_name {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where D: ::serde::de::Deserializer<'de>
+            {
+                let s: String = ::serde::Deserialize::deserialize(deserializer)?;
+                s.parse::<Self>().map_err(|e| ::serde::de::Error::custom(e))
+            }
+        }
+
+        $(
+            impl From<$($variant_type)*> for $enum_name {
+                fn from(id: $($variant_type)*) -> Self {
+                    $enum_name::$variant_name(id)
+                }
+            }
+        )*
+    };
 }
 
-impl ::serde::Serialize for SourceId {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: ::serde::ser::Serializer,
-    {
-        self.to_string().serialize(serializer)
-    }
-}
-
-impl<'de> ::serde::Deserialize<'de> for SourceId {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::serde::de::Deserializer<'de>,
-    {
-        let s: String = ::serde::Deserialize::deserialize(deserializer)?;
-        s.parse::<Self>().map_err(|e| ::serde::de::Error::custom(e))
-    }
-}
-
-#[derive(Debug)]
-pub struct ParseIdError {
-    prefix: &'static str,
-}
+#[derive(Clone, Debug)]
+pub struct ParseIdError { typename: &'static str, expected: &'static str }
 
 impl ::std::fmt::Display for ParseIdError {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        write!(f, "expected id to start with '{}'", self.prefix)
+        write!(f, "invalid `{}`, expected {}", self.typename, self.expected)
     }
 }
 
 impl ::std::error::Error for ParseIdError {
     fn description(&self) -> &str {
-        "error parsing id"
+        "error parsing an id"
     }
 }
+
+id!(BankAccountId, "ba_");
+id!(CardId, "card_");
+id!(SourceId, "src_");
+id!(TokenId, "tok_");
+id!(PaymentSourceId {
+    BankAcccount(BankAccountId),
+    Card(CardId),
+    Source(SourceId),
+});
