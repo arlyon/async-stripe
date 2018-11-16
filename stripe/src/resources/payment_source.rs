@@ -75,7 +75,9 @@ impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
 pub enum PaymentSource {
-    // BitcoinReceiver(...),
     Card(Card),
     Source(Source),
+
+    // FIXME: Add `BankAccount` variant after determing which struct is
+    //        the correct representation of bank accounts in this context.
 }
