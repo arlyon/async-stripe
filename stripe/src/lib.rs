@@ -49,6 +49,8 @@
 //! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
 //! ```
 
+#![deny(warnings)]
+
 extern crate chrono;
 extern crate hmac;
 extern crate reqwest;
