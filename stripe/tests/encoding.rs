@@ -1,5 +1,8 @@
-#[macro_use] extern crate serde_json as json;
-extern crate serde_qs as qs;
+#![recursion_limit="256"]
+
+#[macro_use]
+extern crate serde_json;
+extern crate serde_qs;
 extern crate stripe;
 
 #[test]
@@ -21,17 +24,17 @@ fn display_currency() {
 #[test]
 fn serialize_currency() {
     use stripe::Currency;
-    assert_eq!(json::to_string(&Currency::AED).unwrap(), "\"aed\"");
-    assert_eq!(json::to_string(&Currency::USD).unwrap(), "\"usd\"");
-    assert_eq!(json::to_string(&Currency::ZMW).unwrap(), "\"zmw\"");
+    assert_eq!(serde_json::to_string(&Currency::AED).unwrap(), "\"aed\"");
+    assert_eq!(serde_json::to_string(&Currency::USD).unwrap(), "\"usd\"");
+    assert_eq!(serde_json::to_string(&Currency::ZMW).unwrap(), "\"zmw\"");
 }
 
 #[test]
 fn deserialize_currency() {
     use stripe::Currency;
-    assert_eq!(json::from_str::<Currency>("\"aed\"").unwrap(), Currency::AED);
-    assert_eq!(json::from_str::<Currency>("\"usd\"").unwrap(), Currency::USD);
-    assert_eq!(json::from_str::<Currency>("\"zmw\"").unwrap(), Currency::ZMW);
+    assert_eq!(serde_json::from_str::<Currency>("\"aed\"").unwrap(), Currency::AED);
+    assert_eq!(serde_json::from_str::<Currency>("\"usd\"").unwrap(), Currency::USD);
+    assert_eq!(serde_json::from_str::<Currency>("\"zmw\"").unwrap(), Currency::ZMW);
 }
 
 #[test]
@@ -44,22 +47,22 @@ fn serialize_range_query() {
         lt: Some(1504233902),
         lte: None,
     });
-    assert_eq!(urldecode(qs::to_string(&query).unwrap()), "gte=1501598702&lt=1504233902");
+    assert_eq!(urldecode(serde_qs::to_string(&query).unwrap()), "gte=1501598702&lt=1504233902");
 
     let mut params = CustomerListParams::default();
     params.created = Some(RangeQuery::eq(1501598702));
     params.limit = Some(3);
-    assert_eq!(urldecode(qs::to_string(&params).unwrap()), "created=1501598702&limit=3");
+    assert_eq!(urldecode(serde_qs::to_string(&params).unwrap()), "created=1501598702&limit=3");
 
     let mut params = CustomerListParams::default();
     params.created = Some(RangeQuery::gte(1501598702));
     params.limit = Some(3);
-    assert_eq!(urldecode(qs::to_string(&params).unwrap()), "created[gte]=1501598702&limit=3");
+    assert_eq!(urldecode(serde_qs::to_string(&params).unwrap()), "created[gte]=1501598702&limit=3");
 
     let mut params = CustomerListParams::default();
     params.created = Some(query);
     params.limit = Some(3);
-    let encoded = urldecode(qs::to_string(&params).unwrap());
+    let encoded = urldecode(serde_qs::to_string(&params).unwrap());
     assert_eq!(encoded, "created[gte]=1501598702&created[lt]=1504233902&limit=3");
 }
 
@@ -90,8 +93,8 @@ fn deserialize_payment_source_params() {
     ];
 
     for (value, expected) in &examples {
-        let input = json::to_string(value).unwrap();
-        let parsed: Option<PaymentSourceParams> = json::from_str(&input).ok();
+        let input = serde_json::to_string(value).unwrap();
+        let parsed: Option<PaymentSourceParams> = serde_json::from_str(&input).ok();
         assert_eq!(json!(parsed), json!(expected));
     }
 }
@@ -121,7 +124,156 @@ fn serialize_payment_source_params() {
     ];
 
     for (params, expected) in &examples {
-        let value = json::to_value(params).unwrap();
+        let value = serde_json::to_value(params).unwrap();
         assert_eq!(&value, expected);
     }
+}
+
+#[test]
+fn deserialize_customer_with_card() {
+    use stripe::Customer;
+
+    let example = json!({
+      "id": "cus_1234",
+      "object": "customer",
+      "account_balance": 0,
+      "created": 1542631579,
+      "currency": null,
+      "default_source": "card_ABCD",
+      "delinquent": false,
+      "description": "Customer for green.tea@example.com",
+      "discount": null,
+      "email": null,
+      "invoice_prefix": "99999AA",
+      "livemode": false,
+      "metadata": {},
+      "shipping": null,
+      "sources": {
+        "object": "list",
+        "data": [
+          {
+            "id": "card_ABCD",
+            "object": "card",
+            "address_city": null,
+            "address_country": null,
+            "address_line1": null,
+            "address_line1_check": null,
+            "address_line2": null,
+            "address_state": null,
+            "address_zip": null,
+            "address_zip_check": null,
+            "brand": "American Express",
+            "country": "US",
+            "customer": "cus_1234",
+            "cvc_check": null,
+            "dynamic_last4": null,
+            "exp_month": 11,
+            "exp_year": 2019,
+            "fingerprint": "ffff9999ffff9999",
+            "funding": "credit",
+            "last4": "4242",
+            "metadata": {},
+            "name": null,
+            "tokenization_method": null
+          }
+        ],
+        "has_more": false,
+        "total_count": 1,
+        "url": "/v1/customers/cus_1234/sources"
+      },
+      "subscriptions": {
+        "object": "list",
+        "data": [],
+        "has_more": false,
+        "total_count": 0,
+        "url": "/v1/customers/cus_1234/subscriptions"
+      },
+      "tax_info": null,
+      "tax_info_verification": null
+    });
+    let result = serde_json::from_value::<Customer>(example);
+    assert!(result.is_ok(), "expected ok; was {:?}", result);
+}
+
+#[test]
+fn deserialize_customer_with_source() {
+    use stripe::Customer;
+
+    let example = json!({
+      "id": "cus_5678",
+      "object": "customer",
+      "account_balance": 0,
+      "created": 1538150891,
+      "currency": null,
+      "default_source": "src_EFGH",
+      "delinquent": false,
+      "description": null,
+      "discount": null,
+      "email": null,
+      "invoice_prefix": "00AA00AA",
+      "livemode": false,
+      "metadata": {},
+      "shipping": null,
+      "sources": {
+        "object": "list",
+        "data": [
+          {
+            "id": "src_EFGH",
+            "object": "source",
+            "amount": null,
+            "card": {
+              "exp_month": 9,
+              "exp_year": 2019,
+              "brand": "Visa",
+              "country": "US",
+              "fingerprint": "AAAA1111aaaa2222",
+              "funding": "credit",
+              "last4": "4242",
+              "three_d_secure": "optional",
+              "name": null,
+              "address_line1_check": null,
+              "address_zip_check": null,
+              "cvc_check": null,
+              "tokenization_method": null,
+              "dynamic_last4": null
+            },
+            "client_secret": "src_client_secret_SUPERSECRETTECH",
+            "created": 1538150891,
+            "currency": null,
+            "customer": "cus_5678",
+            "flow": "none",
+            "livemode": false,
+            "metadata": {},
+            "owner": {
+              "address": null,
+              "email": null,
+              "name": null,
+              "phone": null,
+              "verified_address": null,
+              "verified_email": null,
+              "verified_name": null,
+              "verified_phone": null
+            },
+            "statement_descriptor": "My Company",
+            "status": "chargeable",
+            "type": "card",
+            "usage": "reusable"
+          }
+        ],
+        "has_more": false,
+        "total_count": 1,
+        "url": "/v1/customers/cus_5678/sources"
+      },
+      "subscriptions": {
+        "object": "list",
+        "data": [],
+        "has_more": false,
+        "total_count": 0,
+        "url": "/v1/customers/cus_5678/subscriptions"
+      },
+      "tax_info": null,
+      "tax_info_verification": null
+    });
+    let result = serde_json::from_value::<Customer>(example);
+    assert!(result.is_ok(), "expected ok; was {:?}", result);
 }

@@ -1,8 +1,9 @@
-# Version 0.7.0
+# Version 0.7.0 and 0.7.1
 
 ## Fixes
 
  * The type of `Customer.default_source` has changed from `SourceId` to `PaymentSourceId`.
+ * The type of `Customer.sources` has changed from `List<Source>` to `List<PaymentSource>`.
 
 # Version 0.6.0
 

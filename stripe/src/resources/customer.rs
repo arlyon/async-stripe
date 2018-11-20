@@ -2,7 +2,7 @@ use client::Client;
 use error::Error;
 use ids::PaymentSourceId;
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use resources::{Address, Currency, Deleted, Discount, PaymentSourceParams, Source, Subscription};
+use resources::{Address, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
 use serde_qs as qs;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -70,7 +70,7 @@ pub struct Customer {
     pub livemode: bool,
     pub metadata: Metadata,
     pub shipping: Option<CustomerShippingDetails>,
-    pub sources: List<Source>,
+    pub sources: List<PaymentSource>,
     pub subscriptions: List<Subscription>,
 }
 
