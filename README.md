@@ -1,5 +1,4 @@
-stripe-rust
-===========
+# stripe-rust
 
 [![stripe-rust on Travis CI](https://travis-ci.org/wyyerd/stripe-rs.svg?branch=master)](https://travis-ci.org/wyyerd/stripe-rs)
 [![stripe-rust on crates.io](https://img.shields.io/crates/v/stripe-rust.svg)](https://crates.io/crates/stripe-rust)
@@ -10,13 +9,13 @@ Rust API bindings for the Stripe v1 HTTP API.
 This is compatible with all currently supported versions of Stripe's client-side
 libraries including https://js.stripe.com/v2/ and https://js.stripe.com/v3/.
 
-
 ## Usage
+
 Put this in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stripe-rust = "0.7.1"
+stripe-rust = "0.7.2"
 ```
 
 And this in your crate root:
@@ -35,7 +34,7 @@ To get started, we need to create a client:
   let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 ```
 
-Then we can begin making requests as we'd like.  Most Stripe requests accept
+Then we can begin making requests as we'd like. Most Stripe requests accept
 many optional parameters, so we usually get the `::default()` params and then
 set the ones we want from there.
 
@@ -67,6 +66,7 @@ to determine which fields are required for either request.
 ```
 
 ### Using Custom Connect accounts
+
 This crate supports impersonating a custom connect account.
 
 To impersonate the account get a new Client and pass in the account id.

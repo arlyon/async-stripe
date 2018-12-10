@@ -1,3 +1,10 @@
+# Version 0.7.2
+
+## Fixes
+
+- Fix sending `metadata` (and other nested params) as part of a POST request;
+  e.g. `Customer::create`, `Customer::update`, etc.
+
 # Version 0.7.0 and 0.7.1
 
 ## Fixes
