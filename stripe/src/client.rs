@@ -5,7 +5,8 @@ use reqwest::header::{
     HeaderMap, HeaderName, HeaderValue, AUTHORIZATION,
 };
 use serde;
-use serde_json as json;
+use serde_json;
+use serde_qs;
 use std::io::Read;
 
 #[derive(Clone, Default)]
@@ -59,13 +60,14 @@ impl Client {
         send(request)
     }
 
-    pub fn post<T: serde::de::DeserializeOwned, P: serde::Serialize>(
+    pub fn post<T: serde::de::DeserializeOwned, F: serde::Serialize>(
         &self,
         path: &str,
-        params: P,
+        form: F,
     ) -> Result<T, Error> {
         let url = Client::url(path);
-        let request = self.client.post(&url).headers(self.headers()).form(&params);
+        let request = self.client.post(&url).headers(self.headers());
+        let request = with_querystring(request, &form)?;
         send(request)
     }
 
@@ -103,6 +105,16 @@ impl Client {
     }
 }
 
+/// Serialize the form content using `serde_qs` instead of `serde_urlencoded`
+///
+/// See https://github.com/seanmonstar/reqwest/issues/274
+fn with_querystring<T: serde::Serialize>(request: RequestBuilder, form: &T) -> Result<RequestBuilder, Error> {
+    let key = reqwest::header::CONTENT_TYPE;
+    let value = reqwest::header::HeaderValue::from_static("application/x-www-form-urlencoded");
+    let body = serde_qs::to_string(form)?;
+    Ok(request.header(key, value).body(body))
+}
+
 fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Error> {
     let mut response = request.send()?;
     let mut body = String::with_capacity(4096);
@@ -110,7 +122,7 @@ fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Er
 
     let status = response.status();
     if !status.is_success() {
-        let mut err = json::from_str(&body).unwrap_or_else(|err| {
+        let mut err = serde_json::from_str(&body).unwrap_or_else(|err| {
             let mut req = ErrorObject {
                 error: RequestError::default(),
             };
@@ -121,5 +133,38 @@ fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Er
         return Err(Error::from(err.error));
     }
 
-    json::from_str(&body).map_err(|err| Error::from(err))
+    serde_json::from_str(&body).map_err(|err| Error::from(err))
+}
+
+#[cfg(test)]
+mod tests {
+    use ::{Client, CustomerParams};
+    use std::collections::HashMap;
+    use super::with_querystring;
+
+    #[test]
+    fn serialize_metadata() {
+        let mut metadata = HashMap::new();
+        metadata.insert("any".to_string(), "thing".to_string());
+        let form = CustomerParams {
+            email: Some("jdoe@example.org"),
+            metadata: Some(metadata),
+            // ...
+            source: None,
+            default_source: None,
+            account_balance: None,
+            business_vat_id: None,
+            coupon: None,
+            description: None,
+            shipping: None,
+        };
+        let url = Client::url("/");
+        let http = reqwest::Client::new();
+        let result = with_querystring(http.post(&url), &form).and_then(|x| Ok(x.build()?));
+        assert!(result.is_ok(), "Failed to build request: {:?}", result);
+        if let Ok(request) = result {
+            let body = format!("{:?}", request.body());
+            assert_eq!(body, "Some(Body { kind: b\"email=jdoe%40example.org&metadata[any]=thing\" })");
+        }
+    }
 }
