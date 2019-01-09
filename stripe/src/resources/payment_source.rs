@@ -1,11 +1,13 @@
 use ids::{SourceId, TokenId};
-use resources::{Card, CardParams, Source};
+use params::Identifiable;
+use resources::{BankAccount, BankAccountParams, Card, CardParams, Source};
 
 #[derive(Clone, Debug)]
 pub enum PaymentSourceParams<'a> {
     Source(SourceId),
     Token(TokenId),
     Card(CardParams<'a>),
+    BankAccount(BankAccountParams<'a>),
 }
 
 impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams<'de> {
@@ -23,6 +25,7 @@ impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams<'de> {
         #[serde(tag = "object", rename_all = "snake_case")]
         pub enum PaymentSourceObjectType {
             Card(Any),
+            BankAccount(Any),
         }
 
         // Try deserializing the untagged variants first
@@ -44,6 +47,11 @@ impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams<'de> {
                 return <CardParams as Deserialize>::deserialize(deserializer)
                     .map(PaymentSourceParams::Card);
             }
+            Ok(PaymentSourceObjectType::BankAccount(_)) => {
+                let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
+                return <BankAccountParams as Deserialize>::deserialize(deserializer)
+                    .map(PaymentSourceParams::BankAccount);
+            },
             _ => {}
         }
 
@@ -60,6 +68,7 @@ impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
         #[serde(tag = "object", rename_all = "snake_case")]
         enum PaymentSourceTagged<'a> {
             Card(&'a CardParams<'a>),
+            BankAccount(&'a BankAccountParams<'a>)
         }
 
         match self {
@@ -67,7 +76,10 @@ impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
             PaymentSourceParams::Token(id) => id.serialize(serializer),
             PaymentSourceParams::Card(card) => {
                 PaymentSourceTagged::Card(card).serialize(serializer)
-            }
+            },
+            PaymentSourceParams::BankAccount(account) => {
+                PaymentSourceTagged::BankAccount(account).serialize(serializer)
+            },
         }
     }
 }
@@ -77,7 +89,15 @@ impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
 pub enum PaymentSource {
     Card(Card),
     Source(Source),
+    BankAccount(BankAccount),
+}
 
-    // FIXME: Add `BankAccount` variant after determing which struct is
-    //        the correct representation of bank accounts in this context.
+impl Identifiable for PaymentSource {
+    fn id(&self) -> &str {
+        match self {
+            PaymentSource::Card(c) => c.id(),
+            PaymentSource::Source(s) => s.id(),
+            PaymentSource::BankAccount(b) => b.id(),
+        }
+    }
 }

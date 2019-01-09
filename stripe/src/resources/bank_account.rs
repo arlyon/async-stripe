@@ -1,5 +1,32 @@
 use params::{Identifiable, Metadata};
 use resources::Currency;
+use serde::ser::SerializeStruct;
+
+#[derive(Clone, Debug, Default, Deserialize)]
+pub struct BankAccountParams<'a> {
+    pub country: &'a str,
+    pub currency: Currency,
+    pub account_holder_name: Option<&'a str>,
+    pub account_holder_type: Option<&'a str>,
+    pub routing_number: Option<&'a str>,
+    pub account_number: &'a str,
+}
+
+impl<'a> ::serde::Serialize for BankAccountParams<'a> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::ser::Serializer,
+    {
+        let mut s = serializer.serialize_struct("BankAccountParams", 6)?;
+        s.serialize_field("object", "bank_account")?;
+        s.serialize_field("country", &self.country)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("account_holder_name", &self.account_holder_name)?;
+        s.serialize_field("routing_number", &self.routing_number)?;
+        s.serialize_field("account_number", &self.account_number)?;
+        s.end()
+    }
+}
 
 /// The resource representing a Stripe bank account.
 ///

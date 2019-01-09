@@ -1,3 +1,11 @@
+# Version 0.8.0 (Jan 7, 2019)
+
+## Fixes
+- TokenId has become an enum to account for different Token options
+
+## Breaking Changes
+- Minimum Rust version required is 1.31.1.
+
 # Version 0.7.2
 
 ## Fixes
