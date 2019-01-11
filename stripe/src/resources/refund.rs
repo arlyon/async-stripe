@@ -1,6 +1,6 @@
 use client::Client;
 use error::Error;
-use params::{Identifiable, Metadata, RangeQuery, Timestamp};
+use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::Currency;
 use serde_qs as qs;
 
@@ -129,7 +129,7 @@ impl Refund {
     /// List all refunds.
     ///
     /// For more details see [https://stripe.com/docs/api#list_refunds](https://stripe.com/docs/api#list_refunds).
-    pub fn list(client: &Client, params: RefundListParams) -> Result<Vec<Refund>, Error> {
+    pub fn list(client: &Client, params: RefundListParams) -> Result<List<Refund>, Error> {
         client.get(&format!("/refunds?{}", qs::to_string(&params)?))
     }
 }
