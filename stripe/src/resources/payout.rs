@@ -1,6 +1,6 @@
 use client::Client;
 use error::Error;
-use params::{Identifiable, Metadata, RangeQuery, Timestamp};
+use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::Currency;
 use serde_qs as qs;
 
@@ -180,7 +180,7 @@ impl Payout {
     /// List all payouts.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/list](https://stripe.com/docs/api/payouts/list).
-    pub fn list(client: &Client, params: PayoutListParams) -> Result<Vec<Payout>, Error> {
+    pub fn list(client: &Client, params: PayoutListParams) -> Result<List<Payout>, Error> {
         client.get(&format!("/payouts?{}", qs::to_string(&params)?))
     }
 
