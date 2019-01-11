@@ -34,15 +34,12 @@ impl<'a> ::serde::Serialize for BankAccountParams<'a> {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BankAccount {
     pub id: String,
-    pub object: String,
-    pub account: String,
     pub account_holder_name: String,
     pub account_holder_type: String, // (individual or company)
     pub bank_name: String,
     pub country: String,
     pub currency: Currency,
-    pub customer: String,
-    pub default_for_currency: bool,
+    pub customer: Option<String>,
     pub fingerprint: String,
     pub last4: String,
     pub metadata: Metadata,

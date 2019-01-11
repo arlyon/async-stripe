@@ -128,8 +128,6 @@ impl Customer {
         client.post(&format!("/customers/{}/sources", customer_id), params)
     }
 
-    // expected &str, found enum `resources::payment_source::PaymentSourceParams`   
-
     /// Detaches a source from a customer
     ///
     /// For more details see [https://stripe.com/docs/api#detach_source](https://stripe.com/docs/api#detach_source).
@@ -139,6 +137,16 @@ impl Customer {
         source_id: &PaymentSourceId,
     ) -> Result<PaymentSource, Error> {
         client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
+    }
+
+    /// Retrieves a Card, BankAccount, or Source for a Customer
+    /// 
+    pub fn retrieve_source(
+        client: &Client,
+        customer_id: &str,
+        source_id: &PaymentSourceId,
+    ) -> Result<PaymentSource, Error> {
+        client.get(&format!("/customers/{}/sources/{}", customer_id, source_id))
     }
 }
 
