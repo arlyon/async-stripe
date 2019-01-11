@@ -1,6 +1,6 @@
 use client::Client;
 use error::Error;
-use params::{Identifiable, Metadata, RangeQuery, Timestamp};
+use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::{Charge, Currency, ShippingDetails};
 use serde_qs as qs;
 
@@ -20,7 +20,7 @@ pub struct PaymentIntent {
     pub canceled_at: Option<Timestamp>,
     pub cancellation_reason: Option<CancellationReason>,
     pub capture_method: CaptureMethod,
-    pub charges: ChargesHash,
+    pub charges: List<Charge>,
     pub client_secret: Option<String>,
     pub confirmation_method: Option<ConfirmationMethod>,
     pub created: Timestamp,
@@ -46,18 +46,6 @@ impl Identifiable for PaymentIntent {
     fn id(&self) -> &str {
         &self.id
     }
-}
-
-/// The resource representing a Stripe PaymentIntent object.
-///
-/// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-charges](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-charges).
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct ChargesHash {
-    /// Always has the value `list`.
-    pub object: String,
-    pub data: Vec<Charge>,
-    pub has_more: bool,
-    pub url: String,
 }
 
 /// The resource representing a Stripe PaymentError object.
@@ -150,6 +138,18 @@ pub enum ConfirmationMethod {
     Other,
 }
 
+/// The resource representing a Stripe ConfirmationMethod object.
+///
+/// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_source_action-type](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_source_action-type).
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceActionType {
+    AuthorizeWithUrl,
+    UseStripeSdk,
+    #[serde(other)]
+    Other,
+}
+
 /// The resource representing a Stripe NextSourceAction object.
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_source_action](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_source_action).
@@ -157,8 +157,8 @@ pub enum ConfirmationMethod {
 pub struct NextSourceAction {
     pub authorize_with_url: AuthorizeWithUrl,
     #[serde(rename = "type")]
-    pub action_type: String,
-    //When confirming a PaymentIntent with Stripe.js, Stripe.js depends on the contents of this dictionary to invoke authentication flows. The shape of the contents is subject to change and is only intended to be used by Stripe.js.
+    pub action_type: SourceActionType,
+    /// When confirming a PaymentIntent with Stripe.js, Stripe.js depends on the contents of this dictionary to invoke authentication flows. The shape of the contents is subject to change and is only intended to be used by Stripe.js.
     pub use_stripe_sdk: serde_json::Value,
 }
 
@@ -167,9 +167,9 @@ pub struct NextSourceAction {
 /// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_source_action-authorize_with_url](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-next_source_action-authorize_with_url).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AuthorizeWithUrl {
-    //If the customer does not exit their browser while authenticating, they will be redirected to this specified URL after completion.
+    /// If the customer does not exit their browser while authenticating, they will be redirected to this specified URL after completion.
     pub return_url: Option<String>,
-    //The URL you must redirect your customer to in order to authenticate the payment.
+    /// The URL you must redirect your customer to in order to authenticate the payment.
     pub url: Option<String>,
 }
 
@@ -379,7 +379,7 @@ impl PaymentIntent {
     pub fn list(
         client: &Client,
         params: PaymentIntentListParams,
-    ) -> Result<Vec<PaymentIntent>, Error> {
+    ) -> Result<List<PaymentIntent>, Error> {
         client.get(&format!("/payment_intents?{}", qs::to_string(&params)?))
     }
 }
