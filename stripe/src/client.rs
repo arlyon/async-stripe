@@ -1,4 +1,4 @@
-use error::{Error, ErrorObject, RequestError};
+use error::{Error, ErrorResponse, RequestError};
 use reqwest;
 use reqwest::RequestBuilder;
 use reqwest::header::{
@@ -25,6 +25,11 @@ pub struct Client {
 impl Client {
     fn url(path: &str) -> String {
         format!("https://api.stripe.com/v1/{}", &path[1..])
+    }
+
+    fn url_with_params<P: serde::Serialize>(path: &str, params: P) -> Result<String, Error> {
+        let params = serde_qs::to_string(&params).map_err(Error::serialize)?;
+        Ok(format!("https://api.stripe.com/v1/{}?{}", &path[1..], params))
     }
 
     pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
@@ -54,32 +59,58 @@ impl Client {
         self.params.stripe_account = Some(account_id.into());
     }
 
+    /// Make a `GET` http request with just a path
     pub fn get<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
         let url = Client::url(path);
         let request = self.client.get(&url).headers(self.headers());
         send(request)
     }
 
-    pub fn post<T: serde::de::DeserializeOwned, F: serde::Serialize>(
+    /// Make a `GET` http request with url query parameters
+    pub fn get_query<T: serde::de::DeserializeOwned, P: serde::Serialize>(
+        &self,
+        path: &str,
+        params: P,
+    ) -> Result<T, Error> {
+        let url = Client::url_with_params(path, params)?;
+        let request = self.client.get(&url).headers(self.headers());
+        send(request)
+    }
+
+    /// Make a `DELETE` http request with just a path
+    pub fn delete<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
+        let url = Client::url(path);
+        let request = self.client.delete(&url).headers(self.headers());
+        send(request)
+    }
+
+    /// Make a `DELETE` http request with url query parameters
+    pub fn delete_query<T: serde::de::DeserializeOwned, P: serde::Serialize>(
+        &self,
+        path: &str,
+        params: P,
+    ) -> Result<T, Error> {
+        let url = Client::url_with_params(path, params)?;
+        let request = self.client.delete(&url).headers(self.headers());
+        send(request)
+    }
+
+    /// Make a `POST` http request with just a path
+    pub fn post<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
+        let url = Client::url(path);
+        let request = self.client.post(&url).headers(self.headers());
+        send(request)
+    }
+
+    /// Make a `POST` http request with urlencoded body
+    pub fn post_form<T: serde::de::DeserializeOwned, F: serde::Serialize>(
         &self,
         path: &str,
         form: F,
     ) -> Result<T, Error> {
         let url = Client::url(path);
         let request = self.client.post(&url).headers(self.headers());
-        let request = with_querystring(request, &form)?;
-        send(request)
-    }
-
-    pub fn post_empty<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
-        let url = Client::url(path);
-        let request = self.client.post(&url).headers(self.headers());
-        send(request)
-    }
-
-    pub fn delete<T: serde::de::DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
-        let url = Client::url(path);
-        let request = self.client.delete(&url).headers(self.headers());
+        let request = with_form_urlencoded(request, &form)?;
         send(request)
     }
 
@@ -108,10 +139,10 @@ impl Client {
 /// Serialize the form content using `serde_qs` instead of `serde_urlencoded`
 ///
 /// See https://github.com/seanmonstar/reqwest/issues/274
-fn with_querystring<T: serde::Serialize>(request: RequestBuilder, form: &T) -> Result<RequestBuilder, Error> {
+fn with_form_urlencoded<T: serde::Serialize>(request: RequestBuilder, form: &T) -> Result<RequestBuilder, Error> {
     let key = reqwest::header::CONTENT_TYPE;
     let value = reqwest::header::HeaderValue::from_static("application/x-www-form-urlencoded");
-    let body = serde_qs::to_string(form)?;
+    let body = serde_qs::to_string(form).map_err(Error::serialize)?;
     Ok(request.header(key, value).body(body))
 }
 
@@ -123,7 +154,7 @@ fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Er
     let status = response.status();
     if !status.is_success() {
         let mut err = serde_json::from_str(&body).unwrap_or_else(|err| {
-            let mut req = ErrorObject {
+            let mut req = ErrorResponse {
                 error: RequestError::default(),
             };
             req.error.message = Some(format!("failed to deserialize error: {}", err));
@@ -133,14 +164,14 @@ fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Er
         return Err(Error::from(err.error));
     }
 
-    serde_json::from_str(&body).map_err(|err| Error::from(err))
+    serde_json::from_str(&body).map_err(Error::deserialize)
 }
 
 #[cfg(test)]
 mod tests {
     use ::{Client, CustomerParams};
     use std::collections::HashMap;
-    use super::with_querystring;
+    use super::with_form_urlencoded;
 
     #[test]
     fn serialize_metadata() {
@@ -160,7 +191,7 @@ mod tests {
         };
         let url = Client::url("/");
         let http = reqwest::Client::new();
-        let result = with_querystring(http.post(&url), &form).and_then(|x| Ok(x.build()?));
+        let result = with_form_urlencoded(http.post(&url), &form).and_then(|x| Ok(x.build()?));
         assert!(result.is_ok(), "Failed to build request: {:?}", result);
         if let Ok(request) = result {
             let body = format!("{:?}", request.body());

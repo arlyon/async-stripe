@@ -3,7 +3,6 @@ use error::Error;
 use ids::PaymentSourceId;
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::{Address, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
-use serde_qs as qs;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerShippingDetails {
@@ -79,7 +78,7 @@ impl Customer {
     ///
     /// For more details see https://stripe.com/docs/api#create_customer.
     pub fn create(client: &Client, params: CustomerParams) -> Result<Customer, Error> {
-        client.post("/customers", params)
+        client.post_form("/customers", params)
     }
 
     /// Retrieves the details of a customer.
@@ -97,7 +96,7 @@ impl Customer {
         customer_id: &str,
         params: CustomerParams,
     ) -> Result<Customer, Error> {
-        client.post(&format!("/customers/{}", customer_id), params)
+        client.post_form(&format!("/customers/{}", customer_id), params)
     }
 
     /// Deletes a customer.
@@ -111,7 +110,7 @@ impl Customer {
     ///
     /// For more details see https://stripe.com/docs/api#list_customers.
     pub fn list(client: &Client, params: CustomerListParams) -> Result<List<Customer>, Error> {
-        client.get(&format!("/customers?{}", qs::to_string(&params)?))
+        client.get_query("/customers", &params)
     }
 }
 

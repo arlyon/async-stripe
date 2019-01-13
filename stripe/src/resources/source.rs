@@ -228,7 +228,7 @@ pub struct Source {
 
 impl Source {
     pub fn create(client: &Client, params: SourceParams) -> Result<Source, Error> {
-        client.post("/sources", params)
+        client.post_form("/sources", params)
     }
 
     pub fn get(client: &Client, source_id: &str) -> Result<Source, Error> {
@@ -236,7 +236,7 @@ impl Source {
     }
 
     pub fn update(client: &Client, source_id: &str, params: SourceParams) -> Result<Source, Error> {
-        client.post(&format!("/source/{}", source_id), params)
+        client.post_form(&format!("/source/{}", source_id), params)
     }
 
     /// Attaches a source to a customer, does not change default Source for the Customer
@@ -250,7 +250,7 @@ impl Source {
         #[derive(Serialize)]
         struct AttachSource<'a> { source: &'a str }
         let params = AttachSource { source: source_id };
-        client.post(&format!("/customers/{}/sources", customer_id), params)
+        client.post_form(&format!("/customers/{}/sources", customer_id), params)
     }
 
     /// Detaches a source from a customer
