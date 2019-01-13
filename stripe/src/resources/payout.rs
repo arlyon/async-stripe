@@ -56,7 +56,10 @@ pub enum PayoutFailureCode {
     InvalidCurrency,
     NoAccount,
     UnsupportedCard,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// An enum representing the possible values of a `PayOut`'s `method` field.
@@ -67,7 +70,10 @@ pub enum PayoutFailureCode {
 pub enum PayoutMethod {
     Standard,
     Instant,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// An enum representing the possible values of a `PayOut`'s `source_type` field.
@@ -79,7 +85,10 @@ pub enum PayoutSourceType {
     Card,
     BankAccount,
     AlipayAccount,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// An enum representing the possible values of a `PayOut`'s `status` field.
@@ -93,7 +102,10 @@ pub enum PayoutStatus {
     InTransit,
     Canceled,
     Failed,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -105,7 +117,10 @@ pub enum PayoutStatus {
 pub enum PayoutType {
     BankAccount,
     Card,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 

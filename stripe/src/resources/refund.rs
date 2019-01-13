@@ -39,7 +39,10 @@ pub enum RefundReason {
     Duplicate,
     Fraudulent,
     RequestedByCustomer,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -53,7 +56,10 @@ pub enum RefundStatus {
     Succeeded,
     Failed,
     Canceled,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -66,7 +72,10 @@ pub enum RefundFailureReason {
     LostOrStolenCard,
     ExpiredOrCanceledCard,
     Unknown,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 

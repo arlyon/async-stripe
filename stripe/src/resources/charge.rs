@@ -33,7 +33,10 @@ pub enum OutcomeType {
     IssuerDeclined,
     Blocked,
     Invalid,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -46,8 +49,14 @@ pub enum NetworkStatus {
     ApprovedByNetwork,
     DeclinedByNetwork,
     NotSentToNetwork,
+
+    /// This value indiciates the payment was [blocked by Stripe](https://stripe.com/docs/declines#blocked-payments)
+    /// after bank authorization, and may temporarily appear as “pending” on a cardholder’s statement.
     ReversedAfterApproval,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -61,8 +70,11 @@ pub enum RiskLevel {
     Elevated,
     Highest,
     NotAssessed,
-    #[serde(other)]
-    Unknown
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
+    Other,
 }
 
 /// An enum representing the possible values of a `ChargeOutcome`'s `reason` field.
@@ -114,7 +126,10 @@ pub enum OutcomeReason {
     TransactionNotAllowed,
     TryAgainLater,
     WithdrawalCountLimitExceeded,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 

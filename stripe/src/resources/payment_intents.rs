@@ -83,7 +83,10 @@ pub enum PaymentErrorType {
     InvalidRequest,
     #[serde(rename = "rate_limit_error")]
     RateLimit,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -100,7 +103,10 @@ pub enum PaymentIntentStatus {
     RequiresCapture,
     Canceled,
     Succeeded,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// The resource representing a Stripe CancellationReason object.
@@ -112,7 +118,10 @@ pub enum CancellationReason {
     Duplicate,
     Fraudulent,
     RequestedByCustomer,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// The resource representing a Stripe CaptureMethod object.
@@ -123,7 +132,10 @@ pub enum CancellationReason {
 pub enum CaptureMethod {
     Automatic,
     Manual,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// The resource representing a Stripe ConfirmationMethod object.
@@ -134,7 +146,10 @@ pub enum CaptureMethod {
 pub enum ConfirmationMethod {
     Secret,
     Publishable,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -146,7 +161,10 @@ pub enum ConfirmationMethod {
 pub enum SourceActionType {
     AuthorizeWithUrl,
     UseStripeSdk,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
