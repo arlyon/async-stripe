@@ -12,6 +12,17 @@ pub struct BankAccountParams<'a> {
     pub account_number: &'a str,
 }
 
+/// The set of parameters that can be used when verifying a Bank Account.
+///
+/// For more details see https://stripe.com/docs/api/customer_bank_accounts/verify?lang=curl.
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct BankAccountVerifyParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amounts: Option<Vec<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<&'a str>,
+}
+
 impl<'a> ::serde::Serialize for BankAccountParams<'a> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where

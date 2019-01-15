@@ -1,8 +1,8 @@
 use client::Client;
 use error::Error;
-use ids::PaymentSourceId;
+use ids::{BankAccountId, PaymentSourceId};
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use resources::{Address, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
+use resources::{Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
 use serde_qs as qs;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -147,6 +147,18 @@ impl Customer {
         source_id: &PaymentSourceId,
     ) -> Result<PaymentSource, Error> {
         client.get(&format!("/customers/{}/sources/{}", customer_id, source_id))
+    }
+
+    /// Verifies a Bank Account for a Customer.
+    ///
+    /// For more details see https://stripe.com/docs/api/customer_bank_accounts/verify.
+     pub fn verify_bank_account(
+        client: &Client,
+        customer_id: &str,
+        bank_account_id: &BankAccountId,
+        params: BankAccountVerifyParams,
+    ) -> Result<BankAccount, Error> {
+        client.post(&format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id), params)
     }
 }
 
