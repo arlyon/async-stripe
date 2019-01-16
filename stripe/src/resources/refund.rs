@@ -3,32 +3,6 @@ use error::Error;
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::Currency;
 
-/// The resource representing a Stripe refund.
-///
-/// For more details see https://stripe.com/docs/api#refunds.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Refund {
-    pub id: String,
-    pub object: String,
-    pub amount: u64,
-    pub balance_transaction: String,
-    pub charge: String,
-    pub created: Timestamp,
-    pub currency: Currency,
-    pub failure_balance_transaction: Option<String>,
-    pub failure_reason: Option<RefundFailureReason>,
-    pub metadata: Metadata,
-    pub reason: Option<RefundReason>,
-    pub receipt_number: Option<String>,
-    pub status: RefundStatus,
-}
-
-impl Identifiable for Refund {
-    fn id(&self) -> &str {
-        &self.id
-    }
-}
-
 /// An enum representing the possible values of a `Refund`'s `reason` field.
 ///
 /// For more details see [https://stripe.com/docs/api/refunds/object#refund_object-reason](https://stripe.com/docs/api/refunds/object#refund_object-reason)
@@ -81,9 +55,9 @@ pub enum RefundFailureReason {
 /// The set of parameters that can be used when creating refund object.
 ///
 /// For more details see [https://stripe.com/docs/api/refunds/create](https://stripe.com/docs/api/refunds/create).
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct RefundParams {
-    pub charge: String,
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct RefundParams<'a> {
+    pub charge: &'a str,
     pub amount: Option<u64>,
     pub metadata: Metadata,
     pub reason: Option<RefundReason>,
@@ -94,18 +68,38 @@ pub struct RefundParams {
 /// The set of parameters that can be used when listing refund.
 ///
 /// For more details see [https://stripe.com/docs/api/refunds/list](https://stripe.com/docs/api/refunds/list)
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct RefundListParams {
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct RefundListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub charge: Option<String>,
+    pub charge: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
+    pub ending_before: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
+    pub starting_after: Option<&'a str>,
+}
+
+/// The resource representing a Stripe refund.
+///
+/// For more details see https://stripe.com/docs/api#refunds.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Refund {
+    pub id: String,
+    pub object: String,
+    pub amount: u64,
+    pub balance_transaction: String,
+    pub charge: String,
+    pub created: Timestamp,
+    pub currency: Currency,
+    pub failure_balance_transaction: Option<String>,
+    pub failure_reason: Option<RefundFailureReason>,
+    pub metadata: Metadata,
+    pub reason: Option<RefundReason>,
+    pub receipt_number: Option<String>,
+    pub status: RefundStatus,
 }
 
 impl Refund {
@@ -139,5 +133,11 @@ impl Refund {
     /// For more details see [https://stripe.com/docs/api#list_refunds](https://stripe.com/docs/api#list_refunds).
     pub fn list(client: &Client, params: RefundListParams) -> Result<List<Refund>, Error> {
         client.get_query("/refunds", &params)
+    }
+}
+
+impl Identifiable for Refund {
+    fn id(&self) -> &str {
+        &self.id
     }
 }
