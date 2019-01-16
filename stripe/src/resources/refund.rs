@@ -73,7 +73,7 @@ pub enum RefundFailureReason {
 /// The set of parameters that can be used when creating refund object.
 ///
 /// For more details see [https://stripe.com/docs/api/refunds/create](https://stripe.com/docs/api/refunds/create).
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RefundParams {
     pub charge: String,
     pub amount: Option<u64>,
