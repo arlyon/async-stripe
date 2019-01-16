@@ -4,37 +4,46 @@ use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::Currency;
 use serde_qs as qs;
 
-/// The resource representing a Stripe payout.
+/// The set of parameters that can be used when creating a payout object.
 ///
-/// For more details see https://stripe.com/docs/api#payout_object.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Payout {
-    pub id: String,
-    pub object: String,
+/// For more details see [https://stripe.com/docs/api/payouts/create](https://stripe.com/docs/api/payouts/create)
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct PayoutParams<'a> {
     pub amount: u64,
-    pub arrival_date: Timestamp,
-    pub balance_transaction: String,
-    pub created: Timestamp,
     pub currency: Currency,
-    pub description: String,
-    pub destination: Option<String>,
-    pub failure_balance_transaction: Option<String>,
-    pub failure_code: Option<PayoutFailureCode>,
-    pub failure_message: Option<String>,
-    pub livemode: bool,
-    pub metadata: Metadata,
-    pub method: PayoutMethod,
-    pub source_type: PayoutSourceType,
-    pub statement_descriptor: Option<String>,
-    pub status: PayoutStatus,
-    #[serde(rename = "type")]
-    pub payout_type: PayoutType,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub method: Option<PayoutMethod>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_type: Option<PayoutSourceType>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<&'a str>,
 }
 
-impl Identifiable for Payout {
-    fn id(&self) -> &str {
-        &self.id
-    }
+/// The set of parameters that can be used when listing payouts.
+///
+/// For more details see [https://stripe.com/docs/api/payouts/list](https://stripe.com/docs/api/payouts/list)
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct PayoutListParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub arrival_date: Option<RangeQuery<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<RangeQuery<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ending_before: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub starting_after: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<PayoutStatus>,
 }
 
 /// An enum representing the possible values of a `PayOut`'s `failure_code` field.
@@ -109,46 +118,31 @@ pub enum PayoutType {
     Other,
 }
 
-/// The set of parameters that can be used when creating a payout object.
+/// The resource representing a Stripe payout.
 ///
-/// For more details see [https://stripe.com/docs/api/payouts/create](https://stripe.com/docs/api/payouts/create)
-#[derive(Clone, Debug, Default, Serialize)]
-pub struct PayoutParams {
+/// For more details see https://stripe.com/docs/api#payout_object.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Payout {
+    pub id: String,
+    pub object: String,
     pub amount: u64,
+    pub arrival_date: Timestamp,
+    pub balance_transaction: String,
+    pub created: Timestamp,
     pub currency: Currency,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: String,
     pub destination: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub method: Option<PayoutMethod>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_type: Option<PayoutSourceType>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failure_balance_transaction: Option<String>,
+    pub failure_code: Option<PayoutFailureCode>,
+    pub failure_message: Option<String>,
+    pub livemode: bool,
+    pub metadata: Metadata,
+    pub method: PayoutMethod,
+    pub source_type: PayoutSourceType,
     pub statement_descriptor: Option<String>,
-}
-
-/// The set of parameters that can be used when listing payouts.
-///
-/// For more details see [https://stripe.com/docs/api/payouts/list](https://stripe.com/docs/api/payouts/list)
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PayoutListParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub arrival_date: Option<RangeQuery<Timestamp>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<RangeQuery<Timestamp>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_before: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<PayoutStatus>,
+    pub status: PayoutStatus,
+    #[serde(rename = "type")]
+    pub payout_type: PayoutType,
 }
 
 impl Payout {
@@ -189,5 +183,11 @@ impl Payout {
     /// For more details see [https://stripe.com/docs/api/payouts/cancel](https://stripe.com/docs/api/payouts/cancel).
     pub fn cancel(client: &Client, payout_id: &str) -> Result<Payout, Error> {
         client.post_empty(&format!("/payouts/{}/cancel", payout_id))
+    }
+}
+
+impl Identifiable for Payout {
+    fn id(&self) -> &str {
+        &self.id
     }
 }
