@@ -70,10 +70,12 @@ pub enum RiskLevel {
     Highest,
     NotAssessed,
 
-    /// A variant not yet supported by the library.
-    /// It is an error to send `Other` as part of a request.
-    #[serde(other, skip_serializing)]
-    Other,
+    /// An unknown risk level.
+    ///
+    /// May also be a variant not yet supported by the library.
+    #[serde(other)]
+    #[serde(rename = "unknown")]
+    Unknown,
 }
 
 /// An enum representing the possible values of a `ChargeOutcome`'s `reason` field.
