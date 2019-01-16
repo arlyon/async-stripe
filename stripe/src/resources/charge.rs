@@ -2,7 +2,6 @@ use client::Client;
 use error::{Error, ErrorCode};
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::{Address, Currency, PaymentSource, PaymentSourceParams, Refund};
-use serde_qs as qs;
 
 /// The resource representing a Stripe charge object outcome.
 ///
@@ -33,7 +32,10 @@ pub enum OutcomeType {
     IssuerDeclined,
     Blocked,
     Invalid,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -46,8 +48,14 @@ pub enum NetworkStatus {
     ApprovedByNetwork,
     DeclinedByNetwork,
     NotSentToNetwork,
+
+    /// This value indiciates the payment was [blocked by Stripe](https://stripe.com/docs/declines#blocked-payments)
+    /// after bank authorization, and may temporarily appear as “pending” on a cardholder’s statement.
     ReversedAfterApproval,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -61,8 +69,13 @@ pub enum RiskLevel {
     Elevated,
     Highest,
     NotAssessed,
+
+    /// An unknown risk level.
+    ///
+    /// May also be a variant not yet supported by the library.
     #[serde(other)]
-    Unknown
+    #[serde(rename = "unknown")]
+    Unknown,
 }
 
 /// An enum representing the possible values of a `ChargeOutcome`'s `reason` field.
@@ -114,7 +127,10 @@ pub enum OutcomeReason {
     TransactionNotAllowed,
     TryAgainLater,
     WithdrawalCountLimitExceeded,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -326,7 +342,7 @@ impl Charge {
     ///
     /// For more details see [https://stripe.com/docs/api#create_charge](https://stripe.com/docs/api#create_charge).
     pub fn create(client: &Client, params: ChargeParams) -> Result<Charge, Error> {
-        client.post("/charges", params)
+        client.post_form("/charges", params)
     }
 
     /// Retrieves the details of a charge.
@@ -340,7 +356,7 @@ impl Charge {
     ///
     /// For more details see [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
     pub fn update(client: &Client, charge_id: &str, params: ChargeParams) -> Result<Charge, Error> {
-        client.post(&format!("/charges/{}", charge_id), params)
+        client.post_form(&format!("/charges/{}", charge_id), params)
     }
 
     /// Capture captures a previously created charge with capture set to false.
@@ -351,13 +367,13 @@ impl Charge {
         charge_id: &str,
         params: CaptureParams,
     ) -> Result<Charge, Error> {
-        client.post(&format!("/charges/{}/capture", charge_id), params)
+        client.post_form(&format!("/charges/{}/capture", charge_id), params)
     }
 
     /// List all charges.
     ///
     /// For more details see [https://stripe.com/docs/api#list_charges](https://stripe.com/docs/api#list_charges).
     pub fn list(client: &Client, params: ChargeListParams) -> Result<Vec<Charge>, Error> {
-        client.get(&format!("/charges?{}", qs::to_string(&params)?))
+        client.get_query("/charges", &params)
     }
 }

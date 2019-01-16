@@ -2,7 +2,6 @@ use client::Client;
 use error::Error;
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::{Charge, Currency, ShippingDetails};
-use serde_qs as qs;
 
 /// The resource representing a Stripe PaymentError object.
 ///
@@ -39,7 +38,10 @@ pub enum PaymentErrorType {
     InvalidRequest,
     #[serde(rename = "rate_limit_error")]
     RateLimit,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -66,7 +68,10 @@ pub enum PaymentIntentStatus {
     RequiresCapture,
     Canceled,
     Succeeded,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// The resource representing a Stripe CancellationReason object.
@@ -78,7 +83,10 @@ pub enum CancellationReason {
     Duplicate,
     Fraudulent,
     RequestedByCustomer,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// The resource representing a Stripe CaptureMethod object.
@@ -89,7 +97,10 @@ pub enum CancellationReason {
 pub enum CaptureMethod {
     Automatic,
     Manual,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// The resource representing a Stripe ConfirmationMethod object.
@@ -100,7 +111,10 @@ pub enum CaptureMethod {
 pub enum ConfirmationMethod {
     Secret,
     Publishable,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -112,7 +126,10 @@ pub enum ConfirmationMethod {
 pub enum SourceActionType {
     AuthorizeWithUrl,
     UseStripeSdk,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -319,7 +336,7 @@ impl PaymentIntent {
         client: &Client,
         params: PaymentIntentCreateParams,
     ) -> Result<PaymentIntent, Error> {
-        client.post("/payment_intents", params)
+        client.post_form("/payment_intents", params)
     }
 
     /// Retrieves the details of a payment_intent.
@@ -337,7 +354,7 @@ impl PaymentIntent {
         payment_intent_id: &str,
         params: PaymentIntentUpdateParams,
     ) -> Result<PaymentIntent, Error> {
-        client.post(&format!("/payment_intents/{}", payment_intent_id), params)
+        client.post_form(&format!("/payment_intents/{}", payment_intent_id), params)
     }
 
     /// Confirm that customer intends to pay with current or provided source. Upon confirmation, the PaymentIntent will attempt to initiate a payment.
@@ -348,7 +365,7 @@ impl PaymentIntent {
         payment_intent_id: &str,
         params: PaymentIntentConfirmParams,
     ) -> Result<PaymentIntent, Error> {
-        client.post(
+        client.post_form(
             &format!("/payment_intents/{}/confirm", payment_intent_id),
             params,
         )
@@ -362,7 +379,7 @@ impl PaymentIntent {
         payment_intent_id: &str,
         params: PaymentIntentCaptureParams,
     ) -> Result<PaymentIntent, Error> {
-        client.post(
+        client.post_form(
             &format!("/payment_intents/{}/capture", payment_intent_id),
             params,
         )
@@ -376,7 +393,7 @@ impl PaymentIntent {
         payment_intent_id: &str,
         params: PaymentIntentCancelParams,
     ) -> Result<PaymentIntent, Error> {
-        client.post(
+        client.post_form(
             &format!("/payment_intents/{}/cancel", payment_intent_id),
             params,
         )
@@ -389,7 +406,7 @@ impl PaymentIntent {
         client: &Client,
         params: PaymentIntentListParams,
     ) -> Result<List<PaymentIntent>, Error> {
-        client.get(&format!("/payment_intents?{}", qs::to_string(&params)?))
+        client.get_query("/payment_intents", &params)
     }
 }
 

@@ -2,7 +2,6 @@ use client::Client;
 use error::Error;
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::Currency;
-use serde_qs as qs;
 
 /// The set of parameters that can be used when creating a payout object.
 ///
@@ -65,7 +64,10 @@ pub enum PayoutFailureCode {
     InvalidCurrency,
     NoAccount,
     UnsupportedCard,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// An enum representing the possible values of a `PayOut`'s `method` field.
@@ -76,7 +78,10 @@ pub enum PayoutFailureCode {
 pub enum PayoutMethod {
     Standard,
     Instant,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// An enum representing the possible values of a `PayOut`'s `source_type` field.
@@ -88,7 +93,10 @@ pub enum PayoutSourceType {
     Card,
     BankAccount,
     AlipayAccount,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 /// An enum representing the possible values of a `PayOut`'s `status` field.
@@ -102,7 +110,10 @@ pub enum PayoutStatus {
     InTransit,
     Canceled,
     Failed,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -114,7 +125,10 @@ pub enum PayoutStatus {
 pub enum PayoutType {
     BankAccount,
     Card,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -150,7 +164,7 @@ impl Payout {
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/create](https://stripe.com/docs/api/payouts/create).
     pub fn create(client: &Client, params: PayoutParams) -> Result<Payout, Error> {
-        client.post("/payouts", params)
+        client.post_form("/payouts", params)
     }
 
     /// Retrieves the details of a payout.
@@ -168,21 +182,21 @@ impl Payout {
         payout_id: &str,
         metadata: Option<Metadata>,
     ) -> Result<Payout, Error> {
-        client.post(&format!("/payouts/{}", payout_id), metadata)
+        client.post_form(&format!("/payouts/{}", payout_id), metadata)
     }
 
     /// List all payouts.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/list](https://stripe.com/docs/api/payouts/list).
     pub fn list(client: &Client, params: PayoutListParams) -> Result<List<Payout>, Error> {
-        client.get(&format!("/payouts?{}", qs::to_string(&params)?))
+        client.get_query("/payouts", &params)
     }
 
     /// Cancels the payout.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/cancel](https://stripe.com/docs/api/payouts/cancel).
     pub fn cancel(client: &Client, payout_id: &str) -> Result<Payout, Error> {
-        client.post_empty(&format!("/payouts/{}/cancel", payout_id))
+        client.post(&format!("/payouts/{}/cancel", payout_id))
     }
 }
 

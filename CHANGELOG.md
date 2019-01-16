@@ -8,6 +8,7 @@
 ## Breaking Changes
 - Minimum Rust version required is 1.31.1.
 - Moved `retrieve_source` and `detach_source` to `Customer` resource from `Source`.
+- The `Error::Conversion` enum variant has been replaced by `Error::Serialize` and `Error::Deserialize`.
 - See also __Fixes / Improvements__.
 
 ## Fixes / Improvements

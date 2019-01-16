@@ -110,6 +110,9 @@ pub enum CardBrand {
     #[serde(rename = "UnionPay")]
     UnionPay,
 
+    /// An unknown card brand.
+    ///
+    /// May also be a variant not yet supported by the library.
     #[serde(other)]
     #[serde(rename = "Unknown")]
     Unknown,
@@ -124,6 +127,9 @@ pub enum CardType {
     #[serde(rename = "prepaid")]
     Prepaid,
 
+    /// An unknown card type.
+    ///
+    /// May also be a variant not yet supported by the library.
     #[serde(other)]
     #[serde(rename = "unknown")]
     Unknown,
@@ -135,8 +141,10 @@ pub enum TokenizationMethod {
     ApplePay,
     AndroidPay,
 
-    #[serde(other)]
-    Unknown,
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
+    Other,
 }
 
 impl Identifiable for Card {

@@ -29,14 +29,15 @@ pub struct CodeVerification {
 ///
 /// For more details see [https://stripe.com/docs/api#source_object-code_verification-status](https://stripe.com/docs/api#source_object-code_verification-status)
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
 pub enum VerificationStatus {
-    #[serde(rename="pending")]
     Pending,
-    #[serde(rename="succeeded")]
     Succeeded,
-    #[serde(rename="failed")]
     Failed,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -112,7 +113,10 @@ pub enum SourceType {
     SepaDebit,
     Sofort,
     ThreeDSecure,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -127,7 +131,10 @@ pub enum SourceStatus {
     Consumed,
     Failed,
     Pending,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -141,7 +148,10 @@ pub enum SourceFlow {
     Receiver,
     CodeVerification,
     None,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -153,7 +163,10 @@ pub enum SourceFlow {
 pub enum SourceUsage {
     Reusable,
     SingleUse,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -215,7 +228,7 @@ pub struct Source {
 
 impl Source {
     pub fn create(client: &Client, params: SourceParams) -> Result<Source, Error> {
-        client.post("/sources", params)
+        client.post_form("/sources", params)
     }
 
     pub fn get(client: &Client, source_id: &str) -> Result<Source, Error> {
@@ -223,7 +236,7 @@ impl Source {
     }
 
     pub fn update(client: &Client, source_id: &str, params: SourceParams) -> Result<Source, Error> {
-        client.post(&format!("/source/{}", source_id), params)
+        client.post_form(&format!("/source/{}", source_id), params)
     }
 }
 

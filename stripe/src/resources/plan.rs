@@ -52,7 +52,7 @@ impl Plan {
     ///
     /// For more details see https://stripe.com/docs/api#create_plan.
     pub fn create(client: &Client, params: PlanParams) -> Result<Plan, Error> {
-        client.post("/plans", params)
+        client.post_form("/plans", params)
     }
 
     /// Retrieves the details of a plan.
@@ -66,7 +66,7 @@ impl Plan {
     ///
     /// For more details see https://stripe.com/docs/api#update_plan.
     pub fn update(client: &Client, plan_id: &str, params: PlanParams) -> Result<Plan, Error> {
-        client.post(&format!("/plans/{}", plan_id), params)
+        client.post_form(&format!("/plans/{}", plan_id), params)
     }
 
     /// Deletes a plan.
