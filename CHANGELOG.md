@@ -1,17 +1,21 @@
 # Version 0.8.0 (Jan 15, 2019)
 
-## Fixes
-- TokenId has become an enum to account for different Token options
-
-## New Features / Improvements
-- Added verify_bank_account to `Customer` resource.
-- Added BankAccount as a type of `PaymentSource`.
-- Updated fields on `BankAccount` resource so all are correct.
+## New Features
+- Added `verify_bank_account` to `Customer` resource.
+- Added BankAccount as a variant of `PaymentSource`.
+- Add the [PaymentIntents](https://stripe.com/docs/payments/payment-intents) resources, apis and events. 
 
 ## Breaking Changes
 - Minimum Rust version required is 1.31.1.
 - Moved `retrieve_source` and `detach_source` to `Customer` resource from `Source`.
 - The `Error::Conversion` enum variant has been replaced by `Error::Serialize` and `Error::Deserialize`.
+- See also __Fixes / Improvements__.
+
+## Fixes / Improvements
+- TokenId has become an enum to account for different Token options
+- Updated fields on `BankAccount` resource so all are correct.
+- The `Payout` and `Refund` types now use enums instead of Strings.
+- The `WebhookError` type is now externally public.
 
 # Version 0.7.2
 
