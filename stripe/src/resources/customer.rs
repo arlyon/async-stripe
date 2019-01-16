@@ -139,7 +139,6 @@ impl Customer {
     }
 
     /// Retrieves a Card, BankAccount, or Source for a Customer
-    /// 
     pub fn retrieve_source(
         client: &Client,
         customer_id: &str,
@@ -157,7 +156,7 @@ impl Customer {
         bank_account_id: &BankAccountId,
         params: BankAccountVerifyParams,
     ) -> Result<BankAccount, Error> {
-        client.post(&format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id), params)
+        client.post_form(&format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id), params)
     }
 }
 
