@@ -4,7 +4,7 @@ use ids::TokenId;
 use params::{Identifiable, Metadata, Timestamp};
 use resources::{AchCreditTransfer, Address, CardShort, Currency};
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OwnerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -61,7 +61,7 @@ pub struct VerifiedAddress {
 pub struct Receiver {
     pub address: String,
     pub amount_charged: i64,
-    pub amount_receive: i64,
+    pub amount_received: i64,
     pub amount_returned: i64,
 }
 
@@ -237,31 +237,6 @@ impl Source {
 
     pub fn update(client: &Client, source_id: &str, params: SourceParams) -> Result<Source, Error> {
         client.post_form(&format!("/source/{}", source_id), params)
-    }
-
-    /// Attaches a source to a customer, does not change default Source for the Customer
-    ///
-    /// For more details see [https://stripe.com/docs/api#attach_source](https://stripe.com/docs/api#attach_source).
-    pub fn attach_source(
-        client: &Client,
-        customer_id: &str,
-        source_id: &str,
-    ) -> Result<Source, Error> {
-        #[derive(Serialize)]
-        struct AttachSource<'a> { source: &'a str }
-        let params = AttachSource { source: source_id };
-        client.post_form(&format!("/customers/{}/sources", customer_id), params)
-    }
-
-    /// Detaches a source from a customer
-    ///
-    /// For more details see [https://stripe.com/docs/api#detach_source](https://stripe.com/docs/api#detach_source).
-    pub fn detach_source(
-        client: &Client,
-        customer_id: &str,
-        source_id: &str,
-    ) -> Result<Source, Error> {
-        client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
     }
 }
 

@@ -110,6 +110,16 @@ pub enum EventType {
     OrderUpdated,
     #[serde(rename = "order_return.updated")]
     OrderReturnUpdated,
+    #[serde(rename = "payment_intent.amount_capturable_updated")]
+    PaymentIntentAmountCapturableUpdated,
+    #[serde(rename = "payment_intent.created")]
+    PaymentIntentCreated,
+    #[serde(rename = "payment_intent.payment_failed")]
+    PaymentIntentPaymentFailed,
+    #[serde(rename = "payment_intent.requires_capture")]
+    PaymentIntentRequiresCapture,
+    #[serde(rename = "payment_intent.succeeded")]
+    PaymentIntentSucceeded,
     #[serde(rename = "payout.canceled")]
     PayoutCanceled,
     #[serde(rename = "payout.created")]
@@ -190,6 +200,7 @@ pub enum EventObject {
     InvoiceItem(InvoiceItem),
     Order(Order),
     OrderReturn(OrderReturn),
+    PaymentIntent(PaymentIntent),
     Payout(Payout),
     Plan(Plan),
     Product(Product),

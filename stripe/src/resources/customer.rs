@@ -1,8 +1,8 @@
 use client::Client;
 use error::Error;
-use ids::PaymentSourceId;
+use ids::{BankAccountId, PaymentSourceId};
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use resources::{Address, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
+use resources::{Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerShippingDetails {
@@ -111,6 +111,53 @@ impl Customer {
     /// For more details see https://stripe.com/docs/api#list_customers.
     pub fn list(client: &Client, params: CustomerListParams) -> Result<List<Customer>, Error> {
         client.get_query("/customers", &params)
+    }
+
+    /// Attaches a source to a customer, does not change default Source for the Customer
+    ///
+    /// For more details see [https://stripe.com/docs/api#attach_source](https://stripe.com/docs/api#attach_source).
+    pub fn attach_source(
+        client: &Client,
+        customer_id: &str,
+        source: PaymentSourceParams,
+    ) -> Result<PaymentSource, Error> {
+        #[derive(Serialize)]
+        struct AttachSource<'a> { source: PaymentSourceParams<'a> }
+        let params = AttachSource { source: source };
+        client.post_form(&format!("/customers/{}/sources", customer_id), params)
+    }
+
+    /// Detaches a source from a customer
+    ///
+    /// For more details see [https://stripe.com/docs/api#detach_source](https://stripe.com/docs/api#detach_source).
+    pub fn detach_source(
+        client: &Client,
+        customer_id: &str,
+        source_id: &PaymentSourceId,
+    ) -> Result<PaymentSource, Error> {
+        client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
+    }
+
+    /// Retrieves a Card, BankAccount, or Source for a Customer
+    /// 
+    pub fn retrieve_source(
+        client: &Client,
+        customer_id: &str,
+        source_id: &PaymentSourceId,
+    ) -> Result<PaymentSource, Error> {
+        client.get(&format!("/customers/{}/sources/{}", customer_id, source_id))
+    }
+
+    /// Verifies a Bank Account for a Customer.
+    ///
+    /// For more details see https://stripe.com/docs/api/customer_bank_accounts/verify.
+     pub fn verify_bank_account(
+        client: &Client,
+        customer_id: &str,
+        bank_account_id: &BankAccountId,
+        params: BankAccountVerifyParams,
+    ) -> Result<BankAccount, Error> {
+        client.post(&format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id), params)
     }
 }
 
