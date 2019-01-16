@@ -3,9 +3,14 @@
 ## Fixes
 - TokenId has become an enum to account for different Token options
 
+## New Features / Improvements
+- Added verify_bank_account to `Customer` resource.
+- Added BankAccount as a type of `PaymentSource`.
+- Updated fields on `BankAccount` resource so all are correct.
+
 ## Breaking Changes
 - Minimum Rust version required is 1.31.1.
-- Moved retrieve_source and detach_source to Customer resource.
+- Moved `retrieve_source` and `detach_source` to `Customer` resource from `Source`.
 
 # Version 0.7.2
 
