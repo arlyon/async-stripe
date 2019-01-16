@@ -131,9 +131,14 @@ impl ::std::error::Error for ParseIdError {
 }
 
 id!(BankAccountId, "ba_");
+id!(BankTokenId, "btok_");
 id!(CardId, "card_");
+id!(CardTokenId, "tok_");
 id!(SourceId, "src_");
-id!(TokenId, "tok_");
+id!(TokenId {
+    Card(CardTokenId),
+    Bank(BankTokenId),
+});
 id!(PaymentSourceId {
     BankAcccount(BankAccountId),
     Card(CardId),
