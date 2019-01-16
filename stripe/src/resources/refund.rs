@@ -2,7 +2,6 @@ use client::Client;
 use error::Error;
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::Currency;
-use serde_qs as qs;
 
 /// The resource representing a Stripe refund.
 ///
@@ -39,7 +38,10 @@ pub enum RefundReason {
     Duplicate,
     Fraudulent,
     RequestedByCustomer,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -53,7 +55,10 @@ pub enum RefundStatus {
     Succeeded,
     Failed,
     Canceled,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -66,7 +71,10 @@ pub enum RefundFailureReason {
     LostOrStolenCard,
     ExpiredOrCanceledCard,
     Unknown,
-    #[serde(other)]
+
+    /// A variant not yet supported by the library.
+    /// It is an error to send `Other` as part of a request.
+    #[serde(other, skip_serializing)]
     Other,
 }
 
@@ -105,7 +113,7 @@ impl Refund {
     ///
     /// For more details see [https://stripe.com/docs/api/refunds/create](https://stripe.com/docs/api/refunds/create).
     pub fn create(client: &Client, params: RefundParams) -> Result<Refund, Error> {
-        client.post("/refunds", params)
+        client.post_form("/refunds", params)
     }
 
     /// Retrieves the details of a refund.
@@ -123,13 +131,13 @@ impl Refund {
         refund_id: &str,
         metadata: Option<Metadata>,
     ) -> Result<Refund, Error> {
-        client.post(&format!("/refunds/{}", refund_id), metadata)
+        client.post_form(&format!("/refunds/{}", refund_id), metadata)
     }
 
     /// List all refunds.
     ///
     /// For more details see [https://stripe.com/docs/api#list_refunds](https://stripe.com/docs/api#list_refunds).
     pub fn list(client: &Client, params: RefundListParams) -> Result<List<Refund>, Error> {
-        client.get(&format!("/refunds?{}", qs::to_string(&params)?))
+        client.get_query("/refunds", &params)
     }
 }

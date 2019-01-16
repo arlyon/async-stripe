@@ -3,7 +3,6 @@ use error::Error;
 use ids::{BankAccountId, PaymentSourceId};
 use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use resources::{Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
-use serde_qs as qs;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerShippingDetails {
@@ -79,7 +78,7 @@ impl Customer {
     ///
     /// For more details see https://stripe.com/docs/api#create_customer.
     pub fn create(client: &Client, params: CustomerParams) -> Result<Customer, Error> {
-        client.post("/customers", params)
+        client.post_form("/customers", params)
     }
 
     /// Retrieves the details of a customer.
@@ -97,7 +96,7 @@ impl Customer {
         customer_id: &str,
         params: CustomerParams,
     ) -> Result<Customer, Error> {
-        client.post(&format!("/customers/{}", customer_id), params)
+        client.post_form(&format!("/customers/{}", customer_id), params)
     }
 
     /// Deletes a customer.
@@ -111,7 +110,7 @@ impl Customer {
     ///
     /// For more details see https://stripe.com/docs/api#list_customers.
     pub fn list(client: &Client, params: CustomerListParams) -> Result<List<Customer>, Error> {
-        client.get(&format!("/customers?{}", qs::to_string(&params)?))
+        client.get_query("/customers", &params)
     }
 
     /// Attaches a source to a customer, does not change default Source for the Customer
@@ -125,7 +124,7 @@ impl Customer {
         #[derive(Serialize)]
         struct AttachSource<'a> { source: PaymentSourceParams<'a> }
         let params = AttachSource { source: source };
-        client.post(&format!("/customers/{}/sources", customer_id), params)
+        client.post_form(&format!("/customers/{}/sources", customer_id), params)
     }
 
     /// Detaches a source from a customer
@@ -140,7 +139,6 @@ impl Customer {
     }
 
     /// Retrieves a Card, BankAccount, or Source for a Customer
-    /// 
     pub fn retrieve_source(
         client: &Client,
         customer_id: &str,
@@ -158,7 +156,7 @@ impl Customer {
         bank_account_id: &BankAccountId,
         params: BankAccountVerifyParams,
     ) -> Result<BankAccount, Error> {
-        client.post(&format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id), params)
+        client.post_form(&format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id), params)
     }
 }
 

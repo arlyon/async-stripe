@@ -11,18 +11,34 @@ use std::num::ParseIntError;
 /// An error encountered when communicating with the Stripe API.
 #[derive(Debug)]
 pub enum Error {
-    /// An error reported by Stripe.
+    /// An error reported by Stripe in the response body.
     Stripe(RequestError),
     /// A networking error communicating with the Stripe server.
     Http(reqwest::Error),
     /// An error reading the response body.
     Io(io::Error),
-    /// An error converting between wire format and Rust types.
-    Conversion(Box<error::Error + Send>),
+    /// An error serializing a request before it is sent to stripe.
+    Serialize(Box<error::Error + Send>),
+    /// An error deserializing a response received from stripe.
+    Deserialize(Box<error::Error + Send>),
     /// Indicates an operation not supported (yet?) by this library.
     Unsupported(&'static str),
     /// An invariant has been violated. Either a bug in this library or Stripe
     Unexpected(&'static str),
+}
+
+impl Error {
+    pub fn serialize<T>(err: T) -> Error
+        where T: std::error::Error + Send + 'static
+    {
+        Error::Serialize(Box::new(err))
+    }
+
+    pub fn deserialize<T>(err: T) -> Error
+        where T: std::error::Error + Send + 'static
+    {
+        Error::Deserialize(Box::new(err))
+    }
 }
 
 impl fmt::Display for Error {
@@ -32,7 +48,8 @@ impl fmt::Display for Error {
             Error::Stripe(ref err) => write!(f, ": {}", err),
             Error::Http(ref err) => write!(f, ": {}", err),
             Error::Io(ref err) => write!(f, ": {}", err),
-            Error::Conversion(ref err) => write!(f, ": {}", err),
+            Error::Serialize(ref err) => write!(f, ": {}", err),
+            Error::Deserialize(ref err) => write!(f, ": {}", err),
             Error::Unsupported(msg) => write!(f, "{}", msg),
             Error::Unexpected(msg) => write!(f, "{}", msg),
         }
@@ -45,7 +62,8 @@ impl error::Error for Error {
             Error::Stripe(_) => "error reported by stripe",
             Error::Http(_) => "error communicating with stripe",
             Error::Io(_) => "error reading response from stripe",
-            Error::Conversion(_) => "error converting between wire format and Rust types",
+            Error::Serialize(_) => "error serializing a request",
+            Error::Deserialize(_) => "error deserializing a response",
             Error::Unsupported(_) => "an unsupported operation was attempted",
             Error::Unexpected(_) => "an unexpected error has occurred",
         }
@@ -56,7 +74,8 @@ impl error::Error for Error {
             Error::Stripe(ref err) => Some(err),
             Error::Http(ref err) => Some(err),
             Error::Io(ref err) => Some(err),
-            Error::Conversion(ref err) => Some(&**err),
+            Error::Serialize(ref err) => Some(&**err),
+            Error::Deserialize(ref err) => Some(&**err),
             Error::Unsupported(_) => None,
             Error::Unexpected(_) => None,
         }
@@ -78,18 +97,6 @@ impl From<reqwest::Error> for Error {
 impl From<io::Error> for Error {
     fn from(err: io::Error) -> Error {
         Error::Io(err)
-    }
-}
-
-impl From<qs::Error> for Error {
-    fn from(err: qs::Error) -> Error {
-        Error::Conversion(Box::new(err))
-    }
-}
-
-impl From<json::Error> for Error {
-    fn from(err: json::Error) -> Error {
-        Error::Conversion(Box::new(err))
     }
 }
 
@@ -265,19 +272,26 @@ impl error::Error for RequestError {
     }
 }
 
-#[doc(hidden)]
+/// The structure of the json body when an error is included in
+/// the response from Stripe.
 #[derive(Deserialize)]
-pub struct ErrorObject {
+pub struct ErrorResponse {
     pub error: RequestError,
 }
 
 /// An error encountered when communicating with the Stripe API webhooks.
 #[derive(Debug)]
 pub enum WebhookError {
+    /// The provided secret could not be parsed as a key
+    /// (e.g. it may not be the correct size).
     BadKey,
+    /// The event's headers are in an unexpected format.
     BadHeader(ParseIntError),
+    /// The event signature could not be verified.
     BadSignature,
+    /// The event signature's timestamp was too old.
     BadTimestamp(i64),
+    /// An error deserializing an event received from stripe.
     BadParse(json::Error),
 }
 

@@ -30,9 +30,13 @@ impl<T: DeserializeOwned> List<T> {
     /// Prefer `List::next` when possible
     pub fn get_next(client: &Client, url: &str, last_id: &str) -> Result<List<T>, Error> {
         if url.starts_with("/v1/") {
+            // TODO: Maybe parse the URL?  Perhaps `List` should always parse its `url` field.
             let mut url = url.trim_left_matches("/v1/").to_string();
-            url.push_str(&format!("?starting_after={}", last_id));
-
+            if url.contains("?") {
+                url.push_str(&format!("&starting_after={}", last_id));
+            } else {
+                url.push_str(&format!("?starting_after={}", last_id));
+            }
             client.get(&url)
         } else {
             Err(Error::Unsupported("URL for fetching additional data uses different API version"))
