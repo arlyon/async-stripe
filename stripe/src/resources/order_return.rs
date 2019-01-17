@@ -1,5 +1,5 @@
-use params::{Identifiable, List, Timestamp};
-use resources::{Currency, OrderItem};
+use crate::params::{Identifiable, List, Timestamp};
+use crate::resources::{Currency, OrderItem};
 
 /// The resource representing a Stripe order return.
 ///

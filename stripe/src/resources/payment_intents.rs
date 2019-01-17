@@ -1,7 +1,7 @@
-use client::Client;
-use error::Error;
-use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use resources::{Charge, Currency, ShippingDetails};
+use crate::client::Client;
+use crate::error::Error;
+use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
+use crate::resources::{Charge, Currency, ShippingDetails};
 
 /// The resource representing a Stripe PaymentError object.
 ///

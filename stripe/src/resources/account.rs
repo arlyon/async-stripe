@@ -1,5 +1,5 @@
-use params::{Identifiable, List, Metadata, Timestamp};
-use resources::BankAccount;
+use crate::params::{Identifiable, List, Metadata, Timestamp};
+use crate::resources::BankAccount;
 use serde_json as json;
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

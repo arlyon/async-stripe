@@ -1,5 +1,5 @@
-use params::{Identifiable, Metadata, Timestamp};
-use resources::Currency;
+use crate::params::{Identifiable, Metadata, Timestamp};
+use crate::resources::Currency;
 
 /// The resource representing a Stripe coupon.
 ///

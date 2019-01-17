@@ -1,5 +1,5 @@
-use client::Client;
-use error::Error;
+use crate::client::Client;
+use crate::error::Error;
 use serde::de::DeserializeOwned;
 use std::collections::HashMap;
 

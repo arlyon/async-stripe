@@ -1,7 +1,7 @@
-use client::Client;
-use error::Error;
-use params::{Identifiable, Metadata, Timestamp};
-use resources::{Currency, Deleted};
+use crate::client::Client;
+use crate::error::Error;
+use crate::params::{Identifiable, Metadata, Timestamp};
+use crate::resources::{Currency, Deleted};
 
 /// The set of parameters that can be used when creating or updating a plan.
 ///

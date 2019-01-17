@@ -1,6 +1,6 @@
 use chrono::Utc;
-use error::WebhookError;
-use resources::*;
+use crate::error::WebhookError;
+use crate::resources::*;
 use serde_json as json;
 use std::str;
 #[cfg(feature = "webhooks")] use hmac::{Hmac, Mac};

@@ -1,4 +1,4 @@
-use params::{Identifiable, Timestamp};
+use crate::params::{Identifiable, Timestamp};
 
 /// The resource representing a Stripe file.
 ///

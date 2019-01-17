@@ -1,5 +1,5 @@
-use params::{Metadata, Timestamp};
-use resources::{Currency, Period, Plan};
+use crate::params::{Metadata, Timestamp};
+use crate::resources::{Currency, Period, Plan};
 
 /// The resource representing a Stripe invoice item.
 ///

@@ -1,8 +1,8 @@
-use client::Client;
-use error::Error;
-use ids::{BankAccountId, PaymentSourceId};
-use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use resources::{Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
+use crate::client::Client;
+use crate::error::Error;
+use crate::ids::{BankAccountId, PaymentSourceId};
+use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
+use crate::resources::{Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerShippingDetails {

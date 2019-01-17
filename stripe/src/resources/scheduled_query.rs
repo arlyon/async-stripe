@@ -1,5 +1,5 @@
-use params::{Identifiable, Timestamp};
-use resources::File;
+use crate::params::{Identifiable, Timestamp};
+use crate::resources::File;
 use serde_json as json;
 
 /// The resource representing a Stripe scheduled query run.

@@ -1,5 +1,5 @@
-use params::{Identifiable, List, Metadata, Timestamp};
-use resources::{Currency, ShippingDetails};
+use crate::params::{Identifiable, List, Metadata, Timestamp};
+use crate::resources::{Currency, ShippingDetails};
 use serde_json as json;
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

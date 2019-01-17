@@ -164,7 +164,7 @@ fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Er
 
 #[cfg(test)]
 mod tests {
-    use ::{Client, CustomerParams};
+    use crate::{Client, CustomerParams};
     use std::collections::HashMap;
     use super::with_form_urlencoded;
 

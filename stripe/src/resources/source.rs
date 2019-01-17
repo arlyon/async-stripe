@@ -1,8 +1,8 @@
-use client::Client;
-use error::Error;
-use ids::TokenId;
-use params::{Identifiable, Metadata, Timestamp};
-use resources::{AchCreditTransfer, Address, CardShort, Currency};
+use crate::client::Client;
+use crate::error::Error;
+use crate::ids::TokenId;
+use crate::params::{Identifiable, Metadata, Timestamp};
+use crate::resources::{AchCreditTransfer, Address, CardShort, Currency};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OwnerParams<'a> {

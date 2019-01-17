@@ -1,5 +1,5 @@
-use params::{Identifiable, List, Metadata, Timestamp};
-use resources::Sku;
+use crate::params::{Identifiable, List, Metadata, Timestamp};
+use crate::resources::Sku;
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PackageDimensions {

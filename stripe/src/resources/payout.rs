@@ -1,7 +1,7 @@
-use client::Client;
-use error::Error;
-use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use resources::Currency;
+use crate::client::Client;
+use crate::error::Error;
+use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
+use crate::resources::Currency;
 
 /// The set of parameters that can be used when creating a payout object.
 ///

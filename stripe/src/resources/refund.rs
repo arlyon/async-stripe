@@ -1,7 +1,7 @@
-use client::Client;
-use error::Error;
-use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use resources::Currency;
+use crate::client::Client;
+use crate::error::Error;
+use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
+use crate::resources::Currency;
 
 /// An enum representing the possible values of a `Refund`'s `reason` field.
 ///

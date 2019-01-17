@@ -2,7 +2,7 @@ extern crate reqwest;
 extern crate serde_json as json;
 extern crate serde_qs as qs;
 
-use params::to_snakecase;
+use crate::params::to_snakecase;
 use std::error;
 use std::fmt;
 use std::io;

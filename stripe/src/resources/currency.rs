@@ -1,4 +1,4 @@
-use params::to_snakecase;
+use crate::params::to_snakecase;
 
 /// Currency is the list of supported currencies.
 ///

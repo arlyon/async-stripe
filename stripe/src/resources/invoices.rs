@@ -1,7 +1,7 @@
-use client::Client;
-use error::Error;
-use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use resources::{Currency, Discount, Plan};
+use crate::client::Client;
+use crate::error::Error;
+use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
+use crate::resources::{Currency, Discount, Plan};
 
 /// The set of parameters that can be used when creating or updating an invoice.
 ///

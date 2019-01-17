@@ -1,7 +1,7 @@
-use client::Client;
-use error::Error;
-use params::{Identifiable, List, Metadata, Timestamp};
-use resources::{Discount, Plan};
+use crate::client::Client;
+use crate::error::Error;
+use crate::params::{Identifiable, List, Metadata, Timestamp};
+use crate::resources::{Discount, Plan};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CancelParams {

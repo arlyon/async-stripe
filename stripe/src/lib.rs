@@ -67,8 +67,8 @@ mod ids;
 mod params;
 mod resources;
 
-pub use client::Client;
-pub use error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
-pub use ids::*;
-pub use params::{Headers, List, Metadata, RangeBounds, RangeQuery, Timestamp};
-pub use resources::*;
+pub use crate::client::Client;
+pub use crate::error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
+pub use crate::ids::*;
+pub use crate::params::{Headers, List, Metadata, RangeBounds, RangeQuery, Timestamp};
+pub use crate::resources::*;

@@ -1,5 +1,5 @@
-use params::{Identifiable, Metadata};
-use resources::Currency;
+use crate::params::{Identifiable, Metadata};
+use crate::resources::Currency;
 use serde::ser::SerializeStruct;
 
 #[derive(Clone, Debug, Default, Deserialize)]

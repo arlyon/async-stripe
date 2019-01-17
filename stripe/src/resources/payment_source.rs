@@ -1,6 +1,6 @@
-use ids::{SourceId, TokenId};
-use params::Identifiable;
-use resources::{BankAccount, BankAccountParams, Card, CardParams, Source};
+use crate::ids::{SourceId, TokenId};
+use crate::params::Identifiable;
+use crate::resources::{BankAccount, BankAccountParams, Card, CardParams, Source};
 
 /// A PaymentSourceParams represents all of the supported ways that can
 /// be used to creating a new customer with a payment method or creating
