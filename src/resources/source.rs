@@ -1,5 +1,4 @@
-use crate::client::Client;
-use crate::error::Error;
+use crate::config::{Client, Response};
 use crate::ids::TokenId;
 use crate::params::{Identifiable, Metadata, Timestamp};
 use crate::resources::{AchCreditTransfer, Address, CardShort, Currency};
@@ -228,11 +227,11 @@ pub struct Source {
 }
 
 impl Source {
-    pub fn create(client: &Client, params: SourceParams<'_>) -> Result<Source, Error> {
+    pub fn create(client: &Client, params: SourceParams<'_>) -> Response<Source> {
         client.post_form("/sources", params)
     }
 
-    pub fn get(client: &Client, source_id: &str) -> Result<Source, Error> {
+    pub fn get(client: &Client, source_id: &str) -> Response<Source> {
         client.get(&format!("/sources/{}", source_id))
     }
 
@@ -240,7 +239,7 @@ impl Source {
         client: &Client,
         source_id: &str,
         params: SourceParams<'_>,
-    ) -> Result<Source, Error> {
+    ) -> Response<Source> {
         client.post_form(&format!("/source/{}", source_id), params)
     }
 }

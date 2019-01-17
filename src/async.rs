@@ -1,20 +1,22 @@
+use crate::config::Response;
 use crate::error::{Error, ErrorResponse, RequestError};
 use crate::params::Headers;
+use futures::future::{self, Future};
+use futures::stream::Stream;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
-use reqwest::RequestBuilder;
+use reqwest::r#async::RequestBuilder;
 use serde::de::DeserializeOwned;
-use std::io::Read;
 
 #[derive(Clone)]
 pub struct Client {
-    client: reqwest::Client,
+    client: reqwest::r#async::Client,
     secret_key: String,
     headers: Headers,
 }
 
 impl Client {
     pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
-        let client = reqwest::Client::new();
+        let client = reqwest::r#async::Client::new();
         Client { client, secret_key: secret_key.into(), headers: Headers::default() }
     }
 
@@ -37,57 +39,66 @@ impl Client {
     }
 
     /// Make a `GET` http request with just a path
-    pub fn get<T: DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
+    pub fn get<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
         let url = Client::url(path);
         let request = self.client.get(&url).headers(self.headers());
         send(request)
     }
 
     /// Make a `GET` http request with url query parameters
-    pub fn get_query<T: DeserializeOwned, P: serde::Serialize>(
+    pub fn get_query<T: DeserializeOwned + Send + 'static, P: serde::Serialize>(
         &self,
         path: &str,
         params: P,
-    ) -> Result<T, Error> {
-        let url = Client::url_with_params(path, params)?;
+    ) -> Response<T> {
+        let url = match Client::url_with_params(path, params) {
+            Err(err) => return Box::new(future::err(err)),
+            Ok(ok) => ok,
+        };
         let request = self.client.get(&url).headers(self.headers());
         send(request)
     }
 
     /// Make a `DELETE` http request with just a path
-    pub fn delete<T: DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
+    pub fn delete<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
         let url = Client::url(path);
         let request = self.client.delete(&url).headers(self.headers());
         send(request)
     }
 
     /// Make a `DELETE` http request with url query parameters
-    pub fn delete_query<T: DeserializeOwned, P: serde::Serialize>(
+    pub fn delete_query<T: DeserializeOwned + Send + 'static, P: serde::Serialize>(
         &self,
         path: &str,
         params: P,
-    ) -> Result<T, Error> {
-        let url = Client::url_with_params(path, params)?;
+    ) -> Response<T> {
+        let url = match Client::url_with_params(path, params) {
+            Err(err) => return Box::new(future::err(err)),
+            Ok(ok) => ok,
+        };
         let request = self.client.delete(&url).headers(self.headers());
         send(request)
     }
 
     /// Make a `POST` http request with just a path
-    pub fn post<T: DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
+    pub fn post<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
         let url = Client::url(path);
         let request = self.client.post(&url).headers(self.headers());
         send(request)
     }
 
     /// Make a `POST` http request with urlencoded body
-    pub fn post_form<T: DeserializeOwned, F: serde::Serialize>(
+    pub fn post_form<T: DeserializeOwned + Send + 'static, F: serde::Serialize>(
         &self,
         path: &str,
         form: F,
-    ) -> Result<T, Error> {
+    ) -> Response<T> {
         let url = Client::url(path);
         let request = self.client.post(&url).headers(self.headers());
-        let request = with_form_urlencoded(request, &form)?;
+        let request = match with_form_urlencoded(request, &form) {
+            Err(err) => return Box::new(future::err(err)),
+            Ok(ok) => ok,
+        };
         send(request)
     }
 
@@ -135,23 +146,30 @@ fn with_form_urlencoded<T: serde::Serialize>(
     Ok(request.header(key, value).body(body))
 }
 
-fn send<T: DeserializeOwned>(request: RequestBuilder) -> Result<T, Error> {
-    let mut response = request.send()?;
-    let mut body = String::with_capacity(4096);
-    response.read_to_string(&mut body)?;
+fn send<T: DeserializeOwned + Send + 'static>(request: RequestBuilder) -> Response<T> {
+    Box::new(request.send()
+        .map_err(Error::Http)
+        .and_then(|response| {
+        let status = response.status();
+        response.into_body().concat2()
+            .map_err(Error::Http)
+            .and_then(move |body| {
+                let mut body = std::io::Cursor::new(body);
+                let mut bytes = Vec::with_capacity(4096);
+                std::io::copy(&mut body, &mut bytes)?;
+                if !status.is_success() {
+                    let mut err = serde_json::from_slice(&bytes).unwrap_or_else(|err| {
+                        let mut req = ErrorResponse { error: RequestError::default() };
+                        req.error.message = Some(format!("failed to deserialize error: {}", err));
+                        req
+                    });
+                    err.error.http_status = status.as_u16();
+                    return Err(Error::from(err.error));
+                }
 
-    let status = response.status();
-    if !status.is_success() {
-        let mut err = serde_json::from_str(&body).unwrap_or_else(|err| {
-            let mut req = ErrorResponse { error: RequestError::default() };
-            req.error.message = Some(format!("failed to deserialize error: {}", err));
-            req
-        });
-        err.error.http_status = status.as_u16();
-        return Err(Error::from(err.error));
-    }
-
-    serde_json::from_str(&body).map_err(Error::deserialize)
+                serde_json::from_slice(&bytes).map_err(Error::deserialize)
+            })
+    }))
 }
 
 #[cfg(test)]

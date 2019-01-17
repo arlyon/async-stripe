@@ -1,5 +1,4 @@
-use crate::client::Client;
-use crate::error::Error;
+use crate::config::{Client, Response, ok, err};
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::{Currency, Discount, Plan};
 use serde_derive::{Deserialize, Serialize};
@@ -187,33 +186,33 @@ impl Invoice {
     /// Creates a new invoice.
     ///
     /// For more details see https://stripe.com/docs/api#create_invoice.
-    pub fn create(client: &Client, params: InvoiceParams<'_>) -> Result<Invoice, Error> {
+    pub fn create(client: &Client, params: InvoiceParams<'_>) -> Response<Invoice> {
         client.post_form("/invoices", params)
     }
 
     /// Retrieves the details of an invoice.
     ///
     /// For more details see https://stripe.com/docs/api#retrieve_invoice.
-    pub fn retrieve(client: &Client, invoice_id: &str) -> Result<Invoice, Error> {
+    pub fn retrieve(client: &Client, invoice_id: &str) -> Response<Invoice> {
         client.get(&format!("/invoices/{}", invoice_id))
     }
 
     // TODO: Implement InvoiceListLinesParams
-    // pub fn get_lines(client: &Client, invoice_id: &str, params: InvoiceListLinesParams) -> Result<List<InvoiceLineItem>, Error> {
+    // pub fn get_lines(client: &Client, invoice_id: &str, params: InvoiceListLinesParams) -> Response<List<InvoiceLineItem>> {
     //     client.get(&format!("/invoices/{}/lines", invoice_id))
     // }
 
     /// Retrieves the details of an upcoming invoice_id
     ///
     /// For more details see https://stripe.com/docs/api#upcoming_invoice
-    pub fn upcoming(client: &Client, params: InvoiceUpcomingParams<'_>) -> Result<Invoice, Error> {
+    pub fn upcoming(client: &Client, params: InvoiceUpcomingParams<'_>) -> Response<Invoice> {
         client.get_query("/invoices/upcoming", &params)
     }
 
     /// Pays an invoice.
     ///
     /// For more details see https://stripe.com/docs/api#pay_invoice.
-    pub fn pay(client: &Client, invoice_id: &str) -> Result<Invoice, Error> {
+    pub fn pay(client: &Client, invoice_id: &str) -> Response<Invoice> {
         client.post(&format!("/invoices/{}/pay", invoice_id))
     }
 
@@ -224,14 +223,14 @@ impl Invoice {
         client: &Client,
         invoice_id: &str,
         params: InvoiceParams<'_>,
-    ) -> Result<Invoice, Error> {
+    ) -> Response<Invoice> {
         client.post_form(&format!("/invoices/{}", invoice_id), &params)
     }
 
     /// Lists all invoices.
     ///
     /// For more details see https://stripe.com/docs/api#list_invoices.
-    pub fn list(client: &Client, params: InvoiceListParams<'_>) -> Result<List<Invoice>, Error> {
+    pub fn list(client: &Client, params: InvoiceListParams<'_>) -> Response<List<Invoice>> {
         client.get_query("/invoices", &params)
     }
 }
@@ -243,14 +242,19 @@ impl InvoiceLineItem {
     pub fn create(
         client: &Client,
         params: InvoiceLineItemParams<'_>,
-    ) -> Result<InvoiceLineItem, Error> {
+    ) -> Response<InvoiceLineItem> {
         client.post_form("/invoiceitems", &params)
     }
 }
 
-/// Since Invoice ID can be empty, special impl for fetching result from list
+// N.B. Since Invoice ID can be empty, override impl for pagination
 impl List<Invoice> {
-    pub fn get_all(self, client: &Client) -> Result<Vec<Invoice>, Error> {
+    /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
+    /// Stripe's default page size.
+    ///
+    /// Not supported by `stripe::async::Client`.
+    #[cfg(not(feature = "async"))]
+    pub fn get_all(self, client: &Client) -> Response<Vec<Invoice>> {
         let mut data = Vec::new();
         let mut next = self;
         loop {
@@ -266,17 +270,19 @@ impl List<Invoice> {
         Ok(data)
     }
 
-    pub fn next(&self, client: &Client) -> Result<List<Invoice>, Error> {
+    /// Fetch additional page of data from stripe
+    pub fn next(&self, client: &Client) -> Response<List<Invoice>> {
+        use crate::error::Error;
+
         if let Some(last) = self.data.last() {
             if let Some(last_id) = &last.id {
                 List::get_next(client, &self.url, last_id)
             } else {
-                Err(Error::Unexpected(
-                    "Cannot fetch List data - Stripe returned Invoice with no ID",
-                ))
+                let invariant = "Cannot paginate List<Invoice>; Stripe returned Invoice with no ID";
+                err(Error::Unexpected(invariant))
             }
         } else {
-            Ok(List {
+            ok(List {
                 data: Vec::new(),
                 has_more: false,
                 total_count: self.total_count,

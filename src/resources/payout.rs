@@ -1,5 +1,4 @@
-use crate::client::Client;
-use crate::error::Error;
+use crate::config::{Client, Response};
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
@@ -164,14 +163,14 @@ impl Payout {
     /// Creates a new payout.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/create](https://stripe.com/docs/api/payouts/create).
-    pub fn create(client: &Client, params: PayoutParams<'_>) -> Result<Payout, Error> {
+    pub fn create(client: &Client, params: PayoutParams<'_>) -> Response<Payout> {
         client.post_form("/payouts", params)
     }
 
     /// Retrieves the details of a payout.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/retrieve](https://stripe.com/docs/api/payouts/retrieve).
-    pub fn retrieve(client: &Client, payout_id: &str) -> Result<Payout, Error> {
+    pub fn retrieve(client: &Client, payout_id: &str) -> Response<Payout> {
         client.get(&format!("/payouts/{}", payout_id))
     }
 
@@ -182,21 +181,21 @@ impl Payout {
         client: &Client,
         payout_id: &str,
         metadata: Option<Metadata>,
-    ) -> Result<Payout, Error> {
+    ) -> Response<Payout> {
         client.post_form(&format!("/payouts/{}", payout_id), metadata)
     }
 
     /// List all payouts.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/list](https://stripe.com/docs/api/payouts/list).
-    pub fn list(client: &Client, params: PayoutListParams<'_>) -> Result<List<Payout>, Error> {
+    pub fn list(client: &Client, params: PayoutListParams<'_>) -> Response<List<Payout>> {
         client.get_query("/payouts", &params)
     }
 
     /// Cancels the payout.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/cancel](https://stripe.com/docs/api/payouts/cancel).
-    pub fn cancel(client: &Client, payout_id: &str) -> Result<Payout, Error> {
+    pub fn cancel(client: &Client, payout_id: &str) -> Response<Payout> {
         client.post(&format!("/payouts/{}/cancel", payout_id))
     }
 }

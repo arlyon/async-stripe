@@ -1,4 +1,4 @@
-use crate::client::Client;
+use crate::config::{Client, Response, ok, err};
 use crate::error::Error;
 use serde::de::DeserializeOwned;
 use serde_derive::{Deserialize, Serialize};
@@ -33,9 +33,9 @@ impl<T: Clone> Clone for List<T> {
     }
 }
 
-impl<T: DeserializeOwned> List<T> {
+impl<T: DeserializeOwned + Send + 'static> List<T> {
     /// Prefer `List::next` when possible
-    pub fn get_next(client: &Client, url: &str, last_id: &str) -> Result<List<T>, Error> {
+    pub fn get_next(client: &Client, url: &str, last_id: &str) -> Response<List<T>> {
         if url.starts_with("/v1/") {
             // TODO: Maybe parse the URL?  Perhaps `List` should always parse its `url` field.
             let mut url = url.trim_left_matches("/v1/").to_string();
@@ -46,15 +46,18 @@ impl<T: DeserializeOwned> List<T> {
             }
             client.get(&url)
         } else {
-            Err(Error::Unsupported("URL for fetching additional data uses different API version"))
+            err(Error::Unsupported("URL for fetching additional data uses different API version"))
         }
     }
 }
 
-impl<T: Identifiable + DeserializeOwned> List<T> {
+impl<T: Identifiable + DeserializeOwned + Send + 'static> List<T> {
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
-    /// Stripe's default page size
-    pub fn get_all(self, client: &Client) -> Result<Vec<T>, Error> {
+    /// Stripe's default page size.
+    ///
+    /// Not supported by `stripe::async::Client`.
+    #[cfg(not(feature = "async"))]
+    pub fn get_all(self, client: &Client) -> Response<Vec<T>> {
         let mut data = Vec::new();
         let mut next = self;
         loop {
@@ -71,11 +74,11 @@ impl<T: Identifiable + DeserializeOwned> List<T> {
     }
 
     /// Fetch additional page of data from stripe
-    pub fn next(&self, client: &Client) -> Result<List<T>, Error> {
+    pub fn next(&self, client: &Client) -> Response<List<T>> {
         if let Some(last_id) = self.data.last().map(|d| d.id()) {
             List::get_next(client, &self.url, last_id)
         } else {
-            Ok(List {
+            ok(List {
                 data: Vec::new(),
                 has_more: false,
                 total_count: self.total_count,

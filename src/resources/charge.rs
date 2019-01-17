@@ -1,5 +1,5 @@
-use crate::client::Client;
-use crate::error::{Error, ErrorCode};
+use crate::config::{Client, Response};
+use crate::error::ErrorCode;
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::{Address, Currency, PaymentSource, PaymentSourceParams, Refund};
 use serde_derive::{Deserialize, Serialize};
@@ -332,14 +332,14 @@ impl Charge {
     /// Creates a new charge.
     ///
     /// For more details see [https://stripe.com/docs/api#create_charge](https://stripe.com/docs/api#create_charge).
-    pub fn create(client: &Client, params: ChargeParams<'_>) -> Result<Charge, Error> {
+    pub fn create(client: &Client, params: ChargeParams<'_>) -> Response<Charge> {
         client.post_form("/charges", params)
     }
 
     /// Retrieves the details of a charge.
     ///
     /// For more details see [https://stripe.com/docs/api#retrieve_charge](https://stripe.com/docs/api#retrieve_charge).
-    pub fn retrieve(client: &Client, charge_id: &str) -> Result<Charge, Error> {
+    pub fn retrieve(client: &Client, charge_id: &str) -> Response<Charge> {
         client.get(&format!("/charges/{}", charge_id))
     }
 
@@ -350,7 +350,7 @@ impl Charge {
         client: &Client,
         charge_id: &str,
         params: ChargeParams<'_>,
-    ) -> Result<Charge, Error> {
+    ) -> Response<Charge> {
         client.post_form(&format!("/charges/{}", charge_id), params)
     }
 
@@ -361,14 +361,14 @@ impl Charge {
         client: &Client,
         charge_id: &str,
         params: CaptureParams<'_>,
-    ) -> Result<Charge, Error> {
+    ) -> Response<Charge> {
         client.post_form(&format!("/charges/{}/capture", charge_id), params)
     }
 
     /// List all charges.
     ///
     /// For more details see [https://stripe.com/docs/api#list_charges](https://stripe.com/docs/api#list_charges).
-    pub fn list(client: &Client, params: ChargeListParams<'_>) -> Result<Vec<Charge>, Error> {
+    pub fn list(client: &Client, params: ChargeListParams<'_>) -> Response<Vec<Charge>> {
         client.get_query("/charges", &params)
     }
 }
