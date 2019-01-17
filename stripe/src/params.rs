@@ -26,8 +26,8 @@ impl<T: Clone> Clone for List<T> {
     fn clone(&self) -> Self {
         List {
             data: self.data.clone(),
-            has_more: self.has_more.clone(),
-            total_count: self.total_count.clone(),
+            has_more: self.has_more,
+            total_count: self.total_count,
             url: self.url.clone(),
         }
     }
@@ -39,7 +39,7 @@ impl<T: DeserializeOwned> List<T> {
         if url.starts_with("/v1/") {
             // TODO: Maybe parse the URL?  Perhaps `List` should always parse its `url` field.
             let mut url = url.trim_left_matches("/v1/").to_string();
-            if url.contains("?") {
+            if url.contains('?') {
                 url.push_str(&format!("&starting_after={}", last_id));
             } else {
                 url.push_str(&format!("?starting_after={}", last_id));

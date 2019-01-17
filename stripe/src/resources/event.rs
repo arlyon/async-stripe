@@ -223,14 +223,14 @@ impl Webhook {
         sig: String,
         secret: String,
     ) -> Result<Event, WebhookError> {
-        let mut headers: Vec<String> = sig.split(",").map(|s| s.trim().to_string()).collect();
+        let headers: Vec<String> = sig.split(',').map(|s| s.trim().to_string()).collect();
 
         // Prepare the signed payload
-        let ref mut timestamp: Vec<String> = headers[0].split("=").map(|s| s.to_string()).collect();
+        let timestamp: Vec<String> = headers[0].split('=').map(|s| s.to_string()).collect();
         let signed_payload = format!("{}{}{}", timestamp[1], ".", payload);
 
         // Get Stripe signature from header
-        let ref mut signature: Vec<String> = headers[1].split("=").map(|s| s.to_string()).collect();
+        let signature: Vec<String> = headers[1].split('=').map(|s| s.to_string()).collect();
 
         // Compute HMAC with the SHA256 hash function, using endpoing secret as key
         // and signed_payload string as the message.
@@ -248,6 +248,6 @@ impl Webhook {
             return Err(WebhookError::BadTimestamp(num_timestamp));
         }
 
-        return serde_json::from_str(&payload).map_err(WebhookError::BadParse);
+        serde_json::from_str(&payload).map_err(WebhookError::BadParse)
     }
 }

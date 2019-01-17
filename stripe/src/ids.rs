@@ -68,7 +68,7 @@ macro_rules! id {
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {
                 let prefix = s.find('_')
-                    .map(|i| &s[0..i+1])
+                    .map(|i| &s[0..=i])
                     .ok_or_else(|| ParseIdError {
                         typename: stringify!($enum_name),
                         expected: "id to start with a prefix (as in 'prefix_')"

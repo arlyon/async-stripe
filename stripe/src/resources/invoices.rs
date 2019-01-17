@@ -244,7 +244,7 @@ impl InvoiceLineItem {
         client: &Client,
         params: InvoiceLineItemParams<'_>,
     ) -> Result<InvoiceLineItem, Error> {
-        client.post_form(&format!("/invoiceitems"), &params)
+        client.post_form("/invoiceitems", &params)
     }
 }
 

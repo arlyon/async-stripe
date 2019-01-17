@@ -129,7 +129,7 @@ impl Customer {
         struct AttachSource<'a> {
             source: PaymentSourceParams<'a>,
         }
-        let params = AttachSource { source: source };
+        let params = AttachSource { source };
         client.post_form(&format!("/customers/{}/sources", customer_id), params)
     }
 

@@ -14,7 +14,7 @@ pub struct Client {
 impl Client {
     pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
         let client = reqwest::Client::new();
-        Client { client: client, secret_key: secret_key.into(), headers: Headers::default() }
+        Client { client, secret_key: secret_key.into(), headers: Headers::default() }
     }
 
     /// Clones a new client with different headers.
