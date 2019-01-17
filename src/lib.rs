@@ -78,39 +78,55 @@ pub use crate::resources::*;
 
 #[cfg(feature = "async")]
 mod config {
-  use crate::error::Error;
-  use futures::future::{self, Future};
+    use crate::error::Error;
+    use futures::future::{self, Future};
 
-  // TODO: We'd rather use `impl Future<Result<T, Error>>` but that isn't so
-  //       easy to accomplish in generic code with futures 0.1.x
-  pub(crate) type Client = crate::r#async::Client;
-  pub(crate) type Response<T> = Box<dyn Future<Item = T, Error = Error> + Send>;
+    // TODO: We'd rather use `impl Future<Result<T, Error>>` but that isn't so
+    //       easy to accomplish in generic code with futures 0.1.x
+    pub type Response<T> = Box<dyn Future<Item = T, Error = Error> + Send>;
 
-  #[inline]
-  pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
-    Box::new(future::ok(ok))
-  }
+    pub(crate) type Client = crate::r#async::Client;
 
-  #[inline]
-  pub(crate) fn err<T: Send + 'static>(err: Error) -> Response<T> {
-    Box::new(future::err(err))
-  }
+    #[inline]
+    pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
+        Box::new(future::ok(ok))
+    }
+
+    #[inline]
+    pub(crate) fn err<T: Send + 'static>(err: Error) -> Response<T> {
+        Box::new(future::err(err))
+    }
 }
 
 #[cfg(not(feature = "async"))]
 mod config {
-  use crate::error::Error;
+    use crate::error::Error;
 
-  pub(crate) type Client = crate::client::Client;
-  pub(crate) type Response<T> = Result<T, Error>;
+    /// An alias for `Result`.
+    ///
+    /// ```rust
+    /// type Response<T> = Result<T, Error>;
+    /// ```
+    ///
+    /// If the `async` feature is enabled, this type is redefined as:
+    ///
+    /// ```rust
+    /// type Response<T> = Box<dyn Future<Item = T, Error = Error> + Send>
+    /// ```
+    pub type Response<T> = Result<T, Error>;
 
-  #[inline]
-  pub(crate) fn ok<T>(ok: T) -> Response<T> {
-    Ok(ok)
-  }
+    pub(crate) type Client = crate::client::Client;
 
-  #[inline]
-  pub(crate) fn err<T>(err: Error) -> Response<T> {
-    Err(err)
-  }
+    #[inline]
+    pub fn ok<T>(ok: T) -> Response<T> {
+        Ok(ok)
+    }
+
+    #[inline]
+    pub fn err<T>(err: Error) -> Response<T> {
+        Err(err)
+    }
 }
+
+// N.B. export for doc purposes
+pub use self::config::Response;

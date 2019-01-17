@@ -156,8 +156,8 @@ fn send<T: DeserializeOwned>(request: RequestBuilder) -> Result<T, Error> {
 
 #[cfg(test)]
 mod tests {
+    use super::{with_form_urlencoded, Client};
     use crate::CustomerParams;
-    use super::{Client, with_form_urlencoded};
     use std::collections::HashMap;
 
     #[test]

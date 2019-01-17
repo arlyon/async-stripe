@@ -26,9 +26,6 @@ fn main() {
     status: {:?},
     ..
 }}",
-        charge.id,
-        charge.amount,
-        charge.created,
-        charge.status
+        charge.id, charge.amount, charge.created, charge.status
     );
 }

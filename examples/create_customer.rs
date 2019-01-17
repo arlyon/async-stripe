@@ -23,8 +23,8 @@ fn main() {
             metadata: None,
             shipping: None,
         },
-    ).unwrap();
-
+    )
+    .unwrap();
 
     // Output in a ~prettyprint format
     println!(
@@ -35,9 +35,6 @@ fn main() {
     email: {:?},
     ..
 }}",
-        customer.id,
-        customer.created,
-        customer.default_source,
-        customer.email
+        customer.id, customer.created, customer.default_source, customer.email
     );
 }

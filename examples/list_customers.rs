@@ -1,4 +1,4 @@
-use stripe::{Customer, CustomerListParams, RangeQuery, RangeBounds};
+use stripe::{Customer, CustomerListParams, RangeBounds, RangeQuery};
 
 fn main() {
     // Create a new client
@@ -14,7 +14,8 @@ fn main() {
             limit: Some(3),
             starting_after: None,
         },
-    ).unwrap();
+    )
+    .unwrap();
 
     // Print the first three customers
     println!("{:?}", customers);

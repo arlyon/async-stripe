@@ -19,20 +19,7 @@ fn main() {
     // Create the charge
     stripe::Charge::create(&client, params)
         .map(|charge| {
-            // Output in a ~prettyprint format
-            println!(
-                "Charge {{
-    id: {:?},
-    amount: {:?},
-    created: {:?},
-    status: {:?},
-    ..
-}}",
-                charge.id,
-                charge.amount,
-                charge.created,
-                charge.status
-            )
+            println!("{:?}", charge);
         })
         .wait()
         .unwrap();

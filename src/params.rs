@@ -1,4 +1,4 @@
-use crate::config::{Client, Response, ok, err};
+use crate::config::{err, ok, Client, Response};
 use crate::error::Error;
 use serde::de::DeserializeOwned;
 use serde_derive::{Deserialize, Serialize};

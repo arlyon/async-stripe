@@ -1,4 +1,4 @@
-use crate::config::{Client, Response, ok, err};
+use crate::config::{err, ok, Client, Response};
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::{Currency, Discount, Plan};
 use serde_derive::{Deserialize, Serialize};
@@ -239,10 +239,7 @@ impl InvoiceLineItem {
     /// Creates an invoice line item.
     ///
     /// For more details see https://stripe.com/docs/api#invoice_line_item_object
-    pub fn create(
-        client: &Client,
-        params: InvoiceLineItemParams<'_>,
-    ) -> Response<InvoiceLineItem> {
+    pub fn create(client: &Client, params: InvoiceLineItemParams<'_>) -> Response<InvoiceLineItem> {
         client.post_form("/invoiceitems", &params)
     }
 }

@@ -346,11 +346,7 @@ impl Charge {
     /// Updates a charge's properties.
     ///
     /// For more details see [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
-    pub fn update(
-        client: &Client,
-        charge_id: &str,
-        params: ChargeParams<'_>,
-    ) -> Response<Charge> {
+    pub fn update(client: &Client, charge_id: &str, params: ChargeParams<'_>) -> Response<Charge> {
         client.post_form(&format!("/charges/{}", charge_id), params)
     }
 

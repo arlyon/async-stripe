@@ -147,27 +147,23 @@ fn with_form_urlencoded<T: serde::Serialize>(
 }
 
 fn send<T: DeserializeOwned + Send + 'static>(request: RequestBuilder) -> Response<T> {
-    Box::new(request.send()
-        .map_err(Error::Http)
-        .and_then(|response| {
+    Box::new(request.send().map_err(Error::Http).and_then(|response| {
         let status = response.status();
-        response.into_body().concat2()
-            .map_err(Error::Http)
-            .and_then(move |body| {
-                let mut body = std::io::Cursor::new(body);
-                let mut bytes = Vec::with_capacity(4096);
-                std::io::copy(&mut body, &mut bytes)?;
-                if !status.is_success() {
-                    let mut err = serde_json::from_slice(&bytes).unwrap_or_else(|err| {
-                        let mut req = ErrorResponse { error: RequestError::default() };
-                        req.error.message = Some(format!("failed to deserialize error: {}", err));
-                        req
-                    });
-                    err.error.http_status = status.as_u16();
-                    return Err(Error::from(err.error));
-                }
+        response.into_body().concat2().map_err(Error::Http).and_then(move |body| {
+            let mut body = std::io::Cursor::new(body);
+            let mut bytes = Vec::with_capacity(4096);
+            std::io::copy(&mut body, &mut bytes)?;
+            if !status.is_success() {
+                let mut err = serde_json::from_slice(&bytes).unwrap_or_else(|err| {
+                    let mut req = ErrorResponse { error: RequestError::default() };
+                    req.error.message = Some(format!("failed to deserialize error: {}", err));
+                    req
+                });
+                err.error.http_status = status.as_u16();
+                return Err(Error::from(err.error));
+            }
 
-                serde_json::from_slice(&bytes).map_err(Error::deserialize)
-            })
+            serde_json::from_slice(&bytes).map_err(Error::deserialize)
+        })
     }))
 }

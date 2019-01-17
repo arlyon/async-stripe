@@ -393,10 +393,7 @@ impl PaymentIntent {
     /// List all payment_intents.
     ///
     /// For more details see [https://stripe.com/docs/api/payment_intents/list](https://stripe.com/docs/api/payment_intents/list).
-    pub fn list(
-        client: &Client,
-        params: PaymentIntentListParams,
-    ) -> Response<List<PaymentIntent>> {
+    pub fn list(client: &Client, params: PaymentIntentListParams) -> Response<List<PaymentIntent>> {
         client.get_query("/payment_intents", &params)
     }
 }
