@@ -15,7 +15,7 @@ Put this in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stripe-rust = "0.8.0"
+stripe-rust = "0.9.0"
 ```
 
 And this in your crate root:
@@ -72,7 +72,10 @@ This crate supports impersonating a custom connect account.
 To impersonate the account get a new Client and pass in the account id.
 
 ```rust
-  let client = client.with(stripe::Params{stripe_account: Some("acct_ABC"), client_id: Some("ca_XYZ")});
+  let client = client.with_headers(stripe::Headers {
+    stripe_account: Some("acct_ABC".to_string()),
+    client_id: Some("ca_XYZ".to_string())
+  });
 
   // Then, all requests can be made normally
   let params = stripe::CustomerListParams::default();

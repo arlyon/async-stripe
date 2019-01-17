@@ -1,9 +1,18 @@
+# Version 0.9.0
+
+## New Features
+- Added an `async` feature flag which removes `stripe::Client` and adds `stripe::async::Client`.
+
+## Breaking Changes
+- The `stripe::Params` typed was renamed to `Headers` to avoid confusion
+  with other `FooParams` types and the `params` module.
+
 # Version 0.8.0 (Jan 15, 2019)
 
 ## New Features
 - Added `verify_bank_account` to `Customer` resource.
 - Added BankAccount as a variant of `PaymentSource`.
-- Add the [PaymentIntents](https://stripe.com/docs/payments/payment-intents) resources, apis and events. 
+- Add the [PaymentIntents](https://stripe.com/docs/payments/payment-intents) resources, apis and events.
 
 ## Breaking Changes
 - Minimum Rust version required is 1.31.1.
