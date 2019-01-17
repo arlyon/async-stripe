@@ -140,10 +140,10 @@ fn with_form_urlencoded<T: serde::Serialize>(
     request: RequestBuilder,
     form: &T,
 ) -> Result<RequestBuilder, Error> {
-    let key = reqwest::header::CONTENT_TYPE;
-    let value = reqwest::header::HeaderValue::from_static("application/x-www-form-urlencoded");
     let body = serde_qs::to_string(form).map_err(Error::serialize)?;
-    Ok(request.header(key, value).body(body))
+    Ok(request
+        .header(reqwest::header::CONTENT_TYPE, "application/x-www-form-urlencoded")
+        .body(body))
 }
 
 fn send<T: DeserializeOwned + Send + 'static>(request: RequestBuilder) -> Response<T> {
@@ -153,6 +153,7 @@ fn send<T: DeserializeOwned + Send + 'static>(request: RequestBuilder) -> Respon
             let mut body = std::io::Cursor::new(body);
             let mut bytes = Vec::with_capacity(4096);
             std::io::copy(&mut body, &mut bytes)?;
+
             if !status.is_success() {
                 let mut err = serde_json::from_slice(&bytes).unwrap_or_else(|err| {
                     let mut req = ErrorResponse { error: RequestError::default() };
