@@ -1,5 +1,4 @@
-use crate::client::Client;
-use crate::error::Error;
+use crate::config::{Client, Response};
 use crate::ids::{BankAccountId, PaymentSourceId};
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::{
@@ -81,14 +80,14 @@ impl Customer {
     /// Creates a new customer.
     ///
     /// For more details see https://stripe.com/docs/api#create_customer.
-    pub fn create(client: &Client, params: CustomerParams<'_>) -> Result<Customer, Error> {
+    pub fn create(client: &Client, params: CustomerParams<'_>) -> Response<Customer> {
         client.post_form("/customers", params)
     }
 
     /// Retrieves the details of a customer.
     ///
     /// For more details see https://stripe.com/docs/api#retrieve_customer.
-    pub fn retrieve(client: &Client, customer_id: &str) -> Result<Customer, Error> {
+    pub fn retrieve(client: &Client, customer_id: &str) -> Response<Customer> {
         client.get(&format!("/customers/{}", customer_id))
     }
 
@@ -99,21 +98,21 @@ impl Customer {
         client: &Client,
         customer_id: &str,
         params: CustomerParams<'_>,
-    ) -> Result<Customer, Error> {
+    ) -> Response<Customer> {
         client.post_form(&format!("/customers/{}", customer_id), params)
     }
 
     /// Deletes a customer.
     ///
     /// For more details see https://stripe.com/docs/api#delete_customer.
-    pub fn delete(client: &Client, customer_id: &str) -> Result<Deleted, Error> {
+    pub fn delete(client: &Client, customer_id: &str) -> Response<Deleted> {
         client.delete(&format!("/customers/{}", customer_id))
     }
 
     /// List customers.
     ///
     /// For more details see https://stripe.com/docs/api#list_customers.
-    pub fn list(client: &Client, params: CustomerListParams<'_>) -> Result<List<Customer>, Error> {
+    pub fn list(client: &Client, params: CustomerListParams<'_>) -> Response<List<Customer>> {
         client.get_query("/customers", &params)
     }
 
@@ -124,7 +123,7 @@ impl Customer {
         client: &Client,
         customer_id: &str,
         source: PaymentSourceParams<'_>,
-    ) -> Result<PaymentSource, Error> {
+    ) -> Response<PaymentSource> {
         #[derive(Serialize)]
         struct AttachSource<'a> {
             source: PaymentSourceParams<'a>,
@@ -140,7 +139,7 @@ impl Customer {
         client: &Client,
         customer_id: &str,
         source_id: &PaymentSourceId,
-    ) -> Result<PaymentSource, Error> {
+    ) -> Response<PaymentSource> {
         client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
     }
 
@@ -149,7 +148,7 @@ impl Customer {
         client: &Client,
         customer_id: &str,
         source_id: &PaymentSourceId,
-    ) -> Result<PaymentSource, Error> {
+    ) -> Response<PaymentSource> {
         client.get(&format!("/customers/{}/sources/{}", customer_id, source_id))
     }
 
@@ -161,7 +160,7 @@ impl Customer {
         customer_id: &str,
         bank_account_id: &BankAccountId,
         params: BankAccountVerifyParams<'_>,
-    ) -> Result<BankAccount, Error> {
+    ) -> Response<BankAccount> {
         client.post_form(
             &format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id),
             params,

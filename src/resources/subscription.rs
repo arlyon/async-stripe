@@ -1,5 +1,4 @@
-use crate::client::Client;
-use crate::error::Error;
+use crate::config::{Client, Response};
 use crate::params::{Identifiable, List, Metadata, Timestamp};
 use crate::resources::{Discount, Plan};
 use serde_derive::{Deserialize, Serialize};
@@ -99,14 +98,14 @@ impl Subscription {
     /// Creates a new subscription for a customer.
     ///
     /// For more details see https://stripe.com/docs/api#create_subscription.
-    pub fn create(client: &Client, params: SubscriptionParams<'_>) -> Result<Subscription, Error> {
+    pub fn create(client: &Client, params: SubscriptionParams<'_>) -> Response<Subscription> {
         client.post_form("/subscriptions", params)
     }
 
     /// Retrieves the details of a subscription.
     ///
     /// For more details see https://stripe.com/docs/api#retrieve_subscription.
-    pub fn retrieve(client: &Client, subscription_id: &str) -> Result<Subscription, Error> {
+    pub fn retrieve(client: &Client, subscription_id: &str) -> Response<Subscription> {
         client.get(&format!("/subscriptions/{}", subscription_id))
     }
 
@@ -116,7 +115,7 @@ impl Subscription {
         client: &Client,
         subscription_id: &str,
         params: SubscriptionParams<'_>,
-    ) -> Result<Subscription, Error> {
+    ) -> Response<Subscription> {
         client.post_form(&format!("/subscriptions/{}", subscription_id), params)
     }
 
@@ -127,7 +126,7 @@ impl Subscription {
         client: &Client,
         subscription_id: &str,
         params: CancelParams,
-    ) -> Result<Subscription, Error> {
+    ) -> Response<Subscription> {
         client.delete_query(&format!("/subscriptions/{}", subscription_id), params)
     }
 }

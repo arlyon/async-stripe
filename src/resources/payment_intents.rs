@@ -1,5 +1,4 @@
-use crate::client::Client;
-use crate::error::Error;
+use crate::config::{Client, Response};
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::{Charge, Currency, ShippingDetails};
 use serde_derive::{Deserialize, Serialize};
@@ -336,14 +335,14 @@ impl PaymentIntent {
     pub fn create(
         client: &Client,
         params: PaymentIntentCreateParams<'_>,
-    ) -> Result<PaymentIntent, Error> {
+    ) -> Response<PaymentIntent> {
         client.post_form("/payment_intents", params)
     }
 
     /// Retrieves the details of a payment_intent.
     ///
     /// For more details see [https://stripe.com/docs/api/payment_intents/retrieve](https://stripe.com/docs/api/payment_intents/retrieve).
-    pub fn retrieve(client: &Client, payment_intent_id: &str) -> Result<PaymentIntent, Error> {
+    pub fn retrieve(client: &Client, payment_intent_id: &str) -> Response<PaymentIntent> {
         client.get(&format!("/payment_intents/{}", payment_intent_id))
     }
 
@@ -354,7 +353,7 @@ impl PaymentIntent {
         client: &Client,
         payment_intent_id: &str,
         params: PaymentIntentUpdateParams<'_>,
-    ) -> Result<PaymentIntent, Error> {
+    ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}", payment_intent_id), params)
     }
 
@@ -365,7 +364,7 @@ impl PaymentIntent {
         client: &Client,
         payment_intent_id: &str,
         params: PaymentIntentConfirmParams<'_>,
-    ) -> Result<PaymentIntent, Error> {
+    ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}/confirm", payment_intent_id), params)
     }
 
@@ -376,7 +375,7 @@ impl PaymentIntent {
         client: &Client,
         payment_intent_id: &str,
         params: PaymentIntentCaptureParams,
-    ) -> Result<PaymentIntent, Error> {
+    ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}/capture", payment_intent_id), params)
     }
 
@@ -387,17 +386,14 @@ impl PaymentIntent {
         client: &Client,
         payment_intent_id: &str,
         params: PaymentIntentCancelParams,
-    ) -> Result<PaymentIntent, Error> {
+    ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}/cancel", payment_intent_id), params)
     }
 
     /// List all payment_intents.
     ///
     /// For more details see [https://stripe.com/docs/api/payment_intents/list](https://stripe.com/docs/api/payment_intents/list).
-    pub fn list(
-        client: &Client,
-        params: PaymentIntentListParams,
-    ) -> Result<List<PaymentIntent>, Error> {
+    pub fn list(client: &Client, params: PaymentIntentListParams) -> Response<List<PaymentIntent>> {
         client.get_query("/payment_intents", &params)
     }
 }

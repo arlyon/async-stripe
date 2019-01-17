@@ -1,5 +1,8 @@
 # Version 0.9.0
 
+## New Features
+- Added an `async` feature flag which removes `stripe::Client` and adds `stripe::async::Client`.
+
 ## Breaking Changes
 - The `stripe::Params` typed was renamed to `Headers` to avoid confusion
   with other `FooParams` types and the `params` module.

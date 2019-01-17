@@ -1,11 +1,8 @@
-extern crate stripe;
-
-use std::env;
 use stripe::{Customer, CustomerParams, PaymentSourceParams};
 
 fn main() {
     // Create a new client
-    let secret_key = env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
+    let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
     let client = stripe::Client::new(secret_key);
 
     // Create the customer
@@ -26,8 +23,8 @@ fn main() {
             metadata: None,
             shipping: None,
         },
-    ).unwrap();
-
+    )
+    .unwrap();
 
     // Output in a ~prettyprint format
     println!(
@@ -38,9 +35,6 @@ fn main() {
     email: {:?},
     ..
 }}",
-        customer.id,
-        customer.created,
-        customer.default_source,
-        customer.email
+        customer.id, customer.created, customer.default_source, customer.email
     );
 }

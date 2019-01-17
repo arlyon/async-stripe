@@ -1,8 +1,16 @@
 language: rust
+
 rust:
   - stable
   - beta
   - nightly
+
 matrix:
   allow_failures:
     - rust: nightly
+
+script:
+  - cargo build --verbose --all
+  - cargo build --verbose --all --features async
+  - cargo test --verbose --all
+  - cargo test --verbose --features async --example async_create_charge
