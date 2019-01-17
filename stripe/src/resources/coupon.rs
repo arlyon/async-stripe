@@ -29,4 +29,3 @@ impl Identifiable for Coupon {
         &self.id
     }
 }
-

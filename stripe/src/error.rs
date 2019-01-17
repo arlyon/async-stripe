@@ -23,13 +23,15 @@ pub enum Error {
 
 impl Error {
     pub fn serialize<T>(err: T) -> Error
-        where T: std::error::Error + Send + 'static
+    where
+        T: std::error::Error + Send + 'static,
     {
         Error::Serialize(Box::new(err))
     }
 
     pub fn deserialize<T>(err: T) -> Error
-        where T: std::error::Error + Send + 'static
+    where
+        T: std::error::Error + Send + 'static,
     {
         Error::Deserialize(Box::new(err))
     }
@@ -259,10 +261,7 @@ impl std::fmt::Display for RequestError {
 
 impl std::error::Error for RequestError {
     fn description(&self) -> &str {
-        self.message
-            .as_ref()
-            .map(|s| s.as_str())
-            .unwrap_or("request error")
+        self.message.as_ref().map(|s| s.as_str()).unwrap_or("request error")
     }
 }
 

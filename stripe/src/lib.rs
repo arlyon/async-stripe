@@ -50,6 +50,8 @@
 //! ```
 
 #![deny(warnings)]
+#![allow(clippy::needless_pass_by_value)]
+#![allow(clippy::large_enum_variant)]
 
 mod client;
 mod error;

@@ -23,4 +23,3 @@ impl Identifiable for OrderReturn {
         &self.id
     }
 }
-

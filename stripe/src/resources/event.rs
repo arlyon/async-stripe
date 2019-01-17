@@ -1,9 +1,11 @@
-use chrono::Utc;
 use crate::error::WebhookError;
 use crate::resources::*;
+use chrono::Utc;
+#[cfg(feature = "webhooks")]
+use hmac::{Hmac, Mac};
 use serde_derive::{Deserialize, Serialize};
-#[cfg(feature = "webhooks")] use hmac::{Hmac, Mac};
-#[cfg(feature = "webhooks")] use sha2::Sha256;
+#[cfg(feature = "webhooks")]
+use sha2::Sha256;
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 pub enum EventType {
@@ -221,19 +223,19 @@ impl Webhook {
         sig: String,
         secret: String,
     ) -> Result<Event, WebhookError> {
-        let mut headers: Vec<String> = sig.split(",").map(|s| s.trim().to_string()).collect();
+        let headers: Vec<String> = sig.split(',').map(|s| s.trim().to_string()).collect();
 
         // Prepare the signed payload
-        let ref mut timestamp: Vec<String> = headers[0].split("=").map(|s| s.to_string()).collect();
+        let timestamp: Vec<String> = headers[0].split('=').map(|s| s.to_string()).collect();
         let signed_payload = format!("{}{}{}", timestamp[1], ".", payload);
 
         // Get Stripe signature from header
-        let ref mut signature: Vec<String> = headers[1].split("=").map(|s| s.to_string()).collect();
+        let signature: Vec<String> = headers[1].split('=').map(|s| s.to_string()).collect();
 
         // Compute HMAC with the SHA256 hash function, using endpoing secret as key
         // and signed_payload string as the message.
-        let mut mac = Hmac::<Sha256>::new_varkey(secret.as_bytes())
-            .map_err(|_| WebhookError::BadKey)?;
+        let mut mac =
+            Hmac::<Sha256>::new_varkey(secret.as_bytes()).map_err(|_| WebhookError::BadKey)?;
         mac.input(signed_payload.as_bytes());
         if !mac.result().is_equal(signature[1].as_bytes()) {
             return Err(WebhookError::BadSignature);
@@ -241,13 +243,11 @@ impl Webhook {
 
         // Get current timestamp to compare to signature timestamp
         let current = Utc::now().timestamp();
-        let num_timestamp = timestamp[1]
-            .parse::<i64>()
-            .map_err(WebhookError::BadHeader)?;
+        let num_timestamp = timestamp[1].parse::<i64>().map_err(WebhookError::BadHeader)?;
         if current - num_timestamp > 300 {
             return Err(WebhookError::BadTimestamp(num_timestamp));
         }
 
-        return serde_json::from_str(&payload).map_err(WebhookError::BadParse);
+        serde_json::from_str(&payload).map_err(WebhookError::BadParse)
     }
 }

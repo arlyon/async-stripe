@@ -244,7 +244,7 @@ impl InvoiceLineItem {
         client: &Client,
         params: InvoiceLineItemParams<'_>,
     ) -> Result<InvoiceLineItem, Error> {
-        client.post_form(&format!("/invoiceitems"), &params)
+        client.post_form("/invoiceitems", &params)
     }
 }
 
@@ -266,19 +266,21 @@ impl List<Invoice> {
         Ok(data)
     }
 
-    pub fn next(&self, client: &Client) -> Result<List<Invoice>, Error>  {
+    pub fn next(&self, client: &Client) -> Result<List<Invoice>, Error> {
         if let Some(last) = self.data.last() {
             if let Some(last_id) = &last.id {
                 List::get_next(client, &self.url, last_id)
             } else {
-                Err(Error::Unexpected("Cannot fetch List data - Stripe returned Invoice with no ID"))
+                Err(Error::Unexpected(
+                    "Cannot fetch List data - Stripe returned Invoice with no ID",
+                ))
             }
         } else {
             Ok(List {
                 data: Vec::new(),
                 has_more: false,
                 total_count: self.total_count,
-                url: self.url.clone()
+                url: self.url.clone(),
             })
         }
     }

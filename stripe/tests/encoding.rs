@@ -1,6 +1,5 @@
-#![recursion_limit="256"]
+#![recursion_limit = "256"]
 use serde_json::json;
-
 
 #[test]
 fn debug_currency() {
@@ -36,7 +35,7 @@ fn deserialize_currency() {
 
 #[test]
 fn serialize_range_query() {
-    use stripe::{CustomerListParams, RangeQuery, RangeBounds};
+    use stripe::{CustomerListParams, RangeBounds, RangeQuery};
 
     let query = RangeQuery::Bounds(RangeBounds {
         gt: None,
@@ -72,20 +71,27 @@ fn deserialize_payment_source_params() {
     use stripe::{CardParams, PaymentSourceParams, SourceId, TokenId};
 
     let examples = [
-        (json!("src_xyzABC123"),
-         Some(PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()))),
-        (json!("tok_189g322eZvKYlo2CeoPw2sdy"),
-         Some(PaymentSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()))),
-        (json!({"object": "card", "exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}),
-         Some(PaymentSourceParams::Card(CardParams {
-             exp_month: "12",
-             exp_year: "2017",
-             number: "1111222233334444",
-             name: None,
-             cvc: None,
-         }))),
-
-         // Error: Missing `{"object": "card"}`
+        (
+            json!("src_xyzABC123"),
+            Some(PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap())),
+        ),
+        (
+            json!("tok_189g322eZvKYlo2CeoPw2sdy"),
+            Some(PaymentSourceParams::Token(
+                "tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap(),
+            )),
+        ),
+        (
+            json!({"object": "card", "exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}),
+            Some(PaymentSourceParams::Card(CardParams {
+                exp_month: "12",
+                exp_year: "2017",
+                number: "1111222233334444",
+                name: None,
+                cvc: None,
+            })),
+        ),
+        // Error: Missing `{"object": "card"}`
         (json!({"exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}), None),
     ];
 
@@ -101,23 +107,31 @@ fn serialize_payment_source_params() {
     use stripe::{CardParams, PaymentSourceParams, SourceId, TokenId};
 
     let examples = [
-        (PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()), json!("src_xyzABC123")),
-        (PaymentSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()), json!("tok_189g322eZvKYlo2CeoPw2sdy")),
-        (PaymentSourceParams::Card(CardParams {
-            exp_month: "12",
-            exp_year: "2017",
-            number: "1111222233334444",
-            name: None,
-            cvc: None,
-        }),
-        json!({
-            "object": "card",
-            "exp_month": "12",
-            "exp_year": "2017",
-            "number": "1111222233334444",
-            "name": null,
-            "cvc": null
-        })),
+        (
+            PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap()),
+            json!("src_xyzABC123"),
+        ),
+        (
+            PaymentSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()),
+            json!("tok_189g322eZvKYlo2CeoPw2sdy"),
+        ),
+        (
+            PaymentSourceParams::Card(CardParams {
+                exp_month: "12",
+                exp_year: "2017",
+                number: "1111222233334444",
+                name: None,
+                cvc: None,
+            }),
+            json!({
+                "object": "card",
+                "exp_month": "12",
+                "exp_year": "2017",
+                "number": "1111222233334444",
+                "name": null,
+                "cvc": null
+            }),
+        ),
     ];
 
     for (params, expected) in &examples {

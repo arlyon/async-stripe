@@ -25,4 +25,3 @@ impl Identifiable for ScheduledQueryRun {
         &self.id
     }
 }
-
