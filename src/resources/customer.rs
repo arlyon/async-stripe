@@ -3,7 +3,7 @@ use crate::ids::{BankAccountId, PaymentSourceId};
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::{
     Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource,
-    PaymentSourceParams, Subscription,
+    PaymentSourceParams, Source, Subscription,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -12,6 +12,14 @@ pub struct CustomerShippingDetails {
     pub address: Address,
     pub name: String,
     pub phone: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(tag = "object", rename_all = "snake_case")]
+pub enum DetachedSource {
+    Source(Source),
+    BankAccount(Deleted),
+    Card(Deleted),
 }
 
 /// The set of parameters that can be used when creating or updating a customer.
@@ -139,7 +147,7 @@ impl Customer {
         client: &Client,
         customer_id: &str,
         source_id: &PaymentSourceId,
-    ) -> Response<PaymentSource> {
+    ) -> Response<DetachedSource> {
         client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
     }
 
