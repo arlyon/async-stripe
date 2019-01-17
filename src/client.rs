@@ -1,3 +1,4 @@
+use crate::config::Response;
 use crate::error::{Error, ErrorResponse, RequestError};
 use crate::params::Headers;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
@@ -37,7 +38,7 @@ impl Client {
     }
 
     /// Make a `GET` http request with just a path
-    pub fn get<T: DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
+    pub fn get<T: DeserializeOwned>(&self, path: &str) -> Response<T> {
         let url = Client::url(path);
         let request = self.client.get(&url).headers(self.headers());
         send(request)
@@ -48,14 +49,14 @@ impl Client {
         &self,
         path: &str,
         params: P,
-    ) -> Result<T, Error> {
+    ) -> Response<T> {
         let url = Client::url_with_params(path, params)?;
         let request = self.client.get(&url).headers(self.headers());
         send(request)
     }
 
     /// Make a `DELETE` http request with just a path
-    pub fn delete<T: DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
+    pub fn delete<T: DeserializeOwned>(&self, path: &str) -> Response<T> {
         let url = Client::url(path);
         let request = self.client.delete(&url).headers(self.headers());
         send(request)
@@ -66,14 +67,14 @@ impl Client {
         &self,
         path: &str,
         params: P,
-    ) -> Result<T, Error> {
+    ) -> Response<T> {
         let url = Client::url_with_params(path, params)?;
         let request = self.client.delete(&url).headers(self.headers());
         send(request)
     }
 
     /// Make a `POST` http request with just a path
-    pub fn post<T: DeserializeOwned>(&self, path: &str) -> Result<T, Error> {
+    pub fn post<T: DeserializeOwned>(&self, path: &str) -> Response<T> {
         let url = Client::url(path);
         let request = self.client.post(&url).headers(self.headers());
         send(request)
@@ -84,7 +85,7 @@ impl Client {
         &self,
         path: &str,
         form: F,
-    ) -> Result<T, Error> {
+    ) -> Response<T> {
         let url = Client::url(path);
         let request = self.client.post(&url).headers(self.headers());
         let request = with_form_urlencoded(request, &form)?;
@@ -135,7 +136,7 @@ fn with_form_urlencoded<T: serde::Serialize>(
     Ok(request.header(key, value).body(body))
 }
 
-fn send<T: DeserializeOwned>(request: RequestBuilder) -> Result<T, Error> {
+fn send<T: DeserializeOwned>(request: RequestBuilder) -> Response<T> {
     let mut response = request.send()?;
     let mut body = String::with_capacity(4096);
     response.read_to_string(&mut body)?;

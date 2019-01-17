@@ -76,28 +76,6 @@ pub use crate::ids::*;
 pub use crate::params::{Headers, List, Metadata, RangeBounds, RangeQuery, Timestamp};
 pub use crate::resources::*;
 
-#[cfg(feature = "async")]
-mod config {
-    use crate::error::Error;
-    use futures::future::{self, Future};
-
-    // TODO: We'd rather use `impl Future<Result<T, Error>>` but that isn't so
-    //       easy to accomplish in generic code with futures 0.1.x
-    pub type Response<T> = Box<dyn Future<Item = T, Error = Error> + Send>;
-
-    pub(crate) type Client = crate::r#async::Client;
-
-    #[inline]
-    pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
-        Box::new(future::ok(ok))
-    }
-
-    #[inline]
-    pub(crate) fn err<T: Send + 'static>(err: Error) -> Response<T> {
-        Box::new(future::err(err))
-    }
-}
-
 #[cfg(not(feature = "async"))]
 mod config {
     use crate::error::Error;
@@ -125,6 +103,28 @@ mod config {
     #[inline]
     pub fn err<T>(err: Error) -> Response<T> {
         Err(err)
+    }
+}
+
+#[cfg(feature = "async")]
+mod config {
+    use crate::error::Error;
+    use futures::future::{self, Future};
+
+    // TODO: We'd rather use `impl Future<Result<T, Error>>` but that isn't so
+    //       easy to accomplish in generic code with futures 0.1.x
+    pub type Response<T> = Box<dyn Future<Item = T, Error = Error> + Send>;
+
+    pub(crate) type Client = crate::r#async::Client;
+
+    #[inline]
+    pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
+        Box::new(future::ok(ok))
+    }
+
+    #[inline]
+    pub(crate) fn err<T: Send + 'static>(err: Error) -> Response<T> {
+        Box::new(future::err(err))
     }
 }
 
