@@ -1,10 +1,8 @@
 # Version 0.9.0
 
-
 ## Breaking Changes
 - The `stripe::Params` typed was renamed to `Headers` to avoid confusion
   with other `FooParams` types and the `params` module.
-
 
 # Version 0.8.0 (Jan 15, 2019)
 
