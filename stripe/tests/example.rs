@@ -27,7 +27,7 @@ fn customer_create_and_delete_with_account() {
     let sk = env::var("STRIPE_SK").unwrap();
     let account = env::var("STRIPE_ACCOUNT").unwrap();
     let client_id = env::var("STRIPE_CLIENT_ID").unwrap();
-    let params = stripe::Params { stripe_account: Some(account), client_id: Some(client_id) };
-    let client = stripe::Client::new(sk).with(params);
+    let headers = stripe::Headers { stripe_account: Some(account), client_id: Some(client_id) };
+    let client = stripe::Client::new(sk).with_headers(headers);
     customer_create_and_delete(&client)
 }
