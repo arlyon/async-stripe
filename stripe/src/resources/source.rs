@@ -236,7 +236,11 @@ impl Source {
         client.get(&format!("/sources/{}", source_id))
     }
 
-    pub fn update(client: &Client, source_id: &str, params: SourceParams<'_>) -> Result<Source, Error> {
+    pub fn update(
+        client: &Client,
+        source_id: &str,
+        params: SourceParams<'_>,
+    ) -> Result<Source, Error> {
         client.post_form(&format!("/source/{}", source_id), params)
     }
 }

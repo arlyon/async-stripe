@@ -2,7 +2,10 @@ use crate::client::Client;
 use crate::error::Error;
 use crate::ids::{BankAccountId, PaymentSourceId};
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use crate::resources::{Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
+use crate::resources::{
+    Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource,
+    PaymentSourceParams, Subscription,
+};
 use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -123,7 +126,9 @@ impl Customer {
         source: PaymentSourceParams<'_>,
     ) -> Result<PaymentSource, Error> {
         #[derive(Serialize)]
-        struct AttachSource<'a> { source: PaymentSourceParams<'a> }
+        struct AttachSource<'a> {
+            source: PaymentSourceParams<'a>,
+        }
         let params = AttachSource { source: source };
         client.post_form(&format!("/customers/{}/sources", customer_id), params)
     }
@@ -151,13 +156,16 @@ impl Customer {
     /// Verifies a Bank Account for a Customer.
     ///
     /// For more details see https://stripe.com/docs/api/customer_bank_accounts/verify.
-     pub fn verify_bank_account(
+    pub fn verify_bank_account(
         client: &Client,
         customer_id: &str,
         bank_account_id: &BankAccountId,
         params: BankAccountVerifyParams<'_>,
     ) -> Result<BankAccount, Error> {
-        client.post_form(&format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id), params)
+        client.post_form(
+            &format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id),
+            params,
+        )
     }
 }
 

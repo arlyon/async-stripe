@@ -77,7 +77,7 @@ impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams<'de> {
                 let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
                 return <BankAccountParams<'_> as Deserialize>::deserialize(deserializer)
                     .map(PaymentSourceParams::BankAccount);
-            },
+            }
             _ => {}
         }
 
@@ -94,7 +94,7 @@ impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
         #[serde(tag = "object", rename_all = "snake_case")]
         enum PaymentSourceTagged<'a> {
             Card(&'a CardParams<'a>),
-            BankAccount(&'a BankAccountParams<'a>)
+            BankAccount(&'a BankAccountParams<'a>),
         }
 
         match self {
@@ -102,10 +102,10 @@ impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
             PaymentSourceParams::Token(id) => id.serialize(serializer),
             PaymentSourceParams::Card(card) => {
                 PaymentSourceTagged::Card(card).serialize(serializer)
-            },
+            }
             PaymentSourceParams::BankAccount(account) => {
                 PaymentSourceTagged::BankAccount(account).serialize(serializer)
-            },
+            }
         }
     }
 }

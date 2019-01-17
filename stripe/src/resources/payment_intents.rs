@@ -366,10 +366,7 @@ impl PaymentIntent {
         payment_intent_id: &str,
         params: PaymentIntentConfirmParams<'_>,
     ) -> Result<PaymentIntent, Error> {
-        client.post_form(
-            &format!("/payment_intents/{}/confirm", payment_intent_id),
-            params,
-        )
+        client.post_form(&format!("/payment_intents/{}/confirm", payment_intent_id), params)
     }
 
     /// Capture the funds of an existing uncaptured PaymentIntent where required_action="requires_capture".
@@ -380,10 +377,7 @@ impl PaymentIntent {
         payment_intent_id: &str,
         params: PaymentIntentCaptureParams,
     ) -> Result<PaymentIntent, Error> {
-        client.post_form(
-            &format!("/payment_intents/{}/capture", payment_intent_id),
-            params,
-        )
+        client.post_form(&format!("/payment_intents/{}/capture", payment_intent_id), params)
     }
 
     /// A PaymentIntent object can be canceled when it is in one of these statuses: requires_source, requires_capture, requires_confirmation, requires_source_action.
@@ -394,10 +388,7 @@ impl PaymentIntent {
         payment_intent_id: &str,
         params: PaymentIntentCancelParams,
     ) -> Result<PaymentIntent, Error> {
-        client.post_form(
-            &format!("/payment_intents/{}/cancel", payment_intent_id),
-            params,
-        )
+        client.post_form(&format!("/payment_intents/{}/cancel", payment_intent_id), params)
     }
 
     /// List all payment_intents.

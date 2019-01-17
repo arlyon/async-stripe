@@ -1,9 +1,11 @@
-use chrono::Utc;
 use crate::error::WebhookError;
 use crate::resources::*;
+use chrono::Utc;
+#[cfg(feature = "webhooks")]
+use hmac::{Hmac, Mac};
 use serde_derive::{Deserialize, Serialize};
-#[cfg(feature = "webhooks")] use hmac::{Hmac, Mac};
-#[cfg(feature = "webhooks")] use sha2::Sha256;
+#[cfg(feature = "webhooks")]
+use sha2::Sha256;
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 pub enum EventType {
@@ -232,8 +234,8 @@ impl Webhook {
 
         // Compute HMAC with the SHA256 hash function, using endpoing secret as key
         // and signed_payload string as the message.
-        let mut mac = Hmac::<Sha256>::new_varkey(secret.as_bytes())
-            .map_err(|_| WebhookError::BadKey)?;
+        let mut mac =
+            Hmac::<Sha256>::new_varkey(secret.as_bytes()).map_err(|_| WebhookError::BadKey)?;
         mac.input(signed_payload.as_bytes());
         if !mac.result().is_equal(signature[1].as_bytes()) {
             return Err(WebhookError::BadSignature);
@@ -241,9 +243,7 @@ impl Webhook {
 
         // Get current timestamp to compare to signature timestamp
         let current = Utc::now().timestamp();
-        let num_timestamp = timestamp[1]
-            .parse::<i64>()
-            .map_err(WebhookError::BadHeader)?;
+        let num_timestamp = timestamp[1].parse::<i64>().map_err(WebhookError::BadHeader)?;
         if current - num_timestamp > 300 {
             return Err(WebhookError::BadTimestamp(num_timestamp));
         }

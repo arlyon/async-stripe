@@ -28,7 +28,7 @@ impl<T: Clone> Clone for List<T> {
             data: self.data.clone(),
             has_more: self.has_more.clone(),
             total_count: self.total_count.clone(),
-            url: self.url.clone()
+            url: self.url.clone(),
         }
     }
 }
@@ -71,7 +71,7 @@ impl<T: Identifiable + DeserializeOwned> List<T> {
     }
 
     /// Fetch additional page of data from stripe
-    pub fn next(&self, client: &Client) -> Result<List<T>, Error>  {
+    pub fn next(&self, client: &Client) -> Result<List<T>, Error> {
         if let Some(last_id) = self.data.last().map(|d| d.id()) {
             List::get_next(client, &self.url, last_id)
         } else {
@@ -79,7 +79,7 @@ impl<T: Identifiable + DeserializeOwned> List<T> {
                 data: Vec::new(),
                 has_more: false,
                 total_count: self.total_count,
-                url: self.url.clone()
+                url: self.url.clone(),
             })
         }
     }
@@ -99,12 +99,7 @@ pub struct RangeBounds<T> {
 
 impl<T> Default for RangeBounds<T> {
     fn default() -> Self {
-        RangeBounds {
-            gt: None,
-            gte: None,
-            lt: None,
-            lte: None,
-        }
+        RangeBounds { gt: None, gte: None, lt: None, lte: None }
     }
 }
 

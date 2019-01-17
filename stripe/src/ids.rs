@@ -116,7 +116,10 @@ macro_rules! id {
 }
 
 #[derive(Clone, Debug)]
-pub struct ParseIdError { typename: &'static str, expected: &'static str }
+pub struct ParseIdError {
+    typename: &'static str,
+    expected: &'static str,
+}
 
 impl ::std::fmt::Display for ParseIdError {
     fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {

@@ -36,4 +36,3 @@ impl Identifiable for Sku {
         &self.id
     }
 }
-

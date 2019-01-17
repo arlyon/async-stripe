@@ -230,29 +230,19 @@ pub struct SourceFilter {
 
 impl SourceFilter {
     pub fn all() -> SourceFilter {
-        SourceFilter {
-            object: SourceFilterType::All,
-        }
+        SourceFilter { object: SourceFilterType::All }
     }
     pub fn alipay() -> SourceFilter {
-        SourceFilter {
-            object: SourceFilterType::AlipayAccount,
-        }
+        SourceFilter { object: SourceFilterType::AlipayAccount }
     }
     pub fn bank() -> SourceFilter {
-        SourceFilter {
-            object: SourceFilterType::BankAccount,
-        }
+        SourceFilter { object: SourceFilterType::BankAccount }
     }
     pub fn bitcoin() -> SourceFilter {
-        SourceFilter {
-            object: SourceFilterType::BitcoinReceiver,
-        }
+        SourceFilter { object: SourceFilterType::BitcoinReceiver }
     }
     pub fn card() -> SourceFilter {
-        SourceFilter {
-            object: SourceFilterType::Card,
-        }
+        SourceFilter { object: SourceFilterType::Card }
     }
 }
 
@@ -356,7 +346,11 @@ impl Charge {
     /// Updates a charge's properties.
     ///
     /// For more details see [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
-    pub fn update(client: &Client, charge_id: &str, params: ChargeParams<'_>) -> Result<Charge, Error> {
+    pub fn update(
+        client: &Client,
+        charge_id: &str,
+        params: ChargeParams<'_>,
+    ) -> Result<Charge, Error> {
         client.post_form(&format!("/charges/{}", charge_id), params)
     }
 
