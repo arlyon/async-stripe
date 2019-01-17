@@ -171,39 +171,3 @@ fn send<T: DeserializeOwned + Send + 'static>(request: RequestBuilder) -> Respon
             })
     }))
 }
-
-#[cfg(test)]
-mod tests {
-    use super::with_form_urlencoded;
-    use crate::{Client, CustomerParams};
-    use std::collections::HashMap;
-
-    #[test]
-    fn serialize_metadata() {
-        let mut metadata = HashMap::new();
-        metadata.insert("any".to_string(), "thing".to_string());
-        let form = CustomerParams {
-            email: Some("jdoe@example.org"),
-            metadata: Some(metadata),
-            // ...
-            source: None,
-            default_source: None,
-            account_balance: None,
-            business_vat_id: None,
-            coupon: None,
-            description: None,
-            shipping: None,
-        };
-        let url = Client::url("/");
-        let http = reqwest::Client::new();
-        let result = with_form_urlencoded(http.post(&url), &form).and_then(|x| Ok(x.build()?));
-        assert!(result.is_ok(), "Failed to build request: {:?}", result);
-        if let Ok(request) = result {
-            let body = format!("{:?}", request.body());
-            assert_eq!(
-                body,
-                "Some(Body { kind: b\"email=jdoe%40example.org&metadata[any]=thing\" })"
-            );
-        }
-    }
-}

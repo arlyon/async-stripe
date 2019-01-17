@@ -1,7 +1,9 @@
+use futures::future::Future;
+
 fn main() {
     // Create a new client
     let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
-    let client = stripe::Client::new(secret_key);
+    let client = stripe::r#async::Client::new(secret_key);
 
     // Define a card to charge
     let mut card = stripe::CardParams::default();
@@ -15,20 +17,23 @@ fn main() {
     params.source = Some(stripe::PaymentSourceParams::Card(card));
 
     // Create the charge
-    let charge = stripe::Charge::create(&client, params).unwrap();
-
-    // Output in a ~prettyprint format
-    println!(
-        "Charge {{
+    stripe::Charge::create(&client, params)
+        .map(|charge| {
+            // Output in a ~prettyprint format
+            println!(
+                "Charge {{
     id: {:?},
     amount: {:?},
     created: {:?},
     status: {:?},
     ..
 }}",
-        charge.id,
-        charge.amount,
-        charge.created,
-        charge.status
-    );
+                charge.id,
+                charge.amount,
+                charge.created,
+                charge.status
+            )
+        })
+        .wait()
+        .unwrap();
 }

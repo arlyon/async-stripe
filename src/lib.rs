@@ -76,7 +76,6 @@ pub use crate::ids::*;
 pub use crate::params::{Headers, List, Metadata, RangeBounds, RangeQuery, Timestamp};
 pub use crate::resources::*;
 
-
 #[cfg(feature = "async")]
 mod config {
   use crate::error::Error;
