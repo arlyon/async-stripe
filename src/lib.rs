@@ -26,10 +26,11 @@
 //! so you may frequently need to refer to the [official API docs](https://stripe.com/docs/api)
 //! to determine which fields are required for either request.
 //!
-//! ```rust,ignore
+//! ```rust,no_run
 //! /* Creating a Stripe Charge */
 //!
-//! let token = "TOKEN_FROM_CHECKOUT";
+//! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
+//! let token = "tok_ID_FROM_CHECKOUT".parse().unwrap();
 //! let mut params = stripe::ChargeParams::default();
 //! // NOTE: Stripe represents currency in the lowest denominations (e.g. cents)
 //! params.amount = Some(1095); // e.g. $10.95
@@ -41,9 +42,10 @@
 //! println!("{:?}", charge); // =>  Charge { id: "ch_12345", amount: 1095, .. }
 //! ```
 //!
-//! ```rust,ignore
+//! ```rust,no_run
 //! /* Listing Stripe Charges */
 //!
+//! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! let params = stripe::ChargeListParams::default();
 //! let charges = stripe::Charge::list(&client, params).unwrap();
 //! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
@@ -82,13 +84,13 @@ mod config {
 
     /// An alias for `Result`.
     ///
-    /// ```rust
+    /// ```rust,ignore
     /// type Response<T> = Result<T, Error>;
     /// ```
     ///
     /// If the `async` feature is enabled, this type is redefined as:
     ///
-    /// ```rust
+    /// ```rust,ignore
     /// type Response<T> = Box<dyn Future<Item = T, Error = Error> + Send>
     /// ```
     pub type Response<T> = Result<T, Error>;
