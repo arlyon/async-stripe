@@ -1,6 +1,6 @@
 use crate::params::{Identifiable, Metadata, Timestamp};
 use crate::resources::{Currency, PackageDimensions};
-use serde_json as json;
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Inventory {
@@ -18,7 +18,7 @@ pub struct Sku {
     pub id: String,
     pub object: String,
     pub active: bool,
-    pub attributes: json::Value,
+    pub attributes: serde_json::Value,
     pub created: Timestamp,
     pub currency: Currency,
     pub image: Option<String>,

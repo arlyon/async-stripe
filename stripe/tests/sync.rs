@@ -1,17 +1,13 @@
-extern crate stripe;
-
-use std::sync::Arc;
-use std::thread;
-
 #[test]
 fn sync() {
-    let client = Arc::new(stripe::Client::new("sk_key"));
+    let client = stripe::Client::new("sk_key");
+    let client = std::sync::Arc::new(client);
     let clone1 = client.clone();
     let clone2 = client.clone();
-    thread::spawn(move || {
+    std::thread::spawn(move || {
         assert!(stripe::Customer::retrieve(&clone1, "").is_err());
     });
-    thread::spawn(move || {
+    std::thread::spawn(move || {
         assert!(stripe::Customer::retrieve(&clone2, "").is_err());
     });
 }

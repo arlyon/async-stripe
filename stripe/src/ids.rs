@@ -11,7 +11,7 @@ macro_rules! id {
         }
 
         impl ::std::fmt::Display for $newtype_name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+            fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
                 self.0.fmt(f)
             }
         }
@@ -44,7 +44,7 @@ macro_rules! id {
                 where D: ::serde::de::Deserializer<'de>
             {
                 let s: String = ::serde::Deserialize::deserialize(deserializer)?;
-                s.parse::<Self>().map_err(|e| ::serde::de::Error::custom(e))
+                s.parse::<Self>().map_err(::serde::de::Error::custom)
             }
         }
     };
@@ -101,7 +101,7 @@ macro_rules! id {
                 where D: ::serde::de::Deserializer<'de>
             {
                 let s: String = ::serde::Deserialize::deserialize(deserializer)?;
-                s.parse::<Self>().map_err(|e| ::serde::de::Error::custom(e))
+                s.parse::<Self>().map_err(::serde::de::Error::custom)
             }
         }
 
@@ -119,7 +119,7 @@ macro_rules! id {
 pub struct ParseIdError { typename: &'static str, expected: &'static str }
 
 impl ::std::fmt::Display for ParseIdError {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         write!(f, "invalid `{}`, expected {}", self.typename, self.expected)
     }
 }

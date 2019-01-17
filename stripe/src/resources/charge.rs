@@ -2,6 +2,7 @@ use crate::client::Client;
 use crate::error::{Error, ErrorCode};
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::{Address, Currency, PaymentSource, PaymentSourceParams, Refund};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe charge object outcome.
 ///
@@ -341,7 +342,7 @@ impl Charge {
     /// Creates a new charge.
     ///
     /// For more details see [https://stripe.com/docs/api#create_charge](https://stripe.com/docs/api#create_charge).
-    pub fn create(client: &Client, params: ChargeParams) -> Result<Charge, Error> {
+    pub fn create(client: &Client, params: ChargeParams<'_>) -> Result<Charge, Error> {
         client.post_form("/charges", params)
     }
 
@@ -355,7 +356,7 @@ impl Charge {
     /// Updates a charge's properties.
     ///
     /// For more details see [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
-    pub fn update(client: &Client, charge_id: &str, params: ChargeParams) -> Result<Charge, Error> {
+    pub fn update(client: &Client, charge_id: &str, params: ChargeParams<'_>) -> Result<Charge, Error> {
         client.post_form(&format!("/charges/{}", charge_id), params)
     }
 
@@ -365,7 +366,7 @@ impl Charge {
     pub fn capture(
         client: &Client,
         charge_id: &str,
-        params: CaptureParams,
+        params: CaptureParams<'_>,
     ) -> Result<Charge, Error> {
         client.post_form(&format!("/charges/{}/capture", charge_id), params)
     }
@@ -373,7 +374,7 @@ impl Charge {
     /// List all charges.
     ///
     /// For more details see [https://stripe.com/docs/api#list_charges](https://stripe.com/docs/api#list_charges).
-    pub fn list(client: &Client, params: ChargeListParams) -> Result<Vec<Charge>, Error> {
+    pub fn list(client: &Client, params: ChargeListParams<'_>) -> Result<Vec<Charge>, Error> {
         client.get_query("/charges", &params)
     }
 }

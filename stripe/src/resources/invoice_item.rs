@@ -1,5 +1,6 @@
 use crate::params::{Metadata, Timestamp};
 use crate::resources::{Currency, Period, Plan};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe invoice item.
 ///

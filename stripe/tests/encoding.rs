@@ -1,9 +1,6 @@
 #![recursion_limit="256"]
+use serde_json::json;
 
-#[macro_use]
-extern crate serde_json;
-extern crate serde_qs;
-extern crate stripe;
 
 #[test]
 fn debug_currency() {
@@ -94,7 +91,7 @@ fn deserialize_payment_source_params() {
 
     for (value, expected) in &examples {
         let input = serde_json::to_string(value).unwrap();
-        let parsed: Option<PaymentSourceParams> = serde_json::from_str(&input).ok();
+        let parsed: Option<PaymentSourceParams<'_>> = serde_json::from_str(&input).ok();
         assert_eq!(json!(parsed), json!(expected));
     }
 }

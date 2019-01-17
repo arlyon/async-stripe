@@ -1,5 +1,6 @@
 use crate::params::{Identifiable, Metadata, Timestamp};
 use crate::resources::Currency;
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe coupon.
 ///

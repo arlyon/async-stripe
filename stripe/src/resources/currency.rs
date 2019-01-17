@@ -1,4 +1,5 @@
 use crate::params::to_snakecase;
+use serde_derive::{Deserialize, Serialize};
 
 /// Currency is the list of supported currencies.
 ///
@@ -292,7 +293,7 @@ impl Default for Currency {
 }
 
 impl ::std::fmt::Display for Currency {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         write!(f, "{}", to_snakecase(&format!("{:?}", self)))
     }
 }
@@ -449,7 +450,7 @@ impl ::std::str::FromStr for Currency {
 pub struct ParseCurrencyError(/* private */ ());
 
 impl ::std::fmt::Display for ParseCurrencyError {
-    fn fmt(&self, fmt: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, fmt: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         fmt.write_str(::std::error::Error::description(self))
     }
 }

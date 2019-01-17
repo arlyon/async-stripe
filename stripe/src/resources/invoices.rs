@@ -2,6 +2,7 @@ use crate::client::Client;
 use crate::error::Error;
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::{Currency, Discount, Plan};
+use serde_derive::{Deserialize, Serialize};
 
 /// The set of parameters that can be used when creating or updating an invoice.
 ///
@@ -186,7 +187,7 @@ impl Invoice {
     /// Creates a new invoice.
     ///
     /// For more details see https://stripe.com/docs/api#create_invoice.
-    pub fn create(client: &Client, params: InvoiceParams) -> Result<Invoice, Error> {
+    pub fn create(client: &Client, params: InvoiceParams<'_>) -> Result<Invoice, Error> {
         client.post_form("/invoices", params)
     }
 
@@ -205,7 +206,7 @@ impl Invoice {
     /// Retrieves the details of an upcoming invoice_id
     ///
     /// For more details see https://stripe.com/docs/api#upcoming_invoice
-    pub fn upcoming(client: &Client, params: InvoiceUpcomingParams) -> Result<Invoice, Error> {
+    pub fn upcoming(client: &Client, params: InvoiceUpcomingParams<'_>) -> Result<Invoice, Error> {
         client.get_query("/invoices/upcoming", &params)
     }
 
@@ -222,7 +223,7 @@ impl Invoice {
     pub fn update(
         client: &Client,
         invoice_id: &str,
-        params: InvoiceParams,
+        params: InvoiceParams<'_>,
     ) -> Result<Invoice, Error> {
         client.post_form(&format!("/invoices/{}", invoice_id), &params)
     }
@@ -230,7 +231,7 @@ impl Invoice {
     /// Lists all invoices.
     ///
     /// For more details see https://stripe.com/docs/api#list_invoices.
-    pub fn list(client: &Client, params: InvoiceListParams) -> Result<List<Invoice>, Error> {
+    pub fn list(client: &Client, params: InvoiceListParams<'_>) -> Result<List<Invoice>, Error> {
         client.get_query("/invoices", &params)
     }
 }
@@ -241,7 +242,7 @@ impl InvoiceLineItem {
     /// For more details see https://stripe.com/docs/api#invoice_line_item_object
     pub fn create(
         client: &Client,
-        params: InvoiceLineItemParams,
+        params: InvoiceLineItemParams<'_>,
     ) -> Result<InvoiceLineItem, Error> {
         client.post_form(&format!("/invoiceitems"), &params)
     }

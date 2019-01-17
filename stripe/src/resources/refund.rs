@@ -2,6 +2,7 @@ use crate::client::Client;
 use crate::error::Error;
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::Currency;
+use serde_derive::{Deserialize, Serialize};
 
 /// An enum representing the possible values of a `Refund`'s `reason` field.
 ///
@@ -106,7 +107,7 @@ impl Refund {
     /// Creates a new refund.
     ///
     /// For more details see [https://stripe.com/docs/api/refunds/create](https://stripe.com/docs/api/refunds/create).
-    pub fn create(client: &Client, params: RefundParams) -> Result<Refund, Error> {
+    pub fn create(client: &Client, params: RefundParams<'_>) -> Result<Refund, Error> {
         client.post_form("/refunds", params)
     }
 
@@ -131,7 +132,7 @@ impl Refund {
     /// List all refunds.
     ///
     /// For more details see [https://stripe.com/docs/api#list_refunds](https://stripe.com/docs/api#list_refunds).
-    pub fn list(client: &Client, params: RefundListParams) -> Result<List<Refund>, Error> {
+    pub fn list(client: &Client, params: RefundListParams<'_>) -> Result<List<Refund>, Error> {
         client.get_query("/refunds", &params)
     }
 }

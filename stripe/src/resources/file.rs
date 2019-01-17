@@ -1,4 +1,5 @@
 use crate::params::{Identifiable, Timestamp};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe file.
 ///

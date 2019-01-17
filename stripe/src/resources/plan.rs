@@ -2,6 +2,7 @@ use crate::client::Client;
 use crate::error::Error;
 use crate::params::{Identifiable, Metadata, Timestamp};
 use crate::resources::{Currency, Deleted};
+use serde_derive::{Deserialize, Serialize};
 
 /// The set of parameters that can be used when creating or updating a plan.
 ///
@@ -51,7 +52,7 @@ impl Plan {
     /// Creates a new plan.
     ///
     /// For more details see https://stripe.com/docs/api#create_plan.
-    pub fn create(client: &Client, params: PlanParams) -> Result<Plan, Error> {
+    pub fn create(client: &Client, params: PlanParams<'_>) -> Result<Plan, Error> {
         client.post_form("/plans", params)
     }
 
@@ -65,7 +66,7 @@ impl Plan {
     /// Updates a plan's properties.
     ///
     /// For more details see https://stripe.com/docs/api#update_plan.
-    pub fn update(client: &Client, plan_id: &str, params: PlanParams) -> Result<Plan, Error> {
+    pub fn update(client: &Client, plan_id: &str, params: PlanParams<'_>) -> Result<Plan, Error> {
         client.post_form(&format!("/plans/{}", plan_id), params)
     }
 

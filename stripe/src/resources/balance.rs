@@ -1,6 +1,6 @@
 use crate::params::{Identifiable, List, Timestamp};
 use crate::resources::{Currency, PaymentSource};
-use serde_json as json;
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FeeDetails {
@@ -18,10 +18,10 @@ pub struct FeeDetails {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Balance {
     pub object: String,
-    pub available: Vec<json::Value>,
-    pub connect_reserved: Vec<json::Value>,
+    pub available: Vec<serde_json::Value>,
+    pub connect_reserved: Vec<serde_json::Value>,
     pub livemode: bool,
-    pub pending: Vec<json::Value>,
+    pub pending: Vec<serde_json::Value>,
 }
 
 /// The resource representing a Stripe balance transaction.

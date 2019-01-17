@@ -2,6 +2,7 @@ use crate::client::Client;
 use crate::error::Error;
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::Currency;
+use serde_derive::{Deserialize, Serialize};
 
 /// The set of parameters that can be used when creating a payout object.
 ///
@@ -163,7 +164,7 @@ impl Payout {
     /// Creates a new payout.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/create](https://stripe.com/docs/api/payouts/create).
-    pub fn create(client: &Client, params: PayoutParams) -> Result<Payout, Error> {
+    pub fn create(client: &Client, params: PayoutParams<'_>) -> Result<Payout, Error> {
         client.post_form("/payouts", params)
     }
 
@@ -188,7 +189,7 @@ impl Payout {
     /// List all payouts.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/list](https://stripe.com/docs/api/payouts/list).
-    pub fn list(client: &Client, params: PayoutListParams) -> Result<List<Payout>, Error> {
+    pub fn list(client: &Client, params: PayoutListParams<'_>) -> Result<List<Payout>, Error> {
         client.get_query("/payouts", &params)
     }
 

@@ -1,5 +1,6 @@
 use crate::params::{Identifiable, List, Metadata, Timestamp};
 use crate::resources::Sku;
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PackageDimensions {

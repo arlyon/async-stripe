@@ -1,6 +1,7 @@
 use crate::params::{Identifiable, Metadata};
 use crate::resources::Currency;
 use serde::ser::SerializeStruct;
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize)]
 pub struct BankAccountParams<'a> {
