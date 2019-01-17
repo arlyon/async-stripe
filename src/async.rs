@@ -15,7 +15,7 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
+    pub fn new<S: Into<String>>(secret_key: S) -> Client {
         let client = reqwest::r#async::Client::new();
         Client { client, secret_key: secret_key.into(), headers: Headers::default() }
     }
@@ -34,7 +34,7 @@ impl Client {
     ///
     /// This is recommended if you are acting as only one Account for the lifetime of the client.
     /// Otherwise, prefer `client.with(Headers{stripe_account: "acct_ABC", ..})`.
-    pub fn set_stripe_account<Str: Into<String>>(&mut self, account_id: Str) {
+    pub fn set_stripe_account<S: Into<String>>(&mut self, account_id: S) {
         self.headers.stripe_account = Some(account_id.into());
     }
 
