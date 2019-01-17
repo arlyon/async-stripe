@@ -1,4 +1,4 @@
-# Version 0.9.0
+# Version 0.9.0 (Jan 17, 2019)
 
 ## New Features
 - Added an `async` feature flag which removes `stripe::Client` and adds `stripe::async::Client`.
