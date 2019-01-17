@@ -1,5 +1,6 @@
-use params::{Identifiable, Metadata, Timestamp};
-use resources::{BalanceTransaction, Currency};
+use crate::params::{Identifiable, Metadata, Timestamp};
+use crate::resources::{BalanceTransaction, Currency};
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct EvidenceDetails {

@@ -1,7 +1,8 @@
-use client::Client;
-use error::Error;
-use params::{Identifiable, List, Metadata, Timestamp};
-use resources::{Discount, Plan};
+use crate::client::Client;
+use crate::error::Error;
+use crate::params::{Identifiable, List, Metadata, Timestamp};
+use crate::resources::{Discount, Plan};
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CancelParams {
@@ -98,7 +99,7 @@ impl Subscription {
     /// Creates a new subscription for a customer.
     ///
     /// For more details see https://stripe.com/docs/api#create_subscription.
-    pub fn create(client: &Client, params: SubscriptionParams) -> Result<Subscription, Error> {
+    pub fn create(client: &Client, params: SubscriptionParams<'_>) -> Result<Subscription, Error> {
         client.post_form("/subscriptions", params)
     }
 
@@ -114,7 +115,7 @@ impl Subscription {
     pub fn update(
         client: &Client,
         subscription_id: &str,
-        params: SubscriptionParams,
+        params: SubscriptionParams<'_>,
     ) -> Result<Subscription, Error> {
         client.post_form(&format!("/subscriptions/{}", subscription_id), params)
     }

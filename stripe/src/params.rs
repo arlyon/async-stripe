@@ -1,6 +1,7 @@
-use client::Client;
-use error::Error;
+use crate::client::Client;
+use crate::error::Error;
 use serde::de::DeserializeOwned;
+use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Clone, Default)]

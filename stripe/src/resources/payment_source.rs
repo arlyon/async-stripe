@@ -1,6 +1,7 @@
-use ids::{SourceId, TokenId};
-use params::Identifiable;
-use resources::{BankAccount, BankAccountParams, Card, CardParams, Source};
+use crate::ids::{SourceId, TokenId};
+use crate::params::Identifiable;
+use crate::resources::{BankAccount, BankAccountParams, Card, CardParams, Source};
+use serde_derive::{Deserialize, Serialize};
 
 /// A PaymentSourceParams represents all of the supported ways that can
 /// be used to creating a new customer with a payment method or creating
@@ -54,7 +55,7 @@ impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams<'de> {
         }
 
         // Try deserializing the untagged variants first
-        let content = <Content as Deserialize>::deserialize(deserializer)?;
+        let content = <Content<'_> as Deserialize>::deserialize(deserializer)?;
         let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
         if let Ok(ok) = <SourceId as Deserialize>::deserialize(deserializer) {
             return Ok(PaymentSourceParams::Source(ok));
@@ -69,12 +70,12 @@ impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams<'de> {
         match <PaymentSourceObjectType as Deserialize>::deserialize(deserializer) {
             Ok(PaymentSourceObjectType::Card(_)) => {
                 let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
-                return <CardParams as Deserialize>::deserialize(deserializer)
+                return <CardParams<'_> as Deserialize>::deserialize(deserializer)
                     .map(PaymentSourceParams::Card);
             }
             Ok(PaymentSourceObjectType::BankAccount(_)) => {
                 let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
-                return <BankAccountParams as Deserialize>::deserialize(deserializer)
+                return <BankAccountParams<'_> as Deserialize>::deserialize(deserializer)
                     .map(PaymentSourceParams::BankAccount);
             },
             _ => {}

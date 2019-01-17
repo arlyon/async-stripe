@@ -51,24 +51,14 @@
 
 #![deny(warnings)]
 
-extern crate chrono;
-extern crate hmac;
-extern crate reqwest;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-extern crate serde_qs;
-extern crate sha2;
-
 mod client;
 mod error;
 mod ids;
 mod params;
 mod resources;
 
-pub use client::Client;
-pub use error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
-pub use ids::*;
-pub use params::{Headers, List, Metadata, RangeBounds, RangeQuery, Timestamp};
-pub use resources::*;
+pub use crate::client::Client;
+pub use crate::error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
+pub use crate::ids::*;
+pub use crate::params::{Headers, List, Metadata, RangeBounds, RangeQuery, Timestamp};
+pub use crate::resources::*;

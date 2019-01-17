@@ -1,8 +1,7 @@
 use chrono::Utc;
-use error::WebhookError;
-use resources::*;
-use serde_json as json;
-use std::str;
+use crate::error::WebhookError;
+use crate::resources::*;
+use serde_derive::{Deserialize, Serialize};
 #[cfg(feature = "webhooks")] use hmac::{Hmac, Mac};
 #[cfg(feature = "webhooks")] use sha2::Sha256;
 
@@ -244,12 +243,11 @@ impl Webhook {
         let current = Utc::now().timestamp();
         let num_timestamp = timestamp[1]
             .parse::<i64>()
-            .map_err(|err| WebhookError::BadHeader(err))?;
+            .map_err(WebhookError::BadHeader)?;
         if current - num_timestamp > 300 {
             return Err(WebhookError::BadTimestamp(num_timestamp));
         }
 
-        // return Event
-        return json::from_str(&payload).map_err(|err| WebhookError::BadParse(err));
+        return serde_json::from_str(&payload).map_err(WebhookError::BadParse);
     }
 }

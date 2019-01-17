@@ -12,6 +12,7 @@ repository = "https://github.com/wyyerd/stripe-rs"
 documentation = "https://docs.rs/stripe-rust"
 keywords = ["stripe", "v1", "api"]
 categories = ["api-bindings"]
+edition = "2018"
 
 [badges]
 travis-ci = {repository = "wyyerd/stripe-rs"}

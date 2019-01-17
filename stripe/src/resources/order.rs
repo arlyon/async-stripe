@@ -1,6 +1,6 @@
-use params::{Identifiable, List, Metadata, Timestamp};
-use resources::{Currency, ShippingDetails};
-use serde_json as json;
+use crate::params::{Identifiable, List, Metadata, Timestamp};
+use crate::resources::{Currency, ShippingDetails};
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct StatusTransitions {
@@ -49,10 +49,10 @@ pub struct Order {
     pub items: List<OrderItem>,
     pub livemode: bool,
     pub metadata: Metadata,
-    pub returns: List<json::Value>,
+    pub returns: List<serde_json::Value>,
     pub selected_shipping_method: Option<String>,
     pub shipping: Option<ShippingDetails>,
-    pub shipping_methods: List<json::Value>,
+    pub shipping_methods: List<serde_json::Value>,
     pub status: String, // (created, paid, canceled, fulfilled, returned)
     pub status_transitions: StatusTransitions,
     pub udpated: Timestamp,

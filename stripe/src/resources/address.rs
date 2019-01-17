@@ -1,3 +1,5 @@
+use serde_derive::{Deserialize, Serialize};
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Address {
     pub line1: Option<String>,

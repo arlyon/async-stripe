@@ -1,7 +1,8 @@
-use client::Client;
-use error::Error;
-use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use resources::{Charge, Currency, ShippingDetails};
+use crate::client::Client;
+use crate::error::Error;
+use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
+use crate::resources::{Charge, Currency, ShippingDetails};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe PaymentError object.
 ///
@@ -334,7 +335,7 @@ impl PaymentIntent {
     /// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create).
     pub fn create(
         client: &Client,
-        params: PaymentIntentCreateParams,
+        params: PaymentIntentCreateParams<'_>,
     ) -> Result<PaymentIntent, Error> {
         client.post_form("/payment_intents", params)
     }
@@ -352,7 +353,7 @@ impl PaymentIntent {
     pub fn update(
         client: &Client,
         payment_intent_id: &str,
-        params: PaymentIntentUpdateParams,
+        params: PaymentIntentUpdateParams<'_>,
     ) -> Result<PaymentIntent, Error> {
         client.post_form(&format!("/payment_intents/{}", payment_intent_id), params)
     }
@@ -363,7 +364,7 @@ impl PaymentIntent {
     pub fn confirm(
         client: &Client,
         payment_intent_id: &str,
-        params: PaymentIntentConfirmParams,
+        params: PaymentIntentConfirmParams<'_>,
     ) -> Result<PaymentIntent, Error> {
         client.post_form(
             &format!("/payment_intents/{}/confirm", payment_intent_id),

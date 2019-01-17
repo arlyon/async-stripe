@@ -1,13 +1,7 @@
 use crate::params::Headers;
 use crate::error::{Error, ErrorResponse, RequestError};
-use reqwest;
 use reqwest::RequestBuilder;
-use reqwest::header::{
-    HeaderMap, HeaderName, HeaderValue, AUTHORIZATION,
-};
-use serde;
-use serde_json;
-use serde_qs;
+use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use std::io::Read;
 
 #[derive(Clone)]
@@ -112,7 +106,7 @@ impl Client {
     fn headers(&self) -> HeaderMap {
         let mut headers = HeaderMap::new();
         headers.insert(
-            AUTHORIZATION,
+            reqwest::header::AUTHORIZATION,
             HeaderValue::from_str(&format!("Bearer {}", self.secret_key)).unwrap(),
         );
         if let Some(account) = &self.headers.stripe_account {
@@ -164,7 +158,7 @@ fn send<T: serde::de::DeserializeOwned>(request: RequestBuilder) -> Result<T, Er
 
 #[cfg(test)]
 mod tests {
-    use ::{Client, CustomerParams};
+    use crate::{Client, CustomerParams};
     use std::collections::HashMap;
     use super::with_form_urlencoded;
 

@@ -1,5 +1,6 @@
-use params::Timestamp;
-use resources::Coupon;
+use crate::params::Timestamp;
+use crate::resources::Coupon;
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe discount.
 ///

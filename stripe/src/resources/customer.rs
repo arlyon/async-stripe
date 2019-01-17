@@ -1,8 +1,9 @@
-use client::Client;
-use error::Error;
-use ids::{BankAccountId, PaymentSourceId};
-use params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use resources::{Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
+use crate::client::Client;
+use crate::error::Error;
+use crate::ids::{BankAccountId, PaymentSourceId};
+use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
+use crate::resources::{Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource, PaymentSourceParams, Subscription};
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerShippingDetails {
@@ -77,7 +78,7 @@ impl Customer {
     /// Creates a new customer.
     ///
     /// For more details see https://stripe.com/docs/api#create_customer.
-    pub fn create(client: &Client, params: CustomerParams) -> Result<Customer, Error> {
+    pub fn create(client: &Client, params: CustomerParams<'_>) -> Result<Customer, Error> {
         client.post_form("/customers", params)
     }
 
@@ -94,7 +95,7 @@ impl Customer {
     pub fn update(
         client: &Client,
         customer_id: &str,
-        params: CustomerParams,
+        params: CustomerParams<'_>,
     ) -> Result<Customer, Error> {
         client.post_form(&format!("/customers/{}", customer_id), params)
     }
@@ -109,7 +110,7 @@ impl Customer {
     /// List customers.
     ///
     /// For more details see https://stripe.com/docs/api#list_customers.
-    pub fn list(client: &Client, params: CustomerListParams) -> Result<List<Customer>, Error> {
+    pub fn list(client: &Client, params: CustomerListParams<'_>) -> Result<List<Customer>, Error> {
         client.get_query("/customers", &params)
     }
 
@@ -119,7 +120,7 @@ impl Customer {
     pub fn attach_source(
         client: &Client,
         customer_id: &str,
-        source: PaymentSourceParams,
+        source: PaymentSourceParams<'_>,
     ) -> Result<PaymentSource, Error> {
         #[derive(Serialize)]
         struct AttachSource<'a> { source: PaymentSourceParams<'a> }
@@ -154,7 +155,7 @@ impl Customer {
         client: &Client,
         customer_id: &str,
         bank_account_id: &BankAccountId,
-        params: BankAccountVerifyParams,
+        params: BankAccountVerifyParams<'_>,
     ) -> Result<BankAccount, Error> {
         client.post_form(&format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id), params)
     }

@@ -1,11 +1,5 @@
-extern crate reqwest;
-extern crate serde_json as json;
-extern crate serde_qs as qs;
-
-use params::to_snakecase;
-use std::error;
-use std::fmt;
-use std::io;
+use crate::params::to_snakecase;
+use serde_derive::{Deserialize, Serialize};
 use std::num::ParseIntError;
 
 /// An error encountered when communicating with the Stripe API.
@@ -16,11 +10,11 @@ pub enum Error {
     /// A networking error communicating with the Stripe server.
     Http(reqwest::Error),
     /// An error reading the response body.
-    Io(io::Error),
+    Io(std::io::Error),
     /// An error serializing a request before it is sent to stripe.
-    Serialize(Box<error::Error + Send>),
+    Serialize(Box<dyn std::error::Error + Send>),
     /// An error deserializing a response received from stripe.
-    Deserialize(Box<error::Error + Send>),
+    Deserialize(Box<dyn std::error::Error + Send>),
     /// Indicates an operation not supported (yet?) by this library.
     Unsupported(&'static str),
     /// An invariant has been violated. Either a bug in this library or Stripe
@@ -41,9 +35,9 @@ impl Error {
     }
 }
 
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str(error::Error::description(self))?;
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(std::error::Error::description(self))?;
         match *self {
             Error::Stripe(ref err) => write!(f, ": {}", err),
             Error::Http(ref err) => write!(f, ": {}", err),
@@ -56,7 +50,7 @@ impl fmt::Display for Error {
     }
 }
 
-impl error::Error for Error {
+impl std::error::Error for Error {
     fn description(&self) -> &str {
         match *self {
             Error::Stripe(_) => "error reported by stripe",
@@ -69,7 +63,7 @@ impl error::Error for Error {
         }
     }
 
-    fn cause(&self) -> Option<&error::Error> {
+    fn cause(&self) -> Option<&dyn std::error::Error> {
         match *self {
             Error::Stripe(ref err) => Some(err),
             Error::Http(ref err) => Some(err),
@@ -94,8 +88,8 @@ impl From<reqwest::Error> for Error {
     }
 }
 
-impl From<io::Error> for Error {
-    fn from(err: io::Error) -> Error {
+impl From<std::io::Error> for Error {
+    fn from(err: std::io::Error) -> Error {
         Error::Io(err)
     }
 }
@@ -128,8 +122,8 @@ impl Default for ErrorType {
     }
 }
 
-impl fmt::Display for ErrorType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::fmt::Display for ErrorType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", to_snakecase(&format!("{:?}Error", self)))
     }
 }
@@ -218,8 +212,8 @@ pub enum ErrorCode {
     __NonExhaustive,
 }
 
-impl fmt::Display for ErrorCode {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::fmt::Display for ErrorCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", to_snakecase(&format!("{:?}", self)))
     }
 }
@@ -253,8 +247,8 @@ pub struct RequestError {
     pub charge: Option<String>,
 }
 
-impl fmt::Display for RequestError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::fmt::Display for RequestError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}({})", self.error_type, self.http_status)?;
         if let Some(ref message) = self.message {
             write!(f, ": {}", message)?;
@@ -263,7 +257,7 @@ impl fmt::Display for RequestError {
     }
 }
 
-impl error::Error for RequestError {
+impl std::error::Error for RequestError {
     fn description(&self) -> &str {
         self.message
             .as_ref()
@@ -292,12 +286,12 @@ pub enum WebhookError {
     /// The event signature's timestamp was too old.
     BadTimestamp(i64),
     /// An error deserializing an event received from stripe.
-    BadParse(json::Error),
+    BadParse(serde_json::Error),
 }
 
-impl fmt::Display for WebhookError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str(error::Error::description(self))?;
+impl std::fmt::Display for WebhookError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(std::error::Error::description(self))?;
         match *self {
             WebhookError::BadKey => Ok(()),
             WebhookError::BadHeader(ref err) => write!(f, ": {}", err),
@@ -308,7 +302,7 @@ impl fmt::Display for WebhookError {
     }
 }
 
-impl error::Error for WebhookError {
+impl std::error::Error for WebhookError {
     fn description(&self) -> &str {
         match *self {
             WebhookError::BadKey => "invalid key length",
@@ -319,7 +313,7 @@ impl error::Error for WebhookError {
         }
     }
 
-    fn cause(&self) -> Option<&error::Error> {
+    fn cause(&self) -> Option<&dyn std::error::Error> {
         match *self {
             WebhookError::BadKey => None,
             WebhookError::BadHeader(ref err) => Some(err),

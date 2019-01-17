@@ -1,6 +1,6 @@
-use params::{Identifiable, List, Metadata, Timestamp};
-use resources::BankAccount;
-use serde_json as json;
+use crate::params::{Identifiable, List, Metadata, Timestamp};
+use crate::resources::BankAccount;
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DeclineChargeDetails {
@@ -61,7 +61,7 @@ pub struct Account {
     pub display_name: String,
     pub email: String,
     pub external_accounts: List<BankAccount>,
-    pub legal_entity: Option<json::Value>,
+    pub legal_entity: Option<serde_json::Value>,
     pub metadata: Metadata,
     pub payout_schedule: Option<PayoutScheduleDetails>,
     pub payout_statement_descriptor: Option<String>,
@@ -74,7 +74,7 @@ pub struct Account {
     pub tos_acceptance: Option<TOSAcceptanceDetails>, // (who accepted Stripe's terms of service)
     #[serde(rename = "type")]
     pub account_type: Option<String>, // (Stripe, Custom, or Express)
-    pub verification: Option<json::Value>,
+    pub verification: Option<serde_json::Value>,
 }
 
 impl Identifiable for Account {

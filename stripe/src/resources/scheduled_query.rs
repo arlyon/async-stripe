@@ -1,6 +1,6 @@
-use params::{Identifiable, Timestamp};
-use resources::File;
-use serde_json as json;
+use crate::params::{Identifiable, Timestamp};
+use crate::resources::File;
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe scheduled query run.
 ///
@@ -11,7 +11,7 @@ pub struct ScheduledQueryRun {
     pub object: String,
     pub created: Timestamp,
     pub data_load_time: Timestamp,
-    pub error: Option<json::Value>,
+    pub error: Option<serde_json::Value>,
     pub file: File,
     pub livemode: bool,
     pub result_available_until: Timestamp,

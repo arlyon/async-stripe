@@ -1,5 +1,6 @@
-use params::{Identifiable, List, Timestamp};
-use resources::{Currency, Refund};
+use crate::params::{Identifiable, List, Timestamp};
+use crate::resources::{Currency, Refund};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe application fee.
 ///
