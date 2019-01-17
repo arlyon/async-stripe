@@ -3,6 +3,12 @@ use error::Error;
 use serde::de::DeserializeOwned;
 use std::collections::HashMap;
 
+#[derive(Clone, Default)]
+pub struct Headers {
+    pub stripe_account: Option<String>,
+    pub client_id: Option<String>,
+}
+
 pub trait Identifiable {
     fn id(&self) -> &str;
 }

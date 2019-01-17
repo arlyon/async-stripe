@@ -67,8 +67,8 @@ mod ids;
 mod params;
 mod resources;
 
-pub use client::{Client, Params};
+pub use client::Client;
 pub use error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
 pub use ids::*;
-pub use params::{List, Metadata, RangeBounds, RangeQuery, Timestamp};
+pub use params::{Headers, List, Metadata, RangeBounds, RangeQuery, Timestamp};
 pub use resources::*;

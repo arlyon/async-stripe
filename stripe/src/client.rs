@@ -1,4 +1,5 @@
-use error::{Error, ErrorResponse, RequestError};
+use crate::params::Headers;
+use crate::error::{Error, ErrorResponse, RequestError};
 use reqwest;
 use reqwest::RequestBuilder;
 use reqwest::header::{
@@ -9,54 +10,39 @@ use serde_json;
 use serde_qs;
 use std::io::Read;
 
-#[derive(Clone, Default)]
-pub struct Params {
-    pub stripe_account: Option<String>,
-    pub client_id: Option<String>,
-}
-
 #[derive(Clone)]
 pub struct Client {
     client: reqwest::Client,
     secret_key: String,
-    params: Params,
+    headers: Headers,
 }
 
 impl Client {
-    fn url(path: &str) -> String {
-        format!("https://api.stripe.com/v1/{}", &path[1..])
-    }
-
-    fn url_with_params<P: serde::Serialize>(path: &str, params: P) -> Result<String, Error> {
-        let params = serde_qs::to_string(&params).map_err(Error::serialize)?;
-        Ok(format!("https://api.stripe.com/v1/{}?{}", &path[1..], params))
-    }
-
     pub fn new<Str: Into<String>>(secret_key: Str) -> Client {
         let client = reqwest::Client::new();
         Client {
             client: client,
             secret_key: secret_key.into(),
-            params: Params::default(),
+            headers: Headers::default(),
         }
     }
 
-    /// Clones a new client with different params.
+    /// Clones a new client with different headers.
     ///
     /// This is the recommended way to send requests for many different Stripe accounts
-    /// or with different Meta, Extra, and Expand params while using the same secret key.
-    pub fn with(&self, params: Params) -> Client {
+    /// or with different Meta, Extra, and Expand headers while using the same secret key.
+    pub fn with_headers(&self, headers: Headers) -> Client {
         let mut client = self.clone();
-        client.params = params;
+        client.headers = headers;
         client
     }
 
     /// Sets a value for the Stripe-Account header
     ///
     /// This is recommended if you are acting as only one Account for the lifetime of the client.
-    /// Otherwise, prefer `client.with(Params{stripe_account: "acct_ABC", ..})`.
+    /// Otherwise, prefer `client.with(Headers{stripe_account: "acct_ABC", ..})`.
     pub fn set_stripe_account<Str: Into<String>>(&mut self, account_id: Str) {
-        self.params.stripe_account = Some(account_id.into());
+        self.headers.stripe_account = Some(account_id.into());
     }
 
     /// Make a `GET` http request with just a path
@@ -114,19 +100,28 @@ impl Client {
         send(request)
     }
 
+    fn url(path: &str) -> String {
+        format!("https://api.stripe.com/v1/{}", &path[1..])
+    }
+
+    fn url_with_params<P: serde::Serialize>(path: &str, params: P) -> Result<String, Error> {
+        let params = serde_qs::to_string(&params).map_err(Error::serialize)?;
+        Ok(format!("https://api.stripe.com/v1/{}?{}", &path[1..], params))
+    }
+
     fn headers(&self) -> HeaderMap {
         let mut headers = HeaderMap::new();
         headers.insert(
             AUTHORIZATION,
             HeaderValue::from_str(&format!("Bearer {}", self.secret_key)).unwrap(),
         );
-        if let Some(ref account) = self.params.stripe_account {
+        if let Some(account) = &self.headers.stripe_account {
             headers.insert(
                 HeaderName::from_static("stripe-account"),
                 HeaderValue::from_str(account).unwrap(),
             );
         }
-        if let Some(ref client_id) = self.params.client_id {
+        if let Some(client_id) = &self.headers.client_id {
             headers.insert(
                 HeaderName::from_static("client-id"),
                 HeaderValue::from_str(client_id).unwrap(),
