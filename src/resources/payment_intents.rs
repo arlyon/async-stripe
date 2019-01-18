@@ -321,7 +321,7 @@ pub struct PaymentIntent {
     pub receipt_email: Option<String>,
     pub review: Option<String>,
     pub shipping: Option<ShippingDetails>,
-    pub source: String,
+    pub source: Option<String>,
     pub statement_descriptor: Option<String>,
     pub status: PaymentIntentStatus,
     pub transfer_data: Option<TransferData>,
