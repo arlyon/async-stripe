@@ -10,6 +10,7 @@ matrix:
     - rust: nightly
 
 script:
+  - cargo fmt -- --check
   - cargo build --verbose --all
   - cargo build --verbose --all --features async
   - cargo test --verbose --all
