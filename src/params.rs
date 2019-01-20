@@ -38,7 +38,7 @@ impl<T: DeserializeOwned + Send + 'static> List<T> {
     pub fn get_next(client: &Client, url: &str, last_id: &str) -> Response<List<T>> {
         if url.starts_with("/v1/") {
             // TODO: Maybe parse the URL?  Perhaps `List` should always parse its `url` field.
-            let mut url = url.trim_left_matches("/v1/").to_string();
+            let mut url = url.trim_start_matches("/v1/").to_string();
             if url.contains('?') {
                 url.push_str(&format!("&starting_after={}", last_id));
             } else {
