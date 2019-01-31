@@ -138,7 +138,6 @@ pub enum PayoutType {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Payout {
     pub id: String,
-    pub object: String,
     pub amount: u64,
     pub arrival_date: Timestamp,
     pub balance_transaction: String,

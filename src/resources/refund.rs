@@ -88,7 +88,6 @@ pub struct RefundListParams<'a> {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Refund {
     pub id: String,
-    pub object: String,
     pub amount: u64,
     pub balance_transaction: String,
     pub charge: String,

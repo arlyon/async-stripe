@@ -296,7 +296,6 @@ pub struct PaymentIntentListParams {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntent {
     pub id: String,
-    pub object: String,
     pub allowed_source_types: Vec<String>,
     pub amount: u64,
     pub amount_capturable: u64,
