@@ -1,3 +1,11 @@
+# Version 0.9.1 (Feb 4, 2019)
+
+## Fixes
+- Detach source data structure is a new `DetachedSource` enum
+- The `object` field was removed from `PaymentIntent`, `Refund` and `Payout`.
+- Fields in `PaymentIntent` were updated to correctly be optional
+
+
 # Version 0.9.0 (Jan 17, 2019)
 
 ## New Features
