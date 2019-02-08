@@ -143,7 +143,7 @@ pub struct Payout {
     pub balance_transaction: String,
     pub created: Timestamp,
     pub currency: Currency,
-    pub description: String,
+    pub description: Option<String>,
     pub destination: Option<String>,
     pub failure_balance_transaction: Option<String>,
     pub failure_code: Option<PayoutFailureCode>,
