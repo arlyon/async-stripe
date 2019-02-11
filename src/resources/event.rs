@@ -221,10 +221,15 @@ pub struct Webhook {
 
 #[cfg(feature = "webhooks")]
 impl Webhook {
-    pub fn new() -> Self {
-        Self { current_timestamp: Utc::now().timestamp() }
-    }
     pub fn construct_event(
+        payload: String,
+        sig: String,
+        secret: String,
+    ) -> Result<Event, WebhookError> {
+        Self { current_timestamp: Utc::now().timestamp() }.do_construct_event(payload, sig, secret)
+    }
+
+    fn do_construct_event(
         self,
         payload: String,
         sig: String,
@@ -376,7 +381,7 @@ mod tests {
         let webhook = super::Webhook { current_timestamp: event_timestamp };
 
         let event = webhook
-            .construct_event(payload.to_string(), signature, secret)
+            .do_construct_event(payload.to_string(), signature, secret)
             .expect("Failed to construct event");
 
         assert_eq!(event.event_type, super::EventType::InvoiceItemCreated);
