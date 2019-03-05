@@ -43,6 +43,7 @@ pub struct Plan {
     pub livemode: bool,
     pub metadata: Metadata,
     pub nickname: Option<String>,
+    pub product: String,
     pub statement_descriptor: Option<String>,
     pub trial_period_days: Option<u64>,
 }
