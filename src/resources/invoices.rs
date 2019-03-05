@@ -139,7 +139,7 @@ pub struct Invoice {
     pub attempt_count: u64,
     pub attempted: bool,
     pub charge: Option<String>,
-    pub closed: bool,
+    pub closed: Option<bool>,
     pub currency: Currency,
     pub customer: String,
     pub date: Timestamp,
