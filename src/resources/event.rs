@@ -198,6 +198,7 @@ pub enum EventObject {
     Dispute(Dispute),
     File(File),
     Invoice(Invoice),
+    #[serde(rename = "invoiceitem")]
     InvoiceItem(InvoiceItem),
     Order(Order),
     OrderReturn(OrderReturn),
@@ -214,7 +215,9 @@ pub enum EventObject {
 }
 
 #[cfg(feature = "webhooks")]
-pub struct Webhook {}
+pub struct Webhook {
+    current_timestamp: i64,
+}
 
 #[cfg(feature = "webhooks")]
 impl Webhook {
@@ -223,31 +226,164 @@ impl Webhook {
         sig: String,
         secret: String,
     ) -> Result<Event, WebhookError> {
-        let headers: Vec<String> = sig.split(',').map(|s| s.trim().to_string()).collect();
+        Self { current_timestamp: Utc::now().timestamp() }.do_construct_event(payload, sig, secret)
+    }
 
-        // Prepare the signed payload
-        let timestamp: Vec<String> = headers[0].split('=').map(|s| s.to_string()).collect();
-        let signed_payload = format!("{}{}{}", timestamp[1], ".", payload);
-
+    fn do_construct_event(
+        self,
+        payload: String,
+        sig: String,
+        secret: String,
+    ) -> Result<Event, WebhookError> {
         // Get Stripe signature from header
-        let signature: Vec<String> = headers[1].split('=').map(|s| s.to_string()).collect();
+        let signature = Signature::parse(&sig)?;
+        let signed_payload = format!("{}{}{}", signature.t, ".", payload);
 
         // Compute HMAC with the SHA256 hash function, using endpoing secret as key
         // and signed_payload string as the message.
         let mut mac =
             Hmac::<Sha256>::new_varkey(secret.as_bytes()).map_err(|_| WebhookError::BadKey)?;
         mac.input(signed_payload.as_bytes());
-        if !mac.result().is_equal(signature[1].as_bytes()) {
+        let mac_result = mac.result();
+        let hex = Self::to_hex(mac_result.code().as_slice());
+        if hex != signature.v1 {
             return Err(WebhookError::BadSignature);
         }
 
         // Get current timestamp to compare to signature timestamp
-        let current = Utc::now().timestamp();
-        let num_timestamp = timestamp[1].parse::<i64>().map_err(WebhookError::BadHeader)?;
-        if current - num_timestamp > 300 {
-            return Err(WebhookError::BadTimestamp(num_timestamp));
+        if (self.current_timestamp - signature.t).abs() > 300 {
+            return Err(WebhookError::BadTimestamp(signature.t));
         }
 
         serde_json::from_str(&payload).map_err(WebhookError::BadParse)
+    }
+
+    const CHARS: &'static [u8] = b"0123456789abcdef";
+
+    fn to_hex(bytes: &[u8]) -> String {
+        let mut v = Vec::with_capacity(bytes.len() * 2);
+        for &byte in bytes {
+            v.push(Self::CHARS[(byte >> 4) as usize]);
+            v.push(Self::CHARS[(byte & 0xf) as usize]);
+        }
+
+        unsafe { String::from_utf8_unchecked(v) }
+    }
+}
+
+#[cfg(feature = "webhooks")]
+#[derive(Debug)]
+struct Signature<'r> {
+    t: i64,
+    v1: &'r str,
+    v0: Option<&'r str>,
+}
+
+#[cfg(feature = "webhooks")]
+impl<'r> Signature<'r> {
+    fn parse(raw: &'r str) -> Result<Signature<'r>, WebhookError> {
+        use std::collections::HashMap;
+        let headers: HashMap<&str, &str> = raw
+            .split(',')
+            .map(|header| {
+                let mut key_and_value = header.split('=');
+                let key = key_and_value.next();
+                let value = key_and_value.next();
+                (key, value)
+            })
+            .filter_map(|(key, value)| match (key, value) {
+                (Some(key), Some(value)) => Some((key, value)),
+                _ => None,
+            })
+            .collect();
+        let t = headers.get("t").ok_or(WebhookError::BadSignature)?;
+        let v1 = headers.get("v1").ok_or(WebhookError::BadSignature)?;
+        let v0 = headers.get("v0").map(|r| *r);
+        Ok(Signature { t: t.parse::<i64>().map_err(WebhookError::BadHeader)?, v1, v0 })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[cfg(feature = "webhooks")]
+    #[test]
+    fn test_signature_parse() {
+        use super::Signature;
+
+        let raw_signature =
+            "t=1492774577,v1=5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd";
+        let signature = Signature::parse(raw_signature).unwrap();
+        assert_eq!(signature.t, 1492774577);
+        assert_eq!(
+            signature.v1,
+            "5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd"
+        );
+        assert_eq!(signature.v0, None);
+
+        let raw_signature_with_test_mode = "t=1492774577,v1=5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd,v0=6ffbb59b2300aae63f272406069a9788598b792a944a07aba816edb039989a39";
+        let signature = Signature::parse(raw_signature_with_test_mode).unwrap();
+        assert_eq!(signature.t, 1492774577);
+        assert_eq!(
+            signature.v1,
+            "5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd"
+        );
+        assert_eq!(
+            signature.v0,
+            Some("6ffbb59b2300aae63f272406069a9788598b792a944a07aba816edb039989a39")
+        );
+    }
+
+    #[cfg(feature = "webhooks")]
+    #[test]
+    fn test_webhook_construct_event() {
+        let payload = r#"{
+  "id": "evt_123",
+  "object": "event",
+  "account": "acct_123",
+  "api_version": "2017-05-25",
+  "created": 1533204620,
+  "data": {
+    "object": {
+      "id": "ii_123",
+      "object": "invoiceitem",
+      "amount": 1000,
+      "currency": "usd",
+      "customer": "cus_123",
+      "date": 1533204620,
+      "description": "Test Invoice Item",
+      "discountable": false,
+      "invoice": "in_123",
+      "livemode": false,
+      "metadata": {},
+      "period": {
+        "start": 1533204620,
+        "end": 1533204620
+      },
+      "plan": null,
+      "proration": false,
+      "quantity": null,
+      "subscription": null
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": "req_123",
+    "idempotency_key": "idempotency-key-123"
+  },
+  "type": "invoiceitem.created"
+}
+"#;
+        let event_timestamp = 1533204620;
+        let secret = "webhook_secret".to_string();
+        let signature = format!("t={},v1=f0bdba6d4eacbd8ad8a3bbadd7248e633ec1477f7899c124c51b39405fa36613,v0=63f3a72374a733066c4be69ed7f8e5ac85c22c9f0a6a612ab9a025a9e4ee7eef", event_timestamp);
+
+        let webhook = super::Webhook { current_timestamp: event_timestamp };
+
+        let event = webhook
+            .do_construct_event(payload.to_string(), signature, secret)
+            .expect("Failed to construct event");
+
+        assert_eq!(event.event_type, super::EventType::InvoiceItemCreated);
     }
 }

@@ -8,20 +8,19 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItem {
     pub id: String,
-    pub object: String,
     pub amount: u64,
     pub currency: Currency,
     pub customer: String,
     pub date: Timestamp,
     pub description: String,
-    pub discountable: String,
+    pub discountable: bool,
     pub invoice: String,
     pub livemode: bool,
     pub metadata: Metadata,
     pub period: Period,
     pub plan: Option<Plan>,
     pub proration: bool,
-    pub quantity: u64,
+    pub quantity: Option<u64>,
     pub subscription: Option<String>,
     pub subscription_item: Option<String>,
 }
