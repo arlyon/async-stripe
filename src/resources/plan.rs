@@ -35,7 +35,7 @@ pub struct PlanParams<'a> {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Plan {
     pub id: String,
-    pub amount: u64,
+    pub amount: Option<u64>,
     pub created: Timestamp,
     pub currency: Currency,
     pub interval: String, // (day, week, month, year)
