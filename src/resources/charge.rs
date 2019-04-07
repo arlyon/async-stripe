@@ -296,6 +296,7 @@ pub struct Charge {
     pub outcome: Option<ChargeOutcome>,
     pub paid: bool,
     pub payment_intent: Option<String>,
+    pub receipt_url: Option<String>,
     pub receipt_email: Option<String>,
     pub receipt_number: Option<String>,
     pub refunded: bool,
