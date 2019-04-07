@@ -1,6 +1,6 @@
 [package]
 name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
-version = "0.9.1"
+version = "0.9.2"
 description = "API bindings for the Stripe v1 HTTP API"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",

@@ -1,3 +1,14 @@
+# Version 0.9.2 (April 7, 2019)
+
+## Fixes / Improvements
+- Add missing `product` to `Plan`.
+- Add missing `receipt_url` to `Charge`.
+- The deprecated `closed` field in `Invoice` is now optional.
+- Fix allowing the `description` field in `Payout` to be optional.
+- Fix allowing a `SubscriptionItem` quantity to be `None` (e.g. when using metered pricing API).
+- Fix signature checking for received Webhooks.
+- Allow the timestamp to be manually specified when verifying webhook signature.
+
 # Version 0.9.1 (Feb 4, 2019)
 
 ## Fixes
