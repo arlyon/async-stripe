@@ -64,7 +64,7 @@ pub struct SubscriptionItem {
     pub id: String,
     pub created: Timestamp,
     pub plan: Plan,
-    pub quantity: u64,
+    pub quantity: Option<u64>,
 }
 
 /// The resource representing a Stripe subscription.
