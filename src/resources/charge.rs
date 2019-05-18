@@ -1,5 +1,6 @@
 use crate::config::{Client, Response};
 use crate::error::ErrorCode;
+use crate::ids::{ChargeId, CustomerId};
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::{Address, Currency, PaymentSource, PaymentSourceParams, Refund};
 use serde_derive::{Deserialize, Serialize};
@@ -272,27 +273,27 @@ pub struct ChargeListParams<'a> {
 /// For more details see [https://stripe.com/docs/api#charges](https://stripe.com/docs/api#charges).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Charge {
-    pub id: String,
+    pub id: ChargeId,
     pub amount: u64,
     pub amount_refunded: u64,
     pub application: Option<String>,
     pub application_fee: Option<String>,
-    pub balance_transaction: Option<String>,
+    pub balance_transaction: Option<String>, // TODO: Expandable
     pub captured: bool,
     pub created: Timestamp,
     pub currency: Currency,
-    pub customer: Option<String>,
+    pub customer: Option<CustomerId>, // TODO: Expandable
     pub description: Option<String>,
     pub destination: Option<String>,
     pub dispute: Option<String>,
     pub failure_code: Option<ErrorCode>,
     pub failure_message: Option<String>,
     pub fraud_details: FraudDetails,
-    pub invoice: Option<String>,
+    pub invoice: Option<String>, // TODO: Expandable
     pub livemode: bool,
     pub metadata: Metadata,
     pub on_behalf_of: Option<String>,
-    pub order: Option<String>,
+    pub order: Option<String>, // TODO: Expandable
     pub outcome: Option<ChargeOutcome>,
     pub paid: bool,
     pub payment_intent: Option<String>,
@@ -301,18 +302,19 @@ pub struct Charge {
     pub receipt_number: Option<String>,
     pub refunded: bool,
     pub refunds: List<Refund>,
-    pub review: Option<String>,
+    pub review: Option<String>, // TODO: Expandable
     pub shipping: Option<ShippingDetails>,
     pub source: PaymentSource,
-    pub source_transfer: Option<String>,
+    pub source_transfer: Option<String>, // TODO: Expandable
     pub statement_descriptor: Option<String>,
     pub status: ChargeStatus,
+    pub transfer: Option<String>, // TODO: Expandable
     pub transfer_group: Option<String>,
 }
 
 impl Identifiable for Charge {
     fn id(&self) -> &str {
-        &self.id
+        self.id.as_str()
     }
 }
 

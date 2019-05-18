@@ -10,10 +10,15 @@ pub struct Headers {
     pub client_id: Option<String>,
 }
 
+/// A trait used on types which are identified by an id.
+///
+/// These types support cursor-based pagination when returned
+/// in a `List` by their corresponding `Example::list()` api.
 pub trait Identifiable {
     fn id(&self) -> &str;
 }
 
+/// A single page of a cursor-paginated list of an object.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct List<T> {
     pub data: Vec<T>,
@@ -73,7 +78,7 @@ impl<T: Identifiable + DeserializeOwned + Send + 'static> List<T> {
         Ok(data)
     }
 
-    /// Fetch additional page of data from stripe
+    /// Fetch an additional page of data from stripe.
     pub fn next(&self, client: &Client) -> Response<List<T>> {
         if let Some(last_id) = self.data.last().map(|d| d.id()) {
             List::get_next(client, &self.url, last_id)
