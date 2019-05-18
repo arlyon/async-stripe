@@ -1,4 +1,4 @@
-use crate::params::{Paginated, List, Timestamp};
+use crate::params::{List, Paginated, Timestamp};
 use crate::resources::{Currency, Refund};
 use serde_derive::{Deserialize, Serialize};
 

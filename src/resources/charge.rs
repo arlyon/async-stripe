@@ -1,8 +1,10 @@
 use crate::config::{Client, Response};
 use crate::error::ErrorCode;
-use crate::ids::{ChargeId};
+use crate::ids::ChargeId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Address, Currency, Customer, Invoice, PaymentSource, PaymentSourceParams, Refund};
+use crate::resources::{
+    Address, Currency, Customer, Invoice, PaymentSource, PaymentSourceParams, Refund,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe charge object outcome.
@@ -316,8 +318,12 @@ pub struct Charge {
 
 impl Object for Charge {
     type Id = ChargeId;
-    fn id(&self) -> &Self::Id { &self.id }
-    fn object(&self) -> &'static str { "charge" }
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+    fn object(&self) -> &'static str {
+        "charge"
+    }
 }
 
 /// The resource representing a Stripe charge object status.
@@ -351,7 +357,11 @@ impl Charge {
     /// Updates a charge's properties.
     ///
     /// For more details see [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
-    pub fn update(client: &Client, charge_id: &ChargeId, params: ChargeParams<'_>) -> Response<Charge> {
+    pub fn update(
+        client: &Client,
+        charge_id: &ChargeId,
+        params: ChargeParams<'_>,
+    ) -> Response<Charge> {
         client.post_form(&format!("/charges/{}", charge_id), params)
     }
 

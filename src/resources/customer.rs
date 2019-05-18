@@ -178,6 +178,10 @@ impl Customer {
 
 impl Object for Customer {
     type Id = CustomerId;
-    fn id(&self) -> &Self::Id { &self.id }
-    fn object(&self) -> &'static str { "customer" }
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+    fn object(&self) -> &'static str {
+        "customer"
+    }
 }

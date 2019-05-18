@@ -118,6 +118,10 @@ pub struct Account {
 
 impl Object for Account {
     type Id = AccountId;
-    fn id(&self) -> &Self::Id { &self.id }
-    fn object(&self) -> &'static str { "account" }
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+    fn object(&self) -> &'static str {
+        "account"
+    }
 }

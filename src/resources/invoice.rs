@@ -1,6 +1,6 @@
 use crate::config::{err, ok, Client, Response};
 use crate::ids::{InvoiceId, InvoiceLineItemId};
-use crate::params::{Expand, Expandable, List, Object, Metadata, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Charge, Currency, Customer, Discount, Plan};
 use serde_derive::{Deserialize, Serialize};
 
@@ -123,8 +123,12 @@ pub struct InvoiceLineItem {
 
 impl Object for InvoiceLineItem {
     type Id = InvoiceLineItemId;
-    fn id(&self) -> &Self::Id { &self.id }
-    fn object(&self) -> &'static str { "line_item" }
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+    fn object(&self) -> &'static str {
+        "line_item"
+    }
 }
 
 /// The resource representing a Stripe invoice.
@@ -170,8 +174,12 @@ pub struct Invoice {
 
 impl Object for Invoice {
     type Id = Option<InvoiceId>; // an invoice id can be none if it is an _upcoming_ invoice
-    fn id(&self) -> &Self::Id { &self.id }
-    fn object(&self) -> &'static str { "invoice" }
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+    fn object(&self) -> &'static str {
+        "invoice"
+    }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

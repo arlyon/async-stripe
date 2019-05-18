@@ -1,5 +1,5 @@
 use crate::ids::{BankAccountId, CustomerId};
-use crate::params::{Paginated, Metadata};
+use crate::params::{Metadata, Paginated};
 use crate::resources::Currency;
 use serde::ser::SerializeStruct;
 use serde_derive::{Deserialize, Serialize};

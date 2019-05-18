@@ -1,4 +1,4 @@
-use crate::params::{Paginated, List, Metadata, Timestamp};
+use crate::params::{List, Metadata, Paginated, Timestamp};
 use crate::resources::Sku;
 use serde_derive::{Deserialize, Serialize};
 

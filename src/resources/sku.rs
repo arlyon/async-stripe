@@ -1,4 +1,4 @@
-use crate::params::{Paginated, Metadata, Timestamp};
+use crate::params::{Metadata, Paginated, Timestamp};
 use crate::resources::{Currency, PackageDimensions};
 use serde_derive::{Deserialize, Serialize};
 

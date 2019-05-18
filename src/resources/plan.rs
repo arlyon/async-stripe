@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::params::{Paginated, Metadata, Timestamp};
+use crate::params::{Metadata, Paginated, Timestamp};
 use crate::resources::{Currency, Deleted};
 use serde_derive::{Deserialize, Serialize};
 

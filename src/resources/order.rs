@@ -1,5 +1,5 @@
 use crate::ids::{ChargeId, CustomerId};
-use crate::params::{Paginated, List, Metadata, Timestamp};
+use crate::params::{List, Metadata, Paginated, Timestamp};
 use crate::resources::{Currency, ShippingDetails};
 use serde_derive::{Deserialize, Serialize};
 

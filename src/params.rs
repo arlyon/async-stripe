@@ -25,7 +25,7 @@ pub trait Object {
 #[derive(Serialize)]
 pub struct Expand<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    pub expand: &'a[&'a str],
+    pub expand: &'a [&'a str],
 }
 
 impl Expand<'_> {
