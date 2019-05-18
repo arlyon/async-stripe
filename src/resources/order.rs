@@ -1,3 +1,4 @@
+use crate::ids::{ChargeId, CustomerId};
 use crate::params::{Identifiable, List, Metadata, Timestamp};
 use crate::resources::{Currency, ShippingDetails};
 use serde_derive::{Deserialize, Serialize};
@@ -19,7 +20,6 @@ pub struct StatusTransitions {
 /// For more details see https://stripe.com/docs/api#order_item_object.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderItem {
-    pub object: String,
     pub amount: u64,
     pub currency: Currency,
     pub description: String,
@@ -35,15 +35,14 @@ pub struct OrderItem {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Order {
     pub id: String,
-    pub object: String,
     pub amount: u64,
     pub amount_returned: u64,
     pub application: String,
     pub application_fee: u64,
-    pub charge: Option<String>,
+    pub charge: Option<ChargeId>,
     pub created: Timestamp,
     pub currency: Currency,
-    pub customer: String,
+    pub customer: CustomerId,
     pub email: String,
     pub external_coupon_code: String,
     pub items: List<OrderItem>,

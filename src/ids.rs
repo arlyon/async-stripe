@@ -1,7 +1,7 @@
 macro_rules! id {
     ($struct_name:ident, $prefix:expr) => {
-        #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
-        pub struct $struct_name(String);
+        #[derive(Clone, Debug, Eq, PartialEq, Hash)]
+        pub struct $struct_name(smol_str::SmolStr);
 
         impl $struct_name {
             #[inline(always)]
@@ -24,19 +24,31 @@ macro_rules! id {
 
         impl PartialEq<str> for $struct_name {
             fn eq(&self, other: &str) -> bool {
-                &self.0 == other
+                self.as_str() == other
             }
         }
 
         impl PartialEq<&str> for $struct_name {
             fn eq(&self, other: &&str) -> bool {
-                &self.0 == other
+                self.as_str() == *other
             }
         }
 
         impl PartialEq<String> for $struct_name {
             fn eq(&self, other: &String) -> bool {
-                &self.0 == other
+                self.as_str() == other
+            }
+        }
+
+        impl PartialOrd for $struct_name {
+            fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+                Some(self.cmp(other))
+            }
+        }
+
+        impl Ord for $struct_name {
+            fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+                self.as_str().cmp(other.as_str())
             }
         }
 
@@ -60,7 +72,7 @@ macro_rules! id {
                         expected: stringify!(id to start with $prefix),
                     })
                 } else {
-                    Ok($struct_name(s.to_owned()))
+                    Ok($struct_name(s.into()))
                 }
             }
         }
@@ -69,7 +81,7 @@ macro_rules! id {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
                 where S: ::serde::ser::Serializer
             {
-                self.to_string().serialize(serializer)
+                self.as_str().serialize(serializer)
             }
         }
 
@@ -158,7 +170,7 @@ macro_rules! id {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
                 where S: ::serde::ser::Serializer
             {
-                self.to_string().serialize(serializer)
+                self.as_str().serialize(serializer)
             }
         }
 
