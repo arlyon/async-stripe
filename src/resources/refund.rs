@@ -1,4 +1,5 @@
 use crate::config::{Client, Response};
+use crate::ids::ChargeId;
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
@@ -89,8 +90,8 @@ pub struct RefundListParams<'a> {
 pub struct Refund {
     pub id: String,
     pub amount: u64,
-    pub balance_transaction: String,
-    pub charge: String,
+    pub balance_transaction: Option<String>,
+    pub charge: ChargeId,
     pub created: Timestamp,
     pub currency: Currency,
     pub failure_balance_transaction: Option<String>,

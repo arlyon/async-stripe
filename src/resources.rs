@@ -1,5 +1,6 @@
 mod account;
 mod address;
+mod alipay_account;
 mod application_fee;
 mod application_refund;
 mod balance;
@@ -34,6 +35,7 @@ mod transfer;
 
 pub use self::account::*;
 pub use self::address::*;
+pub use self::alipay_account::*;
 pub use self::application_fee::*;
 pub use self::application_refund::*;
 pub use self::balance::*;

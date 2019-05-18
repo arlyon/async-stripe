@@ -51,7 +51,6 @@
 //! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
 //! ```
 
-#![deny(warnings)]
 #![allow(clippy::needless_pass_by_value)]
 #![allow(clippy::large_enum_variant)]
 
