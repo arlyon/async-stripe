@@ -1,4 +1,4 @@
-use crate::params::{Identifiable, List, Timestamp};
+use crate::params::{Paginated, List, Timestamp};
 use crate::resources::{Currency, Refund};
 use serde_derive::{Deserialize, Serialize};
 
@@ -23,8 +23,8 @@ pub struct ApplicationFee {
     pub refunds: List<Refund>,
 }
 
-impl Identifiable for ApplicationFee {
-    fn id(&self) -> &str {
+impl Paginated for ApplicationFee {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

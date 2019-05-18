@@ -1,9 +1,14 @@
 macro_rules! id {
     ($struct_name:ident, $prefix:expr) => {
+        /// An id for the corresponding object type.
+        ///
+        /// This type _typically_ will not allocate and
+        /// therefore is usually cheaply clonable.
         #[derive(Clone, Debug, Eq, PartialEq, Hash)]
         pub struct $struct_name(smol_str::SmolStr);
 
         impl $struct_name {
+            /// The prefix of the id type (e.g. `cus_` for a `CustomerId`).
             #[inline(always)]
             pub fn prefix() -> &'static str {
                 $prefix
@@ -13,12 +18,6 @@ macro_rules! id {
             #[inline(always)]
             pub fn as_str(&self) -> &str {
                 self.0.as_str()
-            }
-        }
-
-        impl AsRef<str> for $struct_name {
-            fn as_ref(&self) -> &str {
-                self.0.as_ref()
             }
         }
 
@@ -52,13 +51,29 @@ macro_rules! id {
             }
         }
 
-        impl ::std::fmt::Display for $struct_name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        impl AsRef<str> for $struct_name {
+            fn as_ref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl crate::params::AsStrParam for $struct_name {}
+
+        impl std::ops::Deref for $struct_name {
+            type Target = str;
+
+            fn deref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl std::fmt::Display for $struct_name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 self.0.fmt(f)
             }
         }
 
-        impl ::std::str::FromStr for $struct_name {
+        impl std::str::FromStr for $struct_name {
             type Err = ParseIdError;
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -77,19 +92,19 @@ macro_rules! id {
             }
         }
 
-        impl ::serde::Serialize for $struct_name {
+        impl serde::Serialize for $struct_name {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-                where S: ::serde::ser::Serializer
+                where S: serde::ser::Serializer
             {
                 self.as_str().serialize(serializer)
             }
         }
 
-        impl<'de> ::serde::Deserialize<'de> for $struct_name {
+        impl<'de> serde::Deserialize<'de> for $struct_name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                where D: ::serde::de::Deserializer<'de>
+                where D: serde::de::Deserializer<'de>
             {
-                let s: String = ::serde::Deserialize::deserialize(deserializer)?;
+                let s: String = serde::Deserialize::deserialize(deserializer)?;
                 s.parse::<Self>().map_err(::serde::de::Error::custom)
             }
         }
@@ -106,12 +121,6 @@ macro_rules! id {
                 match *self {$(
                     $enum_name::$variant_name(ref id) => id.as_str(),
                 )*}
-            }
-        }
-
-        impl AsRef<str> for $enum_name {
-            fn as_ref(&self) -> &str {
-                self.as_str()
             }
         }
 
@@ -133,15 +142,31 @@ macro_rules! id {
             }
         }
 
-        impl ::std::fmt::Display for $enum_name {
-            fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        impl AsRef<str> for $enum_name {
+            fn as_ref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl crate::params::AsStrParam for $enum_name {}
+
+        impl std::ops::Deref for $enum_name {
+            type Target = str;
+
+            fn deref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl std::fmt::Display for $enum_name {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
                 match *self {$(
                     $enum_name::$variant_name(ref id) => id.fmt(f),
                 )*}
             }
         }
 
-        impl ::std::str::FromStr for $enum_name {
+        impl std::str::FromStr for $enum_name {
             type Err = ParseIdError;
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -166,19 +191,19 @@ macro_rules! id {
             }
         }
 
-        impl ::serde::Serialize for $enum_name {
+        impl serde::Serialize for $enum_name {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-                where S: ::serde::ser::Serializer
+                where S: serde::ser::Serializer
             {
                 self.as_str().serialize(serializer)
             }
         }
 
-        impl<'de> ::serde::Deserialize<'de> for $enum_name {
+        impl<'de> serde::Deserialize<'de> for $enum_name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                where D: ::serde::de::Deserializer<'de>
+                where D: serde::de::Deserializer<'de>
             {
-                let s: String = ::serde::Deserialize::deserialize(deserializer)?;
+                let s: String = serde::Deserialize::deserialize(deserializer)?;
                 s.parse::<Self>().map_err(::serde::de::Error::custom)
             }
         }
@@ -199,13 +224,13 @@ pub struct ParseIdError {
     expected: &'static str,
 }
 
-impl ::std::fmt::Display for ParseIdError {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+impl std::fmt::Display for ParseIdError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "invalid `{}`, expected {}", self.typename, self.expected)
     }
 }
 
-impl ::std::error::Error for ParseIdError {
+impl std::error::Error for ParseIdError {
     fn description(&self) -> &str {
         "error parsing an id"
     }
@@ -219,6 +244,8 @@ id!(CardId, "card_");
 id!(CardTokenId, "tok_");
 id!(ChargeId, "ch_");
 id!(CustomerId, "cus_");
+id!(InvoiceId, "in_");
+id!(InvoiceLineItemId, "ii_");
 id!(SourceId, "src_");
 id!(TokenId {
     Card(CardTokenId),

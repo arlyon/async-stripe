@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::params::{Identifiable, Metadata, Timestamp};
+use crate::params::{Paginated, Metadata, Timestamp};
 use crate::resources::{Currency, Deleted};
 use serde_derive::{Deserialize, Serialize};
 
@@ -78,8 +78,8 @@ impl Plan {
     }
 }
 
-impl Identifiable for Plan {
-    fn id(&self) -> &str {
+impl Paginated for Plan {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

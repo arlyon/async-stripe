@@ -1,4 +1,4 @@
-use crate::params::{Identifiable, List, Metadata, Timestamp};
+use crate::params::{Paginated, List, Metadata, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -17,8 +17,8 @@ pub struct TransferReversal {
     pub transfer: String,
 }
 
-impl Identifiable for TransferReversal {
-    fn id(&self) -> &str {
+impl Paginated for TransferReversal {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }
@@ -47,8 +47,8 @@ pub struct Transfer {
     pub transfer_group: String,
 }
 
-impl Identifiable for Transfer {
-    fn id(&self) -> &str {
+impl Paginated for Transfer {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

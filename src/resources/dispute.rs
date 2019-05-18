@@ -1,4 +1,4 @@
-use crate::params::{Identifiable, Metadata, Timestamp};
+use crate::params::{Paginated, Metadata, Timestamp};
 use crate::resources::{BalanceTransaction, Currency};
 use serde_derive::{Deserialize, Serialize};
 
@@ -93,8 +93,8 @@ pub struct Dispute {
     pub status: Option<String>,
 }
 
-impl Identifiable for Dispute {
-    fn id(&self) -> &str {
+impl Paginated for Dispute {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

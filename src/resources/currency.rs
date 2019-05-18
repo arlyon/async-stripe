@@ -292,13 +292,13 @@ impl Default for Currency {
     }
 }
 
-impl ::std::fmt::Display for Currency {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+impl std::fmt::Display for Currency {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", to_snakecase(&format!("{:?}", self)))
     }
 }
 
-impl ::std::str::FromStr for Currency {
+impl std::str::FromStr for Currency {
     type Err = ParseCurrencyError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -449,13 +449,13 @@ impl ::std::str::FromStr for Currency {
 #[derive(Debug)]
 pub struct ParseCurrencyError(/* private */ ());
 
-impl ::std::fmt::Display for ParseCurrencyError {
-    fn fmt(&self, fmt: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+impl std::fmt::Display for ParseCurrencyError {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         fmt.write_str(::std::error::Error::description(self))
     }
 }
 
-impl ::std::error::Error for ParseCurrencyError {
+impl std::error::Error for ParseCurrencyError {
     fn description(&self) -> &str {
         "unknown currency code"
     }

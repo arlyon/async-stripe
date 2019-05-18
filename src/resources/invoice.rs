@@ -1,6 +1,7 @@
 use crate::config::{err, ok, Client, Response};
-use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use crate::resources::{Currency, Discount, Plan};
+use crate::ids::{InvoiceId, InvoiceLineItemId};
+use crate::params::{Expand, Expandable, List, Object, Metadata, RangeQuery, Timestamp};
+use crate::resources::{Charge, Currency, Customer, Discount, Plan};
 use serde_derive::{Deserialize, Serialize};
 
 /// The set of parameters that can be used when creating or updating an invoice.
@@ -103,7 +104,7 @@ pub struct Period {
 /// For more details see https://stripe.com/docs/api#invoice_line_item_object.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceLineItem {
-    pub id: String,
+    pub id: InvoiceLineItemId,
     pub amount: i64,
     pub currency: Currency,
     pub description: Option<String>,
@@ -115,17 +116,15 @@ pub struct InvoiceLineItem {
     pub proration: bool,
     pub quantity: Option<u64>,
     pub subscription: Option<String>,
-    pub subscription_item: Option<String>,
     #[serde(default)]
-    // NOTE: Missing in response to InvoiceLineItem create
     #[serde(rename = "type")]
-    pub item_type: String, // (invoiceitem, subscription)
+    pub type_: String, // (invoiceitem, subscription)
 }
 
-impl Identifiable for InvoiceLineItem {
-    fn id(&self) -> &str {
-        &self.id
-    }
+impl Object for InvoiceLineItem {
+    type Id = InvoiceLineItemId;
+    fn id(&self) -> &Self::Id { &self.id }
+    fn object(&self) -> &'static str { "line_item" }
 }
 
 /// The resource representing a Stripe invoice.
@@ -133,24 +132,28 @@ impl Identifiable for InvoiceLineItem {
 /// For more details see https://stripe.com/docs/api#invoice_object.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Invoice {
-    pub id: Option<String>, // id field is not present when retrieving upcoming invoices
+    pub id: Option<InvoiceId>, // id field is not present when retrieving upcoming invoices
+
     pub amount_due: u64,
-    pub application_fee: Option<u64>,
+    pub amount_paid: u64,
+    pub amount_remaining: u64,
+    pub application_fee_amount: Option<u64>,
     pub attempt_count: u64,
     pub attempted: bool,
-    pub charge: Option<String>,
-    pub closed: Option<bool>,
+    pub auto_advance: bool,
+    pub charge: Option<Expandable<Charge>>,
+    pub created: Timestamp,
     pub currency: Currency,
-    pub customer: String,
-    pub date: Timestamp,
+    pub customer: Expandable<Customer>,
+    pub due_date: Timestamp,
     pub description: Option<String>,
     pub discount: Option<Discount>,
     pub ending_balance: Option<i64>,
-    pub forgiven: bool,
     pub lines: List<InvoiceLineItem>,
     pub livemode: bool,
     pub metadata: Metadata,
     pub next_payment_attempt: Option<Timestamp>,
+    pub number: String,
     pub paid: bool,
     pub period_end: Timestamp,
     pub period_start: Timestamp,
@@ -158,12 +161,17 @@ pub struct Invoice {
     pub starting_balance: i64,
     pub statment_descriptor: Option<String>,
     pub subscription: Option<String>,
-    pub subscription_proration_date: Option<Timestamp>,
     pub subtotal: i64,
     pub tax: Option<i64>,
     pub tax_percent: Option<f64>,
     pub total: i64,
     pub webhooks_delivered_at: Option<Timestamp>,
+}
+
+impl Object for Invoice {
+    type Id = Option<InvoiceId>; // an invoice id can be none if it is an _upcoming_ invoice
+    fn id(&self) -> &Self::Id { &self.id }
+    fn object(&self) -> &'static str { "invoice" }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -193,8 +201,8 @@ impl Invoice {
     /// Retrieves the details of an invoice.
     ///
     /// For more details see https://stripe.com/docs/api#retrieve_invoice.
-    pub fn retrieve(client: &Client, invoice_id: &str) -> Response<Invoice> {
-        client.get(&format!("/invoices/{}", invoice_id))
+    pub fn retrieve(client: &Client, invoice_id: &str, expand: &[&str]) -> Response<Invoice> {
+        client.get_query(&format!("/invoices/{}?", invoice_id), &Expand { expand })
     }
 
     // TODO: Implement InvoiceListLinesParams
@@ -273,7 +281,7 @@ impl List<Invoice> {
 
         if let Some(last) = self.data.last() {
             if let Some(last_id) = &last.id {
-                List::get_next(client, &self.url, last_id)
+                List::get_next(client, &self.url, &last_id)
             } else {
                 let invariant = "Cannot paginate List<Invoice>; Stripe returned Invoice with no ID";
                 err(Error::Unexpected(invariant))

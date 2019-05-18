@@ -9,10 +9,10 @@ fn main() {
     let customers = Customer::list(
         &client,
         CustomerListParams {
-            created: Some(RangeQuery::gte(1501598702)),
-            ending_before: None,
             limit: Some(3),
+            created: Some(RangeQuery::gte(1501598702)),
             starting_after: None,
+            ending_before: None,
         },
     )
     .unwrap();

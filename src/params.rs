@@ -10,12 +10,98 @@ pub struct Headers {
     pub client_id: Option<String>,
 }
 
-/// A trait used on types which are identified by an id.
+/// Implemented by types which represent stripe objects.
+pub trait Object {
+    /// The canonical id type for this object.
+    type Id;
+    /// The id of the object.
+    fn id(&self) -> &Self::Id;
+    /// The object's type, typically represented in wire format as the `object` property.
+    fn object(&self) -> &'static str;
+}
+
+/// The `Expand` struct is used to serialize `expand` arguments in retrieve and list apis.
+#[doc(hidden)]
+#[derive(Serialize)]
+pub struct Expand<'a> {
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    pub expand: &'a[&'a str],
+}
+
+impl Expand<'_> {
+    pub(crate) fn is_empty(expand: &[&str]) -> bool {
+        expand.is_empty()
+    }
+}
+
+/// An id or object.
 ///
-/// These types support cursor-based pagination when returned
-/// in a `List` by their corresponding `Example::list()` api.
-pub trait Identifiable {
-    fn id(&self) -> &str;
+/// By default stripe will return an id for most fields, but if more detail is
+/// necessary the `expand` parameter can be provided to ask for the id to be
+/// loaded as an object instead:
+///
+/// ```rust,ignore
+/// Charge::retrieve(&client, &charge_id, &["invoice.customer"])
+/// ```
+///
+/// See [https://stripe.com/docs/api/expanding_objects](https://stripe.com/docs/api/expanding_objects).
+#[derive(Clone, Debug, Serialize, Deserialize)] // TODO: Implement deserialize by hand for better error messages
+#[serde(untagged)]
+pub enum Expandable<T: Object> {
+    Id(T::Id),
+    Object(Box<T>),
+}
+
+impl<T: Object> Expandable<T> {
+    pub fn id(&self) -> &T::Id {
+        match self {
+            Expandable::Id(id) => id,
+            Expandable::Object(obj) => obj.id(),
+        }
+    }
+
+    pub fn is_object(&self) -> bool {
+        match self {
+            Expandable::Id(_) => false,
+            Expandable::Object(_) => true,
+        }
+    }
+
+    pub fn as_object(&self) -> Option<&T> {
+        match self {
+            Expandable::Id(_) => None,
+            Expandable::Object(obj) => Some(&obj),
+        }
+    }
+
+    pub fn to_object(self) -> Option<T> {
+        match self {
+            Expandable::Id(_) => None,
+            Expandable::Object(obj) => Some(*obj),
+        }
+    }
+}
+
+/// Implemented by types which support cursor-based pagination,
+/// typically with an id, allowing them to be fetched using a `List`
+/// returned by the corresponding "list" api request.
+pub trait Paginated {
+    fn cursor(&self) -> &str;
+}
+
+/// A crate-internal marker trait used by id types to convert to a `&str` repr
+/// while avoid possible `impl Trait for T` conflicts with upstream crates.
+#[doc(hidden)]
+pub trait AsStrParam: AsRef<str> {}
+
+impl<T> Paginated for T
+where
+    T: Object,
+    T::Id: AsStrParam,
+{
+    fn cursor(&self) -> &str {
+        self.id().as_ref()
+    }
 }
 
 /// A single page of a cursor-paginated list of an object.
@@ -56,7 +142,7 @@ impl<T: DeserializeOwned + Send + 'static> List<T> {
     }
 }
 
-impl<T: Identifiable + DeserializeOwned + Send + 'static> List<T> {
+impl<T: Paginated + DeserializeOwned + Send + 'static> List<T> {
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
     /// Stripe's default page size.
     ///
@@ -80,7 +166,7 @@ impl<T: Identifiable + DeserializeOwned + Send + 'static> List<T> {
 
     /// Fetch an additional page of data from stripe.
     pub fn next(&self, client: &Client) -> Response<List<T>> {
-        if let Some(last_id) = self.data.last().map(|d| d.id()) {
+        if let Some(last_id) = self.data.last().map(|d| d.cursor()) {
             List::get_next(client, &self.url, last_id)
         } else {
             ok(List {

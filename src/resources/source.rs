@@ -1,6 +1,6 @@
 use crate::config::{Client, Response};
 use crate::ids::TokenId;
-use crate::params::{Identifiable, Metadata, Timestamp};
+use crate::params::{Paginated, Metadata, Timestamp};
 use crate::resources::{AchCreditTransfer, Address, CardShort, Currency};
 use serde_derive::{Deserialize, Serialize};
 
@@ -240,8 +240,8 @@ impl Source {
     }
 }
 
-impl Identifiable for Source {
-    fn id(&self) -> &str {
+impl Paginated for Source {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

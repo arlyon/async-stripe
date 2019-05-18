@@ -1,5 +1,5 @@
 use crate::ids::{BankAccountId, CustomerId};
-use crate::params::{Identifiable, Metadata};
+use crate::params::{Paginated, Metadata};
 use crate::resources::Currency;
 use serde::ser::SerializeStruct;
 use serde_derive::{Deserialize, Serialize};
@@ -25,10 +25,10 @@ pub struct BankAccountVerifyParams<'a> {
     pub verification_method: Option<&'a str>,
 }
 
-impl<'a> ::serde::Serialize for BankAccountParams<'a> {
+impl<'a> serde::Serialize for BankAccountParams<'a> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: ::serde::ser::Serializer,
+        S: serde::ser::Serializer,
     {
         let mut s = serializer.serialize_struct("BankAccountParams", 6)?;
         s.serialize_field("object", "bank_account")?;
@@ -112,9 +112,9 @@ pub struct BankAccount {
     pub status: BankAccountStatus,
 }
 
-impl Identifiable for BankAccount {
-    fn id(&self) -> &str {
-        self.id.as_str()
+impl Paginated for BankAccount {
+    fn cursor(&self) -> &str {
+        &self.id
     }
 }
 
