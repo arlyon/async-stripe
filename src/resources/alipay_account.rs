@@ -1,4 +1,4 @@
-use crate::ids::{CustomerId, AlipayAccountId};
+use crate::ids::{AlipayAccountId, CustomerId};
 use crate::params::{Identifiable, Metadata, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};

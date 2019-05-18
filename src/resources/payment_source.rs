@@ -1,6 +1,8 @@
 use crate::ids::{SourceId, TokenId};
 use crate::params::Identifiable;
-use crate::resources::{Account, AlipayAccount, BankAccount, BankAccountParams, Card, CardParams, Source};
+use crate::resources::{
+    Account, AlipayAccount, BankAccount, BankAccountParams, Card, CardParams, Source,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// A PaymentSourceParams represents all of the supported ways that can

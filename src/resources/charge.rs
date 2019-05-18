@@ -1,6 +1,6 @@
 use crate::config::{Client, Response};
-use crate::ids::{ChargeId, CustomerId};
 use crate::error::ErrorCode;
+use crate::ids::{ChargeId, CustomerId};
 use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
 use crate::resources::{Address, Currency, PaymentSource, PaymentSourceParams, Refund};
 use serde_derive::{Deserialize, Serialize};

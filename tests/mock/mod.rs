@@ -1,7 +1,7 @@
 //! Setup and teardown for the stripe mock service.
 
 use lazy_static::lazy_static;
-use std::process::{Command, Child};
+use std::process::{Child, Command};
 use std::sync::{Arc, Mutex};
 
 lazy_static! {
@@ -9,7 +9,8 @@ lazy_static! {
 }
 
 pub fn with_client<T>(test: T) -> ()
-    where T: FnOnce(&stripe::Client) -> () + std::panic::UnwindSafe
+where
+    T: FnOnce(&stripe::Client) -> () + std::panic::UnwindSafe,
 {
     let keep_alive = setup();
 
@@ -53,10 +54,7 @@ fn setup() -> Arc<Mutex<Option<Child>>> {
             // .stderr(Stdio::piped())
             .spawn()
     } else {
-        Command::new(STRIPE_MOCK_PATH)
-            .arg("-http-port")
-            .arg(port)
-            .spawn()
+        Command::new(STRIPE_MOCK_PATH).arg("-http-port").arg(port).spawn()
     };
     let mut process = match try_start {
         Err(err) => panic!("failed to start `stripe-mock`: {}", err),
