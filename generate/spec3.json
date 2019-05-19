@@ -376,8 +376,8 @@
           "statement_descriptor_prefix": {
             "description": "The default text that appears on credit card statements when a charge is made. This field prefixes any dynamic `statement_descriptor` specified on the charge. `statement_descriptor_prefix` is useful for maximizing descriptor space for the dynamic portion.",
             "maxLength": 5000,
-            "type": "string",
-            "nullable": true
+            "nullable": true,
+            "type": "string"
           }
         },
         "title": "AccountCardPaymentsSettings",
@@ -17897,11 +17897,13 @@
           },
           "monthly_anchor": {
             "description": "The day of the month funds will be paid out. Only shown if `interval` is monthly. Payouts scheduled between the 29th and 31st of the month are sent on the last day of shorter months.",
+            "nullable": true,
             "type": "integer"
           },
           "weekly_anchor": {
             "description": "The day of the week funds will be paid out, of the style 'monday', 'tuesday', etc. Only shown if `interval` is weekly.",
             "maxLength": 5000,
+            "nullable": true,
             "type": "string"
           }
         },
