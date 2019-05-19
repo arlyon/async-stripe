@@ -244,6 +244,7 @@ id!(CardId, "card_");
 id!(CardTokenId, "tok_");
 id!(ChargeId, "ch_");
 id!(CustomerId, "cus_");
+id!(FileId, "file_");
 id!(InvoiceId, "in_");
 id!(InvoiceLineItemId, "ii_");
 id!(SourceId, "src_");

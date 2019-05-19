@@ -33,6 +33,9 @@ mod subscription;
 mod transaction;
 mod transfer;
 
+mod stubs;
+pub use self::stubs::*;
+
 pub use self::account::*;
 pub use self::address::*;
 pub use self::alipay_account::*;

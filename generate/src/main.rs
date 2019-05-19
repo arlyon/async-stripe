@@ -74,10 +74,10 @@ fn main() {
 
     // Generate files
     for object in &meta.objects {
-        let (impl_out, impl_meta) = gen_impl_object(&meta, object);
+        let out = gen_impl_object(&meta, object);
 
         // TODO: Finish impl by writing to file
-        println!("{}", impl_out);
+        println!("{}", out);
         std::process::exit(0);
     }
 }
@@ -120,6 +120,7 @@ struct ImplMetadata {
 
 #[derive(Clone)]
 struct InferredEnum {
+    parent: String,
     field: String,
     wire_variants: Vec<String>,
 }
@@ -136,7 +137,7 @@ struct InferredStruct {
     schema: Value,
 }
 
-fn gen_impl_object(meta: &Metadata, object: &str) -> (String, ImplMetadata) {
+fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     let mut out = String::new();
     let mut impl_ = ImplMetadata::default();
     let struct_name = object.to_camel_case();
@@ -198,9 +199,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> (String, ImplMetadata) {
         out.push_str("();\n");
         out.push_str("    fn id(&self) -> &Self::Id {}\n");
     }
-    out.push_str("    fn object(&self) -> &'static str {\n        ");
+    out.push_str("    fn object(&self) -> &'static str {\n        \"");
     out.push_str(object_literal);
-    out.push_str("\n    }\n");
+    out.push_str("\"\n    }\n");
     out.push_str("}\n");
 
     while let Some(schema_name) = impl_
@@ -224,7 +225,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> (String, ImplMetadata) {
             meta.spec["components"]["schemas"][&schema_name]["properties"].as_object().unwrap()
         {
             out.push('\n');
-            out.push_str(&gen_field(&mut impl_, meta, object, &key, &field));
+            out.push_str(&gen_field(&mut impl_, meta, &schema_name, &key, &field));
         }
         out.push_str("}\n");
 
@@ -240,7 +241,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> (String, ImplMetadata) {
         out.push_str(" {\n");
         for (key, field) in struct_.schema["properties"].as_object().unwrap() {
             out.push('\n');
-            out.push_str(&gen_field(&mut impl_, meta, object, &key, &field));
+            out.push_str(&gen_field(&mut impl_, meta, &struct_name.to_snake_case(), &key, &field));
         }
         out.push_str("}\n");
     }
@@ -248,7 +249,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> (String, ImplMetadata) {
     for (union_name, union_) in impl_.inferred_unions.clone() {
         out.push('\n');
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
-        out.push_str("#[serde(rename_all = \"snake_case\")]\n");
+        out.push_str("#[serde(tag = \"object\", rename_all = \"snake_case\")]\n");
         out.push_str("pub enum ");
         out.push_str(&union_name.to_camel_case());
         out.push_str(" {\n");
@@ -279,6 +280,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> (String, ImplMetadata) {
 
     for (enum_name, enum_) in impl_.inferred_enums.clone() {
         out.push('\n');
+        out.push_str(&format!("/// An enum representing the possible values of an `{}`'s `{}` field.\n", enum_.parent, enum_.field));
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
         out.push_str("#[serde(rename_all = \"snake_case\")]\n");
         out.push_str("pub enum ");
@@ -298,8 +300,42 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> (String, ImplMetadata) {
         out.push_str("}\n");
     }
 
+    let mut prelude = String::new();
+    if impl_.use_ids.len() > 0 {
+        prelude.push_str("use crate::ids::{");
+        for (n, id) in impl_.use_ids.iter().enumerate() {
+            if n > 0 {
+                prelude.push_str(", ");
+            }
+            prelude.push_str(&id);
+        }
+        prelude.push_str("};\n");
+    }
+    if impl_.use_params.len() > 0 {
+        prelude.push_str("use crate::params::{");
+        for (n, param) in impl_.use_params.iter().enumerate() {
+            if n > 0 {
+                prelude.push_str(", ");
+            }
+            prelude.push_str(&param);
+        }
+        prelude.push_str("};\n");
+    }
+    if impl_.use_resources.len() > 0 {
+        prelude.push_str("use crate::resources::{");
+        for (n, resource) in impl_.use_resources.iter().enumerate() {
+            if n > 0 {
+                prelude.push_str(", ");
+            }
+            prelude.push_str(&resource);
+        }
+        prelude.push_str("};\n");
+    }
+    prelude.push_str("use serde_derive::{Deserialize, Serialize};\n");
+    prelude.push('\n');
+
     // Done
-    (out, impl_)
+    prelude + &out
 }
 
 fn gen_field(
@@ -370,7 +406,13 @@ fn gen_field_rust_type(
         Some("string") => {
             if let Some(variants) = field["enum"].as_array() {
                 let enum_name = format!("{}_{}", object, field_name).to_camel_case();
+                let parent_name = if let Some(rename) = meta.renames.get(object) {
+                    rename.to_camel_case()
+                } else {
+                    object.to_camel_case()
+                };
                 let enum_ = InferredEnum {
+                    parent: parent_name,
                     field: field_name.into(),
                     wire_variants: variants
                         .into_iter()
@@ -434,6 +476,7 @@ fn gen_field_rust_type(
                         field_name,
                         &field["x-expansionResources"],
                     );
+                    impl_.use_params.insert("Expandable");
                     format!("Expandable<{}>", ty_)
                 } else {
                     let union_name = format!("{}", field_name).to_camel_case();

@@ -1,4 +1,5 @@
-use crate::params::{Paginated, Timestamp};
+use crate::ids::FileId;
+use crate::params::{Object, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe file.
@@ -6,8 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 /// For more details see https://stripe.com/docs/api#file_object.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct File {
-    pub id: String,
-    pub object: String,
+    pub id: FileId,
     pub created: Timestamp,
     pub purpose: String,
     pub size: u64,
@@ -17,8 +17,12 @@ pub struct File {
     pub url: String,
 }
 
-impl Paginated for File {
-    fn cursor(&self) -> &str {
+impl Object for File {
+    type Id = FileId;
+    fn id(&self) -> &FileId {
         &self.id
+    }
+    fn object(&self) -> &'static str {
+        "file"
     }
 }
