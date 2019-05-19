@@ -10027,7 +10027,7 @@
             "type": "string"
           },
           "name_kana": {
-            "description": "The Kana variation of the company's legal name Japan only).",
+            "description": "The Kana variation of the company's legal name (Japan only).",
             "maxLength": 5000,
             "nullable": true,
             "type": "string"
