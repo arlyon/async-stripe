@@ -1,5 +1,5 @@
 macro_rules! id {
-    ($struct_name:ident: UNKNOWN) => {
+    ($struct_name:ident: $COMMENT:ident) => {
         #[derive(Clone, Debug, Eq, PartialEq, Hash)]
         pub struct $struct_name(smol_str::SmolStr);
 
@@ -169,7 +169,7 @@ macro_rules! id {
                 if !s.starts_with($prefix) {
 
                     // N.B. For debugging
-                    // eprintln!("bad id is: {}", s);
+                    eprintln!("bad id is: {}", s);
 
                     Err(ParseIdError {
                         typename: stringify!($struct_name),
@@ -352,7 +352,7 @@ id!(PaymentSourceId {
     Card(CardId),
     Source(SourceId),
 });
-id!(PlanId, "plan_");
+id!(PlanId: USER_PROVIDED); // N.B. A plan id can be user-provided so can be any arbitrary string
 id!(PayoutId, "po_");
 id!(RecipientId: UNKNOWN); // FIXME: This doesn't seem to be documented yet
 id!(RefundId, "re_");

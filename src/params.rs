@@ -100,6 +100,8 @@ pub trait Paginated {
 #[doc(hidden)]
 pub trait AsStrParam: AsRef<str> {}
 
+impl AsStrParam for String {}
+
 impl<T> Paginated for T
 where
     T: Object,
