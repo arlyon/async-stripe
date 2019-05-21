@@ -1,8 +1,104 @@
-use crate::ids::{BankAccountId, CustomerId};
-use crate::params::{Metadata, Paginated};
-use crate::resources::Currency;
+use crate::ids::BankAccountId;
+use crate::params::{Expandable, Metadata, Object};
+use crate::resources::{Account, AccountHolderType, BankAccountStatus, Currency, Customer};
 use serde::ser::SerializeStruct;
 use serde_derive::{Deserialize, Serialize};
+
+/// The resource representing a Stripe "BankAccount".
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct BankAccount {
+    /// Unique identifier for the object.
+    pub id: BankAccountId,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<Expandable<Account>>,
+
+    /// The name of the person or business that owns the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_name: Option<String>,
+
+    /// The type of entity that holds the account.
+    ///
+    /// This can be either `individual` or `company`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_type: Option<AccountHolderType>,
+
+    /// Name of the bank associated with the routing number (e.g., `WELLS FARGO`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_name: Option<String>,
+
+    /// Two-letter ISO code representing the country the bank account is located in.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    /// Three-letter [ISO code for the currency](https://stripe.com/docs/payouts) paid out to the bank account.
+    pub currency: Currency,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<Expandable<Customer>>,
+
+    /// Whether this bank account is the default external account for its currency.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_for_currency: Option<Currency>,
+
+    // Always true for a deleted object
+    #[serde(default)]
+    pub deleted: bool,
+
+    /// Uniquely identifies this particular bank account.
+    ///
+    /// You can use this attribute to check whether two bank accounts are the same.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last4: Option<String>,
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    /// The routing transit number for the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub routing_number: Option<String>,
+
+    /// For bank accounts, possible values are `new`, `validated`, `verified`, `verification_failed`, or `errored`.
+    ///
+    /// A bank account that hasn't had any activity or validation performed is `new`.
+    /// If Stripe can determine that the bank account exists, its status will be `validated`.
+    /// Note that there often isn’t enough information to know (e.g., for smaller credit unions), and the validation is not always run.
+    /// If customer bank account verification has succeeded, the bank account status will be `verified`.
+    /// If the verification failed for any reason, such as microdeposit failure, the status will be `verification_failed`.
+    /// If a transfer sent to this bank account fails, we'll set the status to `errored` and will not continue to send transfers until the bank details are updated.
+    ///
+    /// For external accounts, possible values are `new` and `errored`.
+    /// Validations aren't run against external accounts because they're only used for payouts.
+    /// This means the other statuses don't apply.
+    /// If a transfer fails, the status is set to `errored` and transfers are stopped until account details are updated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<BankAccountStatus>,
+}
+
+impl Object for BankAccount {
+    type Id = BankAccountId;
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+    fn object(&self) -> &'static str {
+        "bank_account"
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AchCreditTransfer {
+    pub account_number: String,
+    pub routing_number: String,
+    pub fingerprint: String,
+    pub bank_name: String,
+    pub swift_code: String,
+}
 
 #[derive(Clone, Debug, Default, Deserialize)]
 pub struct BankAccountParams<'a> {
@@ -39,90 +135,4 @@ impl<'a> serde::Serialize for BankAccountParams<'a> {
         s.serialize_field("account_number", &self.account_number)?;
         s.end()
     }
-}
-
-/// An enum representing the possible values of a `BankAccounts`'s `account_holder_type` field.
-///
-/// For more details see [https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-account_holder_type](https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-account_holder_type)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum AccountHolderType {
-    Individual,
-    Company,
-}
-
-/// An enum representing the possible values of a `BankAccounts`'s `account_holder_type` field.
-///
-/// For more details see [https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-status](https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-status)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum BankAccountStatus {
-    /// A bank account that hasn’t had any activity or validation performed is new.
-    New,
-    /// If Stripe can determine that the bank account exists, its status will be validated.
-    ///
-    /// Note that there often isn’t enough information to know (e.g., for smaller credit unions),
-    /// and the validation is not always run.
-    Validated,
-    /// If customer bank account verification has succeeded, the bank account status will be verified.
-    Verified,
-    /// If the verification failed for any reason, such as microdeposit failure, the status will be verification_failed.
-    VerificationFailed,
-    /// If a transfer sent to this bank account fails, we’ll set the status to errored and will not continue to send transfers until the bank details are updated.
-    Errored,
-}
-
-/// The resource representing a Stripe bank account.
-///
-/// For more details see [https://stripe.com/docs/api#customer_bank_account_object](https://stripe.com/docs/api#customer_bank_account_object).
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct BankAccount {
-    /// Unique identifier for the object.
-    pub id: BankAccountId,
-    /// The name of the person or business that owns the bank account.
-    pub account_holder_name: String,
-    /// The type of entity that holds the account. This can be either `individual` or `company`.
-    pub account_holder_type: AccountHolderType,
-    /// Name of the bank associated with the routing number (e.g., `WELLS FARGO`).
-    pub bank_name: String,
-    /// Two-letter ISO code representing the country the bank account is located in.
-    pub country: String, // TODO: Do we want to define an `enum` for country?
-    /// Three-letter [ISO code for the currency](https://stripe.com/docs/payouts) paid out to the bank account.
-    pub currency: Currency,
-    /// The customer the bank account belongs to.
-    pub customer: Option<CustomerId>, // TODO: Expandable
-    /// Always true for a deleted object.
-    #[serde(default)]
-    pub deleted: bool,
-    /// Uniquely identifies this particular bank account. You can use this attribute to check whether
-    /// two bank accounts are the same.
-    pub fingerprint: String,
-    pub last4: String,
-    /// Set of key-value pairs that you can attach to an object. This can be useful for storing
-    /// additional information about the object in a structured format.
-    pub metadata: Metadata,
-    /// The routing transit number for the bank account
-    pub routing_number: String,
-    /// For bank accounts, possible values are `New`, `Validated`, `Verified`, `VerificationFailed` or `Errored`.
-    ///
-    /// For external accounts, possible values are `New` and `Errored`. Validations aren't run
-    /// against external accounts because they're only used for payouts. This means the other statuses
-    /// don't apply. If a transfer fails, the status is set to `Errored` and transfers are stopped
-    /// until account details are updated.
-    pub status: BankAccountStatus,
-}
-
-impl Paginated for BankAccount {
-    fn cursor(&self) -> &str {
-        &self.id
-    }
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AchCreditTransfer {
-    pub account_number: String,
-    pub routing_number: String,
-    pub fingerprint: String,
-    pub bank_name: String,
-    pub swift_code: String,
 }

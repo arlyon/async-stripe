@@ -1,7 +1,5 @@
 [workspace]
-members = [
-  "generate",
-]
+members = ["openapi"]
 
 [package]
 name = "stripe-rust" # b.c. stripe and stripe-rs were already taken

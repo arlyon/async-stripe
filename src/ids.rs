@@ -238,6 +238,9 @@ impl std::error::Error for ParseIdError {
 
 id!(AccountId, "acct_");
 id!(AlipayAccountId, "aliacc_");
+id!(ApplicationFeeId, "fee_");
+id!(ApplicationFeeRefundId, "fr_");
+id!(BalanceTransactionId, "txn_");
 id!(BankAccountId, "ba_");
 id!(BankTokenId, "btok_");
 id!(CardId, "card_");
@@ -247,6 +250,12 @@ id!(CustomerId, "cus_");
 id!(FileId, "file_");
 id!(InvoiceId, "in_");
 id!(InvoiceLineItemId, "ii_");
+id!(IssuingAuthorizationId, "iauth_");
+id!(IssuingCardId, "ic_");
+id!(IssuingCardholderId, "ich_");
+id!(IssuingDisputeId, "idp_");
+id!(IssuingTransactionId, "ipi_");
+id!(PlanId, "plan_");
 id!(SourceId, "src_");
 id!(TokenId {
     Card(CardTokenId),

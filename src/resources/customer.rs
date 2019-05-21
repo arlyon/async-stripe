@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::ids::{BankAccountId, CustomerId, PaymentSourceId};
+use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
 use crate::params::{List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource,
@@ -17,9 +17,9 @@ pub struct CustomerShippingDetails {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
 pub enum DetachedSource {
+    BankAccount(Deleted<BankAccountId>),
+    Card(Deleted<CardId>),
     Source(Source),
-    BankAccount(Deleted),
-    Card(Deleted),
 }
 
 /// The set of parameters that can be used when creating or updating a customer.
@@ -113,7 +113,7 @@ impl Customer {
     /// Deletes a customer.
     ///
     /// For more details see https://stripe.com/docs/api#delete_customer.
-    pub fn delete(client: &Client, customer_id: &CustomerId) -> Response<Deleted> {
+    pub fn delete(client: &Client, customer_id: &CustomerId) -> Response<Deleted<CustomerId>> {
         client.delete(&format!("/customers/{}", customer_id))
     }
 

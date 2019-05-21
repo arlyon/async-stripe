@@ -1,0 +1,15 @@
+#!/bin/sh
+# Copy all of the resources that are currently auto-generated
+./openapi/add account
+./openapi/add alipay_account
+./openapi/add application
+./openapi/add application_fee
+./openapi/add balance_transaction
+./openapi/add balance
+./openapi/add connect_collection_transfer
+./openapi/add fee_refund
+./openapi/add issuing_authorization
+./openapi/add issuing_card
+./openapi/add issuing_cardholder
+./openapi/add issuing_dispute
+./openapi/add issuing_transaction

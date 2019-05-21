@@ -20,6 +20,12 @@ pub trait Object {
     fn object(&self) -> &'static str;
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Deleted<T> {
+    pub id: T,
+    pub deleted: bool,
+}
+
 /// The `Expand` struct is used to serialize `expand` arguments in retrieve and list apis.
 #[doc(hidden)]
 #[derive(Serialize)]
@@ -111,6 +117,12 @@ pub struct List<T> {
     pub has_more: bool,
     pub total_count: Option<u64>,
     pub url: String,
+}
+
+impl<T> Default for List<T> {
+    fn default() -> Self {
+        List { data: Vec::new(), has_more: false, total_count: None, url: String::new() }
+    }
 }
 
 impl<T: Clone> Clone for List<T> {

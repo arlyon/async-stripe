@@ -1,6 +1,7 @@
 use crate::config::{Client, Response};
-use crate::params::{Metadata, Paginated, Timestamp};
-use crate::resources::{Currency, Deleted};
+use crate::ids::PlanId;
+use crate::params::{Deleted, Metadata, Paginated, Timestamp};
+use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
 /// The set of parameters that can be used when creating or updating a plan.
@@ -34,7 +35,7 @@ pub struct PlanParams<'a> {
 /// For more details see https://stripe.com/docs/api#plans.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Plan {
-    pub id: String,
+    pub id: PlanId,
     pub amount: Option<u64>,
     pub created: Timestamp,
     pub currency: Currency,
@@ -59,22 +60,22 @@ impl Plan {
     /// Retrieves the details of a plan.
     ///
     /// For more details see https://stripe.com/docs/api#retrieve_plan.
-    pub fn retrieve(client: &Client, plan_id: &str) -> Response<Plan> {
-        client.get(&format!("/plans/{}", plan_id))
+    pub fn retrieve(client: &Client, id: PlanId) -> Response<Plan> {
+        client.get(&format!("/plans/{}", id))
     }
 
     /// Updates a plan's properties.
     ///
     /// For more details see https://stripe.com/docs/api#update_plan.
-    pub fn update(client: &Client, plan_id: &str, params: PlanParams<'_>) -> Response<Plan> {
-        client.post_form(&format!("/plans/{}", plan_id), params)
+    pub fn update(client: &Client, id: PlanId, params: PlanParams<'_>) -> Response<Plan> {
+        client.post_form(&format!("/plans/{}", id), params)
     }
 
     /// Deletes a plan.
     ///
     /// For more details see https://stripe.com/docs/api#delete_plan.
-    pub fn delete(client: &Client, plan_id: &str) -> Response<Deleted> {
-        client.delete(&format!("/plans/{}", plan_id))
+    pub fn delete(client: &Client, id: PlanId) -> Response<Deleted<PlanId>> {
+        client.delete(&format!("/plans/{}", id))
     }
 }
 
