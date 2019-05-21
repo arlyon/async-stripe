@@ -1,4 +1,93 @@
 macro_rules! id {
+    ($struct_name:ident: UNKNOWN) => {
+        #[derive(Clone, Debug, Eq, PartialEq, Hash)]
+        pub struct $struct_name(smol_str::SmolStr);
+
+        impl $struct_name {
+            /// Extracts a string slice containing the entire id.
+            #[inline(always)]
+            pub fn as_str(&self) -> &str {
+                self.0.as_str()
+            }
+        }
+
+        impl PartialEq<str> for $struct_name {
+            fn eq(&self, other: &str) -> bool {
+                self.as_str() == other
+            }
+        }
+
+        impl PartialEq<&str> for $struct_name {
+            fn eq(&self, other: &&str) -> bool {
+                self.as_str() == *other
+            }
+        }
+
+        impl PartialEq<String> for $struct_name {
+            fn eq(&self, other: &String) -> bool {
+                self.as_str() == other
+            }
+        }
+
+        impl PartialOrd for $struct_name {
+            fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+                Some(self.cmp(other))
+            }
+        }
+
+        impl Ord for $struct_name {
+            fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+                self.as_str().cmp(other.as_str())
+            }
+        }
+
+        impl AsRef<str> for $struct_name {
+            fn as_ref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl crate::params::AsStrParam for $struct_name {}
+
+        impl std::ops::Deref for $struct_name {
+            type Target = str;
+
+            fn deref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl std::fmt::Display for $struct_name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                self.0.fmt(f)
+            }
+        }
+
+        impl std::str::FromStr for $struct_name {
+            type Err = ParseIdError;
+
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                Ok($struct_name(s.into()))
+            }
+        }
+
+        impl serde::Serialize for $struct_name {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where S: serde::ser::Serializer
+            {
+                self.as_str().serialize(serializer)
+            }
+        }
+
+        impl<'de> serde::Deserialize<'de> for $struct_name {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where D: serde::de::Deserializer<'de>
+            {
+                let s: String = serde::Deserialize::deserialize(deserializer)?;
+                s.parse::<Self>().map_err(::serde::de::Error::custom)
+            }
+        }
+    };
     ($struct_name:ident, $prefix:expr) => {
         /// An id for the corresponding object type.
         ///
@@ -247,6 +336,7 @@ id!(CardId, "card_");
 id!(CardTokenId, "tok_");
 id!(ChargeId, "ch_");
 id!(CustomerId, "cus_");
+id!(DisputeId, "dp_");
 id!(FileId, "file_");
 id!(InvoiceId, "in_");
 id!(InvoiceLineItemId, "ii_");
@@ -255,16 +345,22 @@ id!(IssuingCardId, "ic_");
 id!(IssuingCardholderId, "ich_");
 id!(IssuingDisputeId, "idp_");
 id!(IssuingTransactionId, "ipi_");
+id!(PaymentSourceId {
+    Account(AccountId),
+    AlipayAccount(AlipayAccountId),
+    BankAccount(BankAccountId),
+    Card(CardId),
+    Source(SourceId),
+});
 id!(PlanId, "plan_");
+id!(PayoutId, "po_");
+id!(RecipientId: UNKNOWN); // FIXME: This doesn't seem to be documented yet
+id!(RefundId, "re_");
 id!(SourceId, "src_");
 id!(TokenId {
     Card(CardTokenId),
     Bank(BankTokenId),
 });
-id!(PaymentSourceId {
-    Account(AccountId),
-    AlipayAccountId(AlipayAccountId),
-    BankAccount(BankAccountId),
-    Card(CardId),
-    Source(SourceId),
-});
+id!(TopupId, "tu_");
+id!(TransferId, "tr_");
+id!(TransferReversalId, "trr_");

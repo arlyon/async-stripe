@@ -154,6 +154,7 @@ fn main() {
         ("issuing.transaction", "type"),
         ("IssuingTransactionType", "IssuingTransactionType"),
     );
+    field_types.insert(("recipient", "type"), ("RecipientType", "Option<RecipientType>"));
 
     // Generate files
     let meta = Metadata {
@@ -593,7 +594,7 @@ fn gen_field_rust_type(
         }
         Some("number") => "f64".into(),
         Some("integer") => {
-            if field["format"].as_str() == Some("unix-time") {
+            if field["format"].as_str() == Some("unix-time") || field_name.ends_with("_date") {
                 impl_.use_params.insert("Timestamp");
                 "Timestamp".into()
             } else if field_name == "monthly_anchor" {

@@ -206,6 +206,14 @@ pub struct LegalEntityJapanAddress {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Person {}
 
+/// An enum representing the possible values of a `Recipient`'s `type` field.
+#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum RecipientType {
+    Individual,
+    Corporation,
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SpendingLimit {
     /// Maximum amount allowed to spend per time interval.

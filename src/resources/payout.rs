@@ -1,5 +1,6 @@
 use crate::config::{Client, Response};
-use crate::params::{List, Metadata, Paginated, RangeQuery, Timestamp};
+use crate::ids::PayoutId;
+use crate::params::{List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -137,7 +138,7 @@ pub enum PayoutType {
 /// For more details see https://stripe.com/docs/api#payout_object.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Payout {
-    pub id: String,
+    pub id: PayoutId,
     pub amount: u64,
     pub arrival_date: Timestamp,
     pub balance_transaction: String,
@@ -158,6 +159,16 @@ pub struct Payout {
     pub payout_type: PayoutType,
 }
 
+impl Object for Payout {
+    type Id = PayoutId;
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+    fn object(&self) -> &'static str {
+        "payout"
+    }
+}
+
 impl Payout {
     /// Creates a new payout.
     ///
@@ -169,19 +180,15 @@ impl Payout {
     /// Retrieves the details of a payout.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/retrieve](https://stripe.com/docs/api/payouts/retrieve).
-    pub fn retrieve(client: &Client, payout_id: &str) -> Response<Payout> {
-        client.get(&format!("/payouts/{}", payout_id))
+    pub fn retrieve(client: &Client, id: &PayoutId) -> Response<Payout> {
+        client.get(&format!("/payouts/{}", id))
     }
 
     /// Updates a payout's properties.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/update](https://stripe.com/docs/api/payouts/update).
-    pub fn update(
-        client: &Client,
-        payout_id: &str,
-        metadata: Option<Metadata>,
-    ) -> Response<Payout> {
-        client.post_form(&format!("/payouts/{}", payout_id), metadata)
+    pub fn update(client: &Client, id: &PayoutId, metadata: Option<Metadata>) -> Response<Payout> {
+        client.post_form(&format!("/payouts/{}", id), metadata)
     }
 
     /// List all payouts.
@@ -194,13 +201,7 @@ impl Payout {
     /// Cancels the payout.
     ///
     /// For more details see [https://stripe.com/docs/api/payouts/cancel](https://stripe.com/docs/api/payouts/cancel).
-    pub fn cancel(client: &Client, payout_id: &str) -> Response<Payout> {
-        client.post(&format!("/payouts/{}/cancel", payout_id))
-    }
-}
-
-impl Paginated for Payout {
-    fn cursor(&self) -> &str {
-        &self.id
+    pub fn cancel(client: &Client, id: &PayoutId) -> Response<Payout> {
+        client.post(&format!("/payouts/{}/cancel", id))
     }
 }

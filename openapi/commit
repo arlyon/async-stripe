@@ -7,9 +7,15 @@
 ./openapi/add balance_transaction
 ./openapi/add balance
 ./openapi/add connect_collection_transfer
+./openapi/add dispute
 ./openapi/add fee_refund
 ./openapi/add issuing_authorization
 ./openapi/add issuing_card
 ./openapi/add issuing_cardholder
 ./openapi/add issuing_dispute
 ./openapi/add issuing_transaction
+./openapi/add recipient
+./openapi/add reserve_transaction
+./openapi/add topup
+./openapi/add transfer
+./openapi/add transfer_reversal

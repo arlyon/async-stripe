@@ -12,27 +12,28 @@ impl BalanceTransaction {
     }
 }
 
-type BalanceTransactionSourceId = String; // TODO: Replace with enum
-
 impl Object for BalanceTransactionSource {
-    type Id = BalanceTransactionSourceId;
+    type Id = ();
     fn id(&self) -> &Self::Id {
-        unimplemented!() // FIXME: Implement!
+        &() // TODO: Some patterns contain _do_ contain ids
     }
     fn object(&self) -> &'static str {
-        unimplemented!() // FIXME: Implement!
+        use BalanceTransactionSource as Source;
+
+        match self {
+            Source::ApplicationFee(x) => x.object(),
+            Source::ApplicationFeeRefund(x) => x.object(),
+            Source::Charge(x) => x.object(),
+            Source::ConnectCollectionTransfer(x) => x.object(),
+            Source::Dispute(x) => x.object(),
+            Source::IssuingAuthorization(x) => x.object(),
+            Source::IssuingTransaction(x) => x.object(),
+            Source::Payout(x) => x.object(),
+            Source::Refund(x) => x.object(),
+            Source::ReserveTransaction(x) => x.object(),
+            Source::Topup(x) => x.object(),
+            Source::Transfer(x) => x.object(),
+            Source::TransferReversal(x) => x.object(),
+        }
     }
-    // ApplicationFee(ApplicationFee),
-    // ApplicationFeeRefund(ApplicationFeeRefund),
-    // Charge(Charge),
-    // ConnectCollectionTransfer(ConnectCollectionTransfer),
-    // Dispute(Dispute),
-    // IssuingAuthorization(IssuingAuthorization),
-    // IssuingTransaction(IssuingTransaction),
-    // Payout(Payout),
-    // Refund(Refund),
-    // ReserveTransaction(ReserveTransaction),
-    // Topup(Topup),
-    // Transfer(Transfer),
-    // TransferReversal(TransferReversal),
 }
