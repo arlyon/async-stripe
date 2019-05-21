@@ -1,5 +1,5 @@
 use crate::ids::{BankAccountId, CustomerId};
-use crate::params::{Metadata, Paginated};
+use crate::params::{Metadata, Paginate};
 use crate::resources::Currency;
 use serde::ser::SerializeStruct;
 use serde_derive::{Deserialize, Serialize};
@@ -112,7 +112,7 @@ pub struct BankAccount {
     pub status: BankAccountStatus,
 }
 
-impl Paginated for BankAccount {
+impl Paginate for BankAccount {
     fn cursor(&self) -> &str {
         &self.id
     }

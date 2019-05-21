@@ -1,4 +1,4 @@
-use crate::params::{Paginated, Timestamp};
+use crate::params::{Paginate, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe file.
@@ -17,7 +17,7 @@ pub struct File {
     pub url: String,
 }
 
-impl Paginated for File {
+impl Paginate for File {
     fn cursor(&self) -> &str {
         &self.id
     }

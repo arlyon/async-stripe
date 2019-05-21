@@ -1,4 +1,4 @@
-use crate::params::{List, Metadata, Paginated, Timestamp};
+use crate::params::{List, Metadata, Paginate, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -17,7 +17,7 @@ pub struct TransferReversal {
     pub transfer: String,
 }
 
-impl Paginated for TransferReversal {
+impl Paginate for TransferReversal {
     fn cursor(&self) -> &str {
         &self.id
     }
@@ -47,7 +47,7 @@ pub struct Transfer {
     pub transfer_group: String,
 }
 
-impl Paginated for Transfer {
+impl Paginate for Transfer {
     fn cursor(&self) -> &str {
         &self.id
     }

@@ -85,7 +85,7 @@ impl<T: Object> Expandable<T> {
 /// Implemented by types which support cursor-based pagination,
 /// typically with an id, allowing them to be fetched using a `List`
 /// returned by the corresponding "list" api request.
-pub trait Paginated {
+pub trait Paginate {
     fn cursor(&self) -> &str;
 }
 
@@ -94,7 +94,7 @@ pub trait Paginated {
 #[doc(hidden)]
 pub trait AsStrParam: AsRef<str> {}
 
-impl<T> Paginated for T
+impl<T> Paginate for T
 where
     T: Object,
     T::Id: AsStrParam,
@@ -142,7 +142,7 @@ impl<T: DeserializeOwned + Send + 'static> List<T> {
     }
 }
 
-impl<T: Paginated + DeserializeOwned + Send + 'static> List<T> {
+impl<T: Paginate + DeserializeOwned + Send + 'static> List<T> {
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
     /// Stripe's default page size.
     ///

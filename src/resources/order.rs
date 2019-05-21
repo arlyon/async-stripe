@@ -1,5 +1,5 @@
 use crate::ids::{ChargeId, CustomerId};
-use crate::params::{List, Metadata, Paginated, Timestamp};
+use crate::params::{List, Metadata, Paginate, Timestamp};
 use crate::resources::{Currency, ShippingDetails};
 use serde_derive::{Deserialize, Serialize};
 
@@ -58,7 +58,7 @@ pub struct Order {
     pub upstream_id: Option<String>,
 }
 
-impl Paginated for Order {
+impl Paginate for Order {
     fn cursor(&self) -> &str {
         &self.id
     }

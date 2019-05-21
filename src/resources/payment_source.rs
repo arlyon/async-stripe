@@ -1,5 +1,5 @@
 use crate::ids::{SourceId, TokenId};
-use crate::params::Paginated;
+use crate::params::Paginate;
 use crate::resources::{
     Account, AlipayAccount, BankAccount, BankAccountParams, Card, CardParams, Source,
 };
@@ -129,7 +129,7 @@ pub enum PaymentSource {
     AlipayAccount(AlipayAccount),
 }
 
-impl Paginated for PaymentSource {
+impl Paginate for PaymentSource {
     fn cursor(&self) -> &str {
         match self {
             PaymentSource::Card(x) => x.cursor(),

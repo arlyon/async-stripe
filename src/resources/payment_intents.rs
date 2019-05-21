@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::params::{List, Metadata, Paginated, RangeQuery, Timestamp};
+use crate::params::{List, Metadata, Paginate, RangeQuery, Timestamp};
 use crate::resources::{Charge, Currency, ShippingDetails};
 use serde_derive::{Deserialize, Serialize};
 
@@ -397,7 +397,7 @@ impl PaymentIntent {
     }
 }
 
-impl Paginated for PaymentIntent {
+impl Paginate for PaymentIntent {
     fn cursor(&self) -> &str {
         &self.id
     }

@@ -1,6 +1,6 @@
 use crate::config::{Client, Response};
 use crate::ids::ChargeId;
-use crate::params::{List, Metadata, Paginated, RangeQuery, Timestamp};
+use crate::params::{List, Metadata, Paginate, RangeQuery, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -136,7 +136,7 @@ impl Refund {
     }
 }
 
-impl Paginated for Refund {
+impl Paginate for Refund {
     fn cursor(&self) -> &str {
         &self.id
     }

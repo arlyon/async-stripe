@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::params::{Metadata, Paginated, Timestamp};
+use crate::params::{Metadata, Paginate, Timestamp};
 use crate::resources::{Currency, Deleted};
 use serde_derive::{Deserialize, Serialize};
 
@@ -78,7 +78,7 @@ impl Plan {
     }
 }
 
-impl Paginated for Plan {
+impl Paginate for Plan {
     fn cursor(&self) -> &str {
         &self.id
     }

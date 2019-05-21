@@ -1,4 +1,4 @@
-use crate::params::{Metadata, Paginated, Timestamp};
+use crate::params::{Metadata, Paginate, Timestamp};
 use crate::resources::{BalanceTransaction, Currency};
 use serde_derive::{Deserialize, Serialize};
 
@@ -93,7 +93,7 @@ pub struct Dispute {
     pub status: Option<String>,
 }
 
-impl Paginated for Dispute {
+impl Paginate for Dispute {
     fn cursor(&self) -> &str {
         &self.id
     }

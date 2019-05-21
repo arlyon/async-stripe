@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::params::{List, Metadata, Paginated, RangeQuery, Timestamp};
+use crate::params::{List, Metadata, Paginate, RangeQuery, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -199,7 +199,7 @@ impl Payout {
     }
 }
 
-impl Paginated for Payout {
+impl Paginate for Payout {
     fn cursor(&self) -> &str {
         &self.id
     }

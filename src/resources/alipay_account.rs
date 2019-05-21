@@ -1,5 +1,5 @@
 use crate::ids::{AlipayAccountId, CustomerId};
-use crate::params::{Metadata, Paginated, Timestamp};
+use crate::params::{Metadata, Paginate, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -47,7 +47,7 @@ pub struct AlipayAccount {
     pub username: String,
 }
 
-impl Paginated for AlipayAccount {
+impl Paginate for AlipayAccount {
     fn cursor(&self) -> &str {
         &self.id
     }

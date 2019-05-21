@@ -1,4 +1,4 @@
-use crate::params::{List, Paginated, Timestamp};
+use crate::params::{List, Paginate, Timestamp};
 use crate::resources::{Currency, OrderItem};
 use serde_derive::{Deserialize, Serialize};
 
@@ -18,7 +18,7 @@ pub struct OrderReturn {
     pub refund: String,
 }
 
-impl Paginated for OrderReturn {
+impl Paginate for OrderReturn {
     fn cursor(&self) -> &str {
         &self.id
     }
