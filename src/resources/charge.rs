@@ -1,8 +1,10 @@
 use crate::config::{Client, Response};
 use crate::error::ErrorCode;
-use crate::ids::{ChargeId, CustomerId};
-use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
-use crate::resources::{Address, Currency, PaymentSource, PaymentSourceParams, Refund};
+use crate::ids::ChargeId;
+use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::resources::{
+    Address, Currency, Customer, Invoice, PaymentSource, PaymentSourceParams, Refund,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe charge object outcome.
@@ -207,7 +209,7 @@ pub struct ChargeParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<ShippingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<String>,
+    pub customer: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<PaymentSourceParams<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -250,7 +252,7 @@ impl SourceFilter {
 /// The set of parameters that can be used when listing charges.
 ///
 /// For more details see [https://stripe.com/docs/api#list_charges](https://stripe.com/docs/api#list_charges)
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct ChargeListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -266,6 +268,8 @@ pub struct ChargeListParams<'a> {
     pub starting_after: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    pub expand: &'a [&'a str],
 }
 
 /// The resource representing a Stripe charge object.
@@ -282,14 +286,14 @@ pub struct Charge {
     pub captured: bool,
     pub created: Timestamp,
     pub currency: Currency,
-    pub customer: Option<CustomerId>, // TODO: Expandable
+    pub customer: Option<Expandable<Customer>>,
     pub description: Option<String>,
     pub destination: Option<String>,
     pub dispute: Option<String>,
     pub failure_code: Option<ErrorCode>,
     pub failure_message: Option<String>,
     pub fraud_details: FraudDetails,
-    pub invoice: Option<String>, // TODO: Expandable
+    pub invoice: Option<Expandable<Invoice>>,
     pub livemode: bool,
     pub metadata: Metadata,
     pub on_behalf_of: Option<String>,
@@ -312,9 +316,13 @@ pub struct Charge {
     pub transfer_group: Option<String>,
 }
 
-impl Identifiable for Charge {
-    fn id(&self) -> &str {
-        self.id.as_str()
+impl Object for Charge {
+    type Id = ChargeId;
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+    fn object(&self) -> &'static str {
+        "charge"
     }
 }
 
@@ -342,14 +350,18 @@ impl Charge {
     /// Retrieves the details of a charge.
     ///
     /// For more details see [https://stripe.com/docs/api#retrieve_charge](https://stripe.com/docs/api#retrieve_charge).
-    pub fn retrieve(client: &Client, charge_id: &str) -> Response<Charge> {
-        client.get(&format!("/charges/{}", charge_id))
+    pub fn retrieve(client: &Client, charge_id: &ChargeId, expand: &[&str]) -> Response<Charge> {
+        client.get_query(&format!("/charges/{}", charge_id), &Expand { expand })
     }
 
     /// Updates a charge's properties.
     ///
     /// For more details see [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
-    pub fn update(client: &Client, charge_id: &str, params: ChargeParams<'_>) -> Response<Charge> {
+    pub fn update(
+        client: &Client,
+        charge_id: &ChargeId,
+        params: ChargeParams<'_>,
+    ) -> Response<Charge> {
         client.post_form(&format!("/charges/{}", charge_id), params)
     }
 
@@ -358,7 +370,7 @@ impl Charge {
     /// For more details see [https://stripe.com/docs/api#charge_capture](https://stripe.com/docs/api#charge_capture).
     pub fn capture(
         client: &Client,
-        charge_id: &str,
+        charge_id: &ChargeId,
         params: CaptureParams<'_>,
     ) -> Response<Charge> {
         client.post_form(&format!("/charges/{}/capture", charge_id), params)

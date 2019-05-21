@@ -1,4 +1,4 @@
-use crate::params::{Identifiable, Timestamp};
+use crate::params::{Paginate, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe review of a payment.
@@ -15,8 +15,8 @@ pub struct Review {
     pub reason: String,
 }
 
-impl Identifiable for Review {
-    fn id(&self) -> &str {
+impl Paginate for Review {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

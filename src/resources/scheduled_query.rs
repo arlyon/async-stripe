@@ -1,4 +1,4 @@
-use crate::params::{Identifiable, Timestamp};
+use crate::params::{Paginate, Timestamp};
 use crate::resources::File;
 use serde_derive::{Deserialize, Serialize};
 
@@ -20,8 +20,8 @@ pub struct ScheduledQueryRun {
     pub title: String,
 }
 
-impl Identifiable for ScheduledQueryRun {
-    fn id(&self) -> &str {
+impl Paginate for ScheduledQueryRun {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

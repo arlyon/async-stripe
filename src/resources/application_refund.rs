@@ -1,4 +1,4 @@
-use crate::params::{Identifiable, Metadata, Timestamp};
+use crate::params::{Metadata, Paginate, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -17,8 +17,8 @@ pub struct ApplicationFeeRefund {
     pub metadata: Metadata,
 }
 
-impl Identifiable for ApplicationFeeRefund {
-    fn id(&self) -> &str {
+impl Paginate for ApplicationFeeRefund {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

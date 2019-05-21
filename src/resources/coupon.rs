@@ -1,4 +1,4 @@
-use crate::params::{Identifiable, Metadata, Timestamp};
+use crate::params::{Metadata, Paginate, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -24,8 +24,8 @@ pub struct Coupon {
     pub deleted: bool,
 }
 
-impl Identifiable for Coupon {
-    fn id(&self) -> &str {
+impl Paginate for Coupon {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

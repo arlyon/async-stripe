@@ -1,4 +1,4 @@
-use crate::params::{Identifiable, List, Timestamp};
+use crate::params::{List, Paginate, Timestamp};
 use crate::resources::{Currency, OrderItem};
 use serde_derive::{Deserialize, Serialize};
 
@@ -18,8 +18,8 @@ pub struct OrderReturn {
     pub refund: String,
 }
 
-impl Identifiable for OrderReturn {
-    fn id(&self) -> &str {
+impl Paginate for OrderReturn {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

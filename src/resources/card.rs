@@ -1,5 +1,6 @@
-use crate::params::{Identifiable, Metadata};
-use crate::resources::Currency;
+use crate::ids::CardId;
+use crate::params::{Expandable, Metadata, Object};
+use crate::resources::{Account, Currency, Customer};
 use serde::ser::SerializeStruct;
 use serde_derive::{Deserialize, Serialize};
 
@@ -13,10 +14,10 @@ pub struct CardParams<'a> {
     pub cvc: Option<&'a str>,  // card security code
 }
 
-impl<'a> ::serde::Serialize for CardParams<'a> {
+impl<'a> serde::Serialize for CardParams<'a> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: ::serde::ser::Serializer,
+        S: serde::ser::Serializer,
     {
         let mut s = serializer.serialize_struct("CardParams", 6)?;
         s.serialize_field("object", "card")?;
@@ -34,8 +35,8 @@ impl<'a> ::serde::Serialize for CardParams<'a> {
 /// For more details see [https://stripe.com/docs/api#card_object](https://stripe.com/docs/api#card_object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Card {
-    pub id: String,
-    pub account: Option<String>,
+    pub id: CardId,
+    pub account: Option<Expandable<Account>>,
     pub address_city: Option<String>,
     pub address_country: Option<String>,
     pub address_line1: Option<String>,
@@ -48,7 +49,7 @@ pub struct Card {
     pub brand: CardBrand,
     pub country: String, // eg. "US"
     pub currency: Option<Currency>,
-    pub customer: Option<String>,
+    pub customer: Option<Expandable<Customer>>,
     pub cvc_check: Option<CheckResult>,
     pub default_for_currency: Option<bool>,
     pub dynamic_last4: Option<String>,
@@ -148,8 +149,12 @@ pub enum TokenizationMethod {
     Other,
 }
 
-impl Identifiable for Card {
-    fn id(&self) -> &str {
+impl Object for Card {
+    type Id = CardId;
+    fn id(&self) -> &Self::Id {
         &self.id
+    }
+    fn object(&self) -> &'static str {
+        "card"
     }
 }

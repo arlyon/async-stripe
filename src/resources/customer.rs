@@ -1,6 +1,6 @@
 use crate::config::{Client, Response};
-use crate::ids::{BankAccountId, PaymentSourceId};
-use crate::params::{Identifiable, List, Metadata, RangeQuery, Timestamp};
+use crate::ids::{BankAccountId, CustomerId, PaymentSourceId};
+use crate::params::{List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource,
     PaymentSourceParams, Source, Subscription,
@@ -67,10 +67,10 @@ pub struct CustomerListParams<'a> {
 /// For more details see https://stripe.com/docs/api#customers.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Customer {
-    pub id: String,
+    pub id: CustomerId,
     pub account_balance: i64,
     pub business_vat_id: Option<String>,
-    pub created: u64,
+    pub created: Timestamp,
     pub currency: Option<Currency>,
     pub default_source: Option<PaymentSourceId>,
     pub delinquent: bool,
@@ -95,7 +95,7 @@ impl Customer {
     /// Retrieves the details of a customer.
     ///
     /// For more details see https://stripe.com/docs/api#retrieve_customer.
-    pub fn retrieve(client: &Client, customer_id: &str) -> Response<Customer> {
+    pub fn retrieve(client: &Client, customer_id: &CustomerId) -> Response<Customer> {
         client.get(&format!("/customers/{}", customer_id))
     }
 
@@ -104,7 +104,7 @@ impl Customer {
     /// For more details see https://stripe.com/docs/api#update_customer.
     pub fn update(
         client: &Client,
-        customer_id: &str,
+        customer_id: &CustomerId,
         params: CustomerParams<'_>,
     ) -> Response<Customer> {
         client.post_form(&format!("/customers/{}", customer_id), params)
@@ -113,7 +113,7 @@ impl Customer {
     /// Deletes a customer.
     ///
     /// For more details see https://stripe.com/docs/api#delete_customer.
-    pub fn delete(client: &Client, customer_id: &str) -> Response<Deleted> {
+    pub fn delete(client: &Client, customer_id: &CustomerId) -> Response<Deleted> {
         client.delete(&format!("/customers/{}", customer_id))
     }
 
@@ -129,7 +129,7 @@ impl Customer {
     /// For more details see [https://stripe.com/docs/api#attach_source](https://stripe.com/docs/api#attach_source).
     pub fn attach_source(
         client: &Client,
-        customer_id: &str,
+        customer_id: &CustomerId,
         source: PaymentSourceParams<'_>,
     ) -> Response<PaymentSource> {
         #[derive(Serialize)]
@@ -145,7 +145,7 @@ impl Customer {
     /// For more details see [https://stripe.com/docs/api#detach_source](https://stripe.com/docs/api#detach_source).
     pub fn detach_source(
         client: &Client,
-        customer_id: &str,
+        customer_id: &CustomerId,
         source_id: &PaymentSourceId,
     ) -> Response<DetachedSource> {
         client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
@@ -154,7 +154,7 @@ impl Customer {
     /// Retrieves a Card, BankAccount, or Source for a Customer
     pub fn retrieve_source(
         client: &Client,
-        customer_id: &str,
+        customer_id: &CustomerId,
         source_id: &PaymentSourceId,
     ) -> Response<PaymentSource> {
         client.get(&format!("/customers/{}/sources/{}", customer_id, source_id))
@@ -165,7 +165,7 @@ impl Customer {
     /// For more details see https://stripe.com/docs/api/customer_bank_accounts/verify.
     pub fn verify_bank_account(
         client: &Client,
-        customer_id: &str,
+        customer_id: &CustomerId,
         bank_account_id: &BankAccountId,
         params: BankAccountVerifyParams<'_>,
     ) -> Response<BankAccount> {
@@ -176,8 +176,12 @@ impl Customer {
     }
 }
 
-impl Identifiable for Customer {
-    fn id(&self) -> &str {
+impl Object for Customer {
+    type Id = CustomerId;
+    fn id(&self) -> &Self::Id {
         &self.id
+    }
+    fn object(&self) -> &'static str {
+        "customer"
     }
 }

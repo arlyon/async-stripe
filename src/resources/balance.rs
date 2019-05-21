@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::params::{Identifiable, Timestamp};
+use crate::params::{Paginate, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -46,8 +46,8 @@ pub struct BalanceTransaction {
     pub transaction_type: String,
 }
 
-impl Identifiable for BalanceTransaction {
-    fn id(&self) -> &str {
+impl Paginate for BalanceTransaction {
+    fn cursor(&self) -> &str {
         &self.id
     }
 }

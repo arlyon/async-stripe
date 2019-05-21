@@ -1,5 +1,5 @@
 use crate::ids::AccountId;
-use crate::params::{Identifiable, List, Metadata, Timestamp};
+use crate::params::{List, Metadata, Object, Timestamp};
 use crate::resources::{BankAccount, Currency};
 use serde_derive::{Deserialize, Serialize};
 
@@ -116,8 +116,12 @@ pub struct Account {
     pub verification: Option<serde_json::Value>,
 }
 
-impl Identifiable for Account {
-    fn id(&self) -> &str {
-        self.id.as_str()
+impl Object for Account {
+    type Id = AccountId;
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+    fn object(&self) -> &'static str {
+        "account"
     }
 }
