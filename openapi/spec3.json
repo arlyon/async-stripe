@@ -13814,6 +13814,10 @@
           },
           "type": {
             "description": "Type of the recipient, one of `individual` or `corporation`.",
+            "enum": [
+              "corporation",
+              "individual"
+            ],
             "maxLength": 5000,
             "type": "string"
           }
@@ -28780,6 +28784,17 @@
             "name": "type",
             "required": false,
             "schema": {
+              "enum": [
+                "charge",
+                "refund",
+                "adjustment",
+                "application_fee",
+                "application_fee_refund",
+                "transfer",
+                "payment",
+                "payout",
+                "payout_failure"
+              ],
               "maxLength": 5000,
               "type": "string"
             },
@@ -55870,6 +55885,10 @@
                   },
                   "type": {
                     "description": "Type of the recipient: either `individual` or `corporation`.",
+                    "enum": [
+                      "corporation",
+                      "individual"
+                    ],
                     "maxLength": 5000,
                     "type": "string"
                   }

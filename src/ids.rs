@@ -357,6 +357,7 @@ id!(PayoutId, "po_");
 id!(RecipientId: UNKNOWN); // FIXME: This doesn't seem to be documented yet
 id!(RefundId, "re_");
 id!(SourceId, "src_");
+id!(SubscriptionId, "sub_");
 id!(TokenId {
     Card(CardTokenId),
     Bank(BankTokenId),

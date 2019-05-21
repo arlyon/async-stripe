@@ -1,5 +1,5 @@
 use crate::ids::RecipientId;
-use crate::params::{Expandable, List, Metadata, Object, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{Account, BankAccount, Card, RecipientType};
 use serde_derive::{Deserialize, Serialize};
 
@@ -68,6 +68,15 @@ pub struct Recipient {
     pub type_: Option<RecipientType>,
 }
 
+impl Recipient {
+    /// Returns a list of your recipients.
+    ///
+    /// The recipients are returned sorted by creation date, with the most recently created recipients appearing first.
+    pub fn list(client: &Client, params: RecipientListParams<'_>) -> Response<List<Recipient>> {
+        client.get_query("/recipients", &params)
+    }
+}
+
 impl Object for Recipient {
     type Id = RecipientId;
     fn id(&self) -> &Self::Id {
@@ -76,4 +85,51 @@ impl Object for Recipient {
     fn object(&self) -> &'static str {
         "recipient"
     }
+}
+
+/// The parameters for `Recipient::list`.
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct RecipientListParams<'a> {
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    created: Option<RangeQuery<Timestamp>>,
+
+    /// A cursor for use in pagination.
+    ///
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    ending_before: Option<&'a RecipientId>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_deserializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// A limit on the number of objects to be returned.
+    ///
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    limit: Option<u64>,
+
+    /// A cursor for use in pagination.
+    ///
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    starting_after: Option<&'a RecipientId>,
+
+    #[serde(rename = "type")]
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    type_: Option<RecipientType>,
+
+    /// Only return recipients that are verified or unverified.
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    verified: Option<bool>,
+}
+
+/// An enum representing the possible values of an `RecipientListParams`'s `type_` field.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RecipientType {
+    Corporation,
+    Individual,
 }

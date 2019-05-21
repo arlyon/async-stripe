@@ -1,4 +1,6 @@
 use heck::{CamelCase, SnakeCase};
+use lazy_static::lazy_static;
+use regex::Regex;
 use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -39,7 +41,14 @@ fn main() {
     for (path, _) in spec["paths"].as_object().unwrap() {
         let seg = path.trim_start_matches("/v1/").split("/").into_iter().next().unwrap();
         let seg_like = &seg[0..seg.len() - 1];
-        if seg.ends_with("s") && objects.contains(seg_like) {
+        if seg == "account" {
+            // This isn't documented in the API reference so let's skip it
+            continue;
+        }
+
+        if objects.contains(seg) {
+            requests.entry(seg).or_default().insert(path.as_str());
+        } else if seg.ends_with("s") && objects.contains(seg_like) {
             requests.entry(seg_like).or_default().insert(path.as_str());
         }
     }
@@ -188,17 +197,17 @@ struct Metadata<'a> {
     objects: BTreeSet<&'a str>,
     /// A one to many map of schema to depending types.
     dependents: BTreeMap<&'a str, BTreeSet<&'a str>>,
-    /// A one to many map of _objects_ to requests which should be
-    /// implemented for that object.
-    ///
-    /// This is typically determined by the first segment in the path.
-    requests: BTreeMap<&'a str, BTreeSet<&'a str>>,
     /// How a particular id type shouldd be renamed.
     id_renames: BTreeMap<&'a str, &'a str>,
     /// How a particular schema should be renamed.
     schema_renames: BTreeMap<&'a str, &'a str>,
     /// An override for the rust-type of a particular object/field pair.
     field_types: BTreeMap<(&'a str, &'a str), (&'a str, &'a str)>,
+    /// A one to many map of _objects_ to requests which should be
+    /// implemented for that object.
+    ///
+    /// This is typically determined by the first segment in the path.
+    requests: BTreeMap<&'a str, BTreeSet<&'a str>>,
 }
 
 impl<'a> Metadata<'a> {
@@ -209,6 +218,7 @@ impl<'a> Metadata<'a> {
             id.replace('.', "_").to_camel_case() + "Id"
         }
     }
+
     fn schema_to_rust_type(&self, schema: &str) -> String {
         if let Some(rename) = self.schema_renames.get(&schema) {
             rename.to_camel_case()
@@ -219,7 +229,7 @@ impl<'a> Metadata<'a> {
 }
 
 #[derive(Default)]
-struct ImplMetadata {
+struct Generated {
     /// The ids that must be imported in this file.
     use_ids: BTreeSet<String>,
     /// The params that must be imported in this file.
@@ -232,32 +242,65 @@ struct ImplMetadata {
     inferred_unions: BTreeMap<String, InferredUnion>,
     /// Extra structs that were / will be generated in this file.
     inferred_structs: BTreeMap<String, InferredStruct>,
+    /// The request parameter structs that were / will be generated in this file.
+    inferred_parameters: BTreeMap<String, InferredParams>,
     /// The schemas that were / will be generated in this file.
     generated_schemas: BTreeMap<String, bool>,
 }
 
-#[derive(Clone)]
+impl Generated {
+    fn insert_enum(&mut self, name: impl Into<String>, enum_: InferredEnum) {
+        if let Err(other) = self.try_insert_enum(name, enum_.clone()) {
+            panic!("conflicting enums are not compatible:\n\t{:?}\n\t!=\n\t{:?}", enum_, other);
+        }
+    }
+
+    fn try_insert_enum(&mut self, name: impl Into<String>, enum_: InferredEnum) -> Result<(), &InferredEnum> {
+        let name = name.into();
+        let mut enum_ = enum_;
+        enum_.options.sort();
+        if !self.inferred_enums.contains_key(&name) {
+            self.inferred_enums.insert(name, enum_);
+            return Ok(());
+        }
+        if let Some(other) = self.inferred_enums.get(&name) {
+            if enum_.options != other.options {
+                return Err(other);
+            }
+        }
+        Ok(())
+    }
+}
+
+#[derive(Clone, Debug, PartialEq)]
 struct InferredEnum {
     parent: String,
     field: String,
-    wire_variants: Vec<String>,
+    options: Vec<String>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq)]
 struct InferredUnion {
     field: String,
     schema_variants: Vec<String>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq)]
 struct InferredStruct {
     field: String,
     schema: Value,
 }
 
+#[derive(Clone, Debug, PartialEq)]
+struct InferredParams {
+    method: String,
+    rust_type: String,
+    parameters: Value,
+}
+
 fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     let mut out = String::new();
-    let mut impl_ = ImplMetadata::default();
+    let mut state = Generated::default();
     let struct_name = meta.schema_to_rust_type(object);
     let schema = &meta.spec["components"]["schemas"][object];
     let schema_title = schema["title"].as_str().unwrap();
@@ -293,9 +336,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     out.push_str(&struct_name);
     out.push_str(" {\n");
     if let Some(id_type) = &id_type {
-        impl_.use_ids.insert(id_type.clone());
+        state.use_ids.insert(id_type.clone());
         if let Some(doc) = schema["properties"]["id"]["description"].as_str() {
-            print_doc_comment(&mut out, doc);
+            print_doc_comment(&mut out, doc, 1);
         }
         out.push_str("    pub id: ");
         out.push_str(&id_type);
@@ -330,7 +373,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         };
         out.push('\n');
         out.push_str(&gen_field(
-            &mut impl_,
+            &mut state,
             meta,
             object,
             &key,
@@ -340,8 +383,16 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
     out.push_str("}\n");
 
+    // Generate request methods
+    out.push_str(&gen_impl_requests(
+        &mut state,
+        meta,
+        object,
+        id_type.as_ref().map(|x| x.as_str()),
+    ));
+
     // Generate an `impl Object` block
-    impl_.use_params.insert("Object");
+    state.use_params.insert("Object");
     out.push('\n');
     out.push_str("impl Object for ");
     out.push_str(&struct_name);
@@ -360,7 +411,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     out.push_str("\"\n    }\n");
     out.push_str("}\n");
 
-    while let Some(schema_name) = impl_
+    while let Some(schema_name) = state
         .generated_schemas
         .iter()
         .filter_map(|(k, &v)| if !v { Some(k) } else { None })
@@ -383,15 +434,15 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
                 .unwrap_or(false);
             out.push('\n');
-            out.push_str(&gen_field(&mut impl_, meta, &schema_name, &key, &field, required));
+            out.push_str(&gen_field(&mut state, meta, &schema_name, &key, &field, required));
         }
         out.push_str("}\n");
 
         // Set the schema to generated
-        *impl_.generated_schemas.entry(schema_name).or_default() = true;
+        *state.generated_schemas.entry(schema_name).or_default() = true;
     }
 
-    for (struct_name, struct_) in impl_.inferred_structs.clone() {
+    for (struct_name, struct_) in state.inferred_structs.clone() {
         let fields = match struct_.schema["properties"].as_object() {
             Some(some) => some,
             None => {
@@ -412,7 +463,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 .unwrap_or(false);
             out.push('\n');
             out.push_str(&gen_field(
-                &mut impl_,
+                &mut state,
                 meta,
                 &struct_name.to_snake_case(),
                 &key,
@@ -423,7 +474,210 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         out.push_str("}\n");
     }
 
-    for (union_name, union_) in impl_.inferred_unions.clone() {
+    for (_, params) in state.inferred_parameters.clone() {
+        let parameters = match params.parameters.as_array() {
+            Some(some) => some.as_slice(),
+            None => &[],
+        };
+        out.push('\n');
+        out.push_str(&format!("/// The parameters for `{}::{}`.\n", struct_name, params.method));
+        out.push_str("#[derive(Clone, Debug, Default, Serialize)]\n");
+        out.push_str("pub struct ");
+        out.push_str(&params.rust_type);
+        out.push_str("<'a> {\n");
+        for param in parameters {
+            if param["in"].as_str() != Some("query") {
+                continue;
+            }
+
+            let param_name = param["name"].as_str().unwrap();
+            let param_rename = match param_name {
+                "type" => "type_",
+                other => other,
+            };
+            let print_doc = |out: &mut String| {
+                out.push('\n');
+                if let Some(doc) = param["description"].as_str() {
+                    print_doc_comment(out, doc, 1);
+                }
+                if param_rename != param_name {
+                    out.push_str(&format!("    #[serde(rename = \"{}\")]\n", param_name));
+                }
+            };
+            match param_name {
+                "expand" => {
+                    print_doc(&mut out);
+                    state.use_params.insert("Expand");
+                    out.push_str("    #[serde(skip_deserializing_if = \"Expand::is_empty\")]\n");
+                    out.push_str("    expand: &'a [&'a str],\n");
+                }
+                "limit" => {
+                    print_doc(&mut out);
+                    if param["required"].as_bool() == Some(true) {
+                        out.push_str("    limit: u64,\n");
+                    } else {
+                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    limit: Option<u64>,\n");
+                    }
+                }
+                "ending_before" => {
+                    print_doc(&mut out);
+                    let cursor_type = id_type.as_ref().map(|x| x.as_str()).unwrap_or("str");
+                    if param["required"].as_bool() == Some(true) {
+                        out.push_str("    ending_before: &'a ");
+                        out.push_str(cursor_type);
+                        out.push_str(",\n");
+                    } else {
+                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    ending_before: Option<&'a ");
+                        out.push_str(cursor_type);
+                        out.push_str(">,\n");
+                    }
+                }
+                "starting_after" => {
+                    print_doc(&mut out);
+                    let cursor_type = id_type.as_ref().map(|x| x.as_str()).unwrap_or("str");
+                    if param["required"].as_bool() == Some(true) {
+                        out.push_str("    starting_after: &'a ");
+                        out.push_str(cursor_type);
+                        out.push_str(",\n");
+                    } else {
+                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    starting_after: Option<&'a ");
+                        out.push_str(cursor_type);
+                        out.push_str(">,\n");
+                    }
+                }
+                "charge" => {
+                    print_doc(&mut out);
+                    state.use_ids.insert("ChargeId".into());
+                    if param["required"].as_bool() == Some(true) {
+                        out.push_str("    charge: ChargeId,\n");
+                    } else {
+                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    charge: Option<ChargeId>,\n");
+                    }
+                }
+                "customer" => {
+                    print_doc(&mut out);
+                    state.use_ids.insert("CustomerId".into());
+                    if param["required"].as_bool() == Some(true) {
+                        out.push_str("    customer: CustomerId,\n");
+                    } else {
+                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    customer: Option<CustomerId>,\n");
+                    }
+                }
+                "invoice" => {
+                    state.use_ids.insert("InvoiceId".into());
+                    if param["required"].as_bool() == Some(true) {
+                        out.push_str("    invoice: InvoiceId,\n");
+                    } else {
+                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    invoice: Option<InvoiceId>,\n");
+                    }
+                }
+                "plan" => {
+                    print_doc(&mut out);
+                    state.use_ids.insert("PlanId".into());
+                    if param["required"].as_bool() == Some(true) {
+                        out.push_str("    plan: PlanId,\n");
+                    } else {
+                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    plan: Option<PlanId>,\n");
+                    }
+                }
+                "subscription" => {
+                    print_doc(&mut out);
+                    state.use_ids.insert("SubscriptionId".into());
+                    if param["required"].as_bool() == Some(true) {
+                        out.push_str("    subscription: SubscriptionId,\n");
+                    } else {
+                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    subscription: Option<SubscriptionId>,\n");
+                    }
+                }
+                _ => {
+                    if param["schema"]["type"].as_str() == Some("boolean") {
+                        print_doc(&mut out);
+                        if param["required"].as_bool() == Some(true) {
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": bool,\n");
+                        } else {
+                            out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": Option<bool>,\n");
+                        }
+                    } else if param["schema"]["anyOf"][0]["title"].as_str() == Some("range_query_specs") {
+                        print_doc(&mut out);
+                        if param["required"].as_bool() == Some(true) {
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": RangeQuery<Timestamp>,\n");
+                        } else {
+                            out.push_str(
+                                "    #[serde(skip_deserializing_if = \"Option::is_none\")]\n",
+                            );
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": Option<RangeQuery<Timestamp>>,\n");
+                        }
+                    } else if param["schema"]["type"].as_str() == Some("string")
+                        && param["schema"]["enum"].is_array()
+                    {
+                        let enum_schema = format!("{}_{}", object, param_rename).to_snake_case();
+                        let enum_name = meta.schema_to_rust_type(&enum_schema);
+                        let enum_ = InferredEnum {
+                            parent: params.rust_type.clone(),
+                            field: param_rename.into(),
+                            options: param["schema"]["enum"]
+                                .as_array()
+                                .unwrap()
+                                .into_iter()
+                                .map(|x| x.as_str().unwrap().into())
+                                .collect(),
+                        };
+                        let inserted = state.try_insert_enum(enum_name.clone(), enum_.clone());
+                        let enum_name = if inserted.is_err() {
+                            let enum_schema = format!("{}_{}_filter", object, param_rename).to_snake_case();
+                            let enum_name = meta.schema_to_rust_type(&enum_schema);
+                            state.insert_enum(enum_name.clone(), enum_);
+                            enum_name
+                        } else {
+                            enum_name
+                        };
+
+                        print_doc(&mut out);
+                        if param["required"].as_bool() == Some(true) {
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": ");
+                            out.push_str(&enum_name);
+                            out.push_str(",\n");
+                        } else {
+                            out.push_str(
+                                "    #[serde(skip_deserializing_if = \"Option::is_none\")]\n",
+                            );
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": Option<");
+                            out.push_str(&enum_name);
+                            out.push_str(">,\n");
+                        }
+                    } else if param["required"].as_bool() == Some(true) {
+                        panic!("error: skipped required parameter: {}", param_name);
+                    } else {
+                        eprintln!("warn: skipping optional parameter: {}", param_name);
+                    }
+                }
+            }
+        }
+        out.push_str("}\n");
+    }
+
+    for (union_name, union_) in state.inferred_unions.clone() {
         out.push('\n');
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
         out.push_str("#[serde(tag = \"object\", rename_all = \"snake_case\")]\n");
@@ -451,7 +705,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         out.push_str("}\n");
     }
 
-    for (enum_name, enum_) in impl_.inferred_enums.clone() {
+    for (enum_name, enum_) in state.inferred_enums.clone() {
         out.push('\n');
         out.push_str(&format!(
             "/// An enum representing the possible values of an `{}`'s `{}` field.\n",
@@ -462,7 +716,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         out.push_str("pub enum ");
         out.push_str(&enum_name.to_camel_case());
         out.push_str(" {\n");
-        for wire_name in &enum_.wire_variants {
+        for wire_name in &enum_.options {
             let variant_name = wire_name.to_camel_case();
             if &variant_name.to_snake_case() != wire_name {
                 out.push_str("    #[serde(rename = \"");
@@ -477,9 +731,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     let mut prelude = String::new();
-    if impl_.use_ids.len() > 0 {
+    if state.use_ids.len() > 0 {
         prelude.push_str("use crate::ids::{");
-        for (n, id) in impl_.use_ids.iter().enumerate() {
+        for (n, id) in state.use_ids.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
             }
@@ -487,9 +741,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         }
         prelude.push_str("};\n");
     }
-    if impl_.use_params.len() > 0 {
+    if state.use_params.len() > 0 {
         prelude.push_str("use crate::params::{");
-        for (n, param) in impl_.use_params.iter().enumerate() {
+        for (n, param) in state.use_params.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
             }
@@ -497,9 +751,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         }
         prelude.push_str("};\n");
     }
-    if impl_.use_resources.len() > 0 {
+    if state.use_resources.len() > 0 {
         prelude.push_str("use crate::resources::{");
-        for (n, resource) in impl_.use_resources.iter().enumerate() {
+        for (n, resource) in state.use_resources.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
             }
@@ -515,7 +769,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
 }
 
 fn gen_field(
-    impl_: &mut ImplMetadata,
+    state: &mut Generated,
     meta: &Metadata,
     object: &str,
     field_name: &str,
@@ -524,7 +778,7 @@ fn gen_field(
 ) -> String {
     let mut out = String::new();
     if let Some(doc) = field["description"].as_str() {
-        print_doc_comment(&mut out, doc);
+        print_doc_comment(&mut out, doc, 1);
     }
     let mut field_rename = field_name.to_snake_case();
     if field_rename == "type" {
@@ -535,7 +789,7 @@ fn gen_field(
         out.push_str(field_name);
         out.push_str("\")]\n");
     }
-    let rust_type = gen_field_rust_type(impl_, meta, object, &field_name, &field, required);
+    let rust_type = gen_field_rust_type(state, meta, object, &field_name, &field, required);
     if !required {
         if rust_type == "bool" || rust_type == "Metadata" || rust_type.starts_with("List<") {
             out.push_str("    #[serde(default)]\n");
@@ -552,7 +806,7 @@ fn gen_field(
 }
 
 fn gen_field_rust_type(
-    impl_: &mut ImplMetadata,
+    state: &mut Generated,
     meta: &Metadata,
     object: &str,
     field_name: &str,
@@ -563,23 +817,23 @@ fn gen_field_rust_type(
         match use_path {
             "String" => (),
             _ => {
-                impl_.use_resources.insert(use_path.into());
+                state.use_resources.insert(use_path.into());
             }
         }
         return rust_type.into();
     }
     if field_name == "metadata" {
-        impl_.use_params.insert("Metadata");
+        state.use_params.insert("Metadata");
         return "Metadata".into();
     } else if field_name == "currency" || field_name.ends_with("_currency") {
-        impl_.use_resources.insert("Currency".into());
+        state.use_resources.insert("Currency".into());
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Currency>".into();
         } else {
             return "Currency".into();
         }
     } else if field_name == "created" {
-        impl_.use_params.insert("Timestamp");
+        state.use_params.insert("Timestamp");
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Timestamp>".into();
         } else {
@@ -595,7 +849,7 @@ fn gen_field_rust_type(
         Some("number") => "f64".into(),
         Some("integer") => {
             if field["format"].as_str() == Some("unix-time") || field_name.ends_with("_date") {
-                impl_.use_params.insert("Timestamp");
+                state.use_params.insert("Timestamp");
                 "Timestamp".into()
             } else if field_name == "monthly_anchor" {
                 "u8".into()
@@ -618,12 +872,12 @@ fn gen_field_rust_type(
                 let enum_ = InferredEnum {
                     parent: parent_type,
                     field: field_name.into(),
-                    wire_variants: variants
+                    options: variants
                         .into_iter()
                         .map(|x| x.as_str().unwrap().into())
                         .collect(),
                 };
-                impl_.inferred_enums.insert(enum_name.clone(), enum_);
+                state.insert_enum(enum_name.clone(), enum_);
                 enum_name
             } else {
                 "String".into()
@@ -631,12 +885,12 @@ fn gen_field_rust_type(
         }
         Some("array") => {
             let element = &field["items"];
-            let element_type = gen_field_rust_type(impl_, meta, object, field_name, element, true);
+            let element_type = gen_field_rust_type(state, meta, object, field_name, element, true);
             format!("Vec<{}>", element_type)
         }
         Some("object") => {
             if field["properties"]["object"]["enum"][0].as_str() == Some("list") {
-                impl_.use_params.insert("List");
+                state.use_params.insert("List");
                 let element = &field["properties"]["data"]["items"];
                 let element_field_name = if field_name.ends_with("s") {
                     &field_name[0..field_name.len() - 1]
@@ -644,7 +898,7 @@ fn gen_field_rust_type(
                     field_name
                 };
                 let element_type =
-                    gen_field_rust_type(impl_, meta, object, element_field_name, element, true);
+                    gen_field_rust_type(state, meta, object, element_field_name, element, true);
 
                 // N.B. return immediately; we use `Default` for list rather than `Option`
                 return format!("List<{}>", element_type);
@@ -652,7 +906,7 @@ fn gen_field_rust_type(
                 let struct_name =
                     format!("{}_{}", object.replace('.', "_"), field_name).to_camel_case();
                 let struct_ = InferredStruct { field: field_name.into(), schema: field.clone() };
-                impl_.inferred_structs.insert(struct_name.clone(), struct_);
+                state.inferred_structs.insert(struct_name.clone(), struct_);
                 struct_name
             }
         }
@@ -664,18 +918,18 @@ fn gen_field_rust_type(
                     if meta.objects.contains(schema_name)
                         || meta.dependents.get(schema_name).map(|x| x.len()).unwrap_or(0) > 1
                     {
-                        impl_.use_resources.insert(type_name.clone());
-                    } else if !impl_.generated_schemas.contains_key(schema_name) {
-                        impl_.generated_schemas.insert(schema_name.into(), false);
+                        state.use_resources.insert(type_name.clone());
+                    } else if !state.generated_schemas.contains_key(schema_name) {
+                        state.generated_schemas.insert(schema_name.into(), false);
                     }
                 }
                 type_name
             } else if let Some(any_of) = field["anyOf"].as_array().or(field["oneOf"].as_array()) {
                 if any_of.len() == 1 {
-                    gen_field_rust_type(impl_, meta, object, field_name, &any_of[0], true)
+                    gen_field_rust_type(state, meta, object, field_name, &any_of[0], true)
                 } else if field["x-expansionResources"].is_object() {
                     let ty_ = gen_field_rust_type(
-                        impl_,
+                        state,
                         meta,
                         object,
                         field_name,
@@ -688,7 +942,7 @@ fn gen_field_rust_type(
                         }),
                         true,
                     );
-                    impl_.use_params.insert("Expandable");
+                    state.use_params.insert("Expandable");
                     format!("Expandable<{}>", ty_)
                 } else {
                     let union_schema = format!("{}_{}", object, field_name).to_snake_case();
@@ -711,15 +965,15 @@ fn gen_field_rust_type(
                                         .unwrap_or(0)
                                         > 1
                                 {
-                                    impl_.use_resources.insert(type_name.clone());
-                                } else if !impl_.generated_schemas.contains_key(schema_name) {
-                                    impl_.generated_schemas.insert(schema_name.into(), false);
+                                    state.use_resources.insert(type_name.clone());
+                                } else if !state.generated_schemas.contains_key(schema_name) {
+                                    state.generated_schemas.insert(schema_name.into(), false);
                                 }
                                 schema_name.into()
                             })
                             .collect(),
                     };
-                    impl_.inferred_unions.insert(union_name.clone(), union_);
+                    state.inferred_unions.insert(union_name.clone(), union_);
                     union_name
                 }
             } else {
@@ -735,20 +989,162 @@ fn gen_field_rust_type(
     }
 }
 
-fn print_doc_comment(out: &mut String, comment: &str) {
+fn gen_impl_requests(
+    state: &mut Generated,
+    meta: &Metadata,
+    object: &str,
+    object_id: Option<&str>,
+) -> String {
+    let requests = match meta.requests.get(object) {
+        Some(some) => some,
+        None => return String::new(),
+    };
+    let rust_struct = meta.schema_to_rust_type(object);
+
+    // Collect all methods we know how to auto-generate
+    let mut methods = Vec::new();
+    for path in requests {
+        let request = &meta.spec["paths"][path];
+        let get_request = &request["get"];
+        if get_request.is_object() {
+            let ok_schema =
+                &get_request["responses"]["200"]["content"]["application/json"]["schema"];
+            let err_schema =
+                &get_request["responses"]["default"]["content"]["application/json"]["schema"];
+            if ok_schema.is_null()
+                || err_schema["$ref"].as_str() != Some("#/components/schemas/error")
+            {
+                continue; // skip generating this unusual request (for now...)
+            }
+
+            lazy_static! {
+                static ref P_TAG: Regex = Regex::new("<p>|</p>").unwrap();
+                static ref A_DOC_TAG: Regex =
+                    Regex::new("<a href=\"/docs/([^\"]+)\">([^<]+)</a>").unwrap();
+            }
+            let doc_comment =
+                P_TAG.replace_all(get_request["description"].as_str().unwrap_or_default(), "");
+            let doc_comment =
+                A_DOC_TAG.replace_all(&doc_comment, "[${2}](https://stripe.com/docs/${1})");
+            let segments = path.trim_start_matches("/v1/").split("/").collect::<Vec<_>>();
+            if ok_schema["properties"]["object"]["enum"][0].as_str() == Some("list") {
+                if segments.len() == 1 {
+                    let params_name = format!("{}ListParams", rust_struct);
+                    let params = InferredParams {
+                        method: "list".into(),
+                        rust_type: params_name.clone(),
+                        parameters: get_request["parameters"].clone(),
+                    };
+                    state.inferred_parameters.insert(params_name.to_snake_case(), params);
+
+                    let mut out = String::new();
+                    out.push('\n');
+                    print_doc_comment(&mut out, &doc_comment, 1);
+                    out.push_str("    pub fn list(client: &Client, params: ");
+                    out.push_str(&params_name);
+                    out.push_str("<'_>) -> Response<List<");
+                    out.push_str(&rust_struct);
+                    out.push_str(">> {\n");
+                    out.push_str("        client.get_query(\"/");
+                    out.push_str(&segments.join("/"));
+                    out.push_str("\", &params)\n");
+                    out.push_str("    }\n");
+                    methods.push(out);
+                } else {
+                    // eprintln!("OTHER: {} {:?}", path, segments);
+                }
+            } else if segments.len() == 2 {
+                let id_param = &get_request["parameters"][0];
+                let has_expand = get_request["parameters"][1]["name"].as_str() == Some("expand");
+                if id_param["in"].as_str() != Some("path") {
+                    continue;
+                }
+                if let Some(id_type) = &object_id {
+                    assert_eq!(id_param["required"].as_bool(), Some(true));
+                    assert_eq!(id_param["style"].as_str(), Some("simple"));
+                    state.use_params.insert("Expand");
+
+                    let mut out = String::new();
+                    out.push('\n');
+                    print_doc_comment(&mut out, &doc_comment, 1);
+                    out.push_str("    pub fn retrieve(client: &Client, id: &");
+                    out.push_str(&id_type);
+                    if has_expand {
+                        out.push_str(", expand: &[&str]) -> Response<");
+                        out.push_str(&rust_struct);
+                        out.push_str("> {\n");
+                        out.push_str("        client.get_query(\"/");
+                        out.push_str(&segments.join("/"));
+                        out.push_str("\", &Expand { expand })\n");
+                    } else {
+                        out.push_str(") -> Response<");
+                        out.push_str(&rust_struct);
+                        out.push_str("> {\n");
+                        out.push_str("        client.get(\"/");
+                        out.push_str(&segments.join("/"));
+                        out.push_str("\")\n");
+                    }
+                    out.push_str("    }\n");
+                    methods.push(out);
+                }
+            } else {
+                // eprintln!("OTHER: {} {:?}", path, segments);
+            }
+        }
+    }
+    if methods.is_empty() {
+        return String::new();
+    }
+
+    // Output the impl block
+    let mut out = String::new();
+    out.push('\n');
+    out.push_str("impl ");
+    out.push_str(&rust_struct);
+    out.push_str(" {\n");
+    for method in methods {
+        out.push_str(&method);
+    }
+    out.push_str("}\n");
+    out
+}
+
+fn print_indent(out: &mut String, depth: u8) {
+    for _ in 0..depth {
+        out.push_str("    ");
+    }
+}
+
+fn print_doc_comment(out: &mut String, comment: &str, depth: u8) {
+    if comment.trim().is_empty() {
+        return;
+    }
+
     let mut doc_parts = comment.splitn(2, ". ");
-    let head = doc_parts.next().unwrap();
-    out.push_str("    /// ");
-    out.push_str(&head.replace('\n', "\n    /// "));
+    let head = doc_parts.next().unwrap().trim();
+    for (i, line) in head.split('\n').enumerate() {
+        if i > 0 {
+            out.push('\n');
+        }
+        print_indent(out, depth);
+        if !line.is_empty() {
+            out.push_str("/// ");
+            out.push_str(line);
+        } else {
+            out.push_str("///");
+        }
+    }
     if !head.ends_with(".") {
         out.push('.');
     }
     out.push('\n');
     if let Some(tail) = doc_parts.next() {
-        out.push_str("    ///\n");
+        print_indent(out, depth);
+        out.push_str("///\n");
         for part in tail.split(". ") {
-            out.push_str("    /// ");
-            out.push_str(&part.replace('\n', "\n    /// "));
+            print_indent(out, depth);
+            out.push_str("/// ");
+            out.push_str(&part.replace('\n', " "));
             if !part.ends_with(".") {
                 out.push('.');
             }

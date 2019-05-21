@@ -1,5 +1,5 @@
 use crate::ids::TopupId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
+use crate::params::{Expand, Expandable, Metadata, Object, Timestamp};
 use crate::resources::{BalanceTransaction, Currency, Source};
 use serde_derive::{Deserialize, Serialize};
 
@@ -76,6 +76,13 @@ pub struct Topup {
     pub transfer_group: Option<String>,
 }
 
+impl Topup {
+    /// Returns a list of top-ups.
+    pub fn list(client: &Client, params: TopupListParams<'_>) -> Response<List<Topup>> {
+        client.get_query("/topups", &params)
+    }
+}
+
 impl Object for Topup {
     type Id = TopupId;
     fn id(&self) -> &Self::Id {
@@ -86,6 +93,50 @@ impl Object for Topup {
     }
 }
 
+/// The parameters for `Topup::list`.
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct TopupListParams<'a> {
+    /// A positive integer representing how much to transfer.
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    amount: Option<RangeQuery<Timestamp>>,
+
+    /// A filter on the list, based on the object `created` field.
+    ///
+    /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    created: Option<RangeQuery<Timestamp>>,
+
+    /// A cursor for use in pagination.
+    ///
+    /// `ending_before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    ending_before: Option<&'a TopupId>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_deserializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// A limit on the number of objects to be returned.
+    ///
+    /// Limit can range between 1 and 100, and the default is 10.
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    limit: Option<u64>,
+
+    /// A cursor for use in pagination.
+    ///
+    /// `starting_after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    starting_after: Option<&'a TopupId>,
+
+    /// Only return top-ups that have the given status.
+    ///
+    /// One of `canceled`, `failed`, `pending` or `succeeded`.
+    #[serde(skip_deserializing_if = "Option::is_none")]
+    status: Option<TopupStatusFilter>,
+}
+
 /// An enum representing the possible values of an `Topup`'s `status` field.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -94,5 +145,15 @@ pub enum TopupStatus {
     Failed,
     Pending,
     Reversed,
+    Succeeded,
+}
+
+/// An enum representing the possible values of an `TopupListParams`'s `status` field.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TopupStatusFilter {
+    Canceled,
+    Failed,
+    Pending,
     Succeeded,
 }
