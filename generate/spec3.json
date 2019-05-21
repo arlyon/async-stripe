@@ -19,14 +19,24 @@
             "type": "string"
           },
           "capabilities": {
-            "$ref": "#/components/schemas/account_capabilities"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/account_capabilities"
+              }
+            ],
+            "nullable": true
           },
           "charges_enabled": {
             "description": "Whether the account can create live charges.",
             "type": "boolean"
           },
           "company": {
-            "$ref": "#/components/schemas/legal_entity_company"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/legal_entity_company"
+              }
+            ],
+            "nullable": true
           },
           "country": {
             "description": "The account's country.",
@@ -106,7 +116,12 @@
             "type": "string"
           },
           "individual": {
-            "$ref": "#/components/schemas/person"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/person"
+              }
+            ],
+            "nullable": true
           },
           "metadata": {
             "additionalProperties": {

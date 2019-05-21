@@ -1,0 +1,3 @@
+#!/bin/sh
+cargo run -p generate | rustfmt > src/resources/account.rs
+

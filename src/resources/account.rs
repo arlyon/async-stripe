@@ -21,12 +21,12 @@ pub struct Account {
     /// Can be `individual` or `company`.
     business_type: Option<String>,
 
-    capabilities: AccountCapabilities,
+    capabilities: Option<AccountCapabilities>,
 
     /// Whether the account can create live charges.
     charges_enabled: bool,
 
-    company: LegalEntityCompany,
+    company: Option<LegalEntityCompany>,
 
     /// The account's country.
     country: String,
@@ -52,7 +52,7 @@ pub struct Account {
     /// External accounts (bank accounts and debit cards) currently attached to this account.
     external_accounts: List<ExternalAccount>,
 
-    individual: Person,
+    individual: Option<Person>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///

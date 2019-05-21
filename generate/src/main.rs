@@ -4,7 +4,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 
 fn main() {
-    let raw = fs::read_to_string("spec3.json").unwrap();
+    let raw = fs::read_to_string("generate/spec3.json").unwrap();
     let spec: Value = serde_json::from_str(&raw).unwrap();
 
     // Compute additional metadata from spec.

@@ -1,3 +1,8 @@
+[workspace]
+members = [
+  "generate",
+]
+
 [package]
 name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
 version = "0.10.0-dev"
