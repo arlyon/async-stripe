@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::params::{List, Metadata, Paginated, Timestamp};
+use crate::params::{List, Metadata, Paginate, Timestamp};
 use crate::resources::{Discount, Plan};
 use serde_derive::{Deserialize, Serialize};
 
@@ -131,7 +131,7 @@ impl Subscription {
     }
 }
 
-impl Paginated for Subscription {
+impl Paginate for Subscription {
     fn cursor(&self) -> &str {
         &self.id
     }

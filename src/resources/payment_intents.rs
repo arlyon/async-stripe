@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::params::{List, Metadata, Paginated, RangeQuery, Timestamp};
+use crate::params::{List, Metadata, Paginate, RangeQuery, Timestamp};
 use crate::resources::{Charge, Currency, ShippingDetails};
 use serde_derive::{Deserialize, Serialize};
 
@@ -51,7 +51,7 @@ pub enum PaymentErrorType {
 //       In that case this can be replaced with a deprecated type alias.
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
-pub enum PaymentIntentSourceType {
+pub enum PaymentIntentMethodType {
     Card,
 }
 
@@ -169,8 +169,8 @@ pub struct TransferData {
 /// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create)
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct PaymentIntentCreateParams<'a> {
-    /// The list of source types (e.g. card) that this PaymentIntent is allowed to use.
-    pub allowed_source_types: Vec<PaymentIntentSourceType>,
+    /// The list of payment types (e.g. card) that this PaymentIntent is allowed to use.
+    pub payment_method_types: Vec<PaymentIntentMethodType>,
     pub amount: u64,
     pub currency: Currency,
 
@@ -296,7 +296,7 @@ pub struct PaymentIntentListParams {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntent {
     pub id: String,
-    pub allowed_source_types: Vec<String>,
+    pub payment_method_types: Vec<String>,
     pub amount: u64,
     pub amount_capturable: u64,
     pub amount_received: u64,
@@ -397,7 +397,7 @@ impl PaymentIntent {
     }
 }
 
-impl Paginated for PaymentIntent {
+impl Paginate for PaymentIntent {
     fn cursor(&self) -> &str {
         &self.id
     }

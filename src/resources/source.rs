@@ -1,6 +1,6 @@
 use crate::config::{Client, Response};
 use crate::ids::TokenId;
-use crate::params::{Metadata, Paginated, Timestamp};
+use crate::params::{Metadata, Paginate, Timestamp};
 use crate::resources::{AchCreditTransfer, Address, CardShort, Currency};
 use serde_derive::{Deserialize, Serialize};
 
@@ -240,7 +240,7 @@ impl Source {
     }
 }
 
-impl Paginated for Source {
+impl Paginate for Source {
     fn cursor(&self) -> &str {
         &self.id
     }

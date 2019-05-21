@@ -1,4 +1,4 @@
-use crate::params::{List, Metadata, Paginated, Timestamp};
+use crate::params::{List, Metadata, Paginate, Timestamp};
 use crate::resources::Sku;
 use serde_derive::{Deserialize, Serialize};
 
@@ -34,7 +34,7 @@ pub struct Product {
     pub url: Option<String>,
 }
 
-impl Paginated for Product {
+impl Paginate for Product {
     fn cursor(&self) -> &str {
         &self.id
     }

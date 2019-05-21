@@ -1,4 +1,4 @@
-use crate::params::{Paginated, Timestamp};
+use crate::params::{Paginate, Timestamp};
 use crate::resources::File;
 use serde_derive::{Deserialize, Serialize};
 
@@ -20,7 +20,7 @@ pub struct ScheduledQueryRun {
     pub title: String,
 }
 
-impl Paginated for ScheduledQueryRun {
+impl Paginate for ScheduledQueryRun {
     fn cursor(&self) -> &str {
         &self.id
     }

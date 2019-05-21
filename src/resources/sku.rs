@@ -1,4 +1,4 @@
-use crate::params::{Metadata, Paginated, Timestamp};
+use crate::params::{Metadata, Paginate, Timestamp};
 use crate::resources::{Currency, PackageDimensions};
 use serde_derive::{Deserialize, Serialize};
 
@@ -31,7 +31,7 @@ pub struct Sku {
     pub updated: Timestamp,
 }
 
-impl Paginated for Sku {
+impl Paginate for Sku {
     fn cursor(&self) -> &str {
         &self.id
     }
