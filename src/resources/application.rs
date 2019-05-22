@@ -1,3 +1,7 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::params::Object;
 use serde_derive::{Deserialize, Serialize};
 
@@ -11,9 +15,7 @@ pub struct Application {
 
 impl Object for Application {
     type Id = ();
-    fn id(&self) -> &Self::Id {
-        &()
-    }
+    fn id(&self) -> Self::Id {}
     fn object(&self) -> &'static str {
         "application"
     }

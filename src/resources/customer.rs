@@ -1,8 +1,8 @@
 use crate::config::{Client, Response};
 use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
-use crate::params::{List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Deleted, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource,
+    Address, BankAccount, BankAccountVerifyParams, Currency, Discount, PaymentSource,
     PaymentSourceParams, Source, Subscription,
 };
 use serde_derive::{Deserialize, Serialize};
@@ -178,8 +178,8 @@ impl Customer {
 
 impl Object for Customer {
     type Id = CustomerId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "customer"

@@ -1,3 +1,7 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::params::Object;
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
@@ -21,9 +25,7 @@ pub struct ReserveTransaction {
 
 impl Object for ReserveTransaction {
     type Id = ();
-    fn id(&self) -> &Self::Id {
-        &()
-    }
+    fn id(&self) -> Self::Id {}
     fn object(&self) -> &'static str {
         "reserve_transaction"
     }

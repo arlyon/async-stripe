@@ -1,8 +1,11 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::ids::IssuingCardId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
-    Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType,
-    IssuingCardType, IssuingCardholder, SpendingLimit,
+    Address, CardBrand, Currency, IssuingCardholder, MerchantCategory, SpendingLimit,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -75,8 +78,8 @@ pub struct IssuingCard {
 
 impl Object for IssuingCard {
     type Id = IssuingCardId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "issuing.card"
@@ -87,11 +90,11 @@ impl Object for IssuingCard {
 pub struct IssuingCardAuthorizationControls {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations permitted on this card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_categories: Option<Vec<String>>,
+    pub allowed_categories: Option<Vec<MerchantCategory>>,
 
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to always decline on this card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blocked_categories: Option<Vec<String>>,
+    pub blocked_categories: Option<Vec<MerchantCategory>>,
 
     /// The currency of the card.
     ///
@@ -162,6 +165,26 @@ pub enum IssuingCardReplacementReason {
     Theft,
 }
 
+/// An enum representing the possible values of an `IssuingCardShipping`'s `status` field.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardShippingStatus {
+    Canceled,
+    Delivered,
+    Failure,
+    Pending,
+    Returned,
+    Shipped,
+}
+
+/// An enum representing the possible values of an `IssuingCardShipping`'s `type` field.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardShippingType {
+    Bulk,
+    Individual,
+}
+
 /// An enum representing the possible values of an `IssuingCard`'s `status` field.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -172,4 +195,12 @@ pub enum IssuingCardStatus {
     Lost,
     Pending,
     Stolen,
+}
+
+/// An enum representing the possible values of an `IssuingCard`'s `type` field.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardType {
+    Physical,
+    Virtual,
 }

@@ -1,5 +1,10 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
+use crate::config::{Client, Response};
 use crate::ids::{ApplicationFeeId, ChargeId};
-use crate::params::{Expand, Expandable, List, Object, Timestamp};
+use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Application, ApplicationFeeRefund, BalanceTransaction, Charge, Currency,
 };
@@ -72,8 +77,8 @@ impl ApplicationFee {
 
 impl Object for ApplicationFee {
     type Id = ApplicationFeeId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "application_fee"
@@ -81,36 +86,49 @@ impl Object for ApplicationFee {
 }
 
 /// The parameters for `ApplicationFee::list`.
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct ApplicationFeeListParams<'a> {
     /// Only return application fees for the charge specified by this charge ID.
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<ChargeId>,
 
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<&'a ApplicationFeeId>,
 
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_deserializing_if = "Expand::is_empty")]
+    #[serde(skip_serializing_if = "Expand::is_empty")]
     expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<&'a ApplicationFeeId>,
+}
+
+impl<'a> ApplicationFeeListParams<'a> {
+    pub fn new() -> Self {
+        ApplicationFeeListParams {
+            charge: Default::default(),
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }

@@ -1,3 +1,7 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::ids::AlipayAccountId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Currency, Customer};
@@ -61,8 +65,8 @@ pub struct AlipayAccount {
 
 impl Object for AlipayAccount {
     type Id = AlipayAccountId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "alipay_account"

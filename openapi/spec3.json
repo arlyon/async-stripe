@@ -7182,6 +7182,10 @@
           },
           "type": {
             "description": "One of `virtual` or `physical`.",
+            "enum": [
+              "physical",
+              "virtual"
+            ],
             "maxLength": 5000,
             "type": "string"
           }
@@ -7363,6 +7367,10 @@
           },
           "type": {
             "description": "One of `individual` or `business_entity`.",
+            "enum": [
+              "business_entity",
+              "individual"
+            ],
             "maxLength": 5000,
             "type": "string"
           }
@@ -7451,11 +7459,21 @@
           },
           "reason": {
             "description": "Reason for this dispute. One of `other` or `fraudulent`.",
+            "enum": [
+              "fraudulent",
+              "other"
+            ],
             "maxLength": 5000,
             "type": "string"
           },
           "status": {
             "description": "Current status of dispute. One of `unsubmitted`, `under_review`, `won`, or `lost`.",
+            "enum": [
+              "unsubmitted",
+              "under_review",
+              "won",
+              "lost"
+            ],
             "maxLength": 5000,
             "type": "string"
           }
@@ -7722,6 +7740,14 @@
           },
           "type": {
             "description": "One of `capture`, `refund`, `cash_withdrawal`, `refund_reversal`, `dispute`, or `dispute_loss`.",
+            "enum": [
+              "capture",
+              "refund",
+              "cash_withdrawal",
+              "refund_reversal",
+              "dispute",
+              "dispute_loss"
+            ],
             "maxLength": 5000,
             "type": "string"
           }
@@ -8589,6 +8615,14 @@
           },
           "status": {
             "description": "The delivery status of the card. One of `pending`, `shipped`, `delivered`, `returned`, `failure`, or `canceled`.",
+            "enum": [
+              "pending",
+              "shipped",
+              "delivered",
+              "returned",
+              "failure",
+              "canceled"
+            ],
             "maxLength": 5000,
             "nullable": true,
             "type": "string"
@@ -8607,6 +8641,10 @@
           },
           "type": {
             "description": "One of `bulk` or `individual`. Bulk shipments will be grouped and mailed together, while individual ones will not.",
+            "enum": [
+              "bulk",
+              "individual"
+            ],
             "maxLength": 5000,
             "type": "string"
           }
@@ -14723,6 +14761,12 @@
           },
           "flow": {
             "description": "The authentication `flow` of the source. `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.",
+            "enum": [
+              "redirect",
+              "receiver",
+              "code_verification",
+              "none"
+            ],
             "maxLength": 5000,
             "type": "string"
           },
@@ -14792,6 +14836,13 @@
           },
           "status": {
             "description": "The status of the source, one of `canceled`, `chargeable`, `consumed`, `failed`, or `pending`. Only `chargeable` sources can be used to create a charge.",
+            "enum": [
+              "canceled",
+              "chargeable",
+              "consumed",
+              "failed",
+              "pending"
+            ],
             "maxLength": 5000,
             "type": "string"
           },
@@ -14822,6 +14873,10 @@
           },
           "usage": {
             "description": "Either `reusable` or `single_use`. Whether this source should be reusable or not. Some source types may or may not be reusable by construction, while others may leave the option at creation. If an incompatible value is passed, an error will be returned.",
+            "enum": [
+              "reusable",
+              "single_use"
+            ],
             "maxLength": 5000,
             "nullable": true,
             "type": "string"
@@ -15094,6 +15149,11 @@
         "properties": {
           "failure_reason": {
             "description": "The failure reason for the redirect, either `user_abort` (the customer aborted or dropped out of the redirect flow), `declined` (the authentication failed or the transaction was declined), or `processing_error` (the redirect failed due to a technical error). Present only if the redirect status is `failed`.",
+            "enum": [
+              "user_abort",
+              "declined",
+              "processing_error"
+            ],
             "maxLength": 5000,
             "nullable": true,
             "type": "string"
@@ -15105,6 +15165,12 @@
           },
           "status": {
             "description": "The status of the redirect, either `pending` (ready to be used by your customer to authenticate the transaction), `succeeded` (succesful authentication, cannot be reused) or `not_required` (redirect should not be used) or `failed` (failed authentication, cannot be reused).",
+            "enum": [
+              "pending",
+              "succeeded",
+              "not_required",
+              "failed"
+            ],
             "maxLength": 5000,
             "type": "string"
           },
@@ -15176,6 +15242,11 @@
           },
           "status": {
             "description": "The status of the transaction, one of `succeeded`, `pending`, or `failed`.",
+            "enum": [
+              "succeeded",
+              "pending",
+              "failed"
+            ],
             "maxLength": 5000,
             "type": "string"
           },

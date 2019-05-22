@@ -1,3 +1,7 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::params::Object;
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
@@ -27,9 +31,7 @@ pub struct Balance {
 
 impl Object for Balance {
     type Id = ();
-    fn id(&self) -> &Self::Id {
-        &()
-    }
+    fn id(&self) -> Self::Id {}
     fn object(&self) -> &'static str {
         "balance"
     }

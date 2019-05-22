@@ -254,8 +254,8 @@ pub enum TokenizationMethod {
 
 impl Object for Card {
     type Id = CardId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "card"

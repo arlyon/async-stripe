@@ -1,6 +1,10 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::ids::IssuingCardholderId;
 use crate::params::{Metadata, Object, Timestamp};
-use crate::resources::{Address, IssuingCardholderType, SpendingLimit};
+use crate::resources::{Address, MerchantCategory, SpendingLimit};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingCardholder".
@@ -53,8 +57,8 @@ pub struct IssuingCardholder {
 
 impl Object for IssuingCardholder {
     type Id = IssuingCardholderId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "issuing.cardholder"
@@ -73,11 +77,11 @@ pub struct IssuingCardholderAddress {
 pub struct IssuingCardholderAuthorizationControls {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations permitted on this card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_categories: Option<Vec<String>>,
+    pub allowed_categories: Option<Vec<MerchantCategory>>,
 
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to always decline on this card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub blocked_categories: Option<Vec<String>>,
+    pub blocked_categories: Option<Vec<MerchantCategory>>,
 
     /// Limit the spending with rules based on time intervals and categories.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -92,4 +96,12 @@ pub enum IssuingCardholderStatus {
     Blocked,
     Inactive,
     Pending,
+}
+
+/// An enum representing the possible values of an `IssuingCardholder`'s `type` field.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardholderType {
+    BusinessEntity,
+    Individual,
 }

@@ -104,8 +104,8 @@ pub struct Refund {
 
 impl Object for Refund {
     type Id = RefundId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "refund"

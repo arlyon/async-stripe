@@ -1,5 +1,5 @@
-use crate::ids::{SourceId, TokenId};
-use crate::params::Paginate;
+use crate::ids::{PaymentSourceId, SourceId, TokenId};
+use crate::params::Object;
 use crate::resources::{
     Account, AlipayAccount, BankAccount, BankAccountParams, Card, CardParams, Source,
 };
@@ -129,14 +129,24 @@ pub enum PaymentSource {
     AlipayAccount(AlipayAccount),
 }
 
-impl Paginate for PaymentSource {
-    fn cursor(&self) -> &str {
+impl Object for PaymentSource {
+    type Id = PaymentSourceId;
+    fn id(&self) -> Self::Id {
         match self {
-            PaymentSource::Card(x) => x.cursor(),
-            PaymentSource::Source(x) => x.cursor(),
-            PaymentSource::Account(x) => x.cursor(),
-            PaymentSource::BankAccount(x) => x.cursor(),
-            PaymentSource::AlipayAccount(x) => x.cursor(),
+            PaymentSource::Card(x) => PaymentSourceId::Card(x.id()),
+            PaymentSource::Source(x) => PaymentSourceId::Source(x.id()),
+            PaymentSource::Account(x) => PaymentSourceId::Account(x.id()),
+            PaymentSource::BankAccount(x) => PaymentSourceId::BankAccount(x.id()),
+            PaymentSource::AlipayAccount(x) => PaymentSourceId::AlipayAccount(x.id()),
+        }
+    }
+    fn object(&self) -> &'static str {
+        match self {
+            PaymentSource::Card(x) => x.object(),
+            PaymentSource::Source(x) => x.object(),
+            PaymentSource::Account(x) => x.object(),
+            PaymentSource::BankAccount(x) => x.object(),
+            PaymentSource::AlipayAccount(x) => x.object(),
         }
     }
 }

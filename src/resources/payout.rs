@@ -161,8 +161,8 @@ pub struct Payout {
 
 impl Object for Payout {
     type Id = PayoutId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "payout"

@@ -1,3 +1,7 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::params::{Expandable, Object};
 use crate::resources::{Account, Currency};
 use serde_derive::{Deserialize, Serialize};
@@ -22,9 +26,7 @@ pub struct ConnectCollectionTransfer {
 
 impl Object for ConnectCollectionTransfer {
     type Id = ();
-    fn id(&self) -> &Self::Id {
-        &()
-    }
+    fn id(&self) -> Self::Id {}
     fn object(&self) -> &'static str {
         "connect_collection_transfer"
     }

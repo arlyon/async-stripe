@@ -1,8 +1,12 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::ids::IssuingTransactionId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
     BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder,
-    IssuingDispute, IssuingTransactionType, MerchantData,
+    IssuingDispute, MerchantData,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -58,10 +62,22 @@ pub struct IssuingTransaction {
 
 impl Object for IssuingTransaction {
     type Id = IssuingTransactionId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "issuing.transaction"
     }
+}
+
+/// An enum representing the possible values of an `IssuingTransaction`'s `type` field.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingTransactionType {
+    Capture,
+    CashWithdrawal,
+    Dispute,
+    DisputeLoss,
+    Refund,
+    RefundReversal,
 }

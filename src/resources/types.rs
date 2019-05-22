@@ -1,3 +1,4 @@
+use crate::params::Timestamp;
 use serde_derive::{Deserialize, Serialize};
 
 /// An enum representing the possible values of a `BankAccount`'s `account_holder_type` field.
@@ -60,6 +61,11 @@ pub enum BankAccountStatus {
     Errored,
 }
 
+// TODO: Implement
+/// This type is a stub that still needs to be implemented.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct BillingDetails {}
+
 /// An enum representing the possible values of an `Account`'s `business_type` field.
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -75,16 +81,6 @@ pub enum CapabilityStatus {
     Standard,
     Express,
     Custom,
-}
-
-/// A deleted object.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Deleted<ID> {
-    /// Unique identifier for the object.
-    pub id: ID,
-
-    // Always true for a deleted object.
-    pub deleted: bool,
 }
 
 /// An enum representing the possible values of an `Fee`'s `type` field.
@@ -132,86 +128,46 @@ pub enum IssuingAuthorizationReason {
     WebhookTimeout,
 }
 
-/// An enum representing the possible values of the `IssuingCardShipping`'s `status` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingCardShippingStatus {
-    Pending,
-    Shipped,
-    Delivered,
-    Returned,
-    Failure,
-    Canceled,
-}
-
-/// An enum representing the possible values of the `IssuingCardShipping`'s `type` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingCardShippingType {
-    Bulk,
-    Individual,
-}
-
-/// An enum representing the possible values of the `IssuingCard`'s `type` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingCardType {
-    Virtual,
-    Physical,
-}
-
-/// An enum representing the possible values of an `IssuingCardholder`'s `type` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingCardholderType {
-    Individual,
-    BusinessEntity,
-}
-
-/// An enum representing the possible values of an `IssuingDispute`'s `reason` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingDisputeReason {
-    Fraudulent,
-    Other,
-}
-
-/// An enum representing the possible values of an `IssuingDispute`'s `status` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingDisputeStatus {
-    Unsubmitted,
-    UnderReview,
-    Won,
-    Lost,
-}
-
-/// An enum representing the possible values of an `IssuingTransaction`'s `type` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingTransactionType {
-    Capture,
-    Refund,
-    CashWithdrawal,
-    RefundReversal,
-    Dispute,
-    DisputeLoss,
-}
-
-/// This type is a stub.
+// TODO: Implement
+/// This type is a stub that still needs to be implemented.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LegalEntityJapanAddress {}
 
-/// This type is a stub.
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PackageDimensions {
+    pub height: f64,
+    pub length: f64,
+    pub weight: f64,
+    pub width: f64,
+}
+
+// TODO: Implement
+/// This type is a stub that still needs to be implemented.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodDetails {}
+
+/// Period is a structure representing a start and end dates.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Period {
+    pub start: Timestamp,
+    pub end: Timestamp,
+}
+
+// TODO: Implement
+/// This type is a stub that still needs to be implemented.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Person {}
 
-/// An enum representing the possible values of a `Recipient`'s `type` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum RecipientType {
-    Individual,
-    Corporation,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Shipping {
+    pub name: String,
+    pub address: Address,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier: Option<String>, // eg. Fedex, UPS, USPS
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking_number: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -242,6 +198,16 @@ pub enum SpendingLimitInterval {
     Weekly,
     Yearly,
 }
+
+// TODO: Implement
+/// This type is a stub that still needs to be implemented.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SubscriptionBillingThresholds {}
+
+// TODO: Implement
+/// This type is a stub that still needs to be implemented.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SubscriptionItemBillingThresholds {}
 
 /// An enum representing the possible values of the `IssuingAuthorization`'s `wallet_provider` field.
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]

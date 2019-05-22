@@ -1,3 +1,7 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::ids::ApplicationFeeRefundId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{ApplicationFee, BalanceTransaction, Currency};
@@ -39,8 +43,8 @@ pub struct ApplicationFeeRefund {
 
 impl Object for ApplicationFeeRefund {
     type Id = ApplicationFeeRefundId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "fee_refund"

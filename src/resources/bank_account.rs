@@ -83,21 +83,12 @@ pub struct BankAccount {
 
 impl Object for BankAccount {
     type Id = BankAccountId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "bank_account"
     }
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AchCreditTransfer {
-    pub account_number: String,
-    pub routing_number: String,
-    pub fingerprint: String,
-    pub bank_name: String,
-    pub swift_code: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize)]

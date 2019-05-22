@@ -47,7 +47,7 @@ macro_rules! id {
             }
         }
 
-        impl crate::params::AsStrParam for $struct_name {}
+        impl crate::params::AsCursor for $struct_name {}
 
         impl std::ops::Deref for $struct_name {
             type Target = str;
@@ -146,7 +146,7 @@ macro_rules! id {
             }
         }
 
-        impl crate::params::AsStrParam for $struct_name {}
+        impl crate::params::AsCursor for $struct_name {}
 
         impl std::ops::Deref for $struct_name {
             type Target = str;
@@ -237,7 +237,7 @@ macro_rules! id {
             }
         }
 
-        impl crate::params::AsStrParam for $enum_name {}
+        impl crate::params::AsCursor for $enum_name {}
 
         impl std::ops::Deref for $enum_name {
             type Target = str;
@@ -335,16 +335,23 @@ id!(BankTokenId, "btok_");
 id!(CardId, "card_");
 id!(CardTokenId, "tok_");
 id!(ChargeId, "ch_");
+id!(CouponId: USER_PROVIDED); // N.B. A coupon id can be user-provided so can be any arbitrary string
 id!(CustomerId, "cus_");
 id!(DisputeId, "dp_");
 id!(FileId, "file_");
+id!(FileLinkId, "link_");
 id!(InvoiceId, "in_");
-id!(InvoiceLineItemId, "ii_");
+id!(InvoiceItemId, "ii_");
+id!(InvoiceLineItemId, "ii_"); // N.B. yes this is the same as `InvoiceItemId`
 id!(IssuingAuthorizationId, "iauth_");
 id!(IssuingCardId, "ic_");
 id!(IssuingCardholderId, "ich_");
 id!(IssuingDisputeId, "idp_");
 id!(IssuingTransactionId, "ipi_");
+id!(OrderId, "or_");
+id!(OrderReturnId, "orret_");
+id!(PaymentIntentId, "pi_");
+id!(PaymentMethodId, "pm");
 id!(PaymentSourceId {
     Account(AccountId),
     AlipayAccount(AlipayAccountId),
@@ -352,12 +359,18 @@ id!(PaymentSourceId {
     Card(CardId),
     Source(SourceId),
 });
-id!(PlanId: USER_PROVIDED); // N.B. A plan id can be user-provided so can be any arbitrary string
 id!(PayoutId, "po_");
-id!(RecipientId: UNKNOWN); // FIXME: This doesn't seem to be documented yet
+id!(PlanId: USER_PROVIDED); // N.B. A plan id can be user-provided so can be any arbitrary string
+id!(ProductId, "prod_");
+id!(RecipientId: UNDOCUMENTED); // FIXME: This doesn't seem to be documented yet
 id!(RefundId, "re_");
+id!(ReviewId, "prv_");
+id!(ScheduledQueryRunId, "sqr_");
+id!(SkuId, "sku_");
 id!(SourceId, "src_");
 id!(SubscriptionId, "sub_");
+id!(SubscriptionItemId, "si_");
+id!(TaxRateId, "txr_");
 id!(TokenId {
     Card(CardTokenId),
     Bank(BankTokenId),

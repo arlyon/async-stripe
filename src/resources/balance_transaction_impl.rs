@@ -14,9 +14,7 @@ impl BalanceTransaction {
 
 impl Object for BalanceTransactionSource {
     type Id = ();
-    fn id(&self) -> &Self::Id {
-        &() // TODO: Some patterns contain _do_ contain ids
-    }
+    fn id(&self) -> Self::Id {} // TODO: Some patterns contain _do_ contain ids
     fn object(&self) -> &'static str {
         use BalanceTransactionSource as Source;
 

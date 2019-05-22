@@ -1,8 +1,10 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::ids::IssuingDisputeId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
-    Currency, File, IssuingDisputeReason, IssuingDisputeStatus, IssuingTransaction,
-};
+use crate::resources::{Currency, File, IssuingTransaction};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingDispute".
@@ -52,8 +54,8 @@ pub struct IssuingDispute {
 
 impl Object for IssuingDispute {
     type Id = IssuingDisputeId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "issuing.dispute"
@@ -94,4 +96,22 @@ pub struct IssuingDisputeOtherEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional file evidence supporting your dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uncategorized_file: Option<Expandable<File>>,
+}
+
+/// An enum representing the possible values of an `IssuingDispute`'s `reason` field.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingDisputeReason {
+    Fraudulent,
+    Other,
+}
+
+/// An enum representing the possible values of an `IssuingDispute`'s `status` field.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingDisputeStatus {
+    Lost,
+    UnderReview,
+    Unsubmitted,
+    Won,
 }

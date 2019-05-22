@@ -55,6 +55,8 @@ fn main() {
 
     let mut id_renames = BTreeMap::new();
     id_renames.insert("fee_refund", "application_fee_refund");
+    id_renames.insert("invoiceitem", "invoice_item");
+    id_renames.insert("line_item", "invoice_line_item");
 
     let mut schema_renames = BTreeMap::new();
     schema_renames.insert("account_business_profile", "business_profile");
@@ -66,8 +68,23 @@ fn main() {
     schema_renames.insert("account_payments_settings", "payments_settings");
     schema_renames.insert("account_payout_settings", "payout_settings");
     schema_renames.insert("account_tos_acceptance", "tos_acceptance");
+    schema_renames.insert("charge_fraud_details", "fraud_details");
+    schema_renames.insert("charge_transfer_data", "transfer_data");
     schema_renames.insert("fee_refund", "application_fee_refund");
     schema_renames.insert("issuing_authorization_merchant_data", "merchant_data");
+    schema_renames.insert("invoiceitem", "invoice_item");
+    schema_renames.insert("line_item", "invoice_line_item");
+    schema_renames.insert("payment_method_card", "card_details");
+    schema_renames.insert("payment_method_card_present", "card_present");
+    schema_renames.insert("payment_method_card_wallet", "wallet_details");
+    schema_renames
+        .insert("payment_method_card_wallet_amex_express_checkout", "wallet_amex_express_checkout");
+    schema_renames.insert("payment_method_card_wallet_apple_pay", "wallet_apple_pay");
+    schema_renames.insert("payment_method_card_wallet_google_pay", "wallet_google_pay");
+    schema_renames.insert("payment_method_card_wallet_masterpass", "wallet_masterpass");
+    schema_renames.insert("payment_method_card_wallet_samsung_pay", "wallet_samsung_pay");
+    schema_renames.insert("payment_method_card_wallet_visa_checkout", "wallet_visa_checkout");
+    schema_renames.insert("payment_method_card_wallet_type", "wallet_type");
 
     let mut field_types = BTreeMap::new();
     field_types.insert(("account", "business_type"), ("BusinessType", "Option<BusinessType>"));
@@ -88,6 +105,7 @@ fn main() {
         ("balance_transaction", "status"),
         ("BalanceTransactionStatus", "BalanceTransactionStatus"),
     );
+    field_types.insert(("charge", "source"), ("PaymentSource", "Option<PaymentSource>"));
     field_types.insert(("fee", "type"), ("FeeType", "FeeType"));
     field_types.insert(
         ("bank_account", "account_holder_type"),
@@ -95,6 +113,8 @@ fn main() {
     );
     field_types
         .insert(("bank_account", "status"), ("BankAccountStatus", "Option<BankAccountStatus>"));
+    field_types.insert(("invoiceitem", "period"), ("Period", "Option<Period>"));
+    field_types.insert(("line_item", "period"), ("Period", "Option<Period>"));
     field_types.insert(
         ("issuing.authorization", "authorization_method"),
         ("IssuingAuthorizationMethod", "IssuingAuthorizationMethod"),
@@ -120,50 +140,38 @@ fn main() {
         ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
     );
     field_types.insert(("issuing.card", "brand"), ("CardBrand", "CardBrand"));
-    field_types.insert(("issuing.card", "type"), ("IssuingCardType", "IssuingCardType"));
     field_types.insert(
         ("issuing_card_authorization_controls", "allowed_categories"),
-        ("String", "Option<Vec<String>>"),
+        ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
     );
     field_types.insert(
         ("issuing_card_authorization_controls", "blocked_categories"),
-        ("String", "Option<Vec<String>>"),
+        ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
     );
     field_types.insert(
         ("issuing_card_authorization_controls", "spending_limits"),
         ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
     );
     field_types.insert(
-        ("issuing_card_shipping", "status"),
-        ("IssuingCardShippingStatus", "Option<IssuingCardShippingStatus>"),
-    );
-    field_types.insert(
-        ("issuing_card_shipping", "type"),
-        ("IssuingCardShippingType", "IssuingCardShippingType"),
-    );
-    field_types
-        .insert(("issuing.cardholder", "type"), ("IssuingCardholderType", "IssuingCardholderType"));
-    field_types.insert(
         ("issuing_cardholder_authorization_controls", "allowed_categories"),
-        ("String", "Option<Vec<String>>"),
+        ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
     );
     field_types.insert(
         ("issuing_cardholder_authorization_controls", "blocked_categories"),
-        ("String", "Option<Vec<String>>"),
+        ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
     );
     field_types.insert(
         ("issuing_cardholder_authorization_controls", "spending_limits"),
         ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
     );
-    field_types
-        .insert(("issuing.dispute", "reason"), ("IssuingDisputeReason", "IssuingDisputeReason"));
-    field_types
-        .insert(("issuing.dispute", "status"), ("IssuingDisputeStatus", "IssuingDisputeStatus"));
+    field_types.insert(("payment_intent", "source"), ("PaymentSource", "Option<PaymentSource>"));
     field_types.insert(
-        ("issuing.transaction", "type"),
-        ("IssuingTransactionType", "IssuingTransactionType"),
+        ("payment_intent_next_action", "use_stripe_sdk"),
+        ("", "Option<serde_json::Value>"),
     );
-    field_types.insert(("recipient", "type"), ("RecipientType", "Option<RecipientType>"));
+    field_types.insert(("sku", "attributes"), ("Metadata", "Option<Metadata>"));
+    field_types
+        .insert(("subscription", "default_source"), ("PaymentSource", "Option<PaymentSource>"));
 
     // Generate files
     let meta = Metadata {
@@ -232,6 +240,8 @@ impl<'a> Metadata<'a> {
 struct Generated {
     /// The ids that must be imported in this file.
     use_ids: BTreeSet<String>,
+    /// The config that must be imported in this file.
+    use_config: BTreeSet<&'static str>,
     /// The params that must be imported in this file.
     use_params: BTreeSet<&'static str>,
     /// The resources that must be imported in this file.
@@ -255,7 +265,11 @@ impl Generated {
         }
     }
 
-    fn try_insert_enum(&mut self, name: impl Into<String>, enum_: InferredEnum) -> Result<(), &InferredEnum> {
+    fn try_insert_enum(
+        &mut self,
+        name: impl Into<String>,
+        enum_: InferredEnum,
+    ) -> Result<(), &InferredEnum> {
         let name = name.into();
         let mut enum_ = enum_;
         enum_.options.sort();
@@ -401,10 +415,10 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     if let Some(id_type) = &id_type {
         out.push_str(&id_type);
         out.push_str(";\n");
-        out.push_str("    fn id(&self) -> &Self::Id {\n        &self.id\n    }\n");
+        out.push_str("    fn id(&self) -> Self::Id {\n        self.id.clone()\n    }\n");
     } else {
         out.push_str("();\n");
-        out.push_str("    fn id(&self) -> &Self::Id {\n        &()\n    }\n");
+        out.push_str("    fn id(&self) -> Self::Id {}\n");
     }
     out.push_str("    fn object(&self) -> &'static str {\n        \"");
     out.push_str(object_literal);
@@ -481,10 +495,11 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         };
         out.push('\n');
         out.push_str(&format!("/// The parameters for `{}::{}`.\n", struct_name, params.method));
-        out.push_str("#[derive(Clone, Debug, Default, Serialize)]\n");
+        out.push_str("#[derive(Clone, Debug, Serialize)]\n");
         out.push_str("pub struct ");
         out.push_str(&params.rust_type);
         out.push_str("<'a> {\n");
+        let mut initializers: Vec<(String, String, bool)> = Vec::new();
         for param in parameters {
             if param["in"].as_str() != Some("query") {
                 continue;
@@ -504,31 +519,36 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     out.push_str(&format!("    #[serde(rename = \"{}\")]\n", param_name));
                 }
             };
+            let required = param["required"].as_bool() == Some(true);
             match param_name {
                 "expand" => {
                     print_doc(&mut out);
+                    initializers.push(("expand".into(), "&'a [&'a str]".into(), false));
                     state.use_params.insert("Expand");
-                    out.push_str("    #[serde(skip_deserializing_if = \"Expand::is_empty\")]\n");
+                    out.push_str("    #[serde(skip_serializing_if = \"Expand::is_empty\")]\n");
                     out.push_str("    expand: &'a [&'a str],\n");
                 }
                 "limit" => {
                     print_doc(&mut out);
-                    if param["required"].as_bool() == Some(true) {
+                    initializers.push(("limit".into(), "u64".into(), false));
+                    if required {
                         out.push_str("    limit: u64,\n");
                     } else {
-                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
                         out.push_str("    limit: Option<u64>,\n");
                     }
                 }
                 "ending_before" => {
                     print_doc(&mut out);
                     let cursor_type = id_type.as_ref().map(|x| x.as_str()).unwrap_or("str");
-                    if param["required"].as_bool() == Some(true) {
-                        out.push_str("    ending_before: &'a ");
-                        out.push_str(cursor_type);
-                        out.push_str(",\n");
+                    initializers.push(("ending_before".into(), cursor_type.into(), false));
+                    if required {
+                        panic!("unexpected \"required\" `ending_before` parameter");
+                    // out.push_str("    ending_before: &'a ");
+                    // out.push_str(cursor_type);
+                    // out.push_str(",\n");
                     } else {
-                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
                         out.push_str("    ending_before: Option<&'a ");
                         out.push_str(cursor_type);
                         out.push_str(">,\n");
@@ -537,12 +557,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 "starting_after" => {
                     print_doc(&mut out);
                     let cursor_type = id_type.as_ref().map(|x| x.as_str()).unwrap_or("str");
-                    if param["required"].as_bool() == Some(true) {
-                        out.push_str("    starting_after: &'a ");
-                        out.push_str(cursor_type);
-                        out.push_str(",\n");
+                    initializers.push(("starting_after".into(), cursor_type.into(), false));
+                    if required {
+                        panic!("unexpected \"required\" `starting_after` parameter");
+                    // out.push_str("    starting_after: &'a ");
+                    // out.push_str(cursor_type);
+                    // out.push_str(",\n");
                     } else {
-                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
                         out.push_str("    starting_after: Option<&'a ");
                         out.push_str(cursor_type);
                         out.push_str(">,\n");
@@ -550,75 +572,93 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 }
                 "charge" => {
                     print_doc(&mut out);
+                    initializers.push(("charge".into(), "ChargeId".into(), required));
                     state.use_ids.insert("ChargeId".into());
-                    if param["required"].as_bool() == Some(true) {
+                    if required {
                         out.push_str("    charge: ChargeId,\n");
                     } else {
-                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
                         out.push_str("    charge: Option<ChargeId>,\n");
                     }
                 }
                 "customer" => {
                     print_doc(&mut out);
                     state.use_ids.insert("CustomerId".into());
-                    if param["required"].as_bool() == Some(true) {
+                    initializers.push(("customer".into(), "CustomerId".into(), required));
+                    if required {
                         out.push_str("    customer: CustomerId,\n");
                     } else {
-                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
                         out.push_str("    customer: Option<CustomerId>,\n");
                     }
                 }
                 "invoice" => {
+                    print_doc(&mut out);
                     state.use_ids.insert("InvoiceId".into());
-                    if param["required"].as_bool() == Some(true) {
+                    initializers.push(("invoice".into(), "InvoiceId".into(), required));
+                    if required {
                         out.push_str("    invoice: InvoiceId,\n");
                     } else {
-                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
                         out.push_str("    invoice: Option<InvoiceId>,\n");
                     }
                 }
                 "plan" => {
                     print_doc(&mut out);
+                    initializers.push(("plan".into(), "PlanId".into(), required));
                     state.use_ids.insert("PlanId".into());
-                    if param["required"].as_bool() == Some(true) {
+                    if required {
                         out.push_str("    plan: PlanId,\n");
                     } else {
-                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
                         out.push_str("    plan: Option<PlanId>,\n");
                     }
                 }
                 "subscription" => {
                     print_doc(&mut out);
+                    initializers.push(("subscription".into(), "SubscriptionId".into(), required));
                     state.use_ids.insert("SubscriptionId".into());
-                    if param["required"].as_bool() == Some(true) {
+                    if required {
                         out.push_str("    subscription: SubscriptionId,\n");
                     } else {
-                        out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
                         out.push_str("    subscription: Option<SubscriptionId>,\n");
                     }
                 }
                 _ => {
                     if param["schema"]["type"].as_str() == Some("boolean") {
                         print_doc(&mut out);
-                        if param["required"].as_bool() == Some(true) {
+                        initializers.push((param_rename.into(), "bool".into(), false));
+                        if required {
                             out.push_str("    ");
                             out.push_str(param_rename);
                             out.push_str(": bool,\n");
                         } else {
-                            out.push_str("    #[serde(skip_deserializing_if = \"Option::is_none\")]\n");
+                            out.push_str(
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
+                            );
                             out.push_str("    ");
                             out.push_str(param_rename);
                             out.push_str(": Option<bool>,\n");
                         }
-                    } else if param["schema"]["anyOf"][0]["title"].as_str() == Some("range_query_specs") {
+                    } else if param["schema"]["anyOf"][0]["title"].as_str()
+                        == Some("range_query_specs")
+                    {
                         print_doc(&mut out);
-                        if param["required"].as_bool() == Some(true) {
+                        initializers.push((
+                            param_rename.into(),
+                            "RangeQuery<Timestamp>".into(),
+                            required,
+                        ));
+                        state.use_params.insert("RangeQuery");
+                        state.use_params.insert("Timestamp");
+                        if required {
                             out.push_str("    ");
                             out.push_str(param_rename);
                             out.push_str(": RangeQuery<Timestamp>,\n");
                         } else {
                             out.push_str(
-                                "    #[serde(skip_deserializing_if = \"Option::is_none\")]\n",
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
                             out.push_str("    ");
                             out.push_str(param_rename);
@@ -641,7 +681,8 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         };
                         let inserted = state.try_insert_enum(enum_name.clone(), enum_.clone());
                         let enum_name = if inserted.is_err() {
-                            let enum_schema = format!("{}_{}_filter", object, param_rename).to_snake_case();
+                            let enum_schema =
+                                format!("{}_{}_filter", object, param_rename).to_snake_case();
                             let enum_name = meta.schema_to_rust_type(&enum_schema);
                             state.insert_enum(enum_name.clone(), enum_);
                             enum_name
@@ -650,7 +691,8 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         };
 
                         print_doc(&mut out);
-                        if param["required"].as_bool() == Some(true) {
+                        initializers.push((param_rename.into(), enum_name.clone(), required));
+                        if required {
                             out.push_str("    ");
                             out.push_str(param_rename);
                             out.push_str(": ");
@@ -658,7 +700,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str(",\n");
                         } else {
                             out.push_str(
-                                "    #[serde(skip_deserializing_if = \"Option::is_none\")]\n",
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
                             out.push_str("    ");
                             out.push_str(param_rename);
@@ -666,7 +708,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str(&enum_name);
                             out.push_str(">,\n");
                         }
-                    } else if param["required"].as_bool() == Some(true) {
+                    } else if required {
                         panic!("error: skipped required parameter: {}", param_name);
                     } else {
                         eprintln!("warn: skipping optional parameter: {}", param_name);
@@ -674,6 +716,39 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 }
             }
         }
+        out.push_str("}\n");
+        out.push('\n');
+        out.push_str("impl<'a> ");
+        out.push_str(&params.rust_type);
+        out.push_str("<'a> {\n");
+        out.push_str("    pub fn new(");
+        let mut required_count = 0;
+        for (name, type_, required) in &initializers {
+            if *required {
+                if required_count > 0 {
+                    out.push_str(", ");
+                }
+                out.push_str(&name);
+                out.push_str(": ");
+                out.push_str(&type_);
+                required_count += 1;
+            }
+        }
+        out.push_str(") -> Self {\n");
+        out.push_str("        ");
+        out.push_str(&params.rust_type);
+        out.push_str(" {\n");
+        for (name, _, required) in &initializers {
+            out.push_str("            ");
+            out.push_str(&name);
+            if *required {
+                out.push_str(",\n");
+            } else {
+                out.push_str(": Default::default(),\n");
+            }
+        }
+        out.push_str("        }\n");
+        out.push_str("    }\n");
         out.push_str("}\n");
     }
 
@@ -731,33 +806,46 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     let mut prelude = String::new();
-    if state.use_ids.len() > 0 {
-        prelude.push_str("use crate::ids::{");
-        for (n, id) in state.use_ids.iter().enumerate() {
+    prelude.push_str("// ======================================\n");
+    prelude.push_str("// This file was automatically generated.\n");
+    prelude.push_str("// ======================================\n\n");
+    if state.use_config.len() > 0 {
+        prelude.push_str("use crate::config::{");
+        for (n, type_) in state.use_config.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
             }
-            prelude.push_str(&id);
+            prelude.push_str(&type_);
+        }
+        prelude.push_str("};\n");
+    }
+    if state.use_ids.len() > 0 {
+        prelude.push_str("use crate::ids::{");
+        for (n, type_) in state.use_ids.iter().enumerate() {
+            if n > 0 {
+                prelude.push_str(", ");
+            }
+            prelude.push_str(&type_);
         }
         prelude.push_str("};\n");
     }
     if state.use_params.len() > 0 {
         prelude.push_str("use crate::params::{");
-        for (n, param) in state.use_params.iter().enumerate() {
+        for (n, type_) in state.use_params.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
             }
-            prelude.push_str(&param);
+            prelude.push_str(&type_);
         }
         prelude.push_str("};\n");
     }
     if state.use_resources.len() > 0 {
         prelude.push_str("use crate::resources::{");
-        for (n, resource) in state.use_resources.iter().enumerate() {
+        for (n, type_) in state.use_resources.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
             }
-            prelude.push_str(&resource);
+            prelude.push_str(&type_);
         }
         prelude.push_str("};\n");
     }
@@ -815,7 +903,10 @@ fn gen_field_rust_type(
 ) -> String {
     if let Some(&(use_path, rust_type)) = meta.field_types.get(&(object, field_name)) {
         match use_path {
-            "String" => (),
+            "" | "String" => (),
+            "Metadata" => {
+                state.use_params.insert("Metadata");
+            }
             _ => {
                 state.use_resources.insert(use_path.into());
             }
@@ -872,10 +963,7 @@ fn gen_field_rust_type(
                 let enum_ = InferredEnum {
                     parent: parent_type,
                     field: field_name.into(),
-                    options: variants
-                        .into_iter()
-                        .map(|x| x.as_str().unwrap().into())
-                        .collect(),
+                    options: variants.into_iter().map(|x| x.as_str().unwrap().into()).collect(),
                 };
                 state.insert_enum(enum_name.clone(), enum_);
                 enum_name
@@ -904,7 +992,7 @@ fn gen_field_rust_type(
                 return format!("List<{}>", element_type);
             } else {
                 let struct_name =
-                    format!("{}_{}", object.replace('.', "_"), field_name).to_camel_case();
+                    format!("{}_{}", meta.schema_to_rust_type(object), field_name).to_camel_case();
                 let struct_ = InferredStruct { field: field_name.into(), schema: field.clone() };
                 state.inferred_structs.insert(struct_name.clone(), struct_);
                 struct_name
@@ -1036,6 +1124,7 @@ fn gen_impl_requests(
                         parameters: get_request["parameters"].clone(),
                     };
                     state.inferred_parameters.insert(params_name.to_snake_case(), params);
+                    state.use_params.insert("List");
 
                     let mut out = String::new();
                     out.push('\n');
@@ -1073,9 +1162,9 @@ fn gen_impl_requests(
                         out.push_str(", expand: &[&str]) -> Response<");
                         out.push_str(&rust_struct);
                         out.push_str("> {\n");
-                        out.push_str("        client.get_query(\"/");
-                        out.push_str(&segments.join("/"));
-                        out.push_str("\", &Expand { expand })\n");
+                        out.push_str("        client.get_query(");
+                        out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
+                        out.push_str(", &Expand { expand })\n");
                     } else {
                         out.push_str(") -> Response<");
                         out.push_str(&rust_struct);
@@ -1095,6 +1184,10 @@ fn gen_impl_requests(
     if methods.is_empty() {
         return String::new();
     }
+
+    // Add imports
+    state.use_config.insert("Client");
+    state.use_config.insert("Response");
 
     // Output the impl block
     let mut out = String::new();

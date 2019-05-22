@@ -1,5 +1,10 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
+use crate::config::{Client, Response};
 use crate::ids::DisputeId;
-use crate::params::{Expand, Expandable, Metadata, Object, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Charge, Currency, File};
 use serde_derive::{Deserialize, Serialize};
 
@@ -69,14 +74,14 @@ impl Dispute {
 
     /// Retrieves the dispute with the given ID.
     pub fn retrieve(client: &Client, id: &DisputeId, expand: &[&str]) -> Response<Dispute> {
-        client.get_query("/disputes/{dispute}", &Expand { expand })
+        client.get_query(&format!("/disputes/{}", id), &Expand { expand })
     }
 }
 
 impl Object for Dispute {
     type Id = DisputeId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "dispute"
@@ -235,34 +240,46 @@ pub struct DisputeEvidenceDetails {
 }
 
 /// The parameters for `Dispute::list`.
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct DisputeListParams<'a> {
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<&'a DisputeId>,
 
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_deserializing_if = "Expand::is_empty")]
+    #[serde(skip_serializing_if = "Expand::is_empty")]
     expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<&'a DisputeId>,
+}
+
+impl<'a> DisputeListParams<'a> {
+    pub fn new() -> Self {
+        DisputeListParams {
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }
 
 /// An enum representing the possible values of an `Dispute`'s `status` field.

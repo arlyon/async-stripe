@@ -1,3 +1,7 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::ids::BalanceTransactionId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{
@@ -65,8 +69,8 @@ pub struct BalanceTransaction {
 
 impl Object for BalanceTransaction {
     type Id = BalanceTransactionId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "balance_transaction"

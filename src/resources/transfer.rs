@@ -1,5 +1,10 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
+use crate::config::{Client, Response};
 use crate::ids::TransferId;
-use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BalanceTransaction, Charge, Currency, TransferReversal};
 use serde_derive::{Deserialize, Serialize};
 
@@ -89,8 +94,8 @@ impl Transfer {
 
 impl Object for Transfer {
     type Id = TransferId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "transfer"
@@ -98,32 +103,44 @@ impl Object for Transfer {
 }
 
 /// The parameters for `Transfer::list`.
-#[derive(Clone, Debug, Default, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct TransferListParams<'a> {
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<&'a TransferId>,
 
     /// Specifies which fields in the response should be expanded.
-    #[serde(skip_deserializing_if = "Expand::is_empty")]
+    #[serde(skip_serializing_if = "Expand::is_empty")]
     expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
-    #[serde(skip_deserializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<&'a TransferId>,
+}
+
+impl<'a> TransferListParams<'a> {
+    pub fn new() -> Self {
+        TransferListParams {
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }
