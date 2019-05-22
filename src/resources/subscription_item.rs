@@ -4,7 +4,7 @@
 
 use crate::config::{Client, Response};
 use crate::ids::{SubscriptionId, SubscriptionItemId};
-use crate::params::{Expand, List, Metadata, Object, Timestamp};
+use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{Plan, SubscriptionItemBillingThresholds, TaxRate};
 use serde_derive::{Deserialize, Serialize};
 
@@ -61,6 +61,23 @@ impl SubscriptionItem {
         params: SubscriptionItemListParams<'_>,
     ) -> Response<List<SubscriptionItem>> {
         client.get_query("/subscription_items", &params)
+    }
+
+    /// Retrieves the invoice item with the given ID.
+    pub fn retrieve(
+        client: &Client,
+        id: &SubscriptionItemId,
+        expand: &[&str],
+    ) -> Response<SubscriptionItem> {
+        client.get_query(&format!("/subscription_items/{}", id), &Expand { expand })
+    }
+
+    /// Retrieves the invoice item with the given ID.
+    pub fn delete(
+        client: &Client,
+        id: &SubscriptionItemId,
+    ) -> Response<Deleted<SubscriptionItemId>> {
+        client.delete(&format!("/subscription_items/{}", id))
     }
 }
 

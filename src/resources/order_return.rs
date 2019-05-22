@@ -49,6 +49,13 @@ impl OrderReturn {
     pub fn list(client: &Client, params: OrderReturnListParams<'_>) -> Response<List<OrderReturn>> {
         client.get_query("/order_returns", &params)
     }
+
+    /// Retrieves the details of an existing order return.
+    ///
+    /// Supply the unique order ID from either an order return creation request or the order return list, and Stripe will return the corresponding order information.
+    pub fn retrieve(client: &Client, id: &OrderReturnId, expand: &[&str]) -> Response<OrderReturn> {
+        client.get_query(&format!("/order_returns/{}", id), &Expand { expand })
+    }
 }
 
 impl Object for OrderReturn {

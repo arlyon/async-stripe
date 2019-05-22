@@ -4,7 +4,7 @@
 
 use crate::config::{Client, Response};
 use crate::ids::SkuId;
-use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{Currency, PackageDimensions, Product};
 use serde_derive::{Deserialize, Serialize};
 
@@ -83,6 +83,20 @@ impl Sku {
     /// The SKUs are returned sorted by creation date, with the most recently created SKUs appearing first.
     pub fn list(client: &Client, params: SkuListParams<'_>) -> Response<List<Sku>> {
         client.get_query("/skus", &params)
+    }
+
+    /// Retrieves the details of an existing SKU.
+    ///
+    /// Supply the unique SKU identifier from either a SKU creation request or from the product, and Stripe will return the corresponding SKU information.
+    pub fn retrieve(client: &Client, id: &SkuId, expand: &[&str]) -> Response<Sku> {
+        client.get_query(&format!("/skus/{}", id), &Expand { expand })
+    }
+
+    /// Retrieves the details of an existing SKU.
+    ///
+    /// Supply the unique SKU identifier from either a SKU creation request or from the product, and Stripe will return the corresponding SKU information.
+    pub fn delete(client: &Client, id: &SkuId) -> Response<Deleted<SkuId>> {
+        client.delete(&format!("/skus/{}", id))
     }
 }
 

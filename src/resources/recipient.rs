@@ -4,7 +4,7 @@
 
 use crate::config::{Client, Response};
 use crate::ids::RecipientId;
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BankAccount, Card};
 use serde_derive::{Deserialize, Serialize};
 
@@ -79,6 +79,20 @@ impl Recipient {
     /// The recipients are returned sorted by creation date, with the most recently created recipients appearing first.
     pub fn list(client: &Client, params: RecipientListParams<'_>) -> Response<List<Recipient>> {
         client.get_query("/recipients", &params)
+    }
+
+    /// Retrieves the details of an existing recipient.
+    ///
+    /// You need only supply the unique recipient identifier that was returned upon recipient creation.
+    pub fn retrieve(client: &Client, id: &RecipientId, expand: &[&str]) -> Response<Recipient> {
+        client.get_query(&format!("/recipients/{}", id), &Expand { expand })
+    }
+
+    /// Retrieves the details of an existing recipient.
+    ///
+    /// You need only supply the unique recipient identifier that was returned upon recipient creation.
+    pub fn delete(client: &Client, id: &RecipientId) -> Response<Deleted<RecipientId>> {
+        client.delete(&format!("/recipients/{}", id))
     }
 }
 

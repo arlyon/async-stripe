@@ -4,7 +4,7 @@
 
 use crate::config::{Client, Response};
 use crate::ids::CouponId;
-use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -92,6 +92,11 @@ impl Coupon {
     /// Retrieves the coupon with the given ID.
     pub fn retrieve(client: &Client, id: &CouponId, expand: &[&str]) -> Response<Coupon> {
         client.get_query(&format!("/coupons/{}", id), &Expand { expand })
+    }
+
+    /// Retrieves the coupon with the given ID.
+    pub fn delete(client: &Client, id: &CouponId) -> Response<Deleted<CouponId>> {
+        client.delete(&format!("/coupons/{}", id))
     }
 }
 

@@ -60,6 +60,11 @@ impl TaxRate {
     pub fn list(client: &Client, params: TaxRateListParams<'_>) -> Response<List<TaxRate>> {
         client.get_query("/tax_rates", &params)
     }
+
+    /// Retrieves a tax rate with the given ID.
+    pub fn retrieve(client: &Client, id: &TaxRateId, expand: &[&str]) -> Response<TaxRate> {
+        client.get_query(&format!("/tax_rates/{}", id), &Expand { expand })
+    }
 }
 
 impl Object for TaxRate {

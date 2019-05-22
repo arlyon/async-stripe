@@ -1089,7 +1089,14 @@ fn gen_impl_requests(
     // Collect all methods we know how to auto-generate
     let mut methods = Vec::new();
     for path in requests {
+        lazy_static! {
+            static ref P_TAG: Regex = Regex::new("<p>|</p>").unwrap();
+            static ref A_DOC_TAG: Regex =
+                Regex::new("<a href=\"/docs/([^\"]+)\">([^<]+)</a>").unwrap();
+        }
+
         let request = &meta.spec["paths"][path];
+        let segments = path.trim_start_matches("/v1/").split("/").collect::<Vec<_>>();
         let get_request = &request["get"];
         if get_request.is_object() {
             let ok_schema =
@@ -1101,17 +1108,10 @@ fn gen_impl_requests(
             {
                 continue; // skip generating this unusual request (for now...)
             }
-
-            lazy_static! {
-                static ref P_TAG: Regex = Regex::new("<p>|</p>").unwrap();
-                static ref A_DOC_TAG: Regex =
-                    Regex::new("<a href=\"/docs/([^\"]+)\">([^<]+)</a>").unwrap();
-            }
             let doc_comment =
                 P_TAG.replace_all(get_request["description"].as_str().unwrap_or_default(), "");
             let doc_comment =
                 A_DOC_TAG.replace_all(&doc_comment, "[${2}](https://stripe.com/docs/${1})");
-            let segments = path.trim_start_matches("/v1/").split("/").collect::<Vec<_>>();
             if ok_schema["properties"]["object"]["enum"][0].as_str() == Some("list") {
                 if segments.len() == 1 {
                     let params_name = format!("{}ListParams", rust_struct);
@@ -1140,22 +1140,25 @@ fn gen_impl_requests(
                     // eprintln!("OTHER: {} {:?}", path, segments);
                 }
             } else if segments.len() == 2 {
-                let id_param = &get_request["parameters"][0];
-                let has_expand = get_request["parameters"][1]["name"].as_str() == Some("expand");
-                if id_param["in"].as_str() != Some("path") {
-                    continue;
-                }
+                let id_param = get_request["parameters"].as_array().and_then(|arr| {
+                    arr.iter().find(|p| p["in"].as_str() == Some("path"))
+                });
+                let id_param = match id_param { Some(p) => p, None => continue };
+                let expand_param = get_request["parameters"].as_array().and_then(|arr| {
+                    arr.iter().find(|p| p["name"].as_str() == Some("expand"))
+                });
                 if let Some(id_type) = &object_id {
                     assert_eq!(id_param["required"].as_bool(), Some(true));
                     assert_eq!(id_param["style"].as_str(), Some("simple"));
-                    state.use_params.insert("Expand");
 
                     let mut out = String::new();
                     out.push('\n');
                     print_doc_comment(&mut out, &doc_comment, 1);
                     out.push_str("    pub fn retrieve(client: &Client, id: &");
                     out.push_str(&id_type);
-                    if has_expand {
+                    if let Some(param) = expand_param {
+                        state.use_params.insert("Expand");
+                        assert_eq!(param["in"].as_str(), Some("query"));
                         out.push_str(", expand: &[&str]) -> Response<");
                         out.push_str(&rust_struct);
                         out.push_str("> {\n");
@@ -1166,15 +1169,57 @@ fn gen_impl_requests(
                         out.push_str(") -> Response<");
                         out.push_str(&rust_struct);
                         out.push_str("> {\n");
-                        out.push_str("        client.get(\"/");
-                        out.push_str(&segments.join("/"));
-                        out.push_str("\")\n");
+                        out.push_str("        client.get(/");
+                        out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
+                        out.push_str(")\n");
                     }
                     out.push_str("    }\n");
                     methods.push(out);
                 }
             } else {
                 // eprintln!("OTHER: {} {:?}", path, segments);
+            }
+        }
+        let delete_request = &request["delete"];
+        if delete_request.is_object() {
+            let ok_schema =
+                &delete_request["responses"]["200"]["content"]["application/json"]["schema"];
+            let err_schema =
+                &delete_request["responses"]["default"]["content"]["application/json"]["schema"];
+            if ok_schema.is_null()
+                || err_schema["$ref"].as_str() != Some("#/components/schemas/error")
+            {
+                continue; // skip generating this unusual request (for now...)
+            }
+
+            let doc_comment =
+                P_TAG.replace_all(get_request["description"].as_str().unwrap_or_default(), "");
+            let doc_comment =
+                A_DOC_TAG.replace_all(&doc_comment, "[${2}](https://stripe.com/docs/${1})");
+            if segments.len() == 2 {
+                let id_param = get_request["parameters"].as_array().and_then(|arr| {
+                    arr.iter().find(|p| p["in"].as_str() == Some("path"))
+                });
+                let id_param = match id_param { Some(p) => p, None => continue };
+                if let Some(id_type) = &object_id {
+                    state.use_params.insert("Deleted");
+                    assert_eq!(id_param["required"].as_bool(), Some(true));
+                    assert_eq!(id_param["style"].as_str(), Some("simple"));
+
+                    let mut out = String::new();
+                    out.push('\n');
+                    print_doc_comment(&mut out, &doc_comment, 1);
+                    out.push_str("    pub fn delete(client: &Client, id: &");
+                    out.push_str(&id_type);
+                    out.push_str(") -> Response<Deleted<");
+                    out.push_str(&id_type);
+                    out.push_str(">> {\n");
+                    out.push_str("        client.delete(");
+                    out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
+                    out.push_str(")\n");
+                    out.push_str("    }\n");
+                    methods.push(out);
+                }
             }
         }
     }

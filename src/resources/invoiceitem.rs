@@ -4,7 +4,7 @@
 
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, InvoiceItemId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Currency, Customer, Invoice, Period, Plan, Subscription, TaxRate};
 use serde_derive::{Deserialize, Serialize};
 
@@ -106,6 +106,16 @@ impl InvoiceItem {
     /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
     pub fn list(client: &Client, params: InvoiceItemListParams<'_>) -> Response<List<InvoiceItem>> {
         client.get_query("/invoiceitems", &params)
+    }
+
+    /// Retrieves the invoice item with the given ID.
+    pub fn retrieve(client: &Client, id: &InvoiceItemId, expand: &[&str]) -> Response<InvoiceItem> {
+        client.get_query(&format!("/invoiceitems/{}", id), &Expand { expand })
+    }
+
+    /// Retrieves the invoice item with the given ID.
+    pub fn delete(client: &Client, id: &InvoiceItemId) -> Response<Deleted<InvoiceItemId>> {
+        client.delete(&format!("/invoiceitems/{}", id))
     }
 }
 

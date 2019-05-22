@@ -4,7 +4,7 @@
 
 use crate::config::{Client, Response};
 use crate::ids::AccountId;
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     AccountType, Address, BankAccount, BusinessType, CapabilityStatus, Card, Currency, File,
     LegalEntityJapanAddress, Person,
@@ -114,6 +114,11 @@ impl Account {
     /// Retrieves the details of an account.
     pub fn retrieve(client: &Client, id: &AccountId, expand: &[&str]) -> Response<Account> {
         client.get_query(&format!("/accounts/{}", id), &Expand { expand })
+    }
+
+    /// Retrieves the details of an account.
+    pub fn delete(client: &Client, id: &AccountId) -> Response<Deleted<AccountId>> {
+        client.delete(&format!("/accounts/{}", id))
     }
 }
 

@@ -4,7 +4,7 @@
 
 use crate::config::{Client, Response};
 use crate::ids::ProductId;
-use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::PackageDimensions;
 use serde_derive::{Deserialize, Serialize};
 
@@ -125,6 +125,20 @@ impl Product {
     /// The products are returned sorted by creation date, with the most recently created products appearing first.
     pub fn list(client: &Client, params: ProductListParams<'_>) -> Response<List<Product>> {
         client.get_query("/products", &params)
+    }
+
+    /// Retrieves the details of an existing product.
+    ///
+    /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
+    pub fn retrieve(client: &Client, id: &ProductId, expand: &[&str]) -> Response<Product> {
+        client.get_query(&format!("/products/{}", id), &Expand { expand })
+    }
+
+    /// Retrieves the details of an existing product.
+    ///
+    /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
+    pub fn delete(client: &Client, id: &ProductId) -> Response<Deleted<ProductId>> {
+        client.delete(&format!("/products/{}", id))
     }
 }
 

@@ -73,6 +73,17 @@ impl ApplicationFee {
     ) -> Response<List<ApplicationFee>> {
         client.get_query("/application_fees", &params)
     }
+
+    /// Retrieves the details of an application fee that your account has collected.
+    ///
+    /// The same information is returned when refunding the application fee.
+    pub fn retrieve(
+        client: &Client,
+        id: &ApplicationFeeId,
+        expand: &[&str],
+    ) -> Response<ApplicationFee> {
+        client.get_query(&format!("/application_fees/{}", id), &Expand { expand })
+    }
 }
 
 impl Object for ApplicationFee {

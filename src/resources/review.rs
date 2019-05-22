@@ -75,6 +75,11 @@ impl Review {
     pub fn list(client: &Client, params: ReviewListParams<'_>) -> Response<List<Review>> {
         client.get_query("/reviews", &params)
     }
+
+    /// Retrieves a <code>Review</code> object.
+    pub fn retrieve(client: &Client, id: &ReviewId, expand: &[&str]) -> Response<Review> {
+        client.get_query(&format!("/reviews/{}", id), &Expand { expand })
+    }
 }
 
 impl Object for Review {

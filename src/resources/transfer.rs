@@ -90,6 +90,13 @@ impl Transfer {
     pub fn list(client: &Client, params: TransferListParams<'_>) -> Response<List<Transfer>> {
         client.get_query("/transfers", &params)
     }
+
+    /// Retrieves the details of an existing transfer.
+    ///
+    /// Supply the unique transfer ID from either a transfer creation request or the transfer list, and Stripe will return the corresponding transfer information.
+    pub fn retrieve(client: &Client, id: &TransferId, expand: &[&str]) -> Response<Transfer> {
+        client.get_query(&format!("/transfers/{}", id), &Expand { expand })
+    }
 }
 
 impl Object for Transfer {

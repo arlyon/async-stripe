@@ -49,6 +49,11 @@ impl FileLink {
     pub fn list(client: &Client, params: FileLinkListParams<'_>) -> Response<List<FileLink>> {
         client.get_query("/file_links", &params)
     }
+
+    /// Retrieves the file link with the given ID.
+    pub fn retrieve(client: &Client, id: &FileLinkId, expand: &[&str]) -> Response<FileLink> {
+        client.get_query(&format!("/file_links/{}", id), &Expand { expand })
+    }
 }
 
 impl Object for FileLink {

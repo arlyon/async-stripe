@@ -86,6 +86,13 @@ impl Topup {
     pub fn list(client: &Client, params: TopupListParams<'_>) -> Response<List<Topup>> {
         client.get_query("/topups", &params)
     }
+
+    /// Retrieves the details of a top-up that has previously been created.
+    ///
+    /// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
+    pub fn retrieve(client: &Client, id: &TopupId, expand: &[&str]) -> Response<Topup> {
+        client.get_query(&format!("/topups/{}", id), &Expand { expand })
+    }
 }
 
 impl Object for Topup {

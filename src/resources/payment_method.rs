@@ -59,6 +59,15 @@ impl PaymentMethod {
     ) -> Response<List<PaymentMethod>> {
         client.get_query("/payment_methods", &params)
     }
+
+    /// Retrieves a PaymentMethod object.
+    pub fn retrieve(
+        client: &Client,
+        id: &PaymentMethodId,
+        expand: &[&str],
+    ) -> Response<PaymentMethod> {
+        client.get_query(&format!("/payment_methods/{}", id), &Expand { expand })
+    }
 }
 
 impl Object for PaymentMethod {
