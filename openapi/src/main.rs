@@ -72,6 +72,7 @@ fn main() {
     schema_renames.insert("charge_transfer_data", "transfer_data");
     schema_renames.insert("fee_refund", "application_fee_refund");
     schema_renames.insert("issuing_authorization_merchant_data", "merchant_data");
+    schema_renames.insert("issuing.authorization_wallet_provider", "wallet_provider");
     schema_renames.insert("invoiceitem", "invoice_item");
     schema_renames.insert("line_item", "invoice_line_item");
     schema_renames.insert("payment_method_card", "card_details");
@@ -118,10 +119,6 @@ fn main() {
     field_types.insert(
         ("issuing.authorization", "authorization_method"),
         ("IssuingAuthorizationMethod", "IssuingAuthorizationMethod"),
-    );
-    field_types.insert(
-        ("issuing.authorization", "wallet_provider"),
-        ("WalletProvider", "Option<WalletProvider>"),
     );
     field_types.insert(
         ("issuing_authorization_request", "reason"),
@@ -786,7 +783,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             "/// An enum representing the possible values of an `{}`'s `{}` field.\n",
             enum_.parent, enum_.field
         ));
-        out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+        out.push_str("#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]\n");
         out.push_str("#[serde(rename_all = \"snake_case\")]\n");
         out.push_str("pub enum ");
         out.push_str(&enum_name.to_camel_case());

@@ -157,7 +157,7 @@ impl<'a> TopupListParams<'a> {
 }
 
 /// An enum representing the possible values of an `Topup`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TopupStatus {
     Canceled,
@@ -168,7 +168,7 @@ pub enum TopupStatus {
 }
 
 /// An enum representing the possible values of an `TopupListParams`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TopupStatusFilter {
     Canceled,

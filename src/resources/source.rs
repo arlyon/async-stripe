@@ -736,7 +736,7 @@ impl<'a> SourceParams<'a> {
 }
 
 /// An enum representing the possible values of an `Source`'s `flow` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceFlow {
     CodeVerification,
@@ -746,7 +746,7 @@ pub enum SourceFlow {
 }
 
 /// An enum representing the possible values of an `SourceRedirectFlow`'s `failure_reason` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceRedirectFlowFailureReason {
     Declined,
@@ -755,7 +755,7 @@ pub enum SourceRedirectFlowFailureReason {
 }
 
 /// An enum representing the possible values of an `SourceRedirectFlow`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceRedirectFlowStatus {
     Failed,
@@ -765,7 +765,7 @@ pub enum SourceRedirectFlowStatus {
 }
 
 /// An enum representing the possible values of an `Source`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceStatus {
     Canceled,
@@ -776,7 +776,7 @@ pub enum SourceStatus {
 }
 
 /// An enum representing the possible values of an `Source`'s `type` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceType {
     AchCreditTransfer,
@@ -797,7 +797,7 @@ pub enum SourceType {
 }
 
 /// An enum representing the possible values of an `Source`'s `usage` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceUsage {
     Reusable,

@@ -173,7 +173,7 @@ impl<'a> ReviewListParams<'a> {
 }
 
 /// An enum representing the possible values of an `Review`'s `closed_reason` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum ReviewClosedReason {
     Approved,
@@ -183,7 +183,7 @@ pub enum ReviewClosedReason {
 }
 
 /// An enum representing the possible values of an `Review`'s `opened_reason` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum ReviewOpenedReason {
     Manual,

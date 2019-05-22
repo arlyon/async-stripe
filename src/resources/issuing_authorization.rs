@@ -7,7 +7,6 @@ use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
     BalanceTransaction, Currency, IssuingAuthorizationCheck, IssuingAuthorizationMethod,
     IssuingAuthorizationReason, IssuingCard, IssuingCardholder, IssuingTransaction, MerchantData,
-    WalletProvider,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -148,4 +147,13 @@ pub struct IssuingAuthorizationVerificationData {
 
     /// One of `match`, `mismatch`, or `not_provided`.
     pub cvc_check: IssuingAuthorizationCheck,
+}
+
+/// An enum representing the possible values of an `IssuingAuthorization`'s `wallet_provider` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum WalletProvider {
+    ApplePay,
+    GooglePay,
+    SamsungPay,
 }

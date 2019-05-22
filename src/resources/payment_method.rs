@@ -311,7 +311,7 @@ impl<'a> PaymentMethodListParams<'a> {
 }
 
 /// An enum representing the possible values of an `PaymentMethod`'s `type` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodType {
     Card,
@@ -319,7 +319,7 @@ pub enum PaymentMethodType {
 }
 
 /// An enum representing the possible values of an `WalletDetails`'s `type` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum WalletType {
     AmexExpressCheckout,

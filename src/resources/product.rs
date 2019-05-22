@@ -199,7 +199,7 @@ impl<'a> ProductListParams<'a> {
 }
 
 /// An enum representing the possible values of an `Product`'s `type` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum ProductType {
     Good,

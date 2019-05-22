@@ -156,7 +156,7 @@ pub struct IssuingCardShipping {
 }
 
 /// An enum representing the possible values of an `IssuingCard`'s `replacement_reason` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardReplacementReason {
     Damage,
@@ -166,7 +166,7 @@ pub enum IssuingCardReplacementReason {
 }
 
 /// An enum representing the possible values of an `IssuingCardShipping`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardShippingStatus {
     Canceled,
@@ -178,7 +178,7 @@ pub enum IssuingCardShippingStatus {
 }
 
 /// An enum representing the possible values of an `IssuingCardShipping`'s `type` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardShippingType {
     Bulk,
@@ -186,7 +186,7 @@ pub enum IssuingCardShippingType {
 }
 
 /// An enum representing the possible values of an `IssuingCard`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardStatus {
     Active,
@@ -198,7 +198,7 @@ pub enum IssuingCardStatus {
 }
 
 /// An enum representing the possible values of an `IssuingCard`'s `type` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardType {
     Physical,

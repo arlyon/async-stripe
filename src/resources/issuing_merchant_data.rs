@@ -33,7 +33,7 @@ pub struct MerchantData {
 }
 
 /// An enum representing the industry of a merchant.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum MerchantCategory {
     AcRefrigerationRepair,

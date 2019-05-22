@@ -259,7 +259,7 @@ impl<'a> PlanListParams<'a> {
 }
 
 /// An enum representing the possible values of an `Plan`'s `aggregate_usage` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PlanAggregateUsage {
     LastDuringPeriod,
@@ -269,7 +269,7 @@ pub enum PlanAggregateUsage {
 }
 
 /// An enum representing the possible values of an `Plan`'s `billing_scheme` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PlanBillingScheme {
     PerUnit,
@@ -277,7 +277,7 @@ pub enum PlanBillingScheme {
 }
 
 /// An enum representing the possible values of an `Plan`'s `interval` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PlanInterval {
     Day,
@@ -287,7 +287,7 @@ pub enum PlanInterval {
 }
 
 /// An enum representing the possible values of an `Plan`'s `tiers_mode` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PlanTiersMode {
     Graduated,
@@ -295,7 +295,7 @@ pub enum PlanTiersMode {
 }
 
 /// An enum representing the possible values of an `Plan`'s `usage_type` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PlanUsageType {
     Licensed,
@@ -303,7 +303,7 @@ pub enum PlanUsageType {
 }
 
 /// An enum representing the possible values of an `TransformUsage`'s `round` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TransformUsageRound {
     Down,

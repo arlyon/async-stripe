@@ -345,7 +345,7 @@ impl<'a> SubscriptionListParams<'a> {
 }
 
 /// An enum representing the possible values of an `Subscription`'s `billing` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionBilling {
     ChargeAutomatically,
@@ -353,7 +353,7 @@ pub enum SubscriptionBilling {
 }
 
 /// An enum representing the possible values of an `Subscription`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionStatus {
     Active,
@@ -366,7 +366,7 @@ pub enum SubscriptionStatus {
 }
 
 /// An enum representing the possible values of an `SubscriptionListParams`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionStatusFilter {
     Active,
@@ -380,7 +380,7 @@ pub enum SubscriptionStatusFilter {
     Unpaid,
 }
 
-#[derive(Clone, Serialize, Debug)]
+#[derive(Clone, Debug, Serialize)]
 #[serde(untagged)]
 pub enum TrialEnd<'a> {
     Timestamp(Timestamp),

@@ -89,7 +89,7 @@ pub struct IssuingCardholderAuthorizationControls {
 }
 
 /// An enum representing the possible values of an `IssuingCardholder`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardholderStatus {
     Active,
@@ -99,7 +99,7 @@ pub enum IssuingCardholderStatus {
 }
 
 /// An enum representing the possible values of an `IssuingCardholder`'s `type` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardholderType {
     BusinessEntity,

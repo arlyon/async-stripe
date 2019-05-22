@@ -653,7 +653,7 @@ pub struct SubscriptionItemParams<'a> {
 }
 
 /// An enum representing the possible values of an `Invoice`'s `billing` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum InvoiceBilling {
     ChargeAutomatically,
@@ -661,7 +661,7 @@ pub enum InvoiceBilling {
 }
 
 /// An enum representing the possible values of an `Invoice`'s `billing_reason` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum InvoiceBillingReason {
     AutomaticPendingInvoiceItemInvoice,
@@ -675,7 +675,7 @@ pub enum InvoiceBillingReason {
 }
 
 /// An enum representing the possible values of an `Invoice`'s `customer_tax_exempt` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum InvoiceCustomerTaxExempt {
     Exempt,
@@ -684,7 +684,7 @@ pub enum InvoiceCustomerTaxExempt {
 }
 
 /// An enum representing the possible values of an `Invoice`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum InvoiceStatus {
     Deleted,
@@ -696,7 +696,7 @@ pub enum InvoiceStatus {
 }
 
 /// An enum representing the possible values of an `InvoicesResourceInvoiceTaxId`'s `type` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum InvoicesResourceInvoiceTaxIdType {
     AuAbn,

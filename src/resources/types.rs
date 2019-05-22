@@ -4,7 +4,7 @@ use serde_derive::{Deserialize, Serialize};
 /// An enum representing the possible values of a `BankAccount`'s `account_holder_type` field.
 ///
 /// For more details see [https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-account_holder_type](https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-account_holder_type)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum AccountHolderType {
     Individual,
@@ -14,7 +14,7 @@ pub enum AccountHolderType {
 /// An enum representing the possible values of an `Account`'s `type` field.
 ///
 /// For more details see [https://stripe.com/docs/api/accounts/object#account_object-type](https://stripe.com/docs/api/accounts/object#account_object-type)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum AccountType {
     Standard,
@@ -33,7 +33,7 @@ pub struct Address {
 }
 
 /// An enum representing the possible values of a `BalanceTransaction`'s `status` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum BalanceTransactionStatus {
     Available,
@@ -43,7 +43,7 @@ pub enum BalanceTransactionStatus {
 /// An enum representing the possible values of a `BankAccount`'s `status` field.
 ///
 /// For more details see [https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-status](https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-status)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum BankAccountStatus {
     /// A bank account that hasn’t had any activity or validation performed is new.
@@ -67,7 +67,7 @@ pub enum BankAccountStatus {
 pub struct BillingDetails {}
 
 /// An enum representing the possible values of an `Account`'s `business_type` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum BusinessType {
     Individual,
@@ -75,7 +75,7 @@ pub enum BusinessType {
 }
 
 /// An enum representing the possible values of the `AccountCapabilities` fields.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CapabilityStatus {
     Standard,
@@ -84,7 +84,7 @@ pub enum CapabilityStatus {
 }
 
 /// An enum representing the possible values of an `Fee`'s `type` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FeeType {
     ApplicationFee,
@@ -93,7 +93,7 @@ pub enum FeeType {
 }
 
 /// An enum representing the possible values of the `IssuingAuthorizationVerificationData` fields.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingAuthorizationCheck {
     Match,
@@ -102,7 +102,7 @@ pub enum IssuingAuthorizationCheck {
 }
 
 /// An enum representing the possible values of the `IssuingAuthorization`'s `authorization_method` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingAuthorizationMethod {
     KeyedIn,
@@ -113,7 +113,7 @@ pub enum IssuingAuthorizationMethod {
 }
 
 /// An enum representing the possible values of the `IssuingAuthorizationRequest`'s `reason` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingAuthorizationReason {
     AuthorizationControls,
@@ -208,12 +208,3 @@ pub struct SubscriptionBillingThresholds {}
 /// This type is a stub that still needs to be implemented.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemBillingThresholds {}
-
-/// An enum representing the possible values of the `IssuingAuthorization`'s `wallet_provider` field.
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum WalletProvider {
-    ApplePay,
-    GooglePay,
-    SamsungPay,
-}

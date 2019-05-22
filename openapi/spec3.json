@@ -7016,6 +7016,11 @@
           },
           "wallet_provider": {
             "description": "What, if any, digital wallet was used for this authorization. One of `apple_pay`, `google_pay`, or `samsung_pay`.",
+            "enum": [
+              "apple_pay",
+              "google_pay",
+              "samsung_pay"
+            ],
             "maxLength": 5000,
             "nullable": true,
             "type": "string"

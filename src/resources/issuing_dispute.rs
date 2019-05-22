@@ -99,7 +99,7 @@ pub struct IssuingDisputeOtherEvidence {
 }
 
 /// An enum representing the possible values of an `IssuingDispute`'s `reason` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingDisputeReason {
     Fraudulent,
@@ -107,7 +107,7 @@ pub enum IssuingDisputeReason {
 }
 
 /// An enum representing the possible values of an `IssuingDispute`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingDisputeStatus {
     Lost,

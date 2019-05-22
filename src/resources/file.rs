@@ -120,7 +120,7 @@ impl<'a> FileListParams<'a> {
 }
 
 /// An enum representing the possible values of an `FileListParams`'s `purpose` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FilePurpose {
     BusinessIcon,
