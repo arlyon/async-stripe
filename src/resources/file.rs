@@ -31,7 +31,7 @@ pub struct File {
     /// The purpose of the file.
     ///
     /// Possible values are `business_icon`, `business_logo`, `customer_signature`, `dispute_evidence`, `finance_report_run`, `identity_document`, `pci_document`, `sigma_scheduled_query`, or `tax_document_user_upload`.
-    pub purpose: String,
+    pub purpose: FilePurpose,
 
     /// The size in bytes of the file object.
     pub size: u64,
@@ -54,7 +54,7 @@ impl File {
     /// Returns a list of the files that your account has access to.
     ///
     /// The files are returned sorted by creation date, with the most recently created files appearing first.
-    pub fn list(client: &Client, params: FileListParams<'_>) -> Response<List<File>> {
+    pub fn list(client: &Client, params: ListFiles<'_>) -> Response<List<File>> {
         client.get_query("/files", &params)
     }
 
@@ -78,7 +78,7 @@ impl Object for File {
 
 /// The parameters for `File::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct FileListParams<'a> {
+pub struct ListFiles<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
@@ -113,9 +113,9 @@ pub struct FileListParams<'a> {
     starting_after: Option<&'a FileId>,
 }
 
-impl<'a> FileListParams<'a> {
+impl<'a> ListFiles<'a> {
     pub fn new() -> Self {
-        FileListParams {
+        ListFiles {
             created: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
@@ -126,7 +126,7 @@ impl<'a> FileListParams<'a> {
     }
 }
 
-/// An enum representing the possible values of an `FileListParams`'s `purpose` field.
+/// An enum representing the possible values of an `File`'s `purpose` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FilePurpose {

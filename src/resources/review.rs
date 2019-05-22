@@ -61,7 +61,7 @@ pub struct Review {
     /// The reason the review is currently open or closed.
     ///
     /// One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`, or `disputed`.
-    pub reason: String,
+    pub reason: ReviewReason,
 
     /// Information related to the browsing session of the user who initiated the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -69,14 +69,14 @@ pub struct Review {
 }
 
 impl Review {
-    /// Returns a list of <code>Review</code> objects that have <code>open</code> set to <code>true</code>.
+    /// Returns a list of `Review` objects that have `open` set to `true`.
     ///
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn list(client: &Client, params: ReviewListParams<'_>) -> Response<List<Review>> {
+    pub fn list(client: &Client, params: ListReviews<'_>) -> Response<List<Review>> {
         client.get_query("/reviews", &params)
     }
 
-    /// Retrieves a <code>Review</code> object.
+    /// Retrieves a `Review` object.
     pub fn retrieve(client: &Client, id: &ReviewId, expand: &[&str]) -> Response<Review> {
         client.get_query(&format!("/reviews/{}", id), &Expand { expand })
     }
@@ -136,7 +136,7 @@ pub struct RadarReviewResourceSession {
 
 /// The parameters for `Review::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct ReviewListParams<'a> {
+pub struct ListReviews<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
@@ -165,9 +165,9 @@ pub struct ReviewListParams<'a> {
     starting_after: Option<&'a ReviewId>,
 }
 
-impl<'a> ReviewListParams<'a> {
+impl<'a> ListReviews<'a> {
     pub fn new() -> Self {
-        ReviewListParams {
+        ListReviews {
             created: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
@@ -192,5 +192,17 @@ pub enum ReviewClosedReason {
 #[serde(rename_all = "snake_case")]
 pub enum ReviewOpenedReason {
     Manual,
+    Rule,
+}
+
+/// An enum representing the possible values of an `Review`'s `reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ReviewReason {
+    Approved,
+    Disputed,
+    Manual,
+    Refunded,
+    RefundedAsFraud,
     Rule,
 }

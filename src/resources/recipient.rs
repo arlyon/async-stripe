@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::RecipientId;
+use crate::ids::{RecipientId, TaxIdId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BankAccount, Card};
 use serde_derive::{Deserialize, Serialize};
@@ -77,8 +77,14 @@ impl Recipient {
     /// Returns a list of your recipients.
     ///
     /// The recipients are returned sorted by creation date, with the most recently created recipients appearing first.
-    pub fn list(client: &Client, params: RecipientListParams<'_>) -> Response<List<Recipient>> {
+    pub fn list(client: &Client, params: ListRecipients<'_>) -> Response<List<Recipient>> {
         client.get_query("/recipients", &params)
+    }
+
+    /// Creates a new `Recipient` object and verifies the recipient’s identity.
+    /// Also verifies the recipient’s bank account information or debit card, if either is provided.
+    pub fn create(client: &Client, params: CreateRecipient<'_>) -> Response<Recipient> {
+        client.post_form("/recipients", &params)
     }
 
     /// Retrieves the details of an existing recipient.
@@ -88,9 +94,9 @@ impl Recipient {
         client.get_query(&format!("/recipients/{}", id), &Expand { expand })
     }
 
-    /// Retrieves the details of an existing recipient.
+    /// Permanently deletes a recipient.
     ///
-    /// You need only supply the unique recipient identifier that was returned upon recipient creation.
+    /// It cannot be undone.
     pub fn delete(client: &Client, id: &RecipientId) -> Response<Deleted<RecipientId>> {
         client.delete(&format!("/recipients/{}", id))
     }
@@ -106,9 +112,67 @@ impl Object for Recipient {
     }
 }
 
+/// The parameters for `Recipient::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateRecipient<'a> {
+    /// An arbitrary string which you can attach to a `Recipient` object.
+    ///
+    /// It is displayed alongside the recipient in the web interface.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+
+    /// The recipient's email address.
+    ///
+    /// It is displayed alongside the recipient in the web interface, and can be useful for searching and tracking.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    email: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// The recipient's full, legal name.
+    ///
+    /// For type `individual`, should be in the format `First Last`, `First Middle Last`, or `First M Last` (no prefixes or suffixes).
+    /// For `corporation`, the full, incorporated name.
+    name: &'a str,
+
+    /// The recipient's tax ID, as a string.
+    ///
+    /// For type `individual`, the full SSN; for type `corporation`, the full EIN.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_id: Option<TaxIdId>,
+
+    /// Type of the recipient: either `individual` or `corporation`.
+    #[serde(rename = "type")]
+    type_: RecipientType,
+}
+
+impl<'a> CreateRecipient<'a> {
+    pub fn new(name: &'a str, type_: RecipientType) -> Self {
+        CreateRecipient {
+            description: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            name,
+            tax_id: Default::default(),
+            type_,
+        }
+    }
+}
+
 /// The parameters for `Recipient::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct RecipientListParams<'a> {
+pub struct ListRecipients<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
@@ -145,9 +209,9 @@ pub struct RecipientListParams<'a> {
     verified: Option<bool>,
 }
 
-impl<'a> RecipientListParams<'a> {
+impl<'a> ListRecipients<'a> {
     pub fn new() -> Self {
-        RecipientListParams {
+        ListRecipients {
             created: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),

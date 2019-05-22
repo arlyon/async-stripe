@@ -58,7 +58,7 @@ impl SubscriptionItem {
     /// Returns a list of your subscription items for a given subscription.
     pub fn list(
         client: &Client,
-        params: SubscriptionItemListParams<'_>,
+        params: ListSubscriptionItems<'_>,
     ) -> Response<List<SubscriptionItem>> {
         client.get_query("/subscription_items", &params)
     }
@@ -72,7 +72,9 @@ impl SubscriptionItem {
         client.get_query(&format!("/subscription_items/{}", id), &Expand { expand })
     }
 
-    /// Retrieves the invoice item with the given ID.
+    /// Deletes an item from the subscription.
+    ///
+    /// Removing a subscription item from a subscription will not cancel the subscription.
     pub fn delete(
         client: &Client,
         id: &SubscriptionItemId,
@@ -93,7 +95,7 @@ impl Object for SubscriptionItem {
 
 /// The parameters for `SubscriptionItem::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct SubscriptionItemListParams<'a> {
+pub struct ListSubscriptionItems<'a> {
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -122,9 +124,9 @@ pub struct SubscriptionItemListParams<'a> {
     subscription: SubscriptionId,
 }
 
-impl<'a> SubscriptionItemListParams<'a> {
+impl<'a> ListSubscriptionItems<'a> {
     pub fn new(subscription: SubscriptionId) -> Self {
-        SubscriptionItemListParams {
+        ListSubscriptionItems {
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),

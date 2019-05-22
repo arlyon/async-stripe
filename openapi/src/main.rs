@@ -1,15 +1,22 @@
 use heck::{CamelCase, SnakeCase};
 use lazy_static::lazy_static;
 use regex::Regex;
-use serde_json::Value;
+use serde_json::{json, Value as Json};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 
 fn main() {
     let raw = fs::read_to_string("openapi/spec3.json").unwrap();
-    let spec: Value = serde_json::from_str(&raw).unwrap();
+    let spec: Json = serde_json::from_str(&raw).unwrap();
+
+    // Rename a few id types
+    let mut id_renames = BTreeMap::new();
+    id_renames.insert("fee_refund", "application_fee_refund");
+    id_renames.insert("invoiceitem", "invoice_item");
+    id_renames.insert("line_item", "invoice_line_item");
 
     // Compute additional metadata from spec.
+    let mut ids = BTreeMap::new();
     let mut objects = BTreeSet::new();
     let mut dependents: BTreeMap<_, BTreeSet<_>> = BTreeMap::new();
     for (key, schema) in spec["components"]["schemas"].as_object().unwrap() {
@@ -20,6 +27,16 @@ fn main() {
         };
         if fields.contains_key("object") {
             objects.insert(schema_name);
+            if !schema["properties"]["id"].is_null() {
+                if let Some(id_src) = schema["x-resourceId"].as_str() {
+                    let id_type = if let Some(rename) = id_renames.get(&id_src) {
+                        rename.to_camel_case() + "Id"
+                    } else {
+                        id_src.replace('.', "_").to_camel_case() + "Id"
+                    };
+                    ids.insert(schema_name, id_type);
+                }
+            }
         }
         for (_, field) in fields {
             if let Some(path) = field["$ref"].as_str() {
@@ -53,13 +70,9 @@ fn main() {
         }
     }
 
-    let mut id_renames = BTreeMap::new();
-    id_renames.insert("fee_refund", "application_fee_refund");
-    id_renames.insert("invoiceitem", "invoice_item");
-    id_renames.insert("line_item", "invoice_line_item");
-
     let mut schema_renames = BTreeMap::new();
     schema_renames.insert("account_business_profile", "business_profile");
+    schema_renames.insert("account_business_type", "business_type");
     schema_renames.insert("account_branding_settings", "branding_settings");
     schema_renames.insert("account_card_payments_settings", "card_payments_settings");
     schema_renames.insert("account_dashboard_settings", "dashboard_settings");
@@ -74,6 +87,7 @@ fn main() {
     schema_renames.insert("issuing_authorization_merchant_data", "merchant_data");
     schema_renames.insert("issuing.authorization_wallet_provider", "wallet_provider");
     schema_renames.insert("invoiceitem", "invoice_item");
+    schema_renames.insert("legal_entity_company", "company");
     schema_renames.insert("line_item", "invoice_line_item");
     schema_renames.insert("payment_method_card", "card_details");
     schema_renames.insert("payment_method_card_present", "card_present");
@@ -87,98 +101,120 @@ fn main() {
     schema_renames.insert("payment_method_card_wallet_visa_checkout", "wallet_visa_checkout");
     schema_renames.insert("payment_method_card_wallet_type", "wallet_type");
 
-    let mut field_types = BTreeMap::new();
-    field_types.insert(("account", "business_type"), ("BusinessType", "Option<BusinessType>"));
-    field_types.insert(("account", "type"), ("AccountType", "AccountType"));
-    field_types.insert(
+    let mut field_overrides = BTreeMap::new();
+    field_overrides.insert(
         ("account_capabilities", "card_payments"),
         ("CapabilityStatus", "CapabilityStatus"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("account_capabilities", "legacy_payments"),
         ("CapabilityStatus", "CapabilityStatus"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("account_capabilities", "platform_payments"),
         ("CapabilityStatus", "CapabilityStatus"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("balance_transaction", "status"),
         ("BalanceTransactionStatus", "BalanceTransactionStatus"),
     );
-    field_types.insert(("charge", "source"), ("PaymentSource", "Option<PaymentSource>"));
-    field_types.insert(("fee", "type"), ("FeeType", "FeeType"));
-    field_types.insert(
+    field_overrides.insert(("charge", "source"), ("PaymentSource", "Option<PaymentSource>"));
+    field_overrides.insert(("fee", "type"), ("FeeType", "FeeType"));
+    field_overrides.insert(
         ("bank_account", "account_holder_type"),
         ("AccountHolderType", "Option<AccountHolderType>"),
     );
-    field_types
+    field_overrides
         .insert(("bank_account", "status"), ("BankAccountStatus", "Option<BankAccountStatus>"));
-    field_types.insert(("invoiceitem", "period"), ("Period", "Option<Period>"));
-    field_types.insert(("line_item", "period"), ("Period", "Option<Period>"));
-    field_types.insert(
+    field_overrides.insert(("invoiceitem", "period"), ("Period", "Option<Period>"));
+    field_overrides.insert(("line_item", "period"), ("Period", "Option<Period>"));
+    field_overrides.insert(
         ("issuing.authorization", "authorization_method"),
         ("IssuingAuthorizationMethod", "IssuingAuthorizationMethod"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("issuing_authorization_request", "reason"),
         ("IssuingAuthorizationReason", "IssuingAuthorizationReason"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("issuing_authorization_verification_data", "address_line1_check"),
         ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("issuing_authorization_verification_data", "address_zip_check"),
         ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("issuing_authorization_verification_data", "cvc_check"),
         ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
     );
-    field_types.insert(("issuing.card", "brand"), ("CardBrand", "CardBrand"));
-    field_types.insert(
+    field_overrides.insert(("issuing.card", "brand"), ("CardBrand", "CardBrand"));
+    field_overrides.insert(
         ("issuing_card_authorization_controls", "allowed_categories"),
         ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("issuing_card_authorization_controls", "blocked_categories"),
         ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("issuing_card_authorization_controls", "spending_limits"),
         ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("issuing_cardholder_authorization_controls", "allowed_categories"),
         ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("issuing_cardholder_authorization_controls", "blocked_categories"),
         ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
     );
-    field_types.insert(
+    field_overrides.insert(
         ("issuing_cardholder_authorization_controls", "spending_limits"),
         ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
     );
-    field_types.insert(("payment_intent", "source"), ("PaymentSource", "Option<PaymentSource>"));
-    field_types.insert(
+    field_overrides
+        .insert(("payment_intent", "source"), ("PaymentSource", "Option<PaymentSource>"));
+    field_overrides.insert(
         ("payment_intent_next_action", "use_stripe_sdk"),
         ("", "Option<serde_json::Value>"),
     );
-    field_types.insert(("sku", "attributes"), ("Metadata", "Option<Metadata>"));
-    field_types
+    field_overrides.insert(("sku", "attributes"), ("Metadata", "Option<Metadata>"));
+    field_overrides
         .insert(("subscription", "default_source"), ("PaymentSource", "Option<PaymentSource>"));
+
+    // Renames for params structs
+    schema_renames.insert("create_account_company", "create_company");
+    schema_renames.insert("create_account_individual", "create_person");
+    schema_renames.insert("create_account_requested_capabilities", "requested_capability");
+    schema_renames.insert("create_account_tos_acceptance", "accept_tos");
+    field_overrides.insert(
+        ("create_account", "business_profile"),
+        ("BusinessProfile", "Option<BusinessProfile>"),
+    );
+    field_overrides.insert(("create_company", "address"), ("Address", "Option<Address>"));
+    field_overrides.insert(("create_company", "address_kana"), ("Address", "Option<AddressKana>"));
+    field_overrides
+        .insert(("create_company", "address_kanji"), ("Address", "Option<AddressKanji>"));
+    field_overrides.insert(("create_individual", "address"), ("Address", "Option<Address>"));
+    field_overrides
+        .insert(("create_individual", "address_kana"), ("Address", "Option<AddressKana>"));
+    field_overrides
+        .insert(("create_individual", "address_kanji"), ("Address", "Option<AddressKanji>"));
+    field_overrides.insert(
+        ("create_payment_method", "billing_details"),
+        ("BillingDetails", "Option<BillingDetails>"),
+    );
 
     // Generate files
     let meta = Metadata {
         spec: &spec,
+        ids,
         objects,
         dependents,
         requests,
-        id_renames,
         schema_renames,
-        field_types,
+        field_overrides,
     };
     for object in &meta.objects {
         if object.starts_with("deleted_") {
@@ -196,18 +232,18 @@ fn main() {
 }
 
 struct Metadata<'a> {
-    spec: &'a Value,
+    spec: &'a Json,
+    /// A map of `objects` to their rust id type
+    ids: BTreeMap<&'a str, String>,
     /// The set of schemas which should implement `Object`.
     /// These have both an `id` property and on `object` property.
     objects: BTreeSet<&'a str>,
     /// A one to many map of schema to depending types.
     dependents: BTreeMap<&'a str, BTreeSet<&'a str>>,
-    /// How a particular id type shouldd be renamed.
-    id_renames: BTreeMap<&'a str, &'a str>,
     /// How a particular schema should be renamed.
     schema_renames: BTreeMap<&'a str, &'a str>,
     /// An override for the rust-type of a particular object/field pair.
-    field_types: BTreeMap<(&'a str, &'a str), (&'a str, &'a str)>,
+    field_overrides: BTreeMap<(&'a str, &'a str), (&'a str, &'a str)>,
     /// A one to many map of _objects_ to requests which should be
     /// implemented for that object.
     ///
@@ -216,14 +252,6 @@ struct Metadata<'a> {
 }
 
 impl<'a> Metadata<'a> {
-    fn id_to_rust_type(&self, id: &str) -> String {
-        if let Some(rename) = self.id_renames.get(&id) {
-            rename.to_camel_case() + "Id"
-        } else {
-            id.replace('.', "_").to_camel_case() + "Id"
-        }
-    }
-
     fn schema_to_rust_type(&self, schema: &str) -> String {
         if let Some(rename) = self.schema_renames.get(&schema) {
             rename.to_camel_case()
@@ -281,6 +309,30 @@ impl Generated {
         }
         Ok(())
     }
+
+    fn insert_struct(&mut self, name: impl Into<String>, struct_: InferredStruct) {
+        if let Err(other) = self.try_insert_struct(name, struct_.clone()) {
+            panic!("conflicting structs are not compatible:\n\t{:?}\n\t!=\n\t{:?}", struct_, other);
+        }
+    }
+
+    fn try_insert_struct(
+        &mut self,
+        name: impl Into<String>,
+        struct_: InferredStruct,
+    ) -> Result<(), &InferredStruct> {
+        let name = name.into();
+        if !self.inferred_structs.contains_key(&name) {
+            self.inferred_structs.insert(name, struct_);
+            return Ok(());
+        }
+        if let Some(other) = self.inferred_structs.get(&name) {
+            if struct_.schema != other.schema {
+                return Err(other);
+            }
+        }
+        Ok(())
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -299,28 +351,24 @@ struct InferredUnion {
 #[derive(Clone, Debug, PartialEq)]
 struct InferredStruct {
     field: String,
-    schema: Value,
+    schema: Json,
 }
 
 #[derive(Clone, Debug, PartialEq)]
 struct InferredParams {
     method: String,
     rust_type: String,
-    parameters: Value,
+    parameters: Json,
 }
 
 fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     let mut out = String::new();
     let mut state = Generated::default();
+    let id_type = meta.ids.get(object);
     let struct_name = meta.schema_to_rust_type(object);
     let schema = &meta.spec["components"]["schemas"][object];
     let schema_title = schema["title"].as_str().unwrap();
     let deleted_schema = &meta.spec["components"]["schemas"][format!("deleted_{}", object)];
-    let id_type = if !schema["properties"]["id"].is_null() {
-        schema["x-resourceId"].as_str().map(|id| meta.id_to_rust_type(id))
-    } else {
-        None
-    };
     let fields = match schema["properties"].as_object() {
         Some(some) => some,
         None => return String::new(),
@@ -346,7 +394,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     out.push_str("pub struct ");
     out.push_str(&struct_name);
     out.push_str(" {\n");
-    if let Some(id_type) = &id_type {
+    if let Some(id_type) = id_type {
         state.use_ids.insert(id_type.clone());
         if let Some(doc) = schema["properties"]["id"]["description"].as_str() {
             print_doc_comment(&mut out, doc, 1);
@@ -453,38 +501,6 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         *state.generated_schemas.entry(schema_name).or_default() = true;
     }
 
-    for (struct_name, struct_) in state.inferred_structs.clone() {
-        let fields = match struct_.schema["properties"].as_object() {
-            Some(some) => some,
-            None => {
-                // TODO: Handle these objects
-                // eprintln!("warn: {} has no properties ({})", struct_name, struct_.schema);
-                continue;
-            }
-        };
-        out.push('\n');
-        out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
-        out.push_str("pub struct ");
-        out.push_str(&struct_name.to_camel_case());
-        out.push_str(" {\n");
-        for (key, field) in fields {
-            let required = struct_.schema["required"]
-                .as_array()
-                .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
-                .unwrap_or(false);
-            out.push('\n');
-            out.push_str(&gen_field(
-                &mut state,
-                meta,
-                &struct_name.to_snake_case(),
-                &key,
-                &field,
-                required,
-            ));
-        }
-        out.push_str("}\n");
-    }
-
     for (_, params) in state.inferred_parameters.clone() {
         let parameters = match params.parameters.as_array() {
             Some(some) => some.as_slice(),
@@ -498,8 +514,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         out.push_str("<'a> {\n");
         let mut initializers: Vec<(String, String, bool)> = Vec::new();
         for param in parameters {
-            if param["in"].as_str() != Some("query") {
-                continue;
+            match param["in"].as_str() {
+                Some("query") | Some("form") => (),
+                _ => continue,
             }
 
             let param_name = param["name"].as_str().unwrap();
@@ -518,6 +535,20 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             };
             let required = param["required"].as_bool() == Some(true);
             match param_name {
+                // TODO: Handle these unusual params
+                "tiers" | "destination" | "trial_end" | "start_date" | "bank_account" | "card"
+                | "product" => continue,
+                "metadata" => {
+                    print_doc(&mut out);
+                    initializers.push(("metadata".into(), "Metadata".into(), required));
+                    state.use_params.insert("Metadata");
+                    if required {
+                        out.push_str("    metadata: Metadata,\n");
+                    } else {
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
+                        out.push_str("    metadata: Option<Metadata>,\n");
+                    }
+                }
                 "expand" => {
                     print_doc(&mut out);
                     initializers.push(("expand".into(), "&'a [&'a str]".into(), false));
@@ -567,59 +598,27 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         out.push_str(">,\n");
                     }
                 }
-                "charge" => {
+                object
+                    if meta.ids.contains_key(object)
+                        && param["schema"]["type"].as_str() == Some("string") =>
+                {
+                    let id_type = &meta.ids[object];
                     print_doc(&mut out);
-                    initializers.push(("charge".into(), "ChargeId".into(), required));
-                    state.use_ids.insert("ChargeId".into());
+                    initializers.push((object.into(), id_type.clone(), required));
+                    state.use_ids.insert(id_type.clone());
                     if required {
-                        out.push_str("    charge: ChargeId,\n");
+                        out.push_str("    ");
+                        out.push_str(object);
+                        out.push_str(": ");
+                        out.push_str(&id_type);
+                        out.push_str(",\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    charge: Option<ChargeId>,\n");
-                    }
-                }
-                "customer" => {
-                    print_doc(&mut out);
-                    state.use_ids.insert("CustomerId".into());
-                    initializers.push(("customer".into(), "CustomerId".into(), required));
-                    if required {
-                        out.push_str("    customer: CustomerId,\n");
-                    } else {
-                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    customer: Option<CustomerId>,\n");
-                    }
-                }
-                "invoice" => {
-                    print_doc(&mut out);
-                    state.use_ids.insert("InvoiceId".into());
-                    initializers.push(("invoice".into(), "InvoiceId".into(), required));
-                    if required {
-                        out.push_str("    invoice: InvoiceId,\n");
-                    } else {
-                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    invoice: Option<InvoiceId>,\n");
-                    }
-                }
-                "plan" => {
-                    print_doc(&mut out);
-                    initializers.push(("plan".into(), "PlanId".into(), required));
-                    state.use_ids.insert("PlanId".into());
-                    if required {
-                        out.push_str("    plan: PlanId,\n");
-                    } else {
-                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    plan: Option<PlanId>,\n");
-                    }
-                }
-                "subscription" => {
-                    print_doc(&mut out);
-                    initializers.push(("subscription".into(), "SubscriptionId".into(), required));
-                    state.use_ids.insert("SubscriptionId".into());
-                    if required {
-                        out.push_str("    subscription: SubscriptionId,\n");
-                    } else {
-                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    subscription: Option<SubscriptionId>,\n");
+                        out.push_str("    ");
+                        out.push_str(object);
+                        out.push_str(": Option<");
+                        out.push_str(&id_type);
+                        out.push_str(">,\n");
                     }
                 }
                 _ => {
@@ -637,6 +636,58 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str("    ");
                             out.push_str(param_rename);
                             out.push_str(": Option<bool>,\n");
+                        }
+                    } else if param["schema"]["type"].as_str() == Some("integer") {
+                        let rust_type = if param["schema"]["format"].as_str() == Some("unix-time")
+                            || param_name.ends_with("_date")
+                        {
+                            state.use_params.insert("Timestamp");
+                            "Timestamp"
+                        } else if param_name == "monthly_anchor" {
+                            "u8"
+                        } else if param_name.contains("days") {
+                            "u32"
+                        } else if param_name.contains("count")
+                            || param_name.contains("size")
+                            || param_name.contains("quantity")
+                        {
+                            "u64"
+                        } else {
+                            "i64"
+                        };
+
+                        print_doc(&mut out);
+                        initializers.push((param_rename.into(), rust_type.into(), required));
+                        if required {
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": ");
+                            out.push_str(&rust_type);
+                            out.push_str(",\n");
+                        } else {
+                            out.push_str(
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
+                            );
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": Option<");
+                            out.push_str(&rust_type);
+                            out.push_str(">,\n");
+                        }
+                    } else if param["schema"]["type"].as_str() == Some("number") {
+                        print_doc(&mut out);
+                        initializers.push((param_rename.into(), "f64".into(), required));
+                        if required {
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": f64,\n");
+                        } else {
+                            out.push_str(
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
+                            );
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": Option<f64>,\n");
                         }
                     } else if param["schema"]["anyOf"][0]["title"].as_str()
                         == Some("range_query_specs")
@@ -705,10 +756,73 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str(&enum_name);
                             out.push_str(">,\n");
                         }
+                    } else if (param_name == "currency" || param_name.ends_with("_currency"))
+                        && param["schema"]["type"].as_str() == Some("string")
+                    {
+                        print_doc(&mut out);
+                        initializers.push((param_rename.into(), "Currency".into(), required));
+                        state.use_resources.insert("Currency".into());
+                        if required {
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": Currency,\n");
+                        } else {
+                            out.push_str(
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
+                            );
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": Option<Currency>,\n");
+                        }
+                    } else if param_name != "id"
+                        && param["schema"]["type"].as_str() == Some("string")
+                    {
+                        print_doc(&mut out);
+                        initializers.push((param_rename.into(), "&'a str".into(), required));
+                        if required {
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": &'a str,\n");
+                        } else {
+                            out.push_str(
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
+                            );
+                            out.push_str("    ");
+                            out.push_str(param_rename);
+                            out.push_str(": Option<&'a str>,\n");
+                        }
+                    } else if param["schema"]["type"].as_str() == Some("object")
+                        || param["schema"]["type"].as_str() == Some("array")
+                        || param["schema"]["$ref"].is_string()
+                        || param["schema"]["anyOf"].is_array()
+                    {
+                        let rust_type = gen_field_rust_type(
+                            &mut state,
+                            meta,
+                            &params.rust_type.to_snake_case(),
+                            &param_rename,
+                            &param["schema"],
+                            required,
+                        );
+                        initializers.push((param_rename.into(), rust_type.clone(), required));
+
+                        if !required {
+                            out.push_str(
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
+                            );
+                        }
+                        out.push_str("    ");
+                        out.push_str(param_rename);
+                        out.push_str(": ");
+                        out.push_str(&rust_type);
+                        out.push_str(",\n");
                     } else if required {
-                        panic!("error: skipped required parameter: {}", param_name);
+                        panic!(
+                            "error: skipped required parameter: {} => {:?}",
+                            param_name, param["schema"]
+                        );
                     } else {
-                        eprintln!("warn: skipping optional parameter: {}", param_name);
+                        eprintln!("warning: skipping optional parameter: {}", param_name);
                     }
                 }
             }
@@ -747,6 +861,50 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         out.push_str("        }\n");
         out.push_str("    }\n");
         out.push_str("}\n");
+    }
+
+    let mut emitted_structs = BTreeSet::new();
+    while emitted_structs
+        .difference(&state.inferred_structs.keys().cloned().collect::<BTreeSet<_>>())
+        .count()
+        > 0
+    {
+        for (struct_name, struct_) in state.inferred_structs.clone() {
+            if emitted_structs.contains(&struct_name) {
+                continue;
+            }
+
+            emitted_structs.insert(struct_name.clone());
+            let fields = match struct_.schema["properties"].as_object() {
+                Some(some) => some,
+                None => {
+                    // TODO: Handle these objects
+                    // eprintln!("warning: {} has no properties ({})", struct_name, struct_.schema);
+                    continue;
+                }
+            };
+            out.push('\n');
+            out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+            out.push_str("pub struct ");
+            out.push_str(&struct_name.to_camel_case());
+            out.push_str(" {\n");
+            for (key, field) in fields {
+                let required = struct_.schema["required"]
+                    .as_array()
+                    .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
+                    .unwrap_or(false);
+                out.push('\n');
+                out.push_str(&gen_field(
+                    &mut state,
+                    meta,
+                    &struct_name.to_snake_case(),
+                    &key,
+                    &field,
+                    required,
+                ));
+            }
+            out.push_str("}\n");
+        }
     }
 
     for (union_name, union_) in state.inferred_unions.clone() {
@@ -789,6 +947,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         out.push_str(&enum_name.to_camel_case());
         out.push_str(" {\n");
         for wire_name in &enum_.options {
+            if wire_name.is_empty() {
+                continue;
+            }
             let variant_name = wire_name.to_camel_case();
             if &variant_name.to_snake_case() != wire_name {
                 out.push_str("    #[serde(rename = \"");
@@ -858,7 +1019,7 @@ fn gen_field(
     meta: &Metadata,
     object: &str,
     field_name: &str,
-    field: &Value,
+    field: &Json,
     required: bool,
 ) -> String {
     let mut out = String::new();
@@ -895,10 +1056,10 @@ fn gen_field_rust_type(
     meta: &Metadata,
     object: &str,
     field_name: &str,
-    field: &Value,
+    field: &Json,
     required: bool,
 ) -> String {
-    if let Some(&(use_path, rust_type)) = meta.field_types.get(&(object, field_name)) {
+    if let Some(&(use_path, rust_type)) = meta.field_overrides.get(&(object, field_name)) {
         match use_path {
             "" | "String" => (),
             "Metadata" => {
@@ -978,20 +1139,23 @@ fn gen_field_rust_type(
                 state.use_params.insert("List");
                 let element = &field["properties"]["data"]["items"];
                 let element_field_name = if field_name.ends_with("s") {
-                    &field_name[0..field_name.len() - 1]
+                    field_name[0..field_name.len() - 1].into()
+                } else if field_name.ends_with("ies") {
+                    format!("{}y", &field_name[0..field_name.len() - 3])
                 } else {
-                    field_name
+                    field_name.into()
                 };
                 let element_type =
-                    gen_field_rust_type(state, meta, object, element_field_name, element, true);
+                    gen_field_rust_type(state, meta, object, &element_field_name, element, true);
 
                 // N.B. return immediately; we use `Default` for list rather than `Option`
                 return format!("List<{}>", element_type);
             } else {
-                let struct_name =
-                    format!("{}_{}", meta.schema_to_rust_type(object), field_name).to_camel_case();
+                let struct_schema =
+                    format!("{}_{}", meta.schema_to_rust_type(object), field_name).to_snake_case();
+                let struct_name = meta.schema_to_rust_type(&struct_schema);
                 let struct_ = InferredStruct { field: field_name.into(), schema: field.clone() };
-                state.inferred_structs.insert(struct_name.clone(), struct_);
+                state.insert_struct(struct_name.clone(), struct_);
                 struct_name
             }
         }
@@ -1012,14 +1176,16 @@ fn gen_field_rust_type(
             } else if let Some(any_of) = field["anyOf"].as_array().or(field["oneOf"].as_array()) {
                 if any_of.len() == 1 {
                     gen_field_rust_type(state, meta, object, field_name, &any_of[0], true)
+                } else if any_of.len() == 2 && any_of[1]["enum"][0].as_str() == Some("") {
+                    gen_field_rust_type(state, meta, object, field_name, &any_of[0], true)
                 } else if field["x-expansionResources"].is_object() {
                     let ty_ = gen_field_rust_type(
                         state,
                         meta,
                         object,
                         field_name,
-                        &serde_json::json!({
-                            "oneOf": Value::Array(field["x-expansionResources"]["oneOf"].as_array().unwrap()
+                        &json!({
+                            "oneOf": Json::Array(field["x-expansionResources"]["oneOf"].as_array().unwrap()
                             .iter()
                             .filter(|v| !v["$ref"].as_str().unwrap().starts_with("#/components/schemas/deleted_"))
                             .cloned()
@@ -1029,6 +1195,10 @@ fn gen_field_rust_type(
                     );
                     state.use_params.insert("Expandable");
                     format!("Expandable<{}>", ty_)
+                } else if any_of[0]["title"].as_str() == Some("range_query_specs") {
+                    state.use_params.insert("RangeQuery");
+                    state.use_params.insert("Timestamp");
+                    "RangeQuery<Timestamp>".into()
                 } else {
                     let union_schema = format!("{}_{}", object, field_name).to_snake_case();
                     let union_name = meta.schema_to_rust_type(&union_schema);
@@ -1039,7 +1209,10 @@ fn gen_field_rust_type(
                             .map(|x| {
                                 let schema_name = x["$ref"]
                                     .as_str()
-                                    .unwrap()
+                                    .expect(&format!(
+                                        "invalid union for `{}`:  {:?}",
+                                        union_schema, field
+                                    ))
                                     .trim_start_matches("#/components/schemas/");
                                 let type_name = meta.schema_to_rust_type(schema_name);
                                 if meta.objects.contains(schema_name)
@@ -1062,8 +1235,7 @@ fn gen_field_rust_type(
                     union_name
                 }
             } else {
-                eprintln!("{}.{}: {}\n", object, field_name, field);
-                unimplemented!()
+                panic!("unhandled field type for `{}.{}`: {}\n", object, field_name, field)
             }
         }
     };
@@ -1091,8 +1263,31 @@ fn gen_impl_requests(
     for path in requests {
         lazy_static! {
             static ref P_TAG: Regex = Regex::new("<p>|</p>").unwrap();
+            static ref BR_TAG: Regex = Regex::new("<br ?/?>").unwrap();
             static ref A_DOC_TAG: Regex =
                 Regex::new("<a href=\"/docs/([^\"]+)\">([^<]+)</a>").unwrap();
+            static ref A_HASH_TAG: Regex = Regex::new("<a href=\"#([^\"]+)\">([^<]+)</a>").unwrap();
+            static ref A_HTTP_TAG: Regex =
+                Regex::new("<a href=\"(https?://[^\"]+)\">([^<]+)</a>").unwrap();
+            static ref CODE_TAG: Regex = Regex::new("<code>|</code>").unwrap();
+            static ref AMOUNT_OPEN_TAG: Regex = Regex::new("<amount>").unwrap();
+            static ref AMOUNT_CLOSE_TAG: Regex = Regex::new("</amount>").unwrap();
+            static ref CURRENCY_OPEN_TAG: Regex = Regex::new("<currency>").unwrap();
+            static ref CURRENCY_CLOSE_TAG: Regex = Regex::new("</currency>").unwrap();
+        }
+        fn to_doc_comment(request: &Json) -> String {
+            let doc = request["description"].as_str().unwrap_or_default();
+            let doc = P_TAG.replace_all(&doc, "");
+            let doc = BR_TAG.replace_all(&doc, "\n");
+            let doc = A_DOC_TAG.replace_all(&doc, "[${2}](https://stripe.com/docs/${1})");
+            let doc = A_HASH_TAG.replace_all(&doc, "[${2}](https://stripe.com/docs/api#${1})");
+            let doc = A_HTTP_TAG.replace_all(&doc, "[$2]($1)");
+            let doc = CODE_TAG.replace_all(&doc, "`");
+            let doc = AMOUNT_OPEN_TAG.replace_all(&doc, "");
+            let doc = AMOUNT_CLOSE_TAG.replace_all(&doc, "00"); // add cents to get correct "integer" argument
+            let doc = CURRENCY_OPEN_TAG.replace_all(&doc, "$"); // add locale formatting (we can only support one easily in our rust docs...)
+            let doc = CURRENCY_CLOSE_TAG.replace_all(&doc, "");
+            doc.into()
         }
 
         let request = &meta.spec["paths"][path];
@@ -1108,13 +1303,14 @@ fn gen_impl_requests(
             {
                 continue; // skip generating this unusual request (for now...)
             }
-            let doc_comment =
-                P_TAG.replace_all(get_request["description"].as_str().unwrap_or_default(), "");
-            let doc_comment =
-                A_DOC_TAG.replace_all(&doc_comment, "[${2}](https://stripe.com/docs/${1})");
+            let doc_comment = to_doc_comment(get_request);
             if ok_schema["properties"]["object"]["enum"][0].as_str() == Some("list") {
                 if segments.len() == 1 {
-                    let params_name = format!("{}ListParams", rust_struct);
+                    let params_name = if rust_struct.ends_with("y") {
+                        format!("List{}ies", &rust_struct[0..rust_struct.len() - 1])
+                    } else {
+                        format!("List{}s", rust_struct)
+                    };
                     let params = InferredParams {
                         method: "list".into(),
                         rust_type: params_name.clone(),
@@ -1136,17 +1332,18 @@ fn gen_impl_requests(
                     out.push_str("\", &params)\n");
                     out.push_str("    }\n");
                     methods.push(out);
-                } else {
-                    // eprintln!("OTHER: {} {:?}", path, segments);
                 }
             } else if segments.len() == 2 {
-                let id_param = get_request["parameters"].as_array().and_then(|arr| {
-                    arr.iter().find(|p| p["in"].as_str() == Some("path"))
-                });
-                let id_param = match id_param { Some(p) => p, None => continue };
-                let expand_param = get_request["parameters"].as_array().and_then(|arr| {
-                    arr.iter().find(|p| p["name"].as_str() == Some("expand"))
-                });
+                let id_param = get_request["parameters"]
+                    .as_array()
+                    .and_then(|arr| arr.iter().find(|p| p["in"].as_str() == Some("path")));
+                let id_param = match id_param {
+                    Some(p) => p,
+                    None => continue,
+                };
+                let expand_param = get_request["parameters"]
+                    .as_array()
+                    .and_then(|arr| arr.iter().find(|p| p["name"].as_str() == Some("expand")));
                 if let Some(id_type) = &object_id {
                     assert_eq!(id_param["required"].as_bool(), Some(true));
                     assert_eq!(id_param["style"].as_str(), Some("simple"));
@@ -1176,8 +1373,75 @@ fn gen_impl_requests(
                     out.push_str("    }\n");
                     methods.push(out);
                 }
+            }
+        }
+        let post_request = &request["post"];
+        if post_request.is_object() {
+            let ok_schema =
+                &post_request["responses"]["200"]["content"]["application/json"]["schema"];
+            let err_schema =
+                &post_request["responses"]["default"]["content"]["application/json"]["schema"];
+            if ok_schema.is_null()
+                || err_schema["$ref"].as_str() != Some("#/components/schemas/error")
+            {
+                continue; // skip generating this unusual request (for now...)
+            }
+            let return_type = if let Some(path) = ok_schema["$ref"].as_str() {
+                assert!(ok_schema["nullable"].is_null());
+                let schema = path.trim_start_matches("#/components/schemas/");
+                meta.schema_to_rust_type(schema)
             } else {
-                // eprintln!("OTHER: {} {:?}", path, segments);
+                continue;
+            };
+
+            let doc_comment = to_doc_comment(post_request);
+            if segments.len() == 1 {
+                if !doc_comment.contains("Create") && !doc_comment.contains("create") {
+                    continue; // skip requests which aren't obviously `create` for now
+                }
+
+                // Just make sure I don't miss anything unexpected
+                let query_params: &[_] =
+                    post_request["parameters"].as_array().map(|x| x.as_ref()).unwrap_or_default();
+                assert!(query_params.is_empty());
+
+                // Construct `parameters` from the request body schema
+                let create_schema = &post_request["requestBody"]["content"]
+                    ["application/x-www-form-urlencoded"]["schema"];
+                let mut create_parameters = Vec::new();
+                for (key, value) in create_schema["properties"].as_object().unwrap() {
+                    create_parameters.push(json!({
+                        "in": "form",
+                        "name": key,
+                        "description": value["description"],
+                        "required": create_schema["required"].as_array().map(|arr| {
+                            arr.iter().any(|v| v.as_str() == Some(&key))
+                        }),
+                        "schema": value,
+                        "style": "deepObject"
+                    }));
+                }
+                let params_name = format!("Create{}", rust_struct);
+                let params = InferredParams {
+                    method: "create".into(),
+                    rust_type: params_name.clone(),
+                    parameters: Json::Array(create_parameters),
+                };
+                state.inferred_parameters.insert(params_name.to_snake_case(), params);
+
+                let mut out = String::new();
+                out.push('\n');
+                print_doc_comment(&mut out, &doc_comment, 1);
+                out.push_str("    pub fn create(client: &Client, params: ");
+                out.push_str(&params_name);
+                out.push_str("<'_>) -> Response<");
+                out.push_str(&return_type);
+                out.push_str("> {\n");
+                out.push_str("        client.post_form(\"/");
+                out.push_str(&segments.join("/"));
+                out.push_str("\", &params)\n");
+                out.push_str("    }\n");
+                methods.push(out);
             }
         }
         let delete_request = &request["delete"];
@@ -1192,15 +1456,15 @@ fn gen_impl_requests(
                 continue; // skip generating this unusual request (for now...)
             }
 
-            let doc_comment =
-                P_TAG.replace_all(get_request["description"].as_str().unwrap_or_default(), "");
-            let doc_comment =
-                A_DOC_TAG.replace_all(&doc_comment, "[${2}](https://stripe.com/docs/${1})");
+            let doc_comment = to_doc_comment(delete_request);
             if segments.len() == 2 {
-                let id_param = get_request["parameters"].as_array().and_then(|arr| {
-                    arr.iter().find(|p| p["in"].as_str() == Some("path"))
-                });
-                let id_param = match id_param { Some(p) => p, None => continue };
+                let id_param = delete_request["parameters"]
+                    .as_array()
+                    .and_then(|arr| arr.iter().find(|p| p["in"].as_str() == Some("path")));
+                let id_param = match id_param {
+                    Some(p) => p,
+                    None => continue,
+                };
                 if let Some(id_type) = &object_id {
                     state.use_params.insert("Deleted");
                     assert_eq!(id_param["required"].as_bool(), Some(true));

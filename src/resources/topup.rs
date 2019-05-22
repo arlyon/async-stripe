@@ -83,7 +83,7 @@ pub struct Topup {
 
 impl Topup {
     /// Returns a list of top-ups.
-    pub fn list(client: &Client, params: TopupListParams<'_>) -> Response<List<Topup>> {
+    pub fn list(client: &Client, params: ListTopups<'_>) -> Response<List<Topup>> {
         client.get_query("/topups", &params)
     }
 
@@ -107,7 +107,7 @@ impl Object for Topup {
 
 /// The parameters for `Topup::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct TopupListParams<'a> {
+pub struct ListTopups<'a> {
     /// A positive integer representing how much to transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<RangeQuery<Timestamp>>,
@@ -149,9 +149,9 @@ pub struct TopupListParams<'a> {
     status: Option<TopupStatusFilter>,
 }
 
-impl<'a> TopupListParams<'a> {
+impl<'a> ListTopups<'a> {
     pub fn new() -> Self {
-        TopupListParams {
+        ListTopups {
             amount: Default::default(),
             created: Default::default(),
             ending_before: Default::default(),
@@ -174,7 +174,7 @@ pub enum TopupStatus {
     Succeeded,
 }
 
-/// An enum representing the possible values of an `TopupListParams`'s `status` field.
+/// An enum representing the possible values of an `ListTopups`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TopupStatusFilter {

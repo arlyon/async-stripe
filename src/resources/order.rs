@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{CustomerId, OrderId};
+use crate::ids::{CouponId, CustomerId, OrderId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Charge, Currency, Customer, OrderItem, OrderReturn, Shipping};
 use serde_derive::{Deserialize, Serialize};
@@ -93,7 +93,7 @@ pub struct Order {
     ///
     /// One of `created`, `paid`, `canceled`, `fulfilled`, or `returned`.
     /// More details in the [Orders Guide](https://stripe.com/docs/orders/guide#understanding-order-statuses).
-    pub status: String,
+    pub status: OrderStatus,
 
     /// The timestamps at which the order status was updated.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -111,8 +111,13 @@ impl Order {
     /// Returns a list of your orders.
     ///
     /// The orders are returned sorted by creation date, with the most recently created orders appearing first.
-    pub fn list(client: &Client, params: OrderListParams<'_>) -> Response<List<Order>> {
+    pub fn list(client: &Client, params: ListOrders<'_>) -> Response<List<Order>> {
         client.get_query("/orders", &params)
+    }
+
+    /// Creates a new order object.
+    pub fn create(client: &Client, params: CreateOrder<'_>) -> Response<Order> {
+        client.post_form("/orders", &params)
     }
 
     /// Retrieves the details of an existing order.
@@ -194,9 +199,66 @@ pub struct StatusTransitions {
     pub returned: Option<Timestamp>,
 }
 
+/// The parameters for `Order::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateOrder<'a> {
+    /// A coupon code that represents a discount to be applied to this order.
+    ///
+    /// Must be one-time duration and in same currency as the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    coupon: Option<CouponId>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    currency: Currency,
+
+    /// The ID of an existing customer to use for this order.
+    ///
+    /// If provided, the customer email and shipping address will be used to create the order.
+    /// Subsequently, the customer will also be charged to pay the order.
+    /// If `email` or `shipping` are also provided, they will override the values retrieved from the customer object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<CustomerId>,
+
+    /// The email address of the customer placing the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    email: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    items: Option<Vec<CreateOrderItems>>,
+
+    /// A set of key-value pairs that you can attach to an order object.
+    ///
+    /// Limited to 500 characters.
+    /// Metadata can be useful for storing additional information about the order in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    shipping: Option<CreateOrderShipping>,
+}
+
+impl<'a> CreateOrder<'a> {
+    pub fn new(currency: Currency) -> Self {
+        CreateOrder {
+            coupon: Default::default(),
+            currency,
+            customer: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            items: Default::default(),
+            metadata: Default::default(),
+            shipping: Default::default(),
+        }
+    }
+}
+
 /// The parameters for `Order::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct OrderListParams<'a> {
+pub struct ListOrders<'a> {
     /// Date this order was created.
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
@@ -215,6 +277,8 @@ pub struct OrderListParams<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     expand: &'a [&'a str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ids: Option<Vec<String>>,
 
     /// A limit on the number of objects to be returned.
     ///
@@ -228,17 +292,52 @@ pub struct OrderListParams<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<&'a OrderId>,
+
+    /// Only return orders that have the given status.
+    ///
+    /// One of `created`, `paid`, `fulfilled`, or `refunded`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status: Option<OrderStatusFilter>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status_transitions: Option<ListOrdersStatusTransitions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    upstream_ids: Option<Vec<String>>,
 }
 
-impl<'a> OrderListParams<'a> {
+impl<'a> ListOrders<'a> {
     pub fn new() -> Self {
-        OrderListParams {
+        ListOrders {
             created: Default::default(),
             customer: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
+            ids: Default::default(),
             limit: Default::default(),
             starting_after: Default::default(),
+            status: Default::default(),
+            status_transitions: Default::default(),
+            upstream_ids: Default::default(),
         }
     }
+}
+
+/// An enum representing the possible values of an `Order`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum OrderStatus {
+    Canceled,
+    Created,
+    Fulfilled,
+    Paid,
+    Returned,
+}
+
+/// An enum representing the possible values of an `ListOrders`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum OrderStatusFilter {
+    Created,
+    Fulfilled,
+    Paid,
+    Refunded,
 }

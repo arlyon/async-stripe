@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::FileLinkId;
+use crate::ids::{FileId, FileLinkId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::File;
 use serde_derive::{Deserialize, Serialize};
@@ -46,8 +46,13 @@ pub struct FileLink {
 
 impl FileLink {
     /// Returns a list of file links.
-    pub fn list(client: &Client, params: FileLinkListParams<'_>) -> Response<List<FileLink>> {
+    pub fn list(client: &Client, params: ListFileLinks<'_>) -> Response<List<FileLink>> {
         client.get_query("/file_links", &params)
+    }
+
+    /// Creates a new file link object.
+    pub fn create(client: &Client, params: CreateFileLink<'_>) -> Response<FileLink> {
+        client.post_form("/file_links", &params)
     }
 
     /// Retrieves the file link with the given ID.
@@ -66,9 +71,43 @@ impl Object for FileLink {
     }
 }
 
+/// The parameters for `FileLink::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateFileLink<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// A future timestamp after which the link will no longer be usable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expires_at: Option<Timestamp>,
+
+    /// The ID of the file.
+    ///
+    /// The file's `purpose` must be one of the following: `business_icon`, `business_logo`, `customer_signature`, `dispute_evidence`, `finance_report_run`, `pci_document`, `sigma_scheduled_query`, or `tax_document_user_upload`.
+    file: FileId,
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+}
+
+impl<'a> CreateFileLink<'a> {
+    pub fn new(file: FileId) -> Self {
+        CreateFileLink {
+            expand: Default::default(),
+            expires_at: Default::default(),
+            file,
+            metadata: Default::default(),
+        }
+    }
+}
+
 /// The parameters for `FileLink::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct FileLinkListParams<'a> {
+pub struct ListFileLinks<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
@@ -89,6 +128,10 @@ pub struct FileLinkListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     expired: Option<bool>,
 
+    /// Only return links for the given file.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    file: Option<FileId>,
+
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
@@ -103,13 +146,14 @@ pub struct FileLinkListParams<'a> {
     starting_after: Option<&'a FileLinkId>,
 }
 
-impl<'a> FileLinkListParams<'a> {
+impl<'a> ListFileLinks<'a> {
     pub fn new() -> Self {
-        FileLinkListParams {
+        ListFileLinks {
             created: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             expired: Default::default(),
+            file: Default::default(),
             limit: Default::default(),
             starting_after: Default::default(),
         }

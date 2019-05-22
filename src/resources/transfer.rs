@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::TransferId;
+use crate::ids::{SourceTransactionId, TransferId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BalanceTransaction, Charge, Currency, TransferReversal};
 use serde_derive::{Deserialize, Serialize};
@@ -74,7 +74,7 @@ pub struct Transfer {
     ///
     /// One of `card` or `bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_type: Option<String>,
+    pub source_type: Option<TransferSourceType>,
 
     /// A string that identifies this transaction as part of a group.
     ///
@@ -87,8 +87,15 @@ impl Transfer {
     /// Returns a list of existing transfers sent to connected accounts.
     ///
     /// The transfers are returned in sorted order, with the most recently created transfers appearing first.
-    pub fn list(client: &Client, params: TransferListParams<'_>) -> Response<List<Transfer>> {
+    pub fn list(client: &Client, params: ListTransfers<'_>) -> Response<List<Transfer>> {
         client.get_query("/transfers", &params)
+    }
+
+    /// To send funds from your Stripe account to a connected account, you create a new transfer object.
+    ///
+    /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the transfer amount, or you’ll receive an “Insufficient Funds” error.
+    pub fn create(client: &Client, params: CreateTransfer<'_>) -> Response<Transfer> {
+        client.post_form("/transfers", &params)
     }
 
     /// Retrieves the details of an existing transfer.
@@ -109,9 +116,72 @@ impl Object for Transfer {
     }
 }
 
+/// The parameters for `Transfer::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateTransfer<'a> {
+    /// A positive integer in %s representing how much to transfer.
+    amount: i64,
+
+    /// 3-letter [ISO code for currency](https://stripe.com/docs/payouts).
+    currency: Currency,
+
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// You can use this parameter to transfer funds from a charge before they are added to your available balance.
+    ///
+    /// A pending balance will transfer immediately but the funds will not become available until the original charge becomes available.
+    /// [See the Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-availability) for details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    source_transaction: Option<SourceTransactionId>,
+
+    /// The source balance to use for this transfer.
+    ///
+    /// One of `bank_account` or `card`.
+    /// For most users, this will default to `card`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    source_type: Option<TransferSourceType>,
+
+    /// A string that identifies this transaction as part of a group.
+    ///
+    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#grouping-transactions) for details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    transfer_group: Option<&'a str>,
+}
+
+impl<'a> CreateTransfer<'a> {
+    pub fn new(amount: i64, currency: Currency) -> Self {
+        CreateTransfer {
+            amount,
+            currency,
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            source_transaction: Default::default(),
+            source_type: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
+}
+
 /// The parameters for `Transfer::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct TransferListParams<'a> {
+pub struct ListTransfers<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
@@ -138,16 +208,29 @@ pub struct TransferListParams<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<&'a TransferId>,
+
+    /// Only return transfers with the specified transfer group.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    transfer_group: Option<&'a str>,
 }
 
-impl<'a> TransferListParams<'a> {
+impl<'a> ListTransfers<'a> {
     pub fn new() -> Self {
-        TransferListParams {
+        ListTransfers {
             created: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
             starting_after: Default::default(),
+            transfer_group: Default::default(),
         }
     }
+}
+
+/// An enum representing the possible values of an `Transfer`'s `source_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TransferSourceType {
+    BankAccount,
+    Card,
 }

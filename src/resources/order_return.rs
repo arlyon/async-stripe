@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::OrderReturnId;
+use crate::ids::{OrderId, OrderReturnId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use crate::resources::{Currency, Order, OrderItem, Refund};
 use serde_derive::{Deserialize, Serialize};
@@ -46,7 +46,7 @@ impl OrderReturn {
     /// Returns a list of your order returns.
     ///
     /// The returns are returned sorted by creation date, with the most recently created return appearing first.
-    pub fn list(client: &Client, params: OrderReturnListParams<'_>) -> Response<List<OrderReturn>> {
+    pub fn list(client: &Client, params: ListOrderReturns<'_>) -> Response<List<OrderReturn>> {
         client.get_query("/order_returns", &params)
     }
 
@@ -70,7 +70,7 @@ impl Object for OrderReturn {
 
 /// The parameters for `OrderReturn::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct OrderReturnListParams<'a> {
+pub struct ListOrderReturns<'a> {
     /// Date this return was created.
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
@@ -92,6 +92,10 @@ pub struct OrderReturnListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u64>,
 
+    /// The order to retrieve returns for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    order: Option<OrderId>,
+
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
@@ -100,13 +104,14 @@ pub struct OrderReturnListParams<'a> {
     starting_after: Option<&'a OrderReturnId>,
 }
 
-impl<'a> OrderReturnListParams<'a> {
+impl<'a> ListOrderReturns<'a> {
     pub fn new() -> Self {
-        OrderReturnListParams {
+        ListOrderReturns {
             created: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
+            order: Default::default(),
             starting_after: Default::default(),
         }
     }

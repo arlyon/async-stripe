@@ -81,8 +81,13 @@ impl Sku {
     /// Returns a list of your SKUs.
     ///
     /// The SKUs are returned sorted by creation date, with the most recently created SKUs appearing first.
-    pub fn list(client: &Client, params: SkuListParams<'_>) -> Response<List<Sku>> {
+    pub fn list(client: &Client, params: ListSkus<'_>) -> Response<List<Sku>> {
         client.get_query("/skus", &params)
+    }
+
+    /// Creates a new SKU associated with a product.
+    pub fn create(client: &Client, params: CreateSku<'_>) -> Response<Sku> {
+        client.post_form("/skus", &params)
     }
 
     /// Retrieves the details of an existing SKU.
@@ -92,9 +97,9 @@ impl Sku {
         client.get_query(&format!("/skus/{}", id), &Expand { expand })
     }
 
-    /// Retrieves the details of an existing SKU.
+    /// Delete a SKU.
     ///
-    /// Supply the unique SKU identifier from either a SKU creation request or from the product, and Stripe will return the corresponding SKU information.
+    /// Deleting a SKU is only possible until it has been used in an order.
     pub fn delete(client: &Client, id: &SkuId) -> Response<Deleted<SkuId>> {
         client.delete(&format!("/skus/{}", id))
     }
@@ -132,12 +137,67 @@ pub struct Inventory {
     pub value: Option<String>,
 }
 
+/// The parameters for `Sku::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateSku<'a> {
+    /// Whether the SKU is available for purchase.
+    ///
+    /// Default to `true`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    active: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    attributes: Option<CreateSkuAttributes>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    currency: Currency,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// The URL of an image for this SKU, meant to be displayable to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    image: Option<&'a str>,
+    inventory: CreateSkuInventory,
+
+    /// A set of key-value pairs that you can attach to a SKU object.
+    ///
+    /// It can be useful for storing additional information about the SKU in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    package_dimensions: Option<CreateSkuPackageDimensions>,
+
+    /// The cost of the item as a nonnegative integer in the smallest currency unit (that is, 100 cents to charge $1.00, or 100 to charge ¥100, Japanese Yen being a zero-decimal currency).
+    price: i64,
+}
+
+impl<'a> CreateSku<'a> {
+    pub fn new(currency: Currency, inventory: CreateSkuInventory, price: i64) -> Self {
+        CreateSku {
+            active: Default::default(),
+            attributes: Default::default(),
+            currency,
+            expand: Default::default(),
+            image: Default::default(),
+            inventory,
+            metadata: Default::default(),
+            package_dimensions: Default::default(),
+            price,
+        }
+    }
+}
+
 /// The parameters for `Sku::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct SkuListParams<'a> {
+pub struct ListSkus<'a> {
     /// Only return SKUs that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    attributes: Option<ListSkusAttributes>,
 
     /// A cursor for use in pagination.
     ///
@@ -149,6 +209,8 @@ pub struct SkuListParams<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     expand: &'a [&'a str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ids: Option<Vec<String>>,
 
     /// Only return SKUs that are either in stock or out of stock (e.g., pass `false` to list all SKUs that are out of stock).
     ///
@@ -170,12 +232,14 @@ pub struct SkuListParams<'a> {
     starting_after: Option<&'a SkuId>,
 }
 
-impl<'a> SkuListParams<'a> {
+impl<'a> ListSkus<'a> {
     pub fn new() -> Self {
-        SkuListParams {
+        ListSkus {
             active: Default::default(),
+            attributes: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
+            ids: Default::default(),
             in_stock: Default::default(),
             limit: Default::default(),
             starting_after: Default::default(),

@@ -53,11 +53,15 @@ pub struct PaymentMethod {
 
 impl PaymentMethod {
     /// Returns a list of PaymentMethods for a given Customer.
-    pub fn list(
-        client: &Client,
-        params: PaymentMethodListParams<'_>,
-    ) -> Response<List<PaymentMethod>> {
+    pub fn list(client: &Client, params: ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
         client.get_query("/payment_methods", &params)
+    }
+
+    /// Creates a PaymentMethod object.
+    ///
+    /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.
+    pub fn create(client: &Client, params: CreatePaymentMethod<'_>) -> Response<PaymentMethod> {
+        client.post_form("/payment_methods", &params)
     }
 
     /// Retrieves a PaymentMethod object.
@@ -271,9 +275,56 @@ pub struct ThreeDSecureUsage {
     pub supported: bool,
 }
 
+/// The parameters for `PaymentMethod::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreatePaymentMethod<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_details: Option<BillingDetails>,
+
+    /// The `Customer` to whom the original PaymentMethod is attached.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<CustomerId>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// The PaymentMethod to share.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method: Option<PaymentMethodId>,
+
+    /// The type of the PaymentMethod.
+    ///
+    /// An additional hash is included on the PaymentMethod with a name matching this value.
+    /// It contains additional information specific to the PaymentMethod type.
+    /// Required unless `payment_method` is specified (see the [Shared PaymentMethods](https://stripe.com/docs/payments/payment-methods/connect#shared-paymentmethods) guide).
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_: Option<PaymentMethodType>,
+}
+
+impl<'a> CreatePaymentMethod<'a> {
+    pub fn new() -> Self {
+        CreatePaymentMethod {
+            billing_details: Default::default(),
+            customer: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            payment_method: Default::default(),
+            type_: Default::default(),
+        }
+    }
+}
+
 /// The parameters for `PaymentMethod::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct PaymentMethodListParams<'a> {
+pub struct ListPaymentMethods<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
     customer: CustomerId,
 
@@ -306,9 +357,9 @@ pub struct PaymentMethodListParams<'a> {
     type_: PaymentMethodType,
 }
 
-impl<'a> PaymentMethodListParams<'a> {
+impl<'a> ListPaymentMethods<'a> {
     pub fn new(customer: CustomerId, type_: PaymentMethodType) -> Self {
-        PaymentMethodListParams {
+        ListPaymentMethods {
             customer,
             ending_before: Default::default(),
             expand: Default::default(),

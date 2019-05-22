@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{CustomerId, InvoiceId, InvoiceItemId};
+use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Currency, Customer, Invoice, Period, Plan, Subscription, TaxRate};
 use serde_derive::{Deserialize, Serialize};
@@ -104,8 +104,15 @@ impl InvoiceItem {
     /// Returns a list of your invoice items.
     ///
     /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
-    pub fn list(client: &Client, params: InvoiceItemListParams<'_>) -> Response<List<InvoiceItem>> {
+    pub fn list(client: &Client, params: ListInvoiceItems<'_>) -> Response<List<InvoiceItem>> {
         client.get_query("/invoiceitems", &params)
+    }
+
+    /// Creates an item to be added to a draft invoice.
+    ///
+    /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
+    pub fn create(client: &Client, params: CreateInvoiceItem<'_>) -> Response<InvoiceItem> {
+        client.post_form("/invoiceitems", &params)
     }
 
     /// Retrieves the invoice item with the given ID.
@@ -113,7 +120,9 @@ impl InvoiceItem {
         client.get_query(&format!("/invoiceitems/{}", id), &Expand { expand })
     }
 
-    /// Retrieves the invoice item with the given ID.
+    /// Deletes an invoice item, removing it from an invoice.
+    ///
+    /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
     pub fn delete(client: &Client, id: &InvoiceItemId) -> Response<Deleted<InvoiceItemId>> {
         client.delete(&format!("/invoiceitems/{}", id))
     }
@@ -129,9 +138,102 @@ impl Object for InvoiceItem {
     }
 }
 
+/// The parameters for `InvoiceItem::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateInvoiceItem<'a> {
+    /// The integer amount in **%s** of the charge to be applied to the upcoming invoice.
+    ///
+    /// If you want to apply a credit to the customer's account, pass a negative amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    amount: Option<i64>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    currency: Currency,
+
+    /// The ID of the customer who will be billed when this invoice item is billed.
+    customer: CustomerId,
+
+    /// An arbitrary string which you can attach to the invoice item.
+    ///
+    /// The description is displayed in the invoice for easy tracking.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+
+    /// Controls whether discounts apply to this invoice item.
+    ///
+    /// Defaults to false for prorations or negative invoice items, and true for all other invoice items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    discountable: Option<bool>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// The ID of an existing invoice to add this invoice item to.
+    ///
+    /// When left blank, the invoice item will be added to the next upcoming scheduled invoice.
+    /// This is useful when adding invoice items in response to an invoice.created webhook.
+    /// You can only add invoice items to draft invoices.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    invoice: Option<InvoiceId>,
+
+    /// A set of key-value pairs that you can attach to an invoice item object.
+    ///
+    /// It can be useful for storing additional information about the invoice item in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    period: Option<CreateInvoiceItemPeriod>,
+
+    /// Non-negative integer.
+    ///
+    /// The quantity of units for the invoice item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    quantity: Option<u64>,
+
+    /// The ID of a subscription to add this invoice item to.
+    ///
+    /// When left blank, the invoice item will be be added to the next upcoming scheduled invoice.
+    /// When set, scheduled invoices for subscriptions other than the specified subscription will ignore the invoice item.
+    /// Use this when you want to express that an invoice item has been accrued within the context of a particular subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    subscription: Option<SubscriptionId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_rates: Option<Vec<String>>,
+
+    /// The integer unit amount in **%s** of the charge to be applied to the upcoming invoice.
+    ///
+    /// This unit_amount will be multiplied by the quantity to get the full amount.
+    /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unit_amount: Option<i64>,
+}
+
+impl<'a> CreateInvoiceItem<'a> {
+    pub fn new(currency: Currency, customer: CustomerId) -> Self {
+        CreateInvoiceItem {
+            amount: Default::default(),
+            currency,
+            customer,
+            description: Default::default(),
+            discountable: Default::default(),
+            expand: Default::default(),
+            invoice: Default::default(),
+            metadata: Default::default(),
+            period: Default::default(),
+            quantity: Default::default(),
+            subscription: Default::default(),
+            tax_rates: Default::default(),
+            unit_amount: Default::default(),
+        }
+    }
+}
+
 /// The parameters for `InvoiceItem::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct InvoiceItemListParams<'a> {
+pub struct ListInvoiceItems<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
@@ -180,9 +282,9 @@ pub struct InvoiceItemListParams<'a> {
     starting_after: Option<&'a InvoiceItemId>,
 }
 
-impl<'a> InvoiceItemListParams<'a> {
+impl<'a> ListInvoiceItems<'a> {
     pub fn new() -> Self {
-        InvoiceItemListParams {
+        ListInvoiceItems {
             created: Default::default(),
             customer: Default::default(),
             ending_before: Default::default(),

@@ -6,7 +6,7 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    AccountType, Address, BankAccount, BusinessType, CapabilityStatus, Card, Currency, File,
+    Address, BankAccount, BusinessProfile, CapabilityStatus, Card, Currency, File,
     LegalEntityJapanAddress, Person,
 };
 use serde_derive::{Deserialize, Serialize};
@@ -37,7 +37,7 @@ pub struct Account {
     pub charges_enabled: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub company: Option<LegalEntityCompany>,
+    pub company: Option<Company>,
 
     /// The account's country.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -100,15 +100,25 @@ pub struct Account {
     ///
     /// Can be `standard`, `express`, or `custom`.
     #[serde(rename = "type")]
-    pub type_: AccountType,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<AccountType>,
 }
 
 impl Account {
     /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
     ///
     /// If you’re not a platform, the list is empty.
-    pub fn list(client: &Client, params: AccountListParams<'_>) -> Response<List<Account>> {
+    pub fn list(client: &Client, params: ListAccounts<'_>) -> Response<List<Account>> {
         client.get_query("/accounts", &params)
+    }
+
+    /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
+    /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
+    ///
+    /// For Standard accounts, parameters other than `country`, `email`, and `type`
+    /// are used to prefill the account application that we ask the account holder to complete.
+    pub fn create(client: &Client, params: CreateAccount<'_>) -> Response<Account> {
+        client.post_form("/accounts", &params)
     }
 
     /// Retrieves the details of an account.
@@ -116,7 +126,11 @@ impl Account {
         client.get_query(&format!("/accounts/{}", id), &Expand { expand })
     }
 
-    /// Retrieves the details of an account.
+    /// With [Connect](https://stripe.com/docs/connect), you may delete Custom accounts you manage.
+    ///
+    /// Custom accounts created using test-mode keys can be deleted at any time.
+    ///
+    /// Custom accounts created using live-mode keys may only be deleted once all balances are zero.  If you are looking to close your own account, use the [data tab in your account settings](https://dashboard.stripe.com/account/data) instead.
     pub fn delete(client: &Client, id: &AccountId) -> Response<Deleted<AccountId>> {
         client.delete(&format!("/accounts/{}", id))
     }
@@ -340,7 +354,7 @@ pub struct TosAcceptance {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct LegalEntityCompany {
+pub struct Company {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
@@ -416,9 +430,101 @@ pub struct TransferSchedule {
     pub weekly_anchor: Option<String>,
 }
 
+/// The parameters for `Account::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateAccount<'a> {
+    /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    account_token: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    business_profile: Option<BusinessProfile>,
+
+    /// The business type.
+    ///
+    /// Can be `individual` or `company`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    business_type: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    company: Option<CreateCompany>,
+
+    /// The country in which the account holder resides, or in which the business is legally established.
+    ///
+    /// This should be an ISO 3166-1 alpha-2 country code.
+    /// For example, if you are in the United States and the business for which you're creating an account is legally represented in Canada, you would use `CA` as the country for the account being created.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    country: Option<&'a str>,
+
+    /// Three-letter ISO currency code representing the default currency for the account.
+    ///
+    /// This must be a currency that [Stripe supports in the account's country](https://stripe.com/docs/payouts).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_currency: Option<Currency>,
+
+    /// The email address of the account holder.
+    ///
+    /// For Custom accounts, this is only to make the account easier to identify to you: Stripe will never directly email your users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    email: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// A card or bank account to attach to the account.
+    ///
+    /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/stripe.js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
+    /// <br><br>By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
+    /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    external_account: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    individual: Option<CreatePerson>,
+
+    /// A set of key-value pairs that you can attach to an `Account` object.
+    ///
+    /// This can be useful for storing additional information about the account in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    requested_capabilities: Option<Vec<RequestedCapability>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    settings: Option<CreateAccountSettings>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tos_acceptance: Option<AcceptTos>,
+
+    /// The type of Stripe account to create.
+    ///
+    /// Currently must be `custom`, as only [Custom accounts](https://stripe.com/docs/connect/custom-accounts) may be created via the API.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_: Option<AccountType>,
+}
+
+impl<'a> CreateAccount<'a> {
+    pub fn new() -> Self {
+        CreateAccount {
+            account_token: Default::default(),
+            business_profile: Default::default(),
+            business_type: Default::default(),
+            company: Default::default(),
+            country: Default::default(),
+            default_currency: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            external_account: Default::default(),
+            individual: Default::default(),
+            metadata: Default::default(),
+            requested_capabilities: Default::default(),
+            settings: Default::default(),
+            tos_acceptance: Default::default(),
+            type_: Default::default(),
+        }
+    }
+}
+
 /// The parameters for `Account::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct AccountListParams<'a> {
+pub struct ListAccounts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
@@ -447,9 +553,9 @@ pub struct AccountListParams<'a> {
     starting_after: Option<&'a AccountId>,
 }
 
-impl<'a> AccountListParams<'a> {
+impl<'a> ListAccounts<'a> {
     pub fn new() -> Self {
-        AccountListParams {
+        ListAccounts {
             created: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
@@ -464,4 +570,31 @@ impl<'a> AccountListParams<'a> {
 pub enum ExternalAccount {
     BankAccount(BankAccount),
     Card(Card),
+}
+
+/// An enum representing the possible values of an `Account`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountType {
+    Custom,
+    Express,
+    Standard,
+}
+
+/// An enum representing the possible values of an `Account`'s `business_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum BusinessType {
+    Company,
+    Individual,
+}
+
+/// An enum representing the possible values of an `CreateAccount`'s `requested_capabilities` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum RequestedCapability {
+    CardIssuing,
+    CardPayments,
+    LegacyPayments,
+    PlatformPayments,
 }

@@ -123,8 +123,15 @@ impl Product {
     /// Returns a list of your products.
     ///
     /// The products are returned sorted by creation date, with the most recently created products appearing first.
-    pub fn list(client: &Client, params: ProductListParams<'_>) -> Response<List<Product>> {
+    pub fn list(client: &Client, params: ListProducts<'_>) -> Response<List<Product>> {
         client.get_query("/products", &params)
+    }
+
+    /// Creates a new product object.
+    ///
+    /// To create a product for use with subscriptions, see [Subscriptions Products](https://stripe.com/docs/api#create_service_product).
+    pub fn create(client: &Client, params: CreateProduct<'_>) -> Response<Product> {
+        client.post_form("/products", &params)
     }
 
     /// Retrieves the details of an existing product.
@@ -134,9 +141,10 @@ impl Product {
         client.get_query(&format!("/products/{}", id), &Expand { expand })
     }
 
-    /// Retrieves the details of an existing product.
+    /// Delete a product.
     ///
-    /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
+    /// Deleting a product with type=`good` is only possible if it has no SKUs associated with it.
+    /// Deleting a product with type=`service` is only possible if it has no plans associated with it.
     pub fn delete(client: &Client, id: &ProductId) -> Response<Deleted<ProductId>> {
         client.delete(&format!("/products/{}", id))
     }
@@ -152,9 +160,113 @@ impl Object for Product {
     }
 }
 
+/// The parameters for `Product::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateProduct<'a> {
+    /// Whether the product is currently available for purchase.
+    ///
+    /// Defaults to `true`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    active: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    attributes: Option<Vec<String>>,
+
+    /// A short one-line description of the product, meant to be displayable to the customer.
+    ///
+    /// May only be set if type=`good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    caption: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    deactivate_on: Option<Vec<String>>,
+
+    /// The product's description, meant to be displayable to the customer.
+    ///
+    /// May only be set if type=`good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    images: Option<Vec<String>>,
+
+    /// A set of key-value pairs that you can attach to a product object.
+    ///
+    /// It can be useful for storing additional information about the product in a structured format.
+    /// Applicable to both `service` and `good` types.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// The product's name, meant to be displayable to the customer.
+    ///
+    /// Applicable to both `service` and `good` types.
+    name: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    package_dimensions: Option<CreateProductPackageDimensions>,
+
+    /// Whether this product is shipped (i.e., physical goods).
+    ///
+    /// Defaults to `true`.
+    /// May only be set if type=`good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    shippable: Option<bool>,
+
+    /// An arbitrary string to be displayed on your customer's credit card statement.
+    ///
+    /// This may be up to 22 characters.
+    /// The statement description may not include <>"' characters, and will appear on your customer's statement in capital letters.
+    /// Non-ASCII characters are automatically stripped.
+    /// While most banks display this information consistently, some may display it incorrectly or not at all.
+    /// It must contain at least one letter.
+    /// May only be set if type=`service`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    statement_descriptor: Option<&'a str>,
+
+    /// The type of the product.
+    ///
+    /// The product is either of type `service`, which is eligible for use with Subscriptions and Plans or `good`, which is eligible for use with Orders and SKUs.
+    #[serde(rename = "type")]
+    type_: ProductType,
+
+    /// A label that represents units of this product, such as seat(s), in Stripe and on customers’ receipts and invoices.
+    ///
+    /// Only available on products of type=`service`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unit_label: Option<&'a str>,
+
+    /// A URL of a publicly-accessible webpage for this product.
+    ///
+    /// May only be set if type=`good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    url: Option<&'a str>,
+}
+
+impl<'a> CreateProduct<'a> {
+    pub fn new(name: &'a str, type_: ProductType) -> Self {
+        CreateProduct {
+            active: Default::default(),
+            attributes: Default::default(),
+            caption: Default::default(),
+            deactivate_on: Default::default(),
+            description: Default::default(),
+            expand: Default::default(),
+            images: Default::default(),
+            metadata: Default::default(),
+            name,
+            package_dimensions: Default::default(),
+            shippable: Default::default(),
+            statement_descriptor: Default::default(),
+            type_,
+            unit_label: Default::default(),
+            url: Default::default(),
+        }
+    }
+}
+
 /// The parameters for `Product::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct ProductListParams<'a> {
+pub struct ListProducts<'a> {
     /// Only return products that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -173,6 +285,8 @@ pub struct ProductListParams<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     expand: &'a [&'a str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ids: Option<Vec<String>>,
 
     /// A limit on the number of objects to be returned.
     ///
@@ -195,19 +309,25 @@ pub struct ProductListParams<'a> {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<ProductType>,
+
+    /// Only return products with the given url.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    url: Option<&'a str>,
 }
 
-impl<'a> ProductListParams<'a> {
+impl<'a> ListProducts<'a> {
     pub fn new() -> Self {
-        ProductListParams {
+        ListProducts {
             active: Default::default(),
             created: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
+            ids: Default::default(),
             limit: Default::default(),
             shippable: Default::default(),
             starting_after: Default::default(),
             type_: Default::default(),
+            url: Default::default(),
         }
     }
 }

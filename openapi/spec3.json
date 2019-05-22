@@ -14,6 +14,10 @@
           },
           "business_type": {
             "description": "The business type. Can be `individual` or `company`.",
+            "enum": [
+              "company",
+              "individual"
+            ],
             "maxLength": 5000,
             "nullable": true,
             "type": "string"
@@ -144,6 +148,11 @@
           },
           "type": {
             "description": "The Stripe account type. Can be `standard`, `express`, or `custom`.",
+            "enum": [
+              "standard",
+              "express",
+              "custom"
+            ],
             "maxLength": 5000,
             "type": "string"
           }
@@ -5676,6 +5685,17 @@
           },
           "purpose": {
             "description": "The purpose of the file. Possible values are `business_icon`, `business_logo`, `customer_signature`, `dispute_evidence`, `finance_report_run`, `identity_document`, `pci_document`, `sigma_scheduled_query`, or `tax_document_user_upload`.",
+            "enum": [
+              "business_icon",
+              "business_logo",
+              "customer_signature",
+              "dispute_evidence",
+              "finance_report_run",
+              "identity_document",
+              "pci_document",
+              "sigma_scheduled_query",
+              "tax_document_user_upload"
+            ],
             "maxLength": 5000,
             "type": "string"
           },
@@ -10678,6 +10698,13 @@
           },
           "status": {
             "description": "Current order status. One of `created`, `paid`, `canceled`, `fulfilled`, or `returned`. More details in the [Orders Guide](https://stripe.com/docs/orders/guide#understanding-order-statuses).",
+            "enum": [
+              "created",
+              "paid",
+              "canceled",
+              "fulfilled",
+              "returned"
+            ],
             "maxLength": 5000,
             "type": "string"
           },
@@ -14355,6 +14382,14 @@
           },
           "reason": {
             "description": "The reason the review is currently open or closed. One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`, or `disputed`.",
+            "enum": [
+              "rule",
+              "manual",
+              "approved",
+              "refunded",
+              "refunded_as_fraud",
+              "disputed"
+            ],
             "maxLength": 5000,
             "type": "string"
           },
@@ -17763,6 +17798,10 @@
           },
           "source_type": {
             "description": "The source balance this transfer came from. One of `card` or `bank_account`.",
+            "enum": [
+              "card",
+              "bank_account"
+            ],
             "maxLength": 5000,
             "nullable": true,
             "type": "string"
@@ -22405,6 +22444,10 @@
                   },
                   "type": {
                     "description": "The type of account link the user is requesting. Possible values are `custom_account_verification` or `custom_account_update`.",
+                    "enum": [
+                      "custom_account_verification",
+                      "custom_account_update"
+                    ],
                     "maxLength": 5000,
                     "type": "string"
                   }
@@ -50111,6 +50154,12 @@
             "required": false,
             "schema": {
               "maxLength": 5000,
+              "enum": [
+                "created",
+                "paid",
+                "fulfilled",
+                "refunded"
+              ],
               "type": "string"
             },
             "style": "form"

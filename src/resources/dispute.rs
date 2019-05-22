@@ -68,7 +68,7 @@ pub struct Dispute {
 
 impl Dispute {
     /// Returns a list of your disputes.
-    pub fn list(client: &Client, params: DisputeListParams<'_>) -> Response<List<Dispute>> {
+    pub fn list(client: &Client, params: ListDisputes<'_>) -> Response<List<Dispute>> {
         client.get_query("/disputes", &params)
     }
 
@@ -241,7 +241,7 @@ pub struct DisputeEvidenceDetails {
 
 /// The parameters for `Dispute::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct DisputeListParams<'a> {
+pub struct ListDisputes<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
@@ -270,9 +270,9 @@ pub struct DisputeListParams<'a> {
     starting_after: Option<&'a DisputeId>,
 }
 
-impl<'a> DisputeListParams<'a> {
+impl<'a> ListDisputes<'a> {
     pub fn new() -> Self {
-        DisputeListParams {
+        ListDisputes {
             created: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),

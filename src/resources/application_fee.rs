@@ -69,7 +69,7 @@ impl ApplicationFee {
     /// The application fees are returned in sorted order, with the most recent fees appearing first.
     pub fn list(
         client: &Client,
-        params: ApplicationFeeListParams<'_>,
+        params: ListApplicationFees<'_>,
     ) -> Response<List<ApplicationFee>> {
         client.get_query("/application_fees", &params)
     }
@@ -98,7 +98,7 @@ impl Object for ApplicationFee {
 
 /// The parameters for `ApplicationFee::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct ApplicationFeeListParams<'a> {
+pub struct ListApplicationFees<'a> {
     /// Only return application fees for the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<ChargeId>,
@@ -131,9 +131,9 @@ pub struct ApplicationFeeListParams<'a> {
     starting_after: Option<&'a ApplicationFeeId>,
 }
 
-impl<'a> ApplicationFeeListParams<'a> {
+impl<'a> ListApplicationFees<'a> {
     pub fn new() -> Self {
-        ApplicationFeeListParams {
+        ListApplicationFees {
             charge: Default::default(),
             created: Default::default(),
             ending_before: Default::default(),

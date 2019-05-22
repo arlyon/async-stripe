@@ -11,17 +11,6 @@ pub enum AccountHolderType {
     Company,
 }
 
-/// An enum representing the possible values of an `Account`'s `type` field.
-///
-/// For more details see [https://stripe.com/docs/api/accounts/object#account_object-type](https://stripe.com/docs/api/accounts/object#account_object-type)
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum AccountType {
-    Standard,
-    Express,
-    Custom,
-}
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Address {
     pub line1: Option<String>,
@@ -61,26 +50,28 @@ pub enum BankAccountStatus {
     Errored,
 }
 
-// TODO: Implement
-/// This type is a stub that still needs to be implemented.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct BillingDetails {}
+pub struct BillingDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<Address>,
 
-/// An enum representing the possible values of an `Account`'s `business_type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum BusinessType {
-    Individual,
-    Business,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
 }
 
 /// An enum representing the possible values of the `AccountCapabilities` fields.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CapabilityStatus {
-    Standard,
-    Express,
-    Custom,
+    Active,
+    Inactive,
+    Pending,
 }
 
 /// An enum representing the possible values of an `Fee`'s `type` field.
