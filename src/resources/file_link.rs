@@ -5,7 +5,7 @@
 use crate::config::{Client, Response};
 use crate::ids::{FileId, FileLinkId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::File;
+use crate::resources::{File, Scheduled};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "FileLink".
@@ -58,6 +58,13 @@ impl FileLink {
     /// Retrieves the file link with the given ID.
     pub fn retrieve(client: &Client, id: &FileLinkId, expand: &[&str]) -> Response<FileLink> {
         client.get_query(&format!("/file_links/{}", id), &Expand { expand })
+    }
+
+    /// Updates an existing file link object.
+    ///
+    /// Expired links can no longer be updated.
+    pub fn update(client: &Client, params: UpdateFileLink<'_>) -> Response<FileLink> {
+        client.post_form(&format!("/file_links/{}", id), &params)
     }
 }
 
@@ -156,6 +163,32 @@ impl<'a> ListFileLinks<'a> {
             file: Default::default(),
             limit: Default::default(),
             starting_after: Default::default(),
+        }
+    }
+}
+
+/// The parameters for `FileLink::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateFileLink<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expires_at: Option<Scheduled>,
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+}
+
+impl<'a> UpdateFileLink<'a> {
+    pub fn new() -> Self {
+        UpdateFileLink {
+            expand: Default::default(),
+            expires_at: Default::default(),
+            metadata: Default::default(),
         }
     }
 }

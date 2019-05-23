@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{RecipientId, TaxIdId};
+use crate::ids::RecipientId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BankAccount, Card};
 use serde_derive::{Deserialize, Serialize};
@@ -94,6 +94,15 @@ impl Recipient {
         client.get_query(&format!("/recipients/{}", id), &Expand { expand })
     }
 
+    /// Updates the specified recipient by setting the values of the parameters passed.
+    /// Any parameters not provided will be left unchanged.
+    ///
+    /// If you update the name or tax ID, the identity verification will automatically be rerun.
+    /// If you update the bank account, the bank account validation will automatically be rerun.
+    pub fn update(client: &Client, params: UpdateRecipient<'_>) -> Response<Recipient> {
+        client.post_form(&format!("/recipients/{}", id), &params)
+    }
+
     /// Permanently deletes a recipient.
     ///
     /// It cannot be undone.
@@ -149,7 +158,7 @@ pub struct CreateRecipient<'a> {
     ///
     /// For type `individual`, the full SSN; for type `corporation`, the full EIN.
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_id: Option<TaxIdId>,
+    tax_id: Option<&'a str>,
 
     /// Type of the recipient: either `individual` or `corporation`.
     #[serde(rename = "type")]
@@ -219,6 +228,65 @@ impl<'a> ListRecipients<'a> {
             starting_after: Default::default(),
             type_: Default::default(),
             verified: Default::default(),
+        }
+    }
+}
+
+/// The parameters for `Recipient::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateRecipient<'a> {
+    /// ID of the card to set as the recipient's new default for payouts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_card: Option<&'a str>,
+
+    /// An arbitrary string which you can attach to a `Recipient` object.
+    ///
+    /// It is displayed alongside the recipient in the web interface.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+
+    /// The recipient's email address.
+    ///
+    /// It is displayed alongside the recipient in the web interface, and can be useful for searching and tracking.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    email: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// The recipient's full, legal name.
+    ///
+    /// For type `individual`, should be in the format `First Last`, `First Middle Last`, or `First M Last` (no prefixes or suffixes).
+    /// For `corporation`, the full, incorporated name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<&'a str>,
+
+    /// The recipient's tax ID, as a string.
+    ///
+    /// For type `individual`, the full SSN; for type `corporation`, the full EIN.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_id: Option<&'a str>,
+}
+
+impl<'a> UpdateRecipient<'a> {
+    pub fn new() -> Self {
+        UpdateRecipient {
+            default_card: Default::default(),
+            description: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            name: Default::default(),
+            tax_id: Default::default(),
         }
     }
 }

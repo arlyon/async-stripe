@@ -103,6 +103,13 @@ impl Coupon {
         client.get_query(&format!("/coupons/{}", id), &Expand { expand })
     }
 
+    /// Updates the metadata of a coupon.
+    ///
+    /// Other coupon details (currency, duration, amount_off) are, by design, not editable.
+    pub fn update(client: &Client, params: UpdateCoupon<'_>) -> Response<Coupon> {
+        client.post_form(&format!("/coupons/{}", id), &params)
+    }
+
     /// You can delete coupons via the [coupon management](https://dashboard.stripe.com/coupons) page of the Stripe dashboard.
     ///
     /// However, deleting a coupon does not affect any customers who have already applied the coupon; it means that new customers can’t redeem the coupon.
@@ -146,6 +153,13 @@ pub struct CreateCoupon<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     expand: &'a [&'a str],
 
+    /// Unique string of your choice that will be used to identify this coupon when applying it to a customer.
+    ///
+    /// This is often a specific code you'll give to your customer to use when signing up (e.g., `FALL25OFF`).
+    /// If you don't want to specify a particular code, you can leave the ID blank and we'll generate a random code for you.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    id: Option<&'a str>,
+
     /// A positive integer specifying the number of times the coupon can be redeemed before it's no longer valid.
     ///
     /// For example, you might have a 50% off coupon that the first 20 readers of your blog can use.
@@ -183,6 +197,7 @@ impl<'a> CreateCoupon<'a> {
             duration,
             duration_in_months: Default::default(),
             expand: Default::default(),
+            id: Default::default(),
             max_redemptions: Default::default(),
             metadata: Default::default(),
             name: Default::default(),
@@ -234,6 +249,36 @@ impl<'a> ListCoupons<'a> {
             expand: Default::default(),
             limit: Default::default(),
             starting_after: Default::default(),
+        }
+    }
+}
+
+/// The parameters for `Coupon::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateCoupon<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// A set of key-value pairs that you can attach to a coupon object.
+    ///
+    /// It can be useful for storing additional information about the coupon in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// Name of the coupon displayed to customers on, for instance invoices, or receipts.
+    ///
+    /// By default the `id` is shown if `name` is not set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    name: Option<&'a str>,
+}
+
+impl<'a> UpdateCoupon<'a> {
+    pub fn new() -> Self {
+        UpdateCoupon {
+            expand: Default::default(),
+            metadata: Default::default(),
+            name: Default::default(),
         }
     }
 }

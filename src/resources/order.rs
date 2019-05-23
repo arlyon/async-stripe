@@ -5,7 +5,9 @@
 use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, OrderId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Charge, Currency, Customer, OrderItem, OrderReturn, Shipping};
+use crate::resources::{
+    Charge, Currency, Customer, OrderItem, OrderReturn, Shipping, ShippingParams,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Order".
@@ -126,6 +128,13 @@ impl Order {
     pub fn retrieve(client: &Client, id: &OrderId, expand: &[&str]) -> Response<Order> {
         client.get_query(&format!("/orders/{}", id), &Expand { expand })
     }
+
+    /// Updates the specific order by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    pub fn update(client: &Client, params: UpdateOrder<'_>) -> Response<Order> {
+        client.post_form(&format!("/orders/{}", id), &params)
+    }
 }
 
 impl Object for Order {
@@ -238,7 +247,7 @@ pub struct CreateOrder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping: Option<CreateOrderShipping>,
+    shipping: Option<ShippingParams>,
 }
 
 impl<'a> CreateOrder<'a> {
@@ -319,6 +328,102 @@ impl<'a> ListOrders<'a> {
             upstream_ids: Default::default(),
         }
     }
+}
+
+/// The parameters for `Order::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateOrder<'a> {
+    /// A coupon code that represents a discount to be applied to this order.
+    ///
+    /// Must be one-time duration and in same currency as the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    coupon: Option<CouponId>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// A set of key-value pairs that you can attach to a product object.
+    ///
+    /// It can be useful for storing additional information about the order in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// The shipping method to select for fulfilling this order.
+    ///
+    /// If specified, must be one of the `id`s of a shipping method in the `shipping_methods` array.
+    /// If specified, will overwrite the existing selected shipping method, updating `items` as necessary.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    selected_shipping_method: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    shipping: Option<ShippingParams>,
+
+    /// Current order status.
+    ///
+    /// One of `created`, `paid`, `canceled`, `fulfilled`, or `returned`.
+    /// More detail in the [Orders Guide](https://stripe.com/docs/orders/guide#understanding-order-statuses).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status: Option<OrderStatus>,
+}
+
+impl<'a> UpdateOrder<'a> {
+    pub fn new() -> Self {
+        UpdateOrder {
+            coupon: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            selected_shipping_method: Default::default(),
+            shipping: Default::default(),
+            status: Default::default(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateOrderItems {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parent: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreateOrderItemsType>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ListOrdersStatusTransitions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled: Option<RangeQuery<Timestamp>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fulfilled: Option<RangeQuery<Timestamp>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid: Option<RangeQuery<Timestamp>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub returned: Option<RangeQuery<Timestamp>>,
+}
+
+/// An enum representing the possible values of an `CreateOrderItems`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateOrderItemsType {
+    Discount,
+    Shipping,
+    Sku,
+    Tax,
 }
 
 /// An enum representing the possible values of an `Order`'s `status` field.

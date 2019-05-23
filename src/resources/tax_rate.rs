@@ -70,6 +70,11 @@ impl TaxRate {
     pub fn retrieve(client: &Client, id: &TaxRateId, expand: &[&str]) -> Response<TaxRate> {
         client.get_query(&format!("/tax_rates/{}", id), &Expand { expand })
     }
+
+    /// Updates an existing tax rate.
+    pub fn update(client: &Client, params: UpdateTaxRate<'_>) -> Response<TaxRate> {
+        client.post_form(&format!("/tax_rates/{}", id), &params)
+    }
 }
 
 impl Object for TaxRate {
@@ -193,6 +198,55 @@ impl<'a> ListTaxRates<'a> {
             limit: Default::default(),
             percentage: Default::default(),
             starting_after: Default::default(),
+        }
+    }
+}
+
+/// The parameters for `TaxRate::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateTaxRate<'a> {
+    /// Flag determining whether the tax rate is active or inactive.
+    ///
+    /// Inactive tax rates continue to work where they are currently applied however they cannot be used for new applications.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    active: Option<bool>,
+
+    /// An arbitrary string attached to the tax rate for your internal use only.
+    ///
+    /// It will not be visible to your customers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+
+    /// The display name of the tax rate, which will be shown to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    display_name: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// The jurisdiction for the tax rate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    jurisdiction: Option<&'a str>,
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+}
+
+impl<'a> UpdateTaxRate<'a> {
+    pub fn new() -> Self {
+        UpdateTaxRate {
+            active: Default::default(),
+            description: Default::default(),
+            display_name: Default::default(),
+            expand: Default::default(),
+            jurisdiction: Default::default(),
+            metadata: Default::default(),
         }
     }
 }

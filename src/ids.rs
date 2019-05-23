@@ -1,4 +1,4 @@
-macro_rules! id {
+macro_rules! def_id {
     ($struct_name:ident: $COMMENT:ident) => {
         #[derive(Clone, Debug, Eq, PartialEq, Hash)]
         pub struct $struct_name(smol_str::SmolStr);
@@ -325,56 +325,56 @@ impl std::error::Error for ParseIdError {
     }
 }
 
-id!(AccountId, "acct_");
-id!(AlipayAccountId, "aliacc_");
-id!(ApplicationFeeId, "fee_");
-id!(ApplicationFeeRefundId, "fr_");
-id!(BalanceTransactionId, "txn_");
-id!(BankAccountId, "ba_");
-id!(BankTokenId, "btok_");
-id!(CardId, "card_");
-id!(CardTokenId, "tok_");
-id!(ChargeId, "ch_");
-id!(CouponId: USER_PROVIDED); // N.B. A coupon id can be user-provided so can be any arbitrary string
-id!(CustomerId, "cus_");
-id!(DisputeId, "dp_");
-id!(FileId, "file_");
-id!(FileLinkId, "link_");
-id!(InvoiceId, "in_");
-id!(InvoiceItemId, "ii_");
-id!(InvoiceLineItemId, "ii_"); // N.B. yes this is the same as `InvoiceItemId`
-id!(IssuingAuthorizationId, "iauth_");
-id!(IssuingCardId, "ic_");
-id!(IssuingCardholderId, "ich_");
-id!(IssuingDisputeId, "idp_");
-id!(IssuingTransactionId, "ipi_");
-id!(OrderId, "or_");
-id!(OrderReturnId, "orret_");
-id!(PaymentIntentId, "pi_");
-id!(PaymentMethodId, "pm");
-id!(PaymentSourceId {
+def_id!(AccountId, "acct_");
+def_id!(AlipayAccountId, "aliacc_");
+def_id!(ApplicationFeeId, "fee_");
+def_id!(ApplicationFeeRefundId, "fr_");
+def_id!(BalanceTransactionId, "txn_");
+def_id!(BankAccountId, "ba_");
+def_id!(BankTokenId, "btok_");
+def_id!(CardId, "card_");
+def_id!(CardTokenId, "tok_");
+def_id!(ChargeId, "ch_");
+def_id!(CouponId: USER_PROVIDED); // N.B. A coupon id can be user-provided so can be any arbitrary string
+def_id!(CustomerId, "cus_");
+def_id!(DisputeId, "dp_");
+def_id!(FileId, "file_");
+def_id!(FileLinkId, "link_");
+def_id!(InvoiceId, "in_");
+def_id!(InvoiceItemId, "ii_");
+def_id!(InvoiceLineItemId, "ii_"); // N.B. yes this is the same as `InvoiceItemId`
+def_id!(IssuingAuthorizationId, "iauth_");
+def_id!(IssuingCardId, "ic_");
+def_id!(IssuingCardholderId, "ich_");
+def_id!(IssuingDisputeId, "idp_");
+def_id!(IssuingTransactionId, "ipi_");
+def_id!(OrderId, "or_");
+def_id!(OrderReturnId, "orret_");
+def_id!(PaymentIntentId, "pi_");
+def_id!(PaymentMethodId, "pm");
+def_id!(PaymentSourceId {
     Account(AccountId),
     AlipayAccount(AlipayAccountId),
     BankAccount(BankAccountId),
     Card(CardId),
     Source(SourceId),
 });
-id!(PayoutId, "po_");
-id!(PlanId: USER_PROVIDED); // N.B. A plan id can be user-provided so can be any arbitrary string
-id!(ProductId, "prod_");
-id!(RecipientId: UNDOCUMENTED); // FIXME: This doesn't seem to be documented yet
-id!(RefundId, "re_");
-id!(ReviewId, "prv_");
-id!(ScheduledQueryRunId, "sqr_");
-id!(SkuId, "sku_");
-id!(SourceId, "src_");
-id!(SubscriptionId, "sub_");
-id!(SubscriptionItemId, "si_");
-id!(TaxRateId, "txr_");
-id!(TokenId {
+def_id!(PayoutId, "po_");
+def_id!(PlanId: USER_PROVIDED); // N.B. A plan id can be user-provided so can be any arbitrary string
+def_id!(ProductId, "prod_");
+def_id!(RecipientId: UNDOCUMENTED); // FIXME: This doesn't seem to be documented yet
+def_id!(RefundId, "re_");
+def_id!(ReviewId, "prv_");
+def_id!(ScheduledQueryRunId, "sqr_");
+def_id!(SkuId, "sku_");
+def_id!(SourceId, "src_");
+def_id!(SubscriptionId, "sub_");
+def_id!(SubscriptionItemId, "si_");
+def_id!(TaxRateId, "txr_");
+def_id!(TokenId {
     Card(CardTokenId),
     Bank(BankTokenId),
 });
-id!(TopupId, "tu_");
-id!(TransferId, "tr_");
-id!(TransferReversalId, "trr_");
+def_id!(TopupId, "tu_");
+def_id!(TransferId, "tr_");
+def_id!(TransferReversalId, "trr_");

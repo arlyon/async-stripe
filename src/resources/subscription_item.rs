@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{SubscriptionId, SubscriptionItemId};
+use crate::ids::{PlanId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{Plan, SubscriptionItemBillingThresholds, TaxRate};
 use serde_derive::{Deserialize, Serialize};
@@ -72,6 +72,14 @@ impl SubscriptionItem {
         client.get_query(&format!("/subscription_items/{}", id), &Expand { expand })
     }
 
+    /// Updates the plan or quantity of an item on a current subscription.
+    pub fn update(
+        client: &Client,
+        params: UpdateSubscriptionItem<'_>,
+    ) -> Response<SubscriptionItem> {
+        client.post_form(&format!("/subscription_items/{}", id), &params)
+    }
+
     /// Deletes an item from the subscription.
     ///
     /// Removing a subscription item from a subscription will not cancel the subscription.
@@ -132,6 +140,58 @@ impl<'a> ListSubscriptionItems<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
             subscription,
+        }
+    }
+}
+
+/// The parameters for `SubscriptionItem::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateSubscriptionItem<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_thresholds: Option<SubscriptionItemBillingThresholds>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// The identifier of the new plan for this subscription item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    plan: Option<PlanId>,
+
+    /// Flag indicating whether to [prorate](https://stripe.com/docs/billing/subscriptions/prorations) switching plans during a billing cycle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    prorate: Option<bool>,
+
+    /// If set, the proration will be calculated as though the subscription was updated at the given time.
+    ///
+    /// This can be used to apply the same proration that was previewed with the [upcoming invoice](#retrieve_customer_invoice) endpoint.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    proration_date: Option<Timestamp>,
+
+    /// The quantity you'd like to apply to the subscription item you're creating.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    quantity: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_rates: Option<Vec<String>>,
+}
+
+impl<'a> UpdateSubscriptionItem<'a> {
+    pub fn new() -> Self {
+        UpdateSubscriptionItem {
+            billing_thresholds: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            plan: Default::default(),
+            prorate: Default::default(),
+            proration_date: Default::default(),
+            quantity: Default::default(),
+            tax_rates: Default::default(),
         }
     }
 }

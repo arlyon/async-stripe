@@ -93,6 +93,13 @@ impl Topup {
     pub fn retrieve(client: &Client, id: &TopupId, expand: &[&str]) -> Response<Topup> {
         client.get_query(&format!("/topups/{}", id), &Expand { expand })
     }
+
+    /// Updates the metadata of a top-up.
+    ///
+    /// Other top-up details are not editable by design.
+    pub fn update(client: &Client, params: UpdateTopup<'_>) -> Response<Topup> {
+        client.post_form(&format!("/topups/{}", id), &params)
+    }
 }
 
 impl Object for Topup {
@@ -159,6 +166,36 @@ impl<'a> ListTopups<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
             status: Default::default(),
+        }
+    }
+}
+
+/// The parameters for `Topup::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateTopup<'a> {
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+}
+
+impl<'a> UpdateTopup<'a> {
+    pub fn new() -> Self {
+        UpdateTopup {
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
         }
     }
 }

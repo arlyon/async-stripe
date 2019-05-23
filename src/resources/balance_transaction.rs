@@ -5,9 +5,9 @@
 use crate::ids::BalanceTransactionId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{
-    ApplicationFee, ApplicationFeeRefund, BalanceTransactionStatus, Charge,
-    ConnectCollectionTransfer, Currency, Dispute, FeeType, IssuingAuthorization,
-    IssuingTransaction, Payout, Refund, ReserveTransaction, Topup, Transfer, TransferReversal,
+    ApplicationFee, ApplicationFeeRefund, Charge, ConnectCollectionTransfer, Currency, Dispute,
+    IssuingAuthorization, IssuingTransaction, Payout, Refund, ReserveTransaction, Topup, Transfer,
+    TransferReversal,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -122,6 +122,14 @@ pub enum BalanceTransactionSource {
     TransferReversal(TransferReversal),
 }
 
+/// An enum representing the possible values of an `BalanceTransaction`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum BalanceTransactionStatus {
+    Available,
+    Pending,
+}
+
 /// An enum representing the possible values of an `BalanceTransaction`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -155,4 +163,13 @@ pub enum BalanceTransactionType {
     TransferCancel,
     TransferFailure,
     TransferRefund,
+}
+
+/// An enum representing the possible values of an `Fee`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum FeeType {
+    ApplicationFee,
+    StripeFee,
+    Tax,
 }

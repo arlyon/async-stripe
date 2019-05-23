@@ -21,35 +21,6 @@ pub struct Address {
     pub country: Option<String>,
 }
 
-/// An enum representing the possible values of a `BalanceTransaction`'s `status` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum BalanceTransactionStatus {
-    Available,
-    Pending,
-}
-
-/// An enum representing the possible values of a `BankAccount`'s `status` field.
-///
-/// For more details see [https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-status](https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-status)
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum BankAccountStatus {
-    /// A bank account that hasn’t had any activity or validation performed is new.
-    New,
-    /// If Stripe can determine that the bank account exists, its status will be validated.
-    ///
-    /// Note that there often isn’t enough information to know (e.g., for smaller credit unions),
-    /// and the validation is not always run.
-    Validated,
-    /// If customer bank account verification has succeeded, the bank account status will be verified.
-    Verified,
-    /// If the verification failed for any reason, such as microdeposit failure, the status will be verification_failed.
-    VerificationFailed,
-    /// If a transfer sent to this bank account fails, we’ll set the status to errored and will not continue to send transfers until the bank details are updated.
-    Errored,
-}
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BillingDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -65,13 +36,18 @@ pub struct BillingDetails {
     pub phone: Option<String>,
 }
 
-/// An enum representing the possible values of the `AccountCapabilities` fields.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum CapabilityStatus {
-    Active,
-    Inactive,
-    Pending,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CustomField {
+    pub name: String,
+    pub value: String,
+}
+
+// A date of birth
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Dob {
+    pub day: i64,
+    pub month: i64,
+    pub year: i64,
 }
 
 /// An enum representing the possible values of an `Fee`'s `type` field.
@@ -81,6 +57,14 @@ pub enum FeeType {
     ApplicationFee,
     StripeFee,
     Tax,
+}
+
+/// An enum representing the possible values of a `FraudDetails`'s `report` fields.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum FraudDetailsReport {
+    Fraudulent,
+    Safe,
 }
 
 /// An enum representing the possible values of the `IssuingAuthorizationVerificationData` fields.
@@ -162,6 +146,14 @@ pub struct Shipping {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ShippingParams {
+    pub address: Address,
+    pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SpendingLimit {
     /// Maximum amount allowed to spend per time interval.
     pub amount: i64,
@@ -199,3 +191,82 @@ pub struct SubscriptionBillingThresholds {}
 /// This type is a stub that still needs to be implemented.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemBillingThresholds {}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(untagged)]
+pub enum DelayDays {
+    Days(u32),
+    Other(DelayDaysOther),
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum DelayDaysOther {
+    Minimum,
+}
+
+impl DelayDays {
+    pub fn days(n: u32) -> Self {
+        DelayDays::Days(n)
+    }
+    pub fn minimum() -> Self {
+        DelayDays::Other(DelayDaysOther::Minimum)
+    }
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(untagged)]
+pub enum Scheduled {
+    At(Timestamp),
+    Other(ScheduledOther),
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ScheduledOther {
+    Now,
+}
+
+impl Scheduled {
+    pub fn at(ts: Timestamp) -> Self {
+        Scheduled::Timestamp(ts)
+    }
+    pub fn now() -> Self {
+        Scheduled::Other(ScheduledOther::Now)
+    }
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(untagged)]
+pub enum UpTo {
+    Max(u64),
+    Other(UpToOther),
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpToOther {
+    Inf,
+}
+
+impl UpTo {
+    pub fn max(n: u64) -> Self {
+        UpTo::Max(n)
+    }
+    pub fn now() -> Self {
+        UpTo::Other(UpToOther::Inf)
+    }
+}
+
+/// A day of the week.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum Weekday {
+    Sunday,
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday,
+}

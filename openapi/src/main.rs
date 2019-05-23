@@ -71,140 +71,249 @@ fn main() {
     }
 
     let mut schema_renames = BTreeMap::new();
-    schema_renames.insert("account_business_profile", "business_profile");
-    schema_renames.insert("account_business_type", "business_type");
-    schema_renames.insert("account_branding_settings", "branding_settings");
-    schema_renames.insert("account_card_payments_settings", "card_payments_settings");
-    schema_renames.insert("account_dashboard_settings", "dashboard_settings");
-    schema_renames.insert("account_decline_charge_on", "decline_charge_on");
-    schema_renames.insert("account_external_account", "external_account");
-    schema_renames.insert("account_payments_settings", "payments_settings");
-    schema_renames.insert("account_payout_settings", "payout_settings");
-    schema_renames.insert("account_tos_acceptance", "tos_acceptance");
-    schema_renames.insert("charge_fraud_details", "fraud_details");
-    schema_renames.insert("charge_transfer_data", "transfer_data");
-    schema_renames.insert("fee_refund", "application_fee_refund");
-    schema_renames.insert("issuing_authorization_merchant_data", "merchant_data");
-    schema_renames.insert("issuing.authorization_wallet_provider", "wallet_provider");
-    schema_renames.insert("invoiceitem", "invoice_item");
-    schema_renames.insert("legal_entity_company", "company");
-    schema_renames.insert("line_item", "invoice_line_item");
-    schema_renames.insert("payment_method_card", "card_details");
-    schema_renames.insert("payment_method_card_present", "card_present");
-    schema_renames.insert("payment_method_card_wallet", "wallet_details");
-    schema_renames
-        .insert("payment_method_card_wallet_amex_express_checkout", "wallet_amex_express_checkout");
-    schema_renames.insert("payment_method_card_wallet_apple_pay", "wallet_apple_pay");
-    schema_renames.insert("payment_method_card_wallet_google_pay", "wallet_google_pay");
-    schema_renames.insert("payment_method_card_wallet_masterpass", "wallet_masterpass");
-    schema_renames.insert("payment_method_card_wallet_samsung_pay", "wallet_samsung_pay");
-    schema_renames.insert("payment_method_card_wallet_visa_checkout", "wallet_visa_checkout");
-    schema_renames.insert("payment_method_card_wallet_type", "wallet_type");
+    schema_renames.extend(vec![
+        ("account_business_profile", "business_profile"),
+        ("account_business_type", "business_type"),
+        ("account_capabilities_card_payments", "capability_status"),
+        ("account_capabilities_legacy_payments", "capability_status"),
+        ("account_capabilities_platform_payments", "capability_status"),
+        ("account_branding_settings", "branding_settings"),
+        ("account_card_payments_settings", "card_payments_settings"),
+        ("account_dashboard_settings", "dashboard_settings"),
+        ("account_decline_charge_on", "decline_charge_on"),
+        ("account_external_account", "external_account"),
+        ("account_payments_settings", "payments_settings"),
+        ("account_payout_settings", "payout_settings"),
+        ("account_tos_acceptance", "tos_acceptance"),
+        ("charge_fraud_details", "fraud_details"),
+        ("charge_transfer_data", "transfer_data"),
+        ("fee_refund", "application_fee_refund"),
+        ("issuing_authorization_merchant_data", "merchant_data"),
+        ("issuing.authorization_wallet_provider", "wallet_provider"),
+        ("invoiceitem", "invoice_item"),
+        ("legal_entity_company", "company"),
+        ("line_item", "invoice_line_item"),
+        ("payment_method_card", "card_details"),
+        ("payment_method_card_present", "card_present"),
+        ("payment_method_card_wallet", "wallet_details"),
+        ("payment_method_card_wallet_amex_express_checkout", "wallet_amex_express_checkout"),
+        ("payment_method_card_wallet_apple_pay", "wallet_apple_pay"),
+        ("payment_method_card_wallet_google_pay", "wallet_google_pay"),
+        ("payment_method_card_wallet_masterpass", "wallet_masterpass"),
+        ("payment_method_card_wallet_samsung_pay", "wallet_samsung_pay"),
+        ("payment_method_card_wallet_visa_checkout", "wallet_visa_checkout"),
+        ("payment_method_card_wallet_type", "wallet_type"),
+    ]);
 
     let mut field_overrides = BTreeMap::new();
-    field_overrides.insert(
-        ("account_capabilities", "card_payments"),
-        ("CapabilityStatus", "CapabilityStatus"),
-    );
-    field_overrides.insert(
-        ("account_capabilities", "legacy_payments"),
-        ("CapabilityStatus", "CapabilityStatus"),
-    );
-    field_overrides.insert(
-        ("account_capabilities", "platform_payments"),
-        ("CapabilityStatus", "CapabilityStatus"),
-    );
-    field_overrides.insert(
-        ("balance_transaction", "status"),
-        ("BalanceTransactionStatus", "BalanceTransactionStatus"),
-    );
-    field_overrides.insert(("charge", "source"), ("PaymentSource", "Option<PaymentSource>"));
-    field_overrides.insert(("fee", "type"), ("FeeType", "FeeType"));
-    field_overrides.insert(
-        ("bank_account", "account_holder_type"),
-        ("AccountHolderType", "Option<AccountHolderType>"),
-    );
-    field_overrides
-        .insert(("bank_account", "status"), ("BankAccountStatus", "Option<BankAccountStatus>"));
-    field_overrides.insert(("invoiceitem", "period"), ("Period", "Option<Period>"));
-    field_overrides.insert(("line_item", "period"), ("Period", "Option<Period>"));
-    field_overrides.insert(
-        ("issuing.authorization", "authorization_method"),
-        ("IssuingAuthorizationMethod", "IssuingAuthorizationMethod"),
-    );
-    field_overrides.insert(
-        ("issuing_authorization_request", "reason"),
-        ("IssuingAuthorizationReason", "IssuingAuthorizationReason"),
-    );
-    field_overrides.insert(
-        ("issuing_authorization_verification_data", "address_line1_check"),
-        ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
-    );
-    field_overrides.insert(
-        ("issuing_authorization_verification_data", "address_zip_check"),
-        ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
-    );
-    field_overrides.insert(
-        ("issuing_authorization_verification_data", "cvc_check"),
-        ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
-    );
-    field_overrides.insert(("issuing.card", "brand"), ("CardBrand", "CardBrand"));
-    field_overrides.insert(
-        ("issuing_card_authorization_controls", "allowed_categories"),
-        ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
-    );
-    field_overrides.insert(
-        ("issuing_card_authorization_controls", "blocked_categories"),
-        ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
-    );
-    field_overrides.insert(
-        ("issuing_card_authorization_controls", "spending_limits"),
-        ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
-    );
-    field_overrides.insert(
-        ("issuing_cardholder_authorization_controls", "allowed_categories"),
-        ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
-    );
-    field_overrides.insert(
-        ("issuing_cardholder_authorization_controls", "blocked_categories"),
-        ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
-    );
-    field_overrides.insert(
-        ("issuing_cardholder_authorization_controls", "spending_limits"),
-        ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
-    );
-    field_overrides
-        .insert(("payment_intent", "source"), ("PaymentSource", "Option<PaymentSource>"));
-    field_overrides.insert(
-        ("payment_intent_next_action", "use_stripe_sdk"),
-        ("", "Option<serde_json::Value>"),
-    );
-    field_overrides.insert(("sku", "attributes"), ("Metadata", "Option<Metadata>"));
-    field_overrides
-        .insert(("subscription", "default_source"), ("PaymentSource", "Option<PaymentSource>"));
+    field_overrides.extend(vec![
+        (
+            ("bank_account", "account_holder_type"),
+            ("AccountHolderType", "Option<AccountHolderType>"),
+        ),
+        (("charge", "source"), ("PaymentSource", "Option<PaymentSource>")),
+        (
+            ("charge_fraud_details", "stripe_report"),
+            ("FraudDetailsReport", "Option<FraudDetailsReport>"),
+        ),
+        (("customer", "default_source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
+        (("customer", "sources"), ("PaymentSource", "List<PaymentSource>")),
+        (("invoice", "default_source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
+        (("invoiceitem", "period"), ("Period", "Option<Period>")),
+        (("line_item", "period"), ("Period", "Option<Period>")),
+        (
+            ("issuing.authorization", "authorization_method"),
+            ("IssuingAuthorizationMethod", "IssuingAuthorizationMethod"),
+        ),
+        (
+            ("issuing_authorization_request", "reason"),
+            ("IssuingAuthorizationReason", "IssuingAuthorizationReason"),
+        ),
+        (
+            ("issuing_authorization_verification_data", "address_line1_check"),
+            ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
+        ),
+        (
+            ("issuing_authorization_verification_data", "address_zip_check"),
+            ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
+        ),
+        (
+            ("issuing_authorization_verification_data", "cvc_check"),
+            ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
+        ),
+        (("issuing.card", "brand"), ("CardBrand", "CardBrand")),
+        (
+            ("issuing_card_authorization_controls", "allowed_categories"),
+            ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
+        ),
+        (
+            ("issuing_card_authorization_controls", "blocked_categories"),
+            ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
+        ),
+        (
+            ("issuing_card_authorization_controls", "spending_limits"),
+            ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
+        ),
+        (
+            ("issuing_cardholder_authorization_controls", "allowed_categories"),
+            ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
+        ),
+        (
+            ("issuing_cardholder_authorization_controls", "blocked_categories"),
+            ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
+        ),
+        (
+            ("issuing_cardholder_authorization_controls", "spending_limits"),
+            ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
+        ),
+        (("payment_intent", "source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
+        (("payment_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
+        (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
+        (("subscription", "default_source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
+        (("transfer_schedule", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
+    ]);
 
-    // Renames for params structs
-    schema_renames.insert("create_account_company", "create_company");
-    schema_renames.insert("create_account_individual", "create_person");
-    schema_renames.insert("create_account_requested_capabilities", "requested_capability");
-    schema_renames.insert("create_account_tos_acceptance", "accept_tos");
+    // Renames for `account` params
+    schema_renames.extend(vec![
+        ("create_account_company", "company_params"),
+        ("update_account_company", "company_params"),
+        ("create_account_individual", "person_params"),
+        ("update_account_individual", "person_params"),
+        ("create_account_requested_capabilities", "requested_capability"),
+        ("update_account_requested_capabilities", "requested_capability"),
+        ("create_account_settings", "account_settings_params"),
+        ("update_account_settings", "account_settings_params"),
+        ("account_settings_params_branding", "branding_settings_params"),
+        ("account_settings_params_card_payments", "card_payments_settings_params"),
+        ("account_settings_params_payments", "payments_settings_params"),
+        ("account_settings_params_dashboard_settings", "dashboard_settings_params"),
+        ("account_settings_params_payouts", "payout_settings_params"),
+        ("create_account_tos_acceptance", "accept_tos"),
+        ("update_account_tos_acceptance", "accept_tos"),
+        ("card_payments_settings_params_decline_on", "decline_charge_on_params"),
+        ("payout_settings_params_schedule", "transfer_schedule_params"),
+        ("person_params_verification", "person_verification_params"),
+        ("person_verification_params_document", "person_verification_document_params"),
+        ("transfer_schedule_params_interval", "transfer_schedule_interval"),
+    ]);
+    field_overrides.extend(vec![
+        (("create_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
+        (("update_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
+        (("company_params", "address"), ("Address", "Option<Address>")),
+        (("company_params", "address_kana"), ("Address", "Option<AddressKana>")),
+        (("company_params", "address_kanji"), ("Address", "Option<AddressKanji>")),
+        (("person_params", "address"), ("Address", "Option<Address>")),
+        (("person_params", "address_kana"), ("Address", "Option<AddressKana>")),
+        (("person_params", "address_kanji"), ("Address", "Option<AddressKanji>")),
+        (("person_params", "dob"), ("Dob", "Option<Dob>")),
+        (
+            ("create_payment_method", "billing_details"),
+            ("BillingDetails", "Option<BillingDetails>"),
+        ),
+        (("transfer_schedule_params", "delay_days"), ("DelayDays", "Option<DelayDays>")),
+        (("transfer_schedule_params", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
+    ]);
+
+    // Renames for `charge` params
+    schema_renames.extend(vec![
+        ("create_charge_transfer_data", "transfer_data_params"),
+        ("update_charge_fraud_details", "fraud_details_params"),
+    ]);
+    field_overrides.extend(vec![
+        (("create_charge", "shipping"), ("Shipping", "Option<Shipping>")),
+        (("update_charge", "shipping"), ("Shipping", "Option<Shipping>")),
+        (("fraud_details_params", "user_report"), ("FraudDetailsReport", "FraudDetailsReport")),
+    ]);
+
+    // Renames for `customer` params
+    schema_renames.extend(vec![
+        ("create_customer_invoice_settings", "customer_invoice_settings"),
+        ("update_customer_invoice_settings", "customer_invoice_settings"),
+        ("create_customer_tax_id_data", "tax_id_data"),
+        ("create_customer_tax_info", "tax_info_params"),
+        ("update_customer_tax_info", "tax_info_params"),
+        ("tax_info_params_type", "tax_info_type"),
+    ]);
+    field_overrides.extend(vec![
+        (("create_customer", "address"), ("Address", "Option<Address>")),
+        (("update_customer", "address"), ("Address", "Option<Address>")),
+        (("create_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+        (("update_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+        (("update_customer", "trial_end"), ("Scheduled", "Option<Scheduled>")),
+        (("customer_invoice_settings", "custom_fields"), ("CustomField", "Option<Vec<CustomField>>")),
+    ]);
+
+    // Renames for `invoice` params
+    field_overrides.extend(vec![
+        (("create_invoice", "custom_fields"), ("CustomField", "Option<Vec<CustomField>>")),
+    ]);
+
+    // Renames for `invoiceitem` params
+    schema_renames.extend(vec![
+        ("create_invoiceitem", "create_invoice_item"),
+        ("update_invoiceitem", "update_invoice_item"),
+    ]);
+    field_overrides.extend(vec![
+        (("create_invoice_item", "period"), ("Period", "Option<Period>")),
+        (("update_invoice_item", "period"), ("Period", "Option<Period>")),
+    ]);
+
+    // Renames for `order` params
+    field_overrides.extend(vec![
+        (("create_order", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+        (("update_order", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+    ]);
+
+    // Renames for `payment_intent` params
+    field_overrides.extend(vec![
+        (("create_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+        (("update_payment_intentr", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+    ]);
+
+    // Renames for `subscription` params
+    schema_renames.extend(vec![("create_subscription_schedule", "subscription_schedule")]);
+    field_overrides.extend(vec![
+        (
+            ("update_subscription", "billing_thresholds"),
+            ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
+        ),
+        (
+            ("update_subscription_item", "billing_thresholds"),
+            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
+        ),
+        (("create_subscription", "trial_end"), ("Scheduled", "Option<Scheduled>")),
+        (("update_subscription", "trial_end"), ("Scheduled", "Option<Scheduled>")),
+        (("create_subscription_schedule", "start_date"), ("Scheduled", "Option<Scheduled>")),
+        (("update_subscription_schedule", "start_date"), ("Scheduled", "Option<Scheduled>")),
+        (("create_subscription_schedule_phases", "start_date"), ("Scheduled", "Option<Scheduled>")),
+        (("update_subscription_schedule_phases", "start_date"), ("Scheduled", "Option<Scheduled>")),
+        (("create_subscription_schedule_phases", "end_date"), ("Scheduled", "Option<Scheduled>")),
+        (("update_subscription_schedule_phases", "end_date"), ("Scheduled", "Option<Scheduled>")),
+        (("create_subscription_schedule_phases", "trial_end"), ("Scheduled", "Option<Scheduled>")),
+        (("update_subscription_schedule_phases", "trial_end"), ("Scheduled", "Option<Scheduled>")),
+    ]);
+
+    // Renames for misc
+    field_overrides.insert(("create_sku", "inventory"), ("Inventory", "Option<Inventory>"));
+    field_overrides.insert(("update_sku", "inventory"), ("Inventory", "Option<Inventory>"));
     field_overrides.insert(
-        ("create_account", "business_profile"),
-        ("BusinessProfile", "Option<BusinessProfile>"),
+        ("create_sku", "package_dimensions"),
+        ("PackageDimensions", "Option<PackageDimensions>"),
     );
-    field_overrides.insert(("create_company", "address"), ("Address", "Option<Address>"));
-    field_overrides.insert(("create_company", "address_kana"), ("Address", "Option<AddressKana>"));
-    field_overrides
-        .insert(("create_company", "address_kanji"), ("Address", "Option<AddressKanji>"));
-    field_overrides.insert(("create_individual", "address"), ("Address", "Option<Address>"));
-    field_overrides
-        .insert(("create_individual", "address_kana"), ("Address", "Option<AddressKana>"));
-    field_overrides
-        .insert(("create_individual", "address_kanji"), ("Address", "Option<AddressKanji>"));
     field_overrides.insert(
-        ("create_payment_method", "billing_details"),
-        ("BillingDetails", "Option<BillingDetails>"),
+        ("update_sku", "package_dimensions"),
+        ("PackageDimensions", "Option<PackageDimensions>"),
     );
+    field_overrides.insert(
+        ("create_product", "package_dimensions"),
+        ("PackageDimensions", "Option<PackageDimensions>"),
+    );
+    field_overrides.insert(
+        ("update_product", "package_dimensions"),
+        ("PackageDimensions", "Option<PackageDimensions>"),
+    );
+    field_overrides.insert(("create_plan_tiers", "up_to"), ("UpTo", "Option<UpTo>"));
+    field_overrides.insert(("update_file_link", "expires_at"), ("Scheduled", "Option<Scheduled>"));
 
     // Generate files
     let meta = Metadata {
@@ -258,6 +367,11 @@ impl<'a> Metadata<'a> {
         } else {
             schema.replace('.', "_").to_camel_case()
         }
+    }
+
+    fn schema_field(&self, parent: &str, field: &str) -> String {
+        let parent_type = self.schema_to_rust_type(parent);
+        format!("{}_{}", parent_type, field).to_snake_case()
     }
 }
 
@@ -438,6 +552,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             &key,
             &field,
             required && !force_optional,
+            true,
         ));
     }
     out.push_str("}\n");
@@ -493,7 +608,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
                 .unwrap_or(false);
             out.push('\n');
-            out.push_str(&gen_field(&mut state, meta, &schema_name, &key, &field, required));
+            out.push_str(&gen_field(&mut state, meta, &schema_name, &key, &field, required, true));
         }
         out.push_str("}\n");
 
@@ -536,8 +651,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             let required = param["required"].as_bool() == Some(true);
             match param_name {
                 // TODO: Handle these unusual params
-                "tiers" | "destination" | "trial_end" | "start_date" | "bank_account" | "card"
-                | "product" => continue,
+                "bank_account" | "card" | "destination" | "product" => continue,
                 "metadata" => {
                     print_doc(&mut out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
@@ -600,7 +714,8 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 }
                 object
                     if meta.ids.contains_key(object)
-                        && param["schema"]["type"].as_str() == Some("string") =>
+                        && param["schema"]["type"].as_str() == Some("string")
+                        && param_name != "tax_id" =>
                 {
                     let id_type = &meta.ids[object];
                     print_doc(&mut out);
@@ -715,7 +830,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     } else if param["schema"]["type"].as_str() == Some("string")
                         && param["schema"]["enum"].is_array()
                     {
-                        let enum_schema = format!("{}_{}", object, param_rename).to_snake_case();
+                        let enum_schema = meta.schema_field(object, param_rename);
                         let enum_name = meta.schema_to_rust_type(&enum_schema);
                         let enum_ = InferredEnum {
                             parent: params.rust_type.clone(),
@@ -729,8 +844,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         };
                         let inserted = state.try_insert_enum(enum_name.clone(), enum_.clone());
                         let enum_name = if inserted.is_err() {
-                            let enum_schema =
-                                format!("{}_{}_filter", object, param_rename).to_snake_case();
+                            let enum_schema = format!("{}_filter", enum_schema);
                             let enum_name = meta.schema_to_rust_type(&enum_schema);
                             state.insert_enum(enum_name.clone(), enum_);
                             enum_name
@@ -774,9 +888,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str(param_rename);
                             out.push_str(": Option<Currency>,\n");
                         }
-                    } else if param_name != "id"
-                        && param["schema"]["type"].as_str() == Some("string")
-                    {
+                    } else if param["schema"]["type"].as_str() == Some("string") {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), "&'a str".into(), required));
                         if required {
@@ -803,6 +915,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             &param_rename,
                             &param["schema"],
                             required,
+                            false,
                         );
                         initializers.push((param_rename.into(), rust_type.clone(), required));
 
@@ -864,17 +977,22 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     let mut emitted_structs = BTreeSet::new();
-    while emitted_structs
-        .difference(&state.inferred_structs.keys().cloned().collect::<BTreeSet<_>>())
-        .count()
-        > 0
+    while state
+        .inferred_structs
+        .keys()
+        .cloned()
+        .collect::<BTreeSet<_>>()
+        .difference(&emitted_structs)
+        .any(|_| true)
     {
         for (struct_name, struct_) in state.inferred_structs.clone() {
             if emitted_structs.contains(&struct_name) {
                 continue;
+            } else {
+                emitted_structs.insert(struct_name.clone());
+                eprintln!("struct {} {{ ... }}", struct_name);
             }
 
-            emitted_structs.insert(struct_name.clone());
             let fields = match struct_.schema["properties"].as_object() {
                 Some(some) => some,
                 None => {
@@ -901,6 +1019,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     &key,
                     &field,
                     required,
+                    false,
                 ));
             }
             out.push_str("}\n");
@@ -908,6 +1027,8 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     for (union_name, union_) in state.inferred_unions.clone() {
+        eprintln!("union {} {{ ... }}", union_name);
+
         out.push('\n');
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
         out.push_str("#[serde(tag = \"object\", rename_all = \"snake_case\")]\n");
@@ -936,6 +1057,8 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     for (enum_name, enum_) in state.inferred_enums.clone() {
+        eprintln!("enum {} {{ ... }}", enum_name);
+
         out.push('\n');
         out.push_str(&format!(
             "/// An enum representing the possible values of an `{}`'s `{}` field.\n",
@@ -999,7 +1122,16 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
     if state.use_resources.len() > 0 {
         prelude.push_str("use crate::resources::{");
-        for (n, type_) in state.use_resources.iter().enumerate() {
+        for (n, type_) in state
+            .use_resources
+            .iter()
+            .filter(|&x| {
+                !state.inferred_structs.contains_key(x)
+                    && !state.inferred_unions.contains_key(x)
+                    && !state.inferred_enums.contains_key(x)
+            })
+            .enumerate()
+        {
             if n > 0 {
                 prelude.push_str(", ");
             }
@@ -1021,6 +1153,7 @@ fn gen_field(
     field_name: &str,
     field: &Json,
     required: bool,
+    default: bool,
 ) -> String {
     let mut out = String::new();
     if let Some(doc) = field["description"].as_str() {
@@ -1035,7 +1168,8 @@ fn gen_field(
         out.push_str(field_name);
         out.push_str("\")]\n");
     }
-    let rust_type = gen_field_rust_type(state, meta, object, &field_name, &field, required);
+    let rust_type =
+        gen_field_rust_type(state, meta, object, &field_name, &field, required, default);
     if !required {
         if rust_type == "bool" || rust_type == "Metadata" || rust_type.starts_with("List<") {
             out.push_str("    #[serde(default)]\n");
@@ -1058,6 +1192,7 @@ fn gen_field_rust_type(
     field_name: &str,
     field: &Json,
     required: bool,
+    default: bool,
 ) -> String {
     if let Some(&(use_path, rust_type)) = meta.field_overrides.get(&(object, field_name)) {
         match use_path {
@@ -1092,8 +1227,12 @@ fn gen_field_rust_type(
 
     let ty = match field["type"].as_str() {
         Some("boolean") => {
-            // N.B. return immediately; we use `Default` for bool rather than `Option`
-            return "bool".into();
+            if default {
+                // N.B. return immediately; if we want to use `Default` for bool rather than `Option`
+                return "bool".into();
+            } else {
+                "bool".into()
+            }
         }
         Some("number") => "f64".into(),
         Some("integer") => {
@@ -1115,7 +1254,7 @@ fn gen_field_rust_type(
         }
         Some("string") => {
             if let Some(variants) = field["enum"].as_array() {
-                let enum_schema = format!("{}_{}", object, field_name).to_snake_case();
+                let enum_schema = meta.schema_field(object, field_name);
                 let enum_name = meta.schema_to_rust_type(&enum_schema);
                 let parent_type = meta.schema_to_rust_type(object);
                 let enum_ = InferredEnum {
@@ -1131,7 +1270,8 @@ fn gen_field_rust_type(
         }
         Some("array") => {
             let element = &field["items"];
-            let element_type = gen_field_rust_type(state, meta, object, field_name, element, true);
+            let element_type =
+                gen_field_rust_type(state, meta, object, field_name, element, true, false);
             format!("Vec<{}>", element_type)
         }
         Some("object") => {
@@ -1145,14 +1285,20 @@ fn gen_field_rust_type(
                 } else {
                     field_name.into()
                 };
-                let element_type =
-                    gen_field_rust_type(state, meta, object, &element_field_name, element, true);
+                let element_type = gen_field_rust_type(
+                    state,
+                    meta,
+                    object,
+                    &element_field_name,
+                    element,
+                    true,
+                    false,
+                );
 
                 // N.B. return immediately; we use `Default` for list rather than `Option`
                 return format!("List<{}>", element_type);
             } else {
-                let struct_schema =
-                    format!("{}_{}", meta.schema_to_rust_type(object), field_name).to_snake_case();
+                let struct_schema = meta.schema_field(object, field_name);
                 let struct_name = meta.schema_to_rust_type(&struct_schema);
                 let struct_ = InferredStruct { field: field_name.into(), schema: field.clone() };
                 state.insert_struct(struct_name.clone(), struct_);
@@ -1175,9 +1321,9 @@ fn gen_field_rust_type(
                 type_name
             } else if let Some(any_of) = field["anyOf"].as_array().or(field["oneOf"].as_array()) {
                 if any_of.len() == 1 {
-                    gen_field_rust_type(state, meta, object, field_name, &any_of[0], true)
+                    gen_field_rust_type(state, meta, object, field_name, &any_of[0], true, false)
                 } else if any_of.len() == 2 && any_of[1]["enum"][0].as_str() == Some("") {
-                    gen_field_rust_type(state, meta, object, field_name, &any_of[0], true)
+                    gen_field_rust_type(state, meta, object, field_name, &any_of[0], true, false)
                 } else if field["x-expansionResources"].is_object() {
                     let ty_ = gen_field_rust_type(
                         state,
@@ -1192,6 +1338,7 @@ fn gen_field_rust_type(
                             .collect())
                         }),
                         true,
+                        false,
                     );
                     state.use_params.insert("Expandable");
                     format!("Expandable<{}>", ty_)
@@ -1200,7 +1347,7 @@ fn gen_field_rust_type(
                     state.use_params.insert("Timestamp");
                     "RangeQuery<Timestamp>".into()
                 } else {
-                    let union_schema = format!("{}_{}", object, field_name).to_snake_case();
+                    let union_schema = meta.schema_field(object, field_name);
                     let union_name = meta.schema_to_rust_type(&union_schema);
                     let union_ = InferredUnion {
                         field: field_name.into(),
@@ -1210,8 +1357,8 @@ fn gen_field_rust_type(
                                 let schema_name = x["$ref"]
                                     .as_str()
                                     .expect(&format!(
-                                        "invalid union for `{}`:  {:?}",
-                                        union_schema, field
+                                        "invalid union for `{}.{}`:  {:?}",
+                                        object, field_name, field
                                     ))
                                     .trim_start_matches("#/components/schemas/");
                                 let type_name = meta.schema_to_rust_type(schema_name);
@@ -1261,35 +1408,6 @@ fn gen_impl_requests(
     // Collect all methods we know how to auto-generate
     let mut methods = Vec::new();
     for path in requests {
-        lazy_static! {
-            static ref P_TAG: Regex = Regex::new("<p>|</p>").unwrap();
-            static ref BR_TAG: Regex = Regex::new("<br ?/?>").unwrap();
-            static ref A_DOC_TAG: Regex =
-                Regex::new("<a href=\"/docs/([^\"]+)\">([^<]+)</a>").unwrap();
-            static ref A_HASH_TAG: Regex = Regex::new("<a href=\"#([^\"]+)\">([^<]+)</a>").unwrap();
-            static ref A_HTTP_TAG: Regex =
-                Regex::new("<a href=\"(https?://[^\"]+)\">([^<]+)</a>").unwrap();
-            static ref CODE_TAG: Regex = Regex::new("<code>|</code>").unwrap();
-            static ref AMOUNT_OPEN_TAG: Regex = Regex::new("<amount>").unwrap();
-            static ref AMOUNT_CLOSE_TAG: Regex = Regex::new("</amount>").unwrap();
-            static ref CURRENCY_OPEN_TAG: Regex = Regex::new("<currency>").unwrap();
-            static ref CURRENCY_CLOSE_TAG: Regex = Regex::new("</currency>").unwrap();
-        }
-        fn to_doc_comment(request: &Json) -> String {
-            let doc = request["description"].as_str().unwrap_or_default();
-            let doc = P_TAG.replace_all(&doc, "");
-            let doc = BR_TAG.replace_all(&doc, "\n");
-            let doc = A_DOC_TAG.replace_all(&doc, "[${2}](https://stripe.com/docs/${1})");
-            let doc = A_HASH_TAG.replace_all(&doc, "[${2}](https://stripe.com/docs/api#${1})");
-            let doc = A_HTTP_TAG.replace_all(&doc, "[$2]($1)");
-            let doc = CODE_TAG.replace_all(&doc, "`");
-            let doc = AMOUNT_OPEN_TAG.replace_all(&doc, "");
-            let doc = AMOUNT_CLOSE_TAG.replace_all(&doc, "00"); // add cents to get correct "integer" argument
-            let doc = CURRENCY_OPEN_TAG.replace_all(&doc, "$"); // add locale formatting (we can only support one easily in our rust docs...)
-            let doc = CURRENCY_CLOSE_TAG.replace_all(&doc, "");
-            doc.into()
-        }
-
         let request = &meta.spec["paths"][path];
         let segments = path.trim_start_matches("/v1/").split("/").collect::<Vec<_>>();
         let get_request = &request["get"];
@@ -1303,7 +1421,7 @@ fn gen_impl_requests(
             {
                 continue; // skip generating this unusual request (for now...)
             }
-            let doc_comment = to_doc_comment(get_request);
+            let doc_comment = get_request["description"].as_str().unwrap_or_default();
             if ok_schema["properties"]["object"]["enum"][0].as_str() == Some("list") {
                 if segments.len() == 1 {
                     let params_name = if rust_struct.ends_with("y") {
@@ -1321,7 +1439,7 @@ fn gen_impl_requests(
 
                     let mut out = String::new();
                     out.push('\n');
-                    print_doc_comment(&mut out, &doc_comment, 1);
+                    print_doc_comment(&mut out, doc_comment, 1);
                     out.push_str("    pub fn list(client: &Client, params: ");
                     out.push_str(&params_name);
                     out.push_str("<'_>) -> Response<List<");
@@ -1350,7 +1468,7 @@ fn gen_impl_requests(
 
                     let mut out = String::new();
                     out.push('\n');
-                    print_doc_comment(&mut out, &doc_comment, 1);
+                    print_doc_comment(&mut out, doc_comment, 1);
                     out.push_str("    pub fn retrieve(client: &Client, id: &");
                     out.push_str(&id_type);
                     if let Some(param) = expand_param {
@@ -1394,10 +1512,10 @@ fn gen_impl_requests(
                 continue;
             };
 
-            let doc_comment = to_doc_comment(post_request);
+            let doc_comment = post_request["description"].as_str().unwrap_or_default();
             if segments.len() == 1 {
                 if !doc_comment.contains("Create") && !doc_comment.contains("create") {
-                    continue; // skip requests which aren't obviously `create` for now
+                    continue; // skip requests which don't appear to be `create` for now
                 }
 
                 // Just make sure I don't miss anything unexpected
@@ -1431,7 +1549,7 @@ fn gen_impl_requests(
 
                 let mut out = String::new();
                 out.push('\n');
-                print_doc_comment(&mut out, &doc_comment, 1);
+                print_doc_comment(&mut out, doc_comment, 1);
                 out.push_str("    pub fn create(client: &Client, params: ");
                 out.push_str(&params_name);
                 out.push_str("<'_>) -> Response<");
@@ -1440,6 +1558,53 @@ fn gen_impl_requests(
                 out.push_str("        client.post_form(\"/");
                 out.push_str(&segments.join("/"));
                 out.push_str("\", &params)\n");
+                out.push_str("    }\n");
+                methods.push(out);
+            } else if segments.len() == 2 {
+                if !doc_comment.contains("Update") && !doc_comment.contains("update") {
+                    continue; // skip requests which don't appear to be `update` for now
+                }
+
+                // Just make sure I don't miss anything unexpected
+                let query_params: &[_] =
+                    post_request["parameters"].as_array().map(|x| x.as_ref()).unwrap_or_default();
+                assert_eq!(query_params.len(), 1);
+
+                // Construct `parameters` from the request body schema
+                let update_schema = &post_request["requestBody"]["content"]
+                    ["application/x-www-form-urlencoded"]["schema"];
+                let mut update_parameters = Vec::new();
+                for (key, value) in update_schema["properties"].as_object().unwrap() {
+                    update_parameters.push(json!({
+                        "in": "form",
+                        "name": key,
+                        "description": value["description"],
+                        "required": update_schema["required"].as_array().map(|arr| {
+                            arr.iter().any(|v| v.as_str() == Some(&key))
+                        }),
+                        "schema": value,
+                        "style": "deepObject"
+                    }));
+                }
+                let params_name = format!("Update{}", rust_struct);
+                let params = InferredParams {
+                    method: "update".into(),
+                    rust_type: params_name.clone(),
+                    parameters: Json::Array(update_parameters),
+                };
+                state.inferred_parameters.insert(params_name.to_snake_case(), params);
+
+                let mut out = String::new();
+                out.push('\n');
+                print_doc_comment(&mut out, doc_comment, 1);
+                out.push_str("    pub fn update(client: &Client, params: ");
+                out.push_str(&params_name);
+                out.push_str("<'_>) -> Response<");
+                out.push_str(&return_type);
+                out.push_str("> {\n");
+                out.push_str("        client.post_form(");
+                out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
+                out.push_str(", &params)\n");
                 out.push_str("    }\n");
                 methods.push(out);
             }
@@ -1456,7 +1621,7 @@ fn gen_impl_requests(
                 continue; // skip generating this unusual request (for now...)
             }
 
-            let doc_comment = to_doc_comment(delete_request);
+            let doc_comment = delete_request["description"].as_str().unwrap_or_default();
             if segments.len() == 2 {
                 let id_param = delete_request["parameters"]
                     .as_array()
@@ -1472,7 +1637,7 @@ fn gen_impl_requests(
 
                     let mut out = String::new();
                     out.push('\n');
-                    print_doc_comment(&mut out, &doc_comment, 1);
+                    print_doc_comment(&mut out, doc_comment, 1);
                     out.push_str("    pub fn delete(client: &Client, id: &");
                     out.push_str(&id_type);
                     out.push_str(") -> Response<Deleted<");
@@ -1514,12 +1679,13 @@ fn print_indent(out: &mut String, depth: u8) {
     }
 }
 
-fn print_doc_comment(out: &mut String, comment: &str, depth: u8) {
-    if comment.trim().is_empty() {
+fn print_doc_comment(out: &mut String, description: &str, depth: u8) {
+    if description.trim().is_empty() {
         return;
     }
 
-    let mut doc_parts = comment.splitn(2, ". ");
+    let doc = format_doc_comment(description);
+    let mut doc_parts = doc.splitn(2, ". ");
     let head = doc_parts.next().unwrap().trim();
     for (i, line) in head.split('\n').enumerate() {
         if i > 0 {
@@ -1543,13 +1709,44 @@ fn print_doc_comment(out: &mut String, comment: &str, depth: u8) {
         for part in tail.split(". ") {
             print_indent(out, depth);
             out.push_str("/// ");
-            out.push_str(&part.replace('\n', " "));
+            out.push_str(&part.replace('\n', " ").trim());
             if !part.ends_with(".") {
                 out.push('.');
             }
             out.push('\n');
         }
     }
+}
+
+fn format_doc_comment(doc: &str) -> String {
+    lazy_static! {
+        static ref P_TAG: Regex = Regex::new("<p>|</p>").unwrap();
+        static ref BR_TAG: Regex = Regex::new("<br ?/?>").unwrap();
+        static ref A_DOC_TAG: Regex = Regex::new("<a href=\"/docs/([^\"]+)\">([^<]+)</a>").unwrap();
+        static ref A_HASH_TAG: Regex = Regex::new("<a href=\"#([^\"]+)\">([^<]+)</a>").unwrap();
+        static ref A_HTTP_TAG: Regex =
+            Regex::new("<a href=\"(https?://[^\"]+)\">([^<]+)</a>").unwrap();
+        static ref CODE_TAG: Regex = Regex::new("<code>|</code>").unwrap();
+        static ref EM_TAG: Regex = Regex::new("<em>|</em>|<i>|</i>").unwrap();
+        static ref STRONG_TAG: Regex = Regex::new("<strong>|</strong>|<b>|</b>").unwrap();
+        static ref AMOUNT_OPEN_TAG: Regex = Regex::new("<amount>").unwrap();
+        static ref AMOUNT_CLOSE_TAG: Regex = Regex::new("</amount>").unwrap();
+        static ref CURRENCY_OPEN_TAG: Regex = Regex::new("<currency>").unwrap();
+        static ref CURRENCY_CLOSE_TAG: Regex = Regex::new("</currency>").unwrap();
+    }
+    let doc = P_TAG.replace_all(&doc, "");
+    let doc = BR_TAG.replace_all(&doc, "\n");
+    let doc = A_DOC_TAG.replace_all(&doc, "[${2}](https://stripe.com/docs/${1})");
+    let doc = A_HASH_TAG.replace_all(&doc, "[${2}](https://stripe.com/docs/api#${1})");
+    let doc = A_HTTP_TAG.replace_all(&doc, "[$2]($1)");
+    let doc = CODE_TAG.replace_all(&doc, "`");
+    let doc = EM_TAG.replace_all(&doc, "_");
+    let doc = STRONG_TAG.replace_all(&doc, "**");
+    let doc = AMOUNT_OPEN_TAG.replace_all(&doc, "");
+    let doc = AMOUNT_CLOSE_TAG.replace_all(&doc, "00"); // add cents to get correct "integer" argument
+    let doc = CURRENCY_OPEN_TAG.replace_all(&doc, "$"); // add locale formatting (we can only support one easily in our rust docs...)
+    let doc = CURRENCY_CLOSE_TAG.replace_all(&doc, "");
+    doc.trim().into()
 }
 
 fn check_object_doc_url(object: &str) -> Option<String> {

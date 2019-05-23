@@ -72,6 +72,13 @@ impl PaymentMethod {
     ) -> Response<PaymentMethod> {
         client.get_query(&format!("/payment_methods/{}", id), &Expand { expand })
     }
+
+    /// Updates a PaymentMethod object.
+    ///
+    /// A PaymentMethod must be attached a customer to be updated.
+    pub fn update(client: &Client, params: UpdatePaymentMethod<'_>) -> Response<PaymentMethod> {
+        client.post_form(&format!("/payment_methods/{}", id), &params)
+    }
 }
 
 impl Object for PaymentMethod {
@@ -189,7 +196,7 @@ pub struct WalletDetails {
     /// An additional hash is included on the Wallet subhash with a name matching this value.
     /// It contains additional information specific to the card wallet type.
     #[serde(rename = "type")]
-    pub type_: WalletType,
+    pub type_: WalletDetailsType,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub visa_checkout: Option<WalletVisaCheckout>,
@@ -370,6 +377,69 @@ impl<'a> ListPaymentMethods<'a> {
     }
 }
 
+/// The parameters for `PaymentMethod::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdatePaymentMethod<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_details: Option<UpdatePaymentMethodBillingDetails>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+}
+
+impl<'a> UpdatePaymentMethod<'a> {
+    pub fn new() -> Self {
+        UpdatePaymentMethod {
+            billing_details: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodBillingDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<UpdatePaymentMethodBillingDetailsAddress>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodBillingDetailsAddress {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+
 /// An enum representing the possible values of an `PaymentMethod`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -381,7 +451,7 @@ pub enum PaymentMethodType {
 /// An enum representing the possible values of an `WalletDetails`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum WalletType {
+pub enum WalletDetailsType {
     AmexExpressCheckout,
     ApplePay,
     GooglePay,

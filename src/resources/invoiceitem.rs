@@ -120,6 +120,13 @@ impl InvoiceItem {
         client.get_query(&format!("/invoiceitems/{}", id), &Expand { expand })
     }
 
+    /// Updates the amount or description of an invoice item on an upcoming invoice.
+    ///
+    /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
+    pub fn update(client: &Client, params: UpdateInvoiceItem<'_>) -> Response<InvoiceItem> {
+        client.post_form(&format!("/invoiceitems/{}", id), &params)
+    }
+
     /// Deletes an invoice item, removing it from an invoice.
     ///
     /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
@@ -185,7 +192,7 @@ pub struct CreateInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    period: Option<CreateInvoiceItemPeriod>,
+    period: Option<Period>,
 
     /// Non-negative integer.
     ///
@@ -293,6 +300,72 @@ impl<'a> ListInvoiceItems<'a> {
             limit: Default::default(),
             pending: Default::default(),
             starting_after: Default::default(),
+        }
+    }
+}
+
+/// The parameters for `InvoiceItem::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateInvoiceItem<'a> {
+    /// The integer amount in **%s** of the charge to be applied to the upcoming invoice.
+    ///
+    /// If you want to apply a credit to the customer's account, pass a negative amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    amount: Option<i64>,
+
+    /// An arbitrary string which you can attach to the invoice item.
+    ///
+    /// The description is displayed in the invoice for easy tracking.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+
+    /// Controls whether discounts apply to this invoice item.
+    ///
+    /// Defaults to false for prorations or negative invoice items, and true for all other invoice items.
+    /// Cannot be set to true for prorations.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    discountable: Option<bool>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// A set of key-value pairs that you can attach to an invoice item object.
+    ///
+    /// It can be useful for storing additional information about the invoice item in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    period: Option<Period>,
+
+    /// Non-negative integer.
+    ///
+    /// The quantity of units for the invoice item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    quantity: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_rates: Option<Vec<String>>,
+
+    /// The integer unit amount in **%s** of the charge to be applied to the upcoming invoice.
+    ///
+    /// This unit_amount will be multiplied by the quantity to get the full amount.
+    /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unit_amount: Option<i64>,
+}
+
+impl<'a> UpdateInvoiceItem<'a> {
+    pub fn new() -> Self {
+        UpdateInvoiceItem {
+            amount: Default::default(),
+            description: Default::default(),
+            discountable: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            period: Default::default(),
+            quantity: Default::default(),
+            tax_rates: Default::default(),
+            unit_amount: Default::default(),
         }
     }
 }

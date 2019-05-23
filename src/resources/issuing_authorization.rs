@@ -95,7 +95,7 @@ pub struct IssuingAuthorization {
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wallet_provider: Option<WalletProvider>,
+    pub wallet_provider: Option<IssuingAuthorizationWalletProvider>,
 }
 
 impl Object for IssuingAuthorization {
@@ -152,7 +152,7 @@ pub struct IssuingAuthorizationVerificationData {
 /// An enum representing the possible values of an `IssuingAuthorization`'s `wallet_provider` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum WalletProvider {
+pub enum IssuingAuthorizationWalletProvider {
     ApplePay,
     GooglePay,
     SamsungPay,

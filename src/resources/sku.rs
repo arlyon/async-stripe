@@ -5,7 +5,7 @@
 use crate::config::{Client, Response};
 use crate::ids::SkuId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, Timestamp};
-use crate::resources::{Currency, PackageDimensions, Product};
+use crate::resources::{Currency, Inventory, PackageDimensions, Product};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SKU".
@@ -97,6 +97,14 @@ impl Sku {
         client.get_query(&format!("/skus/{}", id), &Expand { expand })
     }
 
+    /// Updates the specific SKU by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  Note that a SKU’s `attributes` are not editable.
+    /// Instead, you would need to deactivate the existing SKU and create a new one with the new attribute values.
+    pub fn update(client: &Client, params: UpdateSku<'_>) -> Response<Sku> {
+        client.post_form(&format!("/skus/{}", id), &params)
+    }
+
     /// Delete a SKU.
     ///
     /// Deleting a SKU is only possible until it has been used in an order.
@@ -157,10 +165,17 @@ pub struct CreateSku<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     expand: &'a [&'a str],
 
+    /// The identifier for the SKU.
+    ///
+    /// Must be unique.
+    /// If not provided, an identifier will be randomly generated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    id: Option<&'a str>,
+
     /// The URL of an image for this SKU, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     image: Option<&'a str>,
-    inventory: CreateSkuInventory,
+    inventory: Option<Inventory>,
 
     /// A set of key-value pairs that you can attach to a SKU object.
     ///
@@ -168,19 +183,20 @@ pub struct CreateSku<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    package_dimensions: Option<CreateSkuPackageDimensions>,
+    package_dimensions: Option<PackageDimensions>,
 
     /// The cost of the item as a nonnegative integer in the smallest currency unit (that is, 100 cents to charge $1.00, or 100 to charge ¥100, Japanese Yen being a zero-decimal currency).
     price: i64,
 }
 
 impl<'a> CreateSku<'a> {
-    pub fn new(currency: Currency, inventory: CreateSkuInventory, price: i64) -> Self {
+    pub fn new(currency: Currency, inventory: Option<Inventory>, price: i64) -> Self {
         CreateSku {
             active: Default::default(),
             attributes: Default::default(),
             currency,
             expand: Default::default(),
+            id: Default::default(),
             image: Default::default(),
             inventory,
             metadata: Default::default(),
@@ -243,6 +259,60 @@ impl<'a> ListSkus<'a> {
             in_stock: Default::default(),
             limit: Default::default(),
             starting_after: Default::default(),
+        }
+    }
+}
+
+/// The parameters for `Sku::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateSku<'a> {
+    /// Whether this SKU is available for purchase.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    active: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    attributes: Option<UpdateSkuAttributes>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    currency: Option<Currency>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// The URL of an image for this SKU, meant to be displayable to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    image: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    inventory: Option<Inventory>,
+
+    /// A set of key-value pairs that you can attach to a SKU object.
+    ///
+    /// It can be useful for storing additional information about the SKU in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    package_dimensions: Option<PackageDimensions>,
+
+    /// The cost of the item as a positive integer in the smallest currency unit (that is, 100 cents to charge $1.00, or 100 to charge ¥100, Japanese Yen being a zero-decimal currency).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    price: Option<i64>,
+}
+
+impl<'a> UpdateSku<'a> {
+    pub fn new() -> Self {
+        UpdateSku {
+            active: Default::default(),
+            attributes: Default::default(),
+            currency: Default::default(),
+            expand: Default::default(),
+            image: Default::default(),
+            inventory: Default::default(),
+            metadata: Default::default(),
+            package_dimensions: Default::default(),
+            price: Default::default(),
         }
     }
 }

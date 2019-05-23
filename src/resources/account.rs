@@ -6,8 +6,8 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BusinessProfile, CapabilityStatus, Card, Currency, File,
-    LegalEntityJapanAddress, Person,
+    Address, BankAccount, BusinessProfile, Card, Currency, DelayDays, Dob, File,
+    LegalEntityJapanAddress, Person, Weekday,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -126,6 +126,16 @@ impl Account {
         client.get_query(&format!("/accounts/{}", id), &Expand { expand })
     }
 
+    /// Updates a connected [Express or Custom account](https://stripe.com/docs/connect/accounts) by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided are left unchanged.
+    /// Most parameters can be changed only for Custom accounts.
+    /// (These are marked **Custom Only** below.) Parameters marked **Custom and Express** are supported by both account types.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
+    /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
+    pub fn update(client: &Client, params: UpdateAccount<'_>) -> Response<Account> {
+        client.post_form(&format!("/accounts/{}", id), &params)
+    }
+
     /// With [Connect](https://stripe.com/docs/connect), you may delete Custom accounts you manage.
     ///
     /// Custom accounts created using test-mode keys can be deleted at any time.
@@ -188,13 +198,16 @@ pub struct BusinessProfile {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilities {
     /// The status of the card payments capability of the account, or whether the account can directly process credit and debit card charges.
-    pub card_payments: CapabilityStatus,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_payments: Option<CapabilityStatus>,
 
     /// The status of the legacy payments capability of the account.
-    pub legacy_payments: CapabilityStatus,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legacy_payments: Option<CapabilityStatus>,
 
     /// The status of the platform payments capability of the account, or whether your platform can process charges on behalf of the account.
-    pub platform_payments: CapabilityStatus,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub platform_payments: Option<CapabilityStatus>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -427,7 +440,7 @@ pub struct TransferSchedule {
     ///
     /// Only shown if `interval` is weekly.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub weekly_anchor: Option<String>,
+    pub weekly_anchor: Option<Weekday>,
 }
 
 /// The parameters for `Account::create`.
@@ -445,7 +458,7 @@ pub struct CreateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     business_type: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    company: Option<CreateCompany>,
+    company: Option<CompanyParams>,
 
     /// The country in which the account holder resides, or in which the business is legally established.
     ///
@@ -473,12 +486,12 @@ pub struct CreateAccount<'a> {
     /// A card or bank account to attach to the account.
     ///
     /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/stripe.js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
-    /// <br><br>By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
+    /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
     /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
     #[serde(skip_serializing_if = "Option::is_none")]
     external_account: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    individual: Option<CreatePerson>,
+    individual: Option<PersonParams>,
 
     /// A set of key-value pairs that you can attach to an `Account` object.
     ///
@@ -488,7 +501,7 @@ pub struct CreateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     requested_capabilities: Option<Vec<RequestedCapability>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    settings: Option<CreateAccountSettings>,
+    settings: Option<AccountSettingsParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tos_acceptance: Option<AcceptTos>,
 
@@ -565,6 +578,288 @@ impl<'a> ListAccounts<'a> {
     }
 }
 
+/// The parameters for `Account::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateAccount<'a> {
+    /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    account_token: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    business_profile: Option<BusinessProfile>,
+
+    /// The business type.
+    ///
+    /// Can be `individual` or `company`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    business_type: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    company: Option<CompanyParams>,
+
+    /// Three-letter ISO currency code representing the default currency for the account.
+    ///
+    /// This must be a currency that [Stripe supports in the account's country](https://stripe.com/docs/payouts).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_currency: Option<Currency>,
+
+    /// Email address of the account representative.
+    ///
+    /// For Standard accounts, this is used to ask them to claim their Stripe account.
+    /// For Custom accounts, this only makes the account easier to identify to platforms; Stripe does not email the account representative.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    email: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// A card or bank account to attach to the account.
+    ///
+    /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/stripe.js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
+    /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
+    /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    external_account: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    individual: Option<PersonParams>,
+
+    /// A set of key-value pairs that you can attach to an `Account` object.
+    ///
+    /// This can be useful for storing additional information about the account in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    requested_capabilities: Option<Vec<RequestedCapability>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    settings: Option<AccountSettingsParams>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tos_acceptance: Option<AcceptTos>,
+}
+
+impl<'a> UpdateAccount<'a> {
+    pub fn new() -> Self {
+        UpdateAccount {
+            account_token: Default::default(),
+            business_profile: Default::default(),
+            business_type: Default::default(),
+            company: Default::default(),
+            default_currency: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            external_account: Default::default(),
+            individual: Default::default(),
+            metadata: Default::default(),
+            requested_capabilities: Default::default(),
+            settings: Default::default(),
+            tos_acceptance: Default::default(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AcceptTos {
+    pub date: Timestamp,
+
+    pub ip: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountSettingsParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub branding: Option<BrandingSettingsParams>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_payments: Option<CardPaymentsSettingsParams>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payments: Option<PaymentsSettingsParams>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payouts: Option<PayoutSettingsParams>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CompanyParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<Address>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_kana: Option<AddressKana>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_kanji: Option<AddressKanji>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub directors_provided: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name_kana: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name_kanji: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owners_provided: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id_registrar: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vat_id: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PersonParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<Address>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_kana: Option<AddressKana>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_kanji: Option<AddressKanji>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<Dob>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name_kana: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name_kanji: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gender: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name_kana: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name_kanji: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maiden_name: Option<String>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ssn_last_4: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification: Option<PersonVerificationParams>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct BrandingSettingsParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icon: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub logo: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub primary_color: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CardPaymentsSettingsParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub decline_on: Option<DeclineChargeOnParams>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_prefix: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentsSettingsParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_kana: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_kanji: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PayoutSettingsParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub debit_negative_balances: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub schedule: Option<TransferScheduleParams>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PersonVerificationParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<PersonVerificationDocumentParams>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DeclineChargeOnParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub avs_failure: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc_failure: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PersonVerificationDocumentParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct TransferScheduleParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delay_days: Option<DelayDays>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval: Option<TransferScheduleInterval>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub monthly_anchor: Option<u8>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub weekly_anchor: Option<Weekday>,
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
 pub enum ExternalAccount {
@@ -589,6 +884,15 @@ pub enum BusinessType {
     Individual,
 }
 
+/// An enum representing the possible values of an `AccountCapabilities`'s `card_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CapabilityStatus {
+    Active,
+    Inactive,
+    Pending,
+}
+
 /// An enum representing the possible values of an `CreateAccount`'s `requested_capabilities` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -597,4 +901,14 @@ pub enum RequestedCapability {
     CardPayments,
     LegacyPayments,
     PlatformPayments,
+}
+
+/// An enum representing the possible values of an `TransferScheduleParams`'s `interval` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TransferScheduleInterval {
+    Daily,
+    Manual,
+    Monthly,
+    Weekly,
 }

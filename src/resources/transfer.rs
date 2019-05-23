@@ -104,6 +104,13 @@ impl Transfer {
     pub fn retrieve(client: &Client, id: &TransferId, expand: &[&str]) -> Response<Transfer> {
         client.get_query(&format!("/transfers/{}", id), &Expand { expand })
     }
+
+    /// Updates the specified transfer by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  This request accepts only metadata as an argument.
+    pub fn update(client: &Client, params: UpdateTransfer<'_>) -> Response<Transfer> {
+        client.post_form(&format!("/transfers/{}", id), &params)
+    }
 }
 
 impl Object for Transfer {
@@ -223,6 +230,38 @@ impl<'a> ListTransfers<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
             transfer_group: Default::default(),
+        }
+    }
+}
+
+/// The parameters for `Transfer::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateTransfer<'a> {
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+}
+
+impl<'a> UpdateTransfer<'a> {
+    pub fn new() -> Self {
+        UpdateTransfer {
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
         }
     }
 }
