@@ -238,7 +238,7 @@ pub struct CreateOrder<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     expand: &'a [&'a str],
     #[serde(skip_serializing_if = "Option::is_none")]
-    items: Option<Vec<CreateOrderItems>>,
+    items: Option<Vec<OrderItemParams>>,
 
     /// A set of key-value pairs that you can attach to an order object.
     ///
@@ -380,7 +380,22 @@ impl<'a> UpdateOrder<'a> {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreateOrderItems {
+pub struct ListOrdersStatusTransitions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled: Option<RangeQuery<Timestamp>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fulfilled: Option<RangeQuery<Timestamp>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid: Option<RangeQuery<Timestamp>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub returned: Option<RangeQuery<Timestamp>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct OrderItemParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
@@ -398,28 +413,13 @@ pub struct CreateOrderItems {
 
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<CreateOrderItemsType>,
+    pub type_: Option<OrderItemParamsType>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct ListOrdersStatusTransitions {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled: Option<RangeQuery<Timestamp>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fulfilled: Option<RangeQuery<Timestamp>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub paid: Option<RangeQuery<Timestamp>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub returned: Option<RangeQuery<Timestamp>>,
-}
-
-/// An enum representing the possible values of an `CreateOrderItems`'s `type` field.
+/// An enum representing the possible values of an `OrderItemParams`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum CreateOrderItemsType {
+pub enum OrderItemParamsType {
     Discount,
     Shipping,
     Sku,

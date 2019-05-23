@@ -6,6 +6,7 @@
 ./openapi/add application_fee
 ./openapi/add balance_transaction
 ./openapi/add balance
+./openapi/add bank_account
 ./openapi/add connect_collection_transfer
 ./openapi/add coupon
 ./openapi/add discount
@@ -29,6 +30,7 @@
 ./openapi/add review
 ./openapi/add scheduled_query_run
 ./openapi/add sku
+./openapi/add source
 ./openapi/add subscription_item
 ./openapi/add topup
 ./openapi/add tax_rate

@@ -1,7 +1,10 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::ids::BankAccountId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Account, AccountHolderType, BankAccountStatus, Currency, Customer};
-use serde::ser::SerializeStruct;
+use crate::resources::{Account, AccountHolderType, Currency, Customer};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankAccount".
@@ -43,7 +46,7 @@ pub struct BankAccount {
 
     // Always true for a deleted object
     #[serde(default)]
-    pub deleted: bool,
+    deleted: bool,
 
     /// Uniquely identifies this particular bank account.
     ///
@@ -71,9 +74,7 @@ pub struct BankAccount {
     /// Note that there often isn’t enough information to know (e.g., for smaller credit unions), and the validation is not always run.
     /// If customer bank account verification has succeeded, the bank account status will be `verified`.
     /// If the verification failed for any reason, such as microdeposit failure, the status will be `verification_failed`.
-    /// If a transfer sent to this bank account fails, we'll set the status to `errored` and will not continue to send transfers until the bank details are updated.
-    ///
-    /// For external accounts, possible values are `new` and `errored`.
+    /// If a transfer sent to this bank account fails, we'll set the status to `errored` and will not continue to send transfers until the bank details are updated.  For external accounts, possible values are `new` and `errored`.
     /// Validations aren't run against external accounts because they're only used for payouts.
     /// This means the other statuses don't apply.
     /// If a transfer fails, the status is set to `errored` and transfers are stopped until account details are updated.
@@ -91,39 +92,13 @@ impl Object for BankAccount {
     }
 }
 
-#[derive(Clone, Debug, Default, Deserialize)]
-pub struct BankAccountParams<'a> {
-    pub country: &'a str,
-    pub currency: Currency,
-    pub account_holder_name: Option<&'a str>,
-    pub account_holder_type: Option<&'a str>,
-    pub routing_number: Option<&'a str>,
-    pub account_number: &'a str,
-}
-
-/// The set of parameters that can be used when verifying a Bank Account.
-///
-/// For more details see https://stripe.com/docs/api/customer_bank_accounts/verify?lang=curl.
-#[derive(Clone, Debug, Default, Serialize)]
-pub struct BankAccountVerifyParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amounts: Option<Vec<i64>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method: Option<&'a str>,
-}
-
-impl<'a> serde::Serialize for BankAccountParams<'a> {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::ser::Serializer,
-    {
-        let mut s = serializer.serialize_struct("BankAccountParams", 6)?;
-        s.serialize_field("object", "bank_account")?;
-        s.serialize_field("country", &self.country)?;
-        s.serialize_field("currency", &self.currency)?;
-        s.serialize_field("account_holder_name", &self.account_holder_name)?;
-        s.serialize_field("routing_number", &self.routing_number)?;
-        s.serialize_field("account_number", &self.account_number)?;
-        s.end()
-    }
+/// An enum representing the possible values of an `BankAccount`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum BankAccountStatus {
+    Errored,
+    New,
+    Validated,
+    VerificationFailed,
+    Verified,
 }

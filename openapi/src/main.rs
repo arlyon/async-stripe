@@ -169,7 +169,10 @@ fn main() {
         (("payment_intent", "source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
         (("payment_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
-        (("subscription", "default_source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
+        (
+            ("subscription", "default_source"),
+            ("PaymentSource", "Option<Expandable<PaymentSource>>"),
+        ),
         (("transfer_schedule", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
     ]);
 
@@ -240,13 +243,17 @@ fn main() {
         (("create_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("update_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("update_customer", "trial_end"), ("Scheduled", "Option<Scheduled>")),
-        (("customer_invoice_settings", "custom_fields"), ("CustomField", "Option<Vec<CustomField>>")),
+        (
+            ("customer_invoice_settings", "custom_fields"),
+            ("CustomField", "Option<Vec<CustomField>>"),
+        ),
     ]);
 
     // Renames for `invoice` params
-    field_overrides.extend(vec![
-        (("create_invoice", "custom_fields"), ("CustomField", "Option<Vec<CustomField>>")),
-    ]);
+    field_overrides.extend(vec![(
+        ("create_invoice", "custom_fields"),
+        ("CustomField", "Option<Vec<CustomField>>"),
+    )]);
 
     // Renames for `invoiceitem` params
     schema_renames.extend(vec![
@@ -265,13 +272,32 @@ fn main() {
     ]);
 
     // Renames for `payment_intent` params
+    schema_renames.extend(vec![
+        ("create_order_items", "order_item_params"),
+        ("order_items_params_type", "order_item_type"),
+    ]);
     field_overrides.extend(vec![
         (("create_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-        (("update_payment_intentr", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+        (("update_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+    ]);
+
+    // Renames for `source` params
+    schema_renames.extend(vec![
+        ("create_source_mandate", "source_mandate_params"),
+        ("update_source_mandate", "source_mandate_params"),
+        ("source_mandate_params_acceptance", "source_acceptance_params"),
+        ("source_mandate_params_interval", "source_mandate_interval"),
+        ("source_mandate_params_notification_method", "source_mandate_notification_method"),
+        ("source_acceptance_params_offline", "source_acceptance_offline_params"),
+        ("source_acceptance_params_online", "source_acceptance_online_params"),
+        ("create_source_receiver_refund_attributes_method", "source_refund_notification_method"),
+    ]);
+    field_overrides.extend(vec![
+        (("create_source", "owner"), ("BillingDetails", "Option<BillingDetails>")),
+        (("update_source", "owner"), ("BillingDetails", "Option<BillingDetails>")),
     ]);
 
     // Renames for `subscription` params
-    schema_renames.extend(vec![("create_subscription_schedule", "subscription_schedule")]);
     field_overrides.extend(vec![
         (
             ("update_subscription", "billing_thresholds"),
@@ -283,6 +309,10 @@ fn main() {
         ),
         (("create_subscription", "trial_end"), ("Scheduled", "Option<Scheduled>")),
         (("update_subscription", "trial_end"), ("Scheduled", "Option<Scheduled>")),
+    ]);
+
+    // Renames for `subscription_schedule` params
+    field_overrides.extend(vec![
         (("create_subscription_schedule", "start_date"), ("Scheduled", "Option<Scheduled>")),
         (("update_subscription_schedule", "start_date"), ("Scheduled", "Option<Scheduled>")),
         (("create_subscription_schedule_phases", "start_date"), ("Scheduled", "Option<Scheduled>")),

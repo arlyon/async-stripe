@@ -4,32 +4,6 @@ use crate::resources::{Account, Currency, Customer, Recipient};
 use serde::ser::SerializeStruct;
 use serde_derive::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Default, Deserialize)]
-pub struct CardParams<'a> {
-    pub exp_month: &'a str, // eg. "12"
-    pub exp_year: &'a str,  // eg. "17" or 2017"
-
-    pub number: &'a str,       // card number
-    pub name: Option<&'a str>, // cardholder's full name
-    pub cvc: Option<&'a str>,  // card security code
-}
-
-impl<'a> serde::Serialize for CardParams<'a> {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::ser::Serializer,
-    {
-        let mut s = serializer.serialize_struct("CardParams", 6)?;
-        s.serialize_field("object", "card")?;
-        s.serialize_field("exp_month", &self.exp_month)?;
-        s.serialize_field("exp_year", &self.exp_year)?;
-        s.serialize_field("number", &self.number)?;
-        s.serialize_field("name", &self.name)?;
-        s.serialize_field("cvc", &self.cvc)?;
-        s.end()
-    }
-}
-
 /// The resource representing a Stripe "Card".
 ///
 /// For more details see [https://stripe.com/docs/api/cards/object](https://stripe.com/docs/api/cards/object).

@@ -2,8 +2,8 @@ use crate::config::{Client, Response};
 use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
 use crate::params::{Deleted, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BankAccountVerifyParams, Currency, Discount, PaymentSource,
-    PaymentSourceParams, Source, Subscription,
+    Address, BankAccount, Currency, Discount, PaymentSource, PaymentSourceParams, Source,
+    Subscription,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -184,4 +184,15 @@ impl Object for Customer {
     fn object(&self) -> &'static str {
         "customer"
     }
+}
+
+/// The set of parameters that can be used when verifying a Bank Account.
+///
+/// For more details see https://stripe.com/docs/api/customer_bank_accounts/verify?lang=curl.
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct BankAccountVerifyParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amounts: Option<Vec<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<&'a str>,
 }

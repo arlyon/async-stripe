@@ -1,7 +1,11 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::config::{Client, Response};
-use crate::ids::{SourceId, TokenId};
-use crate::params::{Metadata, Object, Timestamp};
-use crate::resources::{Address, Currency};
+use crate::ids::{CustomerId, SourceId, TokenId};
+use crate::params::{Expand, Metadata, Object, Timestamp};
+use crate::resources::{Address, BillingDetails, Currency};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Source".
@@ -143,20 +147,25 @@ pub struct Source {
 }
 
 impl Source {
-    pub fn create(client: &Client, params: SourceParams<'_>) -> Response<Source> {
-        client.post_form("/sources", params)
+    /// Creates a new source object.
+    pub fn create(client: &Client, params: CreateSource<'_>) -> Response<Source> {
+        client.post_form("/sources", &params)
     }
 
-    pub fn get(client: &Client, source_id: &SourceId) -> Response<Source> {
-        client.get(&format!("/sources/{}", source_id))
+    /// Retrieves an existing source object.
+    ///
+    /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
+    pub fn retrieve(client: &Client, id: &SourceId, expand: &[&str]) -> Response<Source> {
+        client.get_query(&format!("/sources/{}", id), &Expand { expand })
     }
 
-    pub fn update(
-        client: &Client,
-        source_id: &SourceId,
-        params: SourceParams<'_>,
-    ) -> Response<Source> {
-        client.post_form(&format!("/source/{}", source_id), params)
+    /// Updates the specified source by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  This request accepts the `metadata` and `owner` as arguments.
+    /// It is also possible to update type specific information for selected payment methods.
+    /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
+    pub fn update(client: &Client, params: UpdateSource<'_>) -> Response<Source> {
+        client.post_form(&format!("/sources/{}", id), &params)
     }
 }
 
@@ -669,70 +678,214 @@ pub struct SourceTypeWechat {
     pub statement_descriptor: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct RedirectParams<'a> {
-    return_url: &'a str,
+/// The parameters for `Source::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateSource<'a> {
+    /// Amount associated with the source.
+    ///
+    /// This is the amount for which the source will be chargeable once ready.
+    /// Required for `single_use` sources.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    amount: Option<i64>,
+
+    /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) associated with the source.
+    ///
+    /// This is the currency for which the source will be chargeable once ready.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    currency: Option<Currency>,
+
+    /// The `Customer` to whom the original source is attached to.
+    ///
+    /// Must be set when the original source is not a `Source` (e.g., `Card`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<CustomerId>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// The authentication `flow` of the source to create.
+    ///
+    /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
+    /// It is generally inferred unless a type supports multiple flows.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    flow: Option<SourceFlow>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    mandate: Option<SourceMandateParams>,
+
+    /// A set of key-value pairs that you can attach to a source object.
+    ///
+    /// It can be useful for storing additional information about the source in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// The source to share.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    original_source: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    owner: Option<BillingDetails>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    receiver: Option<CreateSourceReceiver>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    redirect: Option<CreateSourceRedirect>,
+
+    /// An arbitrary string to be displayed on your customer's statement.
+    ///
+    /// As an example, if your website is `RunClub` and the item you're charging for is a race ticket, you may want to specify a `statement_descriptor` of `RunClub 5K race ticket.` While many payment types will display this information, some may not display it at all.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    statement_descriptor: Option<&'a str>,
+
+    /// An optional token used to create the source.
+    ///
+    /// When passed, token properties will override source parameters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    token: Option<TokenId>,
+
+    /// The `type` of the source to create.
+    ///
+    /// Required unless `customer` and `original_source` are specified (see the [Shared card Sources](https://stripe.com/docs/sources/connect#shared-card-sources) guide).
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    type_: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    usage: Option<SourceUsage>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct OwnerParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<Address>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<&'a str>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<&'a str>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<&'a str>,
-}
-
-impl<'a> OwnerParams<'a> {
+impl<'a> CreateSource<'a> {
     pub fn new() -> Self {
-        Default::default()
+        CreateSource {
+            amount: Default::default(),
+            currency: Default::default(),
+            customer: Default::default(),
+            expand: Default::default(),
+            flow: Default::default(),
+            mandate: Default::default(),
+            metadata: Default::default(),
+            original_source: Default::default(),
+            owner: Default::default(),
+            receiver: Default::default(),
+            redirect: Default::default(),
+            statement_descriptor: Default::default(),
+            token: Default::default(),
+            type_: Default::default(),
+            usage: Default::default(),
+        }
     }
 }
 
-#[derive(Debug, Default, Deserialize, Serialize)]
-pub struct SourceParams<'a> {
-    #[serde(rename = "type")]
+/// The parameters for `Source::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateSource<'a> {
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<SourceType>,
+    mandate: Option<SourceMandateParams>,
+
+    /// A set of key-value pairs that you can attach to a source object.
+    ///
+    /// It can be useful for storing additional information about the source in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    owner: Option<BillingDetails>,
+}
+
+impl<'a> UpdateSource<'a> {
+    pub fn new() -> Self {
+        UpdateSource {
+            expand: Default::default(),
+            mandate: Default::default(),
+            metadata: Default::default(),
+            owner: Default::default(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSourceReceiver {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_attributes_method: Option<SourceRefundNotificationMethod>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSourceRedirect {
+    pub return_url: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SourceMandateParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acceptance: Option<SourceAcceptanceParams>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<u64>,
+    pub amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flow: Option<SourceFlow>,
+    pub interval: Option<SourceMandateInterval>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<OwnerParams<'a>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub redirect: Option<RedirectParams<'a>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub token: Option<TokenId>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage: Option<SourceUsage>,
+    pub notification_method: Option<SourceMandateNotificationMethod>,
 }
 
-impl<'a> SourceParams<'a> {
-    pub fn new() -> Self {
-        Default::default()
-    }
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SourceAcceptanceParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Timestamp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub offline: Option<SourceAcceptanceOfflineParams>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub online: Option<SourceAcceptanceOnlineParams>,
+
+    pub status: SourceAcceptanceParamsStatus,
+
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<SourceAcceptanceParamsType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SourceAcceptanceOfflineParams {
+    pub contact_email: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SourceAcceptanceOnlineParams {
+    pub date: Timestamp,
+
+    pub ip: String,
+
+    pub user_agent: String,
+}
+
+/// An enum representing the possible values of an `SourceAcceptanceParams`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceAcceptanceParamsStatus {
+    Accepted,
+    Pending,
+    Refused,
+    Revoked,
+}
+
+/// An enum representing the possible values of an `SourceAcceptanceParams`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceAcceptanceParamsType {
+    Offline,
+    Online,
 }
 
 /// An enum representing the possible values of an `Source`'s `flow` field.
@@ -743,6 +896,26 @@ pub enum SourceFlow {
     None,
     Receiver,
     Redirect,
+}
+
+/// An enum representing the possible values of an `SourceMandateParams`'s `interval` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceMandateInterval {
+    OneTime,
+    Scheduled,
+    Variable,
+}
+
+/// An enum representing the possible values of an `SourceMandateParams`'s `notification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceMandateNotificationMethod {
+    DeprecatedNone,
+    Email,
+    Manual,
+    None,
+    StripeEmail,
 }
 
 /// An enum representing the possible values of an `SourceRedirectFlow`'s `failure_reason` field.
@@ -762,6 +935,15 @@ pub enum SourceRedirectFlowStatus {
     NotRequired,
     Pending,
     Succeeded,
+}
+
+/// An enum representing the possible values of an `CreateSourceReceiver`'s `refund_attributes_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceRefundNotificationMethod {
+    Email,
+    Manual,
+    None,
 }
 
 /// An enum representing the possible values of an `Source`'s `status` field.
