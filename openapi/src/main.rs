@@ -14,6 +14,7 @@ fn main() {
     id_renames.insert("fee_refund", "application_fee_refund");
     id_renames.insert("invoiceitem", "invoice_item");
     id_renames.insert("line_item", "invoice_line_item");
+    id_renames.insert("source_transaction", "charge");
 
     // Compute additional metadata from spec.
     let mut ids = BTreeMap::new();
@@ -92,7 +93,7 @@ fn main() {
         ("issuing.authorization_wallet_provider", "wallet_provider"),
         ("invoiceitem", "invoice_item"),
         ("legal_entity_company", "company"),
-        ("legal_entity_japan_address", "address_japan"),
+        ("legal_entity_japan_address", "address"),
         ("line_item", "invoice_line_item"),
         ("payment_method_card", "card_details"),
         ("payment_method_card_present", "card_present"),
@@ -204,11 +205,11 @@ fn main() {
         (("create_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
         (("update_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
         (("company_params", "address"), ("Address", "Option<Address>")),
-        (("company_params", "address_kana"), ("Address", "Option<AddressKana>")),
-        (("company_params", "address_kanji"), ("Address", "Option<AddressKanji>")),
+        (("company_params", "address_kana"), ("Address", "Option<Address>")),
+        (("company_params", "address_kanji"), ("Address", "Option<Address>")),
         (("person_params", "address"), ("Address", "Option<Address>")),
-        (("person_params", "address_kana"), ("Address", "Option<AddressKana>")),
-        (("person_params", "address_kanji"), ("Address", "Option<AddressKanji>")),
+        (("person_params", "address_kana"), ("Address", "Option<Address>")),
+        (("person_params", "address_kanji"), ("Address", "Option<Address>")),
         (("person_params", "dob"), ("Dob", "Option<Dob>")),
         (
             ("create_payment_method", "billing_details"),

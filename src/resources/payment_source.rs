@@ -1,6 +1,6 @@
 use crate::ids::{PaymentSourceId, SourceId, TokenId};
 use crate::params::Object;
-use crate::resources::{Account, AlipayAccount, BankAccount, Card, Source};
+use crate::resources::{Account, AlipayAccount, BankAccount, Card, Currency, Source};
 use serde::ser::SerializeStruct;
 use serde_derive::{Deserialize, Serialize};
 

@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{SourceTransactionId, TransferId};
+use crate::ids::{ChargeId, TransferId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BalanceTransaction, Charge, Currency, TransferReversal};
 use serde_derive::{Deserialize, Serialize};
@@ -159,7 +159,7 @@ pub struct CreateTransfer<'a> {
     /// A pending balance will transfer immediately but the funds will not become available until the original charge becomes available.
     /// [See the Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-availability) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    source_transaction: Option<SourceTransactionId>,
+    source_transaction: Option<ChargeId>,
 
     /// The source balance to use for this transfer.
     ///

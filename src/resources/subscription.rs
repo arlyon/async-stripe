@@ -2,8 +2,8 @@ use crate::config::{Client, Response};
 use crate::ids::{CustomerId, PlanId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Customer, Discount, Invoice, PaymentMethod, PaymentSource, Plan, SubscriptionBillingThresholds,
-    SubscriptionItem, TaxRate,
+    Customer, Discount, Invoice, PaymentMethod, PaymentSource, Plan, Scheduled,
+    SubscriptionBillingThresholds, SubscriptionItem, TaxRate,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -262,7 +262,7 @@ pub struct SubscriptionParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_percent: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_end: Option<Scheduled<'a>>,
+    pub trial_end: Option<Scheduled>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u64>,
 }
