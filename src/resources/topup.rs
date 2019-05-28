@@ -97,7 +97,7 @@ impl Topup {
     /// Updates the metadata of a top-up.
     ///
     /// Other top-up details are not editable by design.
-    pub fn update(client: &Client, params: UpdateTopup<'_>) -> Response<Topup> {
+    pub fn update(client: &Client, id: &TopupId, params: UpdateTopup<'_>) -> Response<Topup> {
         client.post_form(&format!("/topups/{}", id), &params)
     }
 }

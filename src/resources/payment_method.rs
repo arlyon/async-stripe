@@ -76,7 +76,11 @@ impl PaymentMethod {
     /// Updates a PaymentMethod object.
     ///
     /// A PaymentMethod must be attached a customer to be updated.
-    pub fn update(client: &Client, params: UpdatePaymentMethod<'_>) -> Response<PaymentMethod> {
+    pub fn update(
+        client: &Client,
+        id: &PaymentMethodId,
+        params: UpdatePaymentMethod<'_>,
+    ) -> Response<PaymentMethod> {
         client.post_form(&format!("/payment_methods/{}", id), &params)
     }
 }

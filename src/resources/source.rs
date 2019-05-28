@@ -164,7 +164,7 @@ impl Source {
     /// Any parameters not provided will be left unchanged.  This request accepts the `metadata` and `owner` as arguments.
     /// It is also possible to update type specific information for selected payment methods.
     /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
-    pub fn update(client: &Client, params: UpdateSource<'_>) -> Response<Source> {
+    pub fn update(client: &Client, id: &SourceId, params: UpdateSource<'_>) -> Response<Source> {
         client.post_form(&format!("/sources/{}", id), &params)
     }
 }

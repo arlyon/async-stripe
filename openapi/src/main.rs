@@ -1600,6 +1600,15 @@ fn gen_impl_requests(
                     post_request["parameters"].as_array().map(|x| x.as_ref()).unwrap_or_default();
                 assert_eq!(query_params.len(), 1);
 
+                // Get the id parameter
+                let id_param = post_request["parameters"]
+                    .as_array()
+                    .and_then(|arr| arr.iter().find(|p| p["in"].as_str() == Some("path")));
+                let id_param = match id_param {
+                    Some(p) => p,
+                    None => continue,
+                };
+
                 // Construct `parameters` from the request body schema
                 let update_schema = &post_request["requestBody"]["content"]
                     ["application/x-www-form-urlencoded"]["schema"];
@@ -1624,19 +1633,26 @@ fn gen_impl_requests(
                 };
                 state.inferred_parameters.insert(params_name.to_snake_case(), params);
 
-                let mut out = String::new();
-                out.push('\n');
-                print_doc_comment(&mut out, doc_comment, 1);
-                out.push_str("    pub fn update(client: &Client, params: ");
-                out.push_str(&params_name);
-                out.push_str("<'_>) -> Response<");
-                out.push_str(&return_type);
-                out.push_str("> {\n");
-                out.push_str("        client.post_form(");
-                out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
-                out.push_str(", &params)\n");
-                out.push_str("    }\n");
-                methods.push(out);
+                if let Some(id_type) = &object_id {
+                    assert_eq!(id_param["required"].as_bool(), Some(true));
+                    assert_eq!(id_param["style"].as_str(), Some("simple"));
+
+                    let mut out = String::new();
+                    out.push('\n');
+                    print_doc_comment(&mut out, doc_comment, 1);
+                    out.push_str("    pub fn update(client: &Client, id: &");
+                    out.push_str(&id_type);
+                    out.push_str(", params: ");
+                    out.push_str(&params_name);
+                    out.push_str("<'_>) -> Response<");
+                    out.push_str(&return_type);
+                    out.push_str("> {\n");
+                    out.push_str("        client.post_form(");
+                    out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
+                    out.push_str(", &params)\n");
+                    out.push_str("    }\n");
+                    methods.push(out);
+                }
             }
         }
         let delete_request = &request["delete"];

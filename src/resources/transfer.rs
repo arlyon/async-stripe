@@ -108,7 +108,11 @@ impl Transfer {
     /// Updates the specified transfer by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.  This request accepts only metadata as an argument.
-    pub fn update(client: &Client, params: UpdateTransfer<'_>) -> Response<Transfer> {
+    pub fn update(
+        client: &Client,
+        id: &TransferId,
+        params: UpdateTransfer<'_>,
+    ) -> Response<Transfer> {
         client.post_form(&format!("/transfers/{}", id), &params)
     }
 }

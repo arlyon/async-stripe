@@ -75,6 +75,7 @@ impl SubscriptionItem {
     /// Updates the plan or quantity of an item on a current subscription.
     pub fn update(
         client: &Client,
+        id: &SubscriptionItemId,
         params: UpdateSubscriptionItem<'_>,
     ) -> Response<SubscriptionItem> {
         client.post_form(&format!("/subscription_items/{}", id), &params)

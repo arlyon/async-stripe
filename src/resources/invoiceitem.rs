@@ -123,7 +123,11 @@ impl InvoiceItem {
     /// Updates the amount or description of an invoice item on an upcoming invoice.
     ///
     /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
-    pub fn update(client: &Client, params: UpdateInvoiceItem<'_>) -> Response<InvoiceItem> {
+    pub fn update(
+        client: &Client,
+        id: &InvoiceItemId,
+        params: UpdateInvoiceItem<'_>,
+    ) -> Response<InvoiceItem> {
         client.post_form(&format!("/invoiceitems/{}", id), &params)
     }
 

@@ -132,7 +132,7 @@ impl Account {
     /// Most parameters can be changed only for Custom accounts.
     /// (These are marked **Custom Only** below.) Parameters marked **Custom and Express** are supported by both account types.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
     /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
-    pub fn update(client: &Client, params: UpdateAccount<'_>) -> Response<Account> {
+    pub fn update(client: &Client, id: &AccountId, params: UpdateAccount<'_>) -> Response<Account> {
         client.post_form(&format!("/accounts/{}", id), &params)
     }
 

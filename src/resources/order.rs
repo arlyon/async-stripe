@@ -132,7 +132,7 @@ impl Order {
     /// Updates the specific order by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.
-    pub fn update(client: &Client, params: UpdateOrder<'_>) -> Response<Order> {
+    pub fn update(client: &Client, id: &OrderId, params: UpdateOrder<'_>) -> Response<Order> {
         client.post_form(&format!("/orders/{}", id), &params)
     }
 }

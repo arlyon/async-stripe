@@ -72,7 +72,7 @@ impl TaxRate {
     }
 
     /// Updates an existing tax rate.
-    pub fn update(client: &Client, params: UpdateTaxRate<'_>) -> Response<TaxRate> {
+    pub fn update(client: &Client, id: &TaxRateId, params: UpdateTaxRate<'_>) -> Response<TaxRate> {
         client.post_form(&format!("/tax_rates/{}", id), &params)
     }
 }

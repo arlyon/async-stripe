@@ -106,7 +106,7 @@ impl Coupon {
     /// Updates the metadata of a coupon.
     ///
     /// Other coupon details (currency, duration, amount_off) are, by design, not editable.
-    pub fn update(client: &Client, params: UpdateCoupon<'_>) -> Response<Coupon> {
+    pub fn update(client: &Client, id: &CouponId, params: UpdateCoupon<'_>) -> Response<Coupon> {
         client.post_form(&format!("/coupons/{}", id), &params)
     }
 

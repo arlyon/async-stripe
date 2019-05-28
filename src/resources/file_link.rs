@@ -63,7 +63,11 @@ impl FileLink {
     /// Updates an existing file link object.
     ///
     /// Expired links can no longer be updated.
-    pub fn update(client: &Client, params: UpdateFileLink<'_>) -> Response<FileLink> {
+    pub fn update(
+        client: &Client,
+        id: &FileLinkId,
+        params: UpdateFileLink<'_>,
+    ) -> Response<FileLink> {
         client.post_form(&format!("/file_links/{}", id), &params)
     }
 }

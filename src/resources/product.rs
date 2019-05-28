@@ -145,7 +145,7 @@ impl Product {
     ///
     /// Any parameters not provided will be left unchanged.  Note that a product’s `attributes` are not editable.
     /// Instead, you would need to deactivate the existing product and create a new one with the new attribute values.
-    pub fn update(client: &Client, params: UpdateProduct<'_>) -> Response<Product> {
+    pub fn update(client: &Client, id: &ProductId, params: UpdateProduct<'_>) -> Response<Product> {
         client.post_form(&format!("/products/{}", id), &params)
     }
 
