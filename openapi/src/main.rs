@@ -1156,7 +1156,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             .use_resources
             .iter()
             .filter(|&x| {
-                !state.inferred_structs.contains_key(x)
+                state.generated_schemas.keys().all(|sch| x != &meta.schema_to_rust_type(sch))
+                    && !state.inferred_parameters.contains_key(x)
+                    && !state.inferred_structs.contains_key(x)
                     && !state.inferred_unions.contains_key(x)
                     && !state.inferred_enums.contains_key(x)
             })

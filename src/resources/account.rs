@@ -6,8 +6,8 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BusinessProfile, Card, Currency, DelayDays, Dob, File,
-    LegalEntityJapanAddress, Person, Weekday,
+    Address, BankAccount, Card, Currency, DelayDays, Dob, File, LegalEntityJapanAddress, Person,
+    Weekday,
 };
 use serde_derive::{Deserialize, Serialize};
 

@@ -5,7 +5,7 @@
 use crate::config::{Client, Response};
 use crate::ids::SkuId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, Timestamp};
-use crate::resources::{Currency, Inventory, PackageDimensions, Product};
+use crate::resources::{Currency, PackageDimensions, Product};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SKU".
