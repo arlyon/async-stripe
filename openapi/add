@@ -1,0 +1,4 @@
+#!/bin/sh
+# Copy a generated resource to the `resources` directory
+cp openapi/out/$1.rs src/resources/$1.rs
+rustfmt src/resources/$1.rs

@@ -1,6 +1,6 @@
 use crate::config::{Client, Response};
-use crate::ids::ChargeId;
-use crate::params::{List, Metadata, Paginate, RangeQuery, Timestamp};
+use crate::ids::{ChargeId, RefundId};
+use crate::params::{List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
@@ -88,7 +88,7 @@ pub struct RefundListParams<'a> {
 /// For more details see https://stripe.com/docs/api#refunds.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Refund {
-    pub id: String,
+    pub id: RefundId,
     pub amount: u64,
     pub balance_transaction: Option<String>,
     pub charge: ChargeId,
@@ -102,6 +102,16 @@ pub struct Refund {
     pub status: RefundStatus,
 }
 
+impl Object for Refund {
+    type Id = RefundId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "refund"
+    }
+}
+
 impl Refund {
     /// Creates a new refund.
     ///
@@ -113,19 +123,15 @@ impl Refund {
     /// Retrieves the details of a refund.
     ///
     /// For more details see [https://stripe.com/docs/api/refunds/retrieve](https://stripe.com/docs/api/refunds/retrieve).
-    pub fn retrieve(client: &Client, refund_id: &str) -> Response<Refund> {
-        client.get(&format!("/refunds/{}", refund_id))
+    pub fn retrieve(client: &Client, id: &RefundId) -> Response<Refund> {
+        client.get(&format!("/refunds/{}", id))
     }
 
     /// Updates a refund's properties.
     ///
     /// For more details see [https://stripe.com/docs/api/refunds/update](https://stripe.com/docs/api/refunds/update).
-    pub fn update(
-        client: &Client,
-        refund_id: &str,
-        metadata: Option<Metadata>,
-    ) -> Response<Refund> {
-        client.post_form(&format!("/refunds/{}", refund_id), metadata)
+    pub fn update(client: &Client, id: &RefundId, metadata: Option<Metadata>) -> Response<Refund> {
+        client.post_form(&format!("/refunds/{}", id), metadata)
     }
 
     /// List all refunds.
@@ -133,11 +139,5 @@ impl Refund {
     /// For more details see [https://stripe.com/docs/api#list_refunds](https://stripe.com/docs/api#list_refunds).
     pub fn list(client: &Client, params: RefundListParams<'_>) -> Response<List<Refund>> {
         client.get_query("/refunds", &params)
-    }
-}
-
-impl Paginate for Refund {
-    fn cursor(&self) -> &str {
-        &self.id
     }
 }

@@ -1,9 +1,9 @@
 use crate::config::{Client, Response};
-use crate::ids::{BankAccountId, CustomerId, PaymentSourceId};
-use crate::params::{List, Metadata, Object, RangeQuery, Timestamp};
+use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
+use crate::params::{Deleted, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BankAccountVerifyParams, Currency, Deleted, Discount, PaymentSource,
-    PaymentSourceParams, Source, Subscription,
+    Address, BankAccount, Currency, Discount, PaymentSource, PaymentSourceParams, Source,
+    Subscription,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -17,9 +17,9 @@ pub struct CustomerShippingDetails {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
 pub enum DetachedSource {
+    BankAccount(Deleted<BankAccountId>),
+    Card(Deleted<CardId>),
     Source(Source),
-    BankAccount(Deleted),
-    Card(Deleted),
 }
 
 /// The set of parameters that can be used when creating or updating a customer.
@@ -113,7 +113,7 @@ impl Customer {
     /// Deletes a customer.
     ///
     /// For more details see https://stripe.com/docs/api#delete_customer.
-    pub fn delete(client: &Client, customer_id: &CustomerId) -> Response<Deleted> {
+    pub fn delete(client: &Client, customer_id: &CustomerId) -> Response<Deleted<CustomerId>> {
         client.delete(&format!("/customers/{}", customer_id))
     }
 
@@ -178,10 +178,21 @@ impl Customer {
 
 impl Object for Customer {
     type Id = CustomerId;
-    fn id(&self) -> &Self::Id {
-        &self.id
+    fn id(&self) -> Self::Id {
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "customer"
     }
+}
+
+/// The set of parameters that can be used when verifying a Bank Account.
+///
+/// For more details see https://stripe.com/docs/api/customer_bank_accounts/verify?lang=curl.
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct BankAccountVerifyParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amounts: Option<Vec<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<&'a str>,
 }

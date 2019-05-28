@@ -1,8 +1,7 @@
-use crate::ids::{SourceId, TokenId};
-use crate::params::Paginate;
-use crate::resources::{
-    Account, AlipayAccount, BankAccount, BankAccountParams, Card, CardParams, Source,
-};
+use crate::ids::{PaymentSourceId, SourceId, TokenId};
+use crate::params::Object;
+use crate::resources::{Account, AlipayAccount, BankAccount, Card, Currency, Source};
+use serde::ser::SerializeStruct;
 use serde_derive::{Deserialize, Serialize};
 
 /// A PaymentSourceParams represents all of the supported ways that can
@@ -129,14 +128,76 @@ pub enum PaymentSource {
     AlipayAccount(AlipayAccount),
 }
 
-impl Paginate for PaymentSource {
-    fn cursor(&self) -> &str {
+impl Object for PaymentSource {
+    type Id = PaymentSourceId;
+    fn id(&self) -> Self::Id {
         match self {
-            PaymentSource::Card(x) => x.cursor(),
-            PaymentSource::Source(x) => x.cursor(),
-            PaymentSource::Account(x) => x.cursor(),
-            PaymentSource::BankAccount(x) => x.cursor(),
-            PaymentSource::AlipayAccount(x) => x.cursor(),
+            PaymentSource::Card(x) => PaymentSourceId::Card(x.id()),
+            PaymentSource::Source(x) => PaymentSourceId::Source(x.id()),
+            PaymentSource::Account(x) => PaymentSourceId::Account(x.id()),
+            PaymentSource::BankAccount(x) => PaymentSourceId::BankAccount(x.id()),
+            PaymentSource::AlipayAccount(x) => PaymentSourceId::AlipayAccount(x.id()),
         }
+    }
+    fn object(&self) -> &'static str {
+        match self {
+            PaymentSource::Card(x) => x.object(),
+            PaymentSource::Source(x) => x.object(),
+            PaymentSource::Account(x) => x.object(),
+            PaymentSource::BankAccount(x) => x.object(),
+            PaymentSource::AlipayAccount(x) => x.object(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize)]
+pub struct BankAccountParams<'a> {
+    pub country: &'a str,
+    pub currency: Currency,
+    pub account_holder_name: Option<&'a str>,
+    pub account_holder_type: Option<&'a str>,
+    pub routing_number: Option<&'a str>,
+    pub account_number: &'a str,
+}
+
+impl<'a> serde::ser::Serialize for BankAccountParams<'a> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        let mut s = serializer.serialize_struct("BankAccountParams", 6)?;
+        s.serialize_field("object", "bank_account")?;
+        s.serialize_field("country", &self.country)?;
+        s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("account_holder_name", &self.account_holder_name)?;
+        s.serialize_field("routing_number", &self.routing_number)?;
+        s.serialize_field("account_number", &self.account_number)?;
+        s.end()
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize)]
+pub struct CardParams<'a> {
+    pub exp_month: &'a str, // eg. "12"
+    pub exp_year: &'a str,  // eg. "17" or 2017"
+
+    pub number: &'a str,       // card number
+    pub name: Option<&'a str>, // cardholder's full name
+    pub cvc: Option<&'a str>,  // card security code
+}
+
+impl<'a> serde::ser::Serialize for CardParams<'a> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        let mut s = serializer.serialize_struct("CardParams", 6)?;
+        s.serialize_field("object", "card")?;
+        s.serialize_field("exp_month", &self.exp_month)?;
+        s.serialize_field("exp_year", &self.exp_year)?;
+        s.serialize_field("number", &self.number)?;
+        s.serialize_field("name", &self.name)?;
+        s.serialize_field("cvc", &self.cvc)?;
+        s.end()
     }
 }

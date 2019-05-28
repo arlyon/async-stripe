@@ -1,0 +1,4 @@
+#!/bin/sh
+# Use the `openapi` spec to automatically generate (most of) the api.
+RUST_BACKTRACE=1 cargo run -p generate
+

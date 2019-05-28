@@ -15,9 +15,18 @@ pub trait Object {
     /// The canonical id type for this object.
     type Id;
     /// The id of the object.
-    fn id(&self) -> &Self::Id;
+    fn id(&self) -> Self::Id;
     /// The object's type, typically represented in wire format as the `object` property.
     fn object(&self) -> &'static str;
+}
+
+/// A deleted object.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Deleted<T> {
+    /// Unique identifier for the object.
+    pub id: T,
+    /// Always true for a deleted object.
+    pub deleted: bool,
 }
 
 /// The `Expand` struct is used to serialize `expand` arguments in retrieve and list apis.
@@ -52,14 +61,20 @@ pub enum Expandable<T: Object> {
     Object(Box<T>),
 }
 
-impl<T: Object> Expandable<T> {
-    pub fn id(&self) -> &T::Id {
+impl<T> Expandable<T>
+where
+    T: Object,
+    T::Id: Clone,
+{
+    pub fn id(&self) -> T::Id {
         match self {
-            Expandable::Id(id) => id,
+            Expandable::Id(id) => id.clone(),
             Expandable::Object(obj) => obj.id(),
         }
     }
+}
 
+impl<T: Object> Expandable<T> {
     pub fn is_object(&self) -> bool {
         match self {
             Expandable::Id(_) => false,
@@ -86,21 +101,23 @@ impl<T: Object> Expandable<T> {
 /// typically with an id, allowing them to be fetched using a `List`
 /// returned by the corresponding "list" api request.
 pub trait Paginate {
-    fn cursor(&self) -> &str;
+    type Cursor: AsCursor;
+    fn cursor(&self) -> Self::Cursor;
 }
 
-/// A crate-internal marker trait used by id types to convert to a `&str` repr
-/// while avoid possible `impl Trait for T` conflicts with upstream crates.
-#[doc(hidden)]
-pub trait AsStrParam: AsRef<str> {}
+pub trait AsCursor: AsRef<str> {}
+
+impl<'a> AsCursor for &'a str {}
+impl AsCursor for String {}
 
 impl<T> Paginate for T
 where
     T: Object,
-    T::Id: AsStrParam,
+    T::Id: AsCursor,
 {
-    fn cursor(&self) -> &str {
-        self.id().as_ref()
+    type Cursor = T::Id;
+    fn cursor(&self) -> Self::Cursor {
+        self.id()
     }
 }
 
@@ -111,6 +128,12 @@ pub struct List<T> {
     pub has_more: bool,
     pub total_count: Option<u64>,
     pub url: String,
+}
+
+impl<T> Default for List<T> {
+    fn default() -> Self {
+        List { data: Vec::new(), has_more: false, total_count: None, url: String::new() }
+    }
 }
 
 impl<T: Clone> Clone for List<T> {
@@ -167,7 +190,7 @@ impl<T: Paginate + DeserializeOwned + Send + 'static> List<T> {
     /// Fetch an additional page of data from stripe.
     pub fn next(&self, client: &Client) -> Response<List<T>> {
         if let Some(last_id) = self.data.last().map(|d| d.cursor()) {
-            List::get_next(client, &self.url, last_id)
+            List::get_next(client, &self.url, last_id.as_ref())
         } else {
             ok(List {
                 data: Vec::new(),
