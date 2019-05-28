@@ -6,8 +6,7 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, Card, Currency, DelayDays, Dob, File, LegalEntityJapanAddress, Person,
-    Weekday,
+    Address, AddressJapan, BankAccount, Card, Currency, DelayDays, Dob, File, Person, Weekday,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -373,11 +372,11 @@ pub struct Company {
 
     /// The Kana variation of the company's primary address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_kana: Option<LegalEntityJapanAddress>,
+    pub address_kana: Option<AddressJapan>,
 
     /// The Kanji variation of the company's primary address (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_kanji: Option<LegalEntityJapanAddress>,
+    pub address_kanji: Option<AddressJapan>,
 
     /// Whether the company's directors have been provided.
     ///

@@ -92,6 +92,7 @@ fn main() {
         ("issuing.authorization_wallet_provider", "wallet_provider"),
         ("invoiceitem", "invoice_item"),
         ("legal_entity_company", "company"),
+        ("legal_entity_japan_address", "address_japan"),
         ("line_item", "invoice_line_item"),
         ("payment_method_card", "card_details"),
         ("payment_method_card_present", "card_present"),
@@ -281,6 +282,17 @@ fn main() {
         (("update_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
     ]);
 
+    // Renames for `sku` params
+    field_overrides.extend(vec![
+        (("list_skus", "attributes"), ("Metadata", "Option<Metadata>")),
+        (("create_sku", "attributes"), ("Metadata", "Option<Metadata>")),
+        (("update_sku", "attributes"), ("Metadata", "Option<Metadata>")),
+        (("create_sku", "inventory"), ("Inventory", "Option<Inventory>")),
+        (("update_sku", "inventory"), ("Inventory", "Option<Inventory>")),
+        (("create_sku", "package_dimensions"), ("PackageDimensions", "Option<PackageDimensions>")),
+        (("update_sku", "package_dimensions"), ("PackageDimensions", "Option<PackageDimensions>")),
+    ]);
+
     // Renames for `source` params
     schema_renames.extend(vec![
         ("create_source_mandate", "source_mandate_params"),
@@ -324,16 +336,6 @@ fn main() {
     ]);
 
     // Renames for misc
-    field_overrides.insert(("create_sku", "inventory"), ("Inventory", "Option<Inventory>"));
-    field_overrides.insert(("update_sku", "inventory"), ("Inventory", "Option<Inventory>"));
-    field_overrides.insert(
-        ("create_sku", "package_dimensions"),
-        ("PackageDimensions", "Option<PackageDimensions>"),
-    );
-    field_overrides.insert(
-        ("update_sku", "package_dimensions"),
-        ("PackageDimensions", "Option<PackageDimensions>"),
-    );
     field_overrides.insert(
         ("create_product", "package_dimensions"),
         ("PackageDimensions", "Option<PackageDimensions>"),

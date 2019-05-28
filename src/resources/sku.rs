@@ -154,7 +154,7 @@ pub struct CreateSku<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    attributes: Option<CreateSkuAttributes>,
+    attributes: Option<Metadata>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -213,7 +213,7 @@ pub struct ListSkus<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    attributes: Option<ListSkusAttributes>,
+    attributes: Option<Metadata>,
 
     /// A cursor for use in pagination.
     ///
@@ -270,7 +270,7 @@ pub struct UpdateSku<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    attributes: Option<UpdateSkuAttributes>,
+    attributes: Option<Metadata>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
