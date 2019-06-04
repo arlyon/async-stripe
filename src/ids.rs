@@ -1,5 +1,5 @@
 macro_rules! def_id {
-    ($struct_name:ident: $COMMENT:ident) => {
+    ($struct_name:ident: String) => {
         #[derive(Clone, Debug, Eq, PartialEq, Hash)]
         pub struct $struct_name(smol_str::SmolStr);
 
@@ -169,7 +169,7 @@ macro_rules! def_id {
                 if !s.starts_with($prefix) {
 
                     // N.B. For debugging
-                    eprintln!("bad id is: {}", s);
+                    eprintln!("bad id is: {} (expected: {:?})", s, $prefix);
 
                     Err(ParseIdError {
                         typename: stringify!($struct_name),
@@ -198,18 +198,19 @@ macro_rules! def_id {
             }
         }
     };
-
-    ($enum_name:ident { $( $variant_name:ident($($variant_type:tt)*) ),* $(,)* }) => {
+    (#[optional] enum $enum_name:ident { $( $variant_name:ident($($variant_type:tt)*) ),* $(,)* }) => {
         #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
-        pub enum $enum_name {$(
-            $variant_name($($variant_type)*),
-        )*}
+        pub enum $enum_name {
+            None,
+            $( $variant_name($($variant_type)*), )*
+        }
 
         impl $enum_name {
             pub fn as_str(&self) -> &str {
-                match *self {$(
-                    $enum_name::$variant_name(ref id) => id.as_str(),
-                )*}
+                match *self {
+                    $enum_name::None => "",
+                    $( $enum_name::$variant_name(ref id) => id.as_str(), )*
+                }
             }
         }
 
@@ -249,9 +250,116 @@ macro_rules! def_id {
 
         impl std::fmt::Display for $enum_name {
             fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-                match *self {$(
-                    $enum_name::$variant_name(ref id) => id.fmt(f),
-                )*}
+                match *self {
+                    $enum_name::None => Ok(()),
+                    $( $enum_name::$variant_name(ref id) => id.fmt(f), )*
+                }
+            }
+        }
+
+        impl std::str::FromStr for $enum_name {
+            type Err = ParseIdError;
+
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                let prefix = s.find('_')
+                    .map(|i| &s[0..=i])
+                    .ok_or_else(|| ParseIdError {
+                        typename: stringify!($enum_name),
+                        expected: "id to start with a prefix (as in 'prefix_')"
+                    })?;
+
+                match prefix {
+                    $(_ if prefix == $($variant_type)*::prefix() => {
+                        Ok($enum_name::$variant_name(s.parse()?))
+                    })*
+                    _ => {
+                        Err(ParseIdError {
+                            typename: stringify!($enum_name),
+                            expected: "unknown id prefix",
+                        })
+                    }
+                }
+            }
+        }
+
+        impl serde::Serialize for $enum_name {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where S: serde::ser::Serializer
+            {
+                self.as_str().serialize(serializer)
+            }
+        }
+
+        impl<'de> serde::Deserialize<'de> for $enum_name {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where D: serde::de::Deserializer<'de>
+            {
+                let s: String = serde::Deserialize::deserialize(deserializer)?;
+                s.parse::<Self>().map_err(::serde::de::Error::custom)
+            }
+        }
+
+        $(
+            impl From<$($variant_type)*> for $enum_name {
+                fn from(id: $($variant_type)*) -> Self {
+                    $enum_name::$variant_name(id)
+                }
+            }
+        )*
+    };
+    (enum $enum_name:ident { $( $variant_name:ident($($variant_type:tt)*) ),* $(,)* }) => {
+        #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+        pub enum $enum_name {
+            $( $variant_name($($variant_type)*), )*
+        }
+
+        impl $enum_name {
+            pub fn as_str(&self) -> &str {
+                match *self {
+                    $( $enum_name::$variant_name(ref id) => id.as_str(), )*
+                }
+            }
+        }
+
+        impl PartialEq<str> for $enum_name {
+            fn eq(&self, other: &str) -> bool {
+                self.as_str() == other
+            }
+        }
+
+        impl PartialEq<&str> for $enum_name {
+            fn eq(&self, other: &&str) -> bool {
+                self.as_str() == *other
+            }
+        }
+
+        impl PartialEq<String> for $enum_name {
+            fn eq(&self, other: &String) -> bool {
+                self.as_str() == other
+            }
+        }
+
+        impl AsRef<str> for $enum_name {
+            fn as_ref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl crate::params::AsCursor for $enum_name {}
+
+        impl std::ops::Deref for $enum_name {
+            type Target = str;
+
+            fn deref(&self) -> &str {
+                self.as_str()
+            }
+        }
+
+        impl std::fmt::Display for $enum_name {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                match *self {
+                    $( $enum_name::$variant_name(ref id) => id.fmt(f), )*
+                }
             }
         }
 
@@ -332,11 +440,27 @@ def_id!(ApplicationFeeRefundId, "fr_");
 def_id!(BalanceTransactionId, "txn_");
 def_id!(BankAccountId, "ba_");
 def_id!(BankTokenId, "btok_");
+def_id!(
+    #[optional]
+    enum BalanceTransactionSourceId {
+        ApplicationFee(ApplicationFeeId),
+        Charge(ChargeId),
+        Dispute(DisputeId),
+        ApplicationFeeRefund(ApplicationFeeRefundId),
+        IssuingAuthorization(IssuingAuthorizationId),
+        IssuingTransaction(IssuingTransactionId),
+        Payout(PayoutId),
+        Refund(RefundId),
+        Topup(TopupId),
+        Transfer(TransferId),
+        TransferReversal(TransferReversalId),
+    }
+);
 def_id!(CardId, "card_");
 def_id!(CardTokenId, "tok_");
 def_id!(ChargeId, "ch_");
 def_id!(CheckoutSessionId, "cs_");
-def_id!(CouponId: USER_PROVIDED); // N.B. A coupon id can be user-provided so can be any arbitrary string
+def_id!(CouponId: String); // N.B. A coupon id can be user-provided so can be any arbitrary string
 def_id!(CustomerId, "cus_");
 def_id!(DisputeId, "dp_");
 def_id!(FileId, "file_");
@@ -353,22 +477,26 @@ def_id!(OrderId, "or_");
 def_id!(OrderReturnId, "orret_");
 def_id!(PaymentIntentId, "pi_");
 def_id!(PaymentMethodId, "pm");
-def_id!(PaymentSourceId {
-    Account(AccountId),
-    AlipayAccount(AlipayAccountId),
-    BankAccount(BankAccountId),
-    Card(CardId),
-    Source(SourceId),
-});
+def_id!(
+    enum PaymentSourceId {
+        Account(AccountId),
+        AlipayAccount(AlipayAccountId),
+        BankAccount(BankAccountId),
+        Card(CardId),
+        Source(SourceId),
+    }
+);
 def_id!(PayoutId, "po_");
-def_id!(PayoutDestinationId {
-    BankAccount(BankAccountId),
-    Card(CardId),
-});
+def_id!(
+    enum PayoutDestinationId {
+        BankAccount(BankAccountId),
+        Card(CardId),
+    }
+);
 def_id!(PersonId, "person_");
-def_id!(PlanId: USER_PROVIDED); // N.B. A plan id can be user-provided so can be any arbitrary string
+def_id!(PlanId: String); // N.B. A plan id can be user-provided so can be any arbitrary string
 def_id!(ProductId, "prod_");
-def_id!(RecipientId: UNDOCUMENTED); // FIXME: This doesn't seem to be documented yet
+def_id!(RecipientId: String); // FIXME: This doesn't seem to be documented yet
 def_id!(RefundId, "re_");
 def_id!(ReviewId, "prv_");
 def_id!(ScheduledQueryRunId, "sqr_");
@@ -378,10 +506,12 @@ def_id!(SubscriptionId, "sub_");
 def_id!(SubscriptionItemId, "si_");
 def_id!(TaxIdId, "txi_");
 def_id!(TaxRateId, "txr_");
-def_id!(TokenId {
-    Card(CardTokenId),
-    Bank(BankTokenId),
-});
+def_id!(
+    enum TokenId {
+        Card(CardTokenId),
+        Bank(BankTokenId),
+    }
+);
 def_id!(TopupId, "tu_");
 def_id!(TransferId, "tr_");
 def_id!(TransferReversalId, "trr_");

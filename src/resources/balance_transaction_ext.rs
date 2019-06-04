@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::ids::BalanceTransactionId;
+use crate::ids::{BalanceTransactionId, BalanceTransactionSourceId};
 use crate::params::Object;
 use crate::resources::{BalanceTransaction, BalanceTransactionSource};
 
@@ -13,8 +13,27 @@ impl BalanceTransaction {
 }
 
 impl Object for BalanceTransactionSource {
-    type Id = ();
-    fn id(&self) -> Self::Id {} // TODO: Some patterns contain _do_ contain ids
+    type Id = BalanceTransactionSourceId;
+    fn id(&self) -> Self::Id {
+        use BalanceTransactionSourceId as Id;
+        use BalanceTransactionSource as Source;
+
+        match self {
+            Source::ApplicationFee(x) => Id::ApplicationFee(x.id()),
+            Source::ApplicationFeeRefund(x) => Id::ApplicationFeeRefund(x.id()),
+            Source::Charge(x) => Id::Charge(x.id()),
+            Source::ConnectCollectionTransfer(_) => Id::None,
+            Source::Dispute(x) => Id::Dispute(x.id()),
+            Source::IssuingAuthorization(x) =>  Id::IssuingAuthorization(x.id()),
+            Source::IssuingTransaction(x) => Id::IssuingTransaction(x.id()),
+            Source::Payout(x) => Id::Payout(x.id()),
+            Source::Refund(x) => Id::Refund(x.id()),
+            Source::ReserveTransaction(_) => Id::None,
+            Source::Topup(x) => Id::Topup(x.id()),
+            Source::Transfer(x) => Id::Transfer(x.id()),
+            Source::TransferReversal(x) => Id::TransferReversal(x.id()),
+        }
+    }
     fn object(&self) -> &'static str {
         use BalanceTransactionSource as Source;
 
