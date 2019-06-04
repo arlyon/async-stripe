@@ -1,4 +1,7 @@
-use crate::config::{Client, Response};
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::ids::InvoiceLineItemId;
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Currency, Period, Plan, TaxRate};
@@ -74,16 +77,7 @@ pub struct InvoiceLineItem {
 
     /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
     #[serde(rename = "type")]
-    pub type_: LineItemType,
-}
-
-impl InvoiceLineItem {
-    /// Creates an invoice line item.
-    ///
-    /// For more details see https://stripe.com/docs/api#invoice_line_item_object
-    pub fn create(client: &Client, params: InvoiceLineItemParams<'_>) -> Response<InvoiceLineItem> {
-        client.post_form("/invoiceitems", &params)
-    }
+    pub type_: InvoiceLineItemType,
 }
 
 impl Object for InvoiceLineItem {
@@ -108,30 +102,10 @@ pub struct TaxAmount {
     pub tax_rate: Expandable<TaxRate>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InvoiceLineItemParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discountable: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<bool>,
-}
-
 /// An enum representing the possible values of an `InvoiceLineItem`'s `type` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum LineItemType {
+pub enum InvoiceLineItemType {
     Invoiceitem,
     Subscription,
 }

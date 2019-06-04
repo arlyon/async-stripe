@@ -371,6 +371,7 @@ def_id!(SkuId, "sku_");
 def_id!(SourceId, "src_");
 def_id!(SubscriptionId, "sub_");
 def_id!(SubscriptionItemId, "si_");
+def_id!(TaxIdId, "txi_");
 def_id!(TaxRateId, "txr_");
 def_id!(TokenId {
     Card(CardTokenId),

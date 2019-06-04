@@ -1,6 +1,10 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::config::{Client, Response};
-use crate::ids::{CustomerId, PlanId, SubscriptionId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::ids::{CouponId, CustomerId, PlanId, SubscriptionId};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Customer, Discount, Invoice, PaymentMethod, PaymentSource, Plan, Scheduled,
     SubscriptionBillingThresholds, SubscriptionItem, TaxRate,
@@ -79,7 +83,7 @@ pub struct Subscription {
     /// It must belong to the customer associated with the subscription and be in a chargeable state.
     /// If not set, defaults to the customer's default source.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_source: Option<PaymentSource>,
+    pub default_source: Option<Expandable<PaymentSource>>,
 
     /// The tax rates that will apply to any subscription item that does not have `tax_rates` set.
     ///
@@ -139,14 +143,14 @@ pub struct Subscription {
 
     /// Possible values are `incomplete`, `incomplete_expired`, `trialing`, `active`, `past_due`, `canceled`, or `unpaid`.
     ///
-    ///   For `billing=charge_automatically` a subscription moves into `incomplete` if the initial payment attempt fails.
+    /// For `billing=charge_automatically` a subscription moves into `incomplete` if the initial payment attempt fails.
     /// A subscription in this state can only have metadata and default_source updated.
     /// Once the first invoice is paid, the subscription moves into an `active` state.
     /// If the first invoice is not paid within 23 hours, the subscription transitions to `incomplete_expired`.
     /// This is a terminal state, the open invoice will be voided and no further invoices will be generated.
-    ///   A subscription that is currently in a trial period is `trialing` and moves to `active` when the trial period is over.
-    ///   If subscription `billing=charge_automatically` it becomes `past_due` when payment to renew it fails and `canceled` or `unpaid` (depending on your subscriptions settings) when Stripe has exhausted all payment retry attempts.
-    ///   If subscription `billing=send_invoice` it becomes `past_due` when its invoice is not paid by the due date, and `canceled` or `unpaid` if it is still not paid by an additional deadline after that.
+    /// A subscription that is currently in a trial period is `trialing` and moves to `active` when the trial period is over.
+    /// If subscription `billing=charge_automatically` it becomes `past_due` when payment to renew it fails and `canceled` or `unpaid` (depending on your subscriptions settings) when Stripe has exhausted all payment retry attempts.
+    /// If subscription `billing=send_invoice` it becomes `past_due` when its invoice is not paid by the due date, and `canceled` or `unpaid` if it is still not paid by an additional deadline after that.
     /// Note that when a subscription has a status of `unpaid`, no subsequent invoices will be attempted (invoices will be created, but then immediately automatically closed).
     /// After receiving updated payment information from a customer, you may choose to reopen and pay their closed invoices.
     pub status: SubscriptionStatus,
@@ -165,49 +169,49 @@ pub struct Subscription {
 }
 
 impl Subscription {
-    /// Creates a new subscription for a customer.
-    ///
-    /// For more details see https://stripe.com/docs/api#create_subscription.
-    pub fn create(client: &Client, params: SubscriptionParams<'_>) -> Response<Subscription> {
-        client.post_form("/subscriptions", params)
-    }
-
-    /// Retrieves the details of a subscription.
-    ///
-    /// For more details see https://stripe.com/docs/api#retrieve_subscription.
-    pub fn retrieve(client: &Client, subscription_id: &str) -> Response<Subscription> {
-        client.get(&format!("/subscriptions/{}", subscription_id))
-    }
-
-    /// Updates a subscription's properties.
-    /// For more details see https://stripe.com/docs/api#update_subscription.
-    pub fn update(
-        client: &Client,
-        subscription_id: &str,
-        params: SubscriptionParams<'_>,
-    ) -> Response<Subscription> {
-        client.post_form(&format!("/subscriptions/{}", subscription_id), params)
-    }
-
-    /// Cancels a subscription.
-    ///
-    /// For more details see https://stripe.com/docs/api#cancel_subscription.
-    pub fn cancel(
-        client: &Client,
-        subscription_id: &str,
-        params: CancelParams,
-    ) -> Response<Subscription> {
-        client.delete_query(&format!("/subscriptions/{}", subscription_id), params)
-    }
-
     /// By default, returns a list of subscriptions that have not been canceled.
     ///
-    /// In order to list canceled subscriptions, specify <code>status=canceled</code>.
-    pub fn list(
-        client: &Client,
-        params: SubscriptionListParams<'_>,
-    ) -> Response<List<Subscription>> {
+    /// In order to list canceled subscriptions, specify `status=canceled`.
+    pub fn list(client: &Client, params: ListSubscriptions<'_>) -> Response<List<Subscription>> {
         client.get_query("/subscriptions", &params)
+    }
+
+    /// Creates a new subscription on an existing customer.
+    pub fn create(client: &Client, params: CreateSubscription<'_>) -> Response<Subscription> {
+        client.post_form("/subscriptions", &params)
+    }
+
+    /// Retrieves the subscription with the given ID.
+    pub fn retrieve(
+        client: &Client,
+        id: &SubscriptionId,
+        expand: &[&str],
+    ) -> Response<Subscription> {
+        client.get_query(&format!("/subscriptions/{}", id), &Expand { expand })
+    }
+
+    /// Updates an existing subscription on a customer to match the specified parameters.
+    ///
+    /// When changing plans or quantities, we will optionally prorate the price we charge next month to make up for any price changes.
+    /// To preview how the proration will be calculated, use the [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
+    pub fn update(
+        client: &Client,
+        id: &SubscriptionId,
+        params: UpdateSubscription<'_>,
+    ) -> Response<Subscription> {
+        client.post_form(&format!("/subscriptions/{}", id), &params)
+    }
+
+    /// Cancels a customer’s subscription immediately.
+    ///
+    /// The customer will not be charged again for the subscription.  Note, however, that any pending invoice items that you’ve created will still be charged for at the end of the period, unless manually [deleted](https://stripe.com/docs/api#delete_invoiceitem).
+    /// If you’ve set the subscription to cancel at the end of the period, any pending prorations will also be left in place and collected at the end of the period.
+    /// But if the subscription is set to cancel immediately, pending prorations will be removed.  By default, upon subscription cancellation, Stripe will stop automatic collection of all finalized invoices for the customer.
+    /// This is intended to prevent unexpected payment attempts after the customer has canceled a subscription.
+    /// However, you can resume automatic collection of the invoices manually after subscription cancellation to have us proceed.
+    /// Or, you could check for unpaid invoices before allowing the customer to cancel the subscription at all.
+    pub fn delete(client: &Client, id: &SubscriptionId) -> Response<Deleted<SubscriptionId>> {
+        client.delete(&format!("/subscriptions/{}", id))
     }
 }
 
@@ -221,55 +225,134 @@ impl Object for Subscription {
     }
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CancelParams {
+/// The parameters for `Subscription::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateSubscription<'a> {
+    /// A non-negative decimal between 0 and 100, with at most two decimal places.
+    ///
+    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// The request must be made with an OAuth key in order to set an application fee percentage.
+    /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#collecting-fees-on-subscriptions).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub at_period_end: Option<bool>,
+    application_fee_percent: Option<f64>,
+
+    /// Either `charge_automatically`, or `send_invoice`.
+    ///
+    /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
+    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
+    /// Defaults to `charge_automatically`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing: Option<SubscriptionBilling>,
+
+    /// A future timestamp to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
+    ///
+    /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_cycle_anchor: Option<Timestamp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_thresholds: Option<CreateSubscriptionBillingThresholds>,
+
+    /// Boolean indicating whether this subscription should cancel at the end of the current period.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cancel_at_period_end: Option<bool>,
+
+    /// The code of the coupon to apply to this subscription.
+    ///
+    /// A coupon applied to a subscription will only affect invoices created for that particular subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    coupon: Option<CouponId>,
+
+    /// The identifier of the customer to subscribe.
+    customer: CustomerId,
+
+    /// Number of days a customer has to pay invoices generated by this subscription.
+    ///
+    /// Valid only for subscriptions where `billing` is set to `send_invoice`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    days_until_due: Option<u32>,
+
+    /// ID of the default payment method for the subscription.
+    ///
+    /// It must belong to the customer associated with the subscription.
+    /// If not set, invoices will use the default payment method in the customer's invoice settings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_payment_method: Option<&'a str>,
+
+    /// ID of the default payment source for the subscription.
+    ///
+    /// It must belong to the customer associated with the subscription and be in a chargeable state.
+    /// If not set, defaults to the customer's default source.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_source: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_tax_rates: Option<Vec<String>>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    items: Option<Vec<CreateSubscriptionItems>>,
+
+    /// A set of key-value pairs that you can attach to a `Subscription` object.
+    ///
+    /// It can be useful for storing additional information about the subscription in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// Boolean (defaults to `true`) telling us whether to [credit for unused time](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g.
+    ///
+    /// when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
+    /// If `false`, the anchor period will be free (similar to a trial) and no proration adjustments will be created.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    prorate: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_percent: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    trial_end: Option<Scheduled>,
+
+    /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
+    ///
+    /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
+    /// Setting this flag to `true` together with `trial_end` is not allowed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    trial_from_plan: Option<bool>,
+
+    /// Integer representing the number of trial period days before the customer is charged for the first time.
+    ///
+    /// This will always overwrite any trials that might apply via a subscribed plan.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    trial_period_days: Option<u32>,
 }
 
-#[derive(Clone, Serialize, Debug)]
-pub struct ItemParams<'a> {
-    pub plan: &'a str,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-}
-
-/// The set of parameters that can be used when creating or updating a subscription.
-///
-/// For more details see https://stripe.com/docs/api#create_subscription and https://stripe.com/docs/api#update_subscription.
-#[derive(Clone, Default, Serialize, Debug)]
-pub struct SubscriptionParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_percent: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ItemParams<'a>>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub prorate: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration_date: Option<Timestamp>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_percent: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_end: Option<Scheduled>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_period_days: Option<u64>,
+impl<'a> CreateSubscription<'a> {
+    pub fn new(customer: CustomerId) -> Self {
+        CreateSubscription {
+            application_fee_percent: Default::default(),
+            billing: Default::default(),
+            billing_cycle_anchor: Default::default(),
+            billing_thresholds: Default::default(),
+            cancel_at_period_end: Default::default(),
+            coupon: Default::default(),
+            customer,
+            days_until_due: Default::default(),
+            default_payment_method: Default::default(),
+            default_source: Default::default(),
+            default_tax_rates: Default::default(),
+            expand: Default::default(),
+            items: Default::default(),
+            metadata: Default::default(),
+            prorate: Default::default(),
+            tax_percent: Default::default(),
+            trial_end: Default::default(),
+            trial_from_plan: Default::default(),
+            trial_period_days: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Subscription::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct SubscriptionListParams<'a> {
+pub struct ListSubscriptions<'a> {
     /// The billing mode of the subscriptions to retrieve.
     ///
     /// Either `charge_automatically` or `send_invoice`.
@@ -326,9 +409,9 @@ pub struct SubscriptionListParams<'a> {
     status: Option<SubscriptionStatusFilter>,
 }
 
-impl<'a> SubscriptionListParams<'a> {
+impl<'a> ListSubscriptions<'a> {
     pub fn new() -> Self {
-        SubscriptionListParams {
+        ListSubscriptions {
             billing: Default::default(),
             created: Default::default(),
             current_period_end: Default::default(),
@@ -344,12 +427,206 @@ impl<'a> SubscriptionListParams<'a> {
     }
 }
 
+/// The parameters for `Subscription::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateSubscription<'a> {
+    /// A non-negative decimal between 0 and 100, with at most two decimal places.
+    ///
+    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// The request must be made with an OAuth key in order to set an application fee percentage.
+    /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#collecting-fees-on-subscriptions).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    application_fee_percent: Option<f64>,
+
+    /// Either `charge_automatically`, or `send_invoice`.
+    ///
+    /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
+    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
+    /// Defaults to `charge_automatically`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing: Option<SubscriptionBilling>,
+
+    /// Either `now` or `unchanged`.
+    ///
+    /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time.
+    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_cycle_anchor: Option<SubscriptionBillingCycleAnchor>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    billing_thresholds: Option<SubscriptionBillingThresholds>,
+
+    /// Boolean indicating whether this subscription should cancel at the end of the current period.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cancel_at_period_end: Option<bool>,
+
+    /// The code of the coupon to apply to this subscription.
+    ///
+    /// A coupon applied to a subscription will only affect invoices created for that particular subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    coupon: Option<CouponId>,
+
+    /// Number of days a customer has to pay invoices generated by this subscription.
+    ///
+    /// Valid only for subscriptions where `billing` is set to `send_invoice`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    days_until_due: Option<u32>,
+
+    /// ID of the default payment method for the subscription.
+    ///
+    /// It must belong to the customer associated with the subscription.
+    /// If not set, invoices will use the default payment method in the customer's invoice settings.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_payment_method: Option<&'a str>,
+
+    /// ID of the default payment source for the subscription.
+    ///
+    /// It must belong to the customer associated with the subscription and be in a chargeable state.
+    /// If not set, defaults to the customer's default source.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_source: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_tax_rates: Option<Vec<String>>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    items: Option<Vec<UpdateSubscriptionItems>>,
+
+    /// A set of key-value pairs that you can attach to a subscription object.
+    ///
+    /// This can be useful for storing additional information about the subscription in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// Boolean (defaults to `true`) telling us whether to [credit for unused time](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g.
+    ///
+    /// when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
+    /// If `false`, the anchor period will be free (similar to a trial) and no proration adjustments will be created.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    prorate: Option<bool>,
+
+    /// If set, the proration will be calculated as though the subscription was updated at the given time.
+    ///
+    /// This can be used to apply exactly the same proration that was previewed with [upcoming invoice](#retrieve_customer_invoice) endpoint.
+    /// It can also be used to implement custom proration logic, such as prorating by day instead of by second, by providing the time that you wish to use for proration calculations.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    proration_date: Option<Timestamp>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_percent: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    trial_end: Option<Scheduled>,
+
+    /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
+    ///
+    /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
+    /// Setting this flag to `true` together with `trial_end` is not allowed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    trial_from_plan: Option<bool>,
+}
+
+impl<'a> UpdateSubscription<'a> {
+    pub fn new() -> Self {
+        UpdateSubscription {
+            application_fee_percent: Default::default(),
+            billing: Default::default(),
+            billing_cycle_anchor: Default::default(),
+            billing_thresholds: Default::default(),
+            cancel_at_period_end: Default::default(),
+            coupon: Default::default(),
+            days_until_due: Default::default(),
+            default_payment_method: Default::default(),
+            default_source: Default::default(),
+            default_tax_rates: Default::default(),
+            expand: Default::default(),
+            items: Default::default(),
+            metadata: Default::default(),
+            prorate: Default::default(),
+            proration_date: Default::default(),
+            tax_percent: Default::default(),
+            trial_end: Default::default(),
+            trial_from_plan: Default::default(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSubscriptionBillingThresholds {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_gte: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reset_billing_cycle_anchor: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSubscriptionItems {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<CreateSubscriptionItemsBillingThresholds>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    pub plan: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSubscriptionItems {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<UpdateSubscriptionItemsBillingThresholds>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub clear_usage: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deleted: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSubscriptionItemsBillingThresholds {
+    pub usage_gte: i64,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSubscriptionItemsBillingThresholds {
+    pub usage_gte: i64,
+}
+
 /// An enum representing the possible values of an `Subscription`'s `billing` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionBilling {
     ChargeAutomatically,
     SendInvoice,
+}
+
+/// An enum representing the possible values of an `UpdateSubscription`'s `billing_cycle_anchor` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionBillingCycleAnchor {
+    Now,
+    Unchanged,
 }
 
 /// An enum representing the possible values of an `Subscription`'s `status` field.
@@ -365,7 +642,7 @@ pub enum SubscriptionStatus {
     Unpaid,
 }
 
-/// An enum representing the possible values of an `SubscriptionListParams`'s `status` field.
+/// An enum representing the possible values of an `ListSubscriptions`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionStatusFilter {

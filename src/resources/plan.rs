@@ -1,7 +1,11 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::config::{Client, Response};
 use crate::ids::PlanId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Currency, Product};
+use crate::resources::{Currency, Product, UpTo};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Plan".
@@ -113,37 +117,34 @@ pub struct Plan {
 }
 
 impl Plan {
-    /// Creates a new plan.
-    ///
-    /// For more details see https://stripe.com/docs/api#create_plan.
-    pub fn create(client: &Client, params: PlanParams<'_>) -> Response<Plan> {
-        client.post_form("/plans", params)
-    }
-
-    /// Retrieves the details of a plan.
-    ///
-    /// For more details see https://stripe.com/docs/api#retrieve_plan.
-    pub fn retrieve(client: &Client, id: PlanId) -> Response<Plan> {
-        client.get(&format!("/plans/{}", id))
-    }
-
-    /// Updates a plan's properties.
-    ///
-    /// For more details see https://stripe.com/docs/api#update_plan.
-    pub fn update(client: &Client, id: PlanId, params: PlanParams<'_>) -> Response<Plan> {
-        client.post_form(&format!("/plans/{}", id), params)
-    }
-
-    /// Deletes a plan.
-    ///
-    /// For more details see https://stripe.com/docs/api#delete_plan.
-    pub fn delete(client: &Client, id: PlanId) -> Response<Deleted<PlanId>> {
-        client.delete(&format!("/plans/{}", id))
-    }
-
     /// Returns a list of your plans.
-    pub fn list(client: &Client, params: PlanListParams<'_>) -> Response<List<Plan>> {
+    pub fn list(client: &Client, params: ListPlans<'_>) -> Response<List<Plan>> {
         client.get_query("/plans", &params)
+    }
+
+    /// You can create plans using the API, or in the Stripe [Dashboard](https://dashboard.stripe.com/subscriptions/products).
+    pub fn create(client: &Client, params: CreatePlan<'_>) -> Response<Plan> {
+        client.post_form("/plans", &params)
+    }
+
+    /// Retrieves the plan with the given ID.
+    pub fn retrieve(client: &Client, id: &PlanId, expand: &[&str]) -> Response<Plan> {
+        client.get_query(&format!("/plans/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified plan by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided are left unchanged.
+    /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
+    pub fn update(client: &Client, id: &PlanId, params: UpdatePlan<'_>) -> Response<Plan> {
+        client.post_form(&format!("/plans/{}", id), &params)
+    }
+
+    /// Deleting plans means new subscribers can’t be added.
+    ///
+    /// Existing subscribers aren’t affected.
+    pub fn delete(client: &Client, id: &PlanId) -> Response<Deleted<PlanId>> {
+        client.delete(&format!("/plans/{}", id))
     }
 }
 
@@ -181,35 +182,121 @@ pub struct TransformUsage {
     pub round: TransformUsageRound,
 }
 
-/// The set of parameters that can be used when creating or updating a plan.
-///
-/// For more details see https://stripe.com/docs/api#create_plan and https://stripe.com/docs/api#update_plan.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PlanParams<'a> {
+/// The parameters for `Plan::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreatePlan<'a> {
+    /// Whether the plan is currently available for new subscriptions.
+    ///
+    /// Defaults to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<&'a str>, // (day, week, month, year)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<&'a str>,
+    active: Option<bool>,
 
+    /// Specifies a usage aggregation strategy for plans of `usage_type=metered`.
+    ///
+    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for picking the last usage record reported within a period, `last_ever` for picking the last usage record ever (across period bounds) or `max` which picks the usage record with the maximum reported usage during a period.
+    /// Defaults to `sum`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<u64>,
+    aggregate_usage: Option<PlanAggregateUsage>,
+
+    /// A positive integer in %s (or 0 for a free plan) representing how much to charge on a recurring basis.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
+    amount: Option<i64>,
+
+    /// Describes how to compute the price per period.
+    ///
+    /// Either `per_unit` or `tiered`.
+    /// `per_unit` indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`).
+    /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
+    billing_scheme: Option<PlanBillingScheme>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    currency: Currency,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// An identifier randomly generated by Stripe.
+    ///
+    /// Used to identify this plan when subscribing a customer.
+    /// You can optionally override this ID, but the ID must be unique across all plans in your Stripe account.
+    /// You can, however, use the same plan ID in both live and test modes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_period_days: Option<u64>,
+    id: Option<&'a str>,
+
+    /// Specifies billing frequency.
+    ///
+    /// Either `day`, `week`, `month` or `year`.
+    interval: PlanInterval,
+
+    /// The number of intervals between subscription billings.
+    ///
+    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    interval_count: Option<u64>,
+
+    /// A set of key-value pairs that you can attach to a plan object.
+    ///
+    /// It can be useful for storing additional information about the plan in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// A brief description of the plan, hidden from customers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    nickname: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tiers: Option<Vec<CreatePlanTiers>>,
+
+    /// Defines if the tiering price should be `graduated` or `volume` based.
+    ///
+    /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tiers_mode: Option<PlanTiersMode>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    transform_usage: Option<CreatePlanTransformUsage>,
+
+    /// Default number of trial days when subscribing a customer to this plan using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    trial_period_days: Option<u32>,
+
+    /// Configures how the quantity per period should be determined, can be either `metered` or `licensed`.
+    ///
+    /// `licensed` will automatically bill the `quantity` set for a plan when adding it to a subscription, `metered` will aggregate the total usage based on usage records.
+    /// Defaults to `licensed`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    usage_type: Option<PlanUsageType>,
+}
+
+impl<'a> CreatePlan<'a> {
+    pub fn new(currency: Currency, interval: PlanInterval) -> Self {
+        CreatePlan {
+            active: Default::default(),
+            aggregate_usage: Default::default(),
+            amount: Default::default(),
+            billing_scheme: Default::default(),
+            currency,
+            expand: Default::default(),
+            id: Default::default(),
+            interval,
+            interval_count: Default::default(),
+            metadata: Default::default(),
+            nickname: Default::default(),
+            tiers: Default::default(),
+            tiers_mode: Default::default(),
+            transform_usage: Default::default(),
+            trial_period_days: Default::default(),
+            usage_type: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Plan::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct PlanListParams<'a> {
+pub struct ListPlans<'a> {
     /// Only return plans that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -245,9 +332,9 @@ pub struct PlanListParams<'a> {
     starting_after: Option<&'a PlanId>,
 }
 
-impl<'a> PlanListParams<'a> {
+impl<'a> ListPlans<'a> {
     pub fn new() -> Self {
-        PlanListParams {
+        ListPlans {
             active: Default::default(),
             created: Default::default(),
             ending_before: Default::default(),
@@ -256,6 +343,70 @@ impl<'a> PlanListParams<'a> {
             starting_after: Default::default(),
         }
     }
+}
+
+/// The parameters for `Plan::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdatePlan<'a> {
+    /// Whether the plan is currently available for new subscriptions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    active: Option<bool>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// A set of key-value pairs that you can attach to a plan object.
+    ///
+    /// It can be useful for storing additional information about the plan in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// A brief description of the plan, hidden from customers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    nickname: Option<&'a str>,
+
+    /// Default number of trial days when subscribing a customer to this plan using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    trial_period_days: Option<u32>,
+}
+
+impl<'a> UpdatePlan<'a> {
+    pub fn new() -> Self {
+        UpdatePlan {
+            active: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            nickname: Default::default(),
+            trial_period_days: Default::default(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePlanTiers {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+
+    pub up_to: Option<UpTo>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePlanTransformUsage {
+    pub divide_by: i64,
+
+    pub round: CreatePlanTransformUsageRound,
+}
+
+/// An enum representing the possible values of an `CreatePlanTransformUsage`'s `round` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePlanTransformUsageRound {
+    Down,
+    Up,
 }
 
 /// An enum representing the possible values of an `Plan`'s `aggregate_usage` field.

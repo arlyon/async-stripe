@@ -1,9 +1,13 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, Charge, Currency, Customer, Discount, InvoiceLineItem, PaymentIntent, PaymentMethod,
-    PaymentSource, Shipping, Subscription, TaxRate,
+    Address, Charge, Currency, CustomField, Customer, Discount, InvoiceLineItem, PaymentIntent,
+    PaymentMethod, PaymentSource, Shipping, Subscription, TaxRate,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -340,55 +344,23 @@ pub struct Invoice {
 }
 
 impl Invoice {
-    /// Creates a new invoice.
-    ///
-    /// For more details see https://stripe.com/docs/api#create_invoice.
-    pub fn create(client: &Client, params: InvoiceParams<'_>) -> Response<Invoice> {
-        client.post_form("/invoices", params)
-    }
-
-    /// Retrieves the details of an invoice.
-    ///
-    /// For more details see https://stripe.com/docs/api#retrieve_invoice.
-    pub fn retrieve(client: &Client, invoice_id: &str, expand: &[&str]) -> Response<Invoice> {
-        client.get_query(&format!("/invoices/{}?", invoice_id), &Expand { expand })
-    }
-
-    // TODO: Implement InvoiceListLinesParams
-    // pub fn get_lines(client: &Client, invoice_id: &str, params: InvoiceListLinesParams) -> Response<List<InvoiceLineItem>> {
-    //     client.get(&format!("/invoices/{}/lines", invoice_id))
-    // }
-
-    /// Retrieves the details of an upcoming invoice_id
-    ///
-    /// For more details see https://stripe.com/docs/api#upcoming_invoice
-    pub fn upcoming(client: &Client, params: InvoiceUpcomingParams<'_>) -> Response<Invoice> {
-        client.get_query("/invoices/upcoming", &params)
-    }
-
-    /// Pays an invoice.
-    ///
-    /// For more details see https://stripe.com/docs/api#pay_invoice.
-    pub fn pay(client: &Client, invoice_id: &str) -> Response<Invoice> {
-        client.post(&format!("/invoices/{}/pay", invoice_id))
-    }
-
-    /// Updates an invoice.
-    ///
-    /// For more details see https://stripe.com/docs/api#update_invoice.
-    pub fn update(
-        client: &Client,
-        invoice_id: &str,
-        params: InvoiceParams<'_>,
-    ) -> Response<Invoice> {
-        client.post_form(&format!("/invoices/{}", invoice_id), &params)
-    }
-
     /// You can list all invoices, or list the invoices for a specific customer.
     ///
     /// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
-    pub fn list(client: &Client, params: InvoiceListParams<'_>) -> Response<List<Invoice>> {
+    pub fn list(client: &Client, params: ListInvoices<'_>) -> Response<List<Invoice>> {
         client.get_query("/invoices", &params)
+    }
+
+    /// This endpoint creates a draft invoice for a given customer.
+    ///
+    /// The draft invoice created pulls in all pending invoice items on that customer, including prorations.
+    pub fn create(client: &Client, params: CreateInvoice<'_>) -> Response<Invoice> {
+        client.post_form("/invoices", &params)
+    }
+
+    /// Retrieves the invoice with the given ID.
+    pub fn retrieve(client: &Client, id: &InvoiceId, expand: &[&str]) -> Response<Invoice> {
+        client.get_query(&format!("/invoices/{}", id), &Expand { expand })
     }
 }
 
@@ -401,54 +373,6 @@ impl Object for Invoice {
         "invoice"
     }
 }
-
-// TODO: This may not be needed anymore
-/*
-// N.B. Since Invoice ID can be empty, override impl for pagination
-impl List<Invoice> {
-    /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
-    /// Stripe's default page size.
-    ///
-    /// Not supported by `stripe::async::Client`.
-    #[cfg(not(feature = "async"))]
-    pub fn get_all(self, client: &Client) -> Response<Vec<Invoice>> {
-        let mut data = Vec::new();
-        let mut next = self;
-        loop {
-            if next.has_more {
-                let resp = next.next(&client)?;
-                data.extend(next.data);
-                next = resp;
-            } else {
-                data.extend(next.data);
-                break;
-            }
-        }
-        Ok(data)
-    }
-
-    /// Fetch additional page of data from stripe
-    pub fn next(&self, client: &Client) -> Response<List<Invoice>> {
-        use crate::error::Error;
-
-        if let Some(last) = self.data.last() {
-            if let Some(last_id) = &last.id {
-                List::get_next(client, &self.url, &last_id)
-            } else {
-                let invariant = "Cannot paginate List<Invoice>; Stripe returned Invoice with no ID";
-                err(Error::Unexpected(invariant))
-            }
-        } else {
-            ok(List {
-                data: Vec::new(),
-                has_more: false,
-                total_count: self.total_count,
-                url: self.url.clone(),
-            })
-        }
-    }
-}
-*/
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomField {
@@ -520,63 +444,125 @@ pub struct TaxAmount {
     pub tax_rate: Expandable<TaxRate>,
 }
 
-/// The set of parameters that can be used when creating or updating an invoice.
-///
-/// For more details see https://stripe.com/docs/api#create_invoice, https://stripe.com/docs/api#update_invoice.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InvoiceParams<'a> {
+/// The parameters for `Invoice::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateInvoice<'a> {
+    /// A fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account.
+    ///
+    /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
+    /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#invoices).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee: Option<u64>,
+    application_fee_amount: Option<i64>,
+
+    /// Controls whether Stripe will perform [automatic collection](https://stripe.com/docs/billing/invoices/workflow/#auto_advance) of the invoice.
+    ///
+    /// When `false`, the invoice's state will not automatically advance without an explicit action.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a str>,
+    auto_advance: Option<bool>,
+
+    /// Either `charge_automatically`, or `send_invoice`.
+    ///
+    /// When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer.
+    /// When sending an invoice, Stripe will email this invoice to the customer with payment instructions.
+    /// Defaults to `charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    billing: Option<InvoiceBilling>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
+    custom_fields: Option<Vec<CustomField>>,
+
+    customer: CustomerId,
+
+    /// The number of days from when the invoice is created until it is due.
+    ///
+    /// Valid only for invoices where `billing=send_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<&'a str>,
+    days_until_due: Option<u32>,
+
+    /// ID of the default payment method for the invoice.
+    ///
+    /// It must belong to the customer associated with the invoice.
+    /// If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_percent: Option<f64>,
+    default_payment_method: Option<&'a str>,
+
+    /// ID of the default payment source for the invoice.
+    ///
+    /// It must belong to the customer associated with the invoice and be in a chargeable state.
+    /// If not set, defaults to the subscription's default source, if any, or to the customer's default source.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_source: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    default_tax_rates: Option<Vec<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub closed: Option<bool>,
+    description: Option<&'a str>,
+
+    /// The date on which payment for this invoice is due.
+    ///
+    /// Valid only for invoices where `billing=send_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub forgiven: Option<bool>,
+    due_date: Option<Timestamp>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Footer to be displayed on the invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    footer: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// Extra information about a charge for the customer's credit card statement.
+    ///
+    /// It must contain at least one letter.
+    /// If not specified and this invoice is part of a subscription, the default `statement_descriptor` will be set to the first subscription item's product's `statement_descriptor`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    statement_descriptor: Option<&'a str>,
+
+    /// The ID of the subscription to invoice, if any.
+    ///
+    /// If not set, the created invoice will include all pending invoice items for the customer.
+    /// If set, the created invoice will only include pending invoice items for that subscription and pending invoice items not associated with any subscription.
+    /// The subscription's billing cycle and regular subscription events won't be affected.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    subscription: Option<SubscriptionId>,
+
+    /// The percent tax rate applied to the invoice, represented as a decimal number.
+    ///
+    /// This field has been deprecated and will be removed in a future API version, for further information view the [migration docs](https://stripe.com/docs/billing/migration/taxes) for `tax_rates`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    tax_percent: Option<f64>,
 }
 
-/*
-#[derive(Debug, Deserialize, Serialize)]
-pub struct InvoiceListLinesParams {
-    #[serde(skip_serializing_if = "Option::is_none")] pub limit: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub ending_before: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")] pub starting_after: Option<String>,
-
-    ..
-}
-*/
-
-#[derive(Clone, Debug, Default, Serialize)]
-pub struct InvoiceUpcomingParams<'a> {
-    pub customer: &'a str, // this is a required param
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_items: Option<SubscriptionItemParams<'a>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_prorate: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_proration_date: Option<Timestamp>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_tax_percent: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_trial_end: Option<Timestamp>,
+impl<'a> CreateInvoice<'a> {
+    pub fn new(customer: CustomerId) -> Self {
+        CreateInvoice {
+            application_fee_amount: Default::default(),
+            auto_advance: Default::default(),
+            billing: Default::default(),
+            custom_fields: Default::default(),
+            customer,
+            days_until_due: Default::default(),
+            default_payment_method: Default::default(),
+            default_source: Default::default(),
+            default_tax_rates: Default::default(),
+            description: Default::default(),
+            due_date: Default::default(),
+            expand: Default::default(),
+            footer: Default::default(),
+            metadata: Default::default(),
+            statement_descriptor: Default::default(),
+            subscription: Default::default(),
+            tax_percent: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Invoice::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct InvoiceListParams<'a> {
+pub struct ListInvoices<'a> {
     /// The billing mode of the invoice to retrieve.
     ///
     /// Either `charge_automatically` or `send_invoice`.
@@ -622,9 +608,9 @@ pub struct InvoiceListParams<'a> {
     subscription: Option<SubscriptionId>,
 }
 
-impl<'a> InvoiceListParams<'a> {
+impl<'a> ListInvoices<'a> {
     pub fn new() -> Self {
-        InvoiceListParams {
+        ListInvoices {
             billing: Default::default(),
             created: Default::default(),
             customer: Default::default(),
@@ -636,20 +622,6 @@ impl<'a> InvoiceListParams<'a> {
             subscription: Default::default(),
         }
     }
-}
-
-#[derive(Clone, Debug, Serialize)]
-pub struct SubscriptionItemParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
 }
 
 /// An enum representing the possible values of an `Invoice`'s `billing` field.
