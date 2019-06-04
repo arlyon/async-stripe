@@ -17577,6 +17577,12 @@
           },
           "type": {
             "description": "Type of the token: `account`, `bank_account`, `card`, or `pii`.",
+            "enum": [
+              "account",
+              "bank_account",
+              "card",
+              "pii"
+            ],
             "maxLength": 5000,
             "type": "string"
           },

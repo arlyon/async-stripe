@@ -367,6 +367,18 @@ fn main() {
     );
     field_overrides.insert(("create_plan_tiers", "up_to"), ("UpTo", "Option<UpTo>"));
     field_overrides.insert(("update_file_link", "expires_at"), ("Scheduled", "Option<Scheduled>"));
+    field_overrides.insert(
+        ("create_token_account", "business_type"),
+        ("BusinessType", "Option<BusinessType>"),
+    );
+    field_overrides.insert(
+        ("create_token_account", "company"),
+        ("CompanyParams", "Option<CompanyParams>"),
+    );
+    field_overrides.insert(
+        ("create_token_account", "individual"),
+        ("PersonParams", "Option<PersonParams>"),
+    );
 
     // Generate files
     let meta = Metadata {
