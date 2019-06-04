@@ -15,8 +15,8 @@ impl BalanceTransaction {
 impl Object for BalanceTransactionSource {
     type Id = BalanceTransactionSourceId;
     fn id(&self) -> Self::Id {
-        use BalanceTransactionSourceId as Id;
         use BalanceTransactionSource as Source;
+        use BalanceTransactionSourceId as Id;
 
         match self {
             Source::ApplicationFee(x) => Id::ApplicationFee(x.id()),
@@ -24,7 +24,7 @@ impl Object for BalanceTransactionSource {
             Source::Charge(x) => Id::Charge(x.id()),
             Source::ConnectCollectionTransfer(_) => Id::None,
             Source::Dispute(x) => Id::Dispute(x.id()),
-            Source::IssuingAuthorization(x) =>  Id::IssuingAuthorization(x.id()),
+            Source::IssuingAuthorization(x) => Id::IssuingAuthorization(x.id()),
             Source::IssuingTransaction(x) => Id::IssuingTransaction(x.id()),
             Source::Payout(x) => Id::Payout(x.id()),
             Source::Refund(x) => Id::Refund(x.id()),
