@@ -226,6 +226,7 @@ fn main() {
     ]);
     field_overrides.extend(vec![
         (("create_charge", "shipping"), ("Shipping", "Option<Shipping>")),
+        (("create_charge", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams<'a>>")),
         (("update_charge", "shipping"), ("Shipping", "Option<Shipping>")),
         (("fraud_details_params", "user_report"), ("FraudDetailsReport", "FraudDetailsReport")),
     ]);
