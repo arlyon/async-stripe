@@ -1,10 +1,13 @@
+// ======================================
+// This file was automatically generated.
+// ======================================
+
 use crate::config::{Client, Response};
-use crate::error::ErrorCode;
-use crate::ids::{ChargeId, CustomerId};
+use crate::ids::{ChargeId, CustomerId, PaymentIntentId, SourceId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Application, ApplicationFee, BalanceTransaction, BillingDetails, Currency, Customer,
-    Dispute, Invoice, Order, PaymentMethodDetails, PaymentSource, PaymentSourceParams, Refund,
+    Dispute, FraudDetailsReport, Invoice, Order, PaymentMethodDetails, PaymentSource, Refund,
     Review, Shipping, Transfer,
 };
 use serde_derive::{Deserialize, Serialize};
@@ -76,7 +79,7 @@ pub struct Charge {
 
     /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/api#errors) for a list of codes).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub failure_code: Option<ErrorCode>,
+    pub failure_code: Option<String>,
 
     /// Message to user further explaining reason for charge failure if available.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -182,7 +185,7 @@ pub struct Charge {
     pub statement_descriptor: Option<String>,
 
     /// The status of the payment is either `succeeded`, `pending`, or `failed`.
-    pub status: ChargeStatus,
+    pub status: String,
 
     /// ID of the transfer to the `destination` account (only applicable if the charge was created using the `destination` parameter).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -202,47 +205,34 @@ pub struct Charge {
 }
 
 impl Charge {
-    /// Creates a new charge.
+    /// Returns a list of charges you’ve previously created.
     ///
-    /// For more details see [https://stripe.com/docs/api#create_charge](https://stripe.com/docs/api#create_charge).
-    pub fn create(client: &Client, params: ChargeParams<'_>) -> Response<Charge> {
-        client.post_form("/charges", params)
-    }
-
-    /// Retrieves the details of a charge.
-    ///
-    /// For more details see [https://stripe.com/docs/api#retrieve_charge](https://stripe.com/docs/api#retrieve_charge).
-    pub fn retrieve(client: &Client, charge_id: &ChargeId, expand: &[&str]) -> Response<Charge> {
-        client.get_query(&format!("/charges/{}", charge_id), &Expand { expand })
-    }
-
-    /// Updates a charge's properties.
-    ///
-    /// For more details see [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
-    pub fn update(
-        client: &Client,
-        charge_id: &ChargeId,
-        params: ChargeParams<'_>,
-    ) -> Response<Charge> {
-        client.post_form(&format!("/charges/{}", charge_id), params)
-    }
-
-    /// Capture captures a previously created charge with capture set to false.
-    ///
-    /// For more details see [https://stripe.com/docs/api#charge_capture](https://stripe.com/docs/api#charge_capture).
-    pub fn capture(
-        client: &Client,
-        charge_id: &ChargeId,
-        params: CaptureParams<'_>,
-    ) -> Response<Charge> {
-        client.post_form(&format!("/charges/{}/capture", charge_id), params)
-    }
-
-    /// List all charges.
-    ///
-    /// For more details see [https://stripe.com/docs/api#list_charges](https://stripe.com/docs/api#list_charges).
-    pub fn list(client: &Client, params: ChargeListParams<'_>) -> Response<List<Charge>> {
+    /// The charges are returned in sorted order, with the most recent charges appearing first.
+    pub fn list(client: &Client, params: ListCharges<'_>) -> Response<List<Charge>> {
         client.get_query("/charges", &params)
+    }
+
+    /// To charge a credit card or other payment source, you create a `Charge` object.
+    ///
+    /// If your API key is in test mode, the supplied payment source (e.g., card) won’t actually be charged, although everything else will occur as if in live mode.
+    /// (Stripe assumes that the charge would have completed successfully).
+    pub fn create(client: &Client, params: CreateCharge<'_>) -> Response<Charge> {
+        client.post_form("/charges", &params)
+    }
+
+    /// Retrieves the details of a charge that has previously been created.
+    ///
+    /// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
+    /// The same information is returned when creating or refunding the charge.
+    pub fn retrieve(client: &Client, id: &ChargeId, expand: &[&str]) -> Response<Charge> {
+        client.get_query(&format!("/charges/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified charge by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    pub fn update(client: &Client, id: &ChargeId, params: UpdateCharge<'_>) -> Response<Charge> {
+        client.post_form(&format!("/charges/{}", id), &params)
     }
 }
 
@@ -256,29 +246,67 @@ impl Object for Charge {
     }
 }
 
-/// The resource representing a Stripe charge object outcome.
-///
-/// For more details see [https://stripe.com/docs/api#charge_object-outcome](https://stripe.com/docs/api#charge_object-outcome)
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct ChargeOutcome {
-    #[serde(rename = "type")]
-    pub outcome_type: OutcomeType,
-    pub network_status: NetworkStatus,
-    #[serde(default)]
-    pub reason: Option<OutcomeReason>,
-    #[serde(default)]
-    pub risk_level: Option<RiskLevel>,
-    #[serde(default)]
-    pub seller_message: Option<String>,
-    #[serde(default)]
-    pub rule: Option<String>,
+pub struct FraudDetails {
+    /// Assessments from Stripe.
+    ///
+    /// If set, the value is `fraudulent`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stripe_report: Option<FraudDetailsReport>,
+
+    /// Assessments reported by you.
+    ///
+    /// If set, possible values of are `safe` and `fraudulent`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_report: Option<String>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct FraudDetails {
-    pub user_report: Option<String>,
-    #[serde(skip_serializing)]
-    pub stripe_report: Option<String>,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ChargeOutcome {
+    /// Possible values are `approved_by_network`, `declined_by_network`, `not_sent_to_network`, and `reversed_after_approval`.
+    ///
+    /// The value `reversed_after_approval` indicates the payment was [blocked by Stripe](https://stripe.com/docs/declines#blocked-payments) after bank authorization, and may temporarily appear as "pending" on a cardholder's statement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network_status: Option<String>,
+
+    /// An enumerated value providing a more detailed explanation of the outcome's `type`.
+    ///
+    /// Charges blocked by Radar's default block rule have the value `highest_risk_level`.
+    /// Charges placed in review by Radar's default review rule have the value `elevated_risk_level`.
+    /// Charges authorized, blocked, or placed in review by custom rules have the value `rule`.
+    /// See [understanding declines](https://stripe.com/docs/declines) for more details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
+
+    /// Stripe's evaluation of the riskiness of the payment.
+    ///
+    /// Possible values for evaluated payments are `normal`, `elevated`, `highest`.
+    /// For non-card payments, and card-based payments predating the public assignment of risk levels, this field will have the value `not_assessed`.
+    /// In the event of an error in the evaluation, this field will have the value `unknown`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub risk_level: Option<String>,
+
+    /// Stripe's evaluation of the riskiness of the payment.
+    ///
+    /// Possible values for evaluated payments are between 0 and 100.
+    /// For non-card payments, card-based payments predating the public assignment of risk scores, or in the event of an error during evaluation, this field will not be present.
+    /// This field is only available with Radar for Fraud Teams.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub risk_score: Option<i64>,
+
+    /// The ID of the Radar rule that matched the payment, if applicable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rule: Option<Expandable<Rule>>,
+
+    /// A human-readable description of the outcome type and reason, designed for you (the recipient of the payment), not your customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub seller_message: Option<String>,
+
+    /// Possible values are `authorized`, `manual_review`, `issuer_declined`, `blocked`, and `invalid`.
+    ///
+    /// See [understanding declines](https://stripe.com/docs/declines) and [Radar reviews](radar/review) for details.
+    #[serde(rename = "type")]
+    pub type_: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -293,62 +321,143 @@ pub struct TransferData {
     pub destination: Expandable<Account>,
 }
 
-/// The set of parameters that can be used when capturing a charge object.
-///
-/// For more details see (https://stripe.com/docs/api#charge_capture](https://stripe.com/docs/api#charge_capture).
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CaptureParams<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub receipt_email: Option<&'a str>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Rule {
+    /// The action taken on the payment.
+    pub action: String,
+
+    /// Unique identifier for the object.
+    pub id: String,
+
+    /// The predicate to evaluate the payment against.
+    pub predicate: String,
 }
 
-/// The set of parameters that can be used when creating or updating a charge object.
-///
-/// For more details see [https://stripe.com/docs/api#create_charge](https://stripe.com/docs/api#create_charge)
-/// and [https://stripe.com/docs/api#update_charge](https://stripe.com/docs/api#update_charge).
-#[derive(Clone, Debug, Default, Serialize)]
-pub struct ChargeParams<'a> {
+/// The parameters for `Charge::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateCharge<'a> {
+    /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
+    ///
+    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://support.stripe.com/questions/what-is-the-minimum-amount-i-can-charge-with-stripe).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<u64>,
+    amount: Option<i64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
+    application_fee: Option<i64>,
+
+    /// A fee in %s that will be applied to the charge and transferred to the application owner's Stripe account.
+    ///
+    /// The request must be made with an OAuth key or the `Stripe-Account` header in order to take an application fee.
+    /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/direct-charges#collecting-fees).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee: Option<u64>,
+    application_fee_amount: Option<i64>,
+
+    /// Whether to immediately capture the charge.
+    ///
+    /// Defaults to `true`.
+    /// When `false`, the charge issues an authorization (or pre-authorization), and will need to be [captured](#capture_charge) later.
+    /// Uncaptured charges expire in _seven days_.
+    /// For more information, see the [authorizing charges and settling later](https://stripe.com/docs/charges#auth-and-capture) documentation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture: Option<bool>, // NOTE: if None, Stripe assumes true
+    capture: Option<bool>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<&'a str>,
+    currency: Option<Currency>,
+
+    /// The ID of an existing customer that will be charged in this request.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination: Option<DestinationParams<'a>>,
+    customer: Option<CustomerId>,
+
+    /// An arbitrary string which you can attach to a `Charge` object.
+    ///
+    /// It is displayed when in the web interface alongside the charge.
+    /// Note that if you use Stripe to send automatic email receipts to your customers, your receipt emails will include the `description` of the charge(s) that they are describing.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fraud_details: Option<FraudDetails>,
+    description: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_group: Option<&'a str>,
+    metadata: Option<Metadata>,
+
+    /// The Stripe account ID for which these funds are intended.
+    ///
+    /// Automatically set if you use the `destination` parameter.
+    /// For details, see [Creating Separate Charges and Transfers](https://stripe.com/docs/connect/charges-transfers#on-behalf-of).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<&'a str>,
+    on_behalf_of: Option<&'a str>,
+
+    /// The email address to which this charge's [receipt](https://stripe.com/docs/dashboard/receipts) will be sent.
+    ///
+    /// The receipt will not be sent until the charge is paid, and no receipts will be sent for test mode charges.
+    /// If this charge is for a [Customer](https://stripe.com/docs/api/customers/object), the email address specified here will override the customer's email address.
+    /// If `receipt_email` is specified for a charge in live mode, a receipt will be sent regardless of your [email settings](https://dashboard.stripe.com/account/emails).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
+    receipt_email: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub receipt_email: Option<&'a str>,
+    shipping: Option<Shipping>,
+
+    /// A payment source to be charged.
+    ///
+    /// This can be the ID of a [card](https://stripe.com/docs/api#cards) (i.e., credit or debit card), a [bank account](https://stripe.com/docs/api#bank_accounts), a [source](https://stripe.com/docs/api#sources), a [token](https://stripe.com/docs/api#tokens), or a [connected account](https://stripe.com/docs/connect/account-debits#charging-a-connected-account).
+    /// For certain sources---namely, [cards](https://stripe.com/docs/api#cards), [bank accounts](https://stripe.com/docs/api#bank_accounts), and attached [sources](https://stripe.com/docs/api#sources)---you must also pass the ID of the associated customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<Shipping>,
+    source: Option<SourceId>,
+
+    /// An arbitrary string to be used as the dynamic portion of the full descriptor displayed on your customer's credit card statement.
+    ///
+    /// This value will be prefixed by your [account's statement descriptor](https://stripe.com/docs/charges#dynamic-statement-descriptor).
+    /// As an example, if your account's statement descriptor is `RUNCLUB` and the item you're charging for is a race ticket, you may want to specify a `statement_descriptor` of `5K RACE`, so that the resulting full descriptor would be `RUNCLUB* 5K RACE`.
+    /// The full descriptor may be up to *22 characters*.
+    /// This value must contain at least one letter, may not include `<>"'` characters, and will appear on your customer's statement in capital letters.
+    /// Non-ASCII characters are automatically stripped.
+    /// While most banks display this information consistently, some may display it incorrectly or not at all.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<&'a CustomerId>,
+    statement_descriptor: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<PaymentSourceParams<'a>>,
+    transfer_data: Option<TransferDataParams>,
+
+    /// A string that identifies this transaction as part of a group.
+    ///
+    /// For details, see [Grouping transactions](https://stripe.com/docs/connect/charges-transfers#grouping-transactions).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<&'a str>,
+    transfer_group: Option<&'a str>,
+}
+
+impl<'a> CreateCharge<'a> {
+    pub fn new() -> Self {
+        CreateCharge {
+            amount: Default::default(),
+            application_fee: Default::default(),
+            application_fee_amount: Default::default(),
+            capture: Default::default(),
+            currency: Default::default(),
+            customer: Default::default(),
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            on_behalf_of: Default::default(),
+            receipt_email: Default::default(),
+            shipping: Default::default(),
+            source: Default::default(),
+            statement_descriptor: Default::default(),
+            transfer_data: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Charge::list`.
-#[derive(Clone, Debug, Default, Serialize)]
-pub struct ChargeListParams<'a> {
+#[derive(Clone, Debug, Serialize)]
+pub struct ListCharges<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<RangeQuery<Timestamp>>,
 
@@ -373,142 +482,107 @@ pub struct ChargeListParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<u64>,
 
+    /// Only return charges that were created by the PaymentIntent specified by this PaymentIntent ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_intent: Option<PaymentIntentId>,
+
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<&'a ChargeId>,
+
+    /// Only return charges for this transfer group.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    transfer_group: Option<&'a str>,
+}
+
+impl<'a> ListCharges<'a> {
+    pub fn new() -> Self {
+        ListCharges {
+            created: Default::default(),
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            payment_intent: Default::default(),
+            starting_after: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
+}
+
+/// The parameters for `Charge::update`.
+#[derive(Clone, Debug, Serialize)]
+pub struct UpdateCharge<'a> {
+    /// The ID of an existing customer that will be associated with this request.
+    ///
+    /// This field may only be updated if there is no existing associated customer with this charge.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<CustomerId>,
+
+    /// An arbitrary string which you can attach to a charge object.
+    ///
+    /// It is displayed when in the web interface alongside the charge.
+    /// Note that if you use Stripe to send automatic email receipts to your customers, your receipt emails will include the `description` of the charge(s) that they are describing.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    description: Option<&'a str>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    expand: &'a [&'a str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    fraud_details: Option<FraudDetailsParams>,
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    metadata: Option<Metadata>,
+
+    /// This is the email address that the receipt for this charge will be sent to.
+    ///
+    /// If this field is updated, then a new email receipt will be sent to the updated address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    receipt_email: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    shipping: Option<Shipping>,
+
+    /// A string that identifies this transaction as part of a group.
+    ///
+    /// `transfer_group` may only be provided if it has not been set.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#grouping-transactions) for details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    transfer_group: Option<&'a str>,
+}
+
+impl<'a> UpdateCharge<'a> {
+    pub fn new() -> Self {
+        UpdateCharge {
+            customer: Default::default(),
+            description: Default::default(),
+            expand: Default::default(),
+            fraud_details: Default::default(),
+            metadata: Default::default(),
+            receipt_email: Default::default(),
+            shipping: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct DestinationParams<'a> {
-    pub account: &'a str,
-    pub amount: u64,
+pub struct FraudDetailsParams {
+    pub user_report: FraudDetailsReport,
 }
 
-/// The resource representing a Stripe charge object status.
-///
-/// For more details see [https://stripe.com/docs/api#charge_object-status](https://stripe.com/docs/api#charge_object-status)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-pub enum ChargeStatus {
-    #[serde(rename = "succeeded")]
-    Succeeded,
-    #[serde(rename = "pending")]
-    Pending,
-    #[serde(rename = "failed")]
-    Failed,
-}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct TransferDataParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
 
-/// An enum representing the possible values of a `ChargeOutcome`'s `network_status` field.
-///
-/// For more details see [https://stripe.com/docs/api#charge_object-outcome-network_status](https://stripe.com/docs/api#charge_object-outcome-network_status)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum NetworkStatus {
-    ApprovedByNetwork,
-    DeclinedByNetwork,
-    NotSentToNetwork,
-
-    /// This value indiciates the payment was [blocked by Stripe](https://stripe.com/docs/declines#blocked-payments)
-    /// after bank authorization, and may temporarily appear as “pending” on a cardholder’s statement.
-    ReversedAfterApproval,
-
-    /// A variant not yet supported by the library.
-    /// It is an error to send `Other` as part of a request.
-    #[serde(other, skip_serializing)]
-    Other,
-}
-
-/// An enum representing the possible values of a `ChargeOutcome`'s `reason` field.
-///
-/// For more details see [https://stripe.com/docs/api#charge_object-outcome-reason](https://stripe.com/docs/api#charge_object-outcome-reason)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum OutcomeReason {
-    ApprovedWithId,
-    CallIssuer,
-    CardNotSupported,
-    CardVelocityExceeded,
-    CurrencyNotSupported,
-    DoNotHonor,
-    DoNotTryAgain,
-    DuplicateTransaction,
-    ExpiredCard,
-    Fraudulent,
-    GenericDecline,
-    IncorrectNumber,
-    IncorrectCvc,
-    IncorrectPin,
-    IncorrectZip,
-    InsufficientFunds,
-    InvalidAccount,
-    InvalidAmount,
-    InvalidCvc,
-    InvalidExpiryYear,
-    InvalidNumber,
-    InvalidPin,
-    IssuerNotAvailable,
-    LostCard,
-    MerchantBlacklist,
-    NewAccountInformationAvailable,
-    NoActionTaken,
-    NotPermitted,
-    PickupCard,
-    PinTryExceeded,
-    ProcessingError,
-    ReenterTransaction,
-    RestrictedCard,
-    RevocationOfAllAuthorizations,
-    RevocationOfAuthorization,
-    SecurityViolation,
-    ServiceNotAllowed,
-    StolenCard,
-    StopPaymentOrder,
-    TestmodeDecline,
-    TransactionNotAllowed,
-    TryAgainLater,
-    WithdrawalCountLimitExceeded,
-
-    /// A variant not yet supported by the library.
-    /// It is an error to send `Other` as part of a request.
-    #[serde(other, skip_serializing)]
-    Other,
-}
-
-/// An enum representing the possible values of a `ChargeOutcome`'s `type` field.
-///
-/// For more details see [https://stripe.com/docs/api#charge_object-outcome-type](https://stripe.com/docs/api#charge_object-outcome-type)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Copy, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum OutcomeType {
-    Authorized,
-    ManualReview,
-    IssuerDeclined,
-    Blocked,
-    Invalid,
-
-    /// A variant not yet supported by the library.
-    /// It is an error to send `Other` as part of a request.
-    #[serde(other, skip_serializing)]
-    Other,
-}
-
-/// An enum representing the possible values of a `ChargeOutcome`'s `risk_level` field.
-///
-/// For more details see [https://stripe.com/docs/api#charge_object-outcome-risk_level](https://stripe.com/docs/api#charge_object-outcome-risk_level)
-#[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum RiskLevel {
-    Normal,
-    Elevated,
-    Highest,
-    NotAssessed,
-
-    /// An unknown risk level.
-    ///
-    /// May also be a variant not yet supported by the library.
-    #[serde(other)]
-    #[serde(rename = "unknown")]
-    Unknown,
+    pub destination: String,
 }

@@ -7,8 +7,10 @@
 ./openapi/add balance_transaction
 ./openapi/add balance
 ./openapi/add bank_account
+./openapi/add charge
 ./openapi/add connect_collection_transfer
 ./openapi/add coupon
+./openapi/add customer
 ./openapi/add discount
 ./openapi/add dispute
 ./openapi/add fee_refund
