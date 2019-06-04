@@ -7,7 +7,7 @@ use crate::ids::{CouponId, CustomerId, PlanId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Customer, Discount, Invoice, PaymentMethod, PaymentSource, Plan, Scheduled,
-    SubscriptionBillingThresholds, SubscriptionItem, TaxRate,
+    SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds, TaxRate,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -250,7 +250,7 @@ pub struct CreateSubscription<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<CreateSubscriptionBillingThresholds>,
+    pub billing_thresholds: Option<SubscriptionBillingThresholds>,
 
     /// Boolean indicating whether this subscription should cancel at the end of the current period.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -551,18 +551,9 @@ impl<'a> UpdateSubscription<'a> {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreateSubscriptionBillingThresholds {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_gte: Option<i64>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reset_billing_cycle_anchor: Option<bool>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionItems {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<CreateSubscriptionItemsBillingThresholds>,
+    pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
 
     #[serde(default)]
     pub metadata: Metadata,
@@ -579,7 +570,7 @@ pub struct CreateSubscriptionItems {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionItems {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<UpdateSubscriptionItemsBillingThresholds>,
+    pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clear_usage: Option<bool>,
@@ -601,16 +592,6 @@ pub struct UpdateSubscriptionItems {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreateSubscriptionItemsBillingThresholds {
-    pub usage_gte: i64,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdateSubscriptionItemsBillingThresholds {
-    pub usage_gte: i64,
 }
 
 /// An enum representing the possible values of an `Subscription`'s `billing` field.

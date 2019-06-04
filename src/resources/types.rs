@@ -185,15 +185,18 @@ pub enum SpendingLimitInterval {
     Yearly,
 }
 
-// TODO: Implement
-/// This type is a stub that still needs to be implemented.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionBillingThresholds {}
+pub struct SubscriptionBillingThresholds {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_gte: Option<i64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reset_billing_cycle_anchor: Option<bool>,
+}
 
-// TODO: Implement
-/// This type is a stub that still needs to be implemented.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionItemBillingThresholds {}
+pub struct SubscriptionItemBillingThresholds {
+    pub usage_gte: i64,
+}
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(untagged)]

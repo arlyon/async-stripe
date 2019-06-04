@@ -149,7 +149,7 @@ impl<'a> ListSubscriptionItems<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct UpdateSubscriptionItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
+    pub billing_thresholds: Option<UpdateSubscriptionItemBillingThresholds>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -195,4 +195,9 @@ impl<'a> UpdateSubscriptionItem<'a> {
             tax_rates: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSubscriptionItemBillingThresholds {
+    pub usage_gte: i64,
 }

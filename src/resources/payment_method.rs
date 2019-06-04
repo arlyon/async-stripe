@@ -385,7 +385,7 @@ impl<'a> ListPaymentMethods<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct UpdatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<UpdatePaymentMethodBillingDetails>,
+    pub billing_details: Option<BillingDetails>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -406,42 +406,6 @@ impl<'a> UpdatePaymentMethod<'a> {
             metadata: Default::default(),
         }
     }
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodBillingDetails {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<UpdatePaymentMethodBillingDetailsAddress>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentMethodBillingDetailsAddress {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
 }
 
 /// An enum representing the possible values of an `PaymentMethod`'s `type` field.

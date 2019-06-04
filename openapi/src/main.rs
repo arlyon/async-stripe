@@ -314,11 +314,19 @@ fn main() {
     // Renames for `subscription` params
     field_overrides.extend(vec![
         (
+            ("create_subscription", "billing_thresholds"),
+            ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
+        ),
+        (
             ("update_subscription", "billing_thresholds"),
             ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
         ),
         (
-            ("update_subscription_item", "billing_thresholds"),
+            ("create_subscription_items", "billing_thresholds"),
+            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
+        ),
+        (
+            ("update_subscription_items", "billing_thresholds"),
             ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
         ),
         (("create_subscription", "trial_end"), ("Scheduled", "Option<Scheduled>")),
@@ -338,6 +346,10 @@ fn main() {
     ]);
 
     // Renames for misc
+    field_overrides.insert(
+        ("update_payment_method", "billing_details"),
+        ("BillingDetails", "Option<BillingDetails>"),
+    );
     field_overrides.insert(
         ("create_product", "package_dimensions"),
         ("PackageDimensions", "Option<PackageDimensions>"),
@@ -1044,7 +1056,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 continue;
             } else {
                 emitted_structs.insert(struct_name.clone());
-                eprintln!("struct {} {{ ... }}", struct_name);
+                println!("struct {} {{ ... }}", struct_name);
             }
 
             let fields = match struct_.schema["properties"].as_object() {
@@ -1081,7 +1093,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     for (union_name, union_) in state.inferred_unions.clone() {
-        eprintln!("union {} {{ ... }}", union_name);
+        println!("union {} {{ ... }}", union_name);
 
         out.push('\n');
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
@@ -1111,7 +1123,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     for (enum_name, enum_) in state.inferred_enums.clone() {
-        eprintln!("enum {} {{ ... }}", enum_name);
+        println!("enum {} {{ ... }}", enum_name);
 
         out.push('\n');
         out.push_str(&format!(
