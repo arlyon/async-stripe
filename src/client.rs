@@ -155,7 +155,7 @@ fn send<T: DeserializeOwned>(request: RequestBuilder) -> Response<T> {
     response.read_to_string(&mut body)?;
 
     // N.B. For debugging
-    eprintln!("request was: {}", body);
+    // eprintln!("request was: {}", body);
 
     let status = response.status();
     if !status.is_success() {
