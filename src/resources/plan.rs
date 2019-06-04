@@ -248,6 +248,11 @@ pub struct CreatePlan<'a> {
     /// A brief description of the plan, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<&'a str>,
+
+    /// Each element represents a pricing tier.
+    ///
+    /// This parameter requires `billing_scheme` to be set to `tiered`.
+    /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tiers: Option<Vec<CreatePlanTiers>>,
 
@@ -256,6 +261,10 @@ pub struct CreatePlan<'a> {
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tiers_mode: Option<PlanTiersMode>,
+
+    /// Apply a transformation to the reported usage or set quantity before computing the billed price.
+    ///
+    /// Cannot be combined with `tiers`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transform_usage: Option<CreatePlanTransformUsage>,
 

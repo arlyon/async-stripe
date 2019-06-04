@@ -402,6 +402,10 @@ pub struct CreateCharge<'a> {
     /// If `receipt_email` is specified for a charge in live mode, a receipt will be sent regardless of your [email settings](https://dashboard.stripe.com/account/emails).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receipt_email: Option<&'a str>,
+
+    /// Shipping information for the charge.
+    ///
+    /// Helps prevent fraud on charges for physical goods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<Shipping>,
 
@@ -409,6 +413,7 @@ pub struct CreateCharge<'a> {
     ///
     /// This can be the ID of a [card](https://stripe.com/docs/api#cards) (i.e., credit or debit card), a [bank account](https://stripe.com/docs/api#bank_accounts), a [source](https://stripe.com/docs/api#sources), a [token](https://stripe.com/docs/api#tokens), or a [connected account](https://stripe.com/docs/connect/account-debits#charging-a-connected-account).
     /// For certain sources---namely, [cards](https://stripe.com/docs/api#cards), [bank accounts](https://stripe.com/docs/api#bank_accounts), and attached [sources](https://stripe.com/docs/api#sources)---you must also pass the ID of the associated customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<PaymentSourceParams<'a>>,
 
     /// An arbitrary string to be used as the dynamic portion of the full descriptor displayed on your customer's credit card statement.
@@ -421,6 +426,10 @@ pub struct CreateCharge<'a> {
     /// While most banks display this information consistently, some may display it incorrectly or not at all.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
+
+    /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
+    ///
+    /// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<TransferDataParams>,
 
@@ -531,6 +540,12 @@ pub struct UpdateCharge<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// A set of key-value pairs you can attach to a charge giving information about its riskiness.
+    ///
+    /// If you believe a charge is fraudulent, include a `user_report` key with a value of `fraudulent`.
+    /// If you believe a charge is safe, include a `user_report` key with a value of `safe`.
+    /// Stripe will use the information you send to improve our fraud detection algorithms.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fraud_details: Option<FraudDetailsParams>,
 
@@ -547,6 +562,10 @@ pub struct UpdateCharge<'a> {
     /// If this field is updated, then a new email receipt will be sent to the updated address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receipt_email: Option<&'a str>,
+
+    /// Shipping information for the charge.
+    ///
+    /// Helps prevent fraud on charges for physical goods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<Shipping>,
 

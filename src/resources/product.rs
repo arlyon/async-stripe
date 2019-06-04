@@ -176,6 +176,10 @@ pub struct CreateProduct<'a> {
     /// Defaults to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
+
+    /// A list of up to 5 alphanumeric attributes.
+    ///
+    /// Applicable to both `service` and `good` types.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Vec<String>>,
 
@@ -184,6 +188,10 @@ pub struct CreateProduct<'a> {
     /// May only be set if type=`good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<&'a str>,
+
+    /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
+    ///
+    /// May only be set if type=`good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deactivate_on: Option<Vec<String>>,
 
@@ -203,6 +211,10 @@ pub struct CreateProduct<'a> {
     /// Applicable to both `service` and `good` types.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<&'a str>,
+
+    /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
+    ///
+    /// May only be set if type=`good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
 
@@ -217,6 +229,11 @@ pub struct CreateProduct<'a> {
     ///
     /// Applicable to both `service` and `good` types.
     pub name: &'a str,
+
+    /// The dimensions of this product for shipping purposes.
+    ///
+    /// A SKU associated with this product can override this value by having its own `package_dimensions`.
+    /// May only be set if type=`good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<PackageDimensions>,
 
@@ -301,6 +318,8 @@ pub struct ListProducts<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// Only return products with the given IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ids: Option<Vec<String>>,
 
@@ -354,12 +373,19 @@ pub struct UpdateProduct<'a> {
     /// Whether the product is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
+
+    /// A list of up to 5 alphanumeric attributes that each SKU can provide values for (e.g., `["color", "size"]`).
+    ///
+    /// If a value for `attributes` is specified, the list specified will replace the existing attributes list on this product.
+    /// Any attributes not present after the update will be deleted from the SKUs for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Vec<String>>,
 
     /// A short one-line description of the product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<&'a str>,
+
+    /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deactivate_on: Option<Vec<String>>,
 
@@ -370,6 +396,8 @@ pub struct UpdateProduct<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
 
@@ -384,6 +412,10 @@ pub struct UpdateProduct<'a> {
     /// Applicable to both `service` and `good` types.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<&'a str>,
+
+    /// The dimensions of this product for shipping purposes.
+    ///
+    /// A SKU associated with this product can override this value by having its own `package_dimensions`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<PackageDimensions>,
 

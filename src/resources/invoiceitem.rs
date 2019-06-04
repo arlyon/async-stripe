@@ -195,6 +195,8 @@ pub struct CreateInvoiceItem<'a> {
     /// It can be useful for storing additional information about the invoice item in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// The period associated with this invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
 
@@ -211,6 +213,10 @@ pub struct CreateInvoiceItem<'a> {
     /// Use this when you want to express that an invoice item has been accrued within the context of a particular subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<SubscriptionId>,
+
+    /// The tax rates which apply to the invoice item.
+    ///
+    /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 
@@ -339,6 +345,8 @@ pub struct UpdateInvoiceItem<'a> {
     /// It can be useful for storing additional information about the invoice item in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// The period associated with this invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
 
@@ -347,6 +355,10 @@ pub struct UpdateInvoiceItem<'a> {
     /// The quantity of units for the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+
+    /// The tax rates which apply to the invoice item.
+    ///
+    /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 

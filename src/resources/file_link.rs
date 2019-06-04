@@ -177,6 +177,8 @@ pub struct UpdateFileLink<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// A future timestamp after which the link will no longer be usable, or `now` to expire the link immediately.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<Scheduled>,
 

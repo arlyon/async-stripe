@@ -6,8 +6,8 @@ use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PaymentMethodId, SourceId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
-    Scheduled, Shipping, ShippingParams, Subscription, TaxId,
+    Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceId,
+    PaymentSourceParams, Scheduled, Shipping, ShippingParams, Subscription, TaxId,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -250,6 +250,8 @@ pub struct CreateCustomer<'a> {
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<u64>,
+
+    /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
@@ -278,6 +280,8 @@ pub struct CreateCustomer<'a> {
     /// Must be 3–12 uppercase letters or numbers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_prefix: Option<&'a str>,
+
+    /// Default invoice settings for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<CustomerInvoiceSettings>,
 
@@ -297,11 +301,18 @@ pub struct CreateCustomer<'a> {
     /// The customer's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<&'a str>,
+
+    /// Customer's preferred languages, ordered by preference.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locales: Option<Vec<String>>,
+
+    /// The customer's shipping information.
+    ///
+    /// Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<ShippingParams>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<PaymentSourceParams<'a>>,
 
     /// The customer's tax exemption.
@@ -309,8 +320,15 @@ pub struct CreateCustomer<'a> {
     /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<CustomerTaxExemptFilter>,
+
+    /// The customer's tax IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id_data: Option<Vec<TaxIdData>>,
+
+    /// The customer's tax information.
+    ///
+    /// Appears on invoices emailed to this customer.
+    /// This parameter has been deprecated and will be removed in a future API version, for further information view the [migration guide](https://stripe.com/docs/billing/migration/taxes#moving-from-taxinfo-to-customer-tax-ids).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_info: Option<TaxInfoParams>,
 }
@@ -399,6 +417,8 @@ pub struct UpdateCustomer<'a> {
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<u64>,
+
+    /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
@@ -421,7 +441,7 @@ pub struct UpdateCustomer<'a> {
     ///
     /// If you want to add a new payment source and make it the default, see the [source](https://stripe.com/docs/api/customers/update#update_customer-source) property.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_source: Option<&'a str>,
+    pub default_source: Option<PaymentSourceId>,
 
     /// An arbitrary string that you can attach to a customer object.
     ///
@@ -445,6 +465,8 @@ pub struct UpdateCustomer<'a> {
     /// Must be 3–12 uppercase letters or numbers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_prefix: Option<&'a str>,
+
+    /// Default invoice settings for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<CustomerInvoiceSettings>,
 
@@ -461,8 +483,14 @@ pub struct UpdateCustomer<'a> {
     /// The customer's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<&'a str>,
+
+    /// Customer's preferred languages, ordered by preference.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locales: Option<Vec<String>>,
+
+    /// The customer's shipping information.
+    ///
+    /// Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<ShippingParams>,
 
@@ -474,8 +502,20 @@ pub struct UpdateCustomer<'a> {
     /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<CustomerTaxExemptFilter>,
+
+    /// The customer's tax information.
+    ///
+    /// Appears on invoices emailed to this customer.
+    /// This parameter has been deprecated and will be removed in a future API version, for further information view the [migration guide](https://stripe.com/docs/billing/migration/taxes#moving-from-taxinfo-to-customer-tax-ids).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_info: Option<TaxInfoParams>,
+
+    /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
+    ///
+    /// This will always overwrite any trials that might apply via a subscribed plan.
+    /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
+    /// The special value `now` can be provided to end the customer's trial immediately.
+    /// Can be at most two years from `billing_cycle_anchor`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Scheduled>,
 }

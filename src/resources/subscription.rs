@@ -249,6 +249,10 @@ pub struct CreateSubscription<'a> {
     /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<Timestamp>,
+
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    ///
+    /// Pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<SubscriptionBillingThresholds>,
 
@@ -284,12 +288,18 @@ pub struct CreateSubscription<'a> {
     /// If not set, defaults to the customer's default source.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<&'a str>,
+
+    /// The tax rates that will apply to any subscription item that does not have `tax_rates` set.
+    ///
+    /// Invoices created will have their `default_tax_rates` populated from the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<String>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// List of subscription items, each with an attached plan.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CreateSubscriptionItems>>,
 
@@ -305,8 +315,22 @@ pub struct CreateSubscription<'a> {
     /// If `false`, the anchor period will be free (similar to a trial) and no proration adjustments will be created.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub prorate: Option<bool>,
+
+    /// A non-negative decimal (with at most four decimal places) between 0 and 100.
+    ///
+    /// This represents the percentage of the subscription invoice subtotal that will be calculated and added as tax to the final amount in each billing period.
+    /// For example, a plan which charges $10/month with a `tax_percent` of `20.0` will charge $12 per invoice.
+    /// To unset a previously-set value, pass an empty string.
+    /// This field has been deprecated and will be removed in a future API version, for further information view the [migration docs](https://stripe.com/docs/billing/migration/taxes) for `tax_rates`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_percent: Option<f64>,
+
+    /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
+    ///
+    /// This will always overwrite any trials that might apply via a subscribed plan.
+    /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
+    /// The special value `now` can be provided to end the customer's trial immediately.
+    /// Can be at most two years from `billing_cycle_anchor`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Scheduled>,
 
@@ -452,6 +476,10 @@ pub struct UpdateSubscription<'a> {
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<SubscriptionBillingCycleAnchor>,
+
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    ///
+    /// Pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<SubscriptionBillingThresholds>,
 
@@ -484,12 +512,18 @@ pub struct UpdateSubscription<'a> {
     /// If not set, defaults to the customer's default source.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<&'a str>,
+
+    /// The tax rates that will apply to any subscription item that does not have `tax_rates` set.
+    ///
+    /// Invoices created will have their `default_tax_rates` populated from the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<String>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// List of subscription items, each with an attached plan.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<UpdateSubscriptionItems>>,
 
@@ -512,8 +546,22 @@ pub struct UpdateSubscription<'a> {
     /// It can also be used to implement custom proration logic, such as prorating by day instead of by second, by providing the time that you wish to use for proration calculations.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_date: Option<Timestamp>,
+
+    /// A non-negative decimal (with at most four decimal places) between 0 and 100.
+    ///
+    /// This represents the percentage of the subscription invoice subtotal that will be calculated and added as tax to the final amount in each billing period.
+    /// For example, a plan which charges $10/month with a `tax_percent` of `20.0` will charge $12 per invoice.
+    /// To unset a previously-set value, pass an empty string.
+    /// This field has been deprecated and will be removed in a future API version, for further information view the [migration docs](https://stripe.com/docs/billing/migration/taxes) for `tax_rates`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_percent: Option<f64>,
+
+    /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
+    ///
+    /// This will always overwrite any trials that might apply via a subscribed plan.
+    /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
+    /// The special value `now` can be provided to end the customer's trial immediately.
+    /// Can be at most two years from `billing_cycle_anchor`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Scheduled>,
 

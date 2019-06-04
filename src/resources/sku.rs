@@ -153,6 +153,10 @@ pub struct CreateSku<'a> {
     /// Default to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
+
+    /// A dictionary of attributes and values for the attributes defined by the product.
+    ///
+    /// If, for example, a product's attributes are `["size", "gender"]`, a valid SKU has the following dictionary of attributes: `{"size": "Medium", "gender": "Unisex"}`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Metadata>,
 
@@ -175,6 +179,9 @@ pub struct CreateSku<'a> {
     /// The URL of an image for this SKU, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub image: Option<&'a str>,
+
+    /// Description of the SKU's inventory.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub inventory: Option<Inventory>,
 
     /// A set of key-value pairs that you can attach to a SKU object.
@@ -182,6 +189,8 @@ pub struct CreateSku<'a> {
     /// It can be useful for storing additional information about the SKU in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// The dimensions of this SKU for shipping purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<PackageDimensions>,
 
@@ -212,6 +221,11 @@ pub struct ListSkus<'a> {
     /// Only return SKUs that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
+
+    /// Only return SKUs that have the specified key-value pairs in this partially constructed dictionary.
+    ///
+    /// Can be specified only if `product` is also supplied.
+    /// For instance, if the associated product has attributes `["color", "size"]`, passing in `attributes[color]=red` returns all the SKUs for this product that have `color` set to `red`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Metadata>,
 
@@ -225,6 +239,8 @@ pub struct ListSkus<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// Only return SKUs with the given IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ids: Option<Vec<String>>,
 
@@ -269,6 +285,10 @@ pub struct UpdateSku<'a> {
     /// Whether this SKU is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
+
+    /// A dictionary of attributes and values for the attributes defined by the product.
+    ///
+    /// When specified, `attributes` will partially update the existing attributes dictionary on the product, with the postcondition that a value must be present for each attribute key on the product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Metadata>,
 
@@ -285,6 +305,8 @@ pub struct UpdateSku<'a> {
     /// The URL of an image for this SKU, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub image: Option<&'a str>,
+
+    /// Description of the SKU's inventory.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inventory: Option<Inventory>,
 
@@ -293,6 +315,8 @@ pub struct UpdateSku<'a> {
     /// It can be useful for storing additional information about the SKU in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// The dimensions of this SKU for shipping purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<PackageDimensions>,
 

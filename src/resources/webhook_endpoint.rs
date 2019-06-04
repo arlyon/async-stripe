@@ -124,6 +124,10 @@ pub struct CreateWebhookEndpoint<'a> {
     /// Whether this endpoint should receive events from connected accounts (`true`), or your account (`false`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connect: Option<bool>,
+
+    /// The list of events to enable for this endpoint.
+    ///
+    /// You may specify `['*']` to enable all events.
     pub enabled_events: Vec<EventFilter>,
 
     /// Specifies which fields in the response should be expanded.
@@ -191,6 +195,10 @@ pub struct UpdateWebhookEndpoint<'a> {
     /// Disable the webhook endpoint if set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
+
+    /// The list of events to enable for this endpoint.
+    ///
+    /// You may specify `['*']` to enable all events.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled_events: Option<Vec<EventFilter>>,
 

@@ -148,6 +148,7 @@ impl<'a> ListSubscriptionItems<'a> {
 /// The parameters for `SubscriptionItem::update`.
 #[derive(Clone, Debug, Serialize)]
 pub struct UpdateSubscriptionItem<'a> {
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
 
@@ -178,6 +179,10 @@ pub struct UpdateSubscriptionItem<'a> {
     /// The quantity you'd like to apply to the subscription item you're creating.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+
+    /// The tax rates which apply to this `subscription_item`.
+    ///
+    /// When set, the `default_tax_rates` on the subscription do not apply to this `subscription_item`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }

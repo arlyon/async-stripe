@@ -448,6 +448,8 @@ pub struct CreateAccount<'a> {
     /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_token: Option<&'a str>,
+
+    /// Non-essential business information about the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_profile: Option<BusinessProfile>,
 
@@ -456,6 +458,10 @@ pub struct CreateAccount<'a> {
     /// Can be `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_type: Option<&'a str>,
+
+    /// Information about the company or business.
+    ///
+    /// This field is null unless `business_type` is set to `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<CompanyParams>,
 
@@ -489,6 +495,10 @@ pub struct CreateAccount<'a> {
     /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account: Option<&'a str>,
+
+    /// Information about the person represented by the account.
+    ///
+    /// This field is null unless `business_type` is set to `individual`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<PersonParams>,
 
@@ -497,10 +507,19 @@ pub struct CreateAccount<'a> {
     /// This can be useful for storing additional information about the account in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// The set of capabilities you want to unlock for this account (US only).
+    ///
+    /// Each capability will be inactive until you have provided its specific requirements and Stripe has verified them.
+    /// An account may have some of its requested capabilities be active and some be inactive.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_capabilities: Option<Vec<RequestedCapability>>,
+
+    /// Options for customizing how the account functions within Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub settings: Option<AccountSettingsParams>,
+
+    /// Details on the account's acceptance of the [Stripe Services Agreement](https://stripe.com/docs/connect/updating-accounts#tos-acceptance).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_acceptance: Option<AcceptTos>,
 
@@ -583,6 +602,8 @@ pub struct UpdateAccount<'a> {
     /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_token: Option<&'a str>,
+
+    /// Non-essential business information about the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_profile: Option<BusinessProfile>,
 
@@ -591,6 +612,10 @@ pub struct UpdateAccount<'a> {
     /// Can be `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_type: Option<&'a str>,
+
+    /// Information about the company or business.
+    ///
+    /// This field is null unless `business_type` is set to `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<CompanyParams>,
 
@@ -618,6 +643,10 @@ pub struct UpdateAccount<'a> {
     /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account: Option<&'a str>,
+
+    /// Information about the person represented by the account.
+    ///
+    /// This field is null unless `business_type` is set to `individual`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<PersonParams>,
 
@@ -626,10 +655,19 @@ pub struct UpdateAccount<'a> {
     /// This can be useful for storing additional information about the account in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// The set of capabilities you want to unlock for this account (US only).
+    ///
+    /// Each capability will be inactive until you have provided its specific requirements and Stripe has verified them.
+    /// An account may have some of its requested capabilities be active and some be inactive.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_capabilities: Option<Vec<RequestedCapability>>,
+
+    /// Options for customizing how the account functions within Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub settings: Option<AccountSettingsParams>,
+
+    /// Details on the account's acceptance of the [Stripe Services Agreement](https://stripe.com/docs/connect/updating-accounts#tos-acceptance).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_acceptance: Option<AcceptTos>,
 }

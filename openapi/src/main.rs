@@ -246,6 +246,8 @@ fn main() {
     field_overrides.extend(vec![
         (("create_customer", "address"), ("Address", "Option<Address>")),
         (("update_customer", "address"), ("Address", "Option<Address>")),
+        (("create_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
+        (("update_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
         (("create_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("update_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("create_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams<'a>>")),
@@ -778,11 +780,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         out.push_str(">,\n");
                     }
                 }
-                object
-                    if meta.ids.contains_key(object)
-                        && param["schema"]["type"].as_str() == Some("string")
-                        && param_name != "tax_id" =>
-                {
+                _ => {
                     if let Some((use_path, rust_type)) =
                         meta.field_overrides.get(&(params_schema.as_str(), param_name))
                     {
@@ -797,19 +795,27 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                                 state.use_resources.insert(path.into());
                             }
                         }
+                        if rust_type.starts_with("Option<") {
+                            out.push_str(
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
+                            );
+                        }
                         out.push_str("    pub ");
                         out.push_str(&param_rename);
                         out.push_str(": ");
                         out.push_str(&rust_type);
                         out.push_str(",\n");
-                    } else {
-                        let id_type = &meta.ids[object];
+                    } else if meta.ids.contains_key(param_name)
+                        && param["schema"]["type"].as_str() == Some("string")
+                        && param_name != "tax_id"
+                    {
+                        let id_type = &meta.ids[param_name];
                         print_doc(&mut out);
-                        initializers.push((object.into(), id_type.clone(), required));
+                        initializers.push((param_name.into(), id_type.clone(), required));
                         state.use_ids.insert(id_type.clone());
                         if required {
                             out.push_str("    pub ");
-                            out.push_str(object);
+                            out.push_str(param_name);
                             out.push_str(": ");
                             out.push_str(&id_type);
                             out.push_str(",\n");
@@ -818,15 +824,12 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
                             out.push_str("    pub ");
-                            out.push_str(object);
+                            out.push_str(param_name);
                             out.push_str(": Option<");
                             out.push_str(&id_type);
                             out.push_str(">,\n");
                         }
-                    }
-                }
-                _ => {
-                    if param["schema"]["type"].as_str() == Some("boolean") {
+                    } else if param["schema"]["type"].as_str() == Some("boolean") {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), "bool".into(), false));
                         if required {
@@ -1008,6 +1011,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         );
                         initializers.push((param_rename.into(), rust_type.clone(), required));
 
+                        print_doc(&mut out);
                         if !required {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",

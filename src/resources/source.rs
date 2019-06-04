@@ -710,6 +710,8 @@ pub struct CreateSource<'a> {
     /// It is generally inferred unless a type supports multiple flows.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flow: Option<SourceFlow>,
+
+    /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate: Option<SourceMandateParams>,
 
@@ -722,10 +724,20 @@ pub struct CreateSource<'a> {
     /// The source to share.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub original_source: Option<&'a str>,
+
+    /// Information about the owner of the payment instrument that may be used or required by particular source types.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<BillingDetails>,
+
+    /// Optional parameters for the receiver flow.
+    ///
+    /// Can be set only if the source is a receiver (`flow` is `receiver`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receiver: Option<CreateSourceReceiver>,
+
+    /// Parameters required for the redirect flow.
+    ///
+    /// Required if the source is authenticated by a redirect (`flow` is `redirect`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect: Option<CreateSourceRedirect>,
 
@@ -780,6 +792,8 @@ pub struct UpdateSource<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate: Option<SourceMandateParams>,
 
@@ -788,6 +802,8 @@ pub struct UpdateSource<'a> {
     /// It can be useful for storing additional information about the source in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// Information about the owner of the payment instrument that may be used or required by particular source types.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<BillingDetails>,
 }

@@ -237,6 +237,10 @@ pub struct CreateOrder<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// List of items constituting the order.
+    ///
+    /// An order can have up to 25 items.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<OrderItemParams>>,
 
@@ -246,6 +250,10 @@ pub struct CreateOrder<'a> {
     /// Metadata can be useful for storing additional information about the order in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// Shipping address for the order.
+    ///
+    /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<ShippingParams>,
 }
@@ -286,6 +294,8 @@ pub struct ListOrders<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// Only return orders with the given IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ids: Option<Vec<String>>,
 
@@ -307,8 +317,12 @@ pub struct ListOrders<'a> {
     /// One of `created`, `paid`, `fulfilled`, or `refunded`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<OrderStatusFilter>,
+
+    /// Filter orders based on when they were paid, fulfilled, canceled, or returned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status_transitions: Option<ListOrdersStatusTransitions>,
+
+    /// Only return orders with the given upstream order IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub upstream_ids: Option<Vec<String>>,
 }
@@ -355,6 +369,8 @@ pub struct UpdateOrder<'a> {
     /// If specified, will overwrite the existing selected shipping method, updating `items` as necessary.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub selected_shipping_method: Option<&'a str>,
+
+    /// Tracking information once the order has been fulfilled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<ShippingParams>,
 

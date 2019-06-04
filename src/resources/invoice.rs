@@ -467,6 +467,8 @@ pub struct CreateInvoice<'a> {
     /// Defaults to `charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing: Option<InvoiceBilling>,
+
+    /// A list of up to 4 custom fields to be displayed on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<Vec<CustomField>>,
 
@@ -491,6 +493,8 @@ pub struct CreateInvoice<'a> {
     /// If not set, defaults to the subscription's default source, if any, or to the customer's default source.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<&'a str>,
+
+    /// The tax rates that will apply to any line item that does not have `tax_rates` set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<String>>,
 

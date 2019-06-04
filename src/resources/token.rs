@@ -70,6 +70,7 @@ impl Object for Token {
 /// The parameters for `Token::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateToken<'a> {
+    /// Information for the account this token will represent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<CreateTokenAccount>,
 
@@ -84,6 +85,8 @@ pub struct CreateToken<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// The PII this token will represent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pii: Option<CreateTokenPii>,
 }
