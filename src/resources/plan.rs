@@ -53,7 +53,7 @@ pub struct Plan {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// One of `day`, `week`, `month` or `year`.
     ///

@@ -346,6 +346,10 @@ fn main() {
     ]);
 
     // Renames for misc
+    schema_renames.insert("webhook_endpoint_enabled_events", "event_filter");
+    schema_renames.insert("webhook_endpoint_api_version", "api_version");
+    schema_renames.insert("create_webhook_endpoint_enabled_events", "event_filter");
+    schema_renames.insert("update_webhook_endpoint_enabled_events", "event_filter");
     field_overrides.insert(
         ("update_payment_method", "billing_details"),
         ("BillingDetails", "Option<BillingDetails>"),
@@ -578,7 +582,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             out.push('\n');
             out.push_str("    // Always true for a deleted object\n");
             out.push_str("    #[serde(default)]\n");
-            out.push_str("    deleted: bool,\n");
+            out.push_str("    pub deleted: bool,\n");
             did_emit_deleted = true;
         }
         let required = schema["required"]

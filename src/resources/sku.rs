@@ -40,7 +40,7 @@ pub struct Sku {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// The URL of an image for this SKU, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -177,7 +177,7 @@ pub struct Invoice {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// An arbitrary string attached to the object.
     ///

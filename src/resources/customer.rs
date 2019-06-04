@@ -49,7 +49,7 @@ pub struct Customer {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// When the customer's latest invoice is billed by charging automatically, delinquent is true if the invoice's latest charge is failed.
     ///

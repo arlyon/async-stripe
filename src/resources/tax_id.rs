@@ -29,7 +29,7 @@ pub struct TaxId {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(default)]

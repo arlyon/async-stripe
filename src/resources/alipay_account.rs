@@ -24,7 +24,7 @@ pub struct AlipayAccount {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// Uniquely identifies the account and will be the same across all Alipay account objects that are linked to the same Alipay account.
     #[serde(skip_serializing_if = "Option::is_none")]

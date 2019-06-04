@@ -32,7 +32,7 @@ pub struct Coupon {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// One of `forever`, `once`, and `repeating`.
     ///

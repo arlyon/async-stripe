@@ -131,11 +131,6 @@ pub struct Period {
     pub end: Timestamp,
 }
 
-// TODO: Implement
-/// This type is a stub that still needs to be implemented.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Person {}
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Shipping {
     pub name: String,

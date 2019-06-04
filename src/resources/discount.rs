@@ -19,7 +19,7 @@ pub struct Discount {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// If the coupon has a duration of `repeating`, the date that this discount will end.
     ///

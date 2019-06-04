@@ -1,5 +1,6 @@
 #!/bin/sh
 # Copy all of the resources that are currently auto-generated
+
 ./openapi/add account
 ./openapi/add alipay_account
 ./openapi/add application
@@ -30,6 +31,7 @@
 ./openapi/add order_return
 ./openapi/add payment_method
 ./openapi/add payout
+./openapi/add person
 ./openapi/add plan
 ./openapi/add product
 ./openapi/add recipient
@@ -39,10 +41,15 @@
 ./openapi/add scheduled_query_run
 ./openapi/add sku
 ./openapi/add source
+./openapi/add source_transaction
 ./openapi/add subscription
 ./openapi/add subscription_item
+./openapi/add subscription_schedule
+./openapi/add subscription_schedule_revision
 ./openapi/add topup
 ./openapi/add tax_id
 ./openapi/add tax_rate
+./openapi/add token
 ./openapi/add transfer
 ./openapi/add transfer_reversal
+./openapi/add webhook_endpoint

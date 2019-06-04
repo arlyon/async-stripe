@@ -56,7 +56,7 @@ pub struct Account {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// Whether account details have been submitted.
     ///

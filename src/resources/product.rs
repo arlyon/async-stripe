@@ -46,7 +46,7 @@ pub struct Product {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// The product's description, meant to be displayable to the customer.
     ///

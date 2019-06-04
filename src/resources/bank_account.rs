@@ -46,7 +46,7 @@ pub struct BankAccount {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// Uniquely identifies this particular bank account.
     ///

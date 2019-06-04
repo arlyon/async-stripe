@@ -28,7 +28,7 @@ pub struct SubscriptionItem {
 
     // Always true for a deleted object
     #[serde(default)]
-    deleted: bool,
+    pub deleted: bool,
 
     /// Set of key-value pairs that you can attach to an object.
     ///
