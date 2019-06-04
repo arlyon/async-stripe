@@ -94,6 +94,8 @@ fn main() {
         ("invoiceitem", "invoice_item"),
         ("legal_entity_company", "company"),
         ("legal_entity_japan_address", "address"),
+        ("legal_entity_person_verification", "person_verification"),
+        ("legal_entity_person_verification_document", "person_verification_document"),
         ("line_item", "invoice_line_item"),
         ("payment_method_card", "card_details"),
         ("payment_method_card_present", "card_present"),
@@ -170,6 +172,7 @@ fn main() {
         ),
         (("payment_intent", "source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
         (("payment_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
+        (("person", "dob"), ("Dob", "Option<Dob>")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
         (
             ("subscription", "default_source"),
