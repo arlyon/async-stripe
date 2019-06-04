@@ -1,3 +1,25 @@
+# Version 0.10.0 (June 4, 2019)
+
+This version uses code generation to generate the stripe API according to the openapi spec.
+
+This contains major breaking changes from previous versions, both
+because many structures were out of date and because some changes
+were made to make things easier to generate.
+
+## New Features
+- Many new APIs have now been implemented (mostly CRUD); some requests are still missing
+  because not all requests are automatically implemented.  All previously implemented
+  requests are still implemented (even if they couldn't be code-generated).
+
+- Many requests now take the `expand` parameter which controls whether more data should
+  be returned for `Expandable<T>` fields.  Previously these fields were just id types.
+
+## Improvements
+- Fields and requests have descriptive documentation rather than just referring to the stripe API docs.
+- Ids and fields are more strictly typed (newtypes vs raw strings).
+- Ids no longer need to be allocated and are cheaply clonable (in _almost_ all cases).
+- Enum types now implement `Display` and `AsRef<str>`.
+
 # Version 0.9.2 (April 7, 2019)
 
 ## Fixes / Improvements
