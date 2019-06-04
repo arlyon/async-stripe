@@ -110,27 +110,27 @@ pub struct ListSubscriptionItems<'a> {
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a SubscriptionItemId>,
+    pub ending_before: Option<&'a SubscriptionItemId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a SubscriptionItemId>,
+    pub starting_after: Option<&'a SubscriptionItemId>,
 
     /// The ID of the subscription whose items will be retrieved.
-    subscription: SubscriptionId,
+    pub subscription: SubscriptionId,
 }
 
 impl<'a> ListSubscriptionItems<'a> {
@@ -149,37 +149,37 @@ impl<'a> ListSubscriptionItems<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct UpdateSubscriptionItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_thresholds: Option<SubscriptionItemBillingThresholds>,
+    pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// The identifier of the new plan for this subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    plan: Option<PlanId>,
+    pub plan: Option<PlanId>,
 
     /// Flag indicating whether to [prorate](https://stripe.com/docs/billing/subscriptions/prorations) switching plans during a billing cycle.
     #[serde(skip_serializing_if = "Option::is_none")]
-    prorate: Option<bool>,
+    pub prorate: Option<bool>,
 
     /// If set, the proration will be calculated as though the subscription was updated at the given time.
     ///
     /// This can be used to apply the same proration that was previewed with the [upcoming invoice](#retrieve_customer_invoice) endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
-    proration_date: Option<Timestamp>,
+    pub proration_date: Option<Timestamp>,
 
     /// The quantity you'd like to apply to the subscription item you're creating.
     #[serde(skip_serializing_if = "Option::is_none")]
-    quantity: Option<u64>,
+    pub quantity: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_rates: Option<Vec<String>>,
+    pub tax_rates: Option<Vec<String>>,
 }
 
 impl<'a> UpdateSubscriptionItem<'a> {

@@ -340,17 +340,17 @@ pub struct CreateCharge<'a> {
     ///
     /// The minimum amount is $0.50 US or [equivalent in charge currency](https://support.stripe.com/questions/what-is-the-minimum-amount-i-can-charge-with-stripe).
     #[serde(skip_serializing_if = "Option::is_none")]
-    amount: Option<i64>,
+    pub amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    application_fee: Option<i64>,
+    pub application_fee: Option<i64>,
 
     /// A fee in %s that will be applied to the charge and transferred to the application owner's Stripe account.
     ///
     /// The request must be made with an OAuth key or the `Stripe-Account` header in order to take an application fee.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/direct-charges#collecting-fees).
     #[serde(skip_serializing_if = "Option::is_none")]
-    application_fee_amount: Option<i64>,
+    pub application_fee_amount: Option<i64>,
 
     /// Whether to immediately capture the charge.
     ///
@@ -359,41 +359,41 @@ pub struct CreateCharge<'a> {
     /// Uncaptured charges expire in _seven days_.
     /// For more information, see the [authorizing charges and settling later](https://stripe.com/docs/charges#auth-and-capture) documentation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    capture: Option<bool>,
+    pub capture: Option<bool>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    currency: Option<Currency>,
+    pub currency: Option<Currency>,
 
     /// The ID of an existing customer that will be charged in this request.
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     /// An arbitrary string which you can attach to a `Charge` object.
     ///
     /// It is displayed when in the web interface alongside the charge.
     /// Note that if you use Stripe to send automatic email receipts to your customers, your receipt emails will include the `description` of the charge(s) that they are describing.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// The Stripe account ID for which these funds are intended.
     ///
     /// Automatically set if you use the `destination` parameter.
     /// For details, see [Creating Separate Charges and Transfers](https://stripe.com/docs/connect/charges-transfers#on-behalf-of).
     #[serde(skip_serializing_if = "Option::is_none")]
-    on_behalf_of: Option<&'a str>,
+    pub on_behalf_of: Option<&'a str>,
 
     /// The email address to which this charge's [receipt](https://stripe.com/docs/dashboard/receipts) will be sent.
     ///
@@ -401,16 +401,16 @@ pub struct CreateCharge<'a> {
     /// If this charge is for a [Customer](https://stripe.com/docs/api/customers/object), the email address specified here will override the customer's email address.
     /// If `receipt_email` is specified for a charge in live mode, a receipt will be sent regardless of your [email settings](https://dashboard.stripe.com/account/emails).
     #[serde(skip_serializing_if = "Option::is_none")]
-    receipt_email: Option<&'a str>,
+    pub receipt_email: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping: Option<Shipping>,
+    pub shipping: Option<Shipping>,
 
     /// A payment source to be charged.
     ///
     /// This can be the ID of a [card](https://stripe.com/docs/api#cards) (i.e., credit or debit card), a [bank account](https://stripe.com/docs/api#bank_accounts), a [source](https://stripe.com/docs/api#sources), a [token](https://stripe.com/docs/api#tokens), or a [connected account](https://stripe.com/docs/connect/account-debits#charging-a-connected-account).
     /// For certain sources---namely, [cards](https://stripe.com/docs/api#cards), [bank accounts](https://stripe.com/docs/api#bank_accounts), and attached [sources](https://stripe.com/docs/api#sources)---you must also pass the ID of the associated customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    source: Option<SourceId>,
+    pub source: Option<SourceId>,
 
     /// An arbitrary string to be used as the dynamic portion of the full descriptor displayed on your customer's credit card statement.
     ///
@@ -421,15 +421,15 @@ pub struct CreateCharge<'a> {
     /// Non-ASCII characters are automatically stripped.
     /// While most banks display this information consistently, some may display it incorrectly or not at all.
     #[serde(skip_serializing_if = "Option::is_none")]
-    statement_descriptor: Option<&'a str>,
+    pub statement_descriptor: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    transfer_data: Option<TransferDataParams>,
+    pub transfer_data: Option<TransferDataParams>,
 
     /// A string that identifies this transaction as part of a group.
     ///
     /// For details, see [Grouping transactions](https://stripe.com/docs/connect/charges-transfers#grouping-transactions).
     #[serde(skip_serializing_if = "Option::is_none")]
-    transfer_group: Option<&'a str>,
+    pub transfer_group: Option<&'a str>,
 }
 
 impl<'a> CreateCharge<'a> {
@@ -459,43 +459,43 @@ impl<'a> CreateCharge<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListCharges<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// Only return charges for the customer specified by this customer ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a ChargeId>,
+    pub ending_before: Option<&'a ChargeId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// Only return charges that were created by the PaymentIntent specified by this PaymentIntent ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_intent: Option<PaymentIntentId>,
+    pub payment_intent: Option<PaymentIntentId>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a ChargeId>,
+    pub starting_after: Option<&'a ChargeId>,
 
     /// Only return charges for this transfer group.
     #[serde(skip_serializing_if = "Option::is_none")]
-    transfer_group: Option<&'a str>,
+    pub transfer_group: Option<&'a str>,
 }
 
 impl<'a> ListCharges<'a> {
@@ -520,20 +520,20 @@ pub struct UpdateCharge<'a> {
     ///
     /// This field may only be updated if there is no existing associated customer with this charge.
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     /// An arbitrary string which you can attach to a charge object.
     ///
     /// It is displayed when in the web interface alongside the charge.
     /// Note that if you use Stripe to send automatic email receipts to your customers, your receipt emails will include the `description` of the charge(s) that they are describing.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
     #[serde(skip_serializing_if = "Option::is_none")]
-    fraud_details: Option<FraudDetailsParams>,
+    pub fraud_details: Option<FraudDetailsParams>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///
@@ -541,22 +541,22 @@ pub struct UpdateCharge<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// This is the email address that the receipt for this charge will be sent to.
     ///
     /// If this field is updated, then a new email receipt will be sent to the updated address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    receipt_email: Option<&'a str>,
+    pub receipt_email: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping: Option<Shipping>,
+    pub shipping: Option<Shipping>,
 
     /// A string that identifies this transaction as part of a group.
     ///
     /// `transfer_group` may only be provided if it has not been set.
     /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#grouping-transactions) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    transfer_group: Option<&'a str>,
+    pub transfer_group: Option<&'a str>,
 }
 
 impl<'a> UpdateCharge<'a> {

@@ -249,71 +249,71 @@ pub struct CreateCustomer<'a> {
     /// Account balances only affect invoices.
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_balance: Option<u64>,
+    pub account_balance: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address: Option<Address>,
+    pub address: Option<Address>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<CouponId>,
+    pub coupon: Option<CouponId>,
 
     /// An arbitrary string that you can attach to a customer object.
     ///
     /// It is displayed alongside the customer in the dashboard.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// Customer's email address.
     ///
     /// It's displayed alongside the customer in your dashboard and can be useful for searching and tracking.
     /// This may be up to *512 characters*.
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<&'a str>,
+    pub email: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// The prefix for the customer used to generate unique invoice numbers.
     ///
     /// Must be 3–12 uppercase letters or numbers.
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_prefix: Option<&'a str>,
+    pub invoice_prefix: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_settings: Option<CustomerInvoiceSettings>,
+    pub invoice_settings: Option<CustomerInvoiceSettings>,
 
     /// A set of key-value pairs that you can attach to a customer object.
     ///
     /// It can be useful for storing additional information about the customer in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// The customer's full name or business name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    pub name: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_method: Option<PaymentMethodId>,
+    pub payment_method: Option<PaymentMethodId>,
 
     /// The customer's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    phone: Option<&'a str>,
+    pub phone: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    preferred_locales: Option<Vec<String>>,
+    pub preferred_locales: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping: Option<ShippingParams>,
+    pub shipping: Option<ShippingParams>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    source: Option<SourceId>,
+    pub source: Option<SourceId>,
 
     /// The customer's tax exemption.
     ///
     /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_exempt: Option<CustomerTaxExemptFilter>,
+    pub tax_exempt: Option<CustomerTaxExemptFilter>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_id_data: Option<Vec<TaxIdData>>,
+    pub tax_id_data: Option<Vec<TaxIdData>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_info: Option<TaxInfoParams>,
+    pub tax_info: Option<TaxInfoParams>,
 }
 
 impl<'a> CreateCustomer<'a> {
@@ -345,37 +345,37 @@ impl<'a> CreateCustomer<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListCustomers<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// A filter on the list based on the customer's `email` field.
     ///
     /// The value must be a string.
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<&'a str>,
+    pub email: Option<&'a str>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a CustomerId>,
+    pub ending_before: Option<&'a CustomerId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a CustomerId>,
+    pub starting_after: Option<&'a CustomerId>,
 }
 
 impl<'a> ListCustomers<'a> {
@@ -399,86 +399,86 @@ pub struct UpdateCustomer<'a> {
     /// Account balances only affect invoices.
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_balance: Option<u64>,
+    pub account_balance: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    address: Option<Address>,
+    pub address: Option<Address>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    coupon: Option<CouponId>,
+    pub coupon: Option<CouponId>,
 
     /// ID of Alipay account to make the customer's new default for invoice payments.
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_alipay_account: Option<&'a str>,
+    pub default_alipay_account: Option<&'a str>,
 
     /// ID of bank account to make the customer's new default for invoice payments.
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_bank_account: Option<&'a str>,
+    pub default_bank_account: Option<&'a str>,
 
     /// ID of card to make the customer's new default for invoice payments.
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_card: Option<&'a str>,
+    pub default_card: Option<&'a str>,
 
     /// Provide the ID of a payment source already attached to this customer to make it this customer's default payment source.
     ///
     /// If you want to add a new payment source and make it the default, see the [source](https://stripe.com/docs/api/customers/update#update_customer-source) property.
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_source: Option<&'a str>,
+    pub default_source: Option<&'a str>,
 
     /// An arbitrary string that you can attach to a customer object.
     ///
     /// It is displayed alongside the customer in the dashboard.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// Customer's email address.
     ///
     /// It's displayed alongside the customer in your dashboard and can be useful for searching and tracking.
     /// This may be up to *512 characters*.
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<&'a str>,
+    pub email: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// The prefix for the customer used to generate unique invoice numbers.
     ///
     /// Must be 3–12 uppercase letters or numbers.
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_prefix: Option<&'a str>,
+    pub invoice_prefix: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice_settings: Option<CustomerInvoiceSettings>,
+    pub invoice_settings: Option<CustomerInvoiceSettings>,
 
     /// A set of key-value pairs that you can attach to a customer object.
     ///
     /// It can be useful for storing additional information about the customer in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// The customer's full name or business name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    pub name: Option<&'a str>,
 
     /// The customer's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    phone: Option<&'a str>,
+    pub phone: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    preferred_locales: Option<Vec<String>>,
+    pub preferred_locales: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    shipping: Option<ShippingParams>,
+    pub shipping: Option<ShippingParams>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    source: Option<SourceId>,
+    pub source: Option<SourceId>,
 
     /// The customer's tax exemption.
     ///
     /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_exempt: Option<CustomerTaxExemptFilter>,
+    pub tax_exempt: Option<CustomerTaxExemptFilter>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_info: Option<TaxInfoParams>,
+    pub tax_info: Option<TaxInfoParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    trial_end: Option<Scheduled>,
+    pub trial_end: Option<Scheduled>,
 }
 
 impl<'a> UpdateCustomer<'a> {

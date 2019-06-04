@@ -156,31 +156,31 @@ pub struct CreateInvoiceItem<'a> {
     ///
     /// If you want to apply a credit to the customer's account, pass a negative amount.
     #[serde(skip_serializing_if = "Option::is_none")]
-    amount: Option<i64>,
+    pub amount: Option<i64>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    currency: Currency,
+    pub currency: Currency,
 
     /// The ID of the customer who will be billed when this invoice item is billed.
-    customer: CustomerId,
+    pub customer: CustomerId,
 
     /// An arbitrary string which you can attach to the invoice item.
     ///
     /// The description is displayed in the invoice for easy tracking.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// Controls whether discounts apply to this invoice item.
     ///
     /// Defaults to false for prorations or negative invoice items, and true for all other invoice items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    discountable: Option<bool>,
+    pub discountable: Option<bool>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// The ID of an existing invoice to add this invoice item to.
     ///
@@ -188,21 +188,21 @@ pub struct CreateInvoiceItem<'a> {
     /// This is useful when adding invoice items in response to an invoice.created webhook.
     /// You can only add invoice items to draft invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice: Option<InvoiceId>,
+    pub invoice: Option<InvoiceId>,
 
     /// A set of key-value pairs that you can attach to an invoice item object.
     ///
     /// It can be useful for storing additional information about the invoice item in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    period: Option<Period>,
+    pub period: Option<Period>,
 
     /// Non-negative integer.
     ///
     /// The quantity of units for the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    quantity: Option<u64>,
+    pub quantity: Option<u64>,
 
     /// The ID of a subscription to add this invoice item to.
     ///
@@ -210,16 +210,16 @@ pub struct CreateInvoiceItem<'a> {
     /// When set, scheduled invoices for subscriptions other than the specified subscription will ignore the invoice item.
     /// Use this when you want to express that an invoice item has been accrued within the context of a particular subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription: Option<SubscriptionId>,
+    pub subscription: Option<SubscriptionId>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_rates: Option<Vec<String>>,
+    pub tax_rates: Option<Vec<String>>,
 
     /// The integer unit amount in **%s** of the charge to be applied to the upcoming invoice.
     ///
     /// This unit_amount will be multiplied by the quantity to get the full amount.
     /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
     #[serde(skip_serializing_if = "Option::is_none")]
-    unit_amount: Option<i64>,
+    pub unit_amount: Option<i64>,
 }
 
 impl<'a> CreateInvoiceItem<'a> {
@@ -246,51 +246,51 @@ impl<'a> CreateInvoiceItem<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListInvoiceItems<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// The identifier of the customer whose invoice items to return.
     ///
     /// If none is provided, all invoice items will be returned.
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a InvoiceItemId>,
+    pub ending_before: Option<&'a InvoiceItemId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Only return invoice items belonging to this invoice.
     ///
     /// If none is provided, all invoice items will be returned.
     /// If specifying an invoice, no customer identifier is needed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    invoice: Option<InvoiceId>,
+    pub invoice: Option<InvoiceId>,
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// Set to `true` to only show pending invoice items, which are not yet attached to any invoices.
     ///
     /// Set to `false` to only show invoice items already attached to invoices.
     /// If unspecified, no filter is applied.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pending: Option<bool>,
+    pub pending: Option<bool>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a InvoiceItemId>,
+    pub starting_after: Option<&'a InvoiceItemId>,
 }
 
 impl<'a> ListInvoiceItems<'a> {
@@ -315,47 +315,47 @@ pub struct UpdateInvoiceItem<'a> {
     ///
     /// If you want to apply a credit to the customer's account, pass a negative amount.
     #[serde(skip_serializing_if = "Option::is_none")]
-    amount: Option<i64>,
+    pub amount: Option<i64>,
 
     /// An arbitrary string which you can attach to the invoice item.
     ///
     /// The description is displayed in the invoice for easy tracking.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// Controls whether discounts apply to this invoice item.
     ///
     /// Defaults to false for prorations or negative invoice items, and true for all other invoice items.
     /// Cannot be set to true for prorations.
     #[serde(skip_serializing_if = "Option::is_none")]
-    discountable: Option<bool>,
+    pub discountable: Option<bool>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A set of key-value pairs that you can attach to an invoice item object.
     ///
     /// It can be useful for storing additional information about the invoice item in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    period: Option<Period>,
+    pub period: Option<Period>,
 
     /// Non-negative integer.
     ///
     /// The quantity of units for the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    quantity: Option<u64>,
+    pub quantity: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_rates: Option<Vec<String>>,
+    pub tax_rates: Option<Vec<String>>,
 
     /// The integer unit amount in **%s** of the charge to be applied to the upcoming invoice.
     ///
     /// This unit_amount will be multiplied by the quantity to get the full amount.
     /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
     #[serde(skip_serializing_if = "Option::is_none")]
-    unit_amount: Option<i64>,
+    pub unit_amount: Option<i64>,
 }
 
 impl<'a> UpdateInvoiceItem<'a> {

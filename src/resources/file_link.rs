@@ -87,22 +87,22 @@ impl Object for FileLink {
 pub struct CreateFileLink<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A future timestamp after which the link will no longer be usable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    expires_at: Option<Timestamp>,
+    pub expires_at: Option<Timestamp>,
 
     /// The ID of the file.
     ///
     /// The file's `purpose` must be one of the following: `business_icon`, `business_logo`, `customer_signature`, `dispute_evidence`, `finance_report_run`, `pci_document`, `sigma_scheduled_query`, or `tax_document_user_upload`.
-    file: FileId,
+    pub file: FileId,
 
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 }
 
 impl<'a> CreateFileLink<'a> {
@@ -120,41 +120,41 @@ impl<'a> CreateFileLink<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListFileLinks<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a FileLinkId>,
+    pub ending_before: Option<&'a FileLinkId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Filter links by their expiration status.
     ///
     /// By default, all links are returned.
     #[serde(skip_serializing_if = "Option::is_none")]
-    expired: Option<bool>,
+    pub expired: Option<bool>,
 
     /// Only return links for the given file.
     #[serde(skip_serializing_if = "Option::is_none")]
-    file: Option<FileId>,
+    pub file: Option<FileId>,
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a FileLinkId>,
+    pub starting_after: Option<&'a FileLinkId>,
 }
 
 impl<'a> ListFileLinks<'a> {
@@ -176,15 +176,15 @@ impl<'a> ListFileLinks<'a> {
 pub struct UpdateFileLink<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
     #[serde(skip_serializing_if = "Option::is_none")]
-    expires_at: Option<Scheduled>,
+    pub expires_at: Option<Scheduled>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 }
 
 impl<'a> UpdateFileLink<'a> {

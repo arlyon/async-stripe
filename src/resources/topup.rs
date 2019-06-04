@@ -117,43 +117,43 @@ impl Object for Topup {
 pub struct ListTopups<'a> {
     /// A positive integer representing how much to transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    amount: Option<RangeQuery<Timestamp>>,
+    pub amount: Option<RangeQuery<Timestamp>>,
 
     /// A filter on the list, based on the object `created` field.
     ///
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a TopupId>,
+    pub ending_before: Option<&'a TopupId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a TopupId>,
+    pub starting_after: Option<&'a TopupId>,
 
     /// Only return top-ups that have the given status.
     ///
     /// One of `canceled`, `failed`, `pending` or `succeeded`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<TopupStatusFilter>,
+    pub status: Option<TopupStatusFilter>,
 }
 
 impl<'a> ListTopups<'a> {
@@ -177,17 +177,17 @@ pub struct UpdateTopup<'a> {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 }
 
 impl<'a> UpdateTopup<'a> {

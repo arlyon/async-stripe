@@ -452,13 +452,13 @@ pub struct CreateInvoice<'a> {
     /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#invoices).
     #[serde(skip_serializing_if = "Option::is_none")]
-    application_fee_amount: Option<i64>,
+    pub application_fee_amount: Option<i64>,
 
     /// Controls whether Stripe will perform [automatic collection](https://stripe.com/docs/billing/invoices/workflow/#auto_advance) of the invoice.
     ///
     /// When `false`, the invoice's state will not automatically advance without an explicit action.
     #[serde(skip_serializing_if = "Option::is_none")]
-    auto_advance: Option<bool>,
+    pub auto_advance: Option<bool>,
 
     /// Either `charge_automatically`, or `send_invoice`.
     ///
@@ -466,60 +466,60 @@ pub struct CreateInvoice<'a> {
     /// When sending an invoice, Stripe will email this invoice to the customer with payment instructions.
     /// Defaults to `charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing: Option<InvoiceBilling>,
+    pub billing: Option<InvoiceBilling>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    custom_fields: Option<Vec<CustomField>>,
+    pub custom_fields: Option<Vec<CustomField>>,
 
-    customer: CustomerId,
+    pub customer: CustomerId,
 
     /// The number of days from when the invoice is created until it is due.
     ///
     /// Valid only for invoices where `billing=send_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    days_until_due: Option<u32>,
+    pub days_until_due: Option<u32>,
 
     /// ID of the default payment method for the invoice.
     ///
     /// It must belong to the customer associated with the invoice.
     /// If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_payment_method: Option<&'a str>,
+    pub default_payment_method: Option<&'a str>,
 
     /// ID of the default payment source for the invoice.
     ///
     /// It must belong to the customer associated with the invoice and be in a chargeable state.
     /// If not set, defaults to the subscription's default source, if any, or to the customer's default source.
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_source: Option<&'a str>,
+    pub default_source: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_tax_rates: Option<Vec<String>>,
+    pub default_tax_rates: Option<Vec<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// The date on which payment for this invoice is due.
     ///
     /// Valid only for invoices where `billing=send_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    due_date: Option<Timestamp>,
+    pub due_date: Option<Timestamp>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Footer to be displayed on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    footer: Option<&'a str>,
+    pub footer: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// Extra information about a charge for the customer's credit card statement.
     ///
     /// It must contain at least one letter.
     /// If not specified and this invoice is part of a subscription, the default `statement_descriptor` will be set to the first subscription item's product's `statement_descriptor`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    statement_descriptor: Option<&'a str>,
+    pub statement_descriptor: Option<&'a str>,
 
     /// The ID of the subscription to invoice, if any.
     ///
@@ -527,13 +527,13 @@ pub struct CreateInvoice<'a> {
     /// If set, the created invoice will only include pending invoice items for that subscription and pending invoice items not associated with any subscription.
     /// The subscription's billing cycle and regular subscription events won't be affected.
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription: Option<SubscriptionId>,
+    pub subscription: Option<SubscriptionId>,
 
     /// The percent tax rate applied to the invoice, represented as a decimal number.
     ///
     /// This field has been deprecated and will be removed in a future API version, for further information view the [migration docs](https://stripe.com/docs/billing/migration/taxes) for `tax_rates`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    tax_percent: Option<f64>,
+    pub tax_percent: Option<f64>,
 }
 
 impl<'a> CreateInvoice<'a> {
@@ -567,45 +567,45 @@ pub struct ListInvoices<'a> {
     ///
     /// Either `charge_automatically` or `send_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing: Option<InvoiceBilling>,
+    pub billing: Option<InvoiceBilling>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// Only return invoices for the customer specified by this customer ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    due_date: Option<RangeQuery<Timestamp>>,
+    pub due_date: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a InvoiceId>,
+    pub ending_before: Option<&'a InvoiceId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a InvoiceId>,
+    pub starting_after: Option<&'a InvoiceId>,
 
     /// Only return invoices for the subscription specified by this subscription ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    subscription: Option<SubscriptionId>,
+    pub subscription: Option<SubscriptionId>,
 }
 
 impl<'a> ListInvoices<'a> {

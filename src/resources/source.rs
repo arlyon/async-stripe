@@ -686,70 +686,70 @@ pub struct CreateSource<'a> {
     /// This is the amount for which the source will be chargeable once ready.
     /// Required for `single_use` sources.
     #[serde(skip_serializing_if = "Option::is_none")]
-    amount: Option<i64>,
+    pub amount: Option<i64>,
 
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) associated with the source.
     ///
     /// This is the currency for which the source will be chargeable once ready.
     #[serde(skip_serializing_if = "Option::is_none")]
-    currency: Option<Currency>,
+    pub currency: Option<Currency>,
 
     /// The `Customer` to whom the original source is attached to.
     ///
     /// Must be set when the original source is not a `Source` (e.g., `Card`).
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// The authentication `flow` of the source to create.
     ///
     /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
     /// It is generally inferred unless a type supports multiple flows.
     #[serde(skip_serializing_if = "Option::is_none")]
-    flow: Option<SourceFlow>,
+    pub flow: Option<SourceFlow>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    mandate: Option<SourceMandateParams>,
+    pub mandate: Option<SourceMandateParams>,
 
     /// A set of key-value pairs that you can attach to a source object.
     ///
     /// It can be useful for storing additional information about the source in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// The source to share.
     #[serde(skip_serializing_if = "Option::is_none")]
-    original_source: Option<&'a str>,
+    pub original_source: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    owner: Option<BillingDetails>,
+    pub owner: Option<BillingDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    receiver: Option<CreateSourceReceiver>,
+    pub receiver: Option<CreateSourceReceiver>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    redirect: Option<CreateSourceRedirect>,
+    pub redirect: Option<CreateSourceRedirect>,
 
     /// An arbitrary string to be displayed on your customer's statement.
     ///
     /// As an example, if your website is `RunClub` and the item you're charging for is a race ticket, you may want to specify a `statement_descriptor` of `RunClub 5K race ticket.` While many payment types will display this information, some may not display it at all.
     #[serde(skip_serializing_if = "Option::is_none")]
-    statement_descriptor: Option<&'a str>,
+    pub statement_descriptor: Option<&'a str>,
 
     /// An optional token used to create the source.
     ///
     /// When passed, token properties will override source parameters.
     #[serde(skip_serializing_if = "Option::is_none")]
-    token: Option<TokenId>,
+    pub token: Option<TokenId>,
 
     /// The `type` of the source to create.
     ///
     /// Required unless `customer` and `original_source` are specified (see the [Shared card Sources](https://stripe.com/docs/sources/connect#shared-card-sources) guide).
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    type_: Option<&'a str>,
+    pub type_: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    usage: Option<SourceUsage>,
+    pub usage: Option<SourceUsage>,
 }
 
 impl<'a> CreateSource<'a> {
@@ -779,17 +779,17 @@ impl<'a> CreateSource<'a> {
 pub struct UpdateSource<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
     #[serde(skip_serializing_if = "Option::is_none")]
-    mandate: Option<SourceMandateParams>,
+    pub mandate: Option<SourceMandateParams>,
 
     /// A set of key-value pairs that you can attach to a source object.
     ///
     /// It can be useful for storing additional information about the source in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    owner: Option<BillingDetails>,
+    pub owner: Option<BillingDetails>,
 }
 
 impl<'a> UpdateSource<'a> {

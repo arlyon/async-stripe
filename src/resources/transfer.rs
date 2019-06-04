@@ -131,20 +131,20 @@ impl Object for Transfer {
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTransfer<'a> {
     /// A positive integer in %s representing how much to transfer.
-    amount: i64,
+    pub amount: i64,
 
     /// 3-letter [ISO code for currency](https://stripe.com/docs/payouts).
-    currency: Currency,
+    pub currency: Currency,
 
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Set of key-value pairs that you can attach to an object.
     ///
@@ -152,27 +152,27 @@ pub struct CreateTransfer<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// You can use this parameter to transfer funds from a charge before they are added to your available balance.
     ///
     /// A pending balance will transfer immediately but the funds will not become available until the original charge becomes available.
     /// [See the Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-availability) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    source_transaction: Option<ChargeId>,
+    pub source_transaction: Option<ChargeId>,
 
     /// The source balance to use for this transfer.
     ///
     /// One of `bank_account` or `card`.
     /// For most users, this will default to `card`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    source_type: Option<TransferSourceType>,
+    pub source_type: Option<TransferSourceType>,
 
     /// A string that identifies this transaction as part of a group.
     ///
     /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#grouping-transactions) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    transfer_group: Option<&'a str>,
+    pub transfer_group: Option<&'a str>,
 }
 
 impl<'a> CreateTransfer<'a> {
@@ -194,35 +194,35 @@ impl<'a> CreateTransfer<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListTransfers<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a TransferId>,
+    pub ending_before: Option<&'a TransferId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a TransferId>,
+    pub starting_after: Option<&'a TransferId>,
 
     /// Only return transfers with the specified transfer group.
     #[serde(skip_serializing_if = "Option::is_none")]
-    transfer_group: Option<&'a str>,
+    pub transfer_group: Option<&'a str>,
 }
 
 impl<'a> ListTransfers<'a> {
@@ -245,11 +245,11 @@ pub struct UpdateTransfer<'a> {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Set of key-value pairs that you can attach to an object.
     ///
@@ -257,7 +257,7 @@ pub struct UpdateTransfer<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 }
 
 impl<'a> UpdateTransfer<'a> {

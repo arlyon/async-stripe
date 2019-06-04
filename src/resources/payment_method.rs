@@ -290,25 +290,25 @@ pub struct ThreeDSecureUsage {
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_details: Option<BillingDetails>,
+    pub billing_details: Option<BillingDetails>,
 
     /// The `Customer` to whom the original PaymentMethod is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
-    customer: Option<CustomerId>,
+    pub customer: Option<CustomerId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// The PaymentMethod to share.
     #[serde(skip_serializing_if = "Option::is_none")]
-    payment_method: Option<PaymentMethodId>,
+    pub payment_method: Option<PaymentMethodId>,
 
     /// The type of the PaymentMethod.
     ///
@@ -317,7 +317,7 @@ pub struct CreatePaymentMethod<'a> {
     /// Required unless `payment_method` is specified (see the [Shared PaymentMethods](https://stripe.com/docs/payments/payment-methods/connect#shared-paymentmethods) guide).
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    type_: Option<PaymentMethodType>,
+    pub type_: Option<PaymentMethodType>,
 }
 
 impl<'a> CreatePaymentMethod<'a> {
@@ -337,35 +337,35 @@ impl<'a> CreatePaymentMethod<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPaymentMethods<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
-    customer: CustomerId,
+    pub customer: CustomerId,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a PaymentMethodId>,
+    pub ending_before: Option<&'a PaymentMethodId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a PaymentMethodId>,
+    pub starting_after: Option<&'a PaymentMethodId>,
 
     /// A required filter on the list, based on the object `type` field.
     #[serde(rename = "type")]
-    type_: PaymentMethodType,
+    pub type_: PaymentMethodType,
 }
 
 impl<'a> ListPaymentMethods<'a> {
@@ -385,17 +385,17 @@ impl<'a> ListPaymentMethods<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct UpdatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    billing_details: Option<UpdatePaymentMethodBillingDetails>,
+    pub billing_details: Option<UpdatePaymentMethodBillingDetails>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 }
 
 impl<'a> UpdatePaymentMethod<'a> {

@@ -134,59 +134,59 @@ impl Object for Coupon {
 pub struct CreateCoupon<'a> {
     /// A positive integer representing the amount to subtract from an invoice total (required if `percent_off` is not passed).
     #[serde(skip_serializing_if = "Option::is_none")]
-    amount_off: Option<i64>,
+    pub amount_off: Option<i64>,
 
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) of the `amount_off` parameter (required if `amount_off` is passed).
     #[serde(skip_serializing_if = "Option::is_none")]
-    currency: Option<Currency>,
+    pub currency: Option<Currency>,
 
     /// Specifies how long the discount will be in effect.
     ///
     /// Can be `forever`, `once`, or `repeating`.
-    duration: CouponDuration,
+    pub duration: CouponDuration,
 
     /// Required only if `duration` is `repeating`, in which case it must be a positive integer that specifies the number of months the discount will be in effect.
     #[serde(skip_serializing_if = "Option::is_none")]
-    duration_in_months: Option<i64>,
+    pub duration_in_months: Option<i64>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Unique string of your choice that will be used to identify this coupon when applying it to a customer.
     ///
     /// This is often a specific code you'll give to your customer to use when signing up (e.g., `FALL25OFF`).
     /// If you don't want to specify a particular code, you can leave the ID blank and we'll generate a random code for you.
     #[serde(skip_serializing_if = "Option::is_none")]
-    id: Option<&'a str>,
+    pub id: Option<&'a str>,
 
     /// A positive integer specifying the number of times the coupon can be redeemed before it's no longer valid.
     ///
     /// For example, you might have a 50% off coupon that the first 20 readers of your blog can use.
     #[serde(skip_serializing_if = "Option::is_none")]
-    max_redemptions: Option<i64>,
+    pub max_redemptions: Option<i64>,
 
     /// A set of key-value pairs that you can attach to a coupon object.
     ///
     /// It can be useful for storing additional information about the coupon in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// Name of the coupon displayed to customers on, for instance invoices, or receipts.
     ///
     /// By default the `id` is shown if `name` is not set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    pub name: Option<&'a str>,
 
     /// A positive float larger than 0, and smaller or equal to 100, that represents the discount the coupon will apply (required if `amount_off` is not passed).
     #[serde(skip_serializing_if = "Option::is_none")]
-    percent_off: Option<f64>,
+    pub percent_off: Option<f64>,
 
     /// Unix timestamp specifying the last time at which the coupon can be redeemed.
     ///
     /// After the redeem_by date, the coupon can no longer be applied to new customers.
     #[serde(skip_serializing_if = "Option::is_none")]
-    redeem_by: Option<Timestamp>,
+    pub redeem_by: Option<Timestamp>,
 }
 
 impl<'a> CreateCoupon<'a> {
@@ -214,31 +214,31 @@ pub struct ListCoupons<'a> {
     ///
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a CouponId>,
+    pub ending_before: Option<&'a CouponId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a CouponId>,
+    pub starting_after: Option<&'a CouponId>,
 }
 
 impl<'a> ListCoupons<'a> {
@@ -258,19 +258,19 @@ impl<'a> ListCoupons<'a> {
 pub struct UpdateCoupon<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A set of key-value pairs that you can attach to a coupon object.
     ///
     /// It can be useful for storing additional information about the coupon in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// Name of the coupon displayed to customers on, for instance invoices, or receipts.
     ///
     /// By default the `id` is shown if `name` is not set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<&'a str>,
+    pub name: Option<&'a str>,
 }
 
 impl<'a> UpdateCoupon<'a> {

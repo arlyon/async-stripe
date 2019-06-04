@@ -447,40 +447,40 @@ pub struct TransferSchedule {
 pub struct CreateAccount<'a> {
     /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_token: Option<&'a str>,
+    pub account_token: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    business_profile: Option<BusinessProfile>,
+    pub business_profile: Option<BusinessProfile>,
 
     /// The business type.
     ///
     /// Can be `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    business_type: Option<&'a str>,
+    pub business_type: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    company: Option<CompanyParams>,
+    pub company: Option<CompanyParams>,
 
     /// The country in which the account holder resides, or in which the business is legally established.
     ///
     /// This should be an ISO 3166-1 alpha-2 country code.
     /// For example, if you are in the United States and the business for which you're creating an account is legally represented in Canada, you would use `CA` as the country for the account being created.
     #[serde(skip_serializing_if = "Option::is_none")]
-    country: Option<&'a str>,
+    pub country: Option<&'a str>,
 
     /// Three-letter ISO currency code representing the default currency for the account.
     ///
     /// This must be a currency that [Stripe supports in the account's country](https://stripe.com/docs/payouts).
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_currency: Option<Currency>,
+    pub default_currency: Option<Currency>,
 
     /// The email address of the account holder.
     ///
     /// For Custom accounts, this is only to make the account easier to identify to you: Stripe will never directly email your users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<&'a str>,
+    pub email: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A card or bank account to attach to the account.
     ///
@@ -488,28 +488,28 @@ pub struct CreateAccount<'a> {
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
     /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
     #[serde(skip_serializing_if = "Option::is_none")]
-    external_account: Option<&'a str>,
+    pub external_account: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    individual: Option<PersonParams>,
+    pub individual: Option<PersonParams>,
 
     /// A set of key-value pairs that you can attach to an `Account` object.
     ///
     /// This can be useful for storing additional information about the account in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    requested_capabilities: Option<Vec<RequestedCapability>>,
+    pub requested_capabilities: Option<Vec<RequestedCapability>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    settings: Option<AccountSettingsParams>,
+    pub settings: Option<AccountSettingsParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tos_acceptance: Option<AcceptTos>,
+    pub tos_acceptance: Option<AcceptTos>,
 
     /// The type of Stripe account to create.
     ///
     /// Currently must be `custom`, as only [Custom accounts](https://stripe.com/docs/connect/custom-accounts) may be created via the API.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    type_: Option<AccountType>,
+    pub type_: Option<AccountType>,
 }
 
 impl<'a> CreateAccount<'a> {
@@ -538,31 +538,31 @@ impl<'a> CreateAccount<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListAccounts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a AccountId>,
+    pub ending_before: Option<&'a AccountId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a AccountId>,
+    pub starting_after: Option<&'a AccountId>,
 }
 
 impl<'a> ListAccounts<'a> {
@@ -582,34 +582,34 @@ impl<'a> ListAccounts<'a> {
 pub struct UpdateAccount<'a> {
     /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_token: Option<&'a str>,
+    pub account_token: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    business_profile: Option<BusinessProfile>,
+    pub business_profile: Option<BusinessProfile>,
 
     /// The business type.
     ///
     /// Can be `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    business_type: Option<&'a str>,
+    pub business_type: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    company: Option<CompanyParams>,
+    pub company: Option<CompanyParams>,
 
     /// Three-letter ISO currency code representing the default currency for the account.
     ///
     /// This must be a currency that [Stripe supports in the account's country](https://stripe.com/docs/payouts).
     #[serde(skip_serializing_if = "Option::is_none")]
-    default_currency: Option<Currency>,
+    pub default_currency: Option<Currency>,
 
     /// Email address of the account representative.
     ///
     /// For Standard accounts, this is used to ask them to claim their Stripe account.
     /// For Custom accounts, this only makes the account easier to identify to platforms; Stripe does not email the account representative.
     #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<&'a str>,
+    pub email: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A card or bank account to attach to the account.
     ///
@@ -617,21 +617,21 @@ pub struct UpdateAccount<'a> {
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
     /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
     #[serde(skip_serializing_if = "Option::is_none")]
-    external_account: Option<&'a str>,
+    pub external_account: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    individual: Option<PersonParams>,
+    pub individual: Option<PersonParams>,
 
     /// A set of key-value pairs that you can attach to an `Account` object.
     ///
     /// This can be useful for storing additional information about the account in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    requested_capabilities: Option<Vec<RequestedCapability>>,
+    pub requested_capabilities: Option<Vec<RequestedCapability>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    settings: Option<AccountSettingsParams>,
+    pub settings: Option<AccountSettingsParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    tos_acceptance: Option<AcceptTos>,
+    pub tos_acceptance: Option<AcceptTos>,
 }
 
 impl<'a> UpdateAccount<'a> {

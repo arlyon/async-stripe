@@ -152,41 +152,41 @@ pub struct CreateSku<'a> {
     ///
     /// Default to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    active: Option<bool>,
+    pub active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    attributes: Option<Metadata>,
+    pub attributes: Option<Metadata>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    currency: Currency,
+    pub currency: Currency,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// The identifier for the SKU.
     ///
     /// Must be unique.
     /// If not provided, an identifier will be randomly generated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    id: Option<&'a str>,
+    pub id: Option<&'a str>,
 
     /// The URL of an image for this SKU, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    image: Option<&'a str>,
-    inventory: Option<Inventory>,
+    pub image: Option<&'a str>,
+    pub inventory: Option<Inventory>,
 
     /// A set of key-value pairs that you can attach to a SKU object.
     ///
     /// It can be useful for storing additional information about the SKU in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    package_dimensions: Option<PackageDimensions>,
+    pub package_dimensions: Option<PackageDimensions>,
 
     /// The cost of the item as a nonnegative integer in the smallest currency unit (that is, 100 cents to charge $1.00, or 100 to charge ¥100, Japanese Yen being a zero-decimal currency).
-    price: i64,
+    pub price: i64,
 }
 
 impl<'a> CreateSku<'a> {
@@ -211,41 +211,41 @@ impl<'a> CreateSku<'a> {
 pub struct ListSkus<'a> {
     /// Only return SKUs that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
-    active: Option<bool>,
+    pub active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    attributes: Option<Metadata>,
+    pub attributes: Option<Metadata>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a SkuId>,
+    pub ending_before: Option<&'a SkuId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
     #[serde(skip_serializing_if = "Option::is_none")]
-    ids: Option<Vec<String>>,
+    pub ids: Option<Vec<String>>,
 
     /// Only return SKUs that are either in stock or out of stock (e.g., pass `false` to list all SKUs that are out of stock).
     ///
     /// If no value is provided, all SKUs are returned.
     #[serde(skip_serializing_if = "Option::is_none")]
-    in_stock: Option<bool>,
+    pub in_stock: Option<bool>,
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a SkuId>,
+    pub starting_after: Option<&'a SkuId>,
 }
 
 impl<'a> ListSkus<'a> {
@@ -268,37 +268,37 @@ impl<'a> ListSkus<'a> {
 pub struct UpdateSku<'a> {
     /// Whether this SKU is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    active: Option<bool>,
+    pub active: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    attributes: Option<Metadata>,
+    pub attributes: Option<Metadata>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    currency: Option<Currency>,
+    pub currency: Option<Currency>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// The URL of an image for this SKU, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    image: Option<&'a str>,
+    pub image: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    inventory: Option<Inventory>,
+    pub inventory: Option<Inventory>,
 
     /// A set of key-value pairs that you can attach to a SKU object.
     ///
     /// It can be useful for storing additional information about the SKU in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    package_dimensions: Option<PackageDimensions>,
+    pub package_dimensions: Option<PackageDimensions>,
 
     /// The cost of the item as a positive integer in the smallest currency unit (that is, 100 cents to charge $1.00, or 100 to charge ¥100, Japanese Yen being a zero-decimal currency).
     #[serde(skip_serializing_if = "Option::is_none")]
-    price: Option<i64>,
+    pub price: Option<i64>,
 }
 
 impl<'a> UpdateSku<'a> {

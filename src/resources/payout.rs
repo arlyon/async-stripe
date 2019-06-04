@@ -146,35 +146,35 @@ impl Object for Payout {
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePayout<'a> {
     /// A positive integer in cents representing how much to payout.
-    amount: i64,
+    pub amount: i64,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    currency: Currency,
+    pub currency: Currency,
 
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A set of key-value pairs that you can attach to a payout object.
     ///
     /// It can be useful for storing additional information about the payout in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// The method used to send this payout, which can be `standard` or `instant`.
     ///
     /// `instant` is only supported for payouts to debit cards.
     /// (See [Instant payouts for marketplaces for more information](https://stripe.com/blog/instant-payouts-for-marketplaces).).
     #[serde(skip_serializing_if = "Option::is_none")]
-    method: Option<PayoutMethod>,
+    pub method: Option<PayoutMethod>,
 
     /// The source balance to draw this payout from.
     ///
@@ -182,7 +182,7 @@ pub struct CreatePayout<'a> {
     /// You can find the amounts with the balances API.
     /// One of `bank_account` or `card`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    source_type: Option<PayoutSourceType>,
+    pub source_type: Option<PayoutSourceType>,
 
     /// A string to be displayed on the recipient's bank or card statement.
     ///
@@ -191,7 +191,7 @@ pub struct CreatePayout<'a> {
     /// Note: Most banks will truncate this information and/or display it inconsistently.
     /// Some may not display it at all.
     #[serde(skip_serializing_if = "Option::is_none")]
-    statement_descriptor: Option<&'a str>,
+    pub statement_descriptor: Option<&'a str>,
 }
 
 impl<'a> CreatePayout<'a> {
@@ -213,38 +213,38 @@ impl<'a> CreatePayout<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPayouts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    arrival_date: Option<RangeQuery<Timestamp>>,
+    pub arrival_date: Option<RangeQuery<Timestamp>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a PayoutId>,
+    pub ending_before: Option<&'a PayoutId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a PayoutId>,
+    pub starting_after: Option<&'a PayoutId>,
 
     /// Only return payouts that have the given status: `pending`, `paid`, `failed`, or `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    status: Option<&'a str>,
+    pub status: Option<&'a str>,
 }
 
 impl<'a> ListPayouts<'a> {
@@ -266,13 +266,13 @@ impl<'a> ListPayouts<'a> {
 pub struct UpdatePayout<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A set of key-value pairs that you can attach to a payout object.
     ///
     /// It can be useful for storing additional information about the payout in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 }
 
 impl<'a> UpdatePayout<'a> {

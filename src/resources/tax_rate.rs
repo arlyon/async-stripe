@@ -94,27 +94,27 @@ pub struct CreateTaxRate<'a> {
     ///
     /// Inactive tax rates continue to work where they are currently applied however they cannot be used for new applications.
     #[serde(skip_serializing_if = "Option::is_none")]
-    active: Option<bool>,
+    pub active: Option<bool>,
 
     /// An arbitrary string attached to the tax rate for your internal use only.
     ///
     /// It will not be visible to your customers.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// The display name of the tax rate, which will be shown to users.
-    display_name: &'a str,
+    pub display_name: &'a str,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// This specifies if the tax rate is inclusive or exclusive.
-    inclusive: bool,
+    pub inclusive: bool,
 
     /// The jurisdiction for the tax rate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    jurisdiction: Option<&'a str>,
+    pub jurisdiction: Option<&'a str>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///
@@ -122,10 +122,10 @@ pub struct CreateTaxRate<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     /// This represents the tax rate percent out of 100.
-    percentage: f64,
+    pub percentage: f64,
 }
 
 impl<'a> CreateTaxRate<'a> {
@@ -148,43 +148,43 @@ impl<'a> CreateTaxRate<'a> {
 pub struct ListTaxRates<'a> {
     /// Optional flag to filter by tax rates that are either active or not active (archived).
     #[serde(skip_serializing_if = "Option::is_none")]
-    active: Option<bool>,
+    pub active: Option<bool>,
 
     /// Optional range for filtering created date.
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a TaxRateId>,
+    pub ending_before: Option<&'a TaxRateId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Optional flag to filter by tax rates that are inclusive (or those that are not inclusive).
     #[serde(skip_serializing_if = "Option::is_none")]
-    inclusive: Option<bool>,
+    pub inclusive: Option<bool>,
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// Optional range for tax rate percentage filtering.
     #[serde(skip_serializing_if = "Option::is_none")]
-    percentage: Option<RangeQuery<Timestamp>>,
+    pub percentage: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a TaxRateId>,
+    pub starting_after: Option<&'a TaxRateId>,
 }
 
 impl<'a> ListTaxRates<'a> {
@@ -209,25 +209,25 @@ pub struct UpdateTaxRate<'a> {
     ///
     /// Inactive tax rates continue to work where they are currently applied however they cannot be used for new applications.
     #[serde(skip_serializing_if = "Option::is_none")]
-    active: Option<bool>,
+    pub active: Option<bool>,
 
     /// An arbitrary string attached to the tax rate for your internal use only.
     ///
     /// It will not be visible to your customers.
     #[serde(skip_serializing_if = "Option::is_none")]
-    description: Option<&'a str>,
+    pub description: Option<&'a str>,
 
     /// The display name of the tax rate, which will be shown to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    display_name: Option<&'a str>,
+    pub display_name: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// The jurisdiction for the tax rate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    jurisdiction: Option<&'a str>,
+    pub jurisdiction: Option<&'a str>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///
@@ -235,7 +235,7 @@ pub struct UpdateTaxRate<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 }
 
 impl<'a> UpdateTaxRate<'a> {

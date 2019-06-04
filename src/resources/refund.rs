@@ -132,26 +132,26 @@ impl Object for Refund {
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateRefund<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    amount: Option<i64>,
+    pub amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    charge: Option<ChargeId>,
+    pub charge: Option<ChargeId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    reason: Option<RefundReason>,
+    pub reason: Option<RefundReason>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    refund_application_fee: Option<bool>,
+    pub refund_application_fee: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    reverse_transfer: Option<bool>,
+    pub reverse_transfer: Option<bool>,
 }
 
 impl<'a> CreateRefund<'a> {
@@ -173,34 +173,34 @@ impl<'a> CreateRefund<'a> {
 pub struct ListRefunds<'a> {
     /// Only return refunds for the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    charge: Option<ChargeId>,
+    pub charge: Option<ChargeId>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    created: Option<RangeQuery<Timestamp>>,
+    pub created: Option<RangeQuery<Timestamp>>,
 
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    ending_before: Option<&'a RefundId>,
+    pub ending_before: Option<&'a RefundId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// A limit on the number of objects to be returned.
     ///
     /// Limit can range between 1 and 100, and the default is 10.
     #[serde(skip_serializing_if = "Option::is_none")]
-    limit: Option<u64>,
+    pub limit: Option<u64>,
 
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    starting_after: Option<&'a RefundId>,
+    pub starting_after: Option<&'a RefundId>,
 }
 
 impl<'a> ListRefunds<'a> {
@@ -221,7 +221,7 @@ impl<'a> ListRefunds<'a> {
 pub struct UpdateRefund<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
-    expand: &'a [&'a str],
+    pub expand: &'a [&'a str],
 
     /// Set of key-value pairs that you can attach to an object.
     ///
@@ -229,7 +229,7 @@ pub struct UpdateRefund<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    metadata: Option<Metadata>,
+    pub metadata: Option<Metadata>,
 }
 
 impl<'a> UpdateRefund<'a> {

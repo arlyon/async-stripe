@@ -690,10 +690,10 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     initializers.push(("metadata".into(), "Metadata".into(), required));
                     state.use_params.insert("Metadata");
                     if required {
-                        out.push_str("    metadata: Metadata,\n");
+                        out.push_str("    pub metadata: Metadata,\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    metadata: Option<Metadata>,\n");
+                        out.push_str("    pub metadata: Option<Metadata>,\n");
                     }
                 }
                 "expand" => {
@@ -701,16 +701,16 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     initializers.push(("expand".into(), "&'a [&'a str]".into(), false));
                     state.use_params.insert("Expand");
                     out.push_str("    #[serde(skip_serializing_if = \"Expand::is_empty\")]\n");
-                    out.push_str("    expand: &'a [&'a str],\n");
+                    out.push_str("    pub expand: &'a [&'a str],\n");
                 }
                 "limit" => {
                     print_doc(&mut out);
                     initializers.push(("limit".into(), "u64".into(), false));
                     if required {
-                        out.push_str("    limit: u64,\n");
+                        out.push_str("    pub limit: u64,\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    limit: Option<u64>,\n");
+                        out.push_str("    pub limit: Option<u64>,\n");
                     }
                 }
                 "ending_before" => {
@@ -724,7 +724,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     // out.push_str(",\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    ending_before: Option<&'a ");
+                        out.push_str("    pub ending_before: Option<&'a ");
                         out.push_str(cursor_type);
                         out.push_str(">,\n");
                     }
@@ -740,7 +740,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     // out.push_str(",\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    starting_after: Option<&'a ");
+                        out.push_str("    pub starting_after: Option<&'a ");
                         out.push_str(cursor_type);
                         out.push_str(">,\n");
                     }
@@ -755,14 +755,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     initializers.push((object.into(), id_type.clone(), required));
                     state.use_ids.insert(id_type.clone());
                     if required {
-                        out.push_str("    ");
+                        out.push_str("    pub ");
                         out.push_str(object);
                         out.push_str(": ");
                         out.push_str(&id_type);
                         out.push_str(",\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    ");
+                        out.push_str("    pub ");
                         out.push_str(object);
                         out.push_str(": Option<");
                         out.push_str(&id_type);
@@ -774,14 +774,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), "bool".into(), false));
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": bool,\n");
                         } else {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<bool>,\n");
                         }
@@ -807,7 +807,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), rust_type.into(), required));
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": ");
                             out.push_str(&rust_type);
@@ -816,7 +816,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<");
                             out.push_str(&rust_type);
@@ -826,14 +826,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), "f64".into(), required));
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": f64,\n");
                         } else {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<f64>,\n");
                         }
@@ -849,14 +849,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         state.use_params.insert("RangeQuery");
                         state.use_params.insert("Timestamp");
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": RangeQuery<Timestamp>,\n");
                         } else {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<RangeQuery<Timestamp>>,\n");
                         }
@@ -888,7 +888,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), enum_name.clone(), required));
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": ");
                             out.push_str(&enum_name);
@@ -897,7 +897,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<");
                             out.push_str(&enum_name);
@@ -910,14 +910,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         initializers.push((param_rename.into(), "Currency".into(), required));
                         state.use_resources.insert("Currency".into());
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Currency,\n");
                         } else {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<Currency>,\n");
                         }
@@ -925,14 +925,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), "&'a str".into(), required));
                         if required {
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": &'a str,\n");
                         } else {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
-                            out.push_str("    ");
+                            out.push_str("    pub ");
                             out.push_str(param_rename);
                             out.push_str(": Option<&'a str>,\n");
                         }
@@ -957,7 +957,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
                             );
                         }
-                        out.push_str("    ");
+                        out.push_str("    pub ");
                         out.push_str(param_rename);
                         out.push_str(": ");
                         out.push_str(&rust_type);
