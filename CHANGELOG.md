@@ -1,4 +1,4 @@
-# Version 0.10.0 (June 4, 2019)
+# Version 0.10.0 / 0.10.1 (June 4, 2019)
 
 This version uses code generation to generate the stripe API according to the openapi spec.
 
