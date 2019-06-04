@@ -361,6 +361,10 @@ def_id!(PaymentSourceId {
     Source(SourceId),
 });
 def_id!(PayoutId, "po_");
+def_id!(PayoutDestinationId {
+    BankAccount(BankAccountId),
+    Card(CardId),
+});
 def_id!(PlanId: USER_PROVIDED); // N.B. A plan id can be user-provided so can be any arbitrary string
 def_id!(ProductId, "prod_");
 def_id!(RecipientId: UNDOCUMENTED); // FIXME: This doesn't seem to be documented yet

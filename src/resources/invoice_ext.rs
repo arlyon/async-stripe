@@ -1,6 +1,6 @@
 use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, InvoiceId, PlanId, SubscriptionId, SubscriptionItemId};
-use crate::params::{Metadata, Object, Timestamp};
+use crate::params::{Metadata, Timestamp};
 use crate::resources::Invoice;
 use serde_derive::Serialize;
 
