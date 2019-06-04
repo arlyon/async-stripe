@@ -329,6 +329,10 @@ fn main() {
             ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
         ),
         (
+            ("update_subscription_item", "billing_thresholds"),
+            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
+        ),
+        (
             ("update_subscription_items", "billing_thresholds"),
             ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
         ),
