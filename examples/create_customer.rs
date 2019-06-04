@@ -1,5 +1,3 @@
-use stripe::{Customer, CustomerParams, PaymentSourceParams};
-
 fn main() {
     // Create a new client
     let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
@@ -7,24 +5,10 @@ fn main() {
 
     // Create the customer
     let token = "tok_189g322eZvKYlo2CeoPw2sdy".parse().expect("expected token to be valid");
-    let customer = Customer::create(
-        &client,
-        CustomerParams {
-            email: Some("jdoe@example.org"),
-            source: Some(PaymentSourceParams::Token(token)),
-            default_source: None,
-
-            // TODO: Keep track of https://github.com/rust-lang/rust-roadmap/issues/17
-            //       so we can use default struct field value syntax eventually
-            account_balance: None,
-            business_vat_id: None,
-            coupon: None,
-            description: None,
-            metadata: None,
-            shipping: None,
-        },
-    )
-    .unwrap();
+    let mut params = stripe::CreateCustomer::new();
+    params.source = Some(stripe::PaymentSourceParams::Token(token));
+    params.email = Some("jdoe@example.org");
+    let customer = stripe::Customer::create(&client, params).unwrap();
 
     // Output in a ~prettyprint format
     println!(

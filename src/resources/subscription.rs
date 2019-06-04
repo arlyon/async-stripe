@@ -398,7 +398,7 @@ pub struct ListSubscriptions<'a> {
     /// `starting_after` is an object ID that defines your place in the list.
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_after: Option<&'a SubscriptionId>,
+    pub starting_after: Option<SubscriptionId>,
 
     /// The status of the subscriptions to retrieve.
     ///
