@@ -1,6 +1,6 @@
 use crate::config::{Client, Response};
 use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
-use crate::params::{Deleted, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::Deleted;
 use crate::resources::{BankAccount, Customer, PaymentSource, PaymentSourceParams, Source};
 use serde_derive::{Deserialize, Serialize};
 
