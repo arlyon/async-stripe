@@ -375,14 +375,10 @@ fn main() {
         ("create_token_account", "business_type"),
         ("BusinessType", "Option<BusinessType>"),
     );
-    field_overrides.insert(
-        ("create_token_account", "company"),
-        ("CompanyParams", "Option<CompanyParams>"),
-    );
-    field_overrides.insert(
-        ("create_token_account", "individual"),
-        ("PersonParams", "Option<PersonParams>"),
-    );
+    field_overrides
+        .insert(("create_token_account", "company"), ("CompanyParams", "Option<CompanyParams>"));
+    field_overrides
+        .insert(("create_token_account", "individual"), ("PersonParams", "Option<PersonParams>"));
 
     // Generate files
     let meta = Metadata {
