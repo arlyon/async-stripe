@@ -246,7 +246,10 @@ fn main() {
     field_overrides.extend(vec![
         (("create_customer", "address"), ("Address", "Option<Address>")),
         (("update_customer", "address"), ("Address", "Option<Address>")),
-        (("update_customer", "default_alipay_account"), ("AlipayAccountId", "Option<AlipayAccountId>")),
+        (
+            ("update_customer", "default_alipay_account"),
+            ("AlipayAccountId", "Option<AlipayAccountId>"),
+        ),
         (("update_customer", "default_bank_account"), ("BankAccountId", "Option<BankAccountId>")),
         (("update_customer", "default_card"), ("CardId", "Option<CardId>")),
         (("create_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
