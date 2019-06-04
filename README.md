@@ -46,7 +46,7 @@ to determine which fields are required for either request.
   /* Creating a Stripe Charge */
 
   let token = "TOKEN_FROM_CHECKOUT".parse().expect("token to be valid");
-  let mut params = stripe::ChargeParams::default();
+  let mut params = stripe::CreateCharge::new();
 
   // NOTE: Stripe represents currency in the lowest denominations (e.g. cents)
   params.amount = Some(1095); // e.g. $10.95
@@ -62,7 +62,7 @@ to determine which fields are required for either request.
 ```rust
   /* Listing Stripe Charges */
 
-  let params = stripe::ChargeListParams::default();
+  let params = stripe::ListCharges::new();
   let charges = stripe::Charge::list(&client, params).unwrap();
   println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
 ```

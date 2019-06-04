@@ -19,8 +19,8 @@
 //! ```
 //!
 //! Then we can begin making requests as we'd like.  Most Stripe requests accept
-//! many optional parameters, so we usually get the `::default()` params and then
-//! set the ones we want from there.
+//! many optional parameters, so we usually get the `::new(...)` with any required
+//! params and then set the ones we want from there.
 //!
 //! Most requests for creating or updating a Stripe object use the same Rust struct,
 //! so you may frequently need to refer to the [official API docs](https://stripe.com/docs/api)
@@ -31,7 +31,7 @@
 //!
 //! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! let token = "tok_ID_FROM_CHECKOUT".parse().unwrap();
-//! let mut params = stripe::ChargeParams::default();
+//! let mut params = stripe::CreateCharge::ew();
 //! // NOTE: Stripe represents currency in the lowest denominations (e.g. cents)
 //! params.amount = Some(1095); // e.g. $10.95
 //! params.source = Some(stripe::PaymentSourceParams::Token(token));
@@ -46,7 +46,7 @@
 //! /* Listing Stripe Charges */
 //!
 //! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
-//! let params = stripe::ChargeListParams::default();
+//! let params = stripe::ListCharges::new();
 //! let charges = stripe::Charge::list(&client, params).unwrap();
 //! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
 //! ```
