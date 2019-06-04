@@ -764,7 +764,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         panic!("unexpected \"required\" `ending_before` parameter");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    pub ending_before: Option<&'a ");
+                        out.push_str("    pub ending_before: Option<");
                         out.push_str(cursor_type);
                         out.push_str(">,\n");
                     }
