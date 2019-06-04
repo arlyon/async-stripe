@@ -3,11 +3,13 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{CouponId, CustomerId, PaymentMethodId, SourceId};
+use crate::ids::{
+    AlipayAccountId, BankAccountId, CardId, CouponId, CustomerId, PaymentMethodId, PaymentSourceId,
+};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceId,
-    PaymentSourceParams, Scheduled, Shipping, ShippingParams, Subscription, TaxId,
+    Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
+    Scheduled, Shipping, ShippingParams, Subscription, TaxId,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -427,15 +429,15 @@ pub struct UpdateCustomer<'a> {
 
     /// ID of Alipay account to make the customer's new default for invoice payments.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_alipay_account: Option<&'a str>,
+    pub default_alipay_account: Option<AlipayAccountId>,
 
     /// ID of bank account to make the customer's new default for invoice payments.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_bank_account: Option<&'a str>,
+    pub default_bank_account: Option<BankAccountId>,
 
     /// ID of card to make the customer's new default for invoice payments.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_card: Option<&'a str>,
+    pub default_card: Option<CardId>,
 
     /// Provide the ID of a payment source already attached to this customer to make it this customer's default payment source.
     ///
@@ -495,7 +497,7 @@ pub struct UpdateCustomer<'a> {
     pub shipping: Option<ShippingParams>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<SourceId>,
+    pub source: Option<PaymentSourceParams<'a>>,
 
     /// The customer's tax exemption.
     ///

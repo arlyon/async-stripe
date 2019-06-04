@@ -246,11 +246,15 @@ fn main() {
     field_overrides.extend(vec![
         (("create_customer", "address"), ("Address", "Option<Address>")),
         (("update_customer", "address"), ("Address", "Option<Address>")),
+        (("update_customer", "default_alipay_account"), ("AlipayAccountId", "Option<AlipayAccountId>")),
+        (("update_customer", "default_bank_account"), ("BankAccountId", "Option<BankAccountId>")),
+        (("update_customer", "default_card"), ("CardId", "Option<CardId>")),
         (("create_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
         (("update_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
         (("create_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("update_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("create_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams<'a>>")),
+        (("update_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams<'a>>")),
         (("update_customer", "trial_end"), ("Scheduled", "Option<Scheduled>")),
         (
             ("customer_invoice_settings", "custom_fields"),
@@ -720,6 +724,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             match param_name {
                 // TODO: Handle these unusual params
                 "bank_account" | "card" | "destination" | "product" => continue,
+
                 "metadata" => {
                     print_doc(&mut out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
@@ -754,9 +759,6 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     initializers.push(("ending_before".into(), cursor_type.into(), false));
                     if required {
                         panic!("unexpected \"required\" `ending_before` parameter");
-                    // out.push_str("    ending_before: &'a ");
-                    // out.push_str(cursor_type);
-                    // out.push_str(",\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
                         out.push_str("    pub ending_before: Option<&'a ");
@@ -770,9 +772,6 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     initializers.push(("starting_after".into(), cursor_type.into(), false));
                     if required {
                         panic!("unexpected \"required\" `starting_after` parameter");
-                    // out.push_str("    starting_after: &'a ");
-                    // out.push_str(cursor_type);
-                    // out.push_str(",\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
                         out.push_str("    pub starting_after: Option<");
@@ -790,6 +789,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             "" | "String" => (),
                             "Metadata" => {
                                 state.use_params.insert("Metadata");
+                            }
+                            path if path.ends_with("Id") && path != "TaxId" => {
+                                state.use_ids.insert(path.into());
                             }
                             path => {
                                 state.use_resources.insert(path.into());
