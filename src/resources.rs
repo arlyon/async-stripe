@@ -57,6 +57,7 @@ mod tax_rate;
 mod topup;
 mod transfer;
 mod transfer_reversal;
+mod webhook_endpoint;
 
 mod types;
 pub use self::types::*;
@@ -120,3 +121,4 @@ pub use self::tax_rate::*;
 pub use self::topup::*;
 pub use self::transfer::*;
 pub use self::transfer_reversal::*;
+pub use self::webhook_endpoint::*;
