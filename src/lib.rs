@@ -7,6 +7,7 @@
 // except according to those terms.
 
 #![doc(html_root_url = "https://docs.rs/stripe-rust/")]
+#![recursion_limit = "128"]
 
 //! This crate provides Rust bindings to the Stripe HTTP API.
 //!
@@ -15,7 +16,7 @@
 //! To get started, we need to create a client:
 //!
 //! ```rust
-//!   let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
+//! let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! ```
 //!
 //! Then we can begin making requests as we'd like.  Most Stripe requests accept
