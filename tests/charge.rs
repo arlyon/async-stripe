@@ -23,9 +23,7 @@ fn is_retrievable() {
 fn is_expandable() {
     mock::with_client(|client| {
         let id = "ch_123".parse().unwrap();
-        // let result = stripe::Charge::retrieve(client, &id, &["customer", "invoice"]);
-        // let result = stripe::Charge::retrieve(client, &id, &["customer"]);
-        let result = stripe::Charge::retrieve(client, &id, &["invoice"]);
+        let result = stripe::Charge::retrieve(client, &id, &["customer", "invoice"]);
         let charge = match result {
             Err(err) => panic!("{}", err),
             Ok(ok) => ok,

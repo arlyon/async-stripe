@@ -1,7 +1,7 @@
 mod mock;
 
 fn customer_create_and_delete(client: &stripe::Client) {
-    let customer_params = stripe::CustomerParams::default();
+    let customer_params = stripe::CreateCustomer::new();
     let customer = stripe::Customer::create(client, customer_params).unwrap();
     let result = stripe::Customer::delete(client, &customer.id);
     match result {

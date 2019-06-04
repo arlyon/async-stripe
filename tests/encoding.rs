@@ -35,7 +35,7 @@ fn deserialize_currency() {
 
 #[test]
 fn serialize_range_query() {
-    use stripe::{CustomerListParams, RangeBounds, RangeQuery};
+    use stripe::{ListCustomers, RangeBounds, RangeQuery};
 
     let query = RangeQuery::Bounds(RangeBounds {
         gt: None,
@@ -45,17 +45,17 @@ fn serialize_range_query() {
     });
     assert_eq!(urldecode(serde_qs::to_string(&query).unwrap()), "gte=1501598702&lt=1504233902");
 
-    let mut params = CustomerListParams::default();
+    let mut params = ListCustomers::new();
     params.created = Some(RangeQuery::eq(1501598702));
     params.limit = Some(3);
     assert_eq!(urldecode(serde_qs::to_string(&params).unwrap()), "created=1501598702&limit=3");
 
-    let mut params = CustomerListParams::default();
+    let mut params = ListCustomers::new();
     params.created = Some(RangeQuery::gte(1501598702));
     params.limit = Some(3);
     assert_eq!(urldecode(serde_qs::to_string(&params).unwrap()), "created[gte]=1501598702&limit=3");
 
-    let mut params = CustomerListParams::default();
+    let mut params = ListCustomers::new();
     params.created = Some(query);
     params.limit = Some(3);
     let encoded = urldecode(serde_qs::to_string(&params).unwrap());

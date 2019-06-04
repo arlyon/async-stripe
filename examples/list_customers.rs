@@ -14,7 +14,7 @@ fn main() {
             starting_after: None,
             ending_before: None,
             email: None,
-            expand: None,
+            expand: &[],
         },
     )
     .unwrap();
@@ -25,7 +25,7 @@ fn main() {
     // List the next three customers (using `new`)
     let mut params = ListCustomers::new();
     params.limit = Some(3);
-    params.starting_after = customers.data.last().map(|cust| cust.id;
+    params.starting_after = customers.data.last().map(|cust| cust.id.clone());
     let customers2 = Customer::list(&client, params).unwrap();
 
     // Print the following three customers
