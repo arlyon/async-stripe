@@ -6,8 +6,8 @@ use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PaymentMethodId, SourceId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, Scheduled, Shipping,
-    ShippingParams, Subscription, TaxId,
+    Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
+    Scheduled, Shipping, ShippingParams, Subscription, TaxId,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -302,8 +302,7 @@ pub struct CreateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<ShippingParams>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<SourceId>,
+    pub source: Option<PaymentSourceParams>,
 
     /// The customer's tax exemption.
     ///

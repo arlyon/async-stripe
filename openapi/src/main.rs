@@ -683,24 +683,6 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 }
             };
             let required = param["required"].as_bool() == Some(true);
-            if let Some((use_path, rust_type)) = meta.field_overrides.get(&(params_schema.as_str(), param_name)) {
-                print_doc(&mut out);
-                initializers.push((param_rename.into(), rust_type.to_string(), required));
-                match *use_path {
-                    "" | "String" => (),
-                    "Metadata" => {
-                        state.use_params.insert("Metadata");
-                    }
-                    path => {
-                        state.use_resources.insert(path.into());
-                    }
-                }
-                out.push_str("    pub ");
-                out.push_str(&param_rename);
-                out.push_str(": ");
-                out.push_str(&rust_type);
-                out.push_str("\n");
-            }
             match param_name {
                 // TODO: Handle these unusual params
                 "bank_account" | "card" | "destination" | "product" => continue,
@@ -769,23 +751,42 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         && param["schema"]["type"].as_str() == Some("string")
                         && param_name != "tax_id" =>
                 {
-                    let id_type = &meta.ids[object];
-                    print_doc(&mut out);
-                    initializers.push((object.into(), id_type.clone(), required));
-                    state.use_ids.insert(id_type.clone());
-                    if required {
+                    if let Some((use_path, rust_type)) = meta.field_overrides.get(&(params_schema.as_str(), param_name)) {
+                        print_doc(&mut out);
+                        initializers.push((param_rename.into(), rust_type.to_string(), required));
+                        match *use_path {
+                            "" | "String" => (),
+                            "Metadata" => {
+                                state.use_params.insert("Metadata");
+                            }
+                            path => {
+                                state.use_resources.insert(path.into());
+                            }
+                        }
                         out.push_str("    pub ");
-                        out.push_str(object);
+                        out.push_str(&param_rename);
                         out.push_str(": ");
-                        out.push_str(&id_type);
+                        out.push_str(&rust_type);
                         out.push_str(",\n");
                     } else {
-                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    pub ");
-                        out.push_str(object);
-                        out.push_str(": Option<");
-                        out.push_str(&id_type);
-                        out.push_str(">,\n");
+                        let id_type = &meta.ids[object];
+                        print_doc(&mut out);
+                        initializers.push((object.into(), id_type.clone(), required));
+                        state.use_ids.insert(id_type.clone());
+                        if required {
+                            out.push_str("    pub ");
+                            out.push_str(object);
+                            out.push_str(": ");
+                            out.push_str(&id_type);
+                            out.push_str(",\n");
+                        } else {
+                            out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
+                            out.push_str("    pub ");
+                            out.push_str(object);
+                            out.push_str(": Option<");
+                            out.push_str(&id_type);
+                            out.push_str(">,\n");
+                        }
                     }
                 }
                 _ => {
