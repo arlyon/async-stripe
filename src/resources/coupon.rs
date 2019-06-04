@@ -291,3 +291,25 @@ pub enum CouponDuration {
     Once,
     Repeating,
 }
+
+impl CouponDuration {
+    fn as_str(&self) -> &'static str {
+        match self {
+            CouponDuration::Forever => "forever",
+            CouponDuration::Once => "once",
+            CouponDuration::Repeating => "repeating",
+        }
+    }
+}
+
+impl AsRef<str> for CouponDuration {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CouponDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

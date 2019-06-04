@@ -587,6 +587,28 @@ pub enum CustomerTaxExempt {
     Reverse,
 }
 
+impl CustomerTaxExempt {
+    fn as_str(&self) -> &'static str {
+        match self {
+            CustomerTaxExempt::Exempt => "exempt",
+            CustomerTaxExempt::None => "none",
+            CustomerTaxExempt::Reverse => "reverse",
+        }
+    }
+}
+
+impl AsRef<str> for CustomerTaxExempt {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CustomerTaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `CreateCustomer`'s `tax_exempt` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -594,6 +616,28 @@ pub enum CustomerTaxExemptFilter {
     Exempt,
     None,
     Reverse,
+}
+
+impl CustomerTaxExemptFilter {
+    fn as_str(&self) -> &'static str {
+        match self {
+            CustomerTaxExemptFilter::Exempt => "exempt",
+            CustomerTaxExemptFilter::None => "none",
+            CustomerTaxExemptFilter::Reverse => "reverse",
+        }
+    }
+}
+
+impl AsRef<str> for CustomerTaxExemptFilter {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CustomerTaxExemptFilter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `TaxIdData`'s `type` field.
@@ -605,9 +649,51 @@ pub enum TaxIdDataType {
     NzGst,
 }
 
+impl TaxIdDataType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TaxIdDataType::AuAbn => "au_abn",
+            TaxIdDataType::EuVat => "eu_vat",
+            TaxIdDataType::NzGst => "nz_gst",
+        }
+    }
+}
+
+impl AsRef<str> for TaxIdDataType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxIdDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `TaxInfoParams`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxInfoType {
     Vat,
+}
+
+impl TaxInfoType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TaxInfoType::Vat => "vat",
+        }
+    }
+}
+
+impl AsRef<str> for TaxInfoType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxInfoType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

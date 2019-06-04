@@ -140,3 +140,31 @@ pub enum FilePurpose {
     SigmaScheduledQuery,
     TaxDocumentUserUpload,
 }
+
+impl FilePurpose {
+    fn as_str(&self) -> &'static str {
+        match self {
+            FilePurpose::BusinessIcon => "business_icon",
+            FilePurpose::BusinessLogo => "business_logo",
+            FilePurpose::CustomerSignature => "customer_signature",
+            FilePurpose::DisputeEvidence => "dispute_evidence",
+            FilePurpose::FinanceReportRun => "finance_report_run",
+            FilePurpose::IdentityDocument => "identity_document",
+            FilePurpose::PciDocument => "pci_document",
+            FilePurpose::SigmaScheduledQuery => "sigma_scheduled_query",
+            FilePurpose::TaxDocumentUserUpload => "tax_document_user_upload",
+        }
+    }
+}
+
+impl AsRef<str> for FilePurpose {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for FilePurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

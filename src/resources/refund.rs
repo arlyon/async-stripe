@@ -246,3 +246,25 @@ pub enum RefundReason {
     Fraudulent,
     RequestedByCustomer,
 }
+
+impl RefundReason {
+    fn as_str(&self) -> &'static str {
+        match self {
+            RefundReason::Duplicate => "duplicate",
+            RefundReason::Fraudulent => "fraudulent",
+            RefundReason::RequestedByCustomer => "requested_by_customer",
+        }
+    }
+}
+
+impl AsRef<str> for RefundReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for RefundReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

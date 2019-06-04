@@ -98,10 +98,54 @@ pub enum IssuingCardholderStatus {
     Pending,
 }
 
+impl IssuingCardholderStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingCardholderStatus::Active => "active",
+            IssuingCardholderStatus::Blocked => "blocked",
+            IssuingCardholderStatus::Inactive => "inactive",
+            IssuingCardholderStatus::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardholderStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardholderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `IssuingCardholder`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardholderType {
     BusinessEntity,
     Individual,
+}
+
+impl IssuingCardholderType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingCardholderType::BusinessEntity => "business_entity",
+            IssuingCardholderType::Individual => "individual",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardholderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardholderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

@@ -106,6 +106,27 @@ pub enum IssuingDisputeReason {
     Other,
 }
 
+impl IssuingDisputeReason {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingDisputeReason::Fraudulent => "fraudulent",
+            IssuingDisputeReason::Other => "other",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingDisputeReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingDisputeReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `IssuingDispute`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -114,4 +135,27 @@ pub enum IssuingDisputeStatus {
     UnderReview,
     Unsubmitted,
     Won,
+}
+
+impl IssuingDisputeStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingDisputeStatus::Lost => "lost",
+            IssuingDisputeStatus::UnderReview => "under_review",
+            IssuingDisputeStatus::Unsubmitted => "unsubmitted",
+            IssuingDisputeStatus::Won => "won",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingDisputeStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingDisputeStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

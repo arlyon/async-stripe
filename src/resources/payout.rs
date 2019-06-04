@@ -296,6 +296,27 @@ pub enum PayoutMethod {
     Standard,
 }
 
+impl PayoutMethod {
+    fn as_str(&self) -> &'static str {
+        match self {
+            PayoutMethod::Instant => "instant",
+            PayoutMethod::Standard => "standard",
+        }
+    }
+}
+
+impl AsRef<str> for PayoutMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PayoutMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `CreatePayout`'s `source_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -304,10 +325,52 @@ pub enum PayoutSourceType {
     Card,
 }
 
+impl PayoutSourceType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            PayoutSourceType::BankAccount => "bank_account",
+            PayoutSourceType::Card => "card",
+        }
+    }
+}
+
+impl AsRef<str> for PayoutSourceType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PayoutSourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Payout`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PayoutType {
     BankAccount,
     Card,
+}
+
+impl PayoutType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            PayoutType::BankAccount => "bank_account",
+            PayoutType::Card => "card",
+        }
+    }
+}
+
+impl AsRef<str> for PayoutType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PayoutType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

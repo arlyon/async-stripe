@@ -132,3 +132,26 @@ pub enum TokenType {
     Card,
     Pii,
 }
+
+impl TokenType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TokenType::Account => "account",
+            TokenType::BankAccount => "bank_account",
+            TokenType::Card => "card",
+            TokenType::Pii => "pii",
+        }
+    }
+}
+
+impl AsRef<str> for TokenType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TokenType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

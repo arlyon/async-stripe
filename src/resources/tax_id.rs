@@ -82,6 +82,29 @@ pub enum TaxIdType {
     Unknown,
 }
 
+impl TaxIdType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TaxIdType::AuAbn => "au_abn",
+            TaxIdType::EuVat => "eu_vat",
+            TaxIdType::NzGst => "nz_gst",
+            TaxIdType::Unknown => "unknown",
+        }
+    }
+}
+
+impl AsRef<str> for TaxIdType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxIdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `TaxIdVerification`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -90,4 +113,27 @@ pub enum TaxIdVerificationStatus {
     Unavailable,
     Unverified,
     Verified,
+}
+
+impl TaxIdVerificationStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TaxIdVerificationStatus::Pending => "pending",
+            TaxIdVerificationStatus::Unavailable => "unavailable",
+            TaxIdVerificationStatus::Unverified => "unverified",
+            TaxIdVerificationStatus::Verified => "verified",
+        }
+    }
+}
+
+impl AsRef<str> for TaxIdVerificationStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxIdVerificationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

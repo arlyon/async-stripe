@@ -418,6 +418,27 @@ pub enum CreatePlanTransformUsageRound {
     Up,
 }
 
+impl CreatePlanTransformUsageRound {
+    fn as_str(&self) -> &'static str {
+        match self {
+            CreatePlanTransformUsageRound::Down => "down",
+            CreatePlanTransformUsageRound::Up => "up",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePlanTransformUsageRound {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePlanTransformUsageRound {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Plan`'s `aggregate_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -428,12 +449,56 @@ pub enum PlanAggregateUsage {
     Sum,
 }
 
+impl PlanAggregateUsage {
+    fn as_str(&self) -> &'static str {
+        match self {
+            PlanAggregateUsage::LastDuringPeriod => "last_during_period",
+            PlanAggregateUsage::LastEver => "last_ever",
+            PlanAggregateUsage::Max => "max",
+            PlanAggregateUsage::Sum => "sum",
+        }
+    }
+}
+
+impl AsRef<str> for PlanAggregateUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PlanAggregateUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Plan`'s `billing_scheme` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PlanBillingScheme {
     PerUnit,
     Tiered,
+}
+
+impl PlanBillingScheme {
+    fn as_str(&self) -> &'static str {
+        match self {
+            PlanBillingScheme::PerUnit => "per_unit",
+            PlanBillingScheme::Tiered => "tiered",
+        }
+    }
+}
+
+impl AsRef<str> for PlanBillingScheme {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PlanBillingScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Plan`'s `interval` field.
@@ -446,12 +511,56 @@ pub enum PlanInterval {
     Year,
 }
 
+impl PlanInterval {
+    fn as_str(&self) -> &'static str {
+        match self {
+            PlanInterval::Day => "day",
+            PlanInterval::Month => "month",
+            PlanInterval::Week => "week",
+            PlanInterval::Year => "year",
+        }
+    }
+}
+
+impl AsRef<str> for PlanInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Plan`'s `tiers_mode` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PlanTiersMode {
     Graduated,
     Volume,
+}
+
+impl PlanTiersMode {
+    fn as_str(&self) -> &'static str {
+        match self {
+            PlanTiersMode::Graduated => "graduated",
+            PlanTiersMode::Volume => "volume",
+        }
+    }
+}
+
+impl AsRef<str> for PlanTiersMode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PlanTiersMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Plan`'s `usage_type` field.
@@ -462,10 +571,52 @@ pub enum PlanUsageType {
     Metered,
 }
 
+impl PlanUsageType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            PlanUsageType::Licensed => "licensed",
+            PlanUsageType::Metered => "metered",
+        }
+    }
+}
+
+impl AsRef<str> for PlanUsageType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PlanUsageType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `TransformUsage`'s `round` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TransformUsageRound {
     Down,
     Up,
+}
+
+impl TransformUsageRound {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TransformUsageRound::Down => "down",
+            TransformUsageRound::Up => "up",
+        }
+    }
+}
+
+impl AsRef<str> for TransformUsageRound {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TransformUsageRound {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

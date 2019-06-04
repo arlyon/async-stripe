@@ -636,6 +636,27 @@ pub enum InvoiceBilling {
     SendInvoice,
 }
 
+impl InvoiceBilling {
+    fn as_str(&self) -> &'static str {
+        match self {
+            InvoiceBilling::ChargeAutomatically => "charge_automatically",
+            InvoiceBilling::SendInvoice => "send_invoice",
+        }
+    }
+}
+
+impl AsRef<str> for InvoiceBilling {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoiceBilling {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Invoice`'s `billing_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -650,6 +671,35 @@ pub enum InvoiceBillingReason {
     Upcoming,
 }
 
+impl InvoiceBillingReason {
+    fn as_str(&self) -> &'static str {
+        match self {
+            InvoiceBillingReason::AutomaticPendingInvoiceItemInvoice => {
+                "automatic_pending_invoice_item_invoice"
+            }
+            InvoiceBillingReason::Manual => "manual",
+            InvoiceBillingReason::Subscription => "subscription",
+            InvoiceBillingReason::SubscriptionCreate => "subscription_create",
+            InvoiceBillingReason::SubscriptionCycle => "subscription_cycle",
+            InvoiceBillingReason::SubscriptionThreshold => "subscription_threshold",
+            InvoiceBillingReason::SubscriptionUpdate => "subscription_update",
+            InvoiceBillingReason::Upcoming => "upcoming",
+        }
+    }
+}
+
+impl AsRef<str> for InvoiceBillingReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoiceBillingReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Invoice`'s `customer_tax_exempt` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -657,6 +707,28 @@ pub enum InvoiceCustomerTaxExempt {
     Exempt,
     None,
     Reverse,
+}
+
+impl InvoiceCustomerTaxExempt {
+    fn as_str(&self) -> &'static str {
+        match self {
+            InvoiceCustomerTaxExempt::Exempt => "exempt",
+            InvoiceCustomerTaxExempt::None => "none",
+            InvoiceCustomerTaxExempt::Reverse => "reverse",
+        }
+    }
+}
+
+impl AsRef<str> for InvoiceCustomerTaxExempt {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoiceCustomerTaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Invoice`'s `status` field.
@@ -671,6 +743,31 @@ pub enum InvoiceStatus {
     Void,
 }
 
+impl InvoiceStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            InvoiceStatus::Deleted => "deleted",
+            InvoiceStatus::Draft => "draft",
+            InvoiceStatus::Open => "open",
+            InvoiceStatus::Paid => "paid",
+            InvoiceStatus::Uncollectible => "uncollectible",
+            InvoiceStatus::Void => "void",
+        }
+    }
+}
+
+impl AsRef<str> for InvoiceStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoiceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `InvoicesResourceInvoiceTaxId`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -679,4 +776,27 @@ pub enum InvoicesResourceInvoiceTaxIdType {
     EuVat,
     NzGst,
     Unknown,
+}
+
+impl InvoicesResourceInvoiceTaxIdType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            InvoicesResourceInvoiceTaxIdType::AuAbn => "au_abn",
+            InvoicesResourceInvoiceTaxIdType::EuVat => "eu_vat",
+            InvoicesResourceInvoiceTaxIdType::NzGst => "nz_gst",
+            InvoicesResourceInvoiceTaxIdType::Unknown => "unknown",
+        }
+    }
+}
+
+impl AsRef<str> for InvoicesResourceInvoiceTaxIdType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoicesResourceInvoiceTaxIdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

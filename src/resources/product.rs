@@ -475,3 +475,24 @@ pub enum ProductType {
     Good,
     Service,
 }
+
+impl ProductType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            ProductType::Good => "good",
+            ProductType::Service => "service",
+        }
+    }
+}
+
+impl AsRef<str> for ProductType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

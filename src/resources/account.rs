@@ -913,12 +913,55 @@ pub enum AccountType {
     Standard,
 }
 
+impl AccountType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            AccountType::Custom => "custom",
+            AccountType::Express => "express",
+            AccountType::Standard => "standard",
+        }
+    }
+}
+
+impl AsRef<str> for AccountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Account`'s `business_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum BusinessType {
     Company,
     Individual,
+}
+
+impl BusinessType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            BusinessType::Company => "company",
+            BusinessType::Individual => "individual",
+        }
+    }
+}
+
+impl AsRef<str> for BusinessType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for BusinessType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `AccountCapabilities`'s `card_payments` field.
@@ -928,6 +971,28 @@ pub enum CapabilityStatus {
     Active,
     Inactive,
     Pending,
+}
+
+impl CapabilityStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            CapabilityStatus::Active => "active",
+            CapabilityStatus::Inactive => "inactive",
+            CapabilityStatus::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for CapabilityStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CapabilityStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `CreateAccount`'s `requested_capabilities` field.
@@ -940,6 +1005,29 @@ pub enum RequestedCapability {
     PlatformPayments,
 }
 
+impl RequestedCapability {
+    fn as_str(&self) -> &'static str {
+        match self {
+            RequestedCapability::CardIssuing => "card_issuing",
+            RequestedCapability::CardPayments => "card_payments",
+            RequestedCapability::LegacyPayments => "legacy_payments",
+            RequestedCapability::PlatformPayments => "platform_payments",
+        }
+    }
+}
+
+impl AsRef<str> for RequestedCapability {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for RequestedCapability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `TransferScheduleParams`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -948,4 +1036,27 @@ pub enum TransferScheduleInterval {
     Manual,
     Monthly,
     Weekly,
+}
+
+impl TransferScheduleInterval {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TransferScheduleInterval::Daily => "daily",
+            TransferScheduleInterval::Manual => "manual",
+            TransferScheduleInterval::Monthly => "monthly",
+            TransferScheduleInterval::Weekly => "weekly",
+        }
+    }
+}
+
+impl AsRef<str> for TransferScheduleInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TransferScheduleInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

@@ -302,3 +302,24 @@ pub enum RecipientType {
     Corporation,
     Individual,
 }
+
+impl RecipientType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            RecipientType::Corporation => "corporation",
+            RecipientType::Individual => "individual",
+        }
+    }
+}
+
+impl AsRef<str> for RecipientType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for RecipientType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

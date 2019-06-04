@@ -650,12 +650,54 @@ pub enum SubscriptionBilling {
     SendInvoice,
 }
 
+impl SubscriptionBilling {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SubscriptionBilling::ChargeAutomatically => "charge_automatically",
+            SubscriptionBilling::SendInvoice => "send_invoice",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionBilling {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionBilling {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `UpdateSubscription`'s `billing_cycle_anchor` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionBillingCycleAnchor {
     Now,
     Unchanged,
+}
+
+impl SubscriptionBillingCycleAnchor {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SubscriptionBillingCycleAnchor::Now => "now",
+            SubscriptionBillingCycleAnchor::Unchanged => "unchanged",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionBillingCycleAnchor {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Subscription`'s `status` field.
@@ -671,6 +713,32 @@ pub enum SubscriptionStatus {
     Unpaid,
 }
 
+impl SubscriptionStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SubscriptionStatus::Active => "active",
+            SubscriptionStatus::Canceled => "canceled",
+            SubscriptionStatus::Incomplete => "incomplete",
+            SubscriptionStatus::IncompleteExpired => "incomplete_expired",
+            SubscriptionStatus::PastDue => "past_due",
+            SubscriptionStatus::Trialing => "trialing",
+            SubscriptionStatus::Unpaid => "unpaid",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `ListSubscriptions`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -684,4 +752,32 @@ pub enum SubscriptionStatusFilter {
     PastDue,
     Trialing,
     Unpaid,
+}
+
+impl SubscriptionStatusFilter {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SubscriptionStatusFilter::Active => "active",
+            SubscriptionStatusFilter::All => "all",
+            SubscriptionStatusFilter::Canceled => "canceled",
+            SubscriptionStatusFilter::Ended => "ended",
+            SubscriptionStatusFilter::Incomplete => "incomplete",
+            SubscriptionStatusFilter::IncompleteExpired => "incomplete_expired",
+            SubscriptionStatusFilter::PastDue => "past_due",
+            SubscriptionStatusFilter::Trialing => "trialing",
+            SubscriptionStatusFilter::Unpaid => "unpaid",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionStatusFilter {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionStatusFilter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

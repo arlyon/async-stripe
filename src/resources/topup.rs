@@ -211,6 +211,30 @@ pub enum TopupStatus {
     Succeeded,
 }
 
+impl TopupStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TopupStatus::Canceled => "canceled",
+            TopupStatus::Failed => "failed",
+            TopupStatus::Pending => "pending",
+            TopupStatus::Reversed => "reversed",
+            TopupStatus::Succeeded => "succeeded",
+        }
+    }
+}
+
+impl AsRef<str> for TopupStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TopupStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `ListTopups`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -219,4 +243,27 @@ pub enum TopupStatusFilter {
     Failed,
     Pending,
     Succeeded,
+}
+
+impl TopupStatusFilter {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TopupStatusFilter::Canceled => "canceled",
+            TopupStatusFilter::Failed => "failed",
+            TopupStatusFilter::Pending => "pending",
+            TopupStatusFilter::Succeeded => "succeeded",
+        }
+    }
+}
+
+impl AsRef<str> for TopupStatusFilter {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TopupStatusFilter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

@@ -149,3 +149,37 @@ pub enum CheckoutSessionLocale {
     Sv,
     Zh,
 }
+
+impl CheckoutSessionLocale {
+    fn as_str(&self) -> &'static str {
+        match self {
+            CheckoutSessionLocale::Auto => "auto",
+            CheckoutSessionLocale::Da => "da",
+            CheckoutSessionLocale::De => "de",
+            CheckoutSessionLocale::En => "en",
+            CheckoutSessionLocale::Es => "es",
+            CheckoutSessionLocale::Fi => "fi",
+            CheckoutSessionLocale::Fr => "fr",
+            CheckoutSessionLocale::It => "it",
+            CheckoutSessionLocale::Ja => "ja",
+            CheckoutSessionLocale::Nb => "nb",
+            CheckoutSessionLocale::Nl => "nl",
+            CheckoutSessionLocale::Pl => "pl",
+            CheckoutSessionLocale::Pt => "pt",
+            CheckoutSessionLocale::Sv => "sv",
+            CheckoutSessionLocale::Zh => "zh",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutSessionLocale {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutSessionLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

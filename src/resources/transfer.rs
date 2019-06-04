@@ -277,3 +277,24 @@ pub enum TransferSourceType {
     BankAccount,
     Card,
 }
+
+impl TransferSourceType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TransferSourceType::BankAccount => "bank_account",
+            TransferSourceType::Card => "card",
+        }
+    }
+}
+
+impl AsRef<str> for TransferSourceType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TransferSourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

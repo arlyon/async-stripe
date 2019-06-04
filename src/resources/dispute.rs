@@ -295,3 +295,30 @@ pub enum DisputeStatus {
     WarningUnderReview,
     Won,
 }
+
+impl DisputeStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            DisputeStatus::ChargeRefunded => "charge_refunded",
+            DisputeStatus::Lost => "lost",
+            DisputeStatus::NeedsResponse => "needs_response",
+            DisputeStatus::UnderReview => "under_review",
+            DisputeStatus::WarningClosed => "warning_closed",
+            DisputeStatus::WarningNeedsResponse => "warning_needs_response",
+            DisputeStatus::WarningUnderReview => "warning_under_review",
+            DisputeStatus::Won => "won",
+        }
+    }
+}
+
+impl AsRef<str> for DisputeStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for DisputeStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

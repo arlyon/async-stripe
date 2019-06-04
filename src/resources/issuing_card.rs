@@ -165,6 +165,29 @@ pub enum IssuingCardReplacementReason {
     Theft,
 }
 
+impl IssuingCardReplacementReason {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingCardReplacementReason::Damage => "damage",
+            IssuingCardReplacementReason::Expiration => "expiration",
+            IssuingCardReplacementReason::Loss => "loss",
+            IssuingCardReplacementReason::Theft => "theft",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardReplacementReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardReplacementReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `IssuingCardShipping`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -177,12 +200,58 @@ pub enum IssuingCardShippingStatus {
     Shipped,
 }
 
+impl IssuingCardShippingStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingCardShippingStatus::Canceled => "canceled",
+            IssuingCardShippingStatus::Delivered => "delivered",
+            IssuingCardShippingStatus::Failure => "failure",
+            IssuingCardShippingStatus::Pending => "pending",
+            IssuingCardShippingStatus::Returned => "returned",
+            IssuingCardShippingStatus::Shipped => "shipped",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardShippingStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardShippingStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `IssuingCardShipping`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardShippingType {
     Bulk,
     Individual,
+}
+
+impl IssuingCardShippingType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingCardShippingType::Bulk => "bulk",
+            IssuingCardShippingType::Individual => "individual",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardShippingType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardShippingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `IssuingCard`'s `status` field.
@@ -197,10 +266,56 @@ pub enum IssuingCardStatus {
     Stolen,
 }
 
+impl IssuingCardStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingCardStatus::Active => "active",
+            IssuingCardStatus::Canceled => "canceled",
+            IssuingCardStatus::Inactive => "inactive",
+            IssuingCardStatus::Lost => "lost",
+            IssuingCardStatus::Pending => "pending",
+            IssuingCardStatus::Stolen => "stolen",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `IssuingCard`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardType {
     Physical,
     Virtual,
+}
+
+impl IssuingCardType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingCardType::Physical => "physical",
+            IssuingCardType::Virtual => "virtual",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

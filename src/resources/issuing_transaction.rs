@@ -81,3 +81,28 @@ pub enum IssuingTransactionType {
     Refund,
     RefundReversal,
 }
+
+impl IssuingTransactionType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingTransactionType::Capture => "capture",
+            IssuingTransactionType::CashWithdrawal => "cash_withdrawal",
+            IssuingTransactionType::Dispute => "dispute",
+            IssuingTransactionType::DisputeLoss => "dispute_loss",
+            IssuingTransactionType::Refund => "refund",
+            IssuingTransactionType::RefundReversal => "refund_reversal",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingTransactionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

@@ -418,6 +418,27 @@ pub enum PaymentMethodType {
     CardPresent,
 }
 
+impl PaymentMethodType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            PaymentMethodType::Card => "card",
+            PaymentMethodType::CardPresent => "card_present",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `WalletDetails`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -428,4 +449,29 @@ pub enum WalletDetailsType {
     Masterpass,
     SamsungPay,
     VisaCheckout,
+}
+
+impl WalletDetailsType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            WalletDetailsType::AmexExpressCheckout => "amex_express_checkout",
+            WalletDetailsType::ApplePay => "apple_pay",
+            WalletDetailsType::GooglePay => "google_pay",
+            WalletDetailsType::Masterpass => "masterpass",
+            WalletDetailsType::SamsungPay => "samsung_pay",
+            WalletDetailsType::VisaCheckout => "visa_checkout",
+        }
+    }
+}
+
+impl AsRef<str> for WalletDetailsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for WalletDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

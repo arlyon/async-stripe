@@ -896,12 +896,56 @@ pub enum SourceAcceptanceParamsStatus {
     Revoked,
 }
 
+impl SourceAcceptanceParamsStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceAcceptanceParamsStatus::Accepted => "accepted",
+            SourceAcceptanceParamsStatus::Pending => "pending",
+            SourceAcceptanceParamsStatus::Refused => "refused",
+            SourceAcceptanceParamsStatus::Revoked => "revoked",
+        }
+    }
+}
+
+impl AsRef<str> for SourceAcceptanceParamsStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceAcceptanceParamsStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `SourceAcceptanceParams`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceAcceptanceParamsType {
     Offline,
     Online,
+}
+
+impl SourceAcceptanceParamsType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceAcceptanceParamsType::Offline => "offline",
+            SourceAcceptanceParamsType::Online => "online",
+        }
+    }
+}
+
+impl AsRef<str> for SourceAcceptanceParamsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceAcceptanceParamsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Source`'s `flow` field.
@@ -914,6 +958,29 @@ pub enum SourceFlow {
     Redirect,
 }
 
+impl SourceFlow {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceFlow::CodeVerification => "code_verification",
+            SourceFlow::None => "none",
+            SourceFlow::Receiver => "receiver",
+            SourceFlow::Redirect => "redirect",
+        }
+    }
+}
+
+impl AsRef<str> for SourceFlow {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceFlow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `SourceMandateParams`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -921,6 +988,28 @@ pub enum SourceMandateInterval {
     OneTime,
     Scheduled,
     Variable,
+}
+
+impl SourceMandateInterval {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceMandateInterval::OneTime => "one_time",
+            SourceMandateInterval::Scheduled => "scheduled",
+            SourceMandateInterval::Variable => "variable",
+        }
+    }
+}
+
+impl AsRef<str> for SourceMandateInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceMandateInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `SourceMandateParams`'s `notification_method` field.
@@ -934,6 +1023,30 @@ pub enum SourceMandateNotificationMethod {
     StripeEmail,
 }
 
+impl SourceMandateNotificationMethod {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceMandateNotificationMethod::DeprecatedNone => "deprecated_none",
+            SourceMandateNotificationMethod::Email => "email",
+            SourceMandateNotificationMethod::Manual => "manual",
+            SourceMandateNotificationMethod::None => "none",
+            SourceMandateNotificationMethod::StripeEmail => "stripe_email",
+        }
+    }
+}
+
+impl AsRef<str> for SourceMandateNotificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceMandateNotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `SourceRedirectFlow`'s `failure_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -941,6 +1054,28 @@ pub enum SourceRedirectFlowFailureReason {
     Declined,
     ProcessingError,
     UserAbort,
+}
+
+impl SourceRedirectFlowFailureReason {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceRedirectFlowFailureReason::Declined => "declined",
+            SourceRedirectFlowFailureReason::ProcessingError => "processing_error",
+            SourceRedirectFlowFailureReason::UserAbort => "user_abort",
+        }
+    }
+}
+
+impl AsRef<str> for SourceRedirectFlowFailureReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceRedirectFlowFailureReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `SourceRedirectFlow`'s `status` field.
@@ -953,6 +1088,29 @@ pub enum SourceRedirectFlowStatus {
     Succeeded,
 }
 
+impl SourceRedirectFlowStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceRedirectFlowStatus::Failed => "failed",
+            SourceRedirectFlowStatus::NotRequired => "not_required",
+            SourceRedirectFlowStatus::Pending => "pending",
+            SourceRedirectFlowStatus::Succeeded => "succeeded",
+        }
+    }
+}
+
+impl AsRef<str> for SourceRedirectFlowStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceRedirectFlowStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `CreateSourceReceiver`'s `refund_attributes_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -960,6 +1118,28 @@ pub enum SourceRefundNotificationMethod {
     Email,
     Manual,
     None,
+}
+
+impl SourceRefundNotificationMethod {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceRefundNotificationMethod::Email => "email",
+            SourceRefundNotificationMethod::Manual => "manual",
+            SourceRefundNotificationMethod::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for SourceRefundNotificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceRefundNotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Source`'s `status` field.
@@ -971,6 +1151,30 @@ pub enum SourceStatus {
     Consumed,
     Failed,
     Pending,
+}
+
+impl SourceStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceStatus::Canceled => "canceled",
+            SourceStatus::Chargeable => "chargeable",
+            SourceStatus::Consumed => "consumed",
+            SourceStatus::Failed => "failed",
+            SourceStatus::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for SourceStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Source`'s `type` field.
@@ -994,10 +1198,65 @@ pub enum SourceType {
     Wechat,
 }
 
+impl SourceType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceType::AchCreditTransfer => "ach_credit_transfer",
+            SourceType::AchDebit => "ach_debit",
+            SourceType::Alipay => "alipay",
+            SourceType::Bancontact => "bancontact",
+            SourceType::Card => "card",
+            SourceType::CardPresent => "card_present",
+            SourceType::Eps => "eps",
+            SourceType::Giropay => "giropay",
+            SourceType::Ideal => "ideal",
+            SourceType::Multibanco => "multibanco",
+            SourceType::P24 => "p24",
+            SourceType::SepaDebit => "sepa_debit",
+            SourceType::Sofort => "sofort",
+            SourceType::ThreeDSecure => "three_d_secure",
+            SourceType::Wechat => "wechat",
+        }
+    }
+}
+
+impl AsRef<str> for SourceType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Source`'s `usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceUsage {
     Reusable,
     SingleUse,
+}
+
+impl SourceUsage {
+    fn as_str(&self) -> &'static str {
+        match self {
+            SourceUsage::Reusable => "reusable",
+            SourceUsage::SingleUse => "single_use",
+        }
+    }
+}
+
+impl AsRef<str> for SourceUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SourceUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

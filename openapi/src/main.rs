@@ -1194,6 +1194,53 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             out.push_str(",\n");
         }
         out.push_str("}\n");
+        out.push('\n');
+        out.push_str("impl ");
+        out.push_str(&enum_name);
+        out.push_str(" {\n");
+        out.push_str("    fn as_str(&self) -> &'static str {\n");
+        out.push_str("        match self {\n");
+        for wire_name in &enum_.options {
+            if wire_name.trim().is_empty() {
+                continue;
+            }
+            let variant_name = match wire_name.as_str() {
+                "*" => "All".to_string(),
+                n => {
+                    if n.chars().next().unwrap().is_digit(10) {
+                        format!("V{}", n.to_string().replace('-', "_"))
+                    } else {
+                        meta.schema_to_rust_type(wire_name)
+                    }
+                }
+            };
+            out.push_str("            ");
+            out.push_str(&enum_name);
+            out.push_str("::");
+            out.push_str(&variant_name);
+            out.push_str(" => ");
+            out.push_str(&format!("{:?}", wire_name));
+            out.push_str(",\n");
+        }
+        out.push_str("        }\n");
+        out.push_str("    }\n");
+        out.push_str("}\n");
+        out.push('\n');
+        out.push_str("impl AsRef<str> for ");
+        out.push_str(&enum_name);
+        out.push_str(" {\n");
+        out.push_str("    fn as_ref(&self) -> &str {\n");
+        out.push_str("        self.as_str()\n");
+        out.push_str("    }\n");
+        out.push_str("}\n");
+        out.push('\n');
+        out.push_str("impl std::fmt::Display for ");
+        out.push_str(&enum_name);
+        out.push_str(" {\n");
+        out.push_str("    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {\n");
+        out.push_str("        self.as_str().fmt(f)\n");
+        out.push_str("    }\n");
+        out.push_str("}\n");
     }
 
     let mut prelude = String::new();

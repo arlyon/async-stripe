@@ -157,3 +157,25 @@ pub enum IssuingAuthorizationWalletProvider {
     GooglePay,
     SamsungPay,
 }
+
+impl IssuingAuthorizationWalletProvider {
+    fn as_str(&self) -> &'static str {
+        match self {
+            IssuingAuthorizationWalletProvider::ApplePay => "apple_pay",
+            IssuingAuthorizationWalletProvider::GooglePay => "google_pay",
+            IssuingAuthorizationWalletProvider::SamsungPay => "samsung_pay",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingAuthorizationWalletProvider {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingAuthorizationWalletProvider {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}

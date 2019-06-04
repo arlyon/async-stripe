@@ -402,6 +402,112 @@ pub enum ApiVersion {
     V2019_03_14,
 }
 
+impl ApiVersion {
+    fn as_str(&self) -> &'static str {
+        match self {
+            ApiVersion::V2011_01_01 => "2011-01-01",
+            ApiVersion::V2011_06_21 => "2011-06-21",
+            ApiVersion::V2011_06_28 => "2011-06-28",
+            ApiVersion::V2011_08_01 => "2011-08-01",
+            ApiVersion::V2011_09_15 => "2011-09-15",
+            ApiVersion::V2011_11_17 => "2011-11-17",
+            ApiVersion::V2012_02_23 => "2012-02-23",
+            ApiVersion::V2012_03_25 => "2012-03-25",
+            ApiVersion::V2012_06_18 => "2012-06-18",
+            ApiVersion::V2012_06_28 => "2012-06-28",
+            ApiVersion::V2012_07_09 => "2012-07-09",
+            ApiVersion::V2012_09_24 => "2012-09-24",
+            ApiVersion::V2012_10_26 => "2012-10-26",
+            ApiVersion::V2012_11_07 => "2012-11-07",
+            ApiVersion::V2013_02_11 => "2013-02-11",
+            ApiVersion::V2013_02_13 => "2013-02-13",
+            ApiVersion::V2013_07_05 => "2013-07-05",
+            ApiVersion::V2013_08_12 => "2013-08-12",
+            ApiVersion::V2013_08_13 => "2013-08-13",
+            ApiVersion::V2013_10_29 => "2013-10-29",
+            ApiVersion::V2013_12_03 => "2013-12-03",
+            ApiVersion::V2014_01_31 => "2014-01-31",
+            ApiVersion::V2014_03_13 => "2014-03-13",
+            ApiVersion::V2014_03_28 => "2014-03-28",
+            ApiVersion::V2014_05_19 => "2014-05-19",
+            ApiVersion::V2014_06_13 => "2014-06-13",
+            ApiVersion::V2014_06_17 => "2014-06-17",
+            ApiVersion::V2014_07_22 => "2014-07-22",
+            ApiVersion::V2014_07_26 => "2014-07-26",
+            ApiVersion::V2014_08_04 => "2014-08-04",
+            ApiVersion::V2014_08_20 => "2014-08-20",
+            ApiVersion::V2014_09_08 => "2014-09-08",
+            ApiVersion::V2014_10_07 => "2014-10-07",
+            ApiVersion::V2014_11_05 => "2014-11-05",
+            ApiVersion::V2014_11_20 => "2014-11-20",
+            ApiVersion::V2014_12_08 => "2014-12-08",
+            ApiVersion::V2014_12_17 => "2014-12-17",
+            ApiVersion::V2014_12_22 => "2014-12-22",
+            ApiVersion::V2015_01_11 => "2015-01-11",
+            ApiVersion::V2015_01_26 => "2015-01-26",
+            ApiVersion::V2015_02_10 => "2015-02-10",
+            ApiVersion::V2015_02_16 => "2015-02-16",
+            ApiVersion::V2015_02_18 => "2015-02-18",
+            ApiVersion::V2015_03_24 => "2015-03-24",
+            ApiVersion::V2015_04_07 => "2015-04-07",
+            ApiVersion::V2015_06_15 => "2015-06-15",
+            ApiVersion::V2015_07_07 => "2015-07-07",
+            ApiVersion::V2015_07_13 => "2015-07-13",
+            ApiVersion::V2015_07_28 => "2015-07-28",
+            ApiVersion::V2015_08_07 => "2015-08-07",
+            ApiVersion::V2015_08_19 => "2015-08-19",
+            ApiVersion::V2015_09_03 => "2015-09-03",
+            ApiVersion::V2015_09_08 => "2015-09-08",
+            ApiVersion::V2015_09_23 => "2015-09-23",
+            ApiVersion::V2015_10_01 => "2015-10-01",
+            ApiVersion::V2015_10_12 => "2015-10-12",
+            ApiVersion::V2015_10_16 => "2015-10-16",
+            ApiVersion::V2016_02_03 => "2016-02-03",
+            ApiVersion::V2016_02_19 => "2016-02-19",
+            ApiVersion::V2016_02_22 => "2016-02-22",
+            ApiVersion::V2016_02_23 => "2016-02-23",
+            ApiVersion::V2016_02_29 => "2016-02-29",
+            ApiVersion::V2016_03_07 => "2016-03-07",
+            ApiVersion::V2016_06_15 => "2016-06-15",
+            ApiVersion::V2016_07_06 => "2016-07-06",
+            ApiVersion::V2016_10_19 => "2016-10-19",
+            ApiVersion::V2017_01_27 => "2017-01-27",
+            ApiVersion::V2017_02_14 => "2017-02-14",
+            ApiVersion::V2017_04_06 => "2017-04-06",
+            ApiVersion::V2017_05_25 => "2017-05-25",
+            ApiVersion::V2017_06_05 => "2017-06-05",
+            ApiVersion::V2017_08_15 => "2017-08-15",
+            ApiVersion::V2017_12_14 => "2017-12-14",
+            ApiVersion::V2018_01_23 => "2018-01-23",
+            ApiVersion::V2018_02_05 => "2018-02-05",
+            ApiVersion::V2018_02_06 => "2018-02-06",
+            ApiVersion::V2018_02_28 => "2018-02-28",
+            ApiVersion::V2018_05_21 => "2018-05-21",
+            ApiVersion::V2018_07_27 => "2018-07-27",
+            ApiVersion::V2018_08_23 => "2018-08-23",
+            ApiVersion::V2018_09_06 => "2018-09-06",
+            ApiVersion::V2018_09_24 => "2018-09-24",
+            ApiVersion::V2018_10_31 => "2018-10-31",
+            ApiVersion::V2018_11_08 => "2018-11-08",
+            ApiVersion::V2019_02_11 => "2019-02-11",
+            ApiVersion::V2019_02_19 => "2019-02-19",
+            ApiVersion::V2019_03_14 => "2019-03-14",
+        }
+    }
+}
+
+impl AsRef<str> for ApiVersion {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ApiVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `WebhookEndpoint`'s `enabled_events` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -676,10 +782,188 @@ pub enum EventFilter {
     TransferUpdated,
 }
 
+impl EventFilter {
+    fn as_str(&self) -> &'static str {
+        match self {
+            EventFilter::All => "*",
+            EventFilter::AccountApplicationAuthorized => "account.application.authorized",
+            EventFilter::AccountApplicationDeauthorized => "account.application.deauthorized",
+            EventFilter::AccountExternalAccountCreated => "account.external_account.created",
+            EventFilter::AccountExternalAccountDeleted => "account.external_account.deleted",
+            EventFilter::AccountExternalAccountUpdated => "account.external_account.updated",
+            EventFilter::AccountUpdated => "account.updated",
+            EventFilter::ApplicationFeeCreated => "application_fee.created",
+            EventFilter::ApplicationFeeRefundUpdated => "application_fee.refund.updated",
+            EventFilter::ApplicationFeeRefunded => "application_fee.refunded",
+            EventFilter::BalanceAvailable => "balance.available",
+            EventFilter::ChargeCaptured => "charge.captured",
+            EventFilter::ChargeDisputeClosed => "charge.dispute.closed",
+            EventFilter::ChargeDisputeCreated => "charge.dispute.created",
+            EventFilter::ChargeDisputeFundsReinstated => "charge.dispute.funds_reinstated",
+            EventFilter::ChargeDisputeFundsWithdrawn => "charge.dispute.funds_withdrawn",
+            EventFilter::ChargeDisputeUpdated => "charge.dispute.updated",
+            EventFilter::ChargeExpired => "charge.expired",
+            EventFilter::ChargeFailed => "charge.failed",
+            EventFilter::ChargePending => "charge.pending",
+            EventFilter::ChargeRefundUpdated => "charge.refund.updated",
+            EventFilter::ChargeRefunded => "charge.refunded",
+            EventFilter::ChargeSucceeded => "charge.succeeded",
+            EventFilter::ChargeUpdated => "charge.updated",
+            EventFilter::CheckoutSessionCompleted => "checkout.session.completed",
+            EventFilter::CouponCreated => "coupon.created",
+            EventFilter::CouponDeleted => "coupon.deleted",
+            EventFilter::CouponUpdated => "coupon.updated",
+            EventFilter::CreditNoteCreated => "credit_note.created",
+            EventFilter::CreditNoteUpdated => "credit_note.updated",
+            EventFilter::CreditNoteVoided => "credit_note.voided",
+            EventFilter::CustomerCreated => "customer.created",
+            EventFilter::CustomerDeleted => "customer.deleted",
+            EventFilter::CustomerDiscountCreated => "customer.discount.created",
+            EventFilter::CustomerDiscountDeleted => "customer.discount.deleted",
+            EventFilter::CustomerDiscountUpdated => "customer.discount.updated",
+            EventFilter::CustomerSourceCreated => "customer.source.created",
+            EventFilter::CustomerSourceDeleted => "customer.source.deleted",
+            EventFilter::CustomerSourceExpiring => "customer.source.expiring",
+            EventFilter::CustomerSourceUpdated => "customer.source.updated",
+            EventFilter::CustomerSubscriptionCreated => "customer.subscription.created",
+            EventFilter::CustomerSubscriptionDeleted => "customer.subscription.deleted",
+            EventFilter::CustomerSubscriptionTrialWillEnd => "customer.subscription.trial_will_end",
+            EventFilter::CustomerSubscriptionUpdated => "customer.subscription.updated",
+            EventFilter::CustomerTaxIdCreated => "customer.tax_id.created",
+            EventFilter::CustomerTaxIdDeleted => "customer.tax_id.deleted",
+            EventFilter::CustomerTaxIdUpdated => "customer.tax_id.updated",
+            EventFilter::CustomerUpdated => "customer.updated",
+            EventFilter::FileCreated => "file.created",
+            EventFilter::InvoiceCreated => "invoice.created",
+            EventFilter::InvoiceDeleted => "invoice.deleted",
+            EventFilter::InvoiceFinalized => "invoice.finalized",
+            EventFilter::InvoiceMarkedUncollectible => "invoice.marked_uncollectible",
+            EventFilter::InvoicePaymentActionRequired => "invoice.payment_action_required",
+            EventFilter::InvoicePaymentFailed => "invoice.payment_failed",
+            EventFilter::InvoicePaymentSucceeded => "invoice.payment_succeeded",
+            EventFilter::InvoiceSent => "invoice.sent",
+            EventFilter::InvoiceUpcoming => "invoice.upcoming",
+            EventFilter::InvoiceUpdated => "invoice.updated",
+            EventFilter::InvoiceVoided => "invoice.voided",
+            EventFilter::InvoiceitemCreated => "invoiceitem.created",
+            EventFilter::InvoiceitemDeleted => "invoiceitem.deleted",
+            EventFilter::InvoiceitemUpdated => "invoiceitem.updated",
+            EventFilter::IssuingAuthorizationCreated => "issuing_authorization.created",
+            EventFilter::IssuingAuthorizationRequest => "issuing_authorization.request",
+            EventFilter::IssuingAuthorizationUpdated => "issuing_authorization.updated",
+            EventFilter::IssuingCardCreated => "issuing_card.created",
+            EventFilter::IssuingCardUpdated => "issuing_card.updated",
+            EventFilter::IssuingCardholderCreated => "issuing_cardholder.created",
+            EventFilter::IssuingCardholderUpdated => "issuing_cardholder.updated",
+            EventFilter::IssuingDisputeCreated => "issuing_dispute.created",
+            EventFilter::IssuingDisputeUpdated => "issuing_dispute.updated",
+            EventFilter::IssuingSettlementCreated => "issuing_settlement.created",
+            EventFilter::IssuingSettlementUpdated => "issuing_settlement.updated",
+            EventFilter::IssuingTransactionCreated => "issuing_transaction.created",
+            EventFilter::IssuingTransactionUpdated => "issuing_transaction.updated",
+            EventFilter::OrderCreated => "order.created",
+            EventFilter::OrderPaymentFailed => "order.payment_failed",
+            EventFilter::OrderPaymentSucceeded => "order.payment_succeeded",
+            EventFilter::OrderUpdated => "order.updated",
+            EventFilter::OrderReturnCreated => "order_return.created",
+            EventFilter::PaymentIntentAmountCapturableUpdated => {
+                "payment_intent.amount_capturable_updated"
+            }
+            EventFilter::PaymentIntentCreated => "payment_intent.created",
+            EventFilter::PaymentIntentPaymentFailed => "payment_intent.payment_failed",
+            EventFilter::PaymentIntentSucceeded => "payment_intent.succeeded",
+            EventFilter::PaymentMethodAttached => "payment_method.attached",
+            EventFilter::PaymentMethodCardAutomaticallyUpdated => {
+                "payment_method.card_automatically_updated"
+            }
+            EventFilter::PaymentMethodDetached => "payment_method.detached",
+            EventFilter::PaymentMethodUpdated => "payment_method.updated",
+            EventFilter::PayoutCanceled => "payout.canceled",
+            EventFilter::PayoutCreated => "payout.created",
+            EventFilter::PayoutFailed => "payout.failed",
+            EventFilter::PayoutPaid => "payout.paid",
+            EventFilter::PayoutUpdated => "payout.updated",
+            EventFilter::PersonCreated => "person.created",
+            EventFilter::PersonDeleted => "person.deleted",
+            EventFilter::PersonUpdated => "person.updated",
+            EventFilter::PlanCreated => "plan.created",
+            EventFilter::PlanDeleted => "plan.deleted",
+            EventFilter::PlanUpdated => "plan.updated",
+            EventFilter::ProductCreated => "product.created",
+            EventFilter::ProductDeleted => "product.deleted",
+            EventFilter::ProductUpdated => "product.updated",
+            EventFilter::RecipientCreated => "recipient.created",
+            EventFilter::RecipientDeleted => "recipient.deleted",
+            EventFilter::RecipientUpdated => "recipient.updated",
+            EventFilter::ReportingReportRunFailed => "reporting.report_run.failed",
+            EventFilter::ReportingReportRunSucceeded => "reporting.report_run.succeeded",
+            EventFilter::ReportingReportTypeUpdated => "reporting.report_type.updated",
+            EventFilter::ReviewClosed => "review.closed",
+            EventFilter::ReviewOpened => "review.opened",
+            EventFilter::SigmaScheduledQueryRunCreated => "sigma.scheduled_query_run.created",
+            EventFilter::SkuCreated => "sku.created",
+            EventFilter::SkuDeleted => "sku.deleted",
+            EventFilter::SkuUpdated => "sku.updated",
+            EventFilter::SourceCanceled => "source.canceled",
+            EventFilter::SourceChargeable => "source.chargeable",
+            EventFilter::SourceFailed => "source.failed",
+            EventFilter::SourceMandateNotification => "source.mandate_notification",
+            EventFilter::SourceRefundAttributesRequired => "source.refund_attributes_required",
+            EventFilter::SourceTransactionCreated => "source.transaction.created",
+            EventFilter::SourceTransactionUpdated => "source.transaction.updated",
+            EventFilter::TaxRateCreated => "tax_rate.created",
+            EventFilter::TaxRateUpdated => "tax_rate.updated",
+            EventFilter::TopupCanceled => "topup.canceled",
+            EventFilter::TopupCreated => "topup.created",
+            EventFilter::TopupFailed => "topup.failed",
+            EventFilter::TopupReversed => "topup.reversed",
+            EventFilter::TopupSucceeded => "topup.succeeded",
+            EventFilter::TransferCreated => "transfer.created",
+            EventFilter::TransferFailed => "transfer.failed",
+            EventFilter::TransferPaid => "transfer.paid",
+            EventFilter::TransferReversed => "transfer.reversed",
+            EventFilter::TransferUpdated => "transfer.updated",
+        }
+    }
+}
+
+impl AsRef<str> for EventFilter {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for EventFilter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `WebhookEndpoint`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum WebhookEndpointStatus {
     Disabled,
     Enabled,
+}
+
+impl WebhookEndpointStatus {
+    fn as_str(&self) -> &'static str {
+        match self {
+            WebhookEndpointStatus::Disabled => "disabled",
+            WebhookEndpointStatus::Enabled => "enabled",
+        }
+    }
+}
+
+impl AsRef<str> for WebhookEndpointStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for WebhookEndpointStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

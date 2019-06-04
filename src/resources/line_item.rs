@@ -110,3 +110,24 @@ pub enum InvoiceLineItemType {
     InvoiceItem,
     Subscription,
 }
+
+impl InvoiceLineItemType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            InvoiceLineItemType::InvoiceItem => "invoiceitem",
+            InvoiceLineItemType::Subscription => "subscription",
+        }
+    }
+}
+
+impl AsRef<str> for InvoiceLineItemType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoiceLineItemType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
