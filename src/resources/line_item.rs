@@ -106,6 +106,7 @@ pub struct TaxAmount {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum InvoiceLineItemType {
-    Invoiceitem,
+    #[serde(rename = "invoiceitem")]
+    InvoiceItem,
     Subscription,
 }

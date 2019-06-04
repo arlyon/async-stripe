@@ -1137,13 +1137,25 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         out.push_str("#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]\n");
         out.push_str("#[serde(rename_all = \"snake_case\")]\n");
         out.push_str("pub enum ");
-        out.push_str(&enum_name.to_camel_case());
+        out.push_str(&enum_name);
         out.push_str(" {\n");
         for wire_name in &enum_.options {
-            if wire_name.is_empty() {
+            if wire_name.trim().is_empty() {
                 continue;
             }
-            let variant_name = wire_name.to_camel_case();
+            let variant_name = match wire_name.as_str() {
+                "*" => "All".to_string(),
+                n => {
+                    if n.chars().next().unwrap().is_digit(10) {
+                        format!("V{}", n.to_string().replace('-', "_"))
+                    } else {
+                        meta.schema_to_rust_type(wire_name)
+                    }
+                }
+            };
+            if variant_name.trim().is_empty() {
+                panic!("unhandled enum variant: {:?}", wire_name)
+            }
             if &variant_name.to_snake_case() != wire_name {
                 out.push_str("    #[serde(rename = \"");
                 out.push_str(wire_name);
