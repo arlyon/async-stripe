@@ -31,7 +31,7 @@
 //!
 //! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! let token = "tok_ID_FROM_CHECKOUT".parse().unwrap();
-//! let mut params = stripe::CreateCharge::ew();
+//! let mut params = stripe::CreateCharge::new();
 //! // NOTE: Stripe represents currency in the lowest denominations (e.g. cents)
 //! params.amount = Some(1095); // e.g. $10.95
 //! params.source = Some(stripe::PaymentSourceParams::Token(token));
