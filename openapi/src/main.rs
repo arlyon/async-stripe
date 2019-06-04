@@ -244,7 +244,7 @@ fn main() {
         (("update_customer", "address"), ("Address", "Option<Address>")),
         (("create_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("update_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-        (("create_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams>")),
+        (("create_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams<'a>>")),
         (("update_customer", "trial_end"), ("Scheduled", "Option<Scheduled>")),
         (
             ("customer_invoice_settings", "custom_fields"),
