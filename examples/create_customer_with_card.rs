@@ -10,7 +10,7 @@ fn main() {
     card.exp_year = "20";
 
     // Define the customer
-    let mut params = stripe::CustomerParams::default();
+    let mut params = stripe::CreateCustomer::new();
     params.email = Some("jdoe@example.org");
     params.source = Some(stripe::PaymentSourceParams::Card(card));
 

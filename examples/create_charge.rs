@@ -10,7 +10,7 @@ fn main() {
     card.exp_year = "20";
 
     // Define the charge
-    let mut params = stripe::ChargeParams::default();
+    let mut params = stripe::CreateCharge::new();
     params.amount = Some(1000);
     params.source = Some(stripe::PaymentSourceParams::Card(card));
 

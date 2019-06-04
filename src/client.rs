@@ -174,25 +174,16 @@ fn send<T: DeserializeOwned>(request: RequestBuilder) -> Response<T> {
 #[cfg(test)]
 mod tests {
     use super::with_form_urlencoded;
-    use crate::CustomerParams;
+    use crate::CreateCustomer;
     use std::collections::HashMap;
 
     #[test]
     fn serialize_metadata() {
         let mut metadata = HashMap::new();
         metadata.insert("any".to_string(), "thing".to_string());
-        let form = CustomerParams {
-            email: Some("jdoe@example.org"),
-            metadata: Some(metadata),
-            // ...
-            source: None,
-            default_source: None,
-            account_balance: None,
-            business_vat_id: None,
-            coupon: None,
-            description: None,
-            shipping: None,
-        };
+        let mut form = CreateCustomer::new();
+        form.email = Some("jdoe@example.org");
+        form.metadata = Some(metadata);
         let http = reqwest::Client::new();
         let result = with_form_urlencoded(http.post("https://example.example/v1/"), &form)
             .and_then(|x| Ok(x.build()?));
