@@ -335,6 +335,7 @@ def_id!(BankTokenId, "btok_");
 def_id!(CardId, "card_");
 def_id!(CardTokenId, "tok_");
 def_id!(ChargeId, "ch_");
+def_id!(CheckoutSession, "cs_");
 def_id!(CouponId: USER_PROVIDED); // N.B. A coupon id can be user-provided so can be any arbitrary string
 def_id!(CustomerId, "cus_");
 def_id!(DisputeId, "dp_");
