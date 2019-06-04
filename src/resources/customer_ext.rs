@@ -70,10 +70,7 @@ pub struct VerifyBankAccount<'a> {
 
 impl VerifyBankAccount<'_> {
     pub fn new() -> Self {
-        VerifyBankAccount {
-            amounts: None,
-            verification_method: None,
-        }
+        VerifyBankAccount { amounts: None, verification_method: None }
     }
 }
 

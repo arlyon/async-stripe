@@ -764,7 +764,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         && param["schema"]["type"].as_str() == Some("string")
                         && param_name != "tax_id" =>
                 {
-                    if let Some((use_path, rust_type)) = meta.field_overrides.get(&(params_schema.as_str(), param_name)) {
+                    if let Some((use_path, rust_type)) =
+                        meta.field_overrides.get(&(params_schema.as_str(), param_name))
+                    {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), rust_type.to_string(), required));
                         match *use_path {
@@ -793,7 +795,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str(&id_type);
                             out.push_str(",\n");
                         } else {
-                            out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
+                            out.push_str(
+                                "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
+                            );
                             out.push_str("    pub ");
                             out.push_str(object);
                             out.push_str(": Option<");
