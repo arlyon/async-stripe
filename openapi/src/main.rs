@@ -244,13 +244,13 @@ fn main() {
         (("update_customer", "address"), ("Address", "Option<Address>")),
         (("create_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("update_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+        (("create_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams>")),
         (("update_customer", "trial_end"), ("Scheduled", "Option<Scheduled>")),
         (
             ("customer_invoice_settings", "custom_fields"),
             ("CustomField", "Option<Vec<CustomField>>"),
         ),
     ]);
-
     // Renames for `invoice` params
     field_overrides.extend(vec![(
         ("create_invoice", "custom_fields"),
@@ -650,6 +650,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     }
 
     for (_, params) in state.inferred_parameters.clone() {
+        let params_schema = params.rust_type.to_snake_case();
         let parameters = match params.parameters.as_array() {
             Some(some) => some.as_slice(),
             None => &[],
@@ -682,6 +683,24 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 }
             };
             let required = param["required"].as_bool() == Some(true);
+            if let Some((use_path, rust_type)) = meta.field_overrides.get(&(params_schema.as_str(), param_name)) {
+                print_doc(&mut out);
+                initializers.push((param_rename.into(), rust_type.to_string(), required));
+                match *use_path {
+                    "" | "String" => (),
+                    "Metadata" => {
+                        state.use_params.insert("Metadata");
+                    }
+                    path => {
+                        state.use_resources.insert(path.into());
+                    }
+                }
+                out.push_str("    pub ");
+                out.push_str(&param_rename);
+                out.push_str(": ");
+                out.push_str(&rust_type);
+                out.push_str("\n");
+            }
             match param_name {
                 // TODO: Handle these unusual params
                 "bank_account" | "card" | "destination" | "product" => continue,
@@ -740,7 +759,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                     // out.push_str(",\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    pub starting_after: Option<&'a ");
+                        out.push_str("    pub starting_after: Option<");
                         out.push_str(cursor_type);
                         out.push_str(">,\n");
                     }
