@@ -134,7 +134,7 @@ pub enum TokenType {
 }
 
 impl TokenType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             TokenType::Account => "account",
             TokenType::BankAccount => "bank_account",

@@ -651,7 +651,7 @@ pub enum SubscriptionBilling {
 }
 
 impl SubscriptionBilling {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SubscriptionBilling::ChargeAutomatically => "charge_automatically",
             SubscriptionBilling::SendInvoice => "send_invoice",
@@ -680,7 +680,7 @@ pub enum SubscriptionBillingCycleAnchor {
 }
 
 impl SubscriptionBillingCycleAnchor {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SubscriptionBillingCycleAnchor::Now => "now",
             SubscriptionBillingCycleAnchor::Unchanged => "unchanged",
@@ -714,7 +714,7 @@ pub enum SubscriptionStatus {
 }
 
 impl SubscriptionStatus {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SubscriptionStatus::Active => "active",
             SubscriptionStatus::Canceled => "canceled",
@@ -755,7 +755,7 @@ pub enum SubscriptionStatusFilter {
 }
 
 impl SubscriptionStatusFilter {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SubscriptionStatusFilter::Active => "active",
             SubscriptionStatusFilter::All => "all",

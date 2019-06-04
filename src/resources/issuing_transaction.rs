@@ -83,7 +83,7 @@ pub enum IssuingTransactionType {
 }
 
 impl IssuingTransactionType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             IssuingTransactionType::Capture => "capture",
             IssuingTransactionType::CashWithdrawal => "cash_withdrawal",

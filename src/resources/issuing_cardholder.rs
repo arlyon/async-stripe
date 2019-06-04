@@ -99,7 +99,7 @@ pub enum IssuingCardholderStatus {
 }
 
 impl IssuingCardholderStatus {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             IssuingCardholderStatus::Active => "active",
             IssuingCardholderStatus::Blocked => "blocked",
@@ -130,7 +130,7 @@ pub enum IssuingCardholderType {
 }
 
 impl IssuingCardholderType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             IssuingCardholderType::BusinessEntity => "business_entity",
             IssuingCardholderType::Individual => "individual",

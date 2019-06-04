@@ -403,7 +403,7 @@ pub enum ApiVersion {
 }
 
 impl ApiVersion {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             ApiVersion::V2011_01_01 => "2011-01-01",
             ApiVersion::V2011_06_21 => "2011-06-21",
@@ -783,7 +783,7 @@ pub enum EventFilter {
 }
 
 impl EventFilter {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             EventFilter::All => "*",
             EventFilter::AccountApplicationAuthorized => "account.application.authorized",
@@ -948,7 +948,7 @@ pub enum WebhookEndpointStatus {
 }
 
 impl WebhookEndpointStatus {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             WebhookEndpointStatus::Disabled => "disabled",
             WebhookEndpointStatus::Enabled => "enabled",

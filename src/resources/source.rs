@@ -897,7 +897,7 @@ pub enum SourceAcceptanceParamsStatus {
 }
 
 impl SourceAcceptanceParamsStatus {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceAcceptanceParamsStatus::Accepted => "accepted",
             SourceAcceptanceParamsStatus::Pending => "pending",
@@ -928,7 +928,7 @@ pub enum SourceAcceptanceParamsType {
 }
 
 impl SourceAcceptanceParamsType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceAcceptanceParamsType::Offline => "offline",
             SourceAcceptanceParamsType::Online => "online",
@@ -959,7 +959,7 @@ pub enum SourceFlow {
 }
 
 impl SourceFlow {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceFlow::CodeVerification => "code_verification",
             SourceFlow::None => "none",
@@ -991,7 +991,7 @@ pub enum SourceMandateInterval {
 }
 
 impl SourceMandateInterval {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceMandateInterval::OneTime => "one_time",
             SourceMandateInterval::Scheduled => "scheduled",
@@ -1024,7 +1024,7 @@ pub enum SourceMandateNotificationMethod {
 }
 
 impl SourceMandateNotificationMethod {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceMandateNotificationMethod::DeprecatedNone => "deprecated_none",
             SourceMandateNotificationMethod::Email => "email",
@@ -1057,7 +1057,7 @@ pub enum SourceRedirectFlowFailureReason {
 }
 
 impl SourceRedirectFlowFailureReason {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceRedirectFlowFailureReason::Declined => "declined",
             SourceRedirectFlowFailureReason::ProcessingError => "processing_error",
@@ -1089,7 +1089,7 @@ pub enum SourceRedirectFlowStatus {
 }
 
 impl SourceRedirectFlowStatus {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceRedirectFlowStatus::Failed => "failed",
             SourceRedirectFlowStatus::NotRequired => "not_required",
@@ -1121,7 +1121,7 @@ pub enum SourceRefundNotificationMethod {
 }
 
 impl SourceRefundNotificationMethod {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceRefundNotificationMethod::Email => "email",
             SourceRefundNotificationMethod::Manual => "manual",
@@ -1154,7 +1154,7 @@ pub enum SourceStatus {
 }
 
 impl SourceStatus {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceStatus::Canceled => "canceled",
             SourceStatus::Chargeable => "chargeable",
@@ -1199,7 +1199,7 @@ pub enum SourceType {
 }
 
 impl SourceType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceType::AchCreditTransfer => "ach_credit_transfer",
             SourceType::AchDebit => "ach_debit",
@@ -1241,7 +1241,7 @@ pub enum SourceUsage {
 }
 
 impl SourceUsage {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             SourceUsage::Reusable => "reusable",
             SourceUsage::SingleUse => "single_use",

@@ -112,7 +112,7 @@ pub enum InvoiceLineItemType {
 }
 
 impl InvoiceLineItemType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             InvoiceLineItemType::InvoiceItem => "invoiceitem",
             InvoiceLineItemType::Subscription => "subscription",

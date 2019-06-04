@@ -419,7 +419,7 @@ pub enum PaymentMethodType {
 }
 
 impl PaymentMethodType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             PaymentMethodType::Card => "card",
             PaymentMethodType::CardPresent => "card_present",
@@ -452,7 +452,7 @@ pub enum WalletDetailsType {
 }
 
 impl WalletDetailsType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             WalletDetailsType::AmexExpressCheckout => "amex_express_checkout",
             WalletDetailsType::ApplePay => "apple_pay",

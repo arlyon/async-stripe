@@ -279,7 +279,7 @@ pub enum TransferSourceType {
 }
 
 impl TransferSourceType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             TransferSourceType::BankAccount => "bank_account",
             TransferSourceType::Card => "card",

@@ -443,7 +443,7 @@ pub enum OrderItemParamsType {
 }
 
 impl OrderItemParamsType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             OrderItemParamsType::Discount => "discount",
             OrderItemParamsType::Shipping => "shipping",
@@ -477,7 +477,7 @@ pub enum OrderStatus {
 }
 
 impl OrderStatus {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             OrderStatus::Canceled => "canceled",
             OrderStatus::Created => "created",
@@ -511,7 +511,7 @@ pub enum OrderStatusFilter {
 }
 
 impl OrderStatusFilter {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             OrderStatusFilter::Created => "created",
             OrderStatusFilter::Fulfilled => "fulfilled",

@@ -188,7 +188,7 @@ pub enum ReviewClosedReason {
 }
 
 impl ReviewClosedReason {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             ReviewClosedReason::Approved => "approved",
             ReviewClosedReason::Disputed => "disputed",
@@ -219,7 +219,7 @@ pub enum ReviewOpenedReason {
 }
 
 impl ReviewOpenedReason {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             ReviewOpenedReason::Manual => "manual",
             ReviewOpenedReason::Rule => "rule",
@@ -252,7 +252,7 @@ pub enum ReviewReason {
 }
 
 impl ReviewReason {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             ReviewReason::Approved => "approved",
             ReviewReason::Disputed => "disputed",

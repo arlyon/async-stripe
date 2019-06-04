@@ -419,7 +419,7 @@ pub enum CreatePlanTransformUsageRound {
 }
 
 impl CreatePlanTransformUsageRound {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             CreatePlanTransformUsageRound::Down => "down",
             CreatePlanTransformUsageRound::Up => "up",
@@ -450,7 +450,7 @@ pub enum PlanAggregateUsage {
 }
 
 impl PlanAggregateUsage {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             PlanAggregateUsage::LastDuringPeriod => "last_during_period",
             PlanAggregateUsage::LastEver => "last_ever",
@@ -481,7 +481,7 @@ pub enum PlanBillingScheme {
 }
 
 impl PlanBillingScheme {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             PlanBillingScheme::PerUnit => "per_unit",
             PlanBillingScheme::Tiered => "tiered",
@@ -512,7 +512,7 @@ pub enum PlanInterval {
 }
 
 impl PlanInterval {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             PlanInterval::Day => "day",
             PlanInterval::Month => "month",
@@ -543,7 +543,7 @@ pub enum PlanTiersMode {
 }
 
 impl PlanTiersMode {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             PlanTiersMode::Graduated => "graduated",
             PlanTiersMode::Volume => "volume",
@@ -572,7 +572,7 @@ pub enum PlanUsageType {
 }
 
 impl PlanUsageType {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             PlanUsageType::Licensed => "licensed",
             PlanUsageType::Metered => "metered",
@@ -601,7 +601,7 @@ pub enum TransformUsageRound {
 }
 
 impl TransformUsageRound {
-    fn as_str(&self) -> &'static str {
+    pub fn as_str(&self) -> &'static str {
         match self {
             TransformUsageRound::Down => "down",
             TransformUsageRound::Up => "up",
