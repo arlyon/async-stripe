@@ -467,7 +467,12 @@ def_id!(FileId, "file_");
 def_id!(FileLinkId, "link_");
 def_id!(InvoiceId, "in_");
 def_id!(InvoiceItemId, "ii_");
-def_id!(InvoiceLineItemId, "ii_"); // N.B. yes this is the same as `InvoiceItemId`
+def_id!(
+    enum InvoiceLineItemId {
+        Item(InvoiceItemId),
+        Subscription(SubscriptionLineId),
+    }
+);
 def_id!(IssuingAuthorizationId, "iauth_");
 def_id!(IssuingCardId, "ic_");
 def_id!(IssuingCardholderId, "ich_");
@@ -504,6 +509,7 @@ def_id!(SkuId, "sku_");
 def_id!(SourceId, "src_");
 def_id!(SubscriptionId, "sub_");
 def_id!(SubscriptionItemId, "si_");
+def_id!(SubscriptionLineId, "sli_");
 def_id!(TaxIdId, "txi_");
 def_id!(TaxRateId, "txr_");
 def_id!(
