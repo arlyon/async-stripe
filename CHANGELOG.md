@@ -1,3 +1,8 @@
+# Version 0.10.2 (June 13, 2019)
+
+## Fixes
+- Fixed the `InvoiceLineItemId` type to correctly handle subscription items.
+
 # Version 0.10.0 / 0.10.1 (June 4, 2019)
 
 This version uses code generation to generate the stripe API according to the openapi spec.
