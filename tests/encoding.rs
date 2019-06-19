@@ -288,3 +288,54 @@ fn deserialize_customer_with_source() {
     let result = serde_json::from_value::<Customer>(example);
     assert!(result.is_ok(), "expected ok; was {:?}", result);
 }
+
+#[test]
+fn deserialize_checkout_event() {
+    use stripe::Event;
+
+    let example = json!({
+      "created": 1326853478,
+      "livemode": false,
+      "id": "evt_00000000000000",
+      "type": "checkout.session.completed",
+      "object": "event",
+      "request": null,
+      "pending_webhooks": 1,
+      "api_version": "2019-05-16",
+      "data": {
+        "object": {
+          "id": "cs_00000000000000",
+          "object": "checkout.session",
+          "billing_address_collection": null,
+          "cancel_url": "https://example.com/cancel",
+          "client_reference_id": null,
+          "customer": null,
+          "customer_email": null,
+          "display_items": [
+            {
+              "amount": 1500,
+              "currency": "usd",
+              "custom": {
+                "description": "Comfortable cotton t-shirt",
+                "images": null,
+                "name": "T-shirt"
+              },
+              "quantity": 2,
+              "type": "custom"
+            }
+          ],
+          "livemode": false,
+          "locale": null,
+          "payment_intent": "pi_00000000000000",
+          "payment_method_types": [
+            "card"
+          ],
+          "submit_type": null,
+          "subscription": null,
+          "success_url": "https://example.com/success"
+        }
+      }
+    });
+    let result = serde_json::from_value::<Event>(example);
+    assert!(result.is_ok(), "expected ok; was {:?}", result);
+}

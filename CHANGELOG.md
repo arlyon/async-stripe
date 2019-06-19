@@ -1,3 +1,8 @@
+# Version 0.10.3 (June 19, 2019)
+
+## Fixes
+- Fixed deserialization of `CheckoutSessionCompleted` events.
+
 # Version 0.10.2 (June 13, 2019)
 
 ## Fixes
