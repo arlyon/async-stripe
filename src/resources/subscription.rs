@@ -615,6 +615,18 @@ pub struct CreateSubscriptionItems {
     pub tax_rates: Option<Vec<String>>,
 }
 
+impl CreateSubscriptionItems {
+    pub fn new(plan: impl AsRef<str>) -> Self {
+        Self {
+            billing_thresholds: Default::default(),
+            metadata: Default::default(),
+            plan: plan.as_ref().to_owned(),
+            quantity: Default::default(),
+            tax_rates: Default::default(),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionItems {
     #[serde(skip_serializing_if = "Option::is_none")]
