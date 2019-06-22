@@ -1,12 +1,13 @@
-# Version 0.10.4 (June 28, 2019)
+# Version 0.10.4 (development)
 
 ## Added
 - Added `id` field to `Event`
 
-# Version 0.10.3 (June 19, 2019)
+# Version 0.10.3 (June 21, 2019)
 
 ## Fixes
 - Fixed deserialization of `CheckoutSessionCompleted` events.
+- Added missing `Invoice` events.
 
 # Version 0.10.2 (June 13, 2019)
 
