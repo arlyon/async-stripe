@@ -87,14 +87,26 @@ pub enum EventType {
     FileCreated,
     #[serde(rename = "invoice.created")]
     InvoiceCreated,
+    #[serde(rename = "invoice.deleted")]
+    InvoiceDeleted,
+    #[serde(rename = "invoice.finalized")]
+    InvoiceFinalized,
+    #[serde(rename = "invoice.marked_uncollectible")]
+    InvoiceMarkedUncollectible,
+    #[serde(rename = "invoice.payment_action_required")]
+    InvoicePaymentActionRequired,
     #[serde(rename = "invoice.payment_failed")]
     InvoicePaymentFailed,
     #[serde(rename = "invoice.payment_succeeded")]
     InvoicePaymentSucceeded,
+    #[serde(rename = "invoice.sent")]
+    InvoiceSent,
     #[serde(rename = "invoice.updated")]
     InvoiceUpdated,
     #[serde(rename = "invoice.upcoming")]
     InvoiceUpcoming,
+    #[serde(rename = "invoice.voided")]
+    InvoiceVoided,
     #[serde(rename = "invoiceitem.created")]
     InvoiceItemCreated,
     #[serde(rename = "invoiceitem.deleted")]
