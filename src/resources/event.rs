@@ -1,5 +1,7 @@
 use crate::error::WebhookError;
 use crate::resources::*;
+use crate::ids::{EventId};
+
 use chrono::Utc;
 #[cfg(feature = "webhooks")]
 use hmac::{Hmac, Mac};
@@ -175,6 +177,7 @@ pub enum EventType {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Event {
+    pub id: EventId,
     #[serde(rename = "type")]
     pub event_type: EventType,
     pub data: EventData,
@@ -388,5 +391,6 @@ mod tests {
             .expect("Failed to construct event");
 
         assert_eq!(event.event_type, super::EventType::InvoiceItemCreated);
+        assert_eq!(event.id.to_string(), "evt_123");
     }
 }

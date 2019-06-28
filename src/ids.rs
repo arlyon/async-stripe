@@ -463,6 +463,7 @@ def_id!(CheckoutSessionId, "cs_");
 def_id!(CouponId: String); // N.B. A coupon id can be user-provided so can be any arbitrary string
 def_id!(CustomerId, "cus_");
 def_id!(DisputeId, "dp_");
+def_id!(EventId, "evt_");
 def_id!(FileId, "file_");
 def_id!(FileLinkId, "link_");
 def_id!(InvoiceId, "in_");
