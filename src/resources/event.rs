@@ -1,6 +1,6 @@
 use crate::error::WebhookError;
+use crate::ids::EventId;
 use crate::resources::*;
-use crate::ids::{EventId};
 
 use chrono::Utc;
 #[cfg(feature = "webhooks")]
