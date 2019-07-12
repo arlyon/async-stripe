@@ -1,7 +1,10 @@
-# Version 0.10.4 (development)
+# Version 0.10.4 (July 12, 2019)
 
-## Added
+## Improvements
 - Added `id` field to `Event`
+
+## Fixes
+- Fixes a regression deriving `Eq` and `PartialEq` for `PaymentIntent` enums.
 
 # Version 0.10.3 (June 21, 2019)
 
