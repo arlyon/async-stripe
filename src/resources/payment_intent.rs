@@ -518,7 +518,7 @@ pub struct PaymentIntentListParams<'a> {
 }
 
 /// An enum representing the possible values of an `PaymentIntent`'s `cancellation_reason` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentCancellationReason {
     Abandoned,
@@ -531,7 +531,7 @@ pub enum PaymentIntentCancellationReason {
 }
 
 /// An enum representing the possible values of an `PaymentIntent`'s `capture_method` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentCaptureMethod {
     Automatic,
@@ -539,7 +539,7 @@ pub enum PaymentIntentCaptureMethod {
 }
 
 /// An enum representing the possible values of an `PaymentIntent`'s `confirmation_method` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentConfirmationMethod {
     Automatic,
@@ -547,7 +547,7 @@ pub enum PaymentIntentConfirmationMethod {
 }
 
 /// An enum representing the possible values of an `PaymentIntent`'s `status` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentStatus {
     Canceled,
