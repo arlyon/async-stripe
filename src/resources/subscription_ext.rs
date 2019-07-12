@@ -29,7 +29,7 @@ impl Subscription {
 }
 
 impl CreateSubscriptionItems {
-   pub fn new(plan: impl AsRef<str>) -> Self {
+    pub fn new(plan: impl AsRef<str>) -> Self {
         Self {
             billing_thresholds: Default::default(),
             metadata: Default::default(),
