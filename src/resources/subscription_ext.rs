@@ -27,3 +27,15 @@ impl Subscription {
         client.delete_query(&format!("/subscriptions/{}", subscription_id), params)
     }
 }
+
+impl CreateSubscriptionItems {
+   pub fn new(plan: impl AsRef<str>) -> Self {
+        Self {
+            billing_thresholds: Default::default(),
+            metadata: Default::default(),
+            plan: plan.as_ref().to_owned(),
+            quantity: Default::default(),
+            tax_rates: Default::default(),
+        }
+    }
+}
