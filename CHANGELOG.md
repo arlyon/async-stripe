@@ -1,3 +1,8 @@
+# Version 0.10.4 (June 28, 2019)
+
+## Added
+- Added `id` field to `Event`
+
 # Version 0.10.3 (June 19, 2019)
 
 ## Fixes
