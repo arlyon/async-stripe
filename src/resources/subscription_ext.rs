@@ -1,6 +1,6 @@
 use crate::config::{Client, Response};
 use crate::ids::SubscriptionId;
-use crate::resources::Subscription;
+use crate::resources::{CreateSubscriptionItems, Subscription};
 use serde_derive::Serialize;
 
 #[derive(Clone, Debug, Serialize)]
