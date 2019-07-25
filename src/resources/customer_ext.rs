@@ -11,11 +11,11 @@ impl Customer {
     pub fn attach_source(
         client: &Client,
         customer_id: &CustomerId,
-        source: PaymentSourceParams<'_>,
+        source: PaymentSourceParams,
     ) -> Response<PaymentSource> {
         #[derive(Serialize)]
-        struct AttachSource<'a> {
-            source: PaymentSourceParams<'a>,
+        struct AttachSource {
+            source: PaymentSourceParams,
         }
         let params = AttachSource { source };
         client.post_form(&format!("/customers/{}/sources", customer_id), params)

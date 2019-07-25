@@ -414,7 +414,7 @@ pub struct CreateCharge<'a> {
     /// This can be the ID of a [card](https://stripe.com/docs/api#cards) (i.e., credit or debit card), a [bank account](https://stripe.com/docs/api#bank_accounts), a [source](https://stripe.com/docs/api#sources), a [token](https://stripe.com/docs/api#tokens), or a [connected account](https://stripe.com/docs/connect/account-debits#charging-a-connected-account).
     /// For certain sources---namely, [cards](https://stripe.com/docs/api#cards), [bank accounts](https://stripe.com/docs/api#bank_accounts), and attached [sources](https://stripe.com/docs/api#sources)---you must also pass the ID of the associated customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<PaymentChargeParams<'a>>,
+    pub source: Option<PaymentChargeParams>,
 
     /// An arbitrary string to be used as the dynamic portion of the full descriptor displayed on your customer's credit card statement.
     ///

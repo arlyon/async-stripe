@@ -1,5 +1,5 @@
 use crate::config::{Client, Response};
-use crate::ids::ChargeId;
+use crate::ids::{BankAccountId, CardId, ChargeId, SourceId, TokenId};
 use crate::params::Object;
 use crate::resources::{Charge, Rule};
 use serde_derive::{Deserialize, Serialize};
@@ -7,8 +7,8 @@ use serde_derive::{Deserialize, Serialize};
 /// The set of PaymentSource parameters that can be used to create a charge.
 /// 
 /// For more details see [https://stripe.com/docs/api/charges/create#create_charge-source](https://stripe.com/docs/api/charges/create#create_charge-source).
-#[derive(Clone, Debug)]
-pub enum PaymentChargeParams<'a> {
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub enum PaymentChargeParams {
     Token(TokenId),
     Source(SourceId),
     Card(CardId),

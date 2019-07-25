@@ -11,7 +11,7 @@ use serde_derive::{Deserialize, Serialize};
 /// Not to be confused with `SourceParams` which is used by `Source::create`
 /// to create a source that is not necessarily attached to a customer.
 #[derive(Clone, Debug)]
-pub enum PaymentSourceParams<'a> {
+pub enum PaymentSourceParams {
     /// Creates a payment method (e.g. card or bank account) from tokenized data,
     /// using a token typically received from Stripe Elements.
     Token(TokenId),
@@ -20,24 +20,24 @@ pub enum PaymentSourceParams<'a> {
     /// create a new customer from an existing source.
     Source(SourceId),
 
-    /// Creates a `Card` payment method from the full card information
-    /// (e.g. card number, expiration, etc).
-    ///
-    /// You usually want to use a `TokenId` received from
-    /// [Stripe Elements](https://stripe.com/docs/stripe-js)
-    /// instead.
+    // // Creates a `Card` payment method from the full card information
+    // // (e.g. card number, expiration, etc).
+    // //
+    // // You usually want to use a `TokenId` received from
+    // // [Stripe Elements](https://stripe.com/docs/stripe-js)
+    // // instead.
     // Card(CardParams<'a>),
 
-    /// Creates a `BankAccount` payment method from the full bank information
-    /// (e.g. account number, expiration, etc).
-    ///
-    /// You usually want to use a `TokenId` received from
-    /// [Stripe Elements](https://stripe.com/docs/stripe-js)
-    /// instead.
+    // // Creates a `BankAccount` payment method from the full bank information
+    // // (e.g. account number, expiration, etc).
+    // //
+    // // You usually want to use a `TokenId` received from
+    // // [Stripe Elements](https://stripe.com/docs/stripe-js)
+    // // instead.
     // BankAccount(BankAccountParams<'a>),
 }
 
-impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams<'de> {
+impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::de::Deserializer<'de>,
@@ -86,7 +86,7 @@ impl<'de> ::serde::Deserialize<'de> for PaymentSourceParams<'de> {
     }
 }
 
-impl<'a> ::serde::Serialize for PaymentSourceParams<'a> {
+impl<'a> ::serde::Serialize for PaymentSourceParams {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: ::serde::ser::Serializer,

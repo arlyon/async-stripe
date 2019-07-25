@@ -315,7 +315,7 @@ pub struct CreateCustomer<'a> {
     pub shipping: Option<ShippingParams>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<PaymentSourceParams<'a>>,
+    pub source: Option<PaymentSourceParams>,
 
     /// The customer's tax exemption.
     ///
@@ -497,7 +497,7 @@ pub struct UpdateCustomer<'a> {
     pub shipping: Option<ShippingParams>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<PaymentSourceParams<'a>>,
+    pub source: Option<PaymentSourceParams>,
 
     /// The customer's tax exemption.
     ///
