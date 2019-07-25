@@ -81,18 +81,18 @@ fn deserialize_payment_source_params() {
                 "tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap(),
             )),
         ),
-        (
-            json!({"object": "card", "exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}),
-            Some(PaymentSourceParams::Card(CardParams {
-                exp_month: "12",
-                exp_year: "2017",
-                number: "1111222233334444",
-                name: None,
-                cvc: None,
-            })),
-        ),
-        // Error: Missing `{"object": "card"}`
-        (json!({"exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}), None),
+        // (
+        //     json!({"object": "card", "exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}),
+        //     Some(PaymentSourceParams::Card(CardParams {
+        //         exp_month: "12",
+        //         exp_year: "2017",
+        //         number: "1111222233334444",
+        //         name: None,
+        //         cvc: None,
+        //     })),
+        // ),
+        // // Error: Missing `{"object": "card"}`
+        // (json!({"exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}), None),
     ];
 
     for (value, expected) in &examples {
@@ -115,23 +115,23 @@ fn serialize_payment_source_params() {
             PaymentSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()),
             json!("tok_189g322eZvKYlo2CeoPw2sdy"),
         ),
-        (
-            PaymentSourceParams::Card(CardParams {
-                exp_month: "12",
-                exp_year: "2017",
-                number: "1111222233334444",
-                name: None,
-                cvc: None,
-            }),
-            json!({
-                "object": "card",
-                "exp_month": "12",
-                "exp_year": "2017",
-                "number": "1111222233334444",
-                "name": null,
-                "cvc": null
-            }),
-        ),
+        // (
+        //     PaymentSourceParams::Card(CardParams {
+        //         exp_month: "12",
+        //         exp_year: "2017",
+        //         number: "1111222233334444",
+        //         name: None,
+        //         cvc: None,
+        //     }),
+        //     json!({
+        //         "object": "card",
+        //         "exp_month": "12",
+        //         "exp_year": "2017",
+        //         "number": "1111222233334444",
+        //         "name": null,
+        //         "cvc": null
+        //     }),
+        // ),
     ];
 
     for (params, expected) in &examples {

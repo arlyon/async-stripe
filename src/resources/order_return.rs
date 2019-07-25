@@ -9,6 +9,8 @@ use crate::resources::{Currency, Order, OrderItem, Refund};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "OrderReturn".
+///
+/// For more details see [https://stripe.com/docs/api/order_returns/object](https://stripe.com/docs/api/order_returns/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderReturn {
     /// Unique identifier for the object.

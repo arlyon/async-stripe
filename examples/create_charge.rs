@@ -4,15 +4,12 @@ fn main() {
     let client = stripe::Client::new(secret_key);
 
     // Define a card to charge
-    let mut card = stripe::CardParams::default();
-    card.number = "4242424242424242";
-    card.exp_month = "10";
-    card.exp_year = "20";
+    let mut card = "card_189g322eZvKYlo2CeoPw2sdy".parse().expect("expected card to be valid");
 
     // Define the charge
     let mut params = stripe::CreateCharge::new();
     params.amount = Some(1000);
-    params.source = Some(stripe::PaymentSourceParams::Card(card));
+    params.source = Some(stripe::PaymentChargeParams::Card(card));
 
     // Create the charge
     let charge = stripe::Charge::create(&client, params).unwrap();

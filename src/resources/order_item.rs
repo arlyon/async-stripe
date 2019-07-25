@@ -7,6 +7,8 @@ use crate::resources::{Currency, Sku};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "OrderItem".
+///
+/// For more details see [https://stripe.com/docs/api/order_items/object](https://stripe.com/docs/api/order_items/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderItem {
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the line item.
