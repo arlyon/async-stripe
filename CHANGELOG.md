@@ -2,7 +2,7 @@
 
 ## Breaking Changes
 - The `PaymentSourceParams` struct was edit to only include a `TokenId` and `SourceId` as per improvements to the API.
-- The `charge.source` field to create a `Charge` was fixed to accept the new struct `PaymentChargeParams`.
+- The `charge.source` field to create a `Charge` was fixed to accept the new struct `ChargeSourceParams`.
 
 # Version 0.10.4 (July 12, 2019)
 

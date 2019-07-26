@@ -11,7 +11,7 @@ fn main() {
     // Define the charge
     let mut params = stripe::CreateCharge::new();
     params.amount = Some(1000);
-    params.source = Some(stripe::PaymentChargeParams::Card(card));
+    params.source = Some(stripe::ChargeSourceParams::Card(card));
 
     // Create the charge
     stripe::Charge::create(&client, params)
