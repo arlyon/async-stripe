@@ -5,7 +5,7 @@ use crate::resources::{Charge, Rule};
 use serde_derive::{Deserialize, Serialize};
 
 /// The set of PaymentSource parameters that can be used to create a charge.
-/// 
+///
 /// For more details see [https://stripe.com/docs/api/charges/create#create_charge-source](https://stripe.com/docs/api/charges/create#create_charge-source).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]

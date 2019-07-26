@@ -6,8 +6,8 @@ use crate::config::{Client, Response};
 use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Account, Application, ApplicationFee, BalanceTransaction, BillingDetails, Currency, Customer,
-    Dispute, FraudDetailsReport, Invoice, Order, ChargeSourceParams, PaymentMethodDetails,
+    Account, Application, ApplicationFee, BalanceTransaction, BillingDetails, ChargeSourceParams,
+    Currency, Customer, Dispute, FraudDetailsReport, Invoice, Order, PaymentMethodDetails,
     PaymentSource, Refund, Review, Shipping, Transfer,
 };
 use serde_derive::{Deserialize, Serialize};

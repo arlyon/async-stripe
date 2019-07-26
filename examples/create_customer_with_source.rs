@@ -10,7 +10,6 @@ fn main() {
     params.email = Some("jdoe@example.org");
     params.source = Some(stripe::PaymentSourceParams::Source(source));
 
-
     // Perform request
     let customer = stripe::Customer::create(&client, params).unwrap();
 
