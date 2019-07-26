@@ -7,12 +7,56 @@ use serde_derive::{Deserialize, Serialize};
 /// The set of PaymentSource parameters that can be used to create a charge.
 /// 
 /// For more details see [https://stripe.com/docs/api/charges/create#create_charge-source](https://stripe.com/docs/api/charges/create#create_charge-source).
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug)]
 pub enum PaymentChargeParams {
     Token(TokenId),
     Source(SourceId),
     Card(CardId),
     BankAccount(BankAccountId),
+}
+
+impl<'de> ::serde::Deserialize<'de> for PaymentChargeParams {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::serde::de::Deserializer<'de>,
+    {
+        use serde::de::{Deserialize, Error};
+        use serde::private::de::{Content, ContentRefDeserializer};
+
+        let content = <Content<'_> as Deserialize>::deserialize(deserializer)?;
+        let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
+        if let Ok(ok) = <SourceId as Deserialize>::deserialize(deserializer) {
+            return Ok(PaymentChargeParams::Source(ok));
+        }
+        let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
+        if let Ok(ok) = <TokenId as Deserialize>::deserialize(deserializer) {
+            return Ok(PaymentChargeParams::Token(ok));
+        }
+        let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
+        if let Ok(ok) = <CardId as Deserialize>::deserialize(deserializer) {
+            return Ok(PaymentChargeParams::Card(ok));
+        }
+        let deserializer = ContentRefDeserializer::<D::Error>::new(&content);
+        if let Ok(ok) = <BankAccountId as Deserialize>::deserialize(deserializer) {
+            return Ok(PaymentChargeParams::BankAccount(ok));
+        }
+
+        Err(Error::custom("data did not match any variant of enum PaymentChargeParams"))
+    }
+}
+
+impl<'a> ::serde::Serialize for PaymentChargeParams {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::serde::ser::Serializer,
+    {
+        match self {
+            PaymentChargeParams::Source(id) => id.serialize(serializer),
+            PaymentChargeParams::Token(id) => id.serialize(serializer),
+            PaymentChargeParams::Card(id) => id.serialize(serializer),
+            PaymentChargeParams::BankAccount(id) => id.serialize(serializer),
+        }
+    }
 }
 
 /// The set of parameters that can be used when capturing a charge object.
