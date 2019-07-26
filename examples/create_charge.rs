@@ -4,7 +4,7 @@ fn main() {
     let client = stripe::Client::new(secret_key);
 
     // Define a card to charge
-    let mut card = "card_189g322eZvKYlo2CeoPw2sdy".parse().expect("expected card to be valid");
+    let card = "card_189g322eZvKYlo2CeoPw2sdy".parse().expect("expected card to be valid");
 
     // Define the charge
     let mut params = stripe::CreateCharge::new();

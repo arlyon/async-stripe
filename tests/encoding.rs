@@ -68,7 +68,7 @@ fn urldecode(input: String) -> String {
 
 #[test]
 fn deserialize_payment_source_params() {
-    use stripe::{CardParams, PaymentSourceParams, SourceId, TokenId};
+    use stripe::{PaymentSourceParams, SourceId, TokenId};
 
     let examples = [
         (
@@ -81,30 +81,18 @@ fn deserialize_payment_source_params() {
                 "tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap(),
             )),
         ),
-        // (
-        //     json!({"object": "card", "exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}),
-        //     Some(PaymentSourceParams::Card(CardParams {
-        //         exp_month: "12",
-        //         exp_year: "2017",
-        //         number: "1111222233334444",
-        //         name: None,
-        //         cvc: None,
-        //     })),
-        // ),
-        // // Error: Missing `{"object": "card"}`
-        // (json!({"exp_month": "12", "exp_year": "2017", "number": "1111222233334444"}), None),
     ];
 
     for (value, expected) in &examples {
         let input = serde_json::to_string(value).unwrap();
-        let parsed: Option<PaymentSourceParams<'_>> = serde_json::from_str(&input).ok();
+        let parsed: Option<PaymentSourceParams> = serde_json::from_str(&input).ok();
         assert_eq!(json!(parsed), json!(expected));
     }
 }
 
 #[test]
 fn serialize_payment_source_params() {
-    use stripe::{CardParams, PaymentSourceParams, SourceId, TokenId};
+    use stripe::{PaymentSourceParams, SourceId, TokenId};
 
     let examples = [
         (
@@ -115,23 +103,6 @@ fn serialize_payment_source_params() {
             PaymentSourceParams::Token("tok_189g322eZvKYlo2CeoPw2sdy".parse::<TokenId>().unwrap()),
             json!("tok_189g322eZvKYlo2CeoPw2sdy"),
         ),
-        // (
-        //     PaymentSourceParams::Card(CardParams {
-        //         exp_month: "12",
-        //         exp_year: "2017",
-        //         number: "1111222233334444",
-        //         name: None,
-        //         cvc: None,
-        //     }),
-        //     json!({
-        //         "object": "card",
-        //         "exp_month": "12",
-        //         "exp_year": "2017",
-        //         "number": "1111222233334444",
-        //         "name": null,
-        //         "cvc": null
-        //     }),
-        // ),
     ];
 
     for (params, expected) in &examples {
