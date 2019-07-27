@@ -3,16 +3,12 @@ fn main() {
     let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
     let client = stripe::Client::new(secret_key);
 
-    // Define a card for the customer
-    let mut card = stripe::CardParams::default();
-    card.number = "4242424242424242";
-    card.exp_month = "10";
-    card.exp_year = "20";
+    let source = "src_189g322eZvKYlo2CeoPw2sdy".parse().expect("expected source to be valid");
 
     // Define the customer
     let mut params = stripe::CreateCustomer::new();
     params.email = Some("jdoe@example.org");
-    params.source = Some(stripe::PaymentSourceParams::Card(card));
+    params.source = Some(stripe::PaymentSourceParams::Source(source));
 
     // Perform request
     let customer = stripe::Customer::create(&client, params).unwrap();

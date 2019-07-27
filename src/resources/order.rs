@@ -11,6 +11,8 @@ use crate::resources::{
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Order".
+///
+/// For more details see [https://stripe.com/docs/api/orders/object](https://stripe.com/docs/api/orders/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Order {
     /// Unique identifier for the object.
