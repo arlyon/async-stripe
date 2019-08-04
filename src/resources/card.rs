@@ -83,7 +83,7 @@ pub struct Card {
 
     /// Whether this card is the default external account for its currency.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_for_currency: Option<Currency>,
+    pub default_for_currency: Option<bool>,
 
     // Always true for a deleted object
     #[serde(default)]
