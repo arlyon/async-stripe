@@ -132,6 +132,12 @@ impl Client {
                 HeaderValue::from_str(client_id).unwrap(),
             );
         }
+        if let Some(stripe_version) = &self.headers.stripe_version {
+            headers.insert(
+                HeaderName::from_static("stripe-version"),
+                HeaderValue::from_str(stripe_version.as_str()).unwrap(),
+            );
+        }
         headers
     }
 }
