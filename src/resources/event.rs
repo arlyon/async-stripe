@@ -395,7 +395,7 @@ mod tests {
         let webhook = super::Webhook { current_timestamp: event_timestamp };
 
         let event = webhook
-            .do_construct_event(payload.to_string(), signature, secret)
+            .do_construct_event(payload, &signature, &secret)
             .expect("Failed to construct event");
 
         assert_eq!(event.event_type, super::EventType::InvoiceItemCreated);
