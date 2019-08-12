@@ -239,11 +239,7 @@ pub struct Webhook {
 
 #[cfg(feature = "webhooks")]
 impl Webhook {
-    pub fn construct_event(
-        payload: &str,
-        sig: &str,
-        secret: &str,
-    ) -> Result<Event, WebhookError> {
+    pub fn construct_event(payload: &str, sig: &str, secret: &str) -> Result<Event, WebhookError> {
         Self { current_timestamp: Utc::now().timestamp() }.do_construct_event(payload, sig, secret)
     }
 
