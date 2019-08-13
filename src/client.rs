@@ -156,7 +156,6 @@ fn send<T: DeserializeOwned>(request: RequestBuilder) -> Response<T> {
 
     // N.B. For debugging
     // eprintln!("request was: {}", body);
-
     let status = response.status();
     if !status.is_success() {
         let mut err = serde_json::from_str(&body).unwrap_or_else(|err| {

@@ -253,7 +253,7 @@ pub struct PaymentError {
     pub doc_url: Option<String>,
     pub message: Option<String>,
     pub param: Option<String>,
-    pub source: Option<String>,
+    pub source: Option<Expandable<PaymentSource>>,
 }
 
 /// The resource representing a Stripe PaymentErrorType object.
@@ -556,5 +556,6 @@ pub enum PaymentIntentStatus {
     RequiresCapture,
     RequiresConfirmation,
     RequiresPaymentMethod,
+    RequiresSource,
     Succeeded,
 }
