@@ -1,3 +1,6 @@
+# Version 0.11.0 (TBD)
+- `Webhook::construct_event` takes payload, signature, and secret args by ref (`&str`) instead of value.
+
 # Version 0.10.5 (July 25, 2019)
 
 ## Breaking Changes

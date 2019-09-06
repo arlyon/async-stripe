@@ -239,19 +239,15 @@ pub struct Webhook {
 
 #[cfg(feature = "webhooks")]
 impl Webhook {
-    pub fn construct_event(
-        payload: String,
-        sig: String,
-        secret: String,
-    ) -> Result<Event, WebhookError> {
+    pub fn construct_event(payload: &str, sig: &str, secret: &str) -> Result<Event, WebhookError> {
         Self { current_timestamp: Utc::now().timestamp() }.do_construct_event(payload, sig, secret)
     }
 
     fn do_construct_event(
         self,
-        payload: String,
-        sig: String,
-        secret: String,
+        payload: &str,
+        sig: &str,
+        secret: &str,
     ) -> Result<Event, WebhookError> {
         // Get Stripe signature from header
         let signature = Signature::parse(&sig)?;
@@ -399,7 +395,7 @@ mod tests {
         let webhook = super::Webhook { current_timestamp: event_timestamp };
 
         let event = webhook
-            .do_construct_event(payload.to_string(), signature, secret)
+            .do_construct_event(payload, &signature, &secret)
             .expect("Failed to construct event");
 
         assert_eq!(event.event_type, super::EventType::InvoiceItemCreated);
