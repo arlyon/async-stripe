@@ -377,6 +377,8 @@ pub struct PaymentIntentCreateParams<'a> {
     pub payment_method_types: Vec<PaymentIntentMethodType>,
     pub amount: u64,
     pub currency: Currency,
+    pub payment_method: Option<&'a str>,
+    pub confirmation_method: Option<PaymentIntentConfirmationMethod>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<u64>,
@@ -411,6 +413,33 @@ pub struct PaymentIntentCreateParams<'a> {
     pub transfer_data: Option<TransferData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
+}
+
+impl<'a> PaymentIntentCreateParams<'a> {
+    pub fn new(amount: u64, currency: Currency) -> Self {
+        PaymentIntentCreateParams {
+            payment_method_types: Default::default(),
+            amount,
+            currency,
+            payment_method: Default::default(),
+            confirmation_method: Default::default(),
+            application_fee_amount: Default::default(),
+            capture_method: Default::default(),
+            confirm: Default::default(),
+            customer: Default::default(),
+            description: Default::default(),
+            metadata: Default::default(),
+            on_behalf_of: Default::default(),
+            receipt_email: Default::default(),
+            return_url: Default::default(),
+            save_source_to_customer: Default::default(),
+            shipping: Default::default(),
+            source: Default::default(),
+            statement_descriptor: Default::default(),
+            transfer_data: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
 }
 
 /// The set of parameters that can be used when updating a payment_intent object.
