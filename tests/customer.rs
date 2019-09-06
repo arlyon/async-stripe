@@ -23,6 +23,7 @@ fn customer_create_and_delete_with_account() {
         let client = client.with_headers(stripe::Headers {
             stripe_account: Some("TEST".into()),
             client_id: Some("ca_123".into()),
+            stripe_version: Some(stripe::ApiVersion::V2019_03_14),
         });
         customer_create_and_delete(&client);
     });
