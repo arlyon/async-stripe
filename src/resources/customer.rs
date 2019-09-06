@@ -29,7 +29,7 @@ pub struct Customer {
     /// This balance is only taken into account as invoices are finalized.
     /// Note that the balance does not include unpaid invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_balance: Option<u64>,
+    pub account_balance: Option<i64>,
 
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -251,7 +251,7 @@ pub struct CreateCustomer<'a> {
     /// Account balances only affect invoices.
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_balance: Option<u64>,
+    pub account_balance: Option<i64>,
 
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -418,7 +418,7 @@ pub struct UpdateCustomer<'a> {
     /// Account balances only affect invoices.
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_balance: Option<u64>,
+    pub account_balance: Option<i64>,
 
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]

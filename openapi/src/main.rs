@@ -859,6 +859,8 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             "u8"
                         } else if param_name.contains("days") {
                             "u32"
+                        } else if param_name == "account_balance" {
+                            "i64"
                         } else if param_name.contains("count")
                             || param_name.contains("size")
                             || param_name.contains("quantity")
