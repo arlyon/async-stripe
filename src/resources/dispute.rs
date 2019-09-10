@@ -240,7 +240,7 @@ pub struct DisputeEvidenceDetails {
 }
 
 /// The parameters for `Dispute::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListDisputes<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,

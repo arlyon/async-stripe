@@ -146,7 +146,7 @@ impl<'a> ListSubscriptionItems<'a> {
 }
 
 /// The parameters for `SubscriptionItem::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionItem<'a> {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     #[serde(skip_serializing_if = "Option::is_none")]

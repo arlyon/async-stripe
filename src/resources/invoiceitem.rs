@@ -249,7 +249,7 @@ impl<'a> CreateInvoiceItem<'a> {
 }
 
 /// The parameters for `InvoiceItem::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoiceItems<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -315,7 +315,7 @@ impl<'a> ListInvoiceItems<'a> {
 }
 
 /// The parameters for `InvoiceItem::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateInvoiceItem<'a> {
     /// The integer amount in **%s** of the charge to be applied to the upcoming invoice.
     ///

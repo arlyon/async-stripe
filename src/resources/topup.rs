@@ -113,7 +113,7 @@ impl Object for Topup {
 }
 
 /// The parameters for `Topup::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTopups<'a> {
     /// A positive integer representing how much to transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -171,7 +171,7 @@ impl<'a> ListTopups<'a> {
 }
 
 /// The parameters for `Topup::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTopup<'a> {
     /// An arbitrary string attached to the object.
     ///

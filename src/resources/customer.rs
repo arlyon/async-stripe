@@ -244,7 +244,7 @@ pub struct TaxInfoVerification {
 }
 
 /// The parameters for `Customer::create`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCustomer<'a> {
     /// An integer amount in %s that represents the account balance for your customer.
     ///
@@ -361,7 +361,7 @@ impl<'a> CreateCustomer<'a> {
 }
 
 /// The parameters for `Customer::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCustomers<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -411,7 +411,7 @@ impl<'a> ListCustomers<'a> {
 }
 
 /// The parameters for `Customer::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCustomer<'a> {
     /// An integer amount in %s that represents the account balance for your customer.
     ///

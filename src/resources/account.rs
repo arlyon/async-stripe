@@ -443,7 +443,7 @@ pub struct TransferSchedule {
 }
 
 /// The parameters for `Account::create`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateAccount<'a> {
     /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -554,7 +554,7 @@ impl<'a> CreateAccount<'a> {
 }
 
 /// The parameters for `Account::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListAccounts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -597,7 +597,7 @@ impl<'a> ListAccounts<'a> {
 }
 
 /// The parameters for `Account::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateAccount<'a> {
     /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
     #[serde(skip_serializing_if = "Option::is_none")]

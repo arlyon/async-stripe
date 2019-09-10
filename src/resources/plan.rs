@@ -304,7 +304,7 @@ impl<'a> CreatePlan<'a> {
 }
 
 /// The parameters for `Plan::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPlans<'a> {
     /// Only return plans that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -355,7 +355,7 @@ impl<'a> ListPlans<'a> {
 }
 
 /// The parameters for `Plan::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePlan<'a> {
     /// Whether the plan is currently available for new subscriptions.
     #[serde(skip_serializing_if = "Option::is_none")]

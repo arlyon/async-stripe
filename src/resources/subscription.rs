@@ -375,7 +375,7 @@ impl<'a> CreateSubscription<'a> {
 }
 
 /// The parameters for `Subscription::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptions<'a> {
     /// The billing mode of the subscriptions to retrieve.
     ///
@@ -452,7 +452,7 @@ impl<'a> ListSubscriptions<'a> {
 }
 
 /// The parameters for `Subscription::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscription<'a> {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///

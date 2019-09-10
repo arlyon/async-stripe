@@ -287,7 +287,7 @@ pub struct ThreeDSecureUsage {
 }
 
 /// The parameters for `PaymentMethod::create`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct CreatePaymentMethod<'a> {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -383,7 +383,7 @@ impl<'a> ListPaymentMethods<'a> {
 }
 
 /// The parameters for `PaymentMethod::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentMethod<'a> {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]

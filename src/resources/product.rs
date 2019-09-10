@@ -298,7 +298,7 @@ impl<'a> CreateProduct<'a> {
 }
 
 /// The parameters for `Product::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListProducts<'a> {
     /// Only return products that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -368,7 +368,7 @@ impl<'a> ListProducts<'a> {
 }
 
 /// The parameters for `Product::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateProduct<'a> {
     /// Whether the product is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]

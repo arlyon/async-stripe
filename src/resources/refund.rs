@@ -129,7 +129,7 @@ impl Object for Refund {
 }
 
 /// The parameters for `Refund::create`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateRefund<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -169,7 +169,7 @@ impl<'a> CreateRefund<'a> {
 }
 
 /// The parameters for `Refund::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListRefunds<'a> {
     /// Only return refunds for the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -217,7 +217,7 @@ impl<'a> ListRefunds<'a> {
 }
 
 /// The parameters for `Refund::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRefund<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]

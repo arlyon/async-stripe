@@ -97,7 +97,7 @@ impl Object for ApplicationFee {
 }
 
 /// The parameters for `ApplicationFee::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListApplicationFees<'a> {
     /// Only return application fees for the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -334,7 +334,7 @@ pub struct Rule {
 }
 
 /// The parameters for `Charge::create`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCharge<'a> {
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
     ///
@@ -464,7 +464,7 @@ impl<'a> CreateCharge<'a> {
 }
 
 /// The parameters for `Charge::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCharges<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -522,7 +522,7 @@ impl<'a> ListCharges<'a> {
 }
 
 /// The parameters for `Charge::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCharge<'a> {
     /// The ID of an existing customer that will be associated with this request.
     ///
