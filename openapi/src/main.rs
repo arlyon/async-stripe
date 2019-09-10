@@ -696,9 +696,20 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             Some(some) => some.as_slice(),
             None => &[],
         };
+
+        // Derive Default when no param is required
+        let can_derive_default =
+            parameters.iter().all(|param| param["required"].as_bool() != Some(true));
+
         out.push('\n');
         out.push_str(&format!("/// The parameters for `{}::{}`.\n", struct_name, params.method));
-        out.push_str("#[derive(Clone, Debug, Serialize)]\n");
+
+        if can_derive_default {
+            out.push_str("#[derive(Clone, Debug, Serialize, Default)]\n");
+        } else {
+            out.push_str("#[derive(Clone, Debug, Serialize)]\n");
+        }
+
         out.push_str("pub struct ");
         out.push_str(&params.rust_type);
         out.push_str("<'a> {\n");
