@@ -3,7 +3,7 @@ use crate::ids::SubscriptionId;
 use crate::resources::{CreateSubscriptionItems, Subscription};
 use serde_derive::Serialize;
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct CancelSubscription {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub at_period_end: Option<bool>,

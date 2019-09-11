@@ -260,7 +260,7 @@ impl Webhook {
             Hmac::<Sha256>::new_varkey(secret.as_bytes()).map_err(|_| WebhookError::BadKey)?;
         mac.input(signed_payload.as_bytes());
         let mac_result = mac.result();
-        let hex = Self::to_hex(mac_result.code().as_slice());
+        let hex = to_hex(mac_result.code().as_slice());
         if hex != signature.v1 {
             return Err(WebhookError::BadSignature);
         }
@@ -272,18 +272,19 @@ impl Webhook {
 
         serde_json::from_str(&payload).map_err(WebhookError::BadParse)
     }
+}
 
-    const CHARS: &'static [u8] = b"0123456789abcdef";
+// TODO: If there is a lightweight hex crate, we should just rely on that instead.
+fn to_hex(bytes: &[u8]) -> String {
+    const CHARS: &[u8] = b"0123456789abcdef";
 
-    fn to_hex(bytes: &[u8]) -> String {
-        let mut v = Vec::with_capacity(bytes.len() * 2);
-        for &byte in bytes {
-            v.push(Self::CHARS[(byte >> 4) as usize]);
-            v.push(Self::CHARS[(byte & 0xf) as usize]);
-        }
-
-        unsafe { String::from_utf8_unchecked(v) }
+    let mut v = Vec::with_capacity(bytes.len() * 2);
+    for &byte in bytes {
+        v.push(CHARS[(byte >> 4) as usize]);
+        v.push(CHARS[(byte & 0xf) as usize]);
     }
+
+    unsafe { String::from_utf8_unchecked(v) }
 }
 
 #[cfg(feature = "webhooks")]

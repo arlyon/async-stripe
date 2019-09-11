@@ -107,7 +107,7 @@ pub enum IssuingDisputeReason {
 }
 
 impl IssuingDisputeReason {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             IssuingDisputeReason::Fraudulent => "fraudulent",
             IssuingDisputeReason::Other => "other",
@@ -138,7 +138,7 @@ pub enum IssuingDisputeStatus {
 }
 
 impl IssuingDisputeStatus {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             IssuingDisputeStatus::Lost => "lost",
             IssuingDisputeStatus::UnderReview => "under_review",

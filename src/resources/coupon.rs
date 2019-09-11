@@ -293,7 +293,7 @@ pub enum CouponDuration {
 }
 
 impl CouponDuration {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             CouponDuration::Forever => "forever",
             CouponDuration::Once => "once",

@@ -133,7 +133,7 @@ pub enum BalanceTransactionStatus {
 }
 
 impl BalanceTransactionStatus {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             BalanceTransactionStatus::Available => "available",
             BalanceTransactionStatus::Pending => "pending",
@@ -189,7 +189,7 @@ pub enum BalanceTransactionType {
 }
 
 impl BalanceTransactionType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             BalanceTransactionType::Adjustment => "adjustment",
             BalanceTransactionType::Advance => "advance",
@@ -246,7 +246,7 @@ pub enum FeeType {
 }
 
 impl FeeType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             FeeType::ApplicationFee => "application_fee",
             FeeType::StripeFee => "stripe_fee",

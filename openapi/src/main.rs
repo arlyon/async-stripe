@@ -1197,7 +1197,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         out.push_str("impl ");
         out.push_str(&enum_name);
         out.push_str(" {\n");
-        out.push_str("    pub fn as_str(&self) -> &'static str {\n");
+        out.push_str("    pub fn as_str(self) -> &'static str {\n");
         out.push_str("        match self {\n");
         for wire_name in &enum_.options {
             if wire_name.trim().is_empty() {

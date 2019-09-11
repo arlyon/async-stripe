@@ -297,7 +297,7 @@ pub enum PayoutMethod {
 }
 
 impl PayoutMethod {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             PayoutMethod::Instant => "instant",
             PayoutMethod::Standard => "standard",
@@ -326,7 +326,7 @@ pub enum PayoutSourceType {
 }
 
 impl PayoutSourceType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             PayoutSourceType::BankAccount => "bank_account",
             PayoutSourceType::Card => "card",
@@ -355,7 +355,7 @@ pub enum PayoutType {
 }
 
 impl PayoutType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             PayoutType::BankAccount => "bank_account",
             PayoutType::Card => "card",

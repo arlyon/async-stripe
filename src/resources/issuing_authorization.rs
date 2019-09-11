@@ -159,7 +159,7 @@ pub enum IssuingAuthorizationWalletProvider {
 }
 
 impl IssuingAuthorizationWalletProvider {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             IssuingAuthorizationWalletProvider::ApplePay => "apple_pay",
             IssuingAuthorizationWalletProvider::GooglePay => "google_pay",

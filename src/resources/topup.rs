@@ -212,7 +212,7 @@ pub enum TopupStatus {
 }
 
 impl TopupStatus {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             TopupStatus::Canceled => "canceled",
             TopupStatus::Failed => "failed",
@@ -246,7 +246,7 @@ pub enum TopupStatusFilter {
 }
 
 impl TopupStatusFilter {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             TopupStatusFilter::Canceled => "canceled",
             TopupStatusFilter::Failed => "failed",

@@ -637,7 +637,7 @@ pub enum InvoiceBilling {
 }
 
 impl InvoiceBilling {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             InvoiceBilling::ChargeAutomatically => "charge_automatically",
             InvoiceBilling::SendInvoice => "send_invoice",
@@ -672,7 +672,7 @@ pub enum InvoiceBillingReason {
 }
 
 impl InvoiceBillingReason {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             InvoiceBillingReason::AutomaticPendingInvoiceItemInvoice => {
                 "automatic_pending_invoice_item_invoice"
@@ -710,7 +710,7 @@ pub enum InvoiceCustomerTaxExempt {
 }
 
 impl InvoiceCustomerTaxExempt {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             InvoiceCustomerTaxExempt::Exempt => "exempt",
             InvoiceCustomerTaxExempt::None => "none",
@@ -744,7 +744,7 @@ pub enum InvoiceStatus {
 }
 
 impl InvoiceStatus {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             InvoiceStatus::Deleted => "deleted",
             InvoiceStatus::Draft => "draft",
@@ -779,7 +779,7 @@ pub enum InvoicesResourceInvoiceTaxIdType {
 }
 
 impl InvoicesResourceInvoiceTaxIdType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             InvoicesResourceInvoiceTaxIdType::AuAbn => "au_abn",
             InvoicesResourceInvoiceTaxIdType::EuVat => "eu_vat",

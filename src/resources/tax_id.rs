@@ -83,7 +83,7 @@ pub enum TaxIdType {
 }
 
 impl TaxIdType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             TaxIdType::AuAbn => "au_abn",
             TaxIdType::EuVat => "eu_vat",
@@ -116,7 +116,7 @@ pub enum TaxIdVerificationStatus {
 }
 
 impl TaxIdVerificationStatus {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             TaxIdVerificationStatus::Pending => "pending",
             TaxIdVerificationStatus::Unavailable => "unavailable",

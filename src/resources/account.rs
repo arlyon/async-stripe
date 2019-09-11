@@ -914,7 +914,7 @@ pub enum AccountType {
 }
 
 impl AccountType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             AccountType::Custom => "custom",
             AccountType::Express => "express",
@@ -944,7 +944,7 @@ pub enum BusinessType {
 }
 
 impl BusinessType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             BusinessType::Company => "company",
             BusinessType::Individual => "individual",
@@ -974,7 +974,7 @@ pub enum CapabilityStatus {
 }
 
 impl CapabilityStatus {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             CapabilityStatus::Active => "active",
             CapabilityStatus::Inactive => "inactive",
@@ -1006,7 +1006,7 @@ pub enum RequestedCapability {
 }
 
 impl RequestedCapability {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             RequestedCapability::CardIssuing => "card_issuing",
             RequestedCapability::CardPayments => "card_payments",
@@ -1039,7 +1039,7 @@ pub enum TransferScheduleInterval {
 }
 
 impl TransferScheduleInterval {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             TransferScheduleInterval::Daily => "daily",
             TransferScheduleInterval::Manual => "manual",

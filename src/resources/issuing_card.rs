@@ -166,7 +166,7 @@ pub enum IssuingCardReplacementReason {
 }
 
 impl IssuingCardReplacementReason {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             IssuingCardReplacementReason::Damage => "damage",
             IssuingCardReplacementReason::Expiration => "expiration",
@@ -201,7 +201,7 @@ pub enum IssuingCardShippingStatus {
 }
 
 impl IssuingCardShippingStatus {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             IssuingCardShippingStatus::Canceled => "canceled",
             IssuingCardShippingStatus::Delivered => "delivered",
@@ -234,7 +234,7 @@ pub enum IssuingCardShippingType {
 }
 
 impl IssuingCardShippingType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             IssuingCardShippingType::Bulk => "bulk",
             IssuingCardShippingType::Individual => "individual",
@@ -267,7 +267,7 @@ pub enum IssuingCardStatus {
 }
 
 impl IssuingCardStatus {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             IssuingCardStatus::Active => "active",
             IssuingCardStatus::Canceled => "canceled",
@@ -300,7 +300,7 @@ pub enum IssuingCardType {
 }
 
 impl IssuingCardType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             IssuingCardType::Physical => "physical",
             IssuingCardType::Virtual => "virtual",

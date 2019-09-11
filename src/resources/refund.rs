@@ -248,7 +248,7 @@ pub enum RefundReason {
 }
 
 impl RefundReason {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             RefundReason::Duplicate => "duplicate",
             RefundReason::Fraudulent => "fraudulent",

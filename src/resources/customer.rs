@@ -588,7 +588,7 @@ pub enum CustomerTaxExempt {
 }
 
 impl CustomerTaxExempt {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             CustomerTaxExempt::Exempt => "exempt",
             CustomerTaxExempt::None => "none",
@@ -619,7 +619,7 @@ pub enum CustomerTaxExemptFilter {
 }
 
 impl CustomerTaxExemptFilter {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             CustomerTaxExemptFilter::Exempt => "exempt",
             CustomerTaxExemptFilter::None => "none",
@@ -650,7 +650,7 @@ pub enum TaxIdDataType {
 }
 
 impl TaxIdDataType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             TaxIdDataType::AuAbn => "au_abn",
             TaxIdDataType::EuVat => "eu_vat",
@@ -679,7 +679,7 @@ pub enum TaxInfoType {
 }
 
 impl TaxInfoType {
-    pub fn as_str(&self) -> &'static str {
+    pub fn as_str(self) -> &'static str {
         match self {
             TaxInfoType::Vat => "vat",
         }

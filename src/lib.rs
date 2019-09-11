@@ -52,6 +52,8 @@
 //! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
 //! ```
 
+#![allow(clippy::map_clone)]
+// N.B. not sure if this rule will break compatibility with older rust versions we might want to support
 #![allow(clippy::needless_pass_by_value)]
 #![allow(clippy::large_enum_variant)]
 

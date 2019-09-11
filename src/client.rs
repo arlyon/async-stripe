@@ -23,7 +23,7 @@ impl Client {
     /// Creates a new client posted to a custom `scheme://host/`
     pub fn from_url(scheme_host: impl Into<String>, secret_key: impl Into<String>) -> Client {
         let url = scheme_host.into();
-        let host = if url.ends_with("/") { format!("{}v1", url) } else { format!("{}/v1", url) };
+        let host = if url.ends_with('/') { format!("{}v1", url) } else { format!("{}/v1", url) };
         Client {
             client: reqwest::Client::new(),
             secret_key: secret_key.into(),
