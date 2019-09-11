@@ -31,8 +31,8 @@ pub struct AlipayAccount {
     pub fingerprint: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(default)]
-    pub livemode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<bool>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///
@@ -51,12 +51,12 @@ pub struct AlipayAccount {
     /// True if you can create multiple payments using this account.
     ///
     /// If the account is reusable, then you can freely choose the amount of each payment.
-    #[serde(default)]
-    pub reusable: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reusable: Option<bool>,
 
     /// Whether this Alipay account object has ever been used for a payment.
-    #[serde(default)]
-    pub used: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub used: Option<bool>,
 
     /// The username for the Alipay account.
     #[serde(skip_serializing_if = "Option::is_none")]

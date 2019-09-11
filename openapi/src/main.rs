@@ -626,7 +626,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             &key,
             &field,
             required && !force_optional,
-            true,
+            false,
         ));
     }
     out.push_str("}\n");

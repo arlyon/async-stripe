@@ -55,8 +55,8 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<String>,
 
-    #[serde(default)]
-    pub id_number_provided: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number_provided: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
@@ -85,8 +85,8 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requirements: Option<PersonRequirements>,
 
-    #[serde(default)]
-    pub ssn_last_4_provided: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ssn_last_4_provided: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<PersonVerification>,

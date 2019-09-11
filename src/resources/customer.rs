@@ -56,8 +56,8 @@ pub struct Customer {
     /// When the customer's latest invoice is billed by charging automatically, delinquent is true if the invoice's latest charge is failed.
     ///
     /// When the customer's latest invoice is billed by sending an invoice, delinquent is true if the invoice is not paid by its due date.
-    #[serde(default)]
-    pub delinquent: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delinquent: Option<bool>,
 
     /// An arbitrary string attached to the object.
     ///
@@ -81,8 +81,8 @@ pub struct Customer {
     pub invoice_settings: Option<InvoiceSettingCustomerSetting>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(default)]
-    pub livemode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<bool>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///

@@ -47,8 +47,8 @@ pub struct Coupon {
     pub duration_in_months: Option<i64>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(default)]
-    pub livemode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<bool>,
 
     /// Maximum number of times this coupon can be redeemed, in total, across all customers, before it is no longer valid.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -79,8 +79,8 @@ pub struct Coupon {
     pub times_redeemed: Option<i64>,
 
     /// Taking account of the above properties, whether this coupon can still be applied to a customer.
-    #[serde(default)]
-    pub valid: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valid: Option<bool>,
 }
 
 impl Coupon {

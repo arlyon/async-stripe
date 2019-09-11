@@ -17,8 +17,8 @@ pub struct Plan {
     pub id: PlanId,
 
     /// Whether the plan is currently available for new subscriptions.
-    #[serde(default)]
-    pub active: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active: Option<bool>,
 
     /// Specifies a usage aggregation strategy for plans of `usage_type=metered`.
     ///
@@ -68,8 +68,8 @@ pub struct Plan {
     pub interval_count: Option<u64>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(default)]
-    pub livemode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<bool>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///

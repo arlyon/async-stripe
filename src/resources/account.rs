@@ -32,8 +32,8 @@ pub struct Account {
     pub capabilities: Option<AccountCapabilities>,
 
     /// Whether the account can create live charges.
-    #[serde(default)]
-    pub charges_enabled: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub charges_enabled: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<Company>,
@@ -61,8 +61,8 @@ pub struct Account {
     /// Whether account details have been submitted.
     ///
     /// Standard accounts cannot receive payouts before this is true.
-    #[serde(default)]
-    pub details_submitted: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub details_submitted: Option<bool>,
 
     /// The primary user's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -82,8 +82,8 @@ pub struct Account {
     pub metadata: Metadata,
 
     /// Whether Stripe can send payouts to this account.
-    #[serde(default)]
-    pub payouts_enabled: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payouts_enabled: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requirements: Option<AccountRequirements>,

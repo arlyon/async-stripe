@@ -57,14 +57,14 @@ pub struct Invoice {
     /// Whether an attempt has been made to pay the invoice.
     ///
     /// An invoice is not attempted until 1 hour after the `invoice.created` webhook, for example, so you might not want to display that invoice as unpaid to your users.
-    #[serde(default)]
-    pub attempted: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attempted: Option<bool>,
 
     /// Controls whether Stripe will perform [automatic collection](https://stripe.com/docs/billing/invoices/workflow/#auto_advance) of the invoice.
     ///
     /// When `false`, the invoice's state will not automatically advance without an explicit action.
-    #[serde(default)]
-    pub auto_advance: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub auto_advance: Option<bool>,
 
     /// Either `charge_automatically`, or `send_invoice`.
     ///
@@ -225,8 +225,8 @@ pub struct Invoice {
     pub lines: List<InvoiceLineItem>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(default)]
-    pub livemode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<bool>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///
@@ -249,8 +249,8 @@ pub struct Invoice {
     /// Whether payment was successfully collected for this invoice.
     ///
     /// An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
-    #[serde(default)]
-    pub paid: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid: Option<bool>,
 
     /// The PaymentIntent associated with this invoice.
     ///

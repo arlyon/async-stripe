@@ -45,8 +45,8 @@ pub struct Recipient {
     pub email: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(default)]
-    pub livemode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<bool>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///

@@ -17,8 +17,8 @@ pub struct Sku {
     pub id: SkuId,
 
     /// Whether the SKU is available for purchase.
-    #[serde(default)]
-    pub active: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active: Option<bool>,
 
     /// A dictionary of attributes and values for the attributes defined by the product.
     ///
@@ -50,8 +50,8 @@ pub struct Sku {
     pub inventory: Option<Inventory>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(default)]
-    pub livemode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<bool>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///

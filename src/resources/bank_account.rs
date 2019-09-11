@@ -41,8 +41,8 @@ pub struct BankAccount {
     pub customer: Option<Expandable<Customer>>,
 
     /// Whether this bank account is the default external account for its currency.
-    #[serde(default)]
-    pub default_for_currency: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_for_currency: Option<bool>,
 
     // Always true for a deleted object
     #[serde(default)]
