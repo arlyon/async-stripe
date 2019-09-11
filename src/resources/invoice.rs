@@ -565,7 +565,7 @@ impl<'a> CreateInvoice<'a> {
 }
 
 /// The parameters for `Invoice::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoices<'a> {
     /// The billing mode of the invoice to retrieve.
     ///

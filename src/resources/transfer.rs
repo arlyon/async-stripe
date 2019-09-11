@@ -191,7 +191,7 @@ impl<'a> CreateTransfer<'a> {
 }
 
 /// The parameters for `Transfer::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTransfers<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -239,7 +239,7 @@ impl<'a> ListTransfers<'a> {
 }
 
 /// The parameters for `Transfer::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTransfer<'a> {
     /// An arbitrary string attached to the object.
     ///

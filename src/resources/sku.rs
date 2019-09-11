@@ -216,7 +216,7 @@ impl<'a> CreateSku<'a> {
 }
 
 /// The parameters for `Sku::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSkus<'a> {
     /// Only return SKUs that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -280,7 +280,7 @@ impl<'a> ListSkus<'a> {
 }
 
 /// The parameters for `Sku::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSku<'a> {
     /// Whether this SKU is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]

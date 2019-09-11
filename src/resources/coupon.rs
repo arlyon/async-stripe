@@ -208,7 +208,7 @@ impl<'a> CreateCoupon<'a> {
 }
 
 /// The parameters for `Coupon::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCoupons<'a> {
     /// A filter on the list, based on the object `created` field.
     ///
@@ -254,7 +254,7 @@ impl<'a> ListCoupons<'a> {
 }
 
 /// The parameters for `Coupon::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCoupon<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]

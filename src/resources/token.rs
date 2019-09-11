@@ -68,7 +68,7 @@ impl Object for Token {
 }
 
 /// The parameters for `Token::create`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateToken<'a> {
     /// Information for the account this token will represent.
     #[serde(skip_serializing_if = "Option::is_none")]

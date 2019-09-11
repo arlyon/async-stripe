@@ -151,7 +151,7 @@ impl<'a> CreateWebhookEndpoint<'a> {
 }
 
 /// The parameters for `WebhookEndpoint::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListWebhookEndpoints<'a> {
     /// A cursor for use in pagination.
     ///
@@ -190,7 +190,7 @@ impl<'a> ListWebhookEndpoints<'a> {
 }
 
 /// The parameters for `WebhookEndpoint::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateWebhookEndpoint<'a> {
     /// Disable the webhook endpoint if set to true.
     #[serde(skip_serializing_if = "Option::is_none")]

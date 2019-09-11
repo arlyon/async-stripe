@@ -276,7 +276,7 @@ impl<'a> CreateOrder<'a> {
 }
 
 /// The parameters for `Order::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListOrders<'a> {
     /// Date this order was created.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -347,7 +347,7 @@ impl<'a> ListOrders<'a> {
 }
 
 /// The parameters for `Order::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateOrder<'a> {
     /// A coupon code that represents a discount to be applied to this order.
     ///

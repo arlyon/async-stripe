@@ -117,7 +117,7 @@ impl<'a> CreateFileLink<'a> {
 }
 
 /// The parameters for `FileLink::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFileLinks<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -172,7 +172,7 @@ impl<'a> ListFileLinks<'a> {
 }
 
 /// The parameters for `FileLink::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateFileLink<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]

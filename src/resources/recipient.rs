@@ -184,7 +184,7 @@ impl<'a> CreateRecipient<'a> {
 }
 
 /// The parameters for `Recipient::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListRecipients<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -237,7 +237,7 @@ impl<'a> ListRecipients<'a> {
 }
 
 /// The parameters for `Recipient::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRecipient<'a> {
     /// ID of the card to set as the recipient's new default for payouts.
     #[serde(skip_serializing_if = "Option::is_none")]

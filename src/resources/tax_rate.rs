@@ -144,7 +144,7 @@ impl<'a> CreateTaxRate<'a> {
 }
 
 /// The parameters for `TaxRate::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxRates<'a> {
     /// Optional flag to filter by tax rates that are either active or not active (archived).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -203,7 +203,7 @@ impl<'a> ListTaxRates<'a> {
 }
 
 /// The parameters for `TaxRate::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTaxRate<'a> {
     /// Flag determining whether the tax rate is active or inactive.
     ///

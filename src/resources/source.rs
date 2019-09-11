@@ -679,7 +679,7 @@ pub struct SourceTypeWechat {
 }
 
 /// The parameters for `Source::create`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateSource<'a> {
     /// Amount associated with the source.
     ///
@@ -787,7 +787,7 @@ impl<'a> CreateSource<'a> {
 }
 
 /// The parameters for `Source::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSource<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]

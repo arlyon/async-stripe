@@ -210,7 +210,7 @@ impl<'a> CreatePayout<'a> {
 }
 
 /// The parameters for `Payout::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPayouts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arrival_date: Option<RangeQuery<Timestamp>>,
@@ -262,7 +262,7 @@ impl<'a> ListPayouts<'a> {
 }
 
 /// The parameters for `Payout::update`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePayout<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
