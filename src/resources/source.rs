@@ -617,8 +617,8 @@ pub struct SourceTypeThreeDSecure {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_zip_check: Option<String>,
 
-    #[serde(default)]
-    pub authenticated: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub authenticated: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub brand: Option<String>,

@@ -55,8 +55,8 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<String>,
 
-    #[serde(default)]
-    pub id_number_provided: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number_provided: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
@@ -85,8 +85,8 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requirements: Option<PersonRequirements>,
 
-    #[serde(default)]
-    pub ssn_last_4_provided: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ssn_last_4_provided: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<PersonVerification>,
@@ -152,19 +152,19 @@ pub struct PersonRelationship {
     /// Whether the person opened the account.
     ///
     /// This person provides information about themselves, and general information about the account.
-    #[serde(default)]
-    pub account_opener: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_opener: Option<bool>,
 
     /// Whether the person is a director of the account's legal entity.
     ///
     /// Currently only required for accounts in the EU.
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
-    #[serde(default)]
-    pub director: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub director: Option<bool>,
 
     /// Whether the person is an owner of the account’s legal entity.
-    #[serde(default)]
-    pub owner: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owner: Option<bool>,
 
     /// The percent owned by the person of the account's legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]

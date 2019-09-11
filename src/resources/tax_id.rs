@@ -32,8 +32,8 @@ pub struct TaxId {
     pub deleted: bool,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(default)]
-    pub livemode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<bool>,
 
     /// Type of the tax ID, one of `eu_vat`, `nz_gst`, `au_abn`, or `unknown`.
     #[serde(rename = "type")]

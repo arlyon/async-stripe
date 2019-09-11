@@ -17,8 +17,8 @@ pub struct Product {
     pub id: ProductId,
 
     /// Whether the product is currently available for purchase.
-    #[serde(default)]
-    pub active: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active: Option<bool>,
 
     /// A list of up to 5 attributes that each SKU can provide values for (e.g., `["color", "size"]`).
     ///
@@ -61,8 +61,8 @@ pub struct Product {
     pub images: Option<Vec<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(default)]
-    pub livemode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<bool>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///
@@ -86,8 +86,8 @@ pub struct Product {
     /// Whether this product is a shipped good.
     ///
     /// Only applicable to products of `type=good`.
-    #[serde(default)]
-    pub shippable: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shippable: Option<bool>,
 
     /// Extra information about a product which will appear on your customer's credit card statement.
     ///

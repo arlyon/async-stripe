@@ -626,7 +626,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             &key,
             &field,
             required && !force_optional,
-            true,
+            false,
         ));
     }
     out.push_str("}\n");
@@ -682,7 +682,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
                 .unwrap_or(false);
             out.push('\n');
-            out.push_str(&gen_field(&mut state, meta, &schema_name, &key, &field, required, true));
+            out.push_str(&gen_field(&mut state, meta, &schema_name, &key, &field, required, false));
         }
         out.push_str("}\n");
 
@@ -861,28 +861,14 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                             out.push_str(": Option<bool>,\n");
                         }
                     } else if param["schema"]["type"].as_str() == Some("integer") {
-                        let rust_type = if param["schema"]["format"].as_str() == Some("unix-time")
-                            || param_name.ends_with("_date")
-                        {
-                            state.use_params.insert("Timestamp");
-                            "Timestamp"
-                        } else if param_name == "monthly_anchor" {
-                            "u8"
-                        } else if param_name.contains("days") {
-                            "u32"
-                        } else if param_name == "account_balance" {
-                            "i64"
-                        } else if param_name.contains("count")
-                            || param_name.contains("size")
-                            || param_name.contains("quantity")
-                        {
-                            "u64"
-                        } else {
-                            "i64"
-                        };
+                        let rust_type = infer_integer_type(
+                            &mut state,
+                            &param_name,
+                            param["schema"]["format"].as_str(),
+                        );
 
                         print_doc(&mut out);
-                        initializers.push((param_rename.into(), rust_type.into(), required));
+                        initializers.push((param_rename.into(), rust_type.clone(), required));
                         if required {
                             out.push_str("    pub ");
                             out.push_str(param_rename);
@@ -1381,7 +1367,9 @@ fn gen_field_rust_type(
     if field_name == "metadata" {
         state.use_params.insert("Metadata");
         return "Metadata".into();
-    } else if field_name == "currency" || field_name.ends_with("_currency") {
+    } else if (field_name == "currency" || field_name.ends_with("_currency"))
+        && field["type"].as_str() == Some("string")
+    {
         state.use_resources.insert("Currency".into());
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Currency>".into();
@@ -1407,23 +1395,7 @@ fn gen_field_rust_type(
             }
         }
         Some("number") => "f64".into(),
-        Some("integer") => {
-            if field["format"].as_str() == Some("unix-time") || field_name.ends_with("_date") {
-                state.use_params.insert("Timestamp");
-                "Timestamp".into()
-            } else if field_name == "monthly_anchor" {
-                "u8".into()
-            } else if field_name.contains("days") {
-                "u32".into()
-            } else if field_name.contains("count")
-                || field_name.contains("size")
-                || field_name.contains("quantity")
-            {
-                "u64".into()
-            } else {
-                "i64".into()
-            }
-        }
+        Some("integer") => infer_integer_type(state, field_name, field["format"].as_str()),
         Some("string") => {
             if let Some(variants) = field["enum"].as_array() {
                 let enum_schema = meta.schema_field(object, field_name);
@@ -1935,6 +1907,26 @@ fn format_doc_comment(doc: &str) -> String {
     let doc = CURRENCY_OPEN_TAG.replace_all(&doc, "$"); // add locale formatting (we can only support one easily in our rust docs...)
     let doc = CURRENCY_CLOSE_TAG.replace_all(&doc, "");
     doc.trim().into()
+}
+
+fn infer_integer_type(state: &mut Generated, name: &str, format: Option<&str>) -> String {
+    let name_snake = name.to_snake_case();
+    let name_words = name_snake.split("_").collect::<Vec<_>>();
+    if format == Some("unix-time") || name_words.contains(&"date") {
+        state.use_params.insert("Timestamp");
+        "Timestamp".into()
+    } else if name == "monthly_anchor" {
+        "u8".into()
+    } else if name_words.contains(&"days") {
+        "u32".into()
+    } else if name_words.contains(&"count")
+        || name_words.contains(&"size")
+        || name_words.contains(&"quantity")
+    {
+        "u64".into()
+    } else {
+        "i64".into()
+    }
 }
 
 fn check_object_doc_url(object: &str) -> Option<String> {

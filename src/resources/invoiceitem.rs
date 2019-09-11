@@ -48,16 +48,16 @@ pub struct InvoiceItem {
     /// If true, discounts will apply to this invoice item.
     ///
     /// Always false for prorations.
-    #[serde(default)]
-    pub discountable: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discountable: Option<bool>,
 
     /// The ID of the invoice this invoice item belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice: Option<Expandable<Invoice>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(default)]
-    pub livemode: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<bool>,
 
     /// Set of key-value pairs that you can attach to an object.
     ///
@@ -73,8 +73,8 @@ pub struct InvoiceItem {
     pub plan: Option<Plan>,
 
     /// Whether the invoice item was created automatically as a proration adjustment when the customer switched plans.
-    #[serde(default)]
-    pub proration: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration: Option<bool>,
 
     /// Quantity of units for the invoice item.
     ///
