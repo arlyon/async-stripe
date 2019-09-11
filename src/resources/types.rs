@@ -1,5 +1,5 @@
 use crate::params::Timestamp;
-use crate::resources::card::{Card, CardBrand, CardType};
+use crate::resources::card::{CardBrand, CardType};
 use serde_derive::{Deserialize, Serialize};
 
 /// An enum representing the possible values of a `BankAccount`'s `account_holder_type` field.
