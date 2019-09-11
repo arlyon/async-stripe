@@ -1367,7 +1367,9 @@ fn gen_field_rust_type(
     if field_name == "metadata" {
         state.use_params.insert("Metadata");
         return "Metadata".into();
-    } else if field_name == "currency" || field_name.ends_with("_currency") {
+    } else if (field_name == "currency" || field_name.ends_with("_currency"))
+        && field["type"].as_str() == Some("string")
+    {
         state.use_resources.insert("Currency".into());
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Currency>".into();
