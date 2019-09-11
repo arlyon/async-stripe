@@ -1,4 +1,15 @@
+# Rust artifacts
 target/
-**/*.rs.bk
 Cargo.lock
+**/*.rs.bk
+
+# Test artifacts
 stripe-mock/
+
+# IDE artifacts
+.DS_Store
+.code-workspace/
+.idea/
+*.swp
+~*
+
