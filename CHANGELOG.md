@@ -1,4 +1,4 @@
-# Version 0.11.0 (TBD)
+# Version 0.11.0 (September 11, 2019)
 
 ## Features
 - The `stripe-version` header can now be set/customized with the `Client::with_headers` method.
