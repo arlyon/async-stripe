@@ -1,5 +1,19 @@
 # Version 0.11.0 (TBD)
+
+## Features
+- The `stripe-version` header can now be set/customized with the `Client::with_headers` method.
+
+## Improvements
+- The `Default` trait is now derived for all structs that have only defaultable parameters.
 - `Webhook::construct_event` takes payload, signature, and secret args by ref (`&str`) instead of value.
+- The `payment_method` and `confirmation_method` fields were added to `PaymentIntentCreateParams`.
+- The `payment_method_details` structure now supports the `card` data field.
+
+## Fixes
+- Boolean fields that may be `null`, are now `Option` instead of `serde(default)`. 
+- The `Customer` variant was added to the `EventObject` enum. 
+- The `PaymentIntentCaptureParams` are now correctly `pub`.
+- Fixed parsing a negative customer `account_balance`.
 
 # Version 0.10.5 (July 25, 2019)
 
