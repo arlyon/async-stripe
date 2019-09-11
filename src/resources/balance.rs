@@ -55,7 +55,7 @@ pub struct BalanceAmount {
 pub struct BalanceAmountBySourceType {
     /// Amount for bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account: Option<u64>,
+    pub bank_account: Option<i64>,
 
     /// Amount for card.
     #[serde(skip_serializing_if = "Option::is_none")]
