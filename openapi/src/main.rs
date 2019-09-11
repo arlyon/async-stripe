@@ -682,7 +682,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
                 .unwrap_or(false);
             out.push('\n');
-            out.push_str(&gen_field(&mut state, meta, &schema_name, &key, &field, required, true));
+            out.push_str(&gen_field(&mut state, meta, &schema_name, &key, &field, required, false));
         }
         out.push_str("}\n");
 

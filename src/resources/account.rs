@@ -406,16 +406,16 @@ pub struct Company {
     pub phone: Option<String>,
 
     /// Whether the company's business ID number was provided.
-    #[serde(default)]
-    pub tax_id_provided: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id_provided: Option<bool>,
 
     /// The jurisdiction in which the `tax_id` is registered (Germany-based companies only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id_registrar: Option<String>,
 
     /// Whether the company's business VAT number was provided.
-    #[serde(default)]
-    pub vat_id_provided: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vat_id_provided: Option<bool>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

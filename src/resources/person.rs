@@ -152,19 +152,19 @@ pub struct PersonRelationship {
     /// Whether the person opened the account.
     ///
     /// This person provides information about themselves, and general information about the account.
-    #[serde(default)]
-    pub account_opener: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_opener: Option<bool>,
 
     /// Whether the person is a director of the account's legal entity.
     ///
     /// Currently only required for accounts in the EU.
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
-    #[serde(default)]
-    pub director: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub director: Option<bool>,
 
     /// Whether the person is an owner of the account’s legal entity.
-    #[serde(default)]
-    pub owner: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owner: Option<bool>,
 
     /// The percent owned by the person of the account's legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
