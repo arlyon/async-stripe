@@ -84,3 +84,19 @@ To impersonate the account get a new Client and pass in the account id.
   let customers = stripe::Customer::list(&client, params).unwrap();
   println!("{:?}", customers); // =>  List { data: [Customer { .. }] }
 ```
+
+## Contributing
+
+### Code Generation
+This library is (mostly) authored via code generation by parsing
+the OpenAPI specification for Stripe.
+
+To update the generated code, use the included scripts:
+
+```sh
+# Generate files into the ./openapi/out directort (working directory must be project root)
+> ./openapi/build
+
+# Copy reviewed files to ./src/resources
+> ./openapi/commit
+```
