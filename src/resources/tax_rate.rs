@@ -175,10 +175,6 @@ pub struct ListTaxRates<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u64>,
 
-    /// Optional range for tax rate percentage filtering.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percentage: Option<RangeQuery<Timestamp>>,
-
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
@@ -196,7 +192,6 @@ impl<'a> ListTaxRates<'a> {
             expand: Default::default(),
             inclusive: Default::default(),
             limit: Default::default(),
-            percentage: Default::default(),
             starting_after: Default::default(),
         }
     }

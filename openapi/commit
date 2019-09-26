@@ -33,12 +33,14 @@
 ./openapi/add payout
 ./openapi/add person
 ./openapi/add plan
+./openapi/add platform_tax_fee
 ./openapi/add product
 ./openapi/add recipient
 ./openapi/add refund
 ./openapi/add reserve_transaction
 ./openapi/add review
 ./openapi/add scheduled_query_run
+./openapi/add setup_intent
 ./openapi/add sku
 ./openapi/add source
 # ./openapi/add source_transaction

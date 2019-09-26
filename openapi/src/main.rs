@@ -171,6 +171,8 @@ fn main() {
             ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
         ),
         (("payment_intent", "source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
+        (("create_payment_intent", "off_session"), ("Option<PaymentIntentOffSession>", "Option<PaymentIntentOffSession>")),
+        (("create_setup_intent", "usage"), ("String", "Option<SetupIntentUsage>")),
         (("payment_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
         (("person", "dob"), ("Dob", "Option<Dob>")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
@@ -1492,7 +1494,7 @@ fn gen_field_rust_type(
                     "RangeQuery<Timestamp>".into()
                 } else {
                     let union_schema = meta.schema_field(object, field_name);
-                    let union_name = meta.schema_to_rust_type(&union_schema);
+                    let union_name = meta.schema_to_rust_type(&union_schema);                    
                     let union_ = InferredUnion {
                         field: field_name.into(),
                         schema_variants: any_of

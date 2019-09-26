@@ -70,7 +70,7 @@ pub struct Recipient {
     /// Type of the recipient, one of `individual` or `corporation`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<RecipientType>,
+    pub type_: Option<String>,
 }
 
 impl Recipient {
@@ -166,11 +166,11 @@ pub struct CreateRecipient<'a> {
 
     /// Type of the recipient: either `individual` or `corporation`.
     #[serde(rename = "type")]
-    pub type_: RecipientType,
+    pub type_: &'a str,
 }
 
 impl<'a> CreateRecipient<'a> {
-    pub fn new(name: &'a str, type_: RecipientType) -> Self {
+    pub fn new(name: &'a str, type_: &'a str) -> Self {
         CreateRecipient {
             description: Default::default(),
             email: Default::default(),
@@ -295,7 +295,7 @@ impl<'a> UpdateRecipient<'a> {
     }
 }
 
-/// An enum representing the possible values of an `Recipient`'s `type` field.
+/// An enum representing the possible values of an `ListRecipients`'s `type_` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum RecipientType {

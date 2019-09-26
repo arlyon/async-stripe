@@ -36,7 +36,7 @@ pub struct Token {
 
     /// Type of the token: `account`, `bank_account`, `card`, or `pii`.
     #[serde(rename = "type")]
-    pub type_: TokenType,
+    pub type_: String,
 
     /// Whether this token has already been used (tokens can be used only once).
     pub used: bool,
@@ -121,37 +121,4 @@ pub struct CreateTokenAccount {
 pub struct CreateTokenPii {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
-}
-
-/// An enum representing the possible values of an `Token`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum TokenType {
-    Account,
-    BankAccount,
-    Card,
-    Pii,
-}
-
-impl TokenType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            TokenType::Account => "account",
-            TokenType::BankAccount => "bank_account",
-            TokenType::Card => "card",
-            TokenType::Pii => "pii",
-        }
-    }
-}
-
-impl AsRef<str> for TokenType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TokenType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
 }

@@ -97,7 +97,7 @@ pub struct Order {
     ///
     /// One of `created`, `paid`, `canceled`, `fulfilled`, or `returned`.
     /// More details in the [Orders Guide](https://stripe.com/docs/orders/guide#understanding-order-statuses).
-    pub status: OrderStatus,
+    pub status: String,
 
     /// The timestamps at which the order status was updated.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -216,6 +216,7 @@ pub struct CreateOrder<'a> {
     /// A coupon code that represents a discount to be applied to this order.
     ///
     /// Must be one-time duration and in same currency as the order.
+    /// An order can have multiple coupons.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
 
@@ -318,7 +319,7 @@ pub struct ListOrders<'a> {
     ///
     /// One of `created`, `paid`, `fulfilled`, or `refunded`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<OrderStatusFilter>,
+    pub status: Option<&'a str>,
 
     /// Filter orders based on when they were paid, fulfilled, canceled, or returned.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -352,6 +353,7 @@ pub struct UpdateOrder<'a> {
     /// A coupon code that represents a discount to be applied to this order.
     ///
     /// Must be one-time duration and in same currency as the order.
+    /// An order can have multiple coupons.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
 
@@ -467,7 +469,7 @@ impl std::fmt::Display for OrderItemParamsType {
     }
 }
 
-/// An enum representing the possible values of an `Order`'s `status` field.
+/// An enum representing the possible values of an `UpdateOrder`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum OrderStatus {
@@ -497,39 +499,6 @@ impl AsRef<str> for OrderStatus {
 }
 
 impl std::fmt::Display for OrderStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `ListOrders`'s `status` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum OrderStatusFilter {
-    Created,
-    Fulfilled,
-    Paid,
-    Refunded,
-}
-
-impl OrderStatusFilter {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            OrderStatusFilter::Created => "created",
-            OrderStatusFilter::Fulfilled => "fulfilled",
-            OrderStatusFilter::Paid => "paid",
-            OrderStatusFilter::Refunded => "refunded",
-        }
-    }
-}
-
-impl AsRef<str> for OrderStatusFilter {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for OrderStatusFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

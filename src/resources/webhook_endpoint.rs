@@ -17,7 +17,7 @@ pub struct WebhookEndpoint {
 
     /// The API version events are rendered as for this webhook endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub api_version: Option<ApiVersion>,
+    pub api_version: Option<String>,
 
     /// The ID of the associated Connect application.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,7 +37,7 @@ pub struct WebhookEndpoint {
     ///
     /// You may specify `['*']` to enable all events.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub enabled_events: Option<Vec<EventFilter>>,
+    pub enabled_events: Option<Vec<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -53,7 +53,7 @@ pub struct WebhookEndpoint {
     ///
     /// It can be `enabled` or `disabled`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<WebhookEndpointStatus>,
+    pub status: Option<String>,
 
     /// The URL of the webhook endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -222,7 +222,7 @@ impl<'a> UpdateWebhookEndpoint<'a> {
     }
 }
 
-/// An enum representing the possible values of an `WebhookEndpoint`'s `api_version` field.
+/// An enum representing the possible values of an `CreateWebhookEndpoint`'s `api_version` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum ApiVersion {
@@ -400,6 +400,12 @@ pub enum ApiVersion {
     V2019_02_19,
     #[serde(rename = "2019-03-14")]
     V2019_03_14,
+    #[serde(rename = "2019-05-16")]
+    V2019_05_16,
+    #[serde(rename = "2019-08-14")]
+    V2019_08_14,
+    #[serde(rename = "2019-09-09")]
+    V2019_09_09,
 }
 
 impl ApiVersion {
@@ -492,6 +498,9 @@ impl ApiVersion {
             ApiVersion::V2019_02_11 => "2019-02-11",
             ApiVersion::V2019_02_19 => "2019-02-19",
             ApiVersion::V2019_03_14 => "2019-03-14",
+            ApiVersion::V2019_05_16 => "2019-05-16",
+            ApiVersion::V2019_08_14 => "2019-08-14",
+            ApiVersion::V2019_09_09 => "2019-09-09",
         }
     }
 }
@@ -508,7 +517,7 @@ impl std::fmt::Display for ApiVersion {
     }
 }
 
-/// An enum representing the possible values of an `WebhookEndpoint`'s `enabled_events` field.
+/// An enum representing the possible values of an `CreateWebhookEndpoint`'s `enabled_events` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum EventFilter {
@@ -534,6 +543,8 @@ pub enum EventFilter {
     ApplicationFeeRefunded,
     #[serde(rename = "balance.available")]
     BalanceAvailable,
+    #[serde(rename = "capability.updated")]
+    CapabilityUpdated,
     #[serde(rename = "charge.captured")]
     ChargeCaptured,
     #[serde(rename = "charge.dispute.closed")]
@@ -718,6 +729,10 @@ pub enum EventFilter {
     ProductDeleted,
     #[serde(rename = "product.updated")]
     ProductUpdated,
+    #[serde(rename = "radar.early_fraud_warning.created")]
+    RadarEarlyFraudWarningCreated,
+    #[serde(rename = "radar.early_fraud_warning.updated")]
+    RadarEarlyFraudWarningUpdated,
     #[serde(rename = "recipient.created")]
     RecipientCreated,
     #[serde(rename = "recipient.deleted")]
@@ -734,6 +749,12 @@ pub enum EventFilter {
     ReviewClosed,
     #[serde(rename = "review.opened")]
     ReviewOpened,
+    #[serde(rename = "setup_intent.created")]
+    SetupIntentCreated,
+    #[serde(rename = "setup_intent.setup_failed")]
+    SetupIntentSetupFailed,
+    #[serde(rename = "setup_intent.succeeded")]
+    SetupIntentSucceeded,
     #[serde(rename = "sigma.scheduled_query_run.created")]
     SigmaScheduledQueryRunCreated,
     #[serde(rename = "sku.created")]
@@ -756,6 +777,20 @@ pub enum EventFilter {
     SourceTransactionCreated,
     #[serde(rename = "source.transaction.updated")]
     SourceTransactionUpdated,
+    #[serde(rename = "subscription_schedule.aborted")]
+    SubscriptionScheduleAborted,
+    #[serde(rename = "subscription_schedule.canceled")]
+    SubscriptionScheduleCanceled,
+    #[serde(rename = "subscription_schedule.completed")]
+    SubscriptionScheduleCompleted,
+    #[serde(rename = "subscription_schedule.created")]
+    SubscriptionScheduleCreated,
+    #[serde(rename = "subscription_schedule.expiring")]
+    SubscriptionScheduleExpiring,
+    #[serde(rename = "subscription_schedule.released")]
+    SubscriptionScheduleReleased,
+    #[serde(rename = "subscription_schedule.updated")]
+    SubscriptionScheduleUpdated,
     #[serde(rename = "tax_rate.created")]
     TaxRateCreated,
     #[serde(rename = "tax_rate.updated")]
@@ -796,6 +831,7 @@ impl EventFilter {
             EventFilter::ApplicationFeeRefundUpdated => "application_fee.refund.updated",
             EventFilter::ApplicationFeeRefunded => "application_fee.refunded",
             EventFilter::BalanceAvailable => "balance.available",
+            EventFilter::CapabilityUpdated => "capability.updated",
             EventFilter::ChargeCaptured => "charge.captured",
             EventFilter::ChargeDisputeClosed => "charge.dispute.closed",
             EventFilter::ChargeDisputeCreated => "charge.dispute.created",
@@ -892,6 +928,8 @@ impl EventFilter {
             EventFilter::ProductCreated => "product.created",
             EventFilter::ProductDeleted => "product.deleted",
             EventFilter::ProductUpdated => "product.updated",
+            EventFilter::RadarEarlyFraudWarningCreated => "radar.early_fraud_warning.created",
+            EventFilter::RadarEarlyFraudWarningUpdated => "radar.early_fraud_warning.updated",
             EventFilter::RecipientCreated => "recipient.created",
             EventFilter::RecipientDeleted => "recipient.deleted",
             EventFilter::RecipientUpdated => "recipient.updated",
@@ -900,6 +938,9 @@ impl EventFilter {
             EventFilter::ReportingReportTypeUpdated => "reporting.report_type.updated",
             EventFilter::ReviewClosed => "review.closed",
             EventFilter::ReviewOpened => "review.opened",
+            EventFilter::SetupIntentCreated => "setup_intent.created",
+            EventFilter::SetupIntentSetupFailed => "setup_intent.setup_failed",
+            EventFilter::SetupIntentSucceeded => "setup_intent.succeeded",
             EventFilter::SigmaScheduledQueryRunCreated => "sigma.scheduled_query_run.created",
             EventFilter::SkuCreated => "sku.created",
             EventFilter::SkuDeleted => "sku.deleted",
@@ -911,6 +952,13 @@ impl EventFilter {
             EventFilter::SourceRefundAttributesRequired => "source.refund_attributes_required",
             EventFilter::SourceTransactionCreated => "source.transaction.created",
             EventFilter::SourceTransactionUpdated => "source.transaction.updated",
+            EventFilter::SubscriptionScheduleAborted => "subscription_schedule.aborted",
+            EventFilter::SubscriptionScheduleCanceled => "subscription_schedule.canceled",
+            EventFilter::SubscriptionScheduleCompleted => "subscription_schedule.completed",
+            EventFilter::SubscriptionScheduleCreated => "subscription_schedule.created",
+            EventFilter::SubscriptionScheduleExpiring => "subscription_schedule.expiring",
+            EventFilter::SubscriptionScheduleReleased => "subscription_schedule.released",
+            EventFilter::SubscriptionScheduleUpdated => "subscription_schedule.updated",
             EventFilter::TaxRateCreated => "tax_rate.created",
             EventFilter::TaxRateUpdated => "tax_rate.updated",
             EventFilter::TopupCanceled => "topup.canceled",
@@ -934,35 +982,6 @@ impl AsRef<str> for EventFilter {
 }
 
 impl std::fmt::Display for EventFilter {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `WebhookEndpoint`'s `status` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum WebhookEndpointStatus {
-    Disabled,
-    Enabled,
-}
-
-impl WebhookEndpointStatus {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            WebhookEndpointStatus::Disabled => "disabled",
-            WebhookEndpointStatus::Enabled => "enabled",
-        }
-    }
-}
-
-impl AsRef<str> for WebhookEndpointStatus {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for WebhookEndpointStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

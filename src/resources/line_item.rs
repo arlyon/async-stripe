@@ -69,7 +69,7 @@ pub struct InvoiceLineItem {
 
     /// The amount of tax calculated per tax rate for this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<Vec<TaxAmount>>,
+    pub tax_amounts: Option<Vec<InvoiceTaxAmount>>,
 
     /// The tax rates which apply to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -78,6 +78,10 @@ pub struct InvoiceLineItem {
     /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
     #[serde(rename = "type")]
     pub type_: InvoiceLineItemType,
+
+    /// For prorations this indicates whether Stripe automatically grouped multiple related debit and credit line items into a single combined line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unified_proration: Option<bool>,
 }
 
 impl Object for InvoiceLineItem {
@@ -91,7 +95,7 @@ impl Object for InvoiceLineItem {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TaxAmount {
+pub struct InvoiceTaxAmount {
     /// The amount, in %s, of the tax.
     pub amount: i64,
 

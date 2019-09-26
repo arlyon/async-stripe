@@ -7,8 +7,8 @@ use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Application, ApplicationFee, BalanceTransaction, BillingDetails, ChargeSourceParams,
-    Currency, Customer, Dispute, FraudDetailsReport, Invoice, Order, PaymentMethodDetails,
-    PaymentSource, Refund, Review, Shipping, Transfer,
+    Currency, Customer, Dispute, FraudDetailsReport, Invoice, Order, PaymentMethodDetails, Refund,
+    Review, Shipping, Transfer,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -22,7 +22,8 @@ pub struct Charge {
 
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
     ///
-    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://support.stripe.com/questions/what-is-the-minimum-amount-i-can-charge-with-stripe).
+    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
+    /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
     pub amount: i64,
 
     /// Amount in %s refunded (can be less than the amount attribute on the charge if a partial refund was issued).
@@ -164,12 +165,6 @@ pub struct Charge {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<Shipping>,
 
-    /// For most Stripe users, the source of every charge is a credit or debit card.
-    ///
-    /// This hash is then the [card object](#card_object) describing that card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<PaymentSource>,
-
     /// The transfer ID which created this charge.
     ///
     /// Only present if the charge came from another Stripe account.
@@ -177,12 +172,19 @@ pub struct Charge {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_transfer: Option<Expandable<Transfer>>,
 
-    /// Extra information about a charge.
+    /// For card charges, use `statement_descriptor_suffix` instead.
     ///
-    /// This will appear on your customer's credit card statement.
-    /// It must contain at least one letter.
+    /// Otherwise, you can use this value as the complete description of a charge on your customers’ statements.
+    /// Must contain at least one letter, maximum 22 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
+
+    /// Provides information about the charge that customers see on their statements.
+    ///
+    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that’s set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters for the concatenated descriptor.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_suffix: Option<String>,
 
     /// The status of the payment is either `succeeded`, `pending`, or `failed`.
     pub status: String,
@@ -338,7 +340,8 @@ pub struct Rule {
 pub struct CreateCharge<'a> {
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
     ///
-    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://support.stripe.com/questions/what-is-the-minimum-amount-i-can-charge-with-stripe).
+    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
+    /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
@@ -416,16 +419,19 @@ pub struct CreateCharge<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<ChargeSourceParams>,
 
-    /// An arbitrary string to be used as the dynamic portion of the full descriptor displayed on your customer's credit card statement.
+    /// For card charges, use `statement_descriptor_suffix` instead.
     ///
-    /// This value will be prefixed by your [account's statement descriptor](https://stripe.com/docs/charges#dynamic-statement-descriptor).
-    /// As an example, if your account's statement descriptor is `RUNCLUB` and the item you're charging for is a race ticket, you may want to specify a `statement_descriptor` of `5K RACE`, so that the resulting full descriptor would be `RUNCLUB* 5K RACE`.
-    /// The full descriptor may be up to *22 characters*.
-    /// This value must contain at least one letter, may not include `<>"'` characters, and will appear on your customer's statement in capital letters.
-    /// Non-ASCII characters are automatically stripped.
-    /// While most banks display this information consistently, some may display it incorrectly or not at all.
+    /// Otherwise, you can use this value as the complete description of a charge on your customers’ statements.
+    /// Must contain at least one letter, maximum 22 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
+
+    /// Provides information about the charge that customers see on their statements.
+    ///
+    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that’s set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters for the concatenated descriptor.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_suffix: Option<&'a str>,
 
     /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
     ///
@@ -457,6 +463,7 @@ impl<'a> CreateCharge<'a> {
             shipping: Default::default(),
             source: Default::default(),
             statement_descriptor: Default::default(),
+            statement_descriptor_suffix: Default::default(),
             transfer_data: Default::default(),
             transfer_group: Default::default(),
         }

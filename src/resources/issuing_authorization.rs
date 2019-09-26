@@ -21,7 +21,7 @@ pub struct IssuingAuthorization {
 
     /// How the card details were provided.
     ///
-    /// One of `keyed_in`, `swipe`, `chip`, `contactless`, or `online`.
+    /// One of `chip`, `contactless`, `keyed_in`, `online`, or `swipe`.
     pub authorization_method: IssuingAuthorizationMethod,
 
     /// The amount that has been authorized.
@@ -95,7 +95,7 @@ pub struct IssuingAuthorization {
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wallet_provider: Option<IssuingAuthorizationWalletProvider>,
+    pub wallet_provider: Option<String>,
 }
 
 impl Object for IssuingAuthorization {
@@ -133,7 +133,7 @@ pub struct IssuingAuthorizationRequest {
     /// The currency of the [held amount](https://stripe.com/docs/api#issuing_authorization_object-held_amount).
     pub held_currency: Currency,
 
-    /// One of `authorization_controls`, `card_active`, `card_inactive`, `insufficient_funds`, `account_compliance_disabled`, `account_inactive`, `suspected_fraud`, `webhook_approved`, `webhook_declined`, or `webhook_timeout`.
+    /// One of `authentication_failed`, `authorization_controls`, `card_active`, `card_inactive`, `insufficient_funds`, `account_compliance_disabled`, `account_inactive`, `suspected_fraud`, `webhook_approved`, `webhook_declined`, or `webhook_timeout`.
     pub reason: IssuingAuthorizationReason,
 }
 
@@ -145,37 +145,9 @@ pub struct IssuingAuthorizationVerificationData {
     /// One of `match`, `mismatch`, or `not_provided`.
     pub address_zip_check: IssuingAuthorizationCheck,
 
+    /// One of `success`, `failure`, `exempt`, or `none`.
+    pub authentication: String,
+
     /// One of `match`, `mismatch`, or `not_provided`.
     pub cvc_check: IssuingAuthorizationCheck,
-}
-
-/// An enum representing the possible values of an `IssuingAuthorization`'s `wallet_provider` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingAuthorizationWalletProvider {
-    ApplePay,
-    GooglePay,
-    SamsungPay,
-}
-
-impl IssuingAuthorizationWalletProvider {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            IssuingAuthorizationWalletProvider::ApplePay => "apple_pay",
-            IssuingAuthorizationWalletProvider::GooglePay => "google_pay",
-            IssuingAuthorizationWalletProvider::SamsungPay => "samsung_pay",
-        }
-    }
-}
-
-impl AsRef<str> for IssuingAuthorizationWalletProvider {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for IssuingAuthorizationWalletProvider {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
 }

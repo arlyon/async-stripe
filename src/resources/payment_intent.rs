@@ -2,8 +2,8 @@ use crate::config::{Client, Response};
 use crate::ids::{CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Account, Application, Charge, Currency, Customer, Invoice, PaymentMethod, PaymentSource,
-    Review, Shipping,
+    Account, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession, 
+    PaymentMethod, PaymentSource, Review, Shipping,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -135,6 +135,12 @@ pub struct PaymentIntent {
     /// ID of the source used in this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<Expandable<PaymentSource>>,
+
+    /// Used in payment flows that collect payment details and charge later when the customer is not available to complete additional required steps for the payment.
+    ///
+    /// Setting this parameter indicates that this payment attempt is happening while the customer is not in your checkout flow.
+    /// Use `recurring` for payments made on a recurring basis (for example, subscriptions) and `one_off` for all other off-session payments.
+    pub off_session: Option<PaymentIntentOffSession>,
 
     /// Extra information about a PaymentIntent.
     ///

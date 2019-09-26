@@ -32,6 +32,9 @@ pub struct InvoiceItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Expandable<Customer>>,
 
+    /// Time at which the object was created.
+    ///
+    /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
 
@@ -86,6 +89,7 @@ pub struct InvoiceItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<Expandable<Subscription>>,
 
+    /// The subscription item that this invoice item has been created for, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_item: Option<String>,
 
@@ -95,9 +99,17 @@ pub struct InvoiceItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<TaxRate>>,
 
+    /// For prorations this indicates whether Stripe automatically grouped multiple related debit and credit line items into a single combined line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unified_proration: Option<bool>,
+
     /// Unit Amount (in the `currency` specified) of the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
+
+    /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
 }
 
 impl InvoiceItem {
@@ -154,7 +166,7 @@ impl Object for InvoiceItem {
 pub struct CreateInvoiceItem<'a> {
     /// The integer amount in **%s** of the charge to be applied to the upcoming invoice.
     ///
-    /// If you want to apply a credit to the customer's account, pass a negative amount.
+    /// Passing in a negative `amount` will reduce the `amount_due` on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
@@ -222,10 +234,16 @@ pub struct CreateInvoiceItem<'a> {
 
     /// The integer unit amount in **%s** of the charge to be applied to the upcoming invoice.
     ///
-    /// This unit_amount will be multiplied by the quantity to get the full amount.
-    /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
+    /// This `unit_amount` will be multiplied by the quantity to get the full amount.
+    /// Passing in a negative `unit_amount` will reduce the `amount_due` on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
+
+    /// Same as `unit_amount`, but accepts a decimal value with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<&'a str>,
 }
 
 impl<'a> CreateInvoiceItem<'a> {
@@ -244,6 +262,7 @@ impl<'a> CreateInvoiceItem<'a> {
             subscription: Default::default(),
             tax_rates: Default::default(),
             unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
         }
     }
 }
@@ -368,6 +387,12 @@ pub struct UpdateInvoiceItem<'a> {
     /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
+
+    /// Same as `unit_amount`, but accepts a decimal value with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<&'a str>,
 }
 
 impl<'a> UpdateInvoiceItem<'a> {
@@ -382,6 +407,7 @@ impl<'a> UpdateInvoiceItem<'a> {
             quantity: Default::default(),
             tax_rates: Default::default(),
             unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
         }
     }
 }

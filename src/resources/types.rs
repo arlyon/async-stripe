@@ -307,3 +307,40 @@ pub enum Weekday {
     Friday,
     Saturday,
 }
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(untagged)]
+pub enum PaymentIntentOffSession {
+    Exists(bool),
+    Other(OffSessionOther),
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum OffSessionOther {
+    #[serde(rename = "one_off")]
+    OneOff,
+    #[serde(rename = "recurring")]
+    Recurring,
+}
+
+impl PaymentIntentOffSession {
+    pub fn exists(n: bool) -> Self {
+        PaymentIntentOffSession::Exists(n)
+    }
+    pub fn frequency(n: OffSessionOther) -> Self {
+        match n {
+            OffSessionOther::OneOff => PaymentIntentOffSession::Other(OffSessionOther::OneOff),
+            OffSessionOther::Recurring => PaymentIntentOffSession::Other(OffSessionOther::Recurring)
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SetupIntentUsage {
+    #[serde(rename = "on_session")]
+    OnSession,
+    #[serde(rename = "off_session")]
+    OffSession,
+}

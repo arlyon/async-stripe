@@ -5,7 +5,7 @@
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, SourceId, TokenId};
 use crate::params::{Expand, Metadata, Object, Timestamp};
-use crate::resources::{Address, BillingDetails, Currency};
+use crate::resources::{Address, BillingDetails, Currency, Shipping};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Source".
@@ -73,13 +73,16 @@ pub struct Source {
     /// The authentication `flow` of the source.
     ///
     /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
-    pub flow: SourceFlow,
+    pub flow: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub giropay: Option<SourceTypeGiropay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<SourceTypeIdeal>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<SourceTypeKlarna>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -112,6 +115,9 @@ pub struct Source {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<SourceTypeSofort>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_order: Option<SourceOrder>,
+
     /// Extra information about a source.
     ///
     /// This will appear on your customer's statement every time you charge the source.
@@ -121,14 +127,14 @@ pub struct Source {
     /// The status of the source, one of `canceled`, `chargeable`, `consumed`, `failed`, or `pending`.
     ///
     /// Only `chargeable` sources can be used to create a charge.
-    pub status: SourceStatus,
+    pub status: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub three_d_secure: Option<SourceTypeThreeDSecure>,
 
     /// The `type` of the source.
     ///
-    /// The `type` is a payment method, one of `ach_credit_transfer`, `ach_debit`, `alipay`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `multibanco`, `p24`, `sepa_debit`, `sofort`, `three_d_secure`, or `wechat`.
+    /// The `type` is a payment method, one of `ach_credit_transfer`, `ach_debit`, `alipay`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `multibanco`, `klarna`, `p24`, `sepa_debit`, `sofort`, `three_d_secure`, or `wechat`.
     /// An additional hash is included on the source with a name matching this value.
     /// It contains additional information specific to the [payment method](https://stripe.com/docs/sources) used.
     #[serde(rename = "type")]
@@ -140,7 +146,7 @@ pub struct Source {
     /// Some source types may or may not be reusable by construction, while others may leave the option at creation.
     /// If an incompatible value is passed, an error will be returned.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage: Option<SourceUsage>,
+    pub usage: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat: Option<SourceTypeWechat>,
@@ -186,6 +192,58 @@ pub struct SourceCodeVerificationFlow {
 
     /// The status of the code verification, either `pending` (awaiting verification, `attempts_remaining` should be greater than 0), `succeeded` (successful verification) or `failed` (failed verification, cannot be verified anymore as `attempts_remaining` should be 0).
     pub status: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SourceOrder {
+    /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the order.
+    pub amount: i64,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
+
+    /// The email address of the customer placing the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    /// List of items constituting the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<SourceOrderItem>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<Shipping>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SourceOrderItem {
+    /// The amount (price) for this order item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+
+    /// This currency of this order item.
+    ///
+    /// Required when `amount` is present.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    /// Human-readable description for this order item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    /// The quantity of this order item.
+    ///
+    /// When type is `sku`, this is the number of instances of the SKU to be ordered.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+
+    /// The type of this order item.
+    ///
+    /// Must be `sku`, `tax`, or `shipping`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -272,13 +330,13 @@ pub struct SourceRedirectFlow {
     ///
     /// Present only if the redirect status is `failed`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub failure_reason: Option<SourceRedirectFlowFailureReason>,
+    pub failure_reason: Option<String>,
 
     /// The URL you provide to redirect the customer to after they authenticated their payment.
     pub return_url: String,
 
     /// The status of the redirect, either `pending` (ready to be used by your customer to authenticate the transaction), `succeeded` (succesful authentication, cannot be reused) or `not_required` (redirect should not be used) or `failed` (failed authentication, cannot be reused).
-    pub status: SourceRedirectFlowStatus,
+    pub status: String,
 
     /// The URL provided to you to redirect a customer to as part of a `redirect` authentication flow.
     pub url: String,
@@ -523,6 +581,84 @@ pub struct SourceTypeIdeal {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SourceTypeKlarna {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub background_image_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub client_token: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub locale: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub logo_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page_title: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_later_asset_urls_descriptive: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_later_asset_urls_standard: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_later_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_later_redirect_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_now_asset_urls_descriptive: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_now_asset_urls_standard: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_now_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_now_redirect_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_over_time_asset_urls_descriptive: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_over_time_asset_urls_standard: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_over_time_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_over_time_redirect_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_categories: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purchase_country: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purchase_type: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redirect_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_first_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_last_name: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeMultibanco {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entity: Option<String>,
@@ -666,9 +802,6 @@ pub struct SourceTypeThreeDSecure {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeWechat {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub native_url: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub prepay_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -741,6 +874,12 @@ pub struct CreateSource<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect: Option<CreateSourceRedirect>,
 
+    /// Information about the items and shipping associated with the source.
+    ///
+    /// Required for transactional credit (for example Klarna) sources before you can charge it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_order: Option<CreateSourceSourceOrder>,
+
     /// An arbitrary string to be displayed on your customer's statement.
     ///
     /// As an example, if your website is `RunClub` and the item you're charging for is a race ticket, you may want to specify a `statement_descriptor` of `RunClub 5K race ticket.` While many payment types will display this information, some may not display it at all.
@@ -778,6 +917,7 @@ impl<'a> CreateSource<'a> {
             owner: Default::default(),
             receiver: Default::default(),
             redirect: Default::default(),
+            source_order: Default::default(),
             statement_descriptor: Default::default(),
             token: Default::default(),
             type_: Default::default(),
@@ -789,6 +929,10 @@ impl<'a> CreateSource<'a> {
 /// The parameters for `Source::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSource<'a> {
+    /// Amount associated with the source.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -806,15 +950,23 @@ pub struct UpdateSource<'a> {
     /// Information about the owner of the payment instrument that may be used or required by particular source types.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<BillingDetails>,
+
+    /// Information about the items and shipping associated with the source.
+    ///
+    /// Required for transactional credit (for example Klarna) sources before you can charge it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_order: Option<UpdateSourceSourceOrder>,
 }
 
 impl<'a> UpdateSource<'a> {
     pub fn new() -> Self {
         UpdateSource {
+            amount: Default::default(),
             expand: Default::default(),
             mandate: Default::default(),
             metadata: Default::default(),
             owner: Default::default(),
+            source_order: Default::default(),
         }
     }
 }
@@ -828,6 +980,15 @@ pub struct CreateSourceReceiver {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSourceRedirect {
     pub return_url: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSourceSourceOrder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<CreateSourceSourceOrderItems>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<CreateSourceSourceOrderShipping>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -846,6 +1007,54 @@ pub struct SourceMandateParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub notification_method: Option<SourceMandateNotificationMethod>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSourceSourceOrder {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<UpdateSourceSourceOrderItems>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<UpdateSourceSourceOrderShipping>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSourceSourceOrderItems {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parent: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreateSourceSourceOrderItemsType>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSourceSourceOrderShipping {
+    pub address: CreateSourceSourceOrderShippingAddress,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking_number: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -873,17 +1082,132 @@ pub struct SourceAcceptanceParams {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSourceSourceOrderItems {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parent: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<UpdateSourceSourceOrderItemsType>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSourceSourceOrderShipping {
+    pub address: UpdateSourceSourceOrderShippingAddress,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSourceSourceOrderShippingAddress {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    pub line1: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceAcceptanceOfflineParams {
     pub contact_email: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceAcceptanceOnlineParams {
-    pub date: Timestamp,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Timestamp>,
 
-    pub ip: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
 
-    pub user_agent: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSourceSourceOrderShippingAddress {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    pub line1: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+
+/// An enum representing the possible values of an `CreateSourceSourceOrderItems`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSourceSourceOrderItemsType {
+    Discount,
+    Shipping,
+    Sku,
+    Tax,
+}
+
+impl CreateSourceSourceOrderItemsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSourceSourceOrderItemsType::Discount => "discount",
+            CreateSourceSourceOrderItemsType::Shipping => "shipping",
+            CreateSourceSourceOrderItemsType::Sku => "sku",
+            CreateSourceSourceOrderItemsType::Tax => "tax",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSourceSourceOrderItemsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSourceSourceOrderItemsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `SourceAcceptanceParams`'s `status` field.
@@ -948,7 +1272,7 @@ impl std::fmt::Display for SourceAcceptanceParamsType {
     }
 }
 
-/// An enum representing the possible values of an `Source`'s `flow` field.
+/// An enum representing the possible values of an `CreateSource`'s `flow` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceFlow {
@@ -1047,70 +1371,6 @@ impl std::fmt::Display for SourceMandateNotificationMethod {
     }
 }
 
-/// An enum representing the possible values of an `SourceRedirectFlow`'s `failure_reason` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SourceRedirectFlowFailureReason {
-    Declined,
-    ProcessingError,
-    UserAbort,
-}
-
-impl SourceRedirectFlowFailureReason {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SourceRedirectFlowFailureReason::Declined => "declined",
-            SourceRedirectFlowFailureReason::ProcessingError => "processing_error",
-            SourceRedirectFlowFailureReason::UserAbort => "user_abort",
-        }
-    }
-}
-
-impl AsRef<str> for SourceRedirectFlowFailureReason {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SourceRedirectFlowFailureReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `SourceRedirectFlow`'s `status` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SourceRedirectFlowStatus {
-    Failed,
-    NotRequired,
-    Pending,
-    Succeeded,
-}
-
-impl SourceRedirectFlowStatus {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SourceRedirectFlowStatus::Failed => "failed",
-            SourceRedirectFlowStatus::NotRequired => "not_required",
-            SourceRedirectFlowStatus::Pending => "pending",
-            SourceRedirectFlowStatus::Succeeded => "succeeded",
-        }
-    }
-}
-
-impl AsRef<str> for SourceRedirectFlowStatus {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SourceRedirectFlowStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
 /// An enum representing the possible values of an `CreateSourceReceiver`'s `refund_attributes_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1142,41 +1402,6 @@ impl std::fmt::Display for SourceRefundNotificationMethod {
     }
 }
 
-/// An enum representing the possible values of an `Source`'s `status` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SourceStatus {
-    Canceled,
-    Chargeable,
-    Consumed,
-    Failed,
-    Pending,
-}
-
-impl SourceStatus {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SourceStatus::Canceled => "canceled",
-            SourceStatus::Chargeable => "chargeable",
-            SourceStatus::Consumed => "consumed",
-            SourceStatus::Failed => "failed",
-            SourceStatus::Pending => "pending",
-        }
-    }
-}
-
-impl AsRef<str> for SourceStatus {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SourceStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
 /// An enum representing the possible values of an `Source`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1190,6 +1415,7 @@ pub enum SourceType {
     Eps,
     Giropay,
     Ideal,
+    Klarna,
     Multibanco,
     P24,
     SepaDebit,
@@ -1210,6 +1436,7 @@ impl SourceType {
             SourceType::Eps => "eps",
             SourceType::Giropay => "giropay",
             SourceType::Ideal => "ideal",
+            SourceType::Klarna => "klarna",
             SourceType::Multibanco => "multibanco",
             SourceType::P24 => "p24",
             SourceType::SepaDebit => "sepa_debit",
@@ -1232,7 +1459,7 @@ impl std::fmt::Display for SourceType {
     }
 }
 
-/// An enum representing the possible values of an `Source`'s `usage` field.
+/// An enum representing the possible values of an `CreateSource`'s `usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceUsage {
@@ -1256,6 +1483,39 @@ impl AsRef<str> for SourceUsage {
 }
 
 impl std::fmt::Display for SourceUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSourceSourceOrderItems`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSourceSourceOrderItemsType {
+    Discount,
+    Shipping,
+    Sku,
+    Tax,
+}
+
+impl UpdateSourceSourceOrderItemsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSourceSourceOrderItemsType::Discount => "discount",
+            UpdateSourceSourceOrderItemsType::Shipping => "shipping",
+            UpdateSourceSourceOrderItemsType::Sku => "sku",
+            UpdateSourceSourceOrderItemsType::Tax => "tax",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSourceSourceOrderItemsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSourceSourceOrderItemsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
