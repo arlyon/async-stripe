@@ -450,7 +450,6 @@ def_id!(
         IssuingAuthorization(IssuingAuthorizationId),
         IssuingTransaction(IssuingTransactionId),
         Payout(PayoutId),
-        PlatformTaxFee(AccountId),
         Refund(RefundId),
         Topup(TopupId),
         Transfer(TransferId),

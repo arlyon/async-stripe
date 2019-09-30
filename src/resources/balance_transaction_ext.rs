@@ -16,7 +16,7 @@ impl Object for BalanceTransactionSource {
             Source::Dispute(x) => Id::Dispute(x.id()),
             Source::IssuingAuthorization(x) => Id::IssuingAuthorization(x.id()),
             Source::IssuingTransaction(x) => Id::IssuingTransaction(x.id()),
-            Source::PlatformTaxFee(x) => Id::PlatformTaxFee(x.id()),
+            Source::PlatformTaxFee(_) => Id::None,
             Source::Payout(x) => Id::Payout(x.id()),
             Source::Refund(x) => Id::Refund(x.id()),
             Source::ReserveTransaction(_) => Id::None,
