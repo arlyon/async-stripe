@@ -450,6 +450,7 @@ def_id!(
         IssuingAuthorization(IssuingAuthorizationId),
         IssuingTransaction(IssuingTransactionId),
         Payout(PayoutId),
+        PlatformTaxFee(AccountId),
         Refund(RefundId),
         Topup(TopupId),
         Transfer(TransferId),
@@ -512,6 +513,7 @@ def_id!(SourceId, "src_");
 def_id!(SubscriptionId, "sub_");
 def_id!(SubscriptionItemId, "si_");
 def_id!(SubscriptionLineId, "sli_");
+def_id!(SubscriptionScheduleId, "ss_");
 def_id!(TaxIdId, "txi_");
 def_id!(TaxRateId, "txr_");
 def_id!(

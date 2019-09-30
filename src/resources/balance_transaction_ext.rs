@@ -1,16 +1,6 @@
-use crate::config::{Client, Response};
-use crate::ids::{BalanceTransactionId, BalanceTransactionSourceId};
+use crate::ids::BalanceTransactionSourceId;
 use crate::params::Object;
-use crate::resources::{BalanceTransaction, BalanceTransactionSource};
-
-impl BalanceTransaction {
-    /// Retrieves the balance transaction with the given ID.
-    ///
-    /// For more details see [https://stripe.com/docs/api/balance/balance_transaction_retrieve](https://stripe.com/docs/api/balance/balance_transaction_retrieve).
-    pub fn retrieve(client: &Client, id: &BalanceTransactionId) -> Response<BalanceTransaction> {
-        client.get(&format!("/balance/history/{}", id))
-    }
-}
+use crate::resources::BalanceTransactionSource;
 
 impl Object for BalanceTransactionSource {
     type Id = BalanceTransactionSourceId;
@@ -26,6 +16,7 @@ impl Object for BalanceTransactionSource {
             Source::Dispute(x) => Id::Dispute(x.id()),
             Source::IssuingAuthorization(x) => Id::IssuingAuthorization(x.id()),
             Source::IssuingTransaction(x) => Id::IssuingTransaction(x.id()),
+            Source::PlatformTaxFee(x) => Id::PlatformTaxFee(x.id()),
             Source::Payout(x) => Id::Payout(x.id()),
             Source::Refund(x) => Id::Refund(x.id()),
             Source::ReserveTransaction(_) => Id::None,
@@ -45,6 +36,7 @@ impl Object for BalanceTransactionSource {
             Source::Dispute(x) => x.object(),
             Source::IssuingAuthorization(x) => x.object(),
             Source::IssuingTransaction(x) => x.object(),
+            Source::PlatformTaxFee(x) => x.object(),
             Source::Payout(x) => x.object(),
             Source::Refund(x) => x.object(),
             Source::ReserveTransaction(x) => x.object(),

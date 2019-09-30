@@ -151,7 +151,7 @@ pub struct SetupIntentNextAction {
     ///
     /// The shape of the contents is subject to change and is only intended to be used by Stripe.js.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub use_stripe_sdk: Option<SetupIntentNextActionUseStripeSdk>,
+    pub use_stripe_sdk: Option<serde_json::Value>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -240,12 +240,6 @@ pub struct CreateSetupIntent<'a> {
     /// This parameter can only be used with [`confirm=true`](https://stripe.com/docs/api/setup_intents/create#create_setup_intent-confirm).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<&'a str>,
-
-    /// Indicates how the payment method is intended to be used in the future.
-    ///
-    /// If not provided, this value defaults to `off_session`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage: Option<SetupIntentUsage>,
 }
 
 impl<'a> CreateSetupIntent<'a> {
@@ -261,7 +255,6 @@ impl<'a> CreateSetupIntent<'a> {
             payment_method_options: Default::default(),
             payment_method_types: Default::default(),
             return_url: Default::default(),
-            usage: Default::default(),
         }
     }
 }

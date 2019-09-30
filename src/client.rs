@@ -114,6 +114,23 @@ impl Client {
         Ok(format!("{}/{}?{}", self.host, &path[1..], params))
     }
 
+    // fn formatAppInfo(info: Option<String>) -> Option<String> {
+    //     let formatted: Option<String> = None;
+    //     if (info.is_not_empty()) {
+    //         formatted = info['name'];
+    //         if (info['version'].is_not_empty() && info['url].is_empty()) {
+    //             formatted = format!("{}/{}", &string, info['version']);
+    //         } else if (info['version'].is_not_empty() && info['url].is_not_empty()) {
+    //             formatted = format!("{}/{} ({})", &string, info['version'], info['url']);
+    //         } else {
+    //             formatted = format!("{} ({})", &string, info['url']);
+    //         }
+    //         return formatted;
+    //     } else {
+    //         return None;
+    //     }
+    // }
+
     fn headers(&self) -> HeaderMap {
         let mut headers = HeaderMap::new();
         headers.insert(
@@ -138,9 +155,46 @@ impl Client {
                 HeaderValue::from_str(stripe_version.as_str()).unwrap(),
             );
         }
+
+        // $uaString = 'Stripe/v1 PhpBindings/' . Stripe::VERSION;
+        // $langVersion = phpversion();
+        // $uname = php_uname();
+        // $appInfo = Stripe::getAppInfo();
+
+        // Get AppInfo Here - somewhere else?
+        // $ua = [
+        //     'bindings_version' => Stripe::VERSION,
+        //     'lang' => 'php',
+        //     'lang_version' => $langVersion,
+        //     'publisher' => 'stripe',
+        //     'uname' => $uname,
+        // ];
+        // if ($clientInfo) {
+        //     $ua = array_merge($clientInfo, $ua);
+        // }
+        // if ($appInfo !== null) {
+        //     $uaString .= ' ' . self::_formatAppInfo($appInfo);
+        //     $ua['application'] = $appInfo;
+        // }
+        // $defaultHeaders = [
+        //     'X-Stripe-Client-User-Agent' => json_encode($ua),
+        //     'User-Agent' => $uaString,
+        //     'Authorization' => 'Bearer ' . $apiKey,
+        // ];
+
+
+
+        // if let Some(app_info) = &self.headers.app_info {
+
+        // }
+        // f ($appInfo !== null) {
+        //     $uaString .= ' ' . self::_formatAppInfo($appInfo);
+        //     $ua['application'] = $appInfo;
+        // }
         headers
     }
 }
+
 
 /// Serialize the form content using `serde_qs` instead of `serde_urlencoded`
 ///

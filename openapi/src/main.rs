@@ -170,10 +170,8 @@ fn main() {
             ("issuing_cardholder_authorization_controls", "spending_limits"),
             ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
         ),
-        (("payment_intent", "source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
-        (("create_payment_intent", "off_session"), ("Option<PaymentIntentOffSession>", "Option<PaymentIntentOffSession>")),
-        (("create_setup_intent", "usage"), ("String", "Option<SetupIntentUsage>")),
-        (("payment_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
+        (("create_setup_intent", "usage"), ("", "Option<SetupIntentUsage>")),
+        (("setup_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
         (("person", "dob"), ("Dob", "Option<Dob>")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
         (
@@ -294,7 +292,10 @@ fn main() {
         ("order_items_params_type", "order_item_type"),
     ]);
     field_overrides.extend(vec![
+        (("payment_intent", "source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
+        (("payment_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
         (("create_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+        (("create_payment_intent", "off_session"), ("Option<PaymentIntentOffSession>", "Option<PaymentIntentOffSession>")),
         (("update_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
     ]);
 
@@ -739,8 +740,8 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             let required = param["required"].as_bool() == Some(true);
             match param_name {
                 // TODO: Handle these unusual params
-                "bank_account" | "card" | "destination" | "product" => continue,
-
+                "bank_account" | "card" | "destination" | "product" | "usage" => continue,
+                
                 "metadata" => {
                     print_doc(&mut out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
