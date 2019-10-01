@@ -4,12 +4,15 @@ use crate::resources::ApiVersion;
 use serde::de::DeserializeOwned;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
+use serde_json::{json, Value as Json};
 
 #[derive(Clone, Default)]
 pub struct Headers {
     pub stripe_account: Option<String>,
     pub client_id: Option<String>,
     pub stripe_version: Option<ApiVersion>,
+    pub user_agent: String,
+    pub x_stripe_client_user_agent: Json,
 }
 
 /// Implemented by types which represent stripe objects.

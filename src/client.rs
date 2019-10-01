@@ -14,6 +14,13 @@ pub struct Client {
     host: String,
 }
 
+#[derive(Clone)]
+pub struct AppInfo {
+    name: String,
+    url: Option<String>,
+    version: Option<String>,
+}
+
 impl Client {
     /// Creates a new client pointed to `https://api.stripe.com/`
     pub fn new(secret_key: impl Into<String>) -> Client {
@@ -114,22 +121,42 @@ impl Client {
         Ok(format!("{}/{}?{}", self.host, &path[1..], params))
     }
 
-    // fn formatAppInfo(info: Option<String>) -> Option<String> {
-    //     let formatted: Option<String> = None;
-    //     if (info.is_not_empty()) {
-    //         formatted = info['name'];
-    //         if (info['version'].is_not_empty() && info['url].is_empty()) {
-    //             formatted = format!("{}/{}", &string, info['version']);
-    //         } else if (info['version'].is_not_empty() && info['url].is_not_empty()) {
-    //             formatted = format!("{}/{} ({})", &string, info['version'], info['url']);
-    //         } else {
-    //             formatted = format!("{} ({})", &string, info['url']);
-    //         }
-    //         return formatted;
-    //     } else {
-    //         return None;
-    //     }
-    // }
+    /// Formats a plugin's 'App Info' into a string that can be added to a User-Agent string.
+    ///
+    /// This formatting matches that of other libraries, and if changed then it should be changed everywhere.
+    fn format_app_info(info: AppInfo) -> String {
+        let formatted: String;
+        let name: String = info["name"];
+        if info["version"].is_not_empty() && info["url"].is_empty() {
+            formatted = format!("{}/{}", &name, info["version"]);
+        } else if info["version"].is_not_empty() && info["url"].is_not_empty() {
+            formatted = format!("{}/{} ({})", &name, info["version"], info["url"]);
+        } else {
+            formatted = format!("{} ({})", &name, info["url"]);
+        }
+        return formatted;
+    }
+    
+    /// Plugins can set their application information to identify themselves with Stripe.
+    pub fn set_app_info(&mut self, name: String, version: Option<String>, url: Option<String>) {
+        let app_version = if let Some(version) = version {
+            version
+        } else {
+            None
+        };
+
+        let app_url = if let Some(url) = url {
+            url
+        } else {
+            None
+        };
+
+         self.app_info = AppInfo {
+             name: name,
+             url: app_url,
+             version: app_version,
+         };
+    }
 
     fn headers(&self) -> HeaderMap {
         let mut headers = HeaderMap::new();
@@ -149,48 +176,47 @@ impl Client {
                 HeaderValue::from_str(client_id).unwrap(),
             );
         }
-        if let Some(stripe_version) = &self.headers.stripe_version {
+        let stripe_version = if let Some(stripe_version) = &self.headers.stripe_version {
             headers.insert(
                 HeaderName::from_static("stripe-version"),
                 HeaderValue::from_str(stripe_version.as_str()).unwrap(),
             );
+            stripe_version
+        } else {
+            None
         }
 
-        // $uaString = 'Stripe/v1 PhpBindings/' . Stripe::VERSION;
-        // $langVersion = phpversion();
-        // $uname = php_uname();
-        // $appInfo = Stripe::getAppInfo();
+        let user_agent: String = format!("Stripe/v3 RustBindings/#{}", stripe_version);
 
-        // Get AppInfo Here - somewhere else?
-        // $ua = [
-        //     'bindings_version' => Stripe::VERSION,
-        //     'lang' => 'php',
-        //     'lang_version' => $langVersion,
-        //     'publisher' => 'stripe',
-        //     'uname' => $uname,
-        // ];
-        // if ($clientInfo) {
-        //     $ua = array_merge($clientInfo, $ua);
-        // }
-        // if ($appInfo !== null) {
-        //     $uaString .= ' ' . self::_formatAppInfo($appInfo);
-        //     $ua['application'] = $appInfo;
-        // }
-        // $defaultHeaders = [
-        //     'X-Stripe-Client-User-Agent' => json_encode($ua),
-        //     'User-Agent' => $uaString,
-        //     'Authorization' => 'Bearer ' . $apiKey,
-        // ];
+        if let Some(app_info) = &self.app_info {
+            let formatted: String = format_app_info(app_info);
+            let user_agent_app_info: String = format!("{} {}", user_agent, formatted);
+            headers.insert(
+                HeaderName::from_static("user_agent"),
+                HeaderValue::from_str(user_agent_app_info.as_str()).unwrap(),
+            );
+        } else {
+            headers.insert(
+                HeaderName::from_static("user_agent"),
+                HeaderValue::from_str(user_agent.as_str()).unwrap(),
+            );
+        }
 
+        /// System information to fillout the user agent header to help debug integrations.
+        let stripe_client_user_agent = {
+            binding_version: stripe_version,
+            lang: "rust".to_string(),
+            lang_version: // rust version
+            publisher: "stripe".to_string(),
+            uname: // unix name
+            application: // app_info
+        };
 
+        headers.insert(
+            HeaderName::from_static("x_stripe_client_user_agent"),
+            HeaderValue::from_str(stripe_client_user_agent).unwrap(),
+        );
 
-        // if let Some(app_info) = &self.headers.app_info {
-
-        // }
-        // f ($appInfo !== null) {
-        //     $uaString .= ' ' . self::_formatAppInfo($appInfo);
-        //     $ua['application'] = $appInfo;
-        // }
         headers
     }
 }
