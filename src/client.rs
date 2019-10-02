@@ -22,14 +22,6 @@ pub struct AppInfo {
     version: Option<String>,
 }
 
-#[derive(Clone, Default)]
-pub struct StripeClientUserAgent {
-    binding_version: String,
-    lang: String,
-    publisher: String,
-    application: Option<String>
-}
-
 static VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 impl Client {
@@ -175,18 +167,6 @@ impl Client {
                 HeaderValue::from_str(user_agent.as_str()).unwrap(),
             );
         };
-
-        /// System information to fillout the user agent header more to help debug integrations.
-        let mut stripe_client_user_agent = StripeClientUserAgent::default();
-        stripe_client_user_agent.binding_version = VERSION;
-        stripe_client_user_agent.lang = "rust".to_string();
-        stripe_client_user_agent.publisher = "stripe".to_string();
-        stripe_client_user_agent.application = self.app_info.unwrap_or_else(None);
-
-        headers.insert(
-            HeaderName::from_static("x_stripe_client_user_agent"),
-            HeaderValue::from_str(stripe_client_user_agent.to_str()).unwrap(),
-        );
 
         headers
     }

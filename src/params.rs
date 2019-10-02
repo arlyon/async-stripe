@@ -1,10 +1,9 @@
 use crate::config::{err, ok, Client, Response};
 use crate::error::Error;
-use crate::resources::{ApiVersion, StripeClientUserAgent};
+use crate::resources::ApiVersion;
 use serde::de::DeserializeOwned;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
-use serde_json::Value as Json;
 
 #[derive(Clone, Default)]
 pub struct Headers {
@@ -12,7 +11,6 @@ pub struct Headers {
     pub client_id: Option<String>,
     pub stripe_version: Option<ApiVersion>,
     pub user_agent: String,
-    pub x_stripe_client_user_agent: StripeClientUserAgent,
 }
 
 /// Implemented by types which represent stripe objects.
