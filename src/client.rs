@@ -12,14 +12,25 @@ pub struct Client {
     secret_key: String,
     headers: Headers,
     host: String,
+    app_info: Option<AppInfo>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct AppInfo {
     name: String,
     url: Option<String>,
     version: Option<String>,
 }
+
+#[derive(Clone, Default)]
+pub struct StripeClientUserAgent {
+    binding_version: String,
+    lang: String,
+    publisher: String,
+    application: Option<String>
+}
+
+static VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 impl Client {
     /// Creates a new client pointed to `https://api.stripe.com/`
@@ -36,6 +47,7 @@ impl Client {
             secret_key: secret_key.into(),
             headers: Headers::default(),
             host,
+            app_info: Some(AppInfo::default()),
         }
     }
 
@@ -121,41 +133,12 @@ impl Client {
         Ok(format!("{}/{}?{}", self.host, &path[1..], params))
     }
 
-    /// Formats a plugin's 'App Info' into a string that can be added to a User-Agent string.
-    ///
-    /// This formatting matches that of other libraries, and if changed then it should be changed everywhere.
-    fn format_app_info(info: AppInfo) -> String {
-        let formatted: String;
-        let name: String = info["name"];
-        if info["version"].is_not_empty() && info["url"].is_empty() {
-            formatted = format!("{}/{}", &name, info["version"]);
-        } else if info["version"].is_not_empty() && info["url"].is_not_empty() {
-            formatted = format!("{}/{} ({})", &name, info["version"], info["url"]);
-        } else {
-            formatted = format!("{} ({})", &name, info["url"]);
-        }
-        return formatted;
-    }
-    
-    /// Plugins can set their application information to identify themselves with Stripe.
     pub fn set_app_info(&mut self, name: String, version: Option<String>, url: Option<String>) {
-        let app_version = if let Some(version) = version {
-            version
-        } else {
-            None
-        };
-
-        let app_url = if let Some(url) = url {
-            url
-        } else {
-            None
-        };
-
-         self.app_info = AppInfo {
-             name: name,
-             url: app_url,
-             version: app_version,
-         };
+        self.app_info = Some(AppInfo {
+            name: name,
+            url: url,
+            version: version,
+        });
     }
 
     fn headers(&self) -> HeaderMap {
@@ -176,17 +159,8 @@ impl Client {
                 HeaderValue::from_str(client_id).unwrap(),
             );
         }
-        let stripe_version = if let Some(stripe_version) = &self.headers.stripe_version {
-            headers.insert(
-                HeaderName::from_static("stripe-version"),
-                HeaderValue::from_str(stripe_version.as_str()).unwrap(),
-            );
-            stripe_version
-        } else {
-            None
-        }
 
-        let user_agent: String = format!("Stripe/v3 RustBindings/#{}", stripe_version);
+        let user_agent: String = format!("Stripe/v3 RustBindings/{}", VERSION);
 
         if let Some(app_info) = &self.app_info {
             let formatted: String = format_app_info(app_info);
@@ -200,27 +174,36 @@ impl Client {
                 HeaderName::from_static("user_agent"),
                 HeaderValue::from_str(user_agent.as_str()).unwrap(),
             );
-        }
-
-        /// System information to fillout the user agent header to help debug integrations.
-        let stripe_client_user_agent = {
-            binding_version: stripe_version,
-            lang: "rust".to_string(),
-            lang_version: // rust version
-            publisher: "stripe".to_string(),
-            uname: // unix name
-            application: // app_info
         };
+
+        /// System information to fillout the user agent header more to help debug integrations.
+        let mut stripe_client_user_agent = StripeClientUserAgent::default();
+        stripe_client_user_agent.binding_version = VERSION;
+        stripe_client_user_agent.lang = "rust".to_string();
+        stripe_client_user_agent.publisher = "stripe".to_string();
+        stripe_client_user_agent.application = self.app_info.unwrap_or_else(None);
 
         headers.insert(
             HeaderName::from_static("x_stripe_client_user_agent"),
-            HeaderValue::from_str(stripe_client_user_agent).unwrap(),
+            HeaderValue::from_str(stripe_client_user_agent.to_str()).unwrap(),
         );
 
         headers
     }
 }
 
+/// Formats a plugin's 'App Info' into a string that can be added to the end of an User-Agent string.
+///
+/// This formatting matches that of other libraries, and if changed then it should be changed everywhere.
+fn format_app_info(info: &AppInfo) -> String {
+    let formatted: String = match (&info.version, &info.url) {
+        (Some(a), Some(b)) => format!("{}/{} ({})", &info.name, a, b),
+        (Some(a), None) => format!("{}/{}", &info.name, a),
+        (None, Some(b)) => format!("{}/{}", &info.name, b),
+        _ => info.name.to_string()
+    };
+    formatted
+}
 
 /// Serialize the form content using `serde_qs` instead of `serde_urlencoded`
 ///
