@@ -12,12 +12,21 @@ pub struct Client {
     client: reqwest::r#async::Client,
     secret_key: String,
     headers: Headers,
+    host: String,
 }
 
 impl Client {
+    /// Creates a new async client pointed to `https://api.stripe.com/`
     pub fn new<S: Into<String>>(secret_key: S) -> Client {
+        Client::from_url("https://api.stripe.com/", secret_key)
+    }
+
+    /// Creates a new async client posted to a custom `scheme://host/`
+    pub fn from_url(scheme_host: impl Into<String>, secret_key: impl Into<String>) -> Client {
         let client = reqwest::r#async::Client::new();
-        Client { client, secret_key: secret_key.into(), headers: Headers::default() }
+        let url = scheme_host.into();
+        let host = if url.ends_with("/") { format!("{}v1", url) } else { format!("{}/v1", url) };
+        Client { client, secret_key: secret_key.into(), headers: Headers::default(), host }
     }
 
     /// Clones a new client with different headers.
@@ -40,7 +49,7 @@ impl Client {
 
     /// Make a `GET` http request with just a path
     pub fn get<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
-        let url = Client::url(path);
+        let url = self.url(path);
         let request = self.client.get(&url).headers(self.headers());
         send(request)
     }
@@ -51,7 +60,7 @@ impl Client {
         path: &str,
         params: P,
     ) -> Response<T> {
-        let url = match Client::url_with_params(path, params) {
+        let url = match self.url_with_params(path, params) {
             Err(err) => return Box::new(future::err(err)),
             Ok(ok) => ok,
         };
@@ -61,7 +70,7 @@ impl Client {
 
     /// Make a `DELETE` http request with just a path
     pub fn delete<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
-        let url = Client::url(path);
+        let url = self.url(path);
         let request = self.client.delete(&url).headers(self.headers());
         send(request)
     }
@@ -72,7 +81,7 @@ impl Client {
         path: &str,
         params: P,
     ) -> Response<T> {
-        let url = match Client::url_with_params(path, params) {
+        let url = match self.url_with_params(path, params) {
             Err(err) => return Box::new(future::err(err)),
             Ok(ok) => ok,
         };
@@ -82,7 +91,7 @@ impl Client {
 
     /// Make a `POST` http request with just a path
     pub fn post<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
-        let url = Client::url(path);
+        let url = self.url(path);
         let request = self.client.post(&url).headers(self.headers());
         send(request)
     }
@@ -93,7 +102,7 @@ impl Client {
         path: &str,
         form: F,
     ) -> Response<T> {
-        let url = Client::url(path);
+        let url = self.url(path);
         let request = self.client.post(&url).headers(self.headers());
         let request = match with_form_urlencoded(request, &form) {
             Err(err) => return Box::new(future::err(err)),
@@ -102,13 +111,13 @@ impl Client {
         send(request)
     }
 
-    fn url(path: &str) -> String {
-        format!("https://api.stripe.com/v1/{}", &path[1..])
+    fn url(&self, path: &str) -> String {
+        format!("{}/{}", self.host, &path[1..])
     }
 
-    fn url_with_params<P: serde::Serialize>(path: &str, params: P) -> Result<String, Error> {
+    fn url_with_params<P: serde::Serialize>(&self, path: &str, params: P) -> Result<String, Error> {
         let params = serde_qs::to_string(&params).map_err(Error::serialize)?;
-        Ok(format!("https://api.stripe.com/v1/{}?{}", &path[1..], params))
+        Ok(format!("{}/{}?{}", self.host, &path[1..], params))
     }
 
     fn headers(&self) -> HeaderMap {

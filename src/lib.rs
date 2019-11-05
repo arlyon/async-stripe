@@ -59,6 +59,9 @@
 
 #[cfg(not(feature = "async"))]
 mod client;
+// pub mod to be backward-compatible with 0.11.x
+#[cfg(feature = "async")]
+pub mod r#async;
 mod error;
 mod ids;
 mod params;
@@ -71,8 +74,6 @@ mod resources;
 //
 // See https://github.com/wyyerd/stripe-rs/issues/24#issuecomment-451514187
 // See https://github.com/rust-lang/rust/issues/44265
-#[cfg(feature = "async")]
-pub mod r#async;
 #[cfg(not(feature = "async"))]
 pub use crate::client::Client;
 pub use crate::error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
@@ -80,6 +81,8 @@ pub use crate::ids::*;
 pub use crate::params::{
     Expandable, Headers, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,
 };
+#[cfg(feature = "async")]
+pub use crate::r#async::Client;
 pub use crate::resources::*;
 
 #[cfg(not(feature = "async"))]
