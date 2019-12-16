@@ -5,7 +5,7 @@
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
 use crate::params::{Expand, Object, Timestamp};
-use crate::resources::{BankAccount, BusinessType, Card, CompanyParams, PersonParams};
+use crate::resources::{BankAccount, BusinessType, Card, CompanyParams, PersonParams, TokenType};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Token".
@@ -36,7 +36,7 @@ pub struct Token {
 
     /// Type of the token: `account`, `bank_account`, `card`, or `pii`.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: TokenType,
 
     /// Whether this token has already been used (tokens can be used only once).
     pub used: bool,

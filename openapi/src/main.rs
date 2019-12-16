@@ -12,8 +12,8 @@ fn main() {
     let spec: Json = serde_json::from_str(&raw).unwrap();
 
     let id_renames = config::id_renames();
-    let schema_renames = config::schema_renames();
-    let field_overrides = config::field_overrides();
+    let object_mappings = config::object_mappings();
+    let field_mappings = config::field_mappings();
 
     // Compute additional metadata from spec.
     let mut ids = BTreeMap::new();
@@ -70,7 +70,6 @@ fn main() {
         }
     }
 
-
     // Generate files
     let meta = Metadata {
         spec: &spec,
@@ -78,8 +77,8 @@ fn main() {
         objects,
         dependents,
         requests,
-        schema_renames,
-        field_overrides,
+        object_mappings,
+        field_mappings,
     };
     for object in &meta.objects {
         if object.starts_with("deleted_") {
@@ -106,9 +105,9 @@ struct Metadata<'a> {
     /// A one to many map of schema to depending types.
     dependents: BTreeMap<&'a str, BTreeSet<&'a str>>,
     /// How a particular schema should be renamed.
-    schema_renames: BTreeMap<&'a str, &'a str>,
+    object_mappings: BTreeMap<&'a str, &'a str>,
     /// An override for the rust-type of a particular object/field pair.
-    field_overrides: BTreeMap<(&'a str, &'a str), (&'a str, &'a str)>,
+    field_mappings: BTreeMap<(&'a str, &'a str), (&'a str, &'a str)>,
     /// A one to many map of _objects_ to requests which should be
     /// implemented for that object.
     ///
@@ -118,7 +117,7 @@ struct Metadata<'a> {
 
 impl<'a> Metadata<'a> {
     fn schema_to_rust_type(&self, schema: &str) -> String {
-        if let Some(rename) = self.schema_renames.get(&schema) {
+        if let Some(rename) = self.object_mappings.get(&schema) {
             rename.to_camel_case()
         } else {
             schema.replace('.', "_").to_camel_case()
@@ -477,7 +476,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 }
                 _ => {
                     if let Some((use_path, rust_type)) =
-                        meta.field_overrides.get(&(params_schema.as_str(), param_name))
+                        meta.field_mappings.get(&(params_schema.as_str(), param_name))
                     {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), rust_type.to_string(), required));
@@ -1034,7 +1033,7 @@ fn gen_field_rust_type(
     required: bool,
     default: bool,
 ) -> String {
-    if let Some(&(use_path, rust_type)) = meta.field_overrides.get(&(object, field_name)) {
+    if let Some(&(use_path, rust_type)) = meta.field_mappings.get(&(object, field_name)) {
         match use_path {
             "" | "String" => (),
             "Metadata" => {

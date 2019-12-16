@@ -6,7 +6,7 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, Card, Currency, DelayDays, Dob, File, Person, Weekday,
+    Address, BankAccount, BusinessType, Card, Currency, DelayDays, Dob, File, Person, Weekday,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -26,7 +26,7 @@ pub struct Account {
     ///
     /// Can be `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<String>,
+    pub business_type: Option<BusinessType>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<AccountCapabilities>,
@@ -100,7 +100,7 @@ pub struct Account {
     /// Can be `standard`, `express`, or `custom`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
+    pub type_: Option<AccountType>,
 }
 
 impl Account {

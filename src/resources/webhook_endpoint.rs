@@ -17,7 +17,7 @@ pub struct WebhookEndpoint {
 
     /// The API version events are rendered as for this webhook endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub api_version: Option<String>,
+    pub api_version: Option<ApiVersion>,
 
     /// The ID of the associated Connect application.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,7 +37,7 @@ pub struct WebhookEndpoint {
     ///
     /// You may specify `['*']` to enable all events.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub enabled_events: Option<Vec<String>>,
+    pub enabled_events: Option<Vec<EventFilter>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]

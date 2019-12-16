@@ -6,9 +6,10 @@ use crate::config::{Client, Response};
 use crate::ids::{BalanceTransactionId, PayoutId, SourceId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    ApplicationFee, ApplicationFeeRefund, Charge, ConnectCollectionTransfer, Currency, Dispute,
-    IssuingAuthorization, IssuingTransaction, Payout, PlatformTaxFee, Refund, ReserveTransaction,
-    Topup, Transfer, TransferReversal,
+    ApplicationFee, ApplicationFeeRefund, BalanceTransactionStatus, Charge,
+    ConnectCollectionTransfer, Currency, Dispute, FeeType, IssuingAuthorization,
+    IssuingTransaction, Payout, PlatformTaxFee, Refund, ReserveTransaction, Topup, Transfer,
+    TransferReversal,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -61,7 +62,7 @@ pub struct BalanceTransaction {
     /// If the transaction's net funds are available in the Stripe balance yet.
     ///
     /// Either `available` or `pending`.
-    pub status: String,
+    pub status: Option<BalanceTransactionStatus>,
 
     /// Transaction type: `adjustment`, `advance`, `advance_funding`, `application_fee`, `application_fee_refund`, `charge`, `connect_collection_transfer`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_transaction`, `payment`, `payment_failure_refund`, `payment_refund`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
     ///
@@ -124,7 +125,7 @@ pub struct Fee {
 
     /// Type of the fee, one of: `application_fee`, `stripe_fee` or `tax`.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: FeeType,
 }
 
 /// The parameters for `BalanceTransaction::list`.

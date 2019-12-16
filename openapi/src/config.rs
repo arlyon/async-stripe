@@ -13,8 +13,9 @@ pub fn id_renames() -> BTreeMap<&'static str, &'static str> {
 }
 
 #[rustfmt::skip]
-pub fn schema_renames() -> BTreeMap<&'static str, &'static str> {
+pub fn object_mappings() -> BTreeMap<&'static str, &'static str> {
     [
+        // Config for object types
         ("account_business_profile", "business_profile"),
         ("account_business_type", "business_type"),
         ("account_capabilities_card_payments", "capability_status"),
@@ -102,7 +103,7 @@ pub fn schema_renames() -> BTreeMap<&'static str, &'static str> {
         ("source_acceptance_params_online", "source_acceptance_online_params"),
         ("create_source_receiver_refund_attributes_method", "source_refund_notification_method"),
 
-        // Config for `webhook`
+        // Config for `webhook` params
         ("webhook_endpoint_enabled_events", "event_filter"),
         ("webhook_endpoint_api_version", "api_version"),
         ("create_webhook_endpoint_enabled_events", "event_filter"),
@@ -113,15 +114,27 @@ pub fn schema_renames() -> BTreeMap<&'static str, &'static str> {
     .collect()
 }
 
-pub type FieldSpec = (&'static str, &'static str);
+pub type FieldSpec = (
+    &'static str, // object name
+    &'static str, // field name
+);
+pub type ImportSpec = (
+    &'static str, // "use" name
+    &'static str, // field type
+);
 
 #[rustfmt::skip]
-pub fn field_overrides() -> BTreeMap<FieldSpec, FieldSpec> {
+pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
     [
+        // Config for object types
+        (("account", "type"), ("AccountType", "Option<AccountType>")),
+        (("account", "business_type"), ("BusinessType", "Option<BusinessType>")),
+        (("balance_transaction", "status"), ("BalanceTransactionStatus", "Option<BalanceTransactionStatus>")),
         (
             ("bank_account", "account_holder_type"),
             ("AccountHolderType", "Option<AccountHolderType>"),
         ),
+        (("fee", "type"), ("FeeType", "FeeType")),
         (("charge", "source"), ("PaymentSource", "Option<PaymentSource>")),
         (
             ("charge_fraud_details", "stripe_report"),
@@ -177,14 +190,14 @@ pub fn field_overrides() -> BTreeMap<FieldSpec, FieldSpec> {
             ("issuing_cardholder_authorization_controls", "spending_limits"),
             ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
         ),
-        (("create_setup_intent", "usage"), ("", "Option<SetupIntentUsage>")),
-        (("setup_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
         (("person", "dob"), ("Dob", "Option<Dob>")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
         (
             ("subscription", "default_source"),
             ("PaymentSource", "Option<Expandable<PaymentSource>>"),
         ),
+        (("token", "type"), ("TokenType", "TokenType")),
+        (("transfer", "source_type"), ("", "Option<TransferSourceType>")),
         (("transfer_schedule", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
 
         // Config for `account` params
@@ -203,6 +216,8 @@ pub fn field_overrides() -> BTreeMap<FieldSpec, FieldSpec> {
         ),
         (("transfer_schedule_params", "delay_days"), ("DelayDays", "Option<DelayDays>")),
         (("transfer_schedule_params", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
+        (("webhook_endpoint", "api_version"), ("", "Option<ApiVersion>")),
+        (("webhook_endpoint", "enabled_events"), ("", "Option<Vec<EventFilter>>")),
 
         // Config for `charge` params
         (("create_charge", "shipping"), ("Shipping", "Option<Shipping>")),
@@ -251,6 +266,9 @@ pub fn field_overrides() -> BTreeMap<FieldSpec, FieldSpec> {
             ("Option<PaymentIntentOffSession>", "Option<PaymentIntentOffSession>"),
         ),
         (("update_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
+        (("create_setup_intent", "usage"), ("", "Option<SetupIntentUsage>")),
+        (("setup_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
+
         // Config for `sku` params
         (("list_skus", "attributes"), ("Metadata", "Option<Metadata>")),
         (("create_sku", "attributes"), ("Metadata", "Option<Metadata>")),
@@ -298,7 +316,7 @@ pub fn field_overrides() -> BTreeMap<FieldSpec, FieldSpec> {
         (("create_subscription_schedule_phases", "trial_end"), ("Scheduled", "Option<Scheduled>")),
         (("update_subscription_schedule_phases", "trial_end"), ("Scheduled", "Option<Scheduled>")),
 
-        // Miscellaneous
+        // Miscellaneous params
         (
             ("update_payment_method", "billing_details"),
             ("BillingDetails", "Option<BillingDetails>"),

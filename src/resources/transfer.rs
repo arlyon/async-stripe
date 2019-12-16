@@ -74,7 +74,7 @@ pub struct Transfer {
     ///
     /// One of `card` or `bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_type: Option<String>,
+    pub source_type: Option<TransferSourceType>,
 
     /// A string that identifies this transaction as part of a group.
     ///

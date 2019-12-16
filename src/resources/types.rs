@@ -51,21 +51,12 @@ pub struct CustomField {
     pub value: String,
 }
 
-// A date of birth
+/// A date of birth.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Dob {
     pub day: i64,
     pub month: i64,
     pub year: i64,
-}
-
-/// An enum representing the possible values of an `Fee`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum FeeType {
-    ApplicationFee,
-    StripeFee,
-    Tax,
 }
 
 /// An enum representing the possible values of a `FraudDetails`'s `report` fields.
