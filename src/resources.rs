@@ -271,4 +271,3 @@ pub struct PersonParams {
     #[serde(default)]
     pub metadata: crate::params::Metadata,
 }
-

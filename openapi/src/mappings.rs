@@ -12,7 +12,7 @@ pub fn id_renames() -> BTreeMap<&'static str, &'static str> {
     .collect()
 }
 
-pub type ObjectMap =  BTreeMap<&'static str, &'static str>;
+pub type ObjectMap = BTreeMap<&'static str, &'static str>;
 
 #[rustfmt::skip]
 pub fn object_mappings() -> ObjectMap {
