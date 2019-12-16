@@ -1,0 +1,22 @@
+[package]
+name = "binary_size"
+version = "0.1.0"
+authors = ["Kevin Stenerson <kestred@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+all = ["stripe-rust/full", "stripe-rust/webhook-events"]
+full = ["stripe-rust/full"]
+checkout = ["stripe-rust/checkout"]
+billing = ["stripe-rust/billing"]
+connect = ["stripe-rust/connect"]
+fraud = ["stripe-rust/fraud"]
+issuing = ["stripe-rust/issuing"]
+orders = ["stripe-rust/orders"]
+sigma = ["stripe-rust/sigma"]
+webhook-endpoints = ["stripe-rust/webhook-endpoints"]
+
+[dependencies]
+stripe-rust = { path = "../../", default-features = false }

@@ -1,0 +1,155 @@
+##
+## Version: 0.12.0-alpha.1
+##
+
+[[benchmark]]
+commit = "54d7a1b7adf6ec20a1af665b46bb0f2b356b6f06"
+features = []
+time = { debug = "3m 51s", release = "8m 21s" }
+size = { debug = "30.5M", release = "7.9M", stripped = "6.5M", lib = "1.8MiB" }
+
+[[benchmark]]
+commit = "54d7a1b7adf6ec20a1af665b46bb0f2b356b6f06"
+features = ["all"]
+time = { debug = "5m 00s", release = "13m 03s" }
+size = { debug = "42.3M", release = "11M", stripped = "9M", lib = "3.9M" }
+
+52.09s stripe
+24.50s syn
+22.83s serde_derive
+20.13s syn
+18.47s regex
+15.74s regex_syntax
+14.72s encoding_rs
+14.70s serde
+13.84s h2
+12.80s http
+10.54s idna
+10.23s idna
+ 9.12s reqwest
+ 9.06s hyper
+ 8.92s futures
+ 8.13s binary_size
+ 7.91s aho_corasick
+ 7.88s proc_macro2
+ 7.85s proc_macro2
+ 7.31s unicode_normalization
+ 7.10s cc
+ 6.21s rand
+ 6.03s synstructure
+ 6.01s data_encoding
+ 5.97s rand
+ 5.66s tokio_threadpool
+ 5.50s failure_derive
+ 5.49s mio
+ 5.47s security_framework
+ 5.34s url
+ 5.19s mime_guess
+ 5.11s memchr
+ 4.91s serde_json
+ 4.73s url
+ 4.63s num_traits
+ 4.12s httparse
+ 4.07s chrono
+ 3.99s byteorder
+ 3.47s tokio_timer
+ 3.46s tokio
+ 3.27s publicsuffix
+ 3.14s parking_lot_core
+ 2.99s libc
+ 2.97s c2_chacha
+ 2.86s ppv_lite86
+ 2.82s tokio_reactor
+ 2.79s cookie_store
+ 2.75s time
+ 2.73s ryu
+ 2.68s arrayvec
+ 2.62s serde_qs
+ 2.60s unicode_bidi
+ 2.52s bytes
+ 2.38s num_integer
+ 2.26s miniz_oxide
+ 2.23s native_tls
+ 2.20s tokio_current_thread
+ 2.16s crc32fast
+ 2.15s backtrace
+ 2.12s crossbeam_epoch
+ 2.12s crossbeam_utils
+ 2.11s log
+ 2.08s core_foundation_sys
+ 2.07s flate2
+ 2.02s tokio_io
+ 2.01s parking_lot
+ 1.99s cookie
+ 1.94s futures_cpupool
+ 1.91s uuid
+ 1.90s getrandom
+ 1.90s core_foundation
+ 1.87s tokio_sync
+ 1.86s net2
+ 1.84s error_chain
+ 1.84s quote
+ 1.82s rustc_demangle
+ 1.72s indexmap
+ 1.71s unicase
+ 1.66s semver_parser
+ 1.65s autocfg
+ 1.61s tempfile
+ 1.50s semver
+ 1.38s version_check
+ 1.35s quote
+ 1.35s base64
+ 1.30s tokio_tcp
+ 1.27s memoffset
+ 1.20s failure
+ 1.19s mime
+ 1.12s rand_chacha
+ 1.10s backtrace_sys
+ 1.08s rand_core
+ 1.07s serde_urlencoded
+ 1.02s smol_str
+ 1.02s rand_jitter
+ 1.00s rustc_version
+ 0.99s tokio_buf
+ 0.97s rand_chacha
+ 0.96s rand_pcg
+ 0.90s thread_local
+ 0.89s rand_core
+ 0.88s smallvec
+ 0.85s try_from
+ 0.85s percent_encoding
+ 0.79s lock_api
+ 0.78s rand_isaac
+ 0.76s percent_encoding
+ 0.75s hyper_tls
+ 0.71s want
+ 0.68s rand_os
+ 0.67s crossbeam_deque
+ 0.62s tokio_executor
+ 0.60s rand_hc
+ 0.59s iovec
+ 0.52s security_framework_sys
+ 0.46s either
+ 0.46s dtoa
+ 0.42s owning_ref
+ 0.40s adler32
+ 0.38s rand_xorshift
+ 0.35s itoa
+ 0.33s string
+ 0.31s lazy_static
+ 0.31s num_cpus
+ 0.29s slab
+ 0.27s crossbeam_queue
+ 0.25s unicode_xid
+ 0.22s unicode_xid
+ 0.20s http_body
+ 0.19s try_lock
+ 0.17s scopeguard
+ 0.15s fnv
+ 0.15s stable_deref_trait
+ 0.14s scopeguard
+ 0.12s nodrop
+ 0.11s cfg_if
+ 0.08s rand_core
+ 0.08s matches
+ 0.08s remove_dir_all
