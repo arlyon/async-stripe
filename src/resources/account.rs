@@ -6,7 +6,7 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, Card, Currency, DelayDays, Dob, File, Person, Weekday,
+    Address, BankAccount, BusinessType, Card, Currency, DelayDays, Dob, File, Person, Weekday,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -88,7 +88,7 @@ pub struct Account {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requirements: Option<AccountRequirements>,
 
-    /// Account options for customizing how the account functions within Stripe.
+    /// Options for customizing how the account functions within Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub settings: Option<AccountSettings>,
 
@@ -204,9 +204,9 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub legacy_payments: Option<CapabilityStatus>,
 
-    /// The status of the platform payments capability of the account, or whether your platform can process charges on behalf of the account.
+    /// The status of the transfers capability of the account, or whether your platform can transfer funds to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub platform_payments: Option<CapabilityStatus>,
+    pub transfers: Option<AccountCapabilitiesTransfers>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -240,6 +240,12 @@ pub struct AccountRequirements {
     /// These fields need to be collected to re-enable the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub past_due: Option<Vec<String>>,
+
+    /// Additional fields that may be required depending on the results of verification or review for provided requirements.
+    ///
+    /// If any of these fields become required, they appear in `currently_due` or `past_due`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pending_verification: Option<Vec<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -337,7 +343,7 @@ pub struct PaymentsSettings {
 pub struct PayoutSettings {
     /// A Boolean indicating if Stripe should try to reclaim negative balances from an attached bank account.
     ///
-    /// See the [Understanding Connect Account Balances](https://stripe.com/docs/connect/account-balances) documentation for details.
+    /// See our [Understanding Connect Account Balances](https://stripe.com/docs/connect/account-balances) documentation for details.
     /// Default value is `true` for Express accounts and `false` for Custom accounts.
     pub debit_negative_balances: bool,
 
@@ -416,6 +422,36 @@ pub struct Company {
     /// Whether the company's business VAT number was provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vat_id_provided: Option<bool>,
+
+    /// Information on the verification state of the company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification: Option<LegalEntityCompanyVerification>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct LegalEntityCompanyVerification {
+    pub document: LegalEntityCompanyVerificationDocument,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct LegalEntityCompanyVerificationDocument {
+    /// The back of a document returned by a [file upload](#create_file) with a `purpose` value of `additional_verification`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<Expandable<File>>,
+
+    /// A user-displayable string describing the verification state of this document.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub details: Option<String>,
+
+    /// One of `document_corrupt`, `document_expired`, `document_failed_copy`, `document_failed_greyscale`, `document_failed_other`, `document_failed_test_mode`, `document_fraudulent`, `document_incomplete`, `document_invalid`, `document_manipulated`, `document_not_readable`, `document_not_uploaded`, `document_type_not_supported`, or `document_too_large`.
+    ///
+    /// A machine-readable code specifying the verification state for this document.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub details_code: Option<String>,
+
+    /// The front of a document returned by a [file upload](#create_file) with a `purpose` value of `additional_verification`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<Expandable<File>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -754,6 +790,9 @@ pub struct CompanyParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vat_id: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification: Option<CompanyParamsVerification>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -835,6 +874,12 @@ pub struct CardPaymentsSettingsParams {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CompanyParamsVerification {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<CompanyParamsVerificationDocument>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentsSettingsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
@@ -861,7 +906,19 @@ pub struct PayoutSettingsParams {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonVerificationParams {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_document: Option<PersonVerificationParamsAdditionalDocument>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<PersonVerificationDocumentParams>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CompanyParamsVerificationDocument {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -875,6 +932,15 @@ pub struct DeclineChargeOnParams {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonVerificationDocumentParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PersonVerificationParamsAdditionalDocument {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<String>,
 
@@ -904,7 +970,38 @@ pub enum ExternalAccount {
     Card(Card),
 }
 
-/// An enum representing the possible values of an `Account`'s `type` field.
+/// An enum representing the possible values of an `AccountCapabilities`'s `transfers` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesTransfers {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesTransfers {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesTransfers::Active => "active",
+            AccountCapabilitiesTransfers::Inactive => "inactive",
+            AccountCapabilitiesTransfers::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesTransfers {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesTransfers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateAccount`'s `type_` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum AccountType {
@@ -930,35 +1027,6 @@ impl AsRef<str> for AccountType {
 }
 
 impl std::fmt::Display for AccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `Account`'s `business_type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum BusinessType {
-    Company,
-    Individual,
-}
-
-impl BusinessType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            BusinessType::Company => "company",
-            BusinessType::Individual => "individual",
-        }
-    }
-}
-
-impl AsRef<str> for BusinessType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for BusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -1002,7 +1070,7 @@ pub enum RequestedCapability {
     CardIssuing,
     CardPayments,
     LegacyPayments,
-    PlatformPayments,
+    Transfers,
 }
 
 impl RequestedCapability {
@@ -1011,7 +1079,7 @@ impl RequestedCapability {
             RequestedCapability::CardIssuing => "card_issuing",
             RequestedCapability::CardPayments => "card_payments",
             RequestedCapability::LegacyPayments => "legacy_payments",
-            RequestedCapability::PlatformPayments => "platform_payments",
+            RequestedCapability::Transfers => "transfers",
         }
     }
 }

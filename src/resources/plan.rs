@@ -31,6 +31,10 @@ pub struct Plan {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
+    /// Same as `amount`, but contains a decimal value with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_decimal: Option<String>,
+
     /// Describes how to compute the price per period.
     ///
     /// Either `per_unit` or `tiered`.
@@ -164,9 +168,17 @@ pub struct PlanTier {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
 
+    /// Same as `flat_amount`, but contains a decimal value with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount_decimal: Option<String>,
+
     /// Per unit price for units relevant to the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
+
+    /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
 
     /// Up to and including to this quantity will be contained in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -201,6 +213,12 @@ pub struct CreatePlan<'a> {
     /// A positive integer in %s (or 0 for a free plan) representing how much to charge on a recurring basis.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
+
+    /// Same as `amount`, but accepts a decimal value with at most 12 decimal places.
+    ///
+    /// Only one of `amount` and `amount_decimal` can be set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_decimal: Option<&'a str>,
 
     /// Describes how to compute the price per period.
     ///
@@ -286,6 +304,7 @@ impl<'a> CreatePlan<'a> {
             active: Default::default(),
             aggregate_usage: Default::default(),
             amount: Default::default(),
+            amount_decimal: Default::default(),
             billing_scheme: Default::default(),
             currency,
             expand: Default::default(),
@@ -398,7 +417,13 @@ pub struct CreatePlanTiers {
     pub flat_amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount_decimal: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
 
     pub up_to: Option<UpTo>,
 }

@@ -4,7 +4,7 @@
 
 use crate::ids::CheckoutSessionId;
 use crate::params::{Expandable, Object};
-use crate::resources::{Currency, Customer, PaymentIntent, Plan, Sku, Subscription};
+use crate::resources::{Currency, Customer, PaymentIntent, Plan, SetupIntent, Sku, Subscription};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Session".
@@ -15,7 +15,8 @@ pub struct CheckoutSession {
     /// Used to pass to `redirectToCheckout` in Stripe.js.
     pub id: CheckoutSessionId,
 
-    /// The value (`auto` or `required`) for whether Checkout collected the customer's billing address.
+    /// The value (`auto` or `required`) for whether Checkout collected the
+    /// customer's billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_address_collection: Option<String>,
 
@@ -44,7 +45,8 @@ pub struct CheckoutSession {
     pub customer_email: Option<String>,
 
     /// The line items, plans, or SKUs purchased by the customer.
-    pub display_items: Vec<CheckoutSessionDisplayItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_items: Option<Vec<CheckoutSessionDisplayItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -55,7 +57,11 @@ pub struct CheckoutSession {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub locale: Option<CheckoutSessionLocale>,
 
-    /// The ID of the PaymentIntent created if SKUs or line items were provided.
+    /// The mode of the Checkout Session, one of `payment`, `setup`, or `subscription`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mode: Option<CheckoutSessionMode>,
+
+    /// The ID of the PaymentIntent for `payment` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<Expandable<PaymentIntent>>,
 
@@ -64,11 +70,25 @@ pub struct CheckoutSession {
     /// card) this Checkout Session is allowed to accept.
     pub payment_method_types: Vec<String>,
 
+    /// The ID of the SetupIntent if mode was set to `setup`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_intent: Option<Expandable<SetupIntent>>,
+
+    /// Describes the type of transaction being performed by Checkout in order
+    /// to customize relevant text on the page, such as the submit button.
+    /// `submit_type` can only be specified on Checkout Sessions using line
+    /// items or a SKU, but not Checkout Sessions for subscriptions.
+    ///
+    /// Supported values are `auto`, `book`, `donate`, or `pay`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub submit_type: Option<CheckoutSessionSubmitType>,
+
     /// The ID of the subscription created if one or more plans were provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<Expandable<Subscription>>,
 
-    /// The URL the customer will be directed to after the payment or subscription creation is successful.
+    /// The URL the customer will be directed to after the payment or
+    /// subscription creation is successful.
     pub success_url: String,
 }
 
@@ -179,6 +199,70 @@ impl AsRef<str> for CheckoutSessionLocale {
 }
 
 impl std::fmt::Display for CheckoutSessionLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutSession`'s `mode` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutSessionMode {
+    Payment,
+    Setup,
+    Subscription,
+}
+
+impl CheckoutSessionMode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutSessionMode::Payment => "payment",
+            CheckoutSessionMode::Setup => "setup",
+            CheckoutSessionMode::Subscription => "subscription",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutSessionMode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutSessionMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutSession`'s `submit_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutSessionSubmitType {
+    Auto,
+    Book,
+    Donate,
+    Pay,
+}
+
+impl CheckoutSessionSubmitType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutSessionSubmitType::Auto => "auto",
+            CheckoutSessionSubmitType::Book => "book",
+            CheckoutSessionSubmitType::Donate => "donate",
+            CheckoutSessionSubmitType::Pay => "pay",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutSessionSubmitType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutSessionSubmitType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

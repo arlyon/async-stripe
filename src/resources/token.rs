@@ -5,7 +5,7 @@
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
 use crate::params::{Expand, Object, Timestamp};
-use crate::resources::{BankAccount, BusinessType, Card, CompanyParams, PersonParams};
+use crate::resources::{BankAccount, BusinessType, Card, CompanyParams, PersonParams, TokenType};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Token".
@@ -121,37 +121,4 @@ pub struct CreateTokenAccount {
 pub struct CreateTokenPii {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
-}
-
-/// An enum representing the possible values of an `Token`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum TokenType {
-    Account,
-    BankAccount,
-    Card,
-    Pii,
-}
-
-impl TokenType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            TokenType::Account => "account",
-            TokenType::BankAccount => "bank_account",
-            TokenType::Card => "card",
-            TokenType::Pii => "pii",
-        }
-    }
-}
-
-impl AsRef<str> for TokenType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TokenType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
 }

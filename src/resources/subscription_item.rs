@@ -162,6 +162,12 @@ pub struct UpdateSubscriptionItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub off_session: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_behavior: Option<SubscriptionItemPaymentBehavior>,
+
     /// The identifier of the new plan for this subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<PlanId>,
@@ -193,11 +199,42 @@ impl<'a> UpdateSubscriptionItem<'a> {
             billing_thresholds: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
+            off_session: Default::default(),
+            payment_behavior: Default::default(),
             plan: Default::default(),
             prorate: Default::default(),
             proration_date: Default::default(),
             quantity: Default::default(),
             tax_rates: Default::default(),
         }
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSubscriptionItem`'s `payment_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionItemPaymentBehavior {
+    AllowIncomplete,
+    ErrorIfIncomplete,
+}
+
+impl SubscriptionItemPaymentBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SubscriptionItemPaymentBehavior::AllowIncomplete => "allow_incomplete",
+            SubscriptionItemPaymentBehavior::ErrorIfIncomplete => "error_if_incomplete",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionItemPaymentBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionItemPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
     }
 }

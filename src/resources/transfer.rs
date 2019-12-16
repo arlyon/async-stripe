@@ -131,7 +131,8 @@ impl Object for Transfer {
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTransfer<'a> {
     /// A positive integer in %s representing how much to transfer.
-    pub amount: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
 
     /// 3-letter [ISO code for currency](https://stripe.com/docs/payouts).
     pub currency: Currency,
@@ -176,9 +177,9 @@ pub struct CreateTransfer<'a> {
 }
 
 impl<'a> CreateTransfer<'a> {
-    pub fn new(amount: i64, currency: Currency) -> Self {
+    pub fn new(currency: Currency) -> Self {
         CreateTransfer {
-            amount,
+            amount: Default::default(),
             currency,
             description: Default::default(),
             expand: Default::default(),
@@ -270,7 +271,7 @@ impl<'a> UpdateTransfer<'a> {
     }
 }
 
-/// An enum representing the possible values of an `Transfer`'s `source_type` field.
+/// An enum representing the possible values of an `CreateTransfer`'s `source_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TransferSourceType {

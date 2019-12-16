@@ -1,3 +1,5 @@
+mod config;
+
 use heck::{CamelCase, SnakeCase};
 use lazy_static::lazy_static;
 use regex::Regex;
@@ -9,12 +11,9 @@ fn main() {
     let raw = fs::read_to_string("openapi/spec3.json").unwrap();
     let spec: Json = serde_json::from_str(&raw).unwrap();
 
-    // Rename a few id types
-    let mut id_renames = BTreeMap::new();
-    id_renames.insert("fee_refund", "application_fee_refund");
-    id_renames.insert("invoiceitem", "invoice_item");
-    id_renames.insert("line_item", "invoice_line_item");
-    id_renames.insert("source_transaction", "charge");
+    let id_renames = config::id_renames();
+    let object_mappings = config::object_mappings();
+    let field_mappings = config::field_mappings();
 
     // Compute additional metadata from spec.
     let mut ids = BTreeMap::new();
@@ -71,324 +70,6 @@ fn main() {
         }
     }
 
-    let mut schema_renames = BTreeMap::new();
-    schema_renames.extend(vec![
-        ("account_business_profile", "business_profile"),
-        ("account_business_type", "business_type"),
-        ("account_capabilities_card_payments", "capability_status"),
-        ("account_capabilities_legacy_payments", "capability_status"),
-        ("account_capabilities_platform_payments", "capability_status"),
-        ("account_branding_settings", "branding_settings"),
-        ("account_card_payments_settings", "card_payments_settings"),
-        ("account_dashboard_settings", "dashboard_settings"),
-        ("account_decline_charge_on", "decline_charge_on"),
-        ("account_external_account", "external_account"),
-        ("account_payments_settings", "payments_settings"),
-        ("account_payout_settings", "payout_settings"),
-        ("account_tos_acceptance", "tos_acceptance"),
-        ("charge_fraud_details", "fraud_details"),
-        ("charge_transfer_data", "transfer_data"),
-        ("fee_refund", "application_fee_refund"),
-        ("issuing_authorization_merchant_data", "merchant_data"),
-        ("issuing.authorization_wallet_provider", "wallet_provider"),
-        ("invoiceitem", "invoice_item"),
-        ("legal_entity_company", "company"),
-        ("legal_entity_japan_address", "address"),
-        ("legal_entity_person_verification", "person_verification"),
-        ("legal_entity_person_verification_document", "person_verification_document"),
-        ("line_item", "invoice_line_item"),
-        ("payment_method_card", "card_details"),
-        ("payment_method_card_present", "card_present"),
-        ("payment_method_card_wallet", "wallet_details"),
-        ("payment_method_card_wallet_amex_express_checkout", "wallet_amex_express_checkout"),
-        ("payment_method_card_wallet_apple_pay", "wallet_apple_pay"),
-        ("payment_method_card_wallet_google_pay", "wallet_google_pay"),
-        ("payment_method_card_wallet_masterpass", "wallet_masterpass"),
-        ("payment_method_card_wallet_samsung_pay", "wallet_samsung_pay"),
-        ("payment_method_card_wallet_visa_checkout", "wallet_visa_checkout"),
-        ("payment_method_card_wallet_type", "wallet_type"),
-    ]);
-
-    let mut field_overrides = BTreeMap::new();
-    field_overrides.extend(vec![
-        (
-            ("bank_account", "account_holder_type"),
-            ("AccountHolderType", "Option<AccountHolderType>"),
-        ),
-        (("charge", "source"), ("PaymentSource", "Option<PaymentSource>")),
-        (
-            ("charge_fraud_details", "stripe_report"),
-            ("FraudDetailsReport", "Option<FraudDetailsReport>"),
-        ),
-        (("customer", "default_source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
-        (("customer", "sources"), ("PaymentSource", "List<PaymentSource>")),
-        (("invoice", "default_source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
-        (("invoiceitem", "period"), ("Period", "Option<Period>")),
-        (("line_item", "period"), ("Period", "Option<Period>")),
-        (
-            ("issuing.authorization", "authorization_method"),
-            ("IssuingAuthorizationMethod", "IssuingAuthorizationMethod"),
-        ),
-        (
-            ("issuing_authorization_request", "reason"),
-            ("IssuingAuthorizationReason", "IssuingAuthorizationReason"),
-        ),
-        (
-            ("issuing_authorization_verification_data", "address_line1_check"),
-            ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
-        ),
-        (
-            ("issuing_authorization_verification_data", "address_zip_check"),
-            ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
-        ),
-        (
-            ("issuing_authorization_verification_data", "cvc_check"),
-            ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
-        ),
-        (("issuing.card", "brand"), ("CardBrand", "CardBrand")),
-        (
-            ("issuing_card_authorization_controls", "allowed_categories"),
-            ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
-        ),
-        (
-            ("issuing_card_authorization_controls", "blocked_categories"),
-            ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
-        ),
-        (
-            ("issuing_card_authorization_controls", "spending_limits"),
-            ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
-        ),
-        (
-            ("issuing_cardholder_authorization_controls", "allowed_categories"),
-            ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
-        ),
-        (
-            ("issuing_cardholder_authorization_controls", "blocked_categories"),
-            ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
-        ),
-        (
-            ("issuing_cardholder_authorization_controls", "spending_limits"),
-            ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
-        ),
-        (("payment_intent", "source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
-        (("payment_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
-        (("person", "dob"), ("Dob", "Option<Dob>")),
-        (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
-        (
-            ("subscription", "default_source"),
-            ("PaymentSource", "Option<Expandable<PaymentSource>>"),
-        ),
-        (("transfer_schedule", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
-    ]);
-
-    // Renames for `account` params
-    schema_renames.extend(vec![
-        ("create_account_company", "company_params"),
-        ("update_account_company", "company_params"),
-        ("create_account_individual", "person_params"),
-        ("update_account_individual", "person_params"),
-        ("create_account_requested_capabilities", "requested_capability"),
-        ("update_account_requested_capabilities", "requested_capability"),
-        ("create_account_settings", "account_settings_params"),
-        ("update_account_settings", "account_settings_params"),
-        ("account_settings_params_branding", "branding_settings_params"),
-        ("account_settings_params_card_payments", "card_payments_settings_params"),
-        ("account_settings_params_payments", "payments_settings_params"),
-        ("account_settings_params_dashboard_settings", "dashboard_settings_params"),
-        ("account_settings_params_payouts", "payout_settings_params"),
-        ("create_account_tos_acceptance", "accept_tos"),
-        ("update_account_tos_acceptance", "accept_tos"),
-        ("card_payments_settings_params_decline_on", "decline_charge_on_params"),
-        ("payout_settings_params_schedule", "transfer_schedule_params"),
-        ("person_params_verification", "person_verification_params"),
-        ("person_verification_params_document", "person_verification_document_params"),
-        ("transfer_schedule_params_interval", "transfer_schedule_interval"),
-    ]);
-    field_overrides.extend(vec![
-        (("create_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
-        (("update_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
-        (("company_params", "address"), ("Address", "Option<Address>")),
-        (("company_params", "address_kana"), ("Address", "Option<Address>")),
-        (("company_params", "address_kanji"), ("Address", "Option<Address>")),
-        (("person_params", "address"), ("Address", "Option<Address>")),
-        (("person_params", "address_kana"), ("Address", "Option<Address>")),
-        (("person_params", "address_kanji"), ("Address", "Option<Address>")),
-        (("person_params", "dob"), ("Dob", "Option<Dob>")),
-        (
-            ("create_payment_method", "billing_details"),
-            ("BillingDetails", "Option<BillingDetails>"),
-        ),
-        (("transfer_schedule_params", "delay_days"), ("DelayDays", "Option<DelayDays>")),
-        (("transfer_schedule_params", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
-    ]);
-
-    // Renames for `charge` params
-    schema_renames.extend(vec![
-        ("create_charge_transfer_data", "transfer_data_params"),
-        ("update_charge_fraud_details", "fraud_details_params"),
-    ]);
-    field_overrides.extend(vec![
-        (("create_charge", "shipping"), ("Shipping", "Option<Shipping>")),
-        (("create_charge", "source"), ("ChargeSourceParams", "Option<ChargeSourceParams>")),
-        (("update_charge", "shipping"), ("Shipping", "Option<Shipping>")),
-        (("fraud_details_params", "user_report"), ("FraudDetailsReport", "FraudDetailsReport")),
-    ]);
-
-    // Renames for `customer` params
-    schema_renames.extend(vec![
-        ("create_customer_invoice_settings", "customer_invoice_settings"),
-        ("update_customer_invoice_settings", "customer_invoice_settings"),
-        ("create_customer_tax_id_data", "tax_id_data"),
-        ("create_customer_tax_info", "tax_info_params"),
-        ("update_customer_tax_info", "tax_info_params"),
-        ("tax_info_params_type", "tax_info_type"),
-    ]);
-    field_overrides.extend(vec![
-        (("create_customer", "address"), ("Address", "Option<Address>")),
-        (("update_customer", "address"), ("Address", "Option<Address>")),
-        (
-            ("update_customer", "default_alipay_account"),
-            ("AlipayAccountId", "Option<AlipayAccountId>"),
-        ),
-        (("update_customer", "default_bank_account"), ("BankAccountId", "Option<BankAccountId>")),
-        (("update_customer", "default_card"), ("CardId", "Option<CardId>")),
-        (("create_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
-        (("update_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
-        (("create_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-        (("update_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-        (("create_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams>")),
-        (("update_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams>")),
-        (("update_customer", "trial_end"), ("Scheduled", "Option<Scheduled>")),
-        (
-            ("customer_invoice_settings", "custom_fields"),
-            ("CustomField", "Option<Vec<CustomField>>"),
-        ),
-    ]);
-    // Renames for `invoice` params
-    field_overrides.extend(vec![(
-        ("create_invoice", "custom_fields"),
-        ("CustomField", "Option<Vec<CustomField>>"),
-    )]);
-
-    // Renames for `invoiceitem` params
-    schema_renames.extend(vec![
-        ("create_invoiceitem", "create_invoice_item"),
-        ("update_invoiceitem", "update_invoice_item"),
-    ]);
-    field_overrides.extend(vec![
-        (("create_invoice_item", "period"), ("Period", "Option<Period>")),
-        (("update_invoice_item", "period"), ("Period", "Option<Period>")),
-    ]);
-
-    // Renames for `order` params
-    field_overrides.extend(vec![
-        (("create_order", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-        (("update_order", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-    ]);
-
-    // Renames for `payment_intent` params
-    schema_renames.extend(vec![
-        ("create_order_items", "order_item_params"),
-        ("order_items_params_type", "order_item_type"),
-    ]);
-    field_overrides.extend(vec![
-        (("create_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-        (("update_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-    ]);
-
-    // Renames for `sku` params
-    field_overrides.extend(vec![
-        (("list_skus", "attributes"), ("Metadata", "Option<Metadata>")),
-        (("create_sku", "attributes"), ("Metadata", "Option<Metadata>")),
-        (("update_sku", "attributes"), ("Metadata", "Option<Metadata>")),
-        (("create_sku", "inventory"), ("Inventory", "Option<Inventory>")),
-        (("update_sku", "inventory"), ("Inventory", "Option<Inventory>")),
-        (("create_sku", "package_dimensions"), ("PackageDimensions", "Option<PackageDimensions>")),
-        (("update_sku", "package_dimensions"), ("PackageDimensions", "Option<PackageDimensions>")),
-    ]);
-
-    // Renames for `source` params
-    schema_renames.extend(vec![
-        ("create_source_mandate", "source_mandate_params"),
-        ("update_source_mandate", "source_mandate_params"),
-        ("source_mandate_params_acceptance", "source_acceptance_params"),
-        ("source_mandate_params_interval", "source_mandate_interval"),
-        ("source_mandate_params_notification_method", "source_mandate_notification_method"),
-        ("source_acceptance_params_offline", "source_acceptance_offline_params"),
-        ("source_acceptance_params_online", "source_acceptance_online_params"),
-        ("create_source_receiver_refund_attributes_method", "source_refund_notification_method"),
-    ]);
-    field_overrides.extend(vec![
-        (("create_source", "owner"), ("BillingDetails", "Option<BillingDetails>")),
-        (("update_source", "owner"), ("BillingDetails", "Option<BillingDetails>")),
-    ]);
-
-    // Renames for `subscription` params
-    field_overrides.extend(vec![
-        (
-            ("create_subscription", "billing_thresholds"),
-            ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
-        ),
-        (
-            ("update_subscription", "billing_thresholds"),
-            ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
-        ),
-        (
-            ("create_subscription_items", "billing_thresholds"),
-            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
-        ),
-        (
-            ("update_subscription_item", "billing_thresholds"),
-            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
-        ),
-        (
-            ("update_subscription_items", "billing_thresholds"),
-            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
-        ),
-        (("create_subscription", "trial_end"), ("Scheduled", "Option<Scheduled>")),
-        (("update_subscription", "trial_end"), ("Scheduled", "Option<Scheduled>")),
-    ]);
-
-    // Renames for `subscription_schedule` params
-    field_overrides.extend(vec![
-        (("create_subscription_schedule", "start_date"), ("Scheduled", "Option<Scheduled>")),
-        (("update_subscription_schedule", "start_date"), ("Scheduled", "Option<Scheduled>")),
-        (("create_subscription_schedule_phases", "start_date"), ("Scheduled", "Option<Scheduled>")),
-        (("update_subscription_schedule_phases", "start_date"), ("Scheduled", "Option<Scheduled>")),
-        (("create_subscription_schedule_phases", "end_date"), ("Scheduled", "Option<Scheduled>")),
-        (("update_subscription_schedule_phases", "end_date"), ("Scheduled", "Option<Scheduled>")),
-        (("create_subscription_schedule_phases", "trial_end"), ("Scheduled", "Option<Scheduled>")),
-        (("update_subscription_schedule_phases", "trial_end"), ("Scheduled", "Option<Scheduled>")),
-    ]);
-
-    // Renames for misc
-    schema_renames.insert("webhook_endpoint_enabled_events", "event_filter");
-    schema_renames.insert("webhook_endpoint_api_version", "api_version");
-    schema_renames.insert("create_webhook_endpoint_enabled_events", "event_filter");
-    schema_renames.insert("update_webhook_endpoint_enabled_events", "event_filter");
-    field_overrides.insert(
-        ("update_payment_method", "billing_details"),
-        ("BillingDetails", "Option<BillingDetails>"),
-    );
-    field_overrides.insert(
-        ("create_product", "package_dimensions"),
-        ("PackageDimensions", "Option<PackageDimensions>"),
-    );
-    field_overrides.insert(
-        ("update_product", "package_dimensions"),
-        ("PackageDimensions", "Option<PackageDimensions>"),
-    );
-    field_overrides.insert(("create_plan_tiers", "up_to"), ("UpTo", "Option<UpTo>"));
-    field_overrides.insert(("update_file_link", "expires_at"), ("Scheduled", "Option<Scheduled>"));
-    field_overrides.insert(
-        ("create_token_account", "business_type"),
-        ("BusinessType", "Option<BusinessType>"),
-    );
-    field_overrides
-        .insert(("create_token_account", "company"), ("CompanyParams", "Option<CompanyParams>"));
-    field_overrides
-        .insert(("create_token_account", "individual"), ("PersonParams", "Option<PersonParams>"));
-
     // Generate files
     let meta = Metadata {
         spec: &spec,
@@ -396,8 +77,8 @@ fn main() {
         objects,
         dependents,
         requests,
-        schema_renames,
-        field_overrides,
+        object_mappings,
+        field_mappings,
     };
     for object in &meta.objects {
         if object.starts_with("deleted_") {
@@ -424,9 +105,9 @@ struct Metadata<'a> {
     /// A one to many map of schema to depending types.
     dependents: BTreeMap<&'a str, BTreeSet<&'a str>>,
     /// How a particular schema should be renamed.
-    schema_renames: BTreeMap<&'a str, &'a str>,
+    object_mappings: BTreeMap<&'a str, &'a str>,
     /// An override for the rust-type of a particular object/field pair.
-    field_overrides: BTreeMap<(&'a str, &'a str), (&'a str, &'a str)>,
+    field_mappings: BTreeMap<(&'a str, &'a str), (&'a str, &'a str)>,
     /// A one to many map of _objects_ to requests which should be
     /// implemented for that object.
     ///
@@ -436,7 +117,7 @@ struct Metadata<'a> {
 
 impl<'a> Metadata<'a> {
     fn schema_to_rust_type(&self, schema: &str) -> String {
-        if let Some(rename) = self.schema_renames.get(&schema) {
+        if let Some(rename) = self.object_mappings.get(&schema) {
             rename.to_camel_case()
         } else {
             schema.replace('.', "_").to_camel_case()
@@ -515,7 +196,11 @@ impl Generated {
             return Ok(());
         }
         if let Some(other) = self.inferred_structs.get(&name) {
-            if struct_.schema != other.schema {
+            let mut self_schema = struct_.schema.clone();
+            let mut other_schema = other.schema.clone();
+            self_schema.as_object_mut().and_then(|x| x.remove("description"));
+            other_schema.as_object_mut().and_then(|x| x.remove("description"));
+            if self_schema != other_schema {
                 return Err(other);
             }
         }
@@ -737,7 +422,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             let required = param["required"].as_bool() == Some(true);
             match param_name {
                 // TODO: Handle these unusual params
-                "bank_account" | "card" | "destination" | "product" => continue,
+                "bank_account" | "card" | "destination" | "product" | "usage" => continue,
 
                 "metadata" => {
                     print_doc(&mut out);
@@ -795,7 +480,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 }
                 _ => {
                     if let Some((use_path, rust_type)) =
-                        meta.field_overrides.get(&(params_schema.as_str(), param_name))
+                        meta.field_mappings.get(&(params_schema.as_str(), param_name))
                     {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), rust_type.to_string(), required));
@@ -1352,7 +1037,7 @@ fn gen_field_rust_type(
     required: bool,
     default: bool,
 ) -> String {
-    if let Some(&(use_path, rust_type)) = meta.field_overrides.get(&(object, field_name)) {
+    if let Some(&(use_path, rust_type)) = meta.field_mappings.get(&(object, field_name)) {
         match use_path {
             "" | "String" => (),
             "Metadata" => {

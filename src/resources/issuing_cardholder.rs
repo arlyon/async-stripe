@@ -4,7 +4,7 @@
 
 use crate::ids::IssuingCardholderId;
 use crate::params::{Metadata, Object, Timestamp};
-use crate::resources::{Address, MerchantCategory, SpendingLimit};
+use crate::resources::{Address, Currency, MerchantCategory, SpendingLimit};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingCardholder".
@@ -86,6 +86,10 @@ pub struct IssuingCardholderAuthorizationControls {
     /// Limit the spending with rules based on time intervals and categories.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits: Option<Vec<SpendingLimit>>,
+
+    /// Currency for the amounts within spending_limits.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub spending_limits_currency: Option<Currency>,
 }
 
 /// An enum representing the possible values of an `IssuingCardholder`'s `status` field.

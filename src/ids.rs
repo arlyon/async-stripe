@@ -506,11 +506,13 @@ def_id!(RecipientId: String); // FIXME: This doesn't seem to be documented yet
 def_id!(RefundId, "re_");
 def_id!(ReviewId, "prv_");
 def_id!(ScheduledQueryRunId, "sqr_");
+def_id!(SetupIntentId, "seti_");
 def_id!(SkuId, "sku_");
 def_id!(SourceId, "src_");
 def_id!(SubscriptionId, "sub_");
 def_id!(SubscriptionItemId, "si_");
 def_id!(SubscriptionLineId, "sli_");
+def_id!(SubscriptionScheduleId, "sub_sched_");
 def_id!(TaxIdId, "txi_");
 def_id!(TaxRateId, "txr_");
 def_id!(

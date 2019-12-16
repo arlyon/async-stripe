@@ -1,3 +1,11 @@
+# Version 0.12.0-alpha.1
+
+## Breaking Changes
+- Updated to a newer version of the Stripe API.
+
+## Features
+- The `app-info` can now be set/customized with the `Client::set_app_info` method.
+
 # Version 0.11.0 (September 11, 2019)
 
 ## Features
