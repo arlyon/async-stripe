@@ -70,13 +70,13 @@ impl Object for CheckoutSession {
     }
 }
 
-#[cfg(not(feature = "unstable-everything-else"))]
+#[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ConnectCollectionTransfer {
     pub id: (),
 }
 
-#[cfg(not(feature = "unstable-everything-else"))]
+#[cfg(not(feature = "connect"))]
 impl Object for ConnectCollectionTransfer {
     type Id = ();
     fn id(&self) -> Self::Id {
@@ -121,13 +121,13 @@ impl Object for Discount {
     }
 }
 
-#[cfg(not(feature = "unstable-everything-else"))]
+#[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ApplicationFeeRefund {
     pub id: ApplicationFeeRefundId,
 }
 
-#[cfg(not(feature = "unstable-everything-else"))]
+#[cfg(not(feature = "connect"))]
 impl Object for ApplicationFeeRefund {
     type Id = ApplicationFeeRefundId;
     fn id(&self) -> Self::Id {
@@ -359,13 +359,13 @@ impl Object for Plan {
     }
 }
 
-#[cfg(not(feature = "unstable-everything-else"))]
+#[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Recipient {
     pub id: RecipientId,
 }
 
-#[cfg(not(feature = "unstable-everything-else"))]
+#[cfg(not(feature = "connect"))]
 impl Object for Recipient {
     type Id = RecipientId;
     fn id(&self) -> Self::Id {
@@ -424,23 +424,6 @@ impl Object for Sku {
     }
     fn object(&self) -> &'static str {
         "sku"
-    }
-}
-
-#[cfg(not(feature = "unstable-everything-else"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SourceTransaction {
-    pub id: ChargeId,
-}
-
-#[cfg(not(feature = "unstable-everything-else"))]
-impl Object for SourceTransaction {
-    type Id = ChargeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "source_transaction"
     }
 }
 

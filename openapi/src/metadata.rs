@@ -49,7 +49,10 @@ pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
 		("account", "connect"),
 		("application", "connect"),
 		("application_fee", "connect"),
+		("connect_collection_transfer", "connect"),
+		("fee_refund", "connect"),
 		("person", "connect"),
+		("recipient", "connect"),
 		("topup", "connect"),
 		("transfer", "connect"),
 		("transfer_reversal", "connect"),
@@ -75,13 +78,8 @@ pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
 
 		// Webhooks Endpoints
 		("webhook_endpoint", "webhook-endpoints"),
-
-		// Etc.
-		("connect_collection_transfer", "unstable-everything-else"),
-		("fee_refund", "unstable-everything-else"),
-		("recipient", "unstable-everything-else"),
- 		("source_transaction", "unstable-everything-else"), ]
-        .into_iter()
-        .copied()
-        .collect()
+	]
+	.into_iter()
+	.copied()
+	.collect()
 }

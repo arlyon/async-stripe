@@ -70,186 +70,199 @@ mod event;
 #[cfg(feature = "events")]
 pub use self::event::*;
 
-// Unstable everything else
-#[cfg(feature = "unstable-everything-else")]
-mod account;
-#[cfg(feature = "unstable-everything-else")]
-mod application;
-#[cfg(feature = "unstable-everything-else")]
-mod application_fee;
-#[cfg(feature = "unstable-everything-else")]
+// Checkout
+#[cfg(feature = "checkout")]
 mod checkout_session;
-#[cfg(feature = "unstable-everything-else")]
-mod connect_collection_transfer;
-#[cfg(feature = "unstable-everything-else")]
-mod coupon;
-#[cfg(feature = "unstable-everything-else")]
-mod discount;
-#[cfg(feature = "unstable-everything-else")]
-mod fee_refund;
-#[cfg(feature = "unstable-everything-else")]
-mod invoice;
-#[cfg(feature = "unstable-everything-else")]
-mod invoice_ext;
-#[cfg(feature = "unstable-everything-else")]
-mod invoiceitem;
-#[cfg(feature = "unstable-everything-else")]
-mod issuing_authorization;
-#[cfg(feature = "unstable-everything-else")]
-mod issuing_authorization_ext;
-#[cfg(feature = "unstable-everything-else")]
-mod issuing_card;
-#[cfg(feature = "unstable-everything-else")]
-mod issuing_card_ext;
-#[cfg(feature = "unstable-everything-else")]
-mod issuing_cardholder;
-#[cfg(feature = "unstable-everything-else")]
-mod issuing_dispute;
-#[cfg(feature = "unstable-everything-else")]
-mod issuing_dispute_ext;
-#[cfg(feature = "unstable-everything-else")]
-mod issuing_merchant_data;
-#[cfg(feature = "unstable-everything-else")]
-mod issuing_transaction;
-#[cfg(feature = "unstable-everything-else")]
-mod issuing_transaction_ext;
-#[cfg(feature = "unstable-everything-else")]
-mod line_item;
-#[cfg(feature = "unstable-everything-else")]
-mod line_item_ext;
-#[cfg(feature = "unstable-everything-else")]
-mod order;
-#[cfg(feature = "unstable-everything-else")]
-mod order_ext;
-#[cfg(feature = "unstable-everything-else")]
-mod order_item;
-#[cfg(feature = "unstable-everything-else")]
-mod order_return;
-#[cfg(feature = "unstable-everything-else")]
-mod person;
-#[cfg(feature = "unstable-everything-else")]
-mod plan;
-#[cfg(feature = "unstable-everything-else")]
-mod recipient;
-#[cfg(feature = "unstable-everything-else")]
-mod review;
-#[cfg(feature = "unstable-everything-else")]
-mod review_ext;
-#[cfg(feature = "unstable-everything-else")]
-mod scheduled_query_run;
-#[cfg(feature = "unstable-everything-else")]
-mod sku;
-#[cfg(feature = "unstable-everything-else")]
-mod subscription;
-#[cfg(feature = "unstable-everything-else")]
-mod subscription_ext;
-#[cfg(feature = "unstable-everything-else")]
-mod subscription_item;
-#[cfg(feature = "unstable-everything-else")]
-mod subscription_schedule;
-#[cfg(feature = "unstable-everything-else")]
-mod tax_id;
-#[cfg(feature = "unstable-everything-else")]
-mod tax_rate;
-#[cfg(feature = "unstable-everything-else")]
-mod topup;
-#[cfg(feature = "unstable-everything-else")]
-mod transfer;
-#[cfg(feature = "unstable-everything-else")]
-mod transfer_reversal;
-#[cfg(feature = "unstable-everything-else")]
-mod webhook_endpoint;
-#[cfg(feature = "unstable-everything-else")]
-mod webhook_endpoint_ext;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::account::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::application::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::application_fee::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "checkout")]
 pub use self::checkout_session::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::connect_collection_transfer::*;
-#[cfg(feature = "unstable-everything-else")]
+
+// Billing
+#[cfg(feature = "billing")]
+mod coupon;
+#[cfg(feature = "billing")]
+mod discount;
+#[cfg(feature = "billing")]
+mod invoice;
+#[cfg(feature = "billing")]
+mod invoice_ext;
+#[cfg(feature = "billing")]
+mod invoiceitem;
+#[cfg(feature = "billing")]
+mod line_item;
+#[cfg(feature = "billing")]
+mod line_item_ext;
+#[cfg(feature = "billing")]
+mod plan;
+#[cfg(feature = "billing")]
+mod subscription;
+#[cfg(feature = "billing")]
+mod subscription_ext;
+#[cfg(feature = "billing")]
+mod subscription_item;
+#[cfg(feature = "billing")]
+mod subscription_schedule;
+#[cfg(feature = "billing")]
+mod tax_id;
+#[cfg(feature = "billing")]
+mod tax_rate;
+#[cfg(feature = "billing")]
 pub use self::coupon::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::discount::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::fee_refund::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::invoice::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::invoice_ext::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::invoiceitem::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::issuing_authorization::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::issuing_authorization_ext::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::issuing_card::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::issuing_card_ext::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::issuing_cardholder::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::issuing_dispute::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::issuing_dispute_ext::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::issuing_merchant_data::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::issuing_transaction::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::issuing_transaction_ext::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::line_item::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::line_item_ext::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::order::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::order_ext::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::order_item::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::order_return::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::person::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::plan::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::recipient::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::review::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::review_ext::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::scheduled_query_run::*;
-#[cfg(feature = "unstable-everything-else")]
-pub use self::sku::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::subscription::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::subscription_ext::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::subscription_item::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::subscription_schedule::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::tax_id::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "billing")]
 pub use self::tax_rate::*;
-#[cfg(feature = "unstable-everything-else")]
+
+// Connect
+#[cfg(feature = "connect")]
+mod account;
+#[cfg(feature = "connect")]
+mod application;
+#[cfg(feature = "connect")]
+mod application_fee;
+#[cfg(feature = "connect")]
+mod connect_collection_transfer;
+#[cfg(feature = "connect")]
+mod fee_refund;
+#[cfg(feature = "connect")]
+mod person;
+#[cfg(feature = "connect")]
+mod recipient;
+#[cfg(feature = "connect")]
+mod topup;
+#[cfg(feature = "connect")]
+mod transfer;
+#[cfg(feature = "connect")]
+mod transfer_reversal;
+#[cfg(feature = "connect")]
+pub use self::account::*;
+#[cfg(feature = "connect")]
+pub use self::application::*;
+#[cfg(feature = "connect")]
+pub use self::application_fee::*;
+#[cfg(feature = "connect")]
+pub use self::connect_collection_transfer::*;
+#[cfg(feature = "connect")]
+pub use self::fee_refund::*;
+#[cfg(feature = "connect")]
+pub use self::person::*;
+#[cfg(feature = "connect")]
+pub use self::recipient::*;
+#[cfg(feature = "connect")]
 pub use self::topup::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "connect")]
 pub use self::transfer::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "connect")]
 pub use self::transfer_reversal::*;
-#[cfg(feature = "unstable-everything-else")]
+
+// Fraud
+#[cfg(feature = "fraud")]
+mod review;
+#[cfg(feature = "fraud")]
+mod review_ext;
+#[cfg(feature = "fraud")]
+pub use self::review::*;
+#[cfg(feature = "fraud")]
+pub use self::review_ext::*;
+
+// Issuing
+#[cfg(feature = "issuing")]
+mod issuing_authorization;
+#[cfg(feature = "issuing")]
+mod issuing_authorization_ext;
+#[cfg(feature = "issuing")]
+mod issuing_card;
+#[cfg(feature = "issuing")]
+mod issuing_card_ext;
+#[cfg(feature = "issuing")]
+mod issuing_cardholder;
+#[cfg(feature = "issuing")]
+mod issuing_dispute;
+#[cfg(feature = "issuing")]
+mod issuing_dispute_ext;
+#[cfg(feature = "issuing")]
+mod issuing_merchant_data;
+#[cfg(feature = "issuing")]
+mod issuing_transaction;
+#[cfg(feature = "issuing")]
+mod issuing_transaction_ext;
+#[cfg(feature = "issuing")]
+pub use self::issuing_authorization::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_authorization_ext::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_card::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_card_ext::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_cardholder::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_dispute::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_dispute_ext::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_merchant_data::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_transaction::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_transaction_ext::*;
+
+// Orders
+#[cfg(feature = "orders")]
+mod order;
+#[cfg(feature = "orders")]
+mod order_ext;
+#[cfg(feature = "orders")]
+mod order_item;
+#[cfg(feature = "orders")]
+mod order_return;
+#[cfg(feature = "orders")]
+mod sku;
+#[cfg(feature = "orders")]
+pub use self::order::*;
+#[cfg(feature = "orders")]
+pub use self::order_ext::*;
+#[cfg(feature = "orders")]
+pub use self::order_item::*;
+#[cfg(feature = "orders")]
+pub use self::order_return::*;
+#[cfg(feature = "orders")]
+pub use self::sku::*;
+
+#[cfg(feature = "sigma")]
+mod scheduled_query_run;
+#[cfg(feature = "sigma")]
+pub use self::scheduled_query_run::*;
+
+// Not-yet-implemented feature flags
+#[cfg(feature = "webhook-endpoints")]
+mod webhook_endpoint;
+#[cfg(feature = "webhook-endpoints")]
+mod webhook_endpoint_ext;
+#[cfg(feature = "webhook-endpoints")]
 pub use self::webhook_endpoint::*;
-#[cfg(feature = "unstable-everything-else")]
+#[cfg(feature = "webhook-endpoints")]
 pub use self::webhook_endpoint_ext::*;
 
 // Fallback types

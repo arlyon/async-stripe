@@ -40,27 +40,23 @@ full = [
 # Stripe feature groups
 #core = [] # N.B. always enabled for now
 #payment-methods = [] # N.B. always enabled for now
-checkout = ["unstable-everything-else"]
-billing = ["unstable-everything-else"]
-connect = ["unstable-everything-else"]
-fraud = ["unstable-everything-else"]
-issuing = ["unstable-everything-else"]
-orders = ["unstable-everything-else"]
-sigma = ["unstable-everything-else"]
-webhook-endpoints = ["unstable-everything-else"]
-
-# Deprecated. Use either `webhook-events` or `webhook-endpoints` instead.
-webhooks = ["webhook-endpoints", "webhook-events"]
+checkout = []
+billing = []
+connect = []
+fraud = []
+issuing = []
+orders = []
+sigma = []
+webhook-endpoints = []
 
 # Deserialize events from webhooks
 webhook-events = ["events", "hmac", "sha2"]
 events = []
 
-# Feature groups that haven't been broken out yet.
-unstable-everything-else = [] # NOTE: Do not depend on this feature directly.
+# Deprecated. Use either `webhook-events` or `webhook-endpoints` instead.
+webhooks = ["webhook-endpoints", "webhook-events"]
 
-# TODO: Deprecate `async` after we can use Generic Associated Types
-# (see https://github.com/rust-lang/rust/issues/44265)
+# Replace the sync client with an async client
 async = []
 
 [dependencies]
