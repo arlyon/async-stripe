@@ -35,6 +35,7 @@ script:
   - rustup component add rustfmt
   - cargo fmt -- --check
   - cargo build --verbose --all
-  - cargo build --verbose --all --features async
   - cargo test --verbose --all
+  - cargo build --verbose --all --features async
   - cargo test --verbose --features async --example async_create_charge
+  - cargo build --verbose --all --no-default-features

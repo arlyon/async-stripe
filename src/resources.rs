@@ -1,154 +1,286 @@
-mod account;
-mod alipay_account;
-mod application;
-mod application_fee;
+// Builtin types
+mod currency;
+mod types;
+pub use self::currency::*;
+pub use self::types::*;
+
+// Core Resources
 mod balance;
 mod balance_transaction;
 mod balance_transaction_ext;
-mod bank_account;
-mod bank_account_ext;
-mod card;
 mod charge;
 mod charge_ext;
-mod checkout_session;
-mod connect_collection_transfer;
-mod coupon;
-mod currency;
 mod customer;
 mod customer_ext;
-mod discount;
 mod dispute;
-mod event;
-mod fee_refund;
 mod file;
 mod file_link;
-mod invoice;
-mod invoice_ext;
-mod invoiceitem;
-mod issuing_authorization;
-mod issuing_authorization_ext;
-mod issuing_card;
-mod issuing_card_ext;
-mod issuing_cardholder;
-mod issuing_dispute;
-mod issuing_dispute_ext;
-mod issuing_merchant_data;
-mod issuing_transaction;
-mod issuing_transaction_ext;
-mod line_item;
-mod line_item_ext;
-mod order;
-mod order_ext;
-mod order_item;
-mod order_return;
 mod payment_intent;
-mod payment_method;
 mod payment_source;
 mod payout;
 mod payout_ext;
-mod person;
-mod plan;
 mod platform_tax_fee;
 mod product;
-mod recipient;
 mod refund;
 mod reserve_transaction;
-mod review;
-mod review_ext;
-mod scheduled_query_run;
 mod setup_intent;
-mod sku;
-mod source;
-mod source_ext;
-mod subscription;
-mod subscription_ext;
-mod subscription_item;
-mod subscription_schedule;
-mod tax_id;
-mod tax_rate;
 mod token;
 mod token_ext;
-mod topup;
-mod transfer;
-mod transfer_reversal;
-mod webhook_endpoint;
-mod webhook_endpoint_ext;
-
-mod types;
-pub use self::types::*;
-
-pub use self::account::*;
-pub use self::alipay_account::*;
-pub use self::application::*;
-pub use self::application_fee::*;
 pub use self::balance::*;
 pub use self::balance_transaction::*;
 pub use self::balance_transaction_ext::*;
-pub use self::bank_account::*;
-pub use self::bank_account_ext::*;
-pub use self::card::*;
 pub use self::charge::*;
 pub use self::charge_ext::*;
-pub use self::checkout_session::*;
-pub use self::connect_collection_transfer::*;
-pub use self::coupon::*;
-pub use self::currency::*;
 pub use self::customer::*;
 pub use self::customer_ext::*;
-pub use self::discount::*;
 pub use self::dispute::*;
-pub use self::event::*;
-pub use self::fee_refund::*;
 pub use self::file::*;
 pub use self::file_link::*;
-pub use self::invoice::*;
-pub use self::invoice_ext::*;
-pub use self::invoiceitem::*;
-pub use self::issuing_authorization::*;
-pub use self::issuing_authorization_ext::*;
-pub use self::issuing_card::*;
-pub use self::issuing_card_ext::*;
-pub use self::issuing_cardholder::*;
-pub use self::issuing_dispute::*;
-pub use self::issuing_dispute_ext::*;
-pub use self::issuing_merchant_data::*;
-pub use self::issuing_transaction::*;
-pub use self::issuing_transaction_ext::*;
-pub use self::line_item::*;
-pub use self::line_item_ext::*;
-pub use self::order::*;
-pub use self::order_ext::*;
-pub use self::order_item::*;
-pub use self::order_return::*;
 pub use self::payment_intent::*;
-pub use self::payment_method::*;
 pub use self::payment_source::*;
 pub use self::payout::*;
 pub use self::payout_ext::*;
-pub use self::person::*;
-pub use self::plan::*;
 pub use self::platform_tax_fee::*;
 pub use self::product::*;
-pub use self::recipient::*;
 pub use self::refund::*;
 pub use self::reserve_transaction::*;
-pub use self::review::*;
-pub use self::review_ext::*;
-pub use self::scheduled_query_run::*;
 pub use self::setup_intent::*;
-pub use self::sku::*;
-pub use self::source::*;
-pub use self::source_ext::*;
-pub use self::subscription::*;
-pub use self::subscription_ext::*;
-pub use self::subscription_item::*;
-pub use self::subscription_schedule::*;
-pub use self::tax_id::*;
-pub use self::tax_rate::*;
 pub use self::token::*;
 pub use self::token_ext::*;
+
+// Payment Methods
+mod alipay_account;
+mod bank_account;
+mod bank_account_ext;
+mod card;
+mod payment_method;
+mod source;
+mod source_ext;
+pub use self::alipay_account::*;
+pub use self::bank_account::*;
+pub use self::bank_account_ext::*;
+pub use self::card::*;
+pub use self::payment_method::*;
+pub use self::source::*;
+pub use self::source_ext::*;
+
+// Events
+#[cfg(feature = "events")]
+mod event;
+#[cfg(feature = "events")]
+pub use self::event::*;
+
+// Checkout
+#[cfg(feature = "checkout")]
+mod checkout_session;
+#[cfg(feature = "checkout")]
+pub use self::checkout_session::*;
+
+// Billing
+#[cfg(feature = "billing")]
+mod coupon;
+#[cfg(feature = "billing")]
+mod discount;
+#[cfg(feature = "billing")]
+mod invoice;
+#[cfg(feature = "billing")]
+mod invoice_ext;
+#[cfg(feature = "billing")]
+mod invoiceitem;
+#[cfg(feature = "billing")]
+mod line_item;
+#[cfg(feature = "billing")]
+mod line_item_ext;
+#[cfg(feature = "billing")]
+mod plan;
+#[cfg(feature = "billing")]
+mod subscription;
+#[cfg(feature = "billing")]
+mod subscription_ext;
+#[cfg(feature = "billing")]
+mod subscription_item;
+#[cfg(feature = "billing")]
+mod subscription_schedule;
+#[cfg(feature = "billing")]
+mod tax_id;
+#[cfg(feature = "billing")]
+mod tax_rate;
+#[cfg(feature = "billing")]
+pub use self::coupon::*;
+#[cfg(feature = "billing")]
+pub use self::discount::*;
+#[cfg(feature = "billing")]
+pub use self::invoice::*;
+#[cfg(feature = "billing")]
+pub use self::invoice_ext::*;
+#[cfg(feature = "billing")]
+pub use self::invoiceitem::*;
+#[cfg(feature = "billing")]
+pub use self::line_item::*;
+#[cfg(feature = "billing")]
+pub use self::line_item_ext::*;
+#[cfg(feature = "billing")]
+pub use self::plan::*;
+#[cfg(feature = "billing")]
+pub use self::subscription::*;
+#[cfg(feature = "billing")]
+pub use self::subscription_ext::*;
+#[cfg(feature = "billing")]
+pub use self::subscription_item::*;
+#[cfg(feature = "billing")]
+pub use self::subscription_schedule::*;
+#[cfg(feature = "billing")]
+pub use self::tax_id::*;
+#[cfg(feature = "billing")]
+pub use self::tax_rate::*;
+
+// Connect
+#[cfg(feature = "connect")]
+mod account;
+#[cfg(feature = "connect")]
+mod application;
+#[cfg(feature = "connect")]
+mod application_fee;
+#[cfg(feature = "connect")]
+mod connect_collection_transfer;
+#[cfg(feature = "connect")]
+mod fee_refund;
+#[cfg(feature = "connect")]
+mod person;
+#[cfg(feature = "connect")]
+mod recipient;
+#[cfg(feature = "connect")]
+mod topup;
+#[cfg(feature = "connect")]
+mod transfer;
+#[cfg(feature = "connect")]
+mod transfer_reversal;
+#[cfg(feature = "connect")]
+pub use self::account::*;
+#[cfg(feature = "connect")]
+pub use self::application::*;
+#[cfg(feature = "connect")]
+pub use self::application_fee::*;
+#[cfg(feature = "connect")]
+pub use self::connect_collection_transfer::*;
+#[cfg(feature = "connect")]
+pub use self::fee_refund::*;
+#[cfg(feature = "connect")]
+pub use self::person::*;
+#[cfg(feature = "connect")]
+pub use self::recipient::*;
+#[cfg(feature = "connect")]
 pub use self::topup::*;
+#[cfg(feature = "connect")]
 pub use self::transfer::*;
+#[cfg(feature = "connect")]
 pub use self::transfer_reversal::*;
+
+// Fraud
+#[cfg(feature = "fraud")]
+mod review;
+#[cfg(feature = "fraud")]
+mod review_ext;
+#[cfg(feature = "fraud")]
+pub use self::review::*;
+#[cfg(feature = "fraud")]
+pub use self::review_ext::*;
+
+// Issuing
+#[cfg(feature = "issuing")]
+mod issuing_authorization;
+#[cfg(feature = "issuing")]
+mod issuing_authorization_ext;
+#[cfg(feature = "issuing")]
+mod issuing_card;
+#[cfg(feature = "issuing")]
+mod issuing_card_ext;
+#[cfg(feature = "issuing")]
+mod issuing_cardholder;
+#[cfg(feature = "issuing")]
+mod issuing_dispute;
+#[cfg(feature = "issuing")]
+mod issuing_dispute_ext;
+#[cfg(feature = "issuing")]
+mod issuing_merchant_data;
+#[cfg(feature = "issuing")]
+mod issuing_transaction;
+#[cfg(feature = "issuing")]
+mod issuing_transaction_ext;
+#[cfg(feature = "issuing")]
+pub use self::issuing_authorization::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_authorization_ext::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_card::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_card_ext::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_cardholder::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_dispute::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_dispute_ext::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_merchant_data::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_transaction::*;
+#[cfg(feature = "issuing")]
+pub use self::issuing_transaction_ext::*;
+
+// Orders
+#[cfg(feature = "orders")]
+mod order;
+#[cfg(feature = "orders")]
+mod order_ext;
+#[cfg(feature = "orders")]
+mod order_item;
+#[cfg(feature = "orders")]
+mod order_return;
+#[cfg(feature = "orders")]
+mod sku;
+#[cfg(feature = "orders")]
+pub use self::order::*;
+#[cfg(feature = "orders")]
+pub use self::order_ext::*;
+#[cfg(feature = "orders")]
+pub use self::order_item::*;
+#[cfg(feature = "orders")]
+pub use self::order_return::*;
+#[cfg(feature = "orders")]
+pub use self::sku::*;
+
+#[cfg(feature = "sigma")]
+mod scheduled_query_run;
+#[cfg(feature = "sigma")]
+pub use self::scheduled_query_run::*;
+
+// Not-yet-implemented feature flags
+#[cfg(feature = "webhook-endpoints")]
+mod webhook_endpoint;
+#[cfg(feature = "webhook-endpoints")]
+mod webhook_endpoint_ext;
+#[cfg(feature = "webhook-endpoints")]
 pub use self::webhook_endpoint::*;
+#[cfg(feature = "webhook-endpoints")]
 pub use self::webhook_endpoint_ext::*;
+
+// Fallback types
+#[cfg(not(feature = "full"))]
+mod placeholders;
+#[cfg(not(feature = "full"))]
+pub use self::placeholders::*;
+
+#[cfg(not(feature = "account"))]
+#[derive(Clone, Debug, serde_derive::Deserialize, serde_derive::Serialize)]
+pub struct CompanyParams {
+    #[serde(default)]
+    pub metadata: crate::params::Metadata,
+}
+
+#[cfg(not(feature = "account"))]
+#[derive(Clone, Debug, serde_derive::Deserialize, serde_derive::Serialize)]
+pub struct PersonParams {
+    #[serde(default)]
+    pub metadata: crate::params::Metadata,
+}

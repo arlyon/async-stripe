@@ -1,3 +1,24 @@
+# Version 0.12.0-unstable
+
+In this version, new feature flags have been added to help reduce binary bloat
+and compile time in downstream applications.
+
+### Usage
+By default the `full` stripe api is enabled.
+
+To reduce code size, disable default features and enable just the APIs you use:
+
+```toml
+# Example: Core-only (enough to create a `Charge` or `Card` or `Customer`)
+stripe-rust = { version = "*", default-features = false }
+
+# Example: Support for "Subscriptions" and "Invoices"
+stripe-rust = { version = "*", default-features = false, features = ["billing"] }
+```
+
+Refer to the [Stripe API docs](https://stripe.com/docs/api) to determine
+which APIs are included as part of each feature flag.
+
 # Version 0.12.0-alpha.1
 
 ## Breaking Changes

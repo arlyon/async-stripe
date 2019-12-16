@@ -1,5 +1,8 @@
 [workspace]
-members = ["openapi"]
+members = [
+    "openapi",
+    "bench/binary_size",
+]
 
 [package]
 name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
@@ -23,11 +26,40 @@ travis-ci = {repository = "wyyerd/stripe-rs"}
 name = "stripe"
 
 [features]
-default = ["webhooks"]
-webhooks = ["hmac", "sha2"]
+default = ["full", "webhook-events"]
+full = [
+#    "core",
+#    "payment-methods",
+    "checkout",
+    "billing",
+    "connect",
+    "fraud",
+    "issuing",
+    "orders",
+    "sigma",
+    "webhook-endpoints",
+]
 
-# TODO: Deprecate `async` after we can use Generic Associated Types
-# (see https://github.com/rust-lang/rust/issues/44265)
+# Stripe feature groups
+#core = [] # N.B. always enabled for now
+#payment-methods = [] # N.B. always enabled for now
+checkout = []
+billing = []
+connect = []
+fraud = []
+issuing = []
+orders = []
+sigma = []
+webhook-endpoints = []
+
+# Deserialize events from webhooks
+webhook-events = ["events", "hmac", "sha2"]
+events = []
+
+# Deprecated. Use either `webhook-events` or `webhook-endpoints` instead.
+webhooks = ["webhook-endpoints", "webhook-events"]
+
+# Replace the sync client with an async client
 async = []
 
 [dependencies]

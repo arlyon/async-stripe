@@ -3,10 +3,10 @@ use crate::ids::EventId;
 use crate::resources::*;
 
 use chrono::Utc;
-#[cfg(feature = "webhooks")]
+#[cfg(feature = "webhook-events")]
 use hmac::{Hmac, Mac};
 use serde_derive::{Deserialize, Serialize};
-#[cfg(feature = "webhooks")]
+#[cfg(feature = "webhook-events")]
 use sha2::Sha256;
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
@@ -233,12 +233,12 @@ pub enum EventObject {
     Transfer(Transfer),
 }
 
-#[cfg(feature = "webhooks")]
+#[cfg(feature = "webhook-events")]
 pub struct Webhook {
     current_timestamp: i64,
 }
 
-#[cfg(feature = "webhooks")]
+#[cfg(feature = "webhook-events")]
 impl Webhook {
     pub fn construct_event(payload: &str, sig: &str, secret: &str) -> Result<Event, WebhookError> {
         Self { current_timestamp: Utc::now().timestamp() }.do_construct_event(payload, sig, secret)
@@ -287,7 +287,7 @@ fn to_hex(bytes: &[u8]) -> String {
     unsafe { String::from_utf8_unchecked(v) }
 }
 
-#[cfg(feature = "webhooks")]
+#[cfg(feature = "webhook-events")]
 #[derive(Debug)]
 struct Signature<'r> {
     t: i64,
@@ -295,7 +295,7 @@ struct Signature<'r> {
     v0: Option<&'r str>,
 }
 
-#[cfg(feature = "webhooks")]
+#[cfg(feature = "webhook-events")]
 impl<'r> Signature<'r> {
     fn parse(raw: &'r str) -> Result<Signature<'r>, WebhookError> {
         use std::collections::HashMap;
@@ -321,7 +321,7 @@ impl<'r> Signature<'r> {
 
 #[cfg(test)]
 mod tests {
-    #[cfg(feature = "webhooks")]
+    #[cfg(feature = "webhook-events")]
     #[test]
     fn test_signature_parse() {
         use super::Signature;
@@ -349,7 +349,7 @@ mod tests {
         );
     }
 
-    #[cfg(feature = "webhooks")]
+    #[cfg(feature = "webhook-events")]
     #[test]
     fn test_webhook_construct_event() {
         let payload = r#"{

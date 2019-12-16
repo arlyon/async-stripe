@@ -1,4 +1,5 @@
-mod config;
+mod mappings;
+mod metadata;
 
 use heck::{CamelCase, SnakeCase};
 use lazy_static::lazy_static;
@@ -11,14 +12,15 @@ fn main() {
     let raw = fs::read_to_string("openapi/spec3.json").unwrap();
     let spec: Json = serde_json::from_str(&raw).unwrap();
 
-    let id_renames = config::id_renames();
-    let object_mappings = config::object_mappings();
-    let field_mappings = config::field_mappings();
+    let id_renames = mappings::id_renames();
+    let object_mappings = mappings::object_mappings();
+    let field_mappings = mappings::field_mappings();
+    let feature_groups = metadata::feature_groups();
 
     // Compute additional metadata from spec.
-    let mut ids = BTreeMap::new();
     let mut objects = BTreeSet::new();
     let mut dependents: BTreeMap<_, BTreeSet<_>> = BTreeMap::new();
+    let mut id_mappings = BTreeMap::new();
     for (key, schema) in spec["components"]["schemas"].as_object().unwrap() {
         let schema_name = key.as_str();
         let fields = match schema["properties"].as_object() {
@@ -34,7 +36,7 @@ fn main() {
                     } else {
                         id_src.replace('.', "_").to_camel_case() + "Id"
                     };
-                    ids.insert(schema_name, id_type);
+                    id_mappings.insert(schema_name.replace(".", "_").to_owned(), id_type);
                 }
             }
         }
@@ -70,16 +72,43 @@ fn main() {
         }
     }
 
-    // Generate files
+    // Build context
     let meta = Metadata {
         spec: &spec,
-        ids,
         objects,
         dependents,
         requests,
+        id_mappings,
         object_mappings,
         field_mappings,
     };
+
+    // Generate placeholders
+    {
+        let mut out = String::new();
+        out.push_str("use crate::ids::*;\n");
+        out.push_str("use crate::params::Object;\n");
+        out.push_str("use serde_derive::{Deserialize, Serialize};\n");
+        for (schema, feature) in &feature_groups {
+            out.push('\n');
+            let id_type = meta.schema_to_id_type(schema).unwrap_or_else(|| "()".into());
+            let struct_type = meta.schema_to_rust_type(schema);
+            out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
+            out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+            out.push_str(&format!("pub struct {} {{\n", struct_type));
+            out.push_str(&format!("\tpub id: {},\n", id_type));
+            out.push_str("}\n\n");
+            out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
+            out.push_str(&format!("impl Object for {} {{\n", struct_type));
+            out.push_str(&format!("\ttype Id = {};\n", id_type));
+            out.push_str("\tfn id(&self) -> Self::Id { self.id.clone() }\n");
+            out.push_str(&format!("\tfn object(&self) -> &'static str {{ \"{}\" }}\n", schema));
+            out.push_str("}\n");
+            fs::write("openapi/out/placeholders.rs", out.as_bytes()).unwrap();
+        }
+    }
+
+    // Generate resources
     for object in &meta.objects {
         if object.starts_with("deleted_") {
             continue;
@@ -97,17 +126,17 @@ fn main() {
 
 struct Metadata<'a> {
     spec: &'a Json,
-    /// A map of `objects` to their rust id type
-    ids: BTreeMap<&'a str, String>,
     /// The set of schemas which should implement `Object`.
     /// These have both an `id` property and on `object` property.
     objects: BTreeSet<&'a str>,
     /// A one to many map of schema to depending types.
     dependents: BTreeMap<&'a str, BTreeSet<&'a str>>,
+    /// A map of `objects` to their rust id type
+    id_mappings: BTreeMap<String, String>,
     /// How a particular schema should be renamed.
-    object_mappings: BTreeMap<&'a str, &'a str>,
+    object_mappings: mappings::ObjectMap,
     /// An override for the rust-type of a particular object/field pair.
-    field_mappings: BTreeMap<(&'a str, &'a str), (&'a str, &'a str)>,
+    field_mappings: mappings::FieldMap,
     /// A one to many map of _objects_ to requests which should be
     /// implemented for that object.
     ///
@@ -116,12 +145,27 @@ struct Metadata<'a> {
 }
 
 impl<'a> Metadata<'a> {
+    fn schema_to_id_type(&self, schema: &str) -> Option<String> {
+        let schema = schema.replace('.', "_");
+        self.id_mappings.get(schema.as_str()).cloned()
+    }
+
     fn schema_to_rust_type(&self, schema: &str) -> String {
-        if let Some(rename) = self.object_mappings.get(&schema) {
+        let schema = schema.replace('.', "_");
+        if let Some(rename) = self.object_mappings.get(schema.as_str()) {
             rename.to_camel_case()
         } else {
-            schema.replace('.', "_").to_camel_case()
+            schema.to_camel_case()
         }
+    }
+
+    fn field_to_rust_type(
+        &self,
+        schema: &str,
+        field: &str,
+    ) -> Option<(&'static str, &'static str)> {
+        let schema = schema.replace('.', "_");
+        self.field_mappings.get(&(schema.as_str(), field)).copied()
     }
 
     fn schema_field(&self, parent: &str, field: &str) -> String {
@@ -237,7 +281,7 @@ struct InferredParams {
 fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     let mut out = String::new();
     let mut state = Generated::default();
-    let id_type = meta.ids.get(object);
+    let id_type = meta.schema_to_id_type(object);
     let struct_name = meta.schema_to_rust_type(object);
     let schema = &meta.spec["components"]["schemas"][object];
     let schema_title = schema["title"].as_str().unwrap();
@@ -267,7 +311,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     out.push_str("pub struct ");
     out.push_str(&struct_name);
     out.push_str(" {\n");
-    if let Some(id_type) = id_type {
+    if let Some(id_type) = &id_type {
         state.use_ids.insert(id_type.clone());
         if let Some(doc) = schema["properties"]["id"]["description"].as_str() {
             print_doc_comment(&mut out, doc, 1);
@@ -480,11 +524,11 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                 }
                 _ => {
                     if let Some((use_path, rust_type)) =
-                        meta.field_mappings.get(&(params_schema.as_str(), param_name))
+                        meta.field_to_rust_type(params_schema.as_str(), param_name)
                     {
                         print_doc(&mut out);
                         initializers.push((param_rename.into(), rust_type.to_string(), required));
-                        match *use_path {
+                        match use_path {
                             "" | "String" => (),
                             "Metadata" => {
                                 state.use_params.insert("Metadata");
@@ -506,11 +550,11 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
                         out.push_str(": ");
                         out.push_str(&rust_type);
                         out.push_str(",\n");
-                    } else if meta.ids.contains_key(param_name)
+                    } else if meta.schema_to_id_type(param_name).is_some()
                         && param["schema"]["type"].as_str() == Some("string")
                         && param_name != "tax_id"
                     {
-                        let id_type = &meta.ids[param_name];
+                        let id_type = meta.schema_to_id_type(param_name).unwrap();
                         print_doc(&mut out);
                         initializers.push((param_name.into(), id_type.clone(), required));
                         state.use_ids.insert(id_type.clone());
@@ -1037,7 +1081,7 @@ fn gen_field_rust_type(
     required: bool,
     default: bool,
 ) -> String {
-    if let Some(&(use_path, rust_type)) = meta.field_mappings.get(&(object, field_name)) {
+    if let Some((use_path, rust_type)) = meta.field_to_rust_type(object, field_name) {
         match use_path {
             "" | "String" => (),
             "Metadata" => {

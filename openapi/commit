@@ -1,6 +1,10 @@
 #!/bin/sh
 # Copy all of the resources that are currently auto-generated
 
+# Globals
+./openapi/add placeholders
+
+# Resources
 ./openapi/add account
 ./openapi/add alipay_account
 ./openapi/add application
