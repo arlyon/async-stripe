@@ -12,8 +12,10 @@ pub fn id_renames() -> BTreeMap<&'static str, &'static str> {
     .collect()
 }
 
+pub type ObjectMap =  BTreeMap<&'static str, &'static str>;
+
 #[rustfmt::skip]
-pub fn object_mappings() -> BTreeMap<&'static str, &'static str> {
+pub fn object_mappings() -> ObjectMap {
     [
         // Config for object types
         ("account_business_profile", "business_profile"),
@@ -33,7 +35,7 @@ pub fn object_mappings() -> BTreeMap<&'static str, &'static str> {
         ("charge_transfer_data", "transfer_data"),
         ("fee_refund", "application_fee_refund"),
         ("issuing_authorization_merchant_data", "merchant_data"),
-        ("issuing.authorization_wallet_provider", "wallet_provider"),
+        ("issuing_authorization_wallet_provider", "wallet_provider"),
         ("invoice_collection_method", "collection_method"),
         ("invoice_tax_amount", "tax_amount"),
         ("invoiceitem", "invoice_item"),
@@ -138,6 +140,7 @@ pub fn object_mappings() -> BTreeMap<&'static str, &'static str> {
     .collect()
 }
 
+pub type FieldMap = BTreeMap<FieldSpec, ImportSpec>;
 pub type FieldSpec = (
     &'static str, // schema name
     &'static str, // field name
@@ -148,7 +151,7 @@ pub type ImportSpec = (
 );
 
 #[rustfmt::skip]
-pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
+pub fn field_mappings() -> FieldMap {
     [
         // Config for object types
         (("account", "type"), ("AccountType", "Option<AccountType>")),
@@ -172,11 +175,11 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         (("invoiceitem", "period"), ("Period", "Option<Period>")),
         (("line_item", "period"), ("Period", "Option<Period>")),
         (
-            ("issuing.authorization", "authorization_method"),
+            ("issuing_authorization", "authorization_method"),
             ("IssuingAuthorizationMethod", "IssuingAuthorizationMethod"),
         ),
         (
-            ("issuing.authorization", "wallet_provider"),
+            ("issuing_authorization", "wallet_provider"),
             ("IssuingAuthorizationWalletProvider", "Option<IssuingAuthorizationWalletProvider>"),
         ),
         (
@@ -195,8 +198,8 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
             ("issuing_authorization_verification_data", "cvc_check"),
             ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
         ),
-        (("issuing.card", "brand"), ("CardBrand", "CardBrand")),
-        (("issuing.card", "type"), ("IssuingCardType", "IssuingCardType")),
+        (("issuing_card", "brand"), ("CardBrand", "CardBrand")),
+        (("issuing_card", "type"), ("IssuingCardType", "IssuingCardType")),
         (
             ("issuing_card_authorization_controls", "allowed_categories"),
             ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
@@ -234,15 +237,15 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
             ("IssuingCardShippingStatus", "Option<IssuingCardShippingStatus>"),
         ),
         (
-            ("issuing.dispute", "reason"),
+            ("issuing_dispute", "reason"),
             ("IssuingDisputeReason", "IssuingDisputeReason"),
         ),
         (
-            ("issuing.dispute", "status"),
+            ("issuing_dispute", "status"),
             ("IssuingDisputeStatus", "IssuingDisputeStatus"),
         ),
         (
-            ("issuing.transaction", "type"),
+            ("issuing_transaction", "type"),
             ("IssuingTransactionType", "IssuingTransactionType"),
         ),
         (("file", "purpose"), ("", "FilePurpose")),
@@ -293,7 +296,7 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         (("token", "type"), ("TokenType", "TokenType")),
         (("transfer", "source_type"), ("", "Option<TransferSourceType>")),
         (("transfer_schedule", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
-        (("webhook_endpoint", "api_version"), ("", "Option<ApiVersion>")),
+        (("webhook_endpoint", "api_version"), ("ApiVersion", "Option<ApiVersion>")),
         (("webhook_endpoint", "enabled_events"), ("", "Option<Vec<EventFilter>>")),
         (("webhook_endpoint", "status"), ("WebhookEndpointStatus", "Option<WebhookEndpointStatus>")),
 
@@ -499,6 +502,7 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         ),
         (("transfer_schedule_params", "delay_days"), ("DelayDays", "Option<DelayDays>")),
         (("transfer_schedule_params", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
+        (("create_webhook_endpoint", "api_version"), ("ApiVersion", "Option<ApiVersion>")),
     ]
     .into_iter()
     .copied()
