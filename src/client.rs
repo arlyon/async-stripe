@@ -126,11 +126,7 @@ impl Client {
     }
 
     pub fn set_app_info(&mut self, name: String, version: Option<String>, url: Option<String>) {
-        self.app_info = Some(AppInfo {
-            name: name,
-            url: url,
-            version: version,
-        });
+        self.app_info = Some(AppInfo { name: name, url: url, version: version });
     }
 
     fn headers(&self) -> HeaderMap {
@@ -180,7 +176,7 @@ fn format_app_info(info: &AppInfo) -> String {
         (Some(a), Some(b)) => format!("{}/{} ({})", &info.name, a, b),
         (Some(a), None) => format!("{}/{}", &info.name, a),
         (None, Some(b)) => format!("{}/{}", &info.name, b),
-        _ => info.name.to_string()
+        _ => info.name.to_string(),
     };
     formatted
 }

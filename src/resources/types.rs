@@ -331,7 +331,9 @@ impl PaymentIntentOffSession {
     pub fn frequency(n: OffSessionOther) -> Self {
         match n {
             OffSessionOther::OneOff => PaymentIntentOffSession::Other(OffSessionOther::OneOff),
-            OffSessionOther::Recurring => PaymentIntentOffSession::Other(OffSessionOther::Recurring)
+            OffSessionOther::Recurring => {
+                PaymentIntentOffSession::Other(OffSessionOther::Recurring)
+            }
         }
     }
 }
