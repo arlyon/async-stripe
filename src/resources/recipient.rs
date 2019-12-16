@@ -295,7 +295,7 @@ impl<'a> UpdateRecipient<'a> {
     }
 }
 
-/// An enum representing the possible values of an `Recipient`'s `type` field.
+/// An enum representing the possible values of an `ListRecipients`'s `type_` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum RecipientType {

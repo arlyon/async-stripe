@@ -78,6 +78,10 @@ pub struct InvoiceLineItem {
     /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
     #[serde(rename = "type")]
     pub type_: InvoiceLineItemType,
+
+    /// For prorations this indicates whether Stripe automatically grouped multiple related debit and credit line items into a single combined line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unified_proration: Option<bool>,
 }
 
 impl Object for InvoiceLineItem {

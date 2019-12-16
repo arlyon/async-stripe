@@ -6,12 +6,22 @@ use reqwest::RequestBuilder;
 use serde::de::DeserializeOwned;
 use std::io::Read;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[derive(Clone)]
 pub struct Client {
+    host: String,
     client: reqwest::Client,
     secret_key: String,
     headers: Headers,
-    host: String,
+    app_info: Option<AppInfo>,
+}
+
+#[derive(Clone, Default)]
+pub struct AppInfo {
+    name: String,
+    url: Option<String>,
+    version: Option<String>,
 }
 
 impl Client {
@@ -25,10 +35,11 @@ impl Client {
         let url = scheme_host.into();
         let host = if url.ends_with('/') { format!("{}v1", url) } else { format!("{}/v1", url) };
         Client {
+            host,
             client: reqwest::Client::new(),
             secret_key: secret_key.into(),
             headers: Headers::default(),
-            host,
+            app_info: Some(AppInfo::default()),
         }
     }
 
@@ -40,6 +51,10 @@ impl Client {
         let mut client = self.clone();
         client.headers = headers;
         client
+    }
+
+    pub fn set_app_info(&mut self, name: String, version: Option<String>, url: Option<String>) {
+        self.app_info = Some(AppInfo { name: name, url: url, version: version });
     }
 
     /// Sets a value for the Stripe-Account header
@@ -138,8 +153,35 @@ impl Client {
                 HeaderValue::from_str(stripe_version.as_str()).unwrap(),
             );
         }
+        let user_agent: String = format!("Stripe/v3 RustBindings/{}", VERSION);
+        if let Some(app_info) = &self.app_info {
+            let formatted: String = format_app_info(app_info);
+            let user_agent_app_info: String = format!("{} {}", user_agent, formatted);
+            headers.insert(
+                HeaderName::from_static("user_agent"),
+                HeaderValue::from_str(user_agent_app_info.as_str()).unwrap(),
+            );
+        } else {
+            headers.insert(
+                HeaderName::from_static("user_agent"),
+                HeaderValue::from_str(user_agent.as_str()).unwrap(),
+            );
+        };
         headers
     }
+}
+
+/// Formats a plugin's 'App Info' into a string that can be added to the end of an User-Agent string.
+///
+/// This formatting matches that of other libraries, and if changed then it should be changed everywhere.
+fn format_app_info(info: &AppInfo) -> String {
+    let formatted: String = match (&info.version, &info.url) {
+        (Some(a), Some(b)) => format!("{}/{} ({})", &info.name, a, b),
+        (Some(a), None) => format!("{}/{}", &info.name, a),
+        (None, Some(b)) => format!("{}/{}", &info.name, b),
+        _ => info.name.to_string(),
+    };
+    formatted
 }
 
 /// Serialize the form content using `serde_qs` instead of `serde_urlencoded`

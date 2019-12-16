@@ -104,6 +104,10 @@ impl Object for Person {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonVerification {
+    /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_document: Option<PersonVerificationDocument>,
+
     /// A user-displayable string describing the verification state for the person.
     ///
     /// For example, this may say "Provided identity information could not be verified".
@@ -116,7 +120,8 @@ pub struct PersonVerification {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub details_code: Option<String>,
 
-    pub document: PersonVerificationDocument,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<PersonVerificationDocument>,
 
     /// The state of verification for the person.
     ///
@@ -162,6 +167,10 @@ pub struct PersonRelationship {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub director: Option<bool>,
 
+    /// Whether the person has significant responsibility to control, manage, or direct the organization.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub executive: Option<bool>,
+
     /// Whether the person is an owner of the account’s legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<bool>,
@@ -179,7 +188,7 @@ pub struct PersonRelationship {
 pub struct PersonRequirements {
     /// Fields that need to be collected to keep the person's account enabled.
     ///
-    /// If not collected by the account's `current_deadline`, these fields are moved to `past_due` and the account is disabled.
+    /// If not collected by the account's `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
     pub currently_due: Vec<String>,
 
     /// Fields that need to be collected assuming all volume thresholds are reached.
@@ -191,4 +200,9 @@ pub struct PersonRequirements {
     ///
     /// These fields need to be collected to enable payouts for the person's account.
     pub past_due: Vec<String>,
+
+    /// Additional fields that may be required depending on the results of verification or review for provided requirements.
+    ///
+    /// If any of these fields become required, they appear in `currently_due` or `past_due`.
+    pub pending_verification: Vec<String>,
 }

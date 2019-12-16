@@ -21,19 +21,22 @@ pub struct Customer {
     /// Unique identifier for the object.
     pub id: CustomerId,
 
-    /// Current balance, if any, being stored on the customer's account.
-    ///
-    /// If negative, the customer has credit to apply to the next invoice.
-    /// If positive, the customer has an amount owed that will be added to the next invoice.
-    /// The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice.
-    /// This balance is only taken into account as invoices are finalized.
-    /// Note that the balance does not include unpaid invoices.
+    /// This field has been renamed to `balance` and will be removed in a future API version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<i64>,
 
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
+
+    /// Current balance, if any, being stored on the customer.
+    ///
+    /// If negative, the customer has credit to apply to their next invoice.
+    /// If positive, the customer has an amount owed that will be added to their next invoice.
+    /// The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice.
+    /// This balance is only taken into account as invoices are finalized.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance: Option<i64>,
 
     /// Time at which the object was created.
     ///
@@ -246,16 +249,19 @@ pub struct TaxInfoVerification {
 /// The parameters for `Customer::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCustomer<'a> {
-    /// An integer amount in %s that represents the account balance for your customer.
-    ///
-    /// Account balances only affect invoices.
-    /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
+    /// This field has been renamed to `balance` and will be removed in a future API version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<i64>,
 
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
+
+    /// An integer amount in %s that represents the customer's current balance, which affect the customer's future invoices.
+    ///
+    /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
@@ -340,6 +346,7 @@ impl<'a> CreateCustomer<'a> {
         CreateCustomer {
             account_balance: Default::default(),
             address: Default::default(),
+            balance: Default::default(),
             coupon: Default::default(),
             description: Default::default(),
             email: Default::default(),
@@ -413,16 +420,19 @@ impl<'a> ListCustomers<'a> {
 /// The parameters for `Customer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCustomer<'a> {
-    /// An integer amount in %s that represents the account balance for your customer.
-    ///
-    /// Account balances only affect invoices.
-    /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
+    /// This field has been renamed to `balance` and will be removed in a future API version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_balance: Option<i64>,
 
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
+
+    /// An integer amount in %s that represents the customer's current balance, which affect the customer's future invoices.
+    ///
+    /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
@@ -527,6 +537,7 @@ impl<'a> UpdateCustomer<'a> {
         UpdateCustomer {
             account_balance: Default::default(),
             address: Default::default(),
+            balance: Default::default(),
             coupon: Default::default(),
             default_alipay_account: Default::default(),
             default_bank_account: Default::default(),
@@ -646,6 +657,8 @@ impl std::fmt::Display for CustomerTaxExemptFilter {
 pub enum TaxIdDataType {
     AuAbn,
     EuVat,
+    InGst,
+    NoVat,
     NzGst,
 }
 
@@ -654,6 +667,8 @@ impl TaxIdDataType {
         match self {
             TaxIdDataType::AuAbn => "au_abn",
             TaxIdDataType::EuVat => "eu_vat",
+            TaxIdDataType::InGst => "in_gst",
+            TaxIdDataType::NoVat => "no_vat",
             TaxIdDataType::NzGst => "nz_gst",
         }
     }

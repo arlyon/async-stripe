@@ -51,21 +51,12 @@ pub struct CustomField {
     pub value: String,
 }
 
-// A date of birth
+/// A date of birth.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Dob {
     pub day: i64,
     pub month: i64,
     pub year: i64,
-}
-
-/// An enum representing the possible values of an `Fee`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum FeeType {
-    ApplicationFee,
-    StripeFee,
-    Tax,
 }
 
 /// An enum representing the possible values of a `FraudDetails`'s `report` fields.
@@ -74,42 +65,6 @@ pub enum FeeType {
 pub enum FraudDetailsReport {
     Fraudulent,
     Safe,
-}
-
-/// An enum representing the possible values of the `IssuingAuthorizationVerificationData` fields.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingAuthorizationCheck {
-    Match,
-    Mismatch,
-    NotProvided,
-}
-
-/// An enum representing the possible values of the `IssuingAuthorization`'s `authorization_method` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingAuthorizationMethod {
-    KeyedIn,
-    Swipe,
-    Chip,
-    Contactless,
-    Online,
-}
-
-/// An enum representing the possible values of the `IssuingAuthorizationRequest`'s `reason` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingAuthorizationReason {
-    AuthorizationControls,
-    CardActive,
-    CardInactive,
-    InsufficientFunds,
-    AccountComplianceDisabled,
-    AccountInactive,
-    SuspectedFraud,
-    WebhookApproved,
-    WebhookDeclined,
-    WebhookTimeout,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -306,4 +261,69 @@ pub enum Weekday {
     Thursday,
     Friday,
     Saturday,
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(untagged)]
+pub enum PaymentIntentOffSession {
+    Exists(bool),
+    Other(OffSessionOther),
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum OffSessionOther {
+    #[serde(rename = "one_off")]
+    OneOff,
+    #[serde(rename = "recurring")]
+    Recurring,
+}
+
+impl PaymentIntentOffSession {
+    pub fn exists(n: bool) -> Self {
+        PaymentIntentOffSession::Exists(n)
+    }
+    pub fn frequency(n: OffSessionOther) -> Self {
+        match n {
+            OffSessionOther::OneOff => PaymentIntentOffSession::Other(OffSessionOther::OneOff),
+            OffSessionOther::Recurring => {
+                PaymentIntentOffSession::Other(OffSessionOther::Recurring)
+            }
+        }
+    }
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SetupIntentUsage {
+    #[serde(rename = "on_session")]
+    OnSession,
+    #[serde(rename = "off_session")]
+    OffSession,
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum BusinessType {
+    Individual,
+    Company,
+}
+
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ApiErrors {
+    #[serde(rename = "api_connection_error")]
+    ApiConnectionError,
+    #[serde(rename = "api_error")]
+    ApiError,
+    #[serde(rename = "authentication_error")]
+    AuthenticationError,
+    #[serde(rename = "card_error")]
+    CardError,
+    #[serde(rename = "idempotency_error")]
+    IdempotencyError,
+    #[serde(rename = "invalid_request_error")]
+    InvalidRequestError,
+    #[serde(rename = "rate_limit_error")]
+    RateLimitError,
 }

@@ -315,7 +315,7 @@ pub struct CreatePaymentMethod<'a> {
     ///
     /// An additional hash is included on the PaymentMethod with a name matching this value.
     /// It contains additional information specific to the PaymentMethod type.
-    /// Required unless `payment_method` is specified (see the [Shared PaymentMethods](https://stripe.com/docs/payments/payment-methods/connect#shared-paymentmethods) guide).
+    /// Required unless `payment_method` is specified (see the [Shared PaymentMethods](https://stripe.com/docs/payments/payment-methods/connect#shared-payment-methods) guide).
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<PaymentMethodType>,

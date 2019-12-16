@@ -1,8 +1,11 @@
 use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, InvoiceId, PlanId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Metadata, Timestamp};
-use crate::resources::Invoice;
+use crate::resources::{CollectionMethod, Invoice};
 use serde_derive::Serialize;
+
+#[deprecated(since = "0.12.0")]
+pub type InvoiceCollectionMethod = CollectionMethod;
 
 impl Invoice {
     /// Retrieves the details of an upcoming invoice_id

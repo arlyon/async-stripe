@@ -6,7 +6,7 @@ use crate::ids::IssuingTransactionId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
     BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder,
-    IssuingDispute, MerchantData,
+    IssuingDispute, IssuingTransactionType, MerchantData,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -48,6 +48,10 @@ pub struct IssuingTransaction {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
+    pub merchant_amount: i64,
+
+    pub merchant_currency: Currency,
+
     pub merchant_data: MerchantData,
 
     /// Set of key-value pairs that you can attach to an object.
@@ -67,42 +71,5 @@ impl Object for IssuingTransaction {
     }
     fn object(&self) -> &'static str {
         "issuing.transaction"
-    }
-}
-
-/// An enum representing the possible values of an `IssuingTransaction`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingTransactionType {
-    Capture,
-    CashWithdrawal,
-    Dispute,
-    DisputeLoss,
-    Refund,
-    RefundReversal,
-}
-
-impl IssuingTransactionType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            IssuingTransactionType::Capture => "capture",
-            IssuingTransactionType::CashWithdrawal => "cash_withdrawal",
-            IssuingTransactionType::Dispute => "dispute",
-            IssuingTransactionType::DisputeLoss => "dispute_loss",
-            IssuingTransactionType::Refund => "refund",
-            IssuingTransactionType::RefundReversal => "refund_reversal",
-        }
-    }
-}
-
-impl AsRef<str> for IssuingTransactionType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for IssuingTransactionType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
     }
 }

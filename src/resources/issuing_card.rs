@@ -5,7 +5,8 @@
 use crate::ids::IssuingCardId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
-    Address, CardBrand, Currency, IssuingCardholder, MerchantCategory, SpendingLimit,
+    Address, CardBrand, Currency, IssuingCardPinStatus, IssuingCardShippingStatus,
+    IssuingCardShippingType, IssuingCardType, IssuingCardholder, MerchantCategory, SpendingLimit,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -53,6 +54,10 @@ pub struct IssuingCard {
 
     /// The name of the cardholder, printed on the card.
     pub name: String,
+
+    /// Metadata about the PIN on the card.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pin: Option<IssuingCardPin>,
 
     /// The card this card replaces, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -117,6 +122,20 @@ pub struct IssuingCardAuthorizationControls {
     /// Limit the spending with rules based on time intervals and categories.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits: Option<Vec<SpendingLimit>>,
+
+    /// Currency for the amounts within spending_limits.
+    ///
+    /// Locked to the currency of the card.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub spending_limits_currency: Option<Currency>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct IssuingCardPin {
+    /// The status of the pin.
+    ///
+    /// One of `blocked` or `active`.
+    pub status: IssuingCardPinStatus,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -188,72 +207,6 @@ impl std::fmt::Display for IssuingCardReplacementReason {
     }
 }
 
-/// An enum representing the possible values of an `IssuingCardShipping`'s `status` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingCardShippingStatus {
-    Canceled,
-    Delivered,
-    Failure,
-    Pending,
-    Returned,
-    Shipped,
-}
-
-impl IssuingCardShippingStatus {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            IssuingCardShippingStatus::Canceled => "canceled",
-            IssuingCardShippingStatus::Delivered => "delivered",
-            IssuingCardShippingStatus::Failure => "failure",
-            IssuingCardShippingStatus::Pending => "pending",
-            IssuingCardShippingStatus::Returned => "returned",
-            IssuingCardShippingStatus::Shipped => "shipped",
-        }
-    }
-}
-
-impl AsRef<str> for IssuingCardShippingStatus {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for IssuingCardShippingStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `IssuingCardShipping`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingCardShippingType {
-    Bulk,
-    Individual,
-}
-
-impl IssuingCardShippingType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            IssuingCardShippingType::Bulk => "bulk",
-            IssuingCardShippingType::Individual => "individual",
-        }
-    }
-}
-
-impl AsRef<str> for IssuingCardShippingType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for IssuingCardShippingType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
 /// An enum representing the possible values of an `IssuingCard`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -286,35 +239,6 @@ impl AsRef<str> for IssuingCardStatus {
 }
 
 impl std::fmt::Display for IssuingCardStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `IssuingCard`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingCardType {
-    Physical,
-    Virtual,
-}
-
-impl IssuingCardType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            IssuingCardType::Physical => "physical",
-            IssuingCardType::Virtual => "virtual",
-        }
-    }
-}
-
-impl AsRef<str> for IssuingCardType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for IssuingCardType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
