@@ -44,5 +44,4 @@ fn create_customer(client: &stripe::Client) {
 
     // Output the result
     println!("{:?}", customer);
-
 }

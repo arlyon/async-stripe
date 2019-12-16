@@ -1,8 +1,8 @@
 use crate::config::Response;
 use crate::error::{Error, ErrorResponse, RequestError};
 use crate::params::Headers;
+use reqwest::blocking::RequestBuilder;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
-use reqwest::RequestBuilder;
 use serde::de::DeserializeOwned;
 use std::io::Read;
 
@@ -11,7 +11,7 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 #[derive(Clone)]
 pub struct Client {
     host: String,
-    client: reqwest::Client,
+    client: reqwest::blocking::Client,
     secret_key: String,
     headers: Headers,
     app_info: Option<AppInfo>,
@@ -36,7 +36,7 @@ impl Client {
         let host = if url.ends_with('/') { format!("{}v1", url) } else { format!("{}/v1", url) };
         Client {
             host,
-            client: reqwest::Client::new(),
+            client: reqwest::blocking::Client::new(),
             secret_key: secret_key.into(),
             headers: Headers::default(),
             app_info: Some(AppInfo::default()),

@@ -19,4 +19,4 @@ sigma = ["stripe-rust/sigma"]
 webhook-endpoints = ["stripe-rust/webhook-endpoints"]
 
 [dependencies]
-stripe-rust = { path = "../../", default-features = false }
+stripe-rust = { path = "../../", default-features = false, features = ["blocking"] }
