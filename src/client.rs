@@ -6,12 +6,14 @@ use reqwest::RequestBuilder;
 use serde::de::DeserializeOwned;
 use std::io::Read;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[derive(Clone)]
 pub struct Client {
+    host: String,
     client: reqwest::Client,
     secret_key: String,
     headers: Headers,
-    host: String,
     app_info: Option<AppInfo>,
 }
 
@@ -21,8 +23,6 @@ pub struct AppInfo {
     url: Option<String>,
     version: Option<String>,
 }
-
-static VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 impl Client {
     /// Creates a new client pointed to `https://api.stripe.com/`
@@ -35,10 +35,10 @@ impl Client {
         let url = scheme_host.into();
         let host = if url.ends_with('/') { format!("{}v1", url) } else { format!("{}/v1", url) };
         Client {
+            host,
             client: reqwest::Client::new(),
             secret_key: secret_key.into(),
             headers: Headers::default(),
-            host,
             app_info: Some(AppInfo::default()),
         }
     }
@@ -51,6 +51,10 @@ impl Client {
         let mut client = self.clone();
         client.headers = headers;
         client
+    }
+
+    pub fn set_app_info(&mut self, name: String, version: Option<String>, url: Option<String>) {
+        self.app_info = Some(AppInfo { name: name, url: url, version: version });
     }
 
     /// Sets a value for the Stripe-Account header
@@ -125,10 +129,6 @@ impl Client {
         Ok(format!("{}/{}?{}", self.host, &path[1..], params))
     }
 
-    pub fn set_app_info(&mut self, name: String, version: Option<String>, url: Option<String>) {
-        self.app_info = Some(AppInfo { name: name, url: url, version: version });
-    }
-
     fn headers(&self) -> HeaderMap {
         let mut headers = HeaderMap::new();
         headers.insert(
@@ -147,9 +147,13 @@ impl Client {
                 HeaderValue::from_str(client_id).unwrap(),
             );
         }
-
+        if let Some(stripe_version) = &self.headers.stripe_version {
+            headers.insert(
+                HeaderName::from_static("stripe-version"),
+                HeaderValue::from_str(stripe_version.as_str()).unwrap(),
+            );
+        }
         let user_agent: String = format!("Stripe/v3 RustBindings/{}", VERSION);
-
         if let Some(app_info) = &self.app_info {
             let formatted: String = format_app_info(app_info);
             let user_agent_app_info: String = format!("{} {}", user_agent, formatted);
@@ -163,7 +167,6 @@ impl Client {
                 HeaderValue::from_str(user_agent.as_str()).unwrap(),
             );
         };
-
         headers
     }
 }
