@@ -24,6 +24,7 @@ fn customer_create_and_delete_with_account() {
             stripe_account: Some("TEST".into()),
             client_id: Some("ca_123".into()),
             stripe_version: Some(stripe::ApiVersion::V2019_03_14),
+            user_agent: None,
         });
         customer_create_and_delete(&client);
     });

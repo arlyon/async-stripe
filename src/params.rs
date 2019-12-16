@@ -7,10 +7,10 @@ use std::collections::HashMap;
 
 #[derive(Clone, Default)]
 pub struct Headers {
-    pub stripe_account: Option<String>,
     pub client_id: Option<String>,
     pub stripe_version: Option<ApiVersion>,
-    pub user_agent: String,
+    pub stripe_account: Option<String>,
+    pub user_agent: Option<String>,
 }
 
 /// Implemented by types which represent stripe objects.
