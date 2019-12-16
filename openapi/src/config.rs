@@ -34,6 +34,7 @@ pub fn object_mappings() -> BTreeMap<&'static str, &'static str> {
         ("fee_refund", "application_fee_refund"),
         ("issuing_authorization_merchant_data", "merchant_data"),
         ("issuing.authorization_wallet_provider", "wallet_provider"),
+        ("invoice_collection_method", "collection_method"),
         ("invoice_tax_amount", "tax_amount"),
         ("invoiceitem", "invoice_item"),
         ("legal_entity_company", "company"),
@@ -73,6 +74,7 @@ pub fn object_mappings() -> BTreeMap<&'static str, &'static str> {
         ("person_params_verification", "person_verification_params"),
         ("person_verification_params_document", "person_verification_document_params"),
         ("transfer_schedule_params_interval", "transfer_schedule_interval"),
+        ("invoice_setting_subscription_schedule_setting", "subscription_schedule_invoice_settings"),
 
         // Config for `charge` params
         ("create_charge_transfer_data", "transfer_data_params"),
@@ -108,6 +110,22 @@ pub fn object_mappings() -> BTreeMap<&'static str, &'static str> {
         ("source_acceptance_params_offline", "source_acceptance_offline_params"),
         ("source_acceptance_params_online", "source_acceptance_online_params"),
         ("create_source_receiver_refund_attributes_method", "source_refund_notification_method"),
+
+        // Config for `subscription_schedule` params
+        // TODO: Maybe allow "union" if structs have optional params
+        /*
+        ("create_subscription_schedule_phases", "subscription_schedule_phases_params"),
+        ("update_subscription_schedule_phases", "subscription_schedule_phases_params"),
+        */
+        ("create_subscription_schedule_phases_plans", "subscription_schedule_phases_plans_params"),
+        ("update_subscription_schedule_phases_plans", "subscription_schedule_phases_plans_params"),
+        ("create_subscription_schedule_invoice_settings", "subscription_schedule_invoice_settings"),
+        ("update_subscription_schedule_invoice_settings", "subscription_schedule_invoice_settings"),
+        ("create_subscription_schedule_phases_invoice_settings", "subscription_schedule_invoice_settings"),
+        ("update_subscription_schedule_phases_invoice_settings", "subscription_schedule_invoice_settings"),
+        ("create_subscription_schedule_renewal_interval", "subscription_schedule_renewal_interval_params"),
+        ("update_subscription_schedule_renewal_interval", "subscription_schedule_renewal_interval_params"),
+        ("subscription_schedule_end_behavior_filter", "subscription_schedule_renewal_behavior"),
 
         // Config for `webhook` params
         ("webhook_endpoint_enabled_events", "event_filter"),
@@ -149,6 +167,7 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         ),
         (("customer", "default_source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
         (("customer", "sources"), ("PaymentSource", "List<PaymentSource>")),
+        (("invoice", "billing"), ("", "Option<CollectionMethod>")),
         (("invoice", "default_source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
         (("invoiceitem", "period"), ("Period", "Option<Period>")),
         (("line_item", "period"), ("Period", "Option<Period>")),
@@ -247,6 +266,30 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
             ("source_redirect_flow", "status"),
             ("SourceRedirectFlowStatus", "SourceRedirectFlowStatus"),
         ),
+        (
+            ("subscription", "billing"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("subscription", "collection_method"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("subscription_schedule", "billing"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("subscription_schedule", "collection_method"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("subscription_schedule_phase_configuration", "collection_method"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("subscription_schedule_renewal_interval", "interval"),
+            ("PlanInterval", "PlanInterval"),
+        ),
         (("token", "type"), ("TokenType", "TokenType")),
         (("transfer", "source_type"), ("", "Option<TransferSourceType>")),
         (("transfer_schedule", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
@@ -293,6 +336,8 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         ),
 
         // Config for `invoice` params
+        (("list_invoices", "billing"), ("", "Option<CollectionMethod>")),
+        (("create_invoice", "billing"), ("", "Option<CollectionMethod>")),
         (("create_invoice", "custom_fields"), ("CustomField", "Option<Vec<CustomField>>")),
 
         // Config for `invoiceitem` params
@@ -350,18 +395,84 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
             ("update_subscription_items", "billing_thresholds"),
             ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
         ),
+        (
+            ("list_subscriptions", "billing"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("create_subscription", "billing"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("update_subscription", "billing"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("list_subscriptions", "collection_method"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("create_subscription", "collection_method"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("update_subscription", "collection_method"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
         (("create_subscription", "trial_end"), ("Scheduled", "Option<Scheduled>")),
         (("update_subscription", "trial_end"), ("Scheduled", "Option<Scheduled>")),
 
         // Config for `subscription_schedule` params
+        (("create_subscription_schedule", "collection_method"), ("CollectionMethod", "Option<CollectionMethod>")),
+        (("update_subscription_schedule", "collection_method"), ("CollectionMethod", "Option<CollectionMethod>")),
         (("create_subscription_schedule", "start_date"), ("Scheduled", "Option<Scheduled>")),
         (("update_subscription_schedule", "start_date"), ("Scheduled", "Option<Scheduled>")),
+        (
+            ("create_subscription_schedule", "billing_thresholds"),
+            ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
+        ),
+        (
+            ("update_subscription_schedule", "billing_thresholds"),
+            ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
+        ),
+        (
+            ("create_subscription_schedule", "billing"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("update_subscription_schedule", "billing"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("create_subscription_schedule_phases", "billing_thresholds"),
+            ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
+        ),
+        (
+            ("update_subscription_schedule_phases", "billing_thresholds"),
+            ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
+        ),
+        (
+            ("create_subscription_schedule_phases", "collection_method"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("update_subscription_schedule_phases", "collection_method"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
         (("create_subscription_schedule_phases", "start_date"), ("Scheduled", "Option<Scheduled>")),
         (("update_subscription_schedule_phases", "start_date"), ("Scheduled", "Option<Scheduled>")),
         (("create_subscription_schedule_phases", "end_date"), ("Scheduled", "Option<Scheduled>")),
         (("update_subscription_schedule_phases", "end_date"), ("Scheduled", "Option<Scheduled>")),
         (("create_subscription_schedule_phases", "trial_end"), ("Scheduled", "Option<Scheduled>")),
         (("update_subscription_schedule_phases", "trial_end"), ("Scheduled", "Option<Scheduled>")),
+        (
+            ("subscription_schedule_renewal_interval_params", "interval"),
+            ("PlanInterval", "PlanInterval"),
+        ),
+        (
+            ("subscription_schedule_phases_plans_params", "billing_thresholds"),
+            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
+        ),
 
         // Miscellaneous params
         (("create_recipient", "type"), ("", "RecipientType")),

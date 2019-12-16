@@ -6,9 +6,9 @@ use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PlanId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Customer, Discount, Invoice, PaymentMethod, PaymentSource, Plan, Scheduled, SetupIntent,
-    SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds,
-    SubscriptionSchedule, TaxRate,
+    CollectionMethod, Customer, Discount, Invoice, PaymentMethod, PaymentSource, Plan, Scheduled,
+    SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
+    SubscriptionItemBillingThresholds, SubscriptionSchedule, TaxRate,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -28,7 +28,7 @@ pub struct Subscription {
 
     /// This field has been renamed to `collection_method` and will be removed in a future API version.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing: Option<SubscriptionBilling>,
+    pub billing: Option<CollectionMethod>,
 
     /// Determines the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     pub billing_cycle_anchor: Timestamp,
@@ -57,7 +57,7 @@ pub struct Subscription {
     /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<SubscriptionCollectionMethod>,
+    pub collection_method: Option<CollectionMethod>,
 
     /// Time at which the object was created.
     ///
@@ -263,7 +263,7 @@ pub struct CreateSubscription<'a> {
 
     /// This field has been renamed to `collection_method` and will be removed in a future API version.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing: Option<SubscriptionBilling>,
+    pub billing: Option<CollectionMethod>,
 
     /// A future timestamp to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
     ///
@@ -293,7 +293,7 @@ pub struct CreateSubscription<'a> {
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
     /// Defaults to `charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<SubscriptionCollectionMethod>,
+    pub collection_method: Option<CollectionMethod>,
 
     /// The code of the coupon to apply to this subscription.
     ///
@@ -436,13 +436,13 @@ impl<'a> CreateSubscription<'a> {
 pub struct ListSubscriptions<'a> {
     /// This field has been renamed to `collection_method` and will be removed in a future API version.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing: Option<SubscriptionBilling>,
+    pub billing: Option<CollectionMethod>,
 
     /// The collection method of the subscriptions to retrieve.
     ///
     /// Either `charge_automatically` or `send_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<SubscriptionCollectionMethod>,
+    pub collection_method: Option<CollectionMethod>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -526,7 +526,7 @@ pub struct UpdateSubscription<'a> {
 
     /// This field has been renamed to `collection_method` and will be removed in a future API version.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing: Option<SubscriptionBilling>,
+    pub billing: Option<CollectionMethod>,
 
     /// Either `now` or `unchanged`.
     ///
@@ -557,7 +557,7 @@ pub struct UpdateSubscription<'a> {
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
     /// Defaults to `charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<SubscriptionCollectionMethod>,
+    pub collection_method: Option<CollectionMethod>,
 
     /// The code of the coupon to apply to this subscription.
     ///
@@ -735,35 +735,6 @@ pub struct UpdateSubscriptionItems {
     pub tax_rates: Option<Vec<String>>,
 }
 
-/// An enum representing the possible values of an `Subscription`'s `billing` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionBilling {
-    ChargeAutomatically,
-    SendInvoice,
-}
-
-impl SubscriptionBilling {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionBilling::ChargeAutomatically => "charge_automatically",
-            SubscriptionBilling::SendInvoice => "send_invoice",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionBilling {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionBilling {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
 /// An enum representing the possible values of an `UpdateSubscription`'s `billing_cycle_anchor` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -788,35 +759,6 @@ impl AsRef<str> for SubscriptionBillingCycleAnchor {
 }
 
 impl std::fmt::Display for SubscriptionBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `Subscription`'s `collection_method` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionCollectionMethod {
-    ChargeAutomatically,
-    SendInvoice,
-}
-
-impl SubscriptionCollectionMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionCollectionMethod::ChargeAutomatically => "charge_automatically",
-            SubscriptionCollectionMethod::SendInvoice => "send_invoice",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionCollectionMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

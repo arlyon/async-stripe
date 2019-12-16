@@ -68,7 +68,7 @@ pub struct Invoice {
 
     /// This field has been renamed to `collection_method` and will be removed in a future API version.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing: Option<InvoiceBilling>,
+    pub billing: Option<CollectionMethod>,
 
     /// Indicates the reason why the invoice was created.
     ///
@@ -91,7 +91,7 @@ pub struct Invoice {
     /// When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer.
     /// When sending an invoice, Stripe will email this invoice to the customer with payment instructions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<InvoiceCollectionMethod>,
+    pub collection_method: Option<CollectionMethod>,
 
     /// Time at which the object was created.
     ///
@@ -466,7 +466,7 @@ pub struct CreateInvoice<'a> {
 
     /// This field has been renamed to `collection_method` and will be removed in a future API version.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing: Option<InvoiceBilling>,
+    pub billing: Option<CollectionMethod>,
 
     /// Either `charge_automatically`, or `send_invoice`.
     ///
@@ -474,7 +474,7 @@ pub struct CreateInvoice<'a> {
     /// When sending an invoice, Stripe will email this invoice to the customer with payment instructions.
     /// Defaults to `charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<InvoiceCollectionMethod>,
+    pub collection_method: Option<CollectionMethod>,
 
     /// A list of up to 4 custom fields to be displayed on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -578,13 +578,13 @@ impl<'a> CreateInvoice<'a> {
 pub struct ListInvoices<'a> {
     /// This field has been renamed to `collection_method` and will be removed in a future API version.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing: Option<InvoiceBilling>,
+    pub billing: Option<CollectionMethod>,
 
     /// The collection method of the invoice to retrieve.
     ///
     /// Either `charge_automatically` or `send_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<InvoiceCollectionMethod>,
+    pub collection_method: Option<CollectionMethod>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -649,30 +649,30 @@ impl<'a> ListInvoices<'a> {
     }
 }
 
-/// An enum representing the possible values of an `Invoice`'s `billing` field.
+/// An enum representing the possible values of an `Invoice`'s `collection_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum InvoiceBilling {
+pub enum CollectionMethod {
     ChargeAutomatically,
     SendInvoice,
 }
 
-impl InvoiceBilling {
+impl CollectionMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            InvoiceBilling::ChargeAutomatically => "charge_automatically",
-            InvoiceBilling::SendInvoice => "send_invoice",
+            CollectionMethod::ChargeAutomatically => "charge_automatically",
+            CollectionMethod::SendInvoice => "send_invoice",
         }
     }
 }
 
-impl AsRef<str> for InvoiceBilling {
+impl AsRef<str> for CollectionMethod {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for InvoiceBilling {
+impl std::fmt::Display for CollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -716,35 +716,6 @@ impl AsRef<str> for InvoiceBillingReason {
 }
 
 impl std::fmt::Display for InvoiceBillingReason {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `Invoice`'s `collection_method` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum InvoiceCollectionMethod {
-    ChargeAutomatically,
-    SendInvoice,
-}
-
-impl InvoiceCollectionMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            InvoiceCollectionMethod::ChargeAutomatically => "charge_automatically",
-            InvoiceCollectionMethod::SendInvoice => "send_invoice",
-        }
-    }
-}
-
-impl AsRef<str> for InvoiceCollectionMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for InvoiceCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
