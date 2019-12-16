@@ -4,7 +4,9 @@
 
 use crate::ids::IssuingDisputeId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Currency, File, IssuingTransaction};
+use crate::resources::{
+    Currency, File, IssuingDisputeReason, IssuingDisputeStatus, IssuingTransaction,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingDispute".
@@ -44,12 +46,12 @@ pub struct IssuingDispute {
     /// Reason for this dispute.
     ///
     /// One of `other` or `fraudulent`.
-    pub reason: String,
+    pub reason: IssuingDisputeReason,
 
     /// Current status of dispute.
     ///
     /// One of `unsubmitted`, `under_review`, `won`, or `lost`.
-    pub status: String,
+    pub status: IssuingDisputeStatus,
 }
 
 impl Object for IssuingDispute {

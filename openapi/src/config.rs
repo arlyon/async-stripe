@@ -215,11 +215,11 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
             ("IssuingCardShippingStatus", "Option<IssuingCardShippingStatus>"),
         ),
         (
-            ("issuing_dispute", "reason"),
+            ("issuing.dispute", "reason"),
             ("IssuingDisputeReason", "IssuingDisputeReason"),
         ),
         (
-            ("issuing_dispute", "status"),
+            ("issuing.dispute", "status"),
             ("IssuingDisputeStatus", "IssuingDisputeStatus"),
         ),
         (
