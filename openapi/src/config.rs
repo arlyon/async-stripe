@@ -153,7 +153,7 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         // Config for object types
         (("account", "type"), ("AccountType", "Option<AccountType>")),
         (("account", "business_type"), ("BusinessType", "Option<BusinessType>")),
-        (("balance_transaction", "status"), ("BalanceTransactionStatus", "Option<BalanceTransactionStatus>")),
+        (("balance_transaction", "status"), ("BalanceTransactionStatus", "BalanceTransactionStatus")),
         (
             ("bank_account", "account_holder_type"),
             ("AccountHolderType", "Option<AccountHolderType>"),
