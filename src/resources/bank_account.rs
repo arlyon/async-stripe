@@ -4,7 +4,7 @@
 
 use crate::ids::BankAccountId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Account, AccountHolderType, Currency, Customer};
+use crate::resources::{Account, AccountHolderType, BankAccountStatus, Currency, Customer};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankAccount".
@@ -79,7 +79,7 @@ pub struct BankAccount {
     /// This means the other statuses don't apply.
     /// If a transfer fails, the status is set to `errored` and transfers are stopped until account details are updated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<BankAccountStatus>,
 }
 
 impl Object for BankAccount {

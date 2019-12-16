@@ -338,7 +338,7 @@ pub struct Invoice {
 
     /// The aggregate amounts calculated per tax rate for all line items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_tax_amounts: Option<Vec<InvoiceTaxAmount>>,
+    pub total_tax_amounts: Option<Vec<TaxAmount>>,
 
     /// The time at which webhooks for this invoice were successfully delivered (if the invoice had no webhooks to deliver, this will match `created`).
     ///
@@ -388,7 +388,7 @@ pub struct InvoiceSettingCustomField {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct InvoiceTaxAmount {
+pub struct TaxAmount {
     /// The amount, in %s, of the tax.
     pub amount: i64,
 

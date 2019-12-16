@@ -5,7 +5,8 @@
 use crate::ids::IssuingCardId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
-    Address, CardBrand, Currency, IssuingCardholder, MerchantCategory, SpendingLimit,
+    Address, CardBrand, Currency, IssuingCardPinStatus, IssuingCardShippingStatus,
+    IssuingCardShippingType, IssuingCardType, IssuingCardholder, MerchantCategory, SpendingLimit,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -77,7 +78,7 @@ pub struct IssuingCard {
 
     /// One of `virtual` or `physical`.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: IssuingCardType,
 }
 
 impl Object for IssuingCard {
@@ -134,7 +135,7 @@ pub struct IssuingCardPin {
     /// The status of the pin.
     ///
     /// One of `blocked` or `active`.
-    pub status: String,
+    pub status: IssuingCardPinStatus,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -156,7 +157,7 @@ pub struct IssuingCardShipping {
     ///
     /// One of `pending`, `shipped`, `delivered`, `returned`, `failure`, or `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<IssuingCardShippingStatus>,
 
     /// A tracking number for a card shipment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -170,7 +171,7 @@ pub struct IssuingCardShipping {
     ///
     /// Bulk shipments will be grouped and mailed together, while individual ones will not.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: IssuingCardShippingType,
 }
 
 /// An enum representing the possible values of an `IssuingCard`'s `replacement_reason` field.

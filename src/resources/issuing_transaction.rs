@@ -6,7 +6,7 @@ use crate::ids::IssuingTransactionId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
     BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder,
-    IssuingDispute, MerchantData,
+    IssuingDispute, IssuingTransactionType, MerchantData,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -61,7 +61,7 @@ pub struct IssuingTransaction {
 
     /// One of `capture`, `refund`, `cash_withdrawal`, `refund_reversal`, `dispute`, or `dispute_loss`.
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: IssuingTransactionType,
 }
 
 impl Object for IssuingTransaction {

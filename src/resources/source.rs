@@ -5,7 +5,10 @@
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, SourceId, TokenId};
 use crate::params::{Expand, Metadata, Object, Timestamp};
-use crate::resources::{Address, BillingDetails, Currency, Shipping};
+use crate::resources::{
+    Address, BillingDetails, Currency, Shipping, SourceRedirectFlowFailureReason,
+    SourceRedirectFlowStatus, SourceStatus, SourceUsage,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Source".
@@ -73,7 +76,7 @@ pub struct Source {
     /// The authentication `flow` of the source.
     ///
     /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
-    pub flow: String,
+    pub flow: SourceFlow,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub giropay: Option<SourceTypeGiropay>,
@@ -127,7 +130,7 @@ pub struct Source {
     /// The status of the source, one of `canceled`, `chargeable`, `consumed`, `failed`, or `pending`.
     ///
     /// Only `chargeable` sources can be used to create a charge.
-    pub status: String,
+    pub status: SourceStatus,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub three_d_secure: Option<SourceTypeThreeDSecure>,
@@ -146,7 +149,7 @@ pub struct Source {
     /// Some source types may or may not be reusable by construction, while others may leave the option at creation.
     /// If an incompatible value is passed, an error will be returned.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage: Option<String>,
+    pub usage: Option<SourceUsage>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat: Option<SourceTypeWechat>,
@@ -330,13 +333,13 @@ pub struct SourceRedirectFlow {
     ///
     /// Present only if the redirect status is `failed`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub failure_reason: Option<String>,
+    pub failure_reason: Option<SourceRedirectFlowFailureReason>,
 
     /// The URL you provide to redirect the customer to after they authenticated their payment.
     pub return_url: String,
 
     /// The status of the redirect, either `pending` (ready to be used by your customer to authenticate the transaction), `succeeded` (succesful authentication, cannot be reused) or `not_required` (redirect should not be used) or `failed` (failed authentication, cannot be reused).
-    pub status: String,
+    pub status: SourceRedirectFlowStatus,
 
     /// The URL provided to you to redirect a customer to as part of a `redirect` authentication flow.
     pub url: String,

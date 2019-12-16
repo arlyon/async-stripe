@@ -70,7 +70,7 @@ pub struct Recipient {
     /// Type of the recipient, one of `individual` or `corporation`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
+    pub type_: Option<RecipientType>,
 }
 
 impl Recipient {
@@ -166,11 +166,11 @@ pub struct CreateRecipient<'a> {
 
     /// Type of the recipient: either `individual` or `corporation`.
     #[serde(rename = "type")]
-    pub type_: &'a str,
+    pub type_: RecipientType,
 }
 
 impl<'a> CreateRecipient<'a> {
-    pub fn new(name: &'a str, type_: &'a str) -> Self {
+    pub fn new(name: &'a str, type_: RecipientType) -> Self {
         CreateRecipient {
             description: Default::default(),
             email: Default::default(),

@@ -69,7 +69,7 @@ pub struct InvoiceLineItem {
 
     /// The amount of tax calculated per tax rate for this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<Vec<InvoiceTaxAmount>>,
+    pub tax_amounts: Option<Vec<TaxAmount>>,
 
     /// The tax rates which apply to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -95,7 +95,7 @@ impl Object for InvoiceLineItem {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct InvoiceTaxAmount {
+pub struct TaxAmount {
     /// The amount, in %s, of the tax.
     pub amount: i64,
 

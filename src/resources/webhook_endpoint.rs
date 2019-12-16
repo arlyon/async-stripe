@@ -5,6 +5,7 @@
 use crate::config::{Client, Response};
 use crate::ids::WebhookEndpointId;
 use crate::params::{Deleted, Expand, List, Object, Timestamp};
+use crate::resources::WebhookEndpointStatus;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "NotificationWebhookEndpoint".
@@ -53,7 +54,7 @@ pub struct WebhookEndpoint {
     ///
     /// It can be `enabled` or `disabled`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Option<WebhookEndpointStatus>,
 
     /// The URL of the webhook endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]

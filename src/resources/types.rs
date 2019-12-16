@@ -67,42 +67,6 @@ pub enum FraudDetailsReport {
     Safe,
 }
 
-/// An enum representing the possible values of the `IssuingAuthorizationVerificationData` fields.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingAuthorizationCheck {
-    Match,
-    Mismatch,
-    NotProvided,
-}
-
-/// An enum representing the possible values of the `IssuingAuthorization`'s `authorization_method` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingAuthorizationMethod {
-    KeyedIn,
-    Swipe,
-    Chip,
-    Contactless,
-    Online,
-}
-
-/// An enum representing the possible values of the `IssuingAuthorizationRequest`'s `reason` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum IssuingAuthorizationReason {
-    AuthorizationControls,
-    CardActive,
-    CardInactive,
-    InsufficientFunds,
-    AccountComplianceDisabled,
-    AccountInactive,
-    SuspectedFraud,
-    WebhookApproved,
-    WebhookDeclined,
-    WebhookTimeout,
-}
-
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PackageDimensions {
     pub height: f64,

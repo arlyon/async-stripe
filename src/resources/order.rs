@@ -6,7 +6,7 @@ use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, OrderId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Charge, Currency, Customer, OrderItem, OrderReturn, Shipping, ShippingParams,
+    Charge, Currency, Customer, OrderItem, OrderReturn, OrderStatusFilter, Shipping, ShippingParams,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -97,7 +97,7 @@ pub struct Order {
     ///
     /// One of `created`, `paid`, `canceled`, `fulfilled`, or `returned`.
     /// More details in the [Orders Guide](https://stripe.com/docs/orders/guide#understanding-order-statuses).
-    pub status: String,
+    pub status: OrderStatus,
 
     /// The timestamps at which the order status was updated.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -319,7 +319,7 @@ pub struct ListOrders<'a> {
     ///
     /// One of `created`, `paid`, `fulfilled`, or `refunded`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<&'a str>,
+    pub status: Option<OrderStatusFilter>,
 
     /// Filter orders based on when they were paid, fulfilled, canceled, or returned.
     #[serde(skip_serializing_if = "Option::is_none")]

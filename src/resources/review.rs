@@ -5,7 +5,7 @@
 use crate::config::{Client, Response};
 use crate::ids::ReviewId;
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
-use crate::resources::{Charge, PaymentIntent};
+use crate::resources::{Charge, PaymentIntent, ReviewReason};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "RadarReview".
@@ -61,7 +61,7 @@ pub struct Review {
     /// The reason the review is currently open or closed.
     ///
     /// One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`, or `disputed`.
-    pub reason: String,
+    pub reason: ReviewReason,
 
     /// Information related to the browsing session of the user who initiated the payment.
     #[serde(skip_serializing_if = "Option::is_none")]

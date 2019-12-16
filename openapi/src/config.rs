@@ -34,6 +34,7 @@ pub fn object_mappings() -> BTreeMap<&'static str, &'static str> {
         ("fee_refund", "application_fee_refund"),
         ("issuing_authorization_merchant_data", "merchant_data"),
         ("issuing.authorization_wallet_provider", "wallet_provider"),
+        ("invoice_tax_amount", "tax_amount"),
         ("invoiceitem", "invoice_item"),
         ("legal_entity_company", "company"),
         ("legal_entity_japan_address", "address"),
@@ -96,6 +97,11 @@ pub fn object_mappings() -> BTreeMap<&'static str, &'static str> {
         // Config for `source` params
         ("create_source_mandate", "source_mandate_params"),
         ("update_source_mandate", "source_mandate_params"),
+        // TODO: Maybe allow "union" if structs have optional params
+        /*
+        ("create_source_source_order", "source_order_params"),
+        ("update_source_source_order", "source_order_params"),
+        */
         ("source_mandate_params_acceptance", "source_acceptance_params"),
         ("source_mandate_params_interval", "source_mandate_interval"),
         ("source_mandate_params_notification_method", "source_mandate_notification_method"),
@@ -115,7 +121,7 @@ pub fn object_mappings() -> BTreeMap<&'static str, &'static str> {
 }
 
 pub type FieldSpec = (
-    &'static str, // object name
+    &'static str, // schema name
     &'static str, // field name
 );
 pub type ImportSpec = (
@@ -134,6 +140,7 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
             ("bank_account", "account_holder_type"),
             ("AccountHolderType", "Option<AccountHolderType>"),
         ),
+        (("bank_account", "status"), ("BankAccountStatus", "Option<BankAccountStatus>")),
         (("fee", "type"), ("FeeType", "FeeType")),
         (("charge", "source"), ("PaymentSource", "Option<PaymentSource>")),
         (
@@ -148,6 +155,10 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         (
             ("issuing.authorization", "authorization_method"),
             ("IssuingAuthorizationMethod", "IssuingAuthorizationMethod"),
+        ),
+        (
+            ("issuing.authorization", "wallet_provider"),
+            ("IssuingAuthorizationWalletProvider", "Option<IssuingAuthorizationWalletProvider>"),
         ),
         (
             ("issuing_authorization_request", "reason"),
@@ -166,6 +177,7 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
             ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
         ),
         (("issuing.card", "brand"), ("CardBrand", "CardBrand")),
+        (("issuing.card", "type"), ("IssuingCardType", "IssuingCardType")),
         (
             ("issuing_card_authorization_controls", "allowed_categories"),
             ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
@@ -190,15 +202,57 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
             ("issuing_cardholder_authorization_controls", "spending_limits"),
             ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
         ),
+        (
+            ("issuing_card_pin", "status"),
+            ("IssuingCardPinStatus", "IssuingCardPinStatus"),
+        ),
+        (
+            ("issuing_card_shipping", "type"),
+            ("IssuingCardShippingType", "IssuingCardShippingType"),
+        ),
+        (
+            ("issuing_card_shipping", "status"),
+            ("IssuingCardShippingStatus", "Option<IssuingCardShippingStatus>"),
+        ),
+        (
+            ("issuing_dispute", "reason"),
+            ("IssuingDisputeReason", "IssuingDisputeReason"),
+        ),
+        (
+            ("issuing_dispute", "status"),
+            ("IssuingDisputeStatus", "IssuingDisputeStatus"),
+        ),
+        (
+            ("issuing.transaction", "type"),
+            ("IssuingTransactionType", "IssuingTransactionType"),
+        ),
+        (("file", "purpose"), ("", "FilePurpose")),
+        (("order", "status"), ("", "OrderStatus")),
         (("person", "dob"), ("Dob", "Option<Dob>")),
+        (("recipient", "type"), ("", "Option<RecipientType>")),
+        (("review", "reason"), ("ReviewReason", "ReviewReason")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
         (
             ("subscription", "default_source"),
             ("PaymentSource", "Option<Expandable<PaymentSource>>"),
         ),
+        (("source", "flow"), ("", "SourceFlow")),
+        (("source", "status"), ("SourceStatus", "SourceStatus")),
+        (("source", "usage"), ("SourceUsage", "Option<SourceUsage>")),
+        (
+            ("source_redirect_flow", "failure_reason"),
+            ("SourceRedirectFlowFailureReason", "Option<SourceRedirectFlowFailureReason>"),
+        ),
+        (
+            ("source_redirect_flow", "status"),
+            ("SourceRedirectFlowStatus", "SourceRedirectFlowStatus"),
+        ),
         (("token", "type"), ("TokenType", "TokenType")),
         (("transfer", "source_type"), ("", "Option<TransferSourceType>")),
         (("transfer_schedule", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
+        (("webhook_endpoint", "api_version"), ("", "Option<ApiVersion>")),
+        (("webhook_endpoint", "enabled_events"), ("", "Option<Vec<EventFilter>>")),
+        (("webhook_endpoint", "status"), ("WebhookEndpointStatus", "Option<WebhookEndpointStatus>")),
 
         // Config for `account` params
         (("create_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
@@ -210,14 +264,6 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         (("person_params", "address_kana"), ("Address", "Option<Address>")),
         (("person_params", "address_kanji"), ("Address", "Option<Address>")),
         (("person_params", "dob"), ("Dob", "Option<Dob>")),
-        (
-            ("create_payment_method", "billing_details"),
-            ("BillingDetails", "Option<BillingDetails>"),
-        ),
-        (("transfer_schedule_params", "delay_days"), ("DelayDays", "Option<DelayDays>")),
-        (("transfer_schedule_params", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
-        (("webhook_endpoint", "api_version"), ("", "Option<ApiVersion>")),
-        (("webhook_endpoint", "enabled_events"), ("", "Option<Vec<EventFilter>>")),
 
         // Config for `charge` params
         (("create_charge", "shipping"), ("Shipping", "Option<Shipping>")),
@@ -254,6 +300,7 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         (("update_invoice_item", "period"), ("Period", "Option<Period>")),
 
         // Config for `order` params
+        (("list_orders", "status"), ("OrderStatusFilter", "Option<OrderStatusFilter>")),
         (("create_order", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("update_order", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
 
@@ -317,6 +364,7 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         (("update_subscription_schedule_phases", "trial_end"), ("Scheduled", "Option<Scheduled>")),
 
         // Miscellaneous params
+        (("create_recipient", "type"), ("", "RecipientType")),
         (
             ("update_payment_method", "billing_details"),
             ("BillingDetails", "Option<BillingDetails>"),
@@ -334,6 +382,12 @@ pub fn field_mappings() -> BTreeMap<FieldSpec, ImportSpec> {
         (("create_token_account", "business_type"), ("BusinessType", "Option<BusinessType>")),
         (("create_token_account", "company"), ("CompanyParams", "Option<CompanyParams>")),
         (("create_token_account", "individual"), ("PersonParams", "Option<PersonParams>")),
+        (
+            ("create_payment_method", "billing_details"),
+            ("BillingDetails", "Option<BillingDetails>"),
+        ),
+        (("transfer_schedule_params", "delay_days"), ("DelayDays", "Option<DelayDays>")),
+        (("transfer_schedule_params", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
     ]
     .into_iter()
     .copied()

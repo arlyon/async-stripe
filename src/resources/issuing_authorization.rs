@@ -6,7 +6,8 @@ use crate::ids::IssuingAuthorizationId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
     BalanceTransaction, Currency, IssuingAuthorizationCheck, IssuingAuthorizationMethod,
-    IssuingAuthorizationReason, IssuingCard, IssuingCardholder, IssuingTransaction, MerchantData,
+    IssuingAuthorizationReason, IssuingAuthorizationWalletProvider, IssuingCard, IssuingCardholder,
+    IssuingTransaction, MerchantData,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -95,7 +96,7 @@ pub struct IssuingAuthorization {
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wallet_provider: Option<String>,
+    pub wallet_provider: Option<IssuingAuthorizationWalletProvider>,
 }
 
 impl Object for IssuingAuthorization {
