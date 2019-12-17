@@ -57,11 +57,16 @@
 #![allow(clippy::needless_pass_by_value)]
 #![allow(clippy::large_enum_variant)]
 
-#[cfg(not(feature = "async"))]
-mod client;
-// pub mod to be backward-compatible with 0.11.x
+mod client {
+    pub mod r#async;
+    #[cfg(feature = "blocking")]
+    pub mod blocking;
+}
+
+// Re-export `pub mod async` to be backward-compatible with 0.11.x
 #[cfg(feature = "async")]
-pub mod r#async;
+pub use client::r#async;
+
 mod error;
 mod ids;
 mod params;
@@ -74,68 +79,41 @@ mod resources;
 //
 // See https://github.com/wyyerd/stripe-rs/issues/24#issuecomment-451514187
 // See https://github.com/rust-lang/rust/issues/44265
-#[cfg(not(feature = "async"))]
-pub use crate::client::Client;
 pub use crate::error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
 pub use crate::ids::*;
 pub use crate::params::{
     Expandable, Headers, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,
 };
-#[cfg(feature = "async")]
-pub use crate::r#async::Client;
 pub use crate::resources::*;
 
-#[cfg(not(feature = "async"))]
+#[cfg(all(feature = "blocking", not(feature = "async")))]
 mod config {
-    use crate::error::Error;
+    pub(crate) use crate::client::blocking::{err, ok};
+    pub type Client = crate::client::blocking::Client;
 
     /// An alias for `Result`.
+    ///
+    /// If `blocking` is enabled, defined as:
     ///
     /// ```rust,ignore
     /// type Response<T> = Result<T, Error>;
     /// ```
     ///
-    /// If the `async` feature is enabled, this type is redefined as:
+    /// If the `async` feature is enabled, this type is defined as:
     ///
     /// ```rust,ignore
-    /// type Response<T> = Box<dyn Future<Item = T, Error = Error> + Send>
+    /// type Response<T> = Box<dyn Future<Result<T, Error>>>;
     /// ```
-    pub type Response<T> = Result<T, Error>;
-
-    pub(crate) type Client = crate::client::Client;
-
-    #[inline]
-    pub fn ok<T>(ok: T) -> Response<T> {
-        Ok(ok)
-    }
-
-    #[inline]
-    pub fn err<T>(err: Error) -> Response<T> {
-        Err(err)
-    }
+    ///
+    pub type Response<T> = crate::client::blocking::Response<T>;
 }
 
-#[cfg(feature = "async")]
+#[cfg(any(not(feature = "blocking"), feature = "async"))]
 mod config {
-    use crate::error::Error;
-    use futures::future::{self, Future};
-
-    // TODO: We'd rather use `impl Future<Result<T, Error>>` but that isn't so
-    //       easy to accomplish in generic code with futures 0.1.x
-    pub type Response<T> = Box<dyn Future<Item = T, Error = Error> + Send>;
-
-    pub(crate) type Client = crate::r#async::Client;
-
-    #[inline]
-    pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
-        Box::new(future::ok(ok))
-    }
-
-    #[inline]
-    pub(crate) fn err<T: Send + 'static>(err: Error) -> Response<T> {
-        Box::new(future::err(err))
-    }
+    pub(crate) use crate::client::r#async::{err, ok};
+    pub type Client = crate::client::r#async::Client;
+    pub type Response<T> = crate::client::r#async::Response<T>;
 }
 
-// N.B. export for doc purposes
-pub use self::config::Response;
+pub use self::config::Client;
+pub use self::config::Response; // N.B. export for doc purposes

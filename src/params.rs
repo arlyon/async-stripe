@@ -6,6 +6,13 @@ use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Clone, Default)]
+pub struct AppInfo {
+    pub name: String,
+    pub url: Option<String>,
+    pub version: Option<String>,
+}
+
+#[derive(Clone, Default)]
 pub struct Headers {
     pub client_id: Option<String>,
     pub stripe_version: Option<ApiVersion>,
@@ -183,8 +190,8 @@ impl<T: Paginate + DeserializeOwned + Send + 'static> List<T> {
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
     /// Stripe's default page size.
     ///
-    /// Not supported by `stripe::async::Client`.
-    #[cfg(not(feature = "async"))]
+    /// Requires `feature = "blocking"`.
+    #[cfg(all(feature = "blocking", not(feature = "async")))]
     pub fn get_all(self, client: &Client) -> Response<Vec<T>> {
         let mut data = Vec::new();
         let mut next = self;
