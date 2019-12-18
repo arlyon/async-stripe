@@ -9,10 +9,6 @@
   Prefer `{ default-features = false, features = ["full"] }` instead. 
 
 ## Feature Flags
-In this version, new feature flags have been added t
-and compile time in downstream applications.
-
-## Feature Flags
 By default the `full` stripe api is enabled.
 
 To reduce code size, disable default features and enable just the APIs you use:
