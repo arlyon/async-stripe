@@ -35,8 +35,12 @@ impl Client {
     }
 
     fn from_async(inner: AsyncClient) -> Client {
-        let runtime =
-            tokio::runtime::Builder::new().basic_scheduler().enable_all().build().unwrap();
+        let runtime = tokio::runtime::Builder::new()
+            .basic_scheduler()
+            .enable_io()
+            .enable_time() // use separate `io/time` instead of `all` to ensure `tokio/time` is enabled
+            .build()
+            .unwrap();
         Client { inner, runtime: Arc::new(RefCell::new(runtime)) }
     }
 
