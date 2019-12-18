@@ -116,4 +116,4 @@ mod config {
 }
 
 pub use self::config::Client;
-pub use self::config::Response; // N.B. export for doc purposes
+pub use self::config::Response;
