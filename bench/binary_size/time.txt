@@ -1,0 +1,117 @@
+57.24s stripe
+33.83s syn
+31.81s serde_derive
+27.80s serde
+19.38s h2
+17.81s reqwest                 # (46.62) 17.81 + 15.97 + 5.49 + 4.15 + 1.11 + 1.05 + 1.04
+    - 15.97s encoding_rs
+    - 5.49s mime_guess
+    - 4.15s url
+    - 1.11s mime
+    - 1.04s serde_urlencoded
+    - 1.04s base64
+15.54s tokio_executor
+14.36s hyper
+14.04s http
+11.05s pin_project_internal
+10.03s futures_util
+ 9.69s tracing_attributes
+ 9.11s tokio_net
+ 8.04s serde_json
+ 6.87s binary_size
+ 6.50s rand
+ 6.20s cc
+ 5.55s security_framework
+ 5.55s chrono
+ 5.22s mio
+ 5.01s idna
+ 4.91s data_encoding
+ 4.55s serde_qs
+ 4.53s tokio_macros
+ 4.22s httparse
+ 4.06s tokio
+ 4.00s num_traits
+ 3.46s tokio_sync
+ 3.07s parking_lot
+ 3.06s memchr
+ 3.05s proc_macro2
+ 3.03s crossbeam_utils
+ 2.90s tokio_timer
+ 2.86s c2_chacha
+ 2.83s crossbeam_channel
+ 2.65s indexmap
+ 2.61s byteorder
+ 2.59s time
+ 2.50s parking_lot_core
+ 2.46s unicode_normalization
+ 2.46s ppv_lite86
+ 2.34s crossbeam_epoch
+ 2.29s native_tls
+ 2.28s backtrace
+ 2.24s libc
+ 2.23s ryu
+ 2.23s bytes
+ 2.21s tokio_codec
+ 2.17s quote
+ 2.14s unicode_bidi
+ 2.01s crossbeam_utils
+ 2.00s num_integer
+ 1.94s core_foundation
+ 1.89s version_check
+ 1.84s rustc_demangle
+ 1.83s error_chain
+ 1.74s getrandom
+ 1.72s tempfile
+ 1.69s net2
+ 1.68s semver_parser
+ 1.68s autocfg
+ 1.61s version_check
+ 1.51s tracing_core
+ 1.37s tokio_io
+ 1.36s tracing
+ 1.34s log
+ 1.26s semver
+ 1.23s unicase
+ 1.02s maybe_uninit
+ 1.01s core_foundation_sys
+ 1.00s rustc_version
+ 1.00s backtrace_sys
+ 0.99s mio_uds
+ 0.98s rand_core
+ 0.97s memoffset
+ 0.94s smallvec
+ 0.94s smol_str
+ 0.82s crossbeam_deque
+ 0.79s percent_encoding
+ 0.74s want
+ 0.73s percent_encoding
+ 0.71s futures_core
+ 0.68s smallvec
+ 0.68s futures_io
+ 0.59s hyper_tls
+ 0.58s futures_channel
+ 0.55s tokio_tls
+ 0.54s lock_api
+ 0.50s dtoa
+ 0.49s security_framework_sys
+ 0.47s rand_chacha
+ 0.46s spin
+ 0.44s itoa
+ 0.43s crossbeam_queue
+ 0.42s iovec
+ 0.40s http_body
+ 0.32s pin_project
+ 0.32s string
+ 0.32s slab
+ 0.26s try_lock
+ 0.24s num_cpus
+ 0.24s tower_make
+ 0.22s unicode_xid
+ 0.20s futures_sink
+ 0.17s fnv
+ 0.14s tower_service
+ 0.13s scopeguard
+ 0.10s lazy_static
+ 0.08s matches
+ 0.08s remove_dir_all
+ 0.08s cfg_if

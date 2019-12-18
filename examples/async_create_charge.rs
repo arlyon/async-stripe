@@ -13,8 +13,6 @@ async fn main() {
     params.source = Some(stripe::ChargeSourceParams::Card(card));
 
     // Create the charge
-    let charge = stripe::Charge::create(&client, params)
-        .await
-        .unwrap();
+    let charge = stripe::Charge::create(&client, params).await.unwrap();
     println!("{:?}", charge);
 }

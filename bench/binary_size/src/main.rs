@@ -32,7 +32,7 @@ fn main() {
     // N.B. While it should be worthwhile to include other APIs in the binary size benchmark,
     //      it isn't super important because a lot of the binary weight (e.g. from `serde`, etc)
     //      is still included even after dead code elimination due to the recursive dependency
-    //      on types causes by `Expand`.
+    //      on types caused by `Expand`.
     // TODO: Use other apis
 }
 
