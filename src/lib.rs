@@ -59,7 +59,7 @@
 
 mod client {
     pub mod r#async;
-    #[cfg(feature = "blocking")]
+    #[cfg(all(feature = "blocking", not(feature = "async")))]
     pub mod blocking;
 }
 

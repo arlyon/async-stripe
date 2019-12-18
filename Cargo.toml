@@ -86,3 +86,4 @@ required-features = ["async"]
 
 [dev-dependencies]
 lazy_static = "1.3.0"
+tokio = { version = "0.2", features = ["full"] }
