@@ -1,7 +1,7 @@
 mod mock;
 
 #[test]
-fn is_retrievable() {
+fn is_subscription_retrievable() {
     mock::with_client(|client| {
         let id = "sub_123".parse().unwrap();
         let result = stripe::Subscription::retrieve(client, &id, &[]);
@@ -17,7 +17,7 @@ fn is_retrievable() {
 }
 
 #[test]
-fn is_expandable() {
+fn is_subscription_expandable() {
     mock::with_client(|client| {
         let id = "sub_123".parse().unwrap();
         let result = stripe::Subscription::retrieve(
