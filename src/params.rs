@@ -266,14 +266,14 @@ impl<T> RangeQuery<T> {
     /// Filter results to be before to a given value
     pub fn lt(value: T) -> RangeQuery<T> {
         let mut bounds = RangeBounds::default();
-        bounds.gt = Some(value);
+        bounds.lt = Some(value);
         RangeQuery::Bounds(bounds)
     }
 
     /// Filter results to be before or equal to a given value
     pub fn lte(value: T) -> RangeQuery<T> {
         let mut bounds = RangeBounds::default();
-        bounds.gte = Some(value);
+        bounds.lte = Some(value);
         RangeQuery::Bounds(bounds)
     }
 }
