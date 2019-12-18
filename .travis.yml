@@ -34,8 +34,14 @@ before_install:
 script:
   - rustup component add rustfmt
   - cargo fmt -- --check
-  - cargo build --verbose --all
-  - cargo test --verbose --all
-  - cargo build --verbose --all --features async
+
+  # Check "no default features"
+  - cargo build --verbose --workspace --exclude binary_size --no-default-features
+
+  # Check "full/blocking"
+  - cargo build --verbose --workspace --exclude binary_size
+  - cargo test --verbose --workspace --exclude binary_size
+
+  # Check "full/async
+  - cargo build --verbose --features async --workspace --exclude binary_size
   - cargo test --verbose --features async --example async_create_charge
-  - cargo build --verbose --all --no-default-features
