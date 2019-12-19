@@ -4,6 +4,10 @@ use crate::params::Headers;
 use serde::de::DeserializeOwned;
 use std::cell::RefCell;
 use std::sync::Arc;
+use std::time::Duration;
+
+/// The delay after which the blocking `Client` will assume the request has failed.
+const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
 
 pub type Response<T> = Result<T, Error>;
 
@@ -36,9 +40,9 @@ impl Client {
 
     fn from_async(inner: AsyncClient) -> Client {
         let runtime = tokio::runtime::Builder::new()
-            .basic_scheduler()
             .enable_io()
             .enable_time() // use separate `io/time` instead of `all` to ensure `tokio/time` is enabled
+            .basic_scheduler()
             .build()
             .unwrap();
         Client { inner, runtime: Arc::new(RefCell::new(runtime)) }
@@ -108,10 +112,13 @@ impl Client {
 
     fn send_blocking<T: DeserializeOwned + Send + 'static>(
         &self,
-        fut: super::r#async::Response<T>,
+        request: super::r#async::Response<T>,
     ) -> Response<T> {
-        let timeout = tokio::time::timeout(std::time::Duration::from_secs(30), fut);
-        match self.runtime.borrow_mut().block_on(timeout) {
+        match self.runtime.borrow_mut().block_on(async {
+            // N.B. The `tokio::time::timeout` must be called from within a running async
+            //      context or else it will panic (it registers with the thread-local timer).
+            tokio::time::timeout(DEFAULT_TIMEOUT, request).await
+        }) {
             Ok(finished) => finished,
             Err(_) => Err(Error::timeout()),
         }
