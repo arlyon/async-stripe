@@ -1675,7 +1675,7 @@ fn check_object_doc_url(object: &str) -> Option<String> {
                 fs::write(&cache_file, text.as_bytes()).unwrap();
                 return Some(doc_url);
             } else {
-                panic!("fatal: documentation response didn't match the expected format.");
+                eprintln!("warning: documentation response at {} didn't match the expected format.", doc_url);
             }
         }
     }
