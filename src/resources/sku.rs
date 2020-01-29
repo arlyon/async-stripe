@@ -4,8 +4,8 @@
 
 use crate::config::{Client, Response};
 use crate::ids::SkuId;
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, Timestamp};
-use crate::resources::{Currency, PackageDimensions, Product};
+use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Timestamp};
+use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SKU".
@@ -196,10 +196,20 @@ pub struct CreateSku<'a> {
 
     /// The cost of the item as a nonnegative integer in the smallest currency unit (that is, 100 cents to charge $1.00, or 100 to charge ¥100, Japanese Yen being a zero-decimal currency).
     pub price: i64,
+
+    /// The ID of the product this SKU is associated with.
+    ///
+    /// Must be a product with type `good`.
+    pub product: IdOrCreate<'a, CreateProduct<'a>>,
 }
 
 impl<'a> CreateSku<'a> {
-    pub fn new(currency: Currency, inventory: Option<Inventory>, price: i64) -> Self {
+    pub fn new(
+        currency: Currency,
+        inventory: Option<Inventory>,
+        price: i64,
+        product: IdOrCreate<'a, CreateProduct<'a>>,
+    ) -> Self {
         CreateSku {
             active: Default::default(),
             attributes: Default::default(),
@@ -211,6 +221,7 @@ impl<'a> CreateSku<'a> {
             metadata: Default::default(),
             package_dimensions: Default::default(),
             price,
+            product,
         }
     }
 }
@@ -256,6 +267,12 @@ pub struct ListSkus<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u64>,
 
+    /// The ID of the product whose SKUs will be retrieved.
+    ///
+    /// Must be a product with type `good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product: Option<IdOrCreate<'a, CreateProduct<'a>>>,
+
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
@@ -274,6 +291,7 @@ impl<'a> ListSkus<'a> {
             ids: Default::default(),
             in_stock: Default::default(),
             limit: Default::default(),
+            product: Default::default(),
             starting_after: Default::default(),
         }
     }
@@ -323,6 +341,12 @@ pub struct UpdateSku<'a> {
     /// The cost of the item as a positive integer in the smallest currency unit (that is, 100 cents to charge $1.00, or 100 to charge ¥100, Japanese Yen being a zero-decimal currency).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<i64>,
+
+    /// The ID of the product that this SKU should belong to.
+    ///
+    /// The product must exist, have the same set of attribute names as the SKU's current product, and be of type `good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product: Option<IdOrCreate<'a, CreateProduct<'a>>>,
 }
 
 impl<'a> UpdateSku<'a> {
@@ -337,6 +361,7 @@ impl<'a> UpdateSku<'a> {
             metadata: Default::default(),
             package_dimensions: Default::default(),
             price: Default::default(),
+            product: Default::default(),
         }
     }
 }
