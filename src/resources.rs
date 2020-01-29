@@ -54,6 +54,7 @@ mod bank_account;
 mod bank_account_ext;
 mod card;
 mod payment_method;
+mod payment_method_ext;
 mod source;
 mod source_ext;
 pub use self::alipay_account::*;
@@ -61,6 +62,7 @@ pub use self::bank_account::*;
 pub use self::bank_account_ext::*;
 pub use self::card::*;
 pub use self::payment_method::*;
+pub use self::payment_method_ext::*;
 pub use self::source::*;
 pub use self::source_ext::*;
 
