@@ -470,14 +470,20 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
 
                 "product" => {
                     print_doc(&mut out);
-                    initializers.push(("product".into(), "IdOrCreate<'a, CreateProduct<'a>>".into(), required));
+                    initializers.push((
+                        "product".into(),
+                        "IdOrCreate<'a, CreateProduct<'a>>".into(),
+                        required,
+                    ));
                     state.use_params.insert("IdOrCreate");
                     state.use_resources.insert("CreateProduct".to_owned());
                     if required {
                         out.push_str("    pub product: IdOrCreate<'a, CreateProduct<'a>>,\n");
                     } else {
                         out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-                        out.push_str("    pub product: Option<IdOrCreate<'a, CreateProduct<'a>>>,\n");
+                        out.push_str(
+                            "    pub product: Option<IdOrCreate<'a, CreateProduct<'a>>>,\n",
+                        );
                     }
                 }
                 "metadata" => {
