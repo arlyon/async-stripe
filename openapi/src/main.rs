@@ -1387,7 +1387,8 @@ fn gen_impl_requests(
 
             let doc_comment = post_request["description"].as_str().unwrap_or_default();
             if segments.len() == 1 {
-                let contains_create = doc_comment.contains("Create") || doc_comment.contains("create");
+                let contains_create =
+                    doc_comment.contains("Create") || doc_comment.contains("create");
                 let contains_adds = doc_comment.contains("Adds") || doc_comment.contains("adds");
                 if !contains_create && !contains_adds {
                     continue; // skip requests which don't appear to be `create` for now
