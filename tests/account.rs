@@ -3,7 +3,7 @@ mod mock;
 #[test]
 fn is_account_listable() {
     mock::with_client(|client| {
-        let result = stripe::Account::list(client, &ListAccounts::new());
+        let result = stripe::Account::list(client, stripe::ListAccounts::new());
         let list = match result {
             Err(err) => panic!("{}", err),
             Ok(ok) => ok,
