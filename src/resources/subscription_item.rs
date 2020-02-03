@@ -63,6 +63,16 @@ impl SubscriptionItem {
         client.get_query("/subscription_items", &params)
     }
 
+    /// Adds a new item to an existing subscription.
+    ///
+    /// No existing items will be changed or replaced.
+    pub fn create(
+        client: &Client,
+        params: CreateSubscriptionItem<'_>,
+    ) -> Response<SubscriptionItem> {
+        client.post_form("/subscription_items", &params)
+    }
+
     /// Retrieves the invoice item with the given ID.
     pub fn retrieve(
         client: &Client,
@@ -99,6 +109,66 @@ impl Object for SubscriptionItem {
     }
     fn object(&self) -> &'static str {
         "subscription_item"
+    }
+}
+
+/// The parameters for `SubscriptionItem::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateSubscriptionItem<'a> {
+    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<CreateSubscriptionItemBillingThresholds>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    pub expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+
+    /// The identifier of the plan to add to the subscription.
+    pub plan: PlanId,
+
+    /// Flag indicating whether to [prorate](https://stripe.com/docs/billing/subscriptions/prorations) switching plans during a billing cycle.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub prorate: Option<bool>,
+
+    /// If set, the proration will be calculated as though the subscription was updated at the given time.
+    ///
+    /// This can be used to apply the same proration that was previewed with the [upcoming invoice](#retrieve_customer_invoice) endpoint.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_date: Option<Timestamp>,
+
+    /// The quantity you'd like to apply to the subscription item you're creating.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+
+    /// The identifier of the subscription to modify.
+    pub subscription: SubscriptionId,
+
+    /// The tax rates which apply to this `subscription_item`.
+    ///
+    /// When set, the `default_tax_rates` on the subscription do not apply to this `subscription_item`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Vec<String>>,
+}
+
+impl<'a> CreateSubscriptionItem<'a> {
+    pub fn new(plan: PlanId, subscription: SubscriptionId) -> Self {
+        CreateSubscriptionItem {
+            billing_thresholds: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            plan,
+            prorate: Default::default(),
+            proration_date: Default::default(),
+            quantity: Default::default(),
+            subscription,
+            tax_rates: Default::default(),
+        }
     }
 }
 
@@ -208,6 +278,11 @@ impl<'a> UpdateSubscriptionItem<'a> {
             tax_rates: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSubscriptionItemBillingThresholds {
+    pub usage_gte: i64,
 }
 
 /// An enum representing the possible values of an `UpdateSubscriptionItem`'s `payment_behavior` field.
