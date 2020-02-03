@@ -16,7 +16,7 @@ cache:
 env:
   global:
     # N.B. Whenever this is updated, please update `tests/common.rs` as well
-    - STRIPE_MOCK_VERSION=0.56.0
+    - STRIPE_MOCK_VERSION=0.79.0
 
 before_install:
   # Unpack and start stripe-mock so that the test suite can talk to it
