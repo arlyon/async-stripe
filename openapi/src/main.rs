@@ -466,8 +466,26 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             let required = param["required"].as_bool() == Some(true);
             match param_name {
                 // TODO: Handle these unusual params
-                "bank_account" | "card" | "destination" | "product" | "usage" => continue,
+                "bank_account" | "card" | "destination" | "usage" => continue,
 
+                "product" => {
+                    print_doc(&mut out);
+                    initializers.push((
+                        "product".into(),
+                        "IdOrCreate<'a, CreateProduct<'a>>".into(),
+                        required,
+                    ));
+                    state.use_params.insert("IdOrCreate");
+                    state.use_resources.insert("CreateProduct".to_owned());
+                    if required {
+                        out.push_str("    pub product: IdOrCreate<'a, CreateProduct<'a>>,\n");
+                    } else {
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
+                        out.push_str(
+                            "    pub product: Option<IdOrCreate<'a, CreateProduct<'a>>>,\n",
+                        );
+                    }
+                }
                 "metadata" => {
                     print_doc(&mut out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
@@ -1387,7 +1405,10 @@ fn gen_impl_requests(
 
             let doc_comment = post_request["description"].as_str().unwrap_or_default();
             if segments.len() == 1 {
-                if !doc_comment.contains("Create") && !doc_comment.contains("create") {
+                let contains_create =
+                    doc_comment.contains("Create") || doc_comment.contains("create");
+                let contains_adds = doc_comment.contains("Adds") || doc_comment.contains("adds");
+                if !contains_create && !contains_adds {
                     continue; // skip requests which don't appear to be `create` for now
                 }
 
@@ -1675,7 +1696,10 @@ fn check_object_doc_url(object: &str) -> Option<String> {
                 fs::write(&cache_file, text.as_bytes()).unwrap();
                 return Some(doc_url);
             } else {
-                panic!("fatal: documentation response didn't match the expected format.");
+                eprintln!(
+                    "warning: documentation response at {} didn't match the expected format.",
+                    doc_url
+                );
             }
         }
     }

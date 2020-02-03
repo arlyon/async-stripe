@@ -82,7 +82,7 @@ mod resources;
 pub use crate::error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
 pub use crate::ids::*;
 pub use crate::params::{
-    Expandable, Headers, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,
+    Expandable, Headers, IdOrCreate, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,
 };
 pub use crate::resources::*;
 
