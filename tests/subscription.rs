@@ -10,9 +10,7 @@ fn is_subscription_retrievable() {
             Ok(ok) => ok,
         };
         assert_eq!(subscription.id, "sub_123");
-        if let Some(cus) = subscription.customer {
-            assert!(!cus.is_object());
-        }
+        assert!(!subscription.customer.is_object());
     });
 }
 
@@ -38,8 +36,6 @@ fn is_subscription_expandable() {
             Ok(ok) => ok,
         };
         assert_eq!(subscription.id, "ch_123");
-        if let Some(cus) = subscription.customer {
-            assert!(cus.is_object());
-        }
+        assert!(subscription.customer.is_object());
     });
 }
