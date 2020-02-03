@@ -143,7 +143,7 @@ impl Client {
     ) -> Response<T> {
         let url = self.url(path);
         let mut req = RequestBuilder::new()
-            .method("DELETE")
+            .method("POST")
             .uri(url)
             .body(match serde_qs::to_string(&form) {
                 Err(err) => return Box::pin(future::ready(Err(Error::serialize(err)))),
