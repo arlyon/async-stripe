@@ -159,7 +159,7 @@ impl Client {
     }
 
     fn url(&self, path: &str) -> String {
-        format!("{}/{}", self.host, &path[1..])
+        format!("{}/{}", self.host, path.trim_start_matches('/'))
     }
 
     fn url_with_params<P: serde::Serialize>(&self, path: &str, params: P) -> Result<String, Error> {
