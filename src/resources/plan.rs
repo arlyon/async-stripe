@@ -4,8 +4,10 @@
 
 use crate::config::{Client, Response};
 use crate::ids::PlanId;
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Currency, Product, UpTo};
+use crate::params::{
+    Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
+};
+use crate::resources::{CreateProduct, Currency, Product, UpTo};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Plan".
@@ -267,6 +269,9 @@ pub struct CreatePlan<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<&'a str>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product: Option<IdOrCreate<'a, CreateProduct<'a>>>,
+
     /// Each element represents a pricing tier.
     ///
     /// This parameter requires `billing_scheme` to be set to `tiered`.
@@ -313,6 +318,7 @@ impl<'a> CreatePlan<'a> {
             interval_count: Default::default(),
             metadata: Default::default(),
             nickname: Default::default(),
+            product: Default::default(),
             tiers: Default::default(),
             tiers_mode: Default::default(),
             transform_usage: Default::default(),
@@ -352,6 +358,10 @@ pub struct ListPlans<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u64>,
 
+    /// Only return plans for the given product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product: Option<IdOrCreate<'a, CreateProduct<'a>>>,
+
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
@@ -368,6 +378,7 @@ impl<'a> ListPlans<'a> {
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
+            product: Default::default(),
             starting_after: Default::default(),
         }
     }
@@ -394,6 +405,12 @@ pub struct UpdatePlan<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<&'a str>,
 
+    /// The product the plan belongs to.
+    ///
+    /// Note that after updating, statement descriptors and line items of the plan in active subscriptions will be affected.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product: Option<IdOrCreate<'a, CreateProduct<'a>>>,
+
     /// Default number of trial days when subscribing a customer to this plan using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
@@ -406,6 +423,7 @@ impl<'a> UpdatePlan<'a> {
             expand: Default::default(),
             metadata: Default::default(),
             nickname: Default::default(),
+            product: Default::default(),
             trial_period_days: Default::default(),
         }
     }

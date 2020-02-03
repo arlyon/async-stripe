@@ -278,6 +278,13 @@ impl<T> RangeQuery<T> {
     }
 }
 
+#[derive(Clone, Debug, Serialize)]
+#[serde(untagged)]
+pub enum IdOrCreate<'a, T> {
+    Id(&'a str),
+    Create(&'a T),
+}
+
 // NOTE: Only intended to handle conversion from ASCII CamelCase to SnakeCase
 //   This function is used to convert static Rust identifiers to snakecase
 // TODO: pub(crate) fn

@@ -466,8 +466,26 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             let required = param["required"].as_bool() == Some(true);
             match param_name {
                 // TODO: Handle these unusual params
-                "bank_account" | "card" | "destination" | "product" | "usage" => continue,
+                "bank_account" | "card" | "destination" | "usage" => continue,
 
+                "product" => {
+                    print_doc(&mut out);
+                    initializers.push((
+                        "product".into(),
+                        "IdOrCreate<'a, CreateProduct<'a>>".into(),
+                        required,
+                    ));
+                    state.use_params.insert("IdOrCreate");
+                    state.use_resources.insert("CreateProduct".to_owned());
+                    if required {
+                        out.push_str("    pub product: IdOrCreate<'a, CreateProduct<'a>>,\n");
+                    } else {
+                        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
+                        out.push_str(
+                            "    pub product: Option<IdOrCreate<'a, CreateProduct<'a>>>,\n",
+                        );
+                    }
+                }
                 "metadata" => {
                     print_doc(&mut out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
