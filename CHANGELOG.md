@@ -7,6 +7,9 @@
 - The async client has been updated to use `std::future::Future`.
   The `async` feature flag is deprecated.
   Prefer `{ default-features = false, features = ["full"] }` instead. 
+  
+- Set default stripe api version to the latest version supported by the library.
+  This is intended to avoid bugs where a later version of stripe is enabled by a customer.
 
 ## Feature Flags
 By default the `full` stripe api is enabled.

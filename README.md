@@ -9,6 +9,9 @@ Rust API bindings for the Stripe v1 HTTP API.
 This is compatible with all currently supported versions of Stripe's client-side
 libraries including https://js.stripe.com/v2/ and https://js.stripe.com/v3/.
 
+## API Version
+The 0.12.x version of the crate uses the `2019-09-09` version of the Stripe API.
+
 ## Usage
 
 Put this in your `Cargo.toml`:

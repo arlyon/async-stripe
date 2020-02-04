@@ -1,5 +1,6 @@
 use crate::error::{Error, ErrorResponse, RequestError};
 use crate::params::{AppInfo, Headers};
+use crate::resources::ApiVersion;
 use futures_util::future;
 use http::header::{HeaderMap, HeaderName, HeaderValue};
 use http::request::Builder as RequestBuilder;
@@ -45,11 +46,14 @@ impl Client {
         let host = if url.ends_with('/') { format!("{}v1", url) } else { format!("{}/v1", url) };
         let https = hyper_tls::HttpsConnector::new();
         let client = hyper::Client::builder().build(https);
+        let mut headers = Headers::default();
+        // TODO: Automatically determine the latest supported api version in codegen?
+        headers.stripe_version = Some(ApiVersion::V2019_09_09);
         Client {
             host,
             client,
             secret_key: secret_key.into(),
-            headers: Headers::default(),
+            headers,
             app_info: Some(AppInfo::default()),
         }
     }

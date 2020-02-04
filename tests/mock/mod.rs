@@ -25,7 +25,7 @@ where
 }
 
 fn setup() -> Arc<Mutex<Option<Child>>> {
-    const STRIPE_MOCK_PATH: &str = "./stripe-mock/stripe-mock_0.79.0/stripe-mock";
+    const STRIPE_MOCK_PATH: &str = "./stripe-mock/stripe-mock_0.67.0/stripe-mock";
     const STRIPE_MOCK_PORT: &str = "12112";
     const PATH_SPEC: &str = "./testing/openapi/spec3.json";
     const PATH_FIXTURES: &str = "./testing/openapi/fixtures3.json";
