@@ -3,7 +3,7 @@ use crate::ids::{CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession,
-    PaymentMethod, PaymentSource, Review, Shipping,
+    PaymentMethod, PaymentSource, Review, Shipping, TransferDataParams
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -172,7 +172,7 @@ impl PaymentIntent {
     /// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create).
     pub fn create(
         client: &Client,
-        params: PaymentIntentCreateParams<'_>,
+        params: CreatePaymentIntent<'_>,
     ) -> Response<PaymentIntent> {
         client.post_form("/payment_intents", params)
     }
@@ -212,7 +212,7 @@ impl PaymentIntent {
     pub fn capture(
         client: &Client,
         payment_intent_id: &str,
-        params: PaymentIntentCaptureParams,
+        params: CapturePaymentIntent,
     ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}/capture", payment_intent_id), params)
     }
@@ -223,7 +223,7 @@ impl PaymentIntent {
     pub fn cancel(
         client: &Client,
         payment_intent_id: &str,
-        params: PaymentIntentCancelParams,
+        params: CancelPaymentIntent,
     ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}/cancel", payment_intent_id), params)
     }
@@ -231,7 +231,7 @@ impl PaymentIntent {
     /// List all payment_intents.
     ///
     /// For more details see [https://stripe.com/docs/api/payment_intents/list](https://stripe.com/docs/api/payment_intents/list).
-    pub fn list(client: &Client, params: PaymentIntentListParams) -> Response<List<PaymentIntent>> {
+    pub fn list(client: &Client, params: ListPaymentIntents) -> Response<List<PaymentIntent>> {
         client.get_query("/payment_intents", &params)
     }
 }
@@ -378,7 +378,7 @@ pub struct TransferData {
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create)
 #[derive(Clone, Debug, Default, Serialize)]
-pub struct PaymentIntentCreateParams<'a> {
+pub struct CreatePaymentIntent<'a> {
     /// The list of payment types (e.g. card) that this PaymentIntent is allowed to use.
     pub payment_method_types: Vec<PaymentIntentMethodType>,
     pub amount: u64,
@@ -416,14 +416,14 @@ pub struct PaymentIntentCreateParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<TransferData>,
+    pub transfer_data: Option<TransferDataParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
 
-impl<'a> PaymentIntentCreateParams<'a> {
+impl<'a> CreatePaymentIntent<'a> {
     pub fn new(amount: u64, currency: Currency) -> Self {
-        PaymentIntentCreateParams {
+        CreatePaymentIntent {
             payment_method_types: Default::default(),
             amount,
             currency,
@@ -498,7 +498,7 @@ pub struct PaymentIntentConfirmParams<'a> {
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/capture](https://stripe.com/docs/api/payment_intents/capture)
 #[derive(Clone, Debug, Default, Serialize)]
-pub struct PaymentIntentCaptureParams {
+pub struct CapturePaymentIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_to_capture: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -509,14 +509,14 @@ pub struct PaymentIntentCaptureParams {
 ///
 /// For more details see [https://stripe.com/docs/api/payment_intents/cancel](https://stripe.com/docs/api/payment_intents/cancel)
 #[derive(Clone, Debug, Default, Serialize)]
-pub struct PaymentIntentCancelParams {
+pub struct CancelPaymentIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cancellation_reason: Option<PaymentIntentCancellationReason>,
 }
 
 /// The parameters for `PaymentIntent::list`.
 #[derive(Clone, Debug, Serialize)]
-pub struct PaymentIntentListParams<'a> {
+pub struct ListPaymentIntents<'a> {
     /// A filter on the list, based on the object `created` field.
     ///
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
