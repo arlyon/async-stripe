@@ -11,6 +11,6 @@ fn is_account_listable() {
 
         // Check to ensure we are deserializing _something_ and this test
         // actually validates something worthwhile.
-        assert!(list.len() > 0);
+        assert!(list.data.len() > 0);
     });
 }
