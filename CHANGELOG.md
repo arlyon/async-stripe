@@ -1,19 +1,27 @@
-# Version 0.12.0-unstable
+# Version 0.12.0-alpha.2
 
-In this version, new feature flags have been added to help reduce binary bloat
-and compile time in downstream applications.
+## Improvements
+- New feature flags have been introduced to disable unused parts of the stripe APIs.
+  This helps reduce binary bloat and compile time.
 
-### Usage
+- The async client has been updated to use `std::future::Future`.
+  The `async` feature flag is deprecated.
+  Prefer `{ default-features = false, features = ["full"] }` instead. 
+  
+- Set default stripe api version to the latest version supported by the library.
+  This is intended to avoid bugs where a later version of stripe is enabled by a customer.
+
+## Feature Flags
 By default the `full` stripe api is enabled.
 
 To reduce code size, disable default features and enable just the APIs you use:
 
 ```toml
 # Example: Core-only (enough to create a `Charge` or `Card` or `Customer`)
-stripe-rust = { version = "*", default-features = false }
+stripe-rust = { version = "*", default-features = false, features = ["blocking"] }
 
 # Example: Support for "Subscriptions" and "Invoices"
-stripe-rust = { version = "*", default-features = false, features = ["billing"] }
+stripe-rust = { version = "*", default-features = false, features = ["blocking", "billing"] }
 ```
 
 Refer to the [Stripe API docs](https://stripe.com/docs/api) to determine

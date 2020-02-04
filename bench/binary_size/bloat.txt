@@ -1,0 +1,133 @@
+44.3%  67.5%   2.3MiB stripe
+ 9.8%  14.9% 514.0KiB std
+ 3.0%   4.6% 158.1KiB h2
+ 1.8%   2.8%  94.8KiB hyper
+ 1.5%   2.3%  80.9KiB serde
+ 1.4%   2.2%  75.0KiB tokio
+ 1.2%   1.8%  60.5KiB [Unknown]
+ 1.0%   1.5%  51.0KiB http
+ 0.4%   0.6%  19.2KiB serde_json
+ 0.4%   0.6%  19.0KiB mio
+ 0.2%   0.3%   9.7KiB security_framework
+ 0.1%   0.2%   5.5KiB futures_channel
+ 0.1%   0.2%   5.5KiB bytes
+ 0.1%   0.1%   4.8KiB serde_qs
+ 0.1%   0.1%   3.3KiB httparse
+ 0.1%   0.1%   2.8KiB futures_util
+ 0.0%   0.1%   2.3KiB hyper_tls
+ 0.0%   0.1%   2.2KiB indexmap
+ 0.0%   0.1%   2.1KiB native_tls
+ 0.0%   0.1%   2.0KiB binary_size
+ 0.0%   0.1%   1.9KiB cc
+ 0.0%   0.1%   1.8KiB error_chain
+ 0.0%   0.1%   1.8KiB tokio_util
+ 0.0%   0.0%   1.7KiB net2
+ 0.0%   0.0%   1.2KiB want
+ 0.0%   0.0%   1.0KiB core_foundation
+ 0.0%   0.0%     704B data_encoding
+ 0.0%   0.0%     560B log
+ 0.0%   0.0%     480B proc_macro2
+ 0.0%   0.0%     432B smol_str
+ 0.0%   0.0%     560B And 3 more crates. Use -n N to show more.
+65.6% 100.0%   3.4MiB .text section size, the file size is 5.1MiB
+
+ 0.8%   1.2% 41.5KiB   stripe? <stripe::resources::charge::_IMPL_DESERIALIZE_FOR_Charge::<impl serde::de::Deserialize for stripe::resources::charge::Charge>::deserialize::__Visitor as serde::de::Visitor>::visit_map::h147d630dc931324c
+ 0.8%   1.2% 38.5KiB   stripe? <stripe::resources::source::_IMPL_DESERIALIZE_FOR_SourceTypeKlarna::<impl serde::de::Deserialize for stripe::resources::source::SourceTypeKlarna>::deserialize::__Visitor as serde::de::Visitor>::visit_map::h9bf4d80348d8db2a
+ 0.7%   1.1% 37.7KiB   stripe? <stripe::resources::charge::_IMPL_DESERIALIZE_FOR_Charge::<impl serde::de::Deserialize for stripe::resources::charge::Charge>::deserialize::__Visitor as serde::de::Visitor>::visit_map::he7bc2079419af655
+ 0.7%   1.1% 36.0KiB   stripe? <stripe::resources::charge::_IMPL_DESERIALIZE_FOR_Charge::<impl serde::de::Deserialize for stripe::resources::charge::Charge>::deserialize::__Visitor as serde::de::Visitor>::visit_map::hdefe851528f6b4e3
+ 0.6%   1.0% 32.2KiB   stripe? <stripe::resources::source::_IMPL_DESERIALIZE_FOR_SourceTypeCardPresent::<impl serde::de::Deserialize for stripe::resources::source::SourceTypeCardPresent>::deserialize::__Visitor as serde::de::Visitor>::visit_map::hfd132e48e9331fef
+ 0.6%   0.9% 30.2KiB    stripe <stripe::resources::currency::_IMPL_DESERIALIZE_FOR_Currency::<impl serde::de::Deserialize for stripe::resources::currency::Currency>::deserialize::__Visitor as serde::de::Visitor>::visit_enum::h08e5509a91c9826b
+ 0.5%   0.8% 26.7KiB   stripe? <stripe::resources::dispute::_IMPL_DESERIALIZE_FOR_DisputeEvidence::<impl serde::de::Deserialize for stripe::resources::dispute::DisputeEvidence>::deserialize::__Visitor as serde::de::Visitor>::visit_map::hc26626e94cd80ec0
+ 0.5%   0.8% 26.0KiB   stripe? <stripe::resources::source::_IMPL_DESERIALIZE_FOR_Source::<impl serde::de::Deserialize for stripe::resources::source::Source>::deserialize::__Visitor as serde::de::Visitor>::visit_map::h726e0664335c90be
+ 0.5%   0.7% 24.3KiB   stripe? <stripe::resources::dispute::_IMPL_DESERIALIZE_FOR_DisputeEvidence::<impl serde::de::Deserialize for stripe::resources::dispute::DisputeEvidence>::deserialize::__Visitor as serde::de::Visitor>::visit_map::hf9aa3aff61117418
+ 0.4%   0.7% 22.5KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h939ef6e441b468eb
+ 0.4%   0.7% 21.9KiB      http http::header::name::parse_hdr::h69fbccc874028efc
+ 0.4%   0.6% 20.2KiB     serde serde::private::de::content::visit_content_map::h30a5994162458a25
+ 0.4%   0.6% 19.8KiB   stripe? <stripe::resources::charge::_IMPL_DESERIALIZE_FOR_Charge::<impl serde::de::Deserialize for stripe::resources::charge::Charge>::deserialize::__Visitor as serde::de::Visitor>::visit_seq::h33822b61d14ee5ef
+ 0.4%   0.6% 19.6KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h85d4618fb6b8e95c
+ 0.4%   0.6% 19.6KiB   stripe? <stripe::resources::card::_IMPL_DESERIALIZE_FOR_Card::<impl serde::de::Deserialize for stripe::resources::card::Card>::deserialize::__Visitor as serde::de::Visitor>::visit_map::h08504daa8c26da71
+ 0.4%   0.6% 18.6KiB   stripe? <stripe::resources::customer::_IMPL_DESERIALIZE_FOR_Customer::<impl serde::de::Deserialize for stripe::resources::customer::Customer>::deserialize::__Visitor as serde::de::Visitor>::visit_map::h6e46817891bef0d8
+ 0.4%   0.6% 18.5KiB   stripe? <stripe::resources::charge::_IMPL_DESERIALIZE_FOR_Charge::<impl serde::de::Deserialize for stripe::resources::charge::Charge>::deserialize::__Visitor as serde::de::Visitor>::visit_seq::hf6bfdfe23f4e3cdd
+ 0.3%   0.5% 16.6KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h11ce3a8eba98e30d
+ 0.3%   0.5% 15.5KiB     serde serde::private::de::content::visit_content_map::h6b2157694dd4c2da
+ 0.3%   0.5% 15.5KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h03d49d5b2a69aca4
+ 0.3%   0.5% 15.0KiB     serde serde::private::de::content::visit_content_map::h9585eff9a579b653
+ 0.3%   0.4% 14.5KiB   stripe? <stripe::resources::charge::_IMPL_DESERIALIZE_FOR_Charge::<impl serde::de::Deserialize for stripe::resources::charge::Charge>::deserialize::__Visitor as serde::de::Visitor>::visit_seq::hdaf56ab45a288dc3
+ 0.3%   0.4% 14.0KiB   stripe? <stripe::resources::customer::_IMPL_DESERIALIZE_FOR_Customer::<impl serde::de::Deserialize for stripe::resources::customer::Customer>::deserialize::__Visitor as serde::de::Visitor>::visit_map::h43e1d2c553aa16bd
+ 0.3%   0.4% 13.5KiB   stripe? <stripe::resources::refund::_IMPL_DESERIALIZE_FOR_Refund::<impl serde::de::Deserialize for stripe::resources::refund::Refund>::deserialize::__Visitor as serde::de::Visitor>::visit_map::hb82983483428470e
+ 0.3%   0.4% 13.4KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hf0aede51c3e87250
+ 0.3%   0.4% 13.0KiB   stripe? <stripe::resources::dispute::_IMPL_DESERIALIZE_FOR_DisputeEvidence::<impl serde::de::Deserialize for stripe::resources::dispute::DisputeEvidence>::deserialize::__Visitor as serde::de::Visitor>::visit_seq::hfc2b4049c849e0c5
+ 0.3%   0.4% 13.0KiB    stripe <&mut serde_json::de::Deserializer<R> as serde::de::Deserializer>::deserialize_struct::ha4c00506f414d154
+ 0.3%   0.4% 12.9KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h5857aabc599aa0b1
+ 0.3%   0.4% 12.8KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::he8657bf3f64ffd27
+ 0.3%   0.4% 12.8KiB    stripe <h2::codec::framed_read::FramedRead<T> as futures_core::stream::Stream>::poll_next::h67ef1ec58f405275
+ 0.2%   0.4% 12.5KiB     serde serde::private::de::content::visit_content_map_ref::hff79d4b148f59a0e
+ 0.2%   0.4% 12.5KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h99e7c584615a1afa
+ 0.2%   0.4% 12.2KiB    stripe hyper::proto::h1::dispatch::Dispatcher<D,Bs,I,T>::poll_catch::h362273531cc366df
+ 0.2%   0.4% 12.1KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::he7f57298bc4196ec
+ 0.2%   0.4% 12.0KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h08a40a5c465cf20e
+ 0.2%   0.4% 11.8KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h488e1cc64d6766f0
+ 0.2%   0.4% 11.8KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h452f970159d7926f
+ 0.2%   0.4% 11.7KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hf2051a83fca14dbf
+ 0.2%   0.4% 11.7KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h6759a886ea93e5b7
+ 0.2%   0.4% 11.7KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h3cae80b628cf0dc1
+ 0.2%   0.3% 11.3KiB    stripe <&mut serde_json::de::Deserializer<R> as serde::de::Deserializer>::deserialize_struct::he6c26795e15dc7b0
+ 0.2%   0.3% 11.2KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h856b73d8ae9eb48e
+ 0.2%   0.3% 11.1KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h77199e9059da47ca
+ 0.2%   0.3% 11.0KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hd1c34f1ccc5350ad
+ 0.2%   0.3% 10.6KiB    stripe <&mut serde_json::de::Deserializer<R> as serde::de::Deserializer>::deserialize_struct::ha81df5c437aad6c6
+ 0.2%   0.3% 10.6KiB [Unknown] _read_line_info
+ 0.2%   0.3% 10.5KiB [Unknown] _read_line_info
+ 0.2%   0.3% 10.2KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h0ca37f3660eaa5e8
+ 0.2%   0.3% 10.2KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h0c8afd731bdf437d
+ 0.2%   0.3%  9.9KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hcfad4d1e832fb362
+ 0.2%   0.3%  9.8KiB    stripe <std::future::GenFuture<T> as core::future::future::Future>::poll::h7ab570ddc9f00ada
+ 0.2%   0.3%  9.5KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h865214fa310792f3
+ 0.2%   0.3%  9.3KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h986ab2b688109770
+ 0.2%   0.3%  9.2KiB    stripe <hyper::client::pool::Checkout<T> as core::future::future::Future>::poll::h13515b22985c6e17
+ 0.2%   0.3%  9.2KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h28648158eca0725d
+ 0.2%   0.3%  8.7KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h9ac909dcdfd4df33
+ 0.2%   0.3%  8.5KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hbe9abdda917edcbd
+ 0.2%   0.3%  8.5KiB    stripe <&mut serde_json::de::Deserializer<R> as serde::de::Deserializer>::deserialize_struct::hcce894ff5d939b30
+ 0.2%   0.2%  8.2KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hc3f58aff22b9f2b7
+ 0.2%   0.2%  8.2KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hdf08251c51b966ea
+ 0.2%   0.2%  8.1KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h3b38dc766c5cd8ee
+ 0.2%   0.2%  7.8KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::ha6796a4177f74a93
+ 0.2%   0.2%  7.7KiB    stripe <&mut serde_json::de::Deserializer<R> as serde::de::Deserializer>::deserialize_struct::hba02f50110964e6c
+ 0.2%   0.2%  7.6KiB       std ___rbt_backtrace_dwarf_add
+ 0.2%   0.2%  7.6KiB    stripe <std::future::GenFuture<T> as core::future::future::Future>::poll::h12633109db7047d4
+ 0.2%   0.2%  7.6KiB    stripe h2::proto::connection::Connection<T,P,B>::poll::h00ad27a6e53a1d24
+ 0.1%   0.2%  7.5KiB    stripe <&mut serde_json::de::Deserializer<R> as serde::de::Deserializer>::deserialize_struct::hb3c0e1c5ee2d3067
+ 0.1%   0.2%  7.4KiB       std ___rdos_backtrace_dwarf_add
+ 0.1%   0.2%  7.2KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::ha04cd7fca87e21bd
+ 0.1%   0.2%  7.2KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h58370dd89675e111
+ 0.1%   0.2%  7.2KiB    stripe hyper::proto::h1::conn::Conn<I,B,T>::poll_read_body::hdec51f008c778818
+ 0.1%   0.2%  7.1KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hd2471fadbd722c6f
+ 0.1%   0.2%  7.1KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::he67afa1ffca410b0
+ 0.1%   0.2%  7.0KiB    stripe <stripe::resources::currency::_IMPL_DESERIALIZE_FOR_Currency::<impl serde::de::Deserialize for stripe::resources::currency::Currency>::deserialize::__FieldVisitor as serde::de::Visitor>::visit_bytes::hcc7c4d45b2f1ee9d
+ 0.1%   0.2%  7.0KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h887531e4da2c2795
+ 0.1%   0.2%  7.0KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h5beb1542092bc463
+ 0.1%   0.2%  7.0KiB    stripe <&mut serde_json::de::Deserializer<R> as serde::de::Deserializer>::deserialize_enum::he9b6678aec8a4cd7
+ 0.1%   0.2%  7.0KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h572d1dac2f7f7221
+ 0.1%   0.2%  6.9KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h4ce22c5f833ee3f7
+ 0.1%   0.2%  6.7KiB    stripe <&mut serde_json::de::Deserializer<R> as serde::de::Deserializer>::deserialize_struct::hce20be26b35b6e46
+ 0.1%   0.2%  6.7KiB    stripe <stripe::resources::currency::_IMPL_DESERIALIZE_FOR_Currency::<impl serde::de::Deserialize for stripe::resources::currency::Currency>::deserialize::__FieldVisitor as serde::de::Visitor>::visit_str::hf31409c1fd2eb2d9
+ 0.1%   0.2%  6.6KiB        h2 <h2::server::Peer as h2::proto::peer::Peer>::convert_poll_message::hc6af1af6b9703ee1
+ 0.1%   0.2%  6.5KiB    stripe <&mut serde_json::de::Deserializer<R> as serde::de::Deserializer>::deserialize_struct::hb522379e5bf76a65
+ 0.1%   0.2%  6.5KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::ha107997b8d2485c8
+ 0.1%   0.2%  6.3KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h668ac217c3c9cbfc
+ 0.1%   0.2%  6.2KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hebba1c5a5f3cca23
+ 0.1%   0.2%  6.2KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hbcf17ec1a3a67682
+ 0.1%   0.2%  6.1KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h509a1314a6b46b62
+ 0.1%   0.2%  6.1KiB    stripe <&mut serde_json::de::Deserializer<R> as serde::de::Deserializer>::deserialize_struct::h0e7d92c5427100bd
+ 0.1%   0.2%  6.0KiB    stripe <stripe::resources::balance_transaction::_IMPL_DESERIALIZE_FOR_BalanceTransactionType::<impl serde::de::Deserialize for stripe::resources::balance_transaction::BalanceTransactionType>::deserialize::__Visitor as serde::de::Visitor>::visit_enum::hb8277d09bae242d6
+ 0.1%   0.2%  5.8KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_any::h3491302e0c5f90ff
+ 0.1%   0.2%  5.8KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hcfe6af91761ac58b
+ 0.1%   0.2%  5.6KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::hee778278562b71ad
+ 0.1%   0.2%  5.6KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h5831a4ba2772944a
+ 0.1%   0.2%  5.5KiB [Unknown] __mh_execute_header
+ 0.1%   0.2%  5.5KiB    stripe h2::proto::streams::prioritize::Prioritize::poll_complete::hd98320c7276e52bf
+ 0.1%   0.2%  5.4KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h1cc6c26b06a3a4e8
+ 0.1%   0.2%  5.4KiB    stripe <serde::private::de::content::ContentRefDeserializer<E> as serde::de::Deserializer>::deserialize_struct::h3ec3975e0934c9e3
+ 0.1%   0.2%  5.4KiB    stripe <serde::private::de::content::ContentDeserializer<E> as serde::de::Deserializer>::deserialize_struct::he286aba8fb1ada9d
+ 0.1%   0.2%  5.4KiB        h2 h2::hpack::table::Table::index::h052b9de240fdc713

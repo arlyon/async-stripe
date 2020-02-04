@@ -7,7 +7,7 @@ pub fn id_renames() -> BTreeMap<&'static str, &'static str> {
         ("line_item", "invoice_line_item"),
         ("source_transaction", "charge"),
     ]
-    .into_iter()
+    .iter()
     .copied()
     .collect()
 }
@@ -135,7 +135,7 @@ pub fn object_mappings() -> ObjectMap {
         ("create_webhook_endpoint_enabled_events", "event_filter"),
         ("update_webhook_endpoint_enabled_events", "event_filter"),
     ]
-    .into_iter()
+    .iter()
     .copied()
     .collect()
 }
@@ -504,7 +504,7 @@ pub fn field_mappings() -> FieldMap {
         (("transfer_schedule_params", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
         (("create_webhook_endpoint", "api_version"), ("ApiVersion", "Option<ApiVersion>")),
     ]
-    .into_iter()
+    .iter()
     .copied()
     .collect()
 }

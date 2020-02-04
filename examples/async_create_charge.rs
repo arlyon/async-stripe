@@ -1,6 +1,5 @@
-use futures::future::Future;
-
-fn main() {
+#[tokio::main]
+async fn main() {
     // Create a new client
     let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
     let client = stripe::r#async::Client::new(secret_key);
@@ -14,10 +13,6 @@ fn main() {
     params.source = Some(stripe::ChargeSourceParams::Card(card));
 
     // Create the charge
-    stripe::Charge::create(&client, params)
-        .map(|charge| {
-            println!("{:?}", charge);
-        })
-        .wait()
-        .unwrap();
+    let charge = stripe::Charge::create(&client, params).await.unwrap();
+    println!("{:?}", charge);
 }

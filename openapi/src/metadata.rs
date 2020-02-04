@@ -79,7 +79,7 @@ pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
 		// Webhooks Endpoints
 		("webhook_endpoint", "webhook-endpoints"),
 	]
-	.into_iter()
+	.iter()
 	.copied()
 	.collect()
 }

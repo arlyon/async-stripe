@@ -16,7 +16,7 @@ cache:
 env:
   global:
     # N.B. Whenever this is updated, please update `tests/common.rs` as well
-    - STRIPE_MOCK_VERSION=0.56.0
+    - STRIPE_MOCK_VERSION=0.67.0
 
 before_install:
   # Unpack and start stripe-mock so that the test suite can talk to it
@@ -34,8 +34,14 @@ before_install:
 script:
   - rustup component add rustfmt
   - cargo fmt -- --check
-  - cargo build --verbose --all
-  - cargo test --verbose --all
-  - cargo build --verbose --features async
+
+  # Check "no default features"
+  - cargo build --verbose --workspace --exclude binary_size --no-default-features
+
+  # Check "full/blocking"
+  - cargo build --verbose --workspace --exclude binary_size
+  - cargo test --verbose --workspace --exclude binary_size
+
+  # Check "full/async
+  - cargo build --verbose --features async --workspace --exclude binary_size
   - cargo test --verbose --features async --example async_create_charge
-  - cargo build --verbose --all --no-default-features
