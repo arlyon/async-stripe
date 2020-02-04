@@ -18,7 +18,7 @@ Put this in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stripe-rust = "0.11.*"
+stripe-rust = "0.12.*"
 ```
 
 And this in your crate root:
@@ -87,6 +87,22 @@ To impersonate the account get a new Client and pass in the account id.
   let customers = stripe::Customer::list(&client, params).unwrap();
   println!("{:?}", customers); // =>  List { data: [Customer { .. }] }
 ```
+
+### Feature Flags
+By default the `full` stripe api is enabled.
+
+To reduce code size, disable default features and enable just the APIs you use:
+
+```toml
+# Example: Core-only (enough to create a `Charge` or `Card` or `Customer`)
+stripe-rust = { version = "*", default-features = false, features = ["blocking"] }
+
+# Example: Support for "Subscriptions" and "Invoices"
+stripe-rust = { version = "*", default-features = false, features = ["blocking", "billing"] }
+```
+
+Refer to the [Stripe API docs](https://stripe.com/docs/api) to determine
+which APIs are included as part of each feature flag.
 
 ## Contributing
 
