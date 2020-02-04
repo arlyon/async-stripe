@@ -9,7 +9,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TransferReversal".
 ///
-/// For more details see [https://stripe.com/docs/api/ctransfer_reversals/object](https://stripe.com/docs/api/transfer_reversals/object).
+/// For more details see [https://stripe.com/docs/api/transfer_reversals/object](https://stripe.com/docs/api/transfer_reversals/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransferReversal {
     /// Unique identifier for the object.
