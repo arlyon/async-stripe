@@ -3,7 +3,7 @@ use crate::ids::{CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession,
-    PaymentMethod, PaymentSource, Review, Shipping, TransferDataParams
+    PaymentMethod, PaymentSource, Review, Shipping, TransferDataParams,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -170,10 +170,7 @@ impl PaymentIntent {
     /// Creates a new payment_intent.
     ///
     /// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create).
-    pub fn create(
-        client: &Client,
-        params: CreatePaymentIntent<'_>,
-    ) -> Response<PaymentIntent> {
+    pub fn create(client: &Client, params: CreatePaymentIntent<'_>) -> Response<PaymentIntent> {
         client.post_form("/payment_intents", params)
     }
 
