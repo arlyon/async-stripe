@@ -35,7 +35,7 @@ fn is_subscription_expandable() {
             Err(err) => panic!("{}", err),
             Ok(ok) => ok,
         };
-        assert_eq!(subscription.id, "ch_123");
+        assert_eq!(subscription.id, "sub_123");
         assert!(subscription.customer.is_object());
     });
 }
