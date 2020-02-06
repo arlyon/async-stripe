@@ -88,7 +88,7 @@ macro_rules! def_id {
             }
         }
     };
-    ($struct_name:ident, $prefix:expr) => {
+    ($struct_name:ident, $prefix:literal $(| $alt_prefix:literal)*) => {
         /// An id for the corresponding object type.
         ///
         /// This type _typically_ will not allocate and
@@ -166,14 +166,16 @@ macro_rules! def_id {
             type Err = ParseIdError;
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {
-                if !s.starts_with($prefix) {
+                if !s.starts_with($prefix) $(
+                    && !s.starts_with($alt_prefix)
+                )* {
 
                     // N.B. For debugging
-                    // eprintln!("bad id is: {} (expected: {:?})", s, $prefix);
+                    eprintln!("bad id is: {} (expected: {:?})", s, $prefix);
 
                     Err(ParseIdError {
                         typename: stringify!($struct_name),
-                        expected: stringify!(id to start with $prefix),
+                        expected: stringify!(id to start with $prefix $(or $alt_prefix)*),
                     })
                 } else {
                     Ok($struct_name(s.into()))
@@ -458,7 +460,7 @@ def_id!(
 );
 def_id!(CardId, "card_");
 def_id!(CardTokenId, "tok_");
-def_id!(ChargeId, "ch_");
+def_id!(ChargeId, "ch_" | "py_"); // TODO: Understand (and then document) why "py_" is a valid charge id
 def_id!(CheckoutSessionId, "cs_");
 def_id!(CouponId: String); // N.B. A coupon id can be user-provided so can be any arbitrary string
 def_id!(CustomerId, "cus_");
@@ -525,3 +527,29 @@ def_id!(TopupId, "tu_");
 def_id!(TransferId, "tr_");
 def_id!(TransferReversalId, "trr_");
 def_id!(WebhookEndpointId, "we_");
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_customer() {
+        assert!("cus_123".parse::<CustomerId>().is_ok());
+        let bad_parse = "zzz_123".parse::<CustomerId>();
+        assert!(bad_parse.is_err());
+        if let Err(err) = bad_parse {
+            assert_eq!(format!("{}", err), "invalid `CustomerId`, expected id to start with \"cus_\"");
+        }
+    }
+
+    #[test]
+    fn test_parse_charge() {
+        assert!("ch_123".parse::<ChargeId>().is_ok());
+        assert!("py_123".parse::<ChargeId>().is_ok());
+        let bad_parse = "zz_123".parse::<ChargeId>();
+        assert!(bad_parse.is_err());
+        if let Err(err) = bad_parse {
+            assert_eq!(format!("{}", err), "invalid `ChargeId`, expected id to start with \"ch_\" or \"py_\"");
+        }
+    }
+}
