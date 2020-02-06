@@ -1,4 +1,9 @@
-# Version 0.12.0
+# Version 0.12.1 (February 6, 2020)
+
+## Fixes
+- Fixed deserialization of `ChargeId`s with `py_` prefix in `PaymentIntent` event(s).
+
+# Version 0.12.0 (February 3, 2020)
 
 ## Breaking Changes
 - Updated to a newer version of the Stripe API.
