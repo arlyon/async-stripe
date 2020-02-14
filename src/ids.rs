@@ -538,7 +538,10 @@ mod tests {
         let bad_parse = "zzz_123".parse::<CustomerId>();
         assert!(bad_parse.is_err());
         if let Err(err) = bad_parse {
-            assert_eq!(format!("{}", err), "invalid `CustomerId`, expected id to start with \"cus_\"");
+            assert_eq!(
+                format!("{}", err),
+                "invalid `CustomerId`, expected id to start with \"cus_\""
+            );
         }
     }
 
@@ -549,7 +552,10 @@ mod tests {
         let bad_parse = "zz_123".parse::<ChargeId>();
         assert!(bad_parse.is_err());
         if let Err(err) = bad_parse {
-            assert_eq!(format!("{}", err), "invalid `ChargeId`, expected id to start with \"ch_\" or \"py_\"");
+            assert_eq!(
+                format!("{}", err),
+                "invalid `ChargeId`, expected id to start with \"ch_\" or \"py_\""
+            );
         }
     }
 }
