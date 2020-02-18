@@ -26,7 +26,7 @@ travis-ci = {repository = "wyyerd/stripe-rs"}
 name = "stripe"
 
 [features]
-default = ["full", "webhook-events", "blocking"]
+default = ["full", "webhook-events", "blocking", "default-tls"]
 full = [
 #    "core",
 #    "payment-methods",
@@ -63,12 +63,16 @@ webhooks = ["webhook-endpoints", "webhook-events"]
 blocking = ["tokio/rt-core"]
 async = []
 
+default-tls = ["hyper-tls"]
+rustls-tls = ["hyper-rustls"]
+
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
 futures-util = { version = "0.3.1", default-features = false }
 http = "0.2.0"
 hyper = { version = "0.13", default-features = false, features = ["tcp"] }
-hyper-tls = "0.4.0"
+hyper-tls = { version = "0.4", optional = true }
+hyper-rustls = { version = "0.19", optional = true }
 serde = "1.0.79" # N.B. we use `serde(other)` which was introduced in `1.0.79`
 serde_derive = "1.0.79"
 serde_json = "1.0"
