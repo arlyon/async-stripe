@@ -36,7 +36,7 @@ script:
   - cargo fmt -- --check
 
   # Check "no default features"
-  - cargo build --verbose --workspace --exclude binary_size --no-default-features
+  - cargo build --verbose --workspace --exclude binary_size --no-default-features --features default-tls
 
   # Check "full/blocking"
   - cargo build --verbose --workspace --exclude binary_size
@@ -45,3 +45,7 @@ script:
   # Check "full/async
   - cargo build --verbose --features async --workspace --exclude binary_size
   - cargo test --verbose --features async --example async_create_charge
+
+  # Check "rustls-tls"
+  - cargo build --verbose --no-default-features --features "full webhook-events blocking rustls-tls" --workspace --exclude binary_size
+  - cargo test --verbose --no-default-features --features "full webhook-events blocking rustls-tls" --workspace --exclude binary_size
