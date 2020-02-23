@@ -293,6 +293,8 @@ pub enum PaymentErrorType {
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentMethodType {
     Card,
+    Ideal,
+    SepaDebit,
 }
 
 /// The resource representing a Stripe CaptureMethod object.
