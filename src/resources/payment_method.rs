@@ -414,15 +414,24 @@ impl<'a> UpdatePaymentMethod<'a> {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodType {
+    /// This `PaymentMethod` must be fulfilled through credit card payment.
     Card,
-    CardPresent,
+    Fpx,
+    /// This `PaymentMethod` must be fulfilled through
+    /// [iDeal](https://stripe.com/docs/payments/ideal).
+    Ideal,
+    /// This `PaymentMethod` must be fulfilled through
+    /// [Sepa Direct Debit](https://stripe.com/docs/payments/sepa-debit).
+    SepaDebit,
 }
 
 impl PaymentMethodType {
     pub fn as_str(self) -> &'static str {
         match self {
-            PaymentMethodType::Card => "card",
-            PaymentMethodType::CardPresent => "card_present",
+            Self::Card => "card",
+            Self::Fpx => "fpx",
+            Self::Ideal => "ideal",
+            Self::SepaDebit => "sepa_debit",
         }
     }
 }

@@ -289,10 +289,18 @@ pub enum PaymentErrorType {
 //       that all of the variants are _always_ the same.
 //
 //       In that case this can be replaced with a deprecated type alias.
+/// Represents the way a `PaymentIntent` needs to be fulfilled. 
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentMethodType {
+    /// This `PaymentIntent` needs to be fulfilled through credit card payment.
     Card,
+    /// This `PaymentIntent` needs to be fulfilled through an
+    /// [iDeal](https://stripe.com/docs/payments/ideal) payment.
+    Ideal,
+    /// This `PaymentIntent` needs to be fulfilled through a
+    /// [Sepa Direct Debit](https://stripe.com/docs/payments/sepa-debit) payment.
+    SepaDebit,
 }
 
 /// The resource representing a Stripe CaptureMethod object.
