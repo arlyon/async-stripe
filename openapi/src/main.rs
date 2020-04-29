@@ -316,6 +316,9 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         if let Some(doc) = schema["properties"]["id"]["description"].as_str() {
             print_doc_comment(&mut out, doc, 1);
         }
+        if id_type == "InvoiceId" {
+            out.push_str("    #[serde(default = \"InvoiceId::empty\")]");
+        }
         out.push_str("    pub id: ");
         out.push_str(&id_type);
         out.push_str(",\n");

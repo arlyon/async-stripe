@@ -528,6 +528,12 @@ def_id!(TransferId, "tr_");
 def_id!(TransferReversalId, "trr_");
 def_id!(WebhookEndpointId, "we_");
 
+impl InvoiceId {
+    pub(crate) fn empty() -> Self {
+        Self("".into())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
