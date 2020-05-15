@@ -143,6 +143,8 @@ pub enum EventType {
     PaymentIntentRequiresCapture,
     #[serde(rename = "payment_intent.succeeded")]
     PaymentIntentSucceeded,
+    #[serde(rename = "payment_method.attached")]
+    PaymentMethodAttached,
     #[serde(rename = "payout.canceled")]
     PayoutCanceled,
     #[serde(rename = "payout.created")]
@@ -217,6 +219,7 @@ pub enum EventObject {
     ApplicationFeeRefund(ApplicationFeeRefund),
     Balance(Balance),
     BankAccount(BankAccount),
+    Card(Card),
     Charge(Charge),
     Customer(Customer),
     Dispute(Dispute),
@@ -228,6 +231,7 @@ pub enum EventObject {
     InvoiceItem(InvoiceItem),
     Order(Order),
     OrderReturn(OrderReturn),
+    PaymentMethod(PaymentMethod),
     PaymentIntent(PaymentIntent),
     Payout(Payout),
     Plan(Plan),
