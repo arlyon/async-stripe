@@ -1,4 +1,4 @@
-# Unreleased
+# Version 0.12.2 (May 15, 2020)
 
 ## Features
 - Enable RustTLS behind a feature flag (@kiljacken)
