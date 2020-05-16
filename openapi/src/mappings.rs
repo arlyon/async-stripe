@@ -71,6 +71,8 @@ pub fn object_mappings() -> ObjectMap {
         ("create_account_company", "company_params"),
         ("update_account_company", "company_params"),
         ("company_params_verification", "company_verification_params"),
+        ("person_verification_params_document", "verification_document_params"),
+        ("person_verification_params_additional_document", "verification_document_params"),
         ("create_account_individual", "person_params"),
         ("update_account_individual", "person_params"),
         ("create_account_requested_capabilities", "requested_capability"),
@@ -374,8 +376,8 @@ pub fn field_mappings() -> FieldMap {
         (("person_params", "dob"), ("Dob", "Option<Dob>")),
         (("person_params", "verification"), ("PersonVerificationParams", "Option<PersonVerificationParams>")),
         (("company_verification_params", "document"), ("VerificationDocumentParams", "Option<VerificationDocumentParams>")),
-        (("person_verification_params", "document"), ("VerificationDocumentParams", "Option<VerificationDocumentParams>")),
-        (("person_verification_params", "additional_document"), ("VerificationDocumentParams", "Option<VerificationDocumentParams>")),
+        // (("person_verification_params", "document"), ("VerificationDocumentParams", "Option<VerificationDocumentParams>")),
+        // (("person_verification_params", "additional_document"), ("VerificationDocumentParams", "Option<VerificationDocumentParams>")),
 
         // Config for `charge` params
         (("create_charge", "shipping"), ("Shipping", "Option<Shipping>")),
