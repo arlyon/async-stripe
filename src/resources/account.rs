@@ -6,8 +6,8 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BusinessType, Card, CompanyVerificationParams, Currency, DelayDays, Dob,
-    File, Person, PersonVerificationParams, Weekday,
+    Address, BankAccount, BusinessType, Card, Currency, DelayDays, Dob, File, Person,
+    PersonVerificationParams, VerificationDocumentParams, Weekday,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -933,6 +933,12 @@ pub struct CardPaymentsSettingsParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_prefix: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CompanyVerificationParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<VerificationDocumentParams>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
