@@ -1,3 +1,8 @@
+# Version 0.12.3 (May 16, 2020)
+
+## Fixes
+- Fix failing `Invoice::upcoming` by adding a `is_none` representation to InvoiceId (@bryanburgers)
+
 # Version 0.12.2 (May 15, 2020)
 
 ## Features
