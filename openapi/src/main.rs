@@ -317,7 +317,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
             print_doc_comment(&mut out, doc, 1);
         }
         if id_type == "InvoiceId" {
-            out.push_str("    #[serde(default = \"InvoiceId::empty\")]");
+            out.push_str("    #[serde(default = \"InvoiceId::none\")]");
         }
         out.push_str("    pub id: ");
         out.push_str(&id_type);
