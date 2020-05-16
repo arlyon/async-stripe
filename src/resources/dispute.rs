@@ -3,9 +3,9 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::DisputeId;
+use crate::ids::{ChargeId, DisputeId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, Charge, Currency, File};
+use crate::resources::{BalanceTransaction, Charge, Currency, File, PaymentIntent};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Dispute".
@@ -53,6 +53,10 @@ pub struct Dispute {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
+
+    /// ID of the PaymentIntent that was disputed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent: Option<Expandable<PaymentIntent>>,
 
     /// Reason given by cardholder for dispute.
     ///
@@ -242,6 +246,10 @@ pub struct DisputeEvidenceDetails {
 /// The parameters for `Dispute::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListDisputes<'a> {
+    /// Only return disputes associated to the charge specified by this charge ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub charge: Option<ChargeId>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -262,6 +270,10 @@ pub struct ListDisputes<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u64>,
 
+    /// Only return disputes associated to the PaymentIntent specified by this PaymentIntent ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent: Option<PaymentIntentId>,
+
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
@@ -273,10 +285,12 @@ pub struct ListDisputes<'a> {
 impl<'a> ListDisputes<'a> {
     pub fn new() -> Self {
         ListDisputes {
+            charge: Default::default(),
             created: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
+            payment_intent: Default::default(),
             starting_after: Default::default(),
         }
     }

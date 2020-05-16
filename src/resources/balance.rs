@@ -9,7 +9,7 @@ use serde_derive::{Deserialize, Serialize};
 /// The resource representing a Stripe "Balance".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Balance {
-    /// Funds that are available to be transferred or paid out, whether automatically by Stripe or explicitly via the [Transfers API](#transfers) or [Payouts API](#payouts).
+    /// Funds that are available to be transferred or paid out, whether automatically by Stripe or explicitly via the [Transfers API](https://stripe.com/docs/api#transfers) or [Payouts API](https://stripe.com/docs/api#payouts).
     ///
     /// The available balance for each currency and payment type can be found in the `source_types` property.
     pub available: Vec<BalanceAmount>,
@@ -19,6 +19,9 @@ pub struct Balance {
     /// The connect reserve balance for each currency and payment type can be found in the `source_types` property.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connect_reserved: Option<Vec<BalanceAmount>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuing: Option<BalanceDetail>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -60,4 +63,14 @@ pub struct BalanceAmountBySourceType {
     /// Amount for card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<i64>,
+
+    /// Amount for FPX.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx: Option<i64>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct BalanceDetail {
+    /// Funds that are available for use.
+    pub available: Vec<BalanceAmount>,
 }

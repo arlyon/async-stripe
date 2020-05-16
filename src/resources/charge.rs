@@ -7,8 +7,8 @@ use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Application, ApplicationFee, BalanceTransaction, BillingDetails, ChargeSourceParams,
-    Currency, Customer, Dispute, FraudDetailsReport, Invoice, Order, PaymentMethodDetails, Refund,
-    Review, Shipping, Transfer,
+    Currency, Customer, FraudDetailsReport, Invoice, Order, PaymentIntent, PaymentMethodDetails,
+    Refund, Review, Shipping, Transfer,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -20,8 +20,9 @@ pub struct Charge {
     /// Unique identifier for the object.
     pub id: ChargeId,
 
-    /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
+    /// Amount intended to be collected by this payment.
     ///
+    /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
     /// The minimum amount is $0.50 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
     /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
     pub amount: i64,
@@ -51,6 +52,12 @@ pub struct Charge {
 
     pub billing_details: BillingDetails,
 
+    /// The full statement descriptor that is passed to card networks, and that is displayed on your customers' credit card and bank statements.
+    ///
+    /// Allows you to see what the statement descriptor looks like after the static and dynamic portions are combined.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub calculated_statement_descriptor: Option<String>,
+
     /// If the charge was created without capturing, this Boolean represents whether it is still uncaptured or has since been captured.
     pub captured: bool,
 
@@ -74,9 +81,8 @@ pub struct Charge {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
-    /// Details about the dispute if the charge has been disputed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dispute: Option<Expandable<Dispute>>,
+    /// Whether the charge has been disputed.
+    pub disputed: bool,
 
     /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/api#errors) for a list of codes).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -123,7 +129,7 @@ pub struct Charge {
 
     /// ID of the PaymentIntent associated with this charge, if one exists.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_intent: Option<String>,
+    pub payment_intent: Option<Expandable<PaymentIntent>>,
 
     /// ID of the payment method used in this charge.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -147,7 +153,8 @@ pub struct Charge {
     ///
     /// The receipt is kept up-to-date to the latest state of the charge, including any refunds.
     /// If the charge is for an Invoice, the receipt will be stylized as an Invoice receipt.
-    pub receipt_url: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub receipt_url: Option<String>,
 
     /// Whether the charge has been fully refunded.
     ///
@@ -201,7 +208,7 @@ pub struct Charge {
 
     /// A string that identifies this transaction as part of a group.
     ///
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#grouping-transactions) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
 }
@@ -306,7 +313,7 @@ pub struct ChargeOutcome {
 
     /// Possible values are `authorized`, `manual_review`, `issuer_declined`, `blocked`, and `invalid`.
     ///
-    /// See [understanding declines](https://stripe.com/docs/declines) and [Radar reviews](radar/review) for details.
+    /// See [understanding declines](https://stripe.com/docs/declines) and [Radar reviews](https://stripe.com/docs/radar/reviews) for details.
     #[serde(rename = "type")]
     pub type_: String,
 }
@@ -338,8 +345,9 @@ pub struct Rule {
 /// The parameters for `Charge::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCharge<'a> {
-    /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
+    /// Amount intended to be collected by this payment.
     ///
+    /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
     /// The minimum amount is $0.50 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
     /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -358,9 +366,9 @@ pub struct CreateCharge<'a> {
     /// Whether to immediately capture the charge.
     ///
     /// Defaults to `true`.
-    /// When `false`, the charge issues an authorization (or pre-authorization), and will need to be [captured](#capture_charge) later.
+    /// When `false`, the charge issues an authorization (or pre-authorization), and will need to be [captured](https://stripe.com/docs/api#capture_charge) later.
     /// Uncaptured charges expire in _seven days_.
-    /// For more information, see the [authorizing charges and settling later](https://stripe.com/docs/charges#auth-and-capture) documentation.
+    /// For more information, see the [authorizing charges and settling later](https://stripe.com/docs/charges/placing-a-hold) documentation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture: Option<bool>,
 
@@ -388,6 +396,8 @@ pub struct CreateCharge<'a> {
     /// Set of key-value pairs that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
@@ -441,7 +451,7 @@ pub struct CreateCharge<'a> {
 
     /// A string that identifies this transaction as part of a group.
     ///
-    /// For details, see [Grouping transactions](https://stripe.com/docs/connect/charges-transfers#grouping-transactions).
+    /// For details, see [Grouping transactions](https://stripe.com/docs/connect/charges-transfers#transfer-options).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
@@ -579,7 +589,7 @@ pub struct UpdateCharge<'a> {
     /// A string that identifies this transaction as part of a group.
     ///
     /// `transfer_group` may only be provided if it has not been set.
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#grouping-transactions) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }

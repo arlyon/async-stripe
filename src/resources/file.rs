@@ -25,12 +25,13 @@ pub struct File {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub filename: Option<String>,
 
+    /// A list of [file links](https://stripe.com/docs/api#file_links) that point at this file.
     #[serde(default)]
     pub links: List<FileLink>,
 
     /// The purpose of the file.
     ///
-    /// Possible values are `business_icon`, `business_logo`, `customer_signature`, `dispute_evidence`, `finance_report_run`, `identity_document`, `pci_document`, `sigma_scheduled_query`, or `tax_document_user_upload`.
+    /// Possible values are `additional_verification`, `business_icon`, `business_logo`, `customer_signature`, `dispute_evidence`, `finance_report_run`, `identity_document`, `pci_document`, `sigma_scheduled_query`, or `tax_document_user_upload`.
     pub purpose: FilePurpose,
 
     /// The size in bytes of the file object.
@@ -61,6 +62,7 @@ impl File {
     /// Retrieves the details of an existing file object.
     ///
     /// Supply the unique file ID from a file, and Stripe will return the corresponding file object.
+    /// To access file contents, see the [File Upload Guide](https://stripe.com/docs/file-upload#download-file-contents).
     pub fn retrieve(client: &Client, id: &FileId, expand: &[&str]) -> Response<File> {
         client.get_query(&format!("/files/{}", id), &Expand { expand })
     }
@@ -130,6 +132,7 @@ impl<'a> ListFiles<'a> {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FilePurpose {
+    AdditionalVerification,
     BusinessIcon,
     BusinessLogo,
     CustomerSignature,
@@ -144,6 +147,7 @@ pub enum FilePurpose {
 impl FilePurpose {
     pub fn as_str(self) -> &'static str {
         match self {
+            FilePurpose::AdditionalVerification => "additional_verification",
             FilePurpose::BusinessIcon => "business_icon",
             FilePurpose::BusinessLogo => "business_logo",
             FilePurpose::CustomerSignature => "customer_signature",

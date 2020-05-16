@@ -4,7 +4,7 @@
 
 use crate::ids::InvoiceLineItemId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Currency, Period, Plan, TaxRate};
+use crate::resources::{Currency, Period, Plan, Price, TaxRate};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceLineItem".
@@ -32,10 +32,11 @@ pub struct InvoiceLineItem {
     /// Always false for prorations.
     pub discountable: bool,
 
+    /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_item: Option<String>,
 
-    /// Whether this is a test line item.
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
     /// Set of key-value pairs that you can attach to an object.
@@ -49,6 +50,10 @@ pub struct InvoiceLineItem {
     /// The plan of the subscription, if the line item is a subscription or a proration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<Plan>,
+
+    /// The price of the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Price>,
 
     /// Whether this is a proration.
     pub proration: bool,
@@ -78,10 +83,6 @@ pub struct InvoiceLineItem {
     /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
     #[serde(rename = "type")]
     pub type_: InvoiceLineItemType,
-
-    /// For prorations this indicates whether Stripe automatically grouped multiple related debit and credit line items into a single combined line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unified_proration: Option<bool>,
 }
 
 impl Object for InvoiceLineItem {

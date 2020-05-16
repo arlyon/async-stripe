@@ -19,6 +19,7 @@ pub struct AlipayAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<Timestamp>,
 
+    /// The ID of the customer associated with this Alipay Account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Expandable<Customer>>,
 

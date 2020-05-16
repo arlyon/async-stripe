@@ -4,8 +4,11 @@
 
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
-use crate::params::{Expand, Object, Timestamp};
-use crate::resources::{BankAccount, BusinessType, Card, CompanyParams, PersonParams, TokenType};
+use crate::params::{Expand, Metadata, Object, Timestamp};
+use crate::resources::{
+    Address, BankAccount, BusinessType, Card, CompanyParams, Dob, PersonParams,
+    PersonVerificationParams, TokenType,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Token".
@@ -76,15 +79,18 @@ pub struct CreateToken<'a> {
 
     /// The customer (owned by the application's account) for which to create a token.
     ///
-    /// For use only with [Stripe Connect](https://stripe.com/docs/connect).
-    /// Also, this can be used only with an [OAuth access token](https://stripe.com/docs/connect/standard-accounts) or [Stripe-Account header](https://stripe.com/docs/connect/authentication).
-    /// For more details, see [Shared Customers](https://stripe.com/docs/connect/shared-customers).
+    /// This can be used only with an [OAuth access token](https://stripe.com/docs/connect/standard-accounts) or [Stripe-Account header](https://stripe.com/docs/connect/authentication).
+    /// For more details, see [Cloning Saved Payment Methods](https://stripe.com/docs/connect/cloning-saved-payment-methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// Information for the person this token will represent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub person: Option<CreateTokenPerson>,
 
     /// The PII this token will represent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -97,6 +103,7 @@ impl<'a> CreateToken<'a> {
             account: Default::default(),
             customer: Default::default(),
             expand: Default::default(),
+            person: Default::default(),
             pii: Default::default(),
         }
     }
@@ -118,7 +125,88 @@ pub struct CreateTokenAccount {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateTokenPerson {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<Address>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_kana: Option<Address>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_kanji: Option<Address>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<Address>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name_kana: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name_kanji: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gender: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name_kana: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name_kanji: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maiden_name: Option<String>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub relationship: Option<CreateTokenPersonRelationship>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ssn_last_4: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification: Option<PersonVerificationParams>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenPii {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateTokenPersonRelationship {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub director: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub executive: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owner: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub percent_ownership: Option<f64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub representative: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub title: Option<String>,
 }

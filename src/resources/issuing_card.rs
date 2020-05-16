@@ -5,8 +5,8 @@
 use crate::ids::IssuingCardId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
-    Address, CardBrand, Currency, IssuingCardPinStatus, IssuingCardShippingStatus,
-    IssuingCardShippingType, IssuingCardType, IssuingCardholder, MerchantCategory, SpendingLimit,
+    Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType,
+    IssuingCardType, IssuingCardholder, MerchantCategory, SpendingLimit,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -16,14 +16,14 @@ pub struct IssuingCard {
     /// Unique identifier for the object.
     pub id: IssuingCardId,
 
-    pub authorization_controls: IssuingCardAuthorizationControls,
-
     /// The brand of the card.
     pub brand: CardBrand,
 
-    /// The [Cardholder](https://stripe.com/docs/api#issuing_cardholder_object) object to which the card belongs.
+    /// The reason why the card was canceled.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cardholder: Option<IssuingCardholder>,
+    pub cancellation_reason: Option<IssuingCardCancellationReason>,
+
+    pub cardholder: IssuingCardholder,
 
     /// Time at which the object was created.
     ///
@@ -34,6 +34,13 @@ pub struct IssuingCard {
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
+
+    /// The card's CVC.
+    ///
+    /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
+    /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc: Option<String>,
 
     /// The expiration month of the card.
     pub exp_month: i64,
@@ -52,20 +59,22 @@ pub struct IssuingCard {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
 
-    /// The name of the cardholder, printed on the card.
-    pub name: String,
-
-    /// Metadata about the PIN on the card.
+    /// The full unredacted card number.
+    ///
+    /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
+    /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pin: Option<IssuingCardPin>,
+    pub number: Option<String>,
+
+    /// The latest card that replaces this card, if any.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub replaced_by: Option<Expandable<IssuingCard>>,
 
     /// The card this card replaces, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub replacement_for: Option<Expandable<IssuingCard>>,
 
-    /// Why the card that this card replaces (if any) needed to be replaced.
-    ///
-    /// One of `damage`, `expiration`, `loss`, or `theft`.
+    /// The reason why the previous card needed to be replaced.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub replacement_reason: Option<IssuingCardReplacementReason>,
 
@@ -73,10 +82,12 @@ pub struct IssuingCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<IssuingCardShipping>,
 
-    /// One of `active`, `inactive`, `canceled`, `lost`, `stolen`, or `pending`.
+    pub spending_controls: IssuingCardAuthorizationControls,
+
+    /// Whether authorizations can be approved on this card.
     pub status: IssuingCardStatus,
 
-    /// One of `virtual` or `physical`.
+    /// The type of the card.
     #[serde(rename = "type")]
     pub type_: IssuingCardType,
 }
@@ -101,24 +112,6 @@ pub struct IssuingCardAuthorizationControls {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blocked_categories: Option<Vec<MerchantCategory>>,
 
-    /// The currency of the card.
-    ///
-    /// See [max_amount](https://stripe.com/docs/api#issuing_card_object-authorization_controls-max_amount).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
-
-    /// Maximum amount allowed per authorization on this card, in the currency of the card.
-    ///
-    /// Authorization amounts in a different currency will be converted to the card's currency when evaluating this control.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_amount: Option<i64>,
-
-    /// Maximum count of approved authorizations on this card.
-    ///
-    /// Counts all authorizations retroactively.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_approvals: Option<i64>,
-
     /// Limit the spending with rules based on time intervals and categories.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits: Option<Vec<SpendingLimit>>,
@@ -131,20 +124,12 @@ pub struct IssuingCardAuthorizationControls {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct IssuingCardPin {
-    /// The status of the pin.
-    ///
-    /// One of `blocked` or `active`.
-    pub status: IssuingCardPinStatus,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardShipping {
     pub address: Address,
 
-    /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
+    /// The delivery company that shipped a card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub carrier: Option<String>,
+    pub carrier: Option<IssuingCardShippingCarrier>,
 
     /// A unix timestamp representing a best estimate of when the card will be delivered.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -153,9 +138,10 @@ pub struct IssuingCardShipping {
     /// Recipient name.
     pub name: String,
 
+    /// Shipment service, such as `standard` or `express`.
+    pub service: IssuingCardShippingService,
+
     /// The delivery status of the card.
-    ///
-    /// One of `pending`, `shipped`, `delivered`, `returned`, `failure`, or `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<IssuingCardShippingStatus>,
 
@@ -167,30 +153,57 @@ pub struct IssuingCardShipping {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_url: Option<String>,
 
-    /// One of `bulk` or `individual`.
-    ///
-    /// Bulk shipments will be grouped and mailed together, while individual ones will not.
+    /// Packaging options.
     #[serde(rename = "type")]
     pub type_: IssuingCardShippingType,
+}
+
+/// An enum representing the possible values of an `IssuingCard`'s `cancellation_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardCancellationReason {
+    Lost,
+    Stolen,
+}
+
+impl IssuingCardCancellationReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingCardCancellationReason::Lost => "lost",
+            IssuingCardCancellationReason::Stolen => "stolen",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardCancellationReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardCancellationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `IssuingCard`'s `replacement_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardReplacementReason {
-    Damage,
-    Expiration,
-    Loss,
-    Theft,
+    Damaged,
+    Expired,
+    Lost,
+    Stolen,
 }
 
 impl IssuingCardReplacementReason {
     pub fn as_str(self) -> &'static str {
         match self {
-            IssuingCardReplacementReason::Damage => "damage",
-            IssuingCardReplacementReason::Expiration => "expiration",
-            IssuingCardReplacementReason::Loss => "loss",
-            IssuingCardReplacementReason::Theft => "theft",
+            IssuingCardReplacementReason::Damaged => "damaged",
+            IssuingCardReplacementReason::Expired => "expired",
+            IssuingCardReplacementReason::Lost => "lost",
+            IssuingCardReplacementReason::Stolen => "stolen",
         }
     }
 }
@@ -207,6 +220,66 @@ impl std::fmt::Display for IssuingCardReplacementReason {
     }
 }
 
+/// An enum representing the possible values of an `IssuingCardShipping`'s `carrier` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardShippingCarrier {
+    Fedex,
+    Usps,
+}
+
+impl IssuingCardShippingCarrier {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingCardShippingCarrier::Fedex => "fedex",
+            IssuingCardShippingCarrier::Usps => "usps",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardShippingCarrier {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardShippingCarrier {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `IssuingCardShipping`'s `service` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardShippingService {
+    Express,
+    Priority,
+    Standard,
+}
+
+impl IssuingCardShippingService {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingCardShippingService::Express => "express",
+            IssuingCardShippingService::Priority => "priority",
+            IssuingCardShippingService::Standard => "standard",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardShippingService {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardShippingService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `IssuingCard`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -214,9 +287,6 @@ pub enum IssuingCardStatus {
     Active,
     Canceled,
     Inactive,
-    Lost,
-    Pending,
-    Stolen,
 }
 
 impl IssuingCardStatus {
@@ -225,9 +295,6 @@ impl IssuingCardStatus {
             IssuingCardStatus::Active => "active",
             IssuingCardStatus::Canceled => "canceled",
             IssuingCardStatus::Inactive => "inactive",
-            IssuingCardStatus::Lost => "lost",
-            IssuingCardStatus::Pending => "pending",
-            IssuingCardStatus::Stolen => "stolen",
         }
     }
 }

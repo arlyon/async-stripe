@@ -10,21 +10,20 @@ This is compatible with all currently supported versions of Stripe's client-side
 libraries including https://js.stripe.com/v2/ and https://js.stripe.com/v3/.
 
 ## API Version
-The 0.12.x version of the crate uses the `2019-09-09` version of the Stripe API.
+The latest supported version of the Stripe API is w`2020-03-02`.
+Set the corresponding crate version depending on which version of the Stripe API you are pinned to.
+If you don't see the specific version you are on, prefer the next available version.
+
+ - `0.13.*` - stripe version `2020-03-02`
+ - `0.12.*` - stripe version `2019-09-09`
 
 ## Usage
 
-Put this in your `Cargo.toml`:
+Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stripe-rust = "0.12.*"
-```
-
-And this in your crate root:
-
-```rust
-extern crate stripe;
+stripe-rust = "0.13.*"
 ```
 
 To see how the library is used, look through the [examples](examples) folder.

@@ -242,8 +242,14 @@ impl Generated {
         if let Some(other) = self.inferred_structs.get(&name) {
             let mut self_schema = struct_.schema.clone();
             let mut other_schema = other.schema.clone();
-            self_schema.as_object_mut().and_then(|x| x.remove("description"));
-            other_schema.as_object_mut().and_then(|x| x.remove("description"));
+            if let Some(x) = self_schema.as_object_mut() {
+                x.remove("description");
+                x.remove("title");
+            }
+            if let Some(x) = other_schema.as_object_mut() {
+                x.remove("description");
+                x.remove("title");
+            }
             if self_schema != other_schema {
                 return Err(other);
             }

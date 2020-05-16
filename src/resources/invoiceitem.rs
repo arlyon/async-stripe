@@ -3,9 +3,9 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, SubscriptionId};
+use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Currency, Customer, Invoice, Period, Plan, Subscription, TaxRate};
+use crate::resources::{Currency, Customer, Invoice, Period, Plan, Price, Subscription, TaxRate};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceItem".
@@ -75,6 +75,10 @@ pub struct InvoiceItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<Plan>,
 
+    /// The price of the invoice item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Price>,
+
     /// Whether the invoice item was created automatically as a proration adjustment when the customer switched plans.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration: Option<bool>,
@@ -98,10 +102,6 @@ pub struct InvoiceItem {
     /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<TaxRate>>,
-
-    /// For prorations this indicates whether Stripe automatically grouped multiple related debit and credit line items into a single combined line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unified_proration: Option<bool>,
 
     /// Unit Amount (in the `currency` specified) of the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -173,7 +173,8 @@ pub struct CreateInvoiceItem<'a> {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: Currency,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
 
     /// The ID of the customer who will be billed when this invoice item is billed.
     pub customer: CustomerId,
@@ -202,15 +203,25 @@ pub struct CreateInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice: Option<InvoiceId>,
 
-    /// A set of key-value pairs that you can attach to an invoice item object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the invoice item in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
     /// The period associated with this invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
+
+    /// The ID of the price object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<PriceId>,
+
+    /// Data used to generate a new price object inline.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price_data: Option<InvoiceItemPriceData>,
 
     /// Non-negative integer.
     ///
@@ -247,10 +258,10 @@ pub struct CreateInvoiceItem<'a> {
 }
 
 impl<'a> CreateInvoiceItem<'a> {
-    pub fn new(currency: Currency, customer: CustomerId) -> Self {
+    pub fn new(customer: CustomerId) -> Self {
         CreateInvoiceItem {
             amount: Default::default(),
-            currency,
+            currency: Default::default(),
             customer,
             description: Default::default(),
             discountable: Default::default(),
@@ -258,6 +269,8 @@ impl<'a> CreateInvoiceItem<'a> {
             invoice: Default::default(),
             metadata: Default::default(),
             period: Default::default(),
+            price: Default::default(),
+            price_data: Default::default(),
             quantity: Default::default(),
             subscription: Default::default(),
             tax_rates: Default::default(),
@@ -359,15 +372,25 @@ pub struct UpdateInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A set of key-value pairs that you can attach to an invoice item object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the invoice item in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
     /// The period associated with this invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
+
+    /// The ID of the price object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<PriceId>,
+
+    /// Data used to generate a new price object inline.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price_data: Option<InvoiceItemPriceData>,
 
     /// Non-negative integer.
     ///
@@ -378,6 +401,7 @@ pub struct UpdateInvoiceItem<'a> {
     /// The tax rates which apply to the invoice item.
     ///
     /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
+    /// Pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 
@@ -404,10 +428,25 @@ impl<'a> UpdateInvoiceItem<'a> {
             expand: Default::default(),
             metadata: Default::default(),
             period: Default::default(),
+            price: Default::default(),
+            price_data: Default::default(),
             quantity: Default::default(),
             tax_rates: Default::default(),
             unit_amount: Default::default(),
             unit_amount_decimal: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct InvoiceItemPriceData {
+    pub currency: Currency,
+
+    pub product: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
 }

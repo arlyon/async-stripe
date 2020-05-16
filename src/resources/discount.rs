@@ -14,6 +14,7 @@ pub struct Discount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<Coupon>,
 
+    /// The ID of the customer associated with this discount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Expandable<Customer>>,
 

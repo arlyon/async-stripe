@@ -4,7 +4,7 @@
 
 use crate::config::{Client, Response};
 use crate::ids::WebhookEndpointId;
-use crate::params::{Deleted, Expand, List, Object, Timestamp};
+use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{ApiVersion, WebhookEndpointStatus};
 use serde_derive::{Deserialize, Serialize};
 
@@ -34,15 +34,25 @@ pub struct WebhookEndpoint {
     #[serde(default)]
     pub deleted: bool,
 
+    /// An optional description of what the wehbook is used for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
     /// The list of events to enable for this endpoint.
     ///
-    /// You may specify `['*']` to enable all events.
+    /// `['*']` indicates that all events are enabled, except those that require explicit selection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled_events: Option<Vec<EventFilter>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub livemode: Option<bool>,
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(default)]
+    pub metadata: Metadata,
 
     /// The endpoint's secret, used to generate [webhook signatures](https://stripe.com/docs/webhooks/signatures).
     ///
@@ -122,18 +132,32 @@ pub struct CreateWebhookEndpoint<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub api_version: Option<ApiVersion>,
 
-    /// Whether this endpoint should receive events from connected accounts (`true`), or your account (`false`).
+    /// Whether this endpoint should receive events from connected accounts (`true`), or from your account (`false`).
+    ///
+    /// Defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connect: Option<bool>,
 
+    /// An optional description of what the wehbook is used for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+
     /// The list of events to enable for this endpoint.
     ///
-    /// You may specify `['*']` to enable all events.
+    /// You may specify `['*']` to enable all events, except those that require explicit selection.
     pub enabled_events: Vec<EventFilter>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The URL of the webhook endpoint.
     pub url: &'a str,
@@ -144,8 +168,10 @@ impl<'a> CreateWebhookEndpoint<'a> {
         CreateWebhookEndpoint {
             api_version: Default::default(),
             connect: Default::default(),
+            description: Default::default(),
             enabled_events,
             expand: Default::default(),
+            metadata: Default::default(),
             url,
         }
     }
@@ -193,19 +219,31 @@ impl<'a> ListWebhookEndpoints<'a> {
 /// The parameters for `WebhookEndpoint::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateWebhookEndpoint<'a> {
+    /// An optional description of what the wehbook is used for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
+
     /// Disable the webhook endpoint if set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
 
     /// The list of events to enable for this endpoint.
     ///
-    /// You may specify `['*']` to enable all events.
+    /// You may specify `['*']` to enable all events, except those that require explicit selection.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled_events: Option<Vec<EventFilter>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// Set of key-value pairs that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
 
     /// The URL of the webhook endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -215,9 +253,11 @@ pub struct UpdateWebhookEndpoint<'a> {
 impl<'a> UpdateWebhookEndpoint<'a> {
     pub fn new() -> Self {
         UpdateWebhookEndpoint {
+            description: Default::default(),
             disabled: Default::default(),
             enabled_events: Default::default(),
             expand: Default::default(),
+            metadata: Default::default(),
             url: Default::default(),
         }
     }
@@ -313,6 +353,10 @@ pub enum EventFilter {
     CustomerSubscriptionCreated,
     #[serde(rename = "customer.subscription.deleted")]
     CustomerSubscriptionDeleted,
+    #[serde(rename = "customer.subscription.pending_update_applied")]
+    CustomerSubscriptionPendingUpdateApplied,
+    #[serde(rename = "customer.subscription.pending_update_expired")]
+    CustomerSubscriptionPendingUpdateExpired,
     #[serde(rename = "customer.subscription.trial_will_end")]
     CustomerSubscriptionTrialWillEnd,
     #[serde(rename = "customer.subscription.updated")]
@@ -369,18 +413,12 @@ pub enum EventFilter {
     IssuingCardholderCreated,
     #[serde(rename = "issuing_cardholder.updated")]
     IssuingCardholderUpdated,
-    #[serde(rename = "issuing_dispute.created")]
-    IssuingDisputeCreated,
-    #[serde(rename = "issuing_dispute.updated")]
-    IssuingDisputeUpdated,
-    #[serde(rename = "issuing_settlement.created")]
-    IssuingSettlementCreated,
-    #[serde(rename = "issuing_settlement.updated")]
-    IssuingSettlementUpdated,
     #[serde(rename = "issuing_transaction.created")]
     IssuingTransactionCreated,
     #[serde(rename = "issuing_transaction.updated")]
     IssuingTransactionUpdated,
+    #[serde(rename = "mandate.updated")]
+    MandateUpdated,
     #[serde(rename = "order.created")]
     OrderCreated,
     #[serde(rename = "order.payment_failed")]
@@ -393,10 +431,14 @@ pub enum EventFilter {
     OrderReturnCreated,
     #[serde(rename = "payment_intent.amount_capturable_updated")]
     PaymentIntentAmountCapturableUpdated,
+    #[serde(rename = "payment_intent.canceled")]
+    PaymentIntentCanceled,
     #[serde(rename = "payment_intent.created")]
     PaymentIntentCreated,
     #[serde(rename = "payment_intent.payment_failed")]
     PaymentIntentPaymentFailed,
+    #[serde(rename = "payment_intent.processing")]
+    PaymentIntentProcessing,
     #[serde(rename = "payment_intent.succeeded")]
     PaymentIntentSucceeded,
     #[serde(rename = "payment_method.attached")]
@@ -455,6 +497,8 @@ pub enum EventFilter {
     ReviewClosed,
     #[serde(rename = "review.opened")]
     ReviewOpened,
+    #[serde(rename = "setup_intent.canceled")]
+    SetupIntentCanceled,
     #[serde(rename = "setup_intent.created")]
     SetupIntentCreated,
     #[serde(rename = "setup_intent.setup_failed")]
@@ -569,6 +613,12 @@ impl EventFilter {
             EventFilter::CustomerSourceUpdated => "customer.source.updated",
             EventFilter::CustomerSubscriptionCreated => "customer.subscription.created",
             EventFilter::CustomerSubscriptionDeleted => "customer.subscription.deleted",
+            EventFilter::CustomerSubscriptionPendingUpdateApplied => {
+                "customer.subscription.pending_update_applied"
+            }
+            EventFilter::CustomerSubscriptionPendingUpdateExpired => {
+                "customer.subscription.pending_update_expired"
+            }
             EventFilter::CustomerSubscriptionTrialWillEnd => "customer.subscription.trial_will_end",
             EventFilter::CustomerSubscriptionUpdated => "customer.subscription.updated",
             EventFilter::CustomerTaxIdCreated => "customer.tax_id.created",
@@ -597,12 +647,9 @@ impl EventFilter {
             EventFilter::IssuingCardUpdated => "issuing_card.updated",
             EventFilter::IssuingCardholderCreated => "issuing_cardholder.created",
             EventFilter::IssuingCardholderUpdated => "issuing_cardholder.updated",
-            EventFilter::IssuingDisputeCreated => "issuing_dispute.created",
-            EventFilter::IssuingDisputeUpdated => "issuing_dispute.updated",
-            EventFilter::IssuingSettlementCreated => "issuing_settlement.created",
-            EventFilter::IssuingSettlementUpdated => "issuing_settlement.updated",
             EventFilter::IssuingTransactionCreated => "issuing_transaction.created",
             EventFilter::IssuingTransactionUpdated => "issuing_transaction.updated",
+            EventFilter::MandateUpdated => "mandate.updated",
             EventFilter::OrderCreated => "order.created",
             EventFilter::OrderPaymentFailed => "order.payment_failed",
             EventFilter::OrderPaymentSucceeded => "order.payment_succeeded",
@@ -611,8 +658,10 @@ impl EventFilter {
             EventFilter::PaymentIntentAmountCapturableUpdated => {
                 "payment_intent.amount_capturable_updated"
             }
+            EventFilter::PaymentIntentCanceled => "payment_intent.canceled",
             EventFilter::PaymentIntentCreated => "payment_intent.created",
             EventFilter::PaymentIntentPaymentFailed => "payment_intent.payment_failed",
+            EventFilter::PaymentIntentProcessing => "payment_intent.processing",
             EventFilter::PaymentIntentSucceeded => "payment_intent.succeeded",
             EventFilter::PaymentMethodAttached => "payment_method.attached",
             EventFilter::PaymentMethodCardAutomaticallyUpdated => {
@@ -644,6 +693,7 @@ impl EventFilter {
             EventFilter::ReportingReportTypeUpdated => "reporting.report_type.updated",
             EventFilter::ReviewClosed => "review.closed",
             EventFilter::ReviewOpened => "review.opened",
+            EventFilter::SetupIntentCanceled => "setup_intent.canceled",
             EventFilter::SetupIntentCreated => "setup_intent.created",
             EventFilter::SetupIntentSetupFailed => "setup_intent.setup_failed",
             EventFilter::SetupIntentSucceeded => "setup_intent.succeeded",

@@ -13,6 +13,7 @@ pub struct BankAccount {
     /// Unique identifier for the object.
     pub id: BankAccountId,
 
+    /// The ID of the account that the bank account is associated with.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<Expandable<Account>>,
 
@@ -37,6 +38,7 @@ pub struct BankAccount {
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/payouts) paid out to the bank account.
     pub currency: Currency,
 
+    /// The ID of the customer that the bank account is associated with.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Expandable<Customer>>,
 
@@ -54,6 +56,7 @@ pub struct BankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 
+    /// The last four digits of the bank account number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
 

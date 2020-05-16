@@ -76,23 +76,23 @@ pub struct Payout {
     /// The method used to send this payout, which can be `standard` or `instant`.
     ///
     /// `instant` is only supported for payouts to debit cards.
-    /// (See [Instant payouts for marketplaces](/blog/instant-payouts-for-marketplaces) for more information.).
+    /// (See [Instant payouts for marketplaces](https://stripe.com/blog/instant-payouts-for-marketplaces) for more information.).
     pub method: String,
 
     /// The source balance this payout came from.
     ///
-    /// One of `card` or `bank_account`.
+    /// One of `card`, `fpx`, or `bank_account`.
     pub source_type: String,
 
     /// Extra information about a payout to be displayed on the user's bank statement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
-    /// Current status of the payout (`paid`, `pending`, `in_transit`, `canceled` or `failed`).
+    /// Current status of the payout: `paid`, `pending`, `in_transit`, `canceled` or `failed`.
     ///
-    /// A payout will be `pending` until it is submitted to the bank, at which point it becomes `in_transit`.
-    /// It will then change to `paid` if the transaction goes through.
-    /// If it does not go through successfully, its status will change to `failed` or `canceled`.
+    /// A payout is `pending` until it is submitted to the bank, when it becomes `in_transit`.
+    /// The status then changes to `paid` if the transaction goes through, or to `failed` or `canceled` (within 5 business days).
+    /// Some failed payouts may initially show as `paid` but then change to `failed`.
     pub status: String,
 
     /// Can be `bank_account` or `card`.
@@ -163,9 +163,11 @@ pub struct CreatePayout<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A set of key-value pairs that you can attach to a payout object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the payout in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
@@ -176,11 +178,11 @@ pub struct CreatePayout<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub method: Option<PayoutMethod>,
 
-    /// The source balance to draw this payout from.
+    /// The balance type of your Stripe balance to draw this payout from.
     ///
     /// Balances for different payment sources are kept separately.
     /// You can find the amounts with the balances API.
-    /// One of `bank_account` or `card`.
+    /// One of `bank_account`, `card`, or `fpx`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_type: Option<PayoutSourceType>,
 
@@ -268,9 +270,11 @@ pub struct UpdatePayout<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A set of key-value pairs that you can attach to a payout object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the payout in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 }
@@ -323,6 +327,7 @@ impl std::fmt::Display for PayoutMethod {
 pub enum PayoutSourceType {
     BankAccount,
     Card,
+    Fpx,
 }
 
 impl PayoutSourceType {
@@ -330,6 +335,7 @@ impl PayoutSourceType {
         match self {
             PayoutSourceType::BankAccount => "bank_account",
             PayoutSourceType::Card => "card",
+            PayoutSourceType::Fpx => "fpx",
         }
     }
 }

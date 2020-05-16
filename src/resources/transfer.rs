@@ -51,9 +51,9 @@ pub struct Transfer {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// A set of key-value pairs that you can attach to a transfer object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the transfer in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
 
     /// A list of reversals that have been applied to the transfer.
@@ -72,13 +72,13 @@ pub struct Transfer {
 
     /// The source balance this transfer came from.
     ///
-    /// One of `card` or `bank_account`.
+    /// One of `card`, `fpx`, or `bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_type: Option<TransferSourceType>,
 
     /// A string that identifies this transaction as part of a group.
     ///
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#grouping-transactions) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
 }
@@ -164,14 +164,14 @@ pub struct CreateTransfer<'a> {
 
     /// The source balance to use for this transfer.
     ///
-    /// One of `bank_account` or `card`.
+    /// One of `bank_account`, `card`, or `fpx`.
     /// For most users, this will default to `card`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_type: Option<TransferSourceType>,
 
     /// A string that identifies this transaction as part of a group.
     ///
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#grouping-transactions) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
@@ -277,6 +277,7 @@ impl<'a> UpdateTransfer<'a> {
 pub enum TransferSourceType {
     BankAccount,
     Card,
+    Fpx,
 }
 
 impl TransferSourceType {
@@ -284,6 +285,7 @@ impl TransferSourceType {
         match self {
             TransferSourceType::BankAccount => "bank_account",
             TransferSourceType::Card => "card",
+            TransferSourceType::Fpx => "fpx",
         }
     }
 }

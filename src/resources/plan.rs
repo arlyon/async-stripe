@@ -18,22 +18,22 @@ pub struct Plan {
     /// Unique identifier for the object.
     pub id: PlanId,
 
-    /// Whether the plan is currently available for new subscriptions.
+    /// Whether the plan can be used for new purchases.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
     /// Specifies a usage aggregation strategy for plans of `usage_type=metered`.
     ///
-    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for picking the last usage record reported within a period, `last_ever` for picking the last usage record ever (across period bounds) or `max` which picks the usage record with the maximum reported usage during a period.
+    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
     /// Defaults to `sum`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_usage: Option<PlanAggregateUsage>,
 
-    /// The amount in %s to be charged on the interval specified.
+    /// The unit amount in %s to be charged, represented as a whole integer if possible.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
-    /// Same as `amount`, but contains a decimal value with at most 12 decimal places.
+    /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_decimal: Option<String>,
 
@@ -61,13 +61,13 @@ pub struct Plan {
     #[serde(default)]
     pub deleted: bool,
 
-    /// One of `day`, `week`, `month` or `year`.
+    /// The frequency at which a subscription is billed.
     ///
-    /// The frequency with which a subscription should be billed.
+    /// One of `day`, `week`, `month` or `year`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval: Option<PlanInterval>,
 
-    /// The number of intervals (specified in the `interval` property) between subscription billings.
+    /// The number of intervals (specified in the `interval` attribute) between subscription billings.
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -100,11 +100,12 @@ pub struct Plan {
 
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
-    /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price, in `graduated` tiering pricing can successively change as the quantity grows.
+    /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
+    /// In `graduated` tiering, pricing can change as the quantity grows.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tiers_mode: Option<PlanTiersMode>,
 
-    /// Apply a transformation to the reported usage or set quantity before computing the billed price.
+    /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     ///
     /// Cannot be combined with `tiers`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -114,9 +115,11 @@ pub struct Plan {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 
-    /// Configures how the quantity per period should be determined, can be either `metered` or `licensed`.
+    /// Configures how the quantity per period should be determined.
     ///
-    /// `licensed` will automatically bill the `quantity` set for a plan when adding it to a subscription, `metered` will aggregate the total usage based on usage records.
+    /// Can be either `metered` or `licensed`.
+    /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
+    /// `metered` aggregates the total usage based on usage records.
     /// Defaults to `licensed`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_type: Option<PlanUsageType>,
@@ -207,7 +210,7 @@ pub struct CreatePlan<'a> {
 
     /// Specifies a usage aggregation strategy for plans of `usage_type=metered`.
     ///
-    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for picking the last usage record reported within a period, `last_ever` for picking the last usage record ever (across period bounds) or `max` which picks the usage record with the maximum reported usage during a period.
+    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
     /// Defaults to `sum`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_usage: Option<PlanAggregateUsage>,
@@ -259,9 +262,11 @@ pub struct CreatePlan<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 
-    /// A set of key-value pairs that you can attach to a plan object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the plan in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
@@ -295,9 +300,11 @@ pub struct CreatePlan<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 
-    /// Configures how the quantity per period should be determined, can be either `metered` or `licensed`.
+    /// Configures how the quantity per period should be determined.
     ///
-    /// `licensed` will automatically bill the `quantity` set for a plan when adding it to a subscription, `metered` will aggregate the total usage based on usage records.
+    /// Can be either `metered` or `licensed`.
+    /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
+    /// `metered` aggregates the total usage based on usage records.
     /// Defaults to `licensed`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_type: Option<PlanUsageType>,
@@ -331,7 +338,7 @@ impl<'a> CreatePlan<'a> {
 /// The parameters for `Plan::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPlans<'a> {
-    /// Only return plans that are active or inactive (e.g., pass `false` to list all inactive products).
+    /// Only return plans that are active or inactive (e.g., pass `false` to list all inactive plans).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
@@ -395,9 +402,11 @@ pub struct UpdatePlan<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A set of key-value pairs that you can attach to a plan object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the plan in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 

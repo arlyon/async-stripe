@@ -36,6 +36,9 @@ pub struct Source {
     pub amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_becs_debit: Option<SourceTypeAuBecsDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<SourceTypeBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -304,14 +307,16 @@ pub struct SourceReceiverFlow {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
 
-    /// The total amount that was charged by you.
+    /// The total amount that was moved to your balance.
     ///
+    /// This is almost always equal to the amount charged.
+    /// In rare cases when customers deposit excess funds and we are unable to refund those, those funds get moved to your balance and show up in amount_charged as well.
     /// The amount charged is expressed in the source's currency.
     pub amount_charged: i64,
 
     /// The total amount received by the receiver source.
     ///
-    /// `amount_received = amount_returned + amount_charged` is true at all time.
+    /// `amount_received = amount_returned + amount_charged` should be true for consumed sources unless customers deposit excess funds.
     /// The amount received is expressed in the source's currency.
     pub amount_received: i64,
 
@@ -404,6 +409,18 @@ pub struct SourceTypeAlipay {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SourceTypeAuBecsDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bsb_number: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last4: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -821,6 +838,7 @@ pub struct CreateSource<'a> {
     ///
     /// This is the amount for which the source will be chargeable once ready.
     /// Required for `single_use` sources.
+    /// Not supported for `receiver` type sources, where charge amount may not be specified until funds land.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
@@ -851,9 +869,6 @@ pub struct CreateSource<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate: Option<SourceMandateParams>,
 
-    /// A set of key-value pairs that you can attach to a source object.
-    ///
-    /// It can be useful for storing additional information about the source in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
@@ -897,7 +912,7 @@ pub struct CreateSource<'a> {
 
     /// The `type` of the source to create.
     ///
-    /// Required unless `customer` and `original_source` are specified (see the [Shared card Sources](https://stripe.com/docs/sources/connect#shared-card-sources) guide).
+    /// Required unless `customer` and `original_source` are specified (see the [Cloning card Sources](https://stripe.com/docs/sources/connect#cloning-card-sources) guide).
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<&'a str>,
@@ -940,9 +955,11 @@ pub struct UpdateSource<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate: Option<SourceMandateParams>,
 
-    /// A set of key-value pairs that you can attach to a source object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the source in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
@@ -1408,6 +1425,7 @@ pub enum SourceType {
     AchCreditTransfer,
     AchDebit,
     Alipay,
+    AuBecsDebit,
     Bancontact,
     Card,
     CardPresent,
@@ -1429,6 +1447,7 @@ impl SourceType {
             SourceType::AchCreditTransfer => "ach_credit_transfer",
             SourceType::AchDebit => "ach_debit",
             SourceType::Alipay => "alipay",
+            SourceType::AuBecsDebit => "au_becs_debit",
             SourceType::Bancontact => "bancontact",
             SourceType::Card => "card",
             SourceType::CardPresent => "card_present",

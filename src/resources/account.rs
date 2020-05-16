@@ -6,7 +6,7 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BusinessType, Card, Currency, DelayDays, Dob, File, Person, Weekday,
+    Address, BankAccount, Card, Currency, DelayDays, Dob, File, Person, Weekday,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -18,13 +18,11 @@ pub struct Account {
     /// Unique identifier for the object.
     pub id: AccountId,
 
-    /// Optional information related to the business.
+    /// Business information about the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_profile: Option<BusinessProfile>,
 
     /// The business type.
-    ///
-    /// Can be `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_type: Option<BusinessType>,
 
@@ -113,9 +111,6 @@ impl Account {
 
     /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
     /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
-    ///
-    /// For Standard accounts, parameters other than `country`, `email`, and `type`
-    /// are used to prefill the account application that we ask the account holder to complete.
     pub fn create(client: &Client, params: CreateAccount<'_>) -> Response<Account> {
         client.post_form("/accounts", &params)
     }
@@ -135,11 +130,11 @@ impl Account {
         client.post_form(&format!("/accounts/{}", id), &params)
     }
 
-    /// With [Connect](https://stripe.com/docs/connect), you may delete Custom accounts you manage.
+    /// With [Connect](https://stripe.com/docs/connect), you can delete Custom or Express accounts you manage.
     ///
-    /// Custom accounts created using test-mode keys can be deleted at any time.
+    /// Accounts created using test-mode keys can be deleted at any time.
     ///
-    /// Custom accounts created using live-mode keys may only be deleted once all balances are zero.  If you are looking to close your own account, use the [data tab in your account settings](https://dashboard.stripe.com/account/data) instead.
+    /// Accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
     pub fn delete(client: &Client, id: &AccountId) -> Response<Deleted<AccountId>> {
         client.delete(&format!("/accounts/{}", id))
     }
@@ -157,7 +152,7 @@ impl Object for Account {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BusinessProfile {
-    /// The merchant category code for the account.
+    /// [The merchant category code for the account](https://stripe.com/docs/connect/setting-mcc).
     ///
     /// MCCs are used to classify businesses based on the goods or services they provide.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -196,17 +191,37 @@ pub struct BusinessProfile {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilities {
+    /// The status of the BECS Direct Debit (AU) payments capability of the account, or whether the account can directly process BECS Direct Debit (AU) charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_becs_debit_payments: Option<CapabilityStatus>,
+
+    /// The status of the card issuing capability of the account, or whether you can use Issuing to distribute funds on cards.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_issuing: Option<CapabilityStatus>,
+
     /// The status of the card payments capability of the account, or whether the account can directly process credit and debit card charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_payments: Option<CapabilityStatus>,
+
+    /// The status of the JCB payments capability of the account, or whether the account (Japan only) can directly process JCB credit card charges in JPY currency.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jcb_payments: Option<CapabilityStatus>,
 
     /// The status of the legacy payments capability of the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub legacy_payments: Option<CapabilityStatus>,
 
+    /// The status of the tax reporting 1099-K (US) capability of the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_reporting_us_1099_k: Option<CapabilityStatus>,
+
+    /// The status of the tax reporting 1099-MISC (US) capability of the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_reporting_us_1099_misc: Option<CapabilityStatus>,
+
     /// The status of the transfers capability of the account, or whether your platform can transfer funds to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfers: Option<AccountCapabilitiesTransfers>,
+    pub transfers: Option<CapabilityStatus>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -229,6 +244,10 @@ pub struct AccountRequirements {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disabled_reason: Option<String>,
 
+    /// The fields that need to be collected again because validation or verification failed for some reason.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub errors: Option<Vec<AccountRequirementsError>>,
+
     /// The fields that need to be collected assuming all volume thresholds are reached.
     ///
     /// As they become required, these fields appear in `currently_due` as well, and the `current_deadline` is set.
@@ -241,11 +260,24 @@ pub struct AccountRequirements {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub past_due: Option<Vec<String>>,
 
-    /// Additional fields that may be required depending on the results of verification or review for provided requirements.
+    /// Fields that may become required depending on the results of verification or review.
     ///
-    /// If any of these fields become required, they appear in `currently_due` or `past_due`.
+    /// An empty array unless an asynchronous verification is pending.
+    /// If verification fails, the fields in this array become required and move to `currently_due` or `past_due`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_verification: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountRequirementsError {
+    /// The code for the type of error.
+    pub code: AccountRequirementsErrorCode,
+
+    /// An informative message that indicates the error type and provides additional details about the error.
+    pub reason: String,
+
+    /// The specific user onboarding requirement field (in the requirements hash) that needs to be resolved.
+    pub requirement: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -279,6 +311,10 @@ pub struct BrandingSettings {
     /// A CSS hex color value representing the primary branding color for this account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub primary_color: Option<String>,
+
+    /// A CSS hex color value representing the secondary branding color for this account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub secondary_color: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -387,7 +423,14 @@ pub struct Company {
     /// Whether the company's directors have been provided.
     ///
     /// This Boolean will be `true` if you've manually indicated that all directors are provided via [the `directors_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-directors_provided).
-    pub directors_provided: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub directors_provided: Option<bool>,
+
+    /// Whether the company's executives have been provided.
+    ///
+    /// This Boolean will be `true` if you've manually indicated that all executives are provided via [the `executives_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-executives_provided), or if Stripe determined that sufficient executives were provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub executives_provided: Option<bool>,
 
     /// The company's legal name.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -403,13 +446,20 @@ pub struct Company {
 
     /// Whether the company's owners have been provided.
     ///
-    /// This Boolean will be `true` if you've manually indicated that all owners are provided via [the `owners_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-owners_provided), or if Stripe determined that all owners were provided.
+    /// This Boolean will be `true` if you've manually indicated that all owners are provided via [the `owners_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-owners_provided), or if Stripe determined that sufficient owners were provided.
     /// Stripe determines ownership requirements using both the number of owners provided and their total percent ownership (calculated by adding the `percent_ownership` of each owner together).
-    pub owners_provided: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub owners_provided: Option<bool>,
 
     /// The company's phone number (used for verification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+
+    /// The category identifying the legal structure of the company or legal entity.
+    ///
+    /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub structure: Option<CompanyStructure>,
 
     /// Whether the company's business ID number was provided.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -435,7 +485,7 @@ pub struct LegalEntityCompanyVerification {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LegalEntityCompanyVerificationDocument {
-    /// The back of a document returned by a [file upload](#create_file) with a `purpose` value of `additional_verification`.
+    /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<Expandable<File>>,
 
@@ -449,7 +499,7 @@ pub struct LegalEntityCompanyVerificationDocument {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub details_code: Option<String>,
 
-    /// The front of a document returned by a [file upload](#create_file) with a `purpose` value of `additional_verification`.
+    /// The front of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<Expandable<File>>,
 }
@@ -485,19 +535,17 @@ pub struct CreateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_token: Option<&'a str>,
 
-    /// Non-essential business information about the account.
+    /// Business information about the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_profile: Option<BusinessProfile>,
 
     /// The business type.
-    ///
-    /// Can be `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<&'a str>,
+    pub business_type: Option<BusinessType>,
 
     /// Information about the company or business.
     ///
-    /// This field is null unless `business_type` is set to `company`.
+    /// This field is null unless `business_type` is set to `company`, `government_entity`, or `non_profit`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<CompanyParams>,
 
@@ -538,13 +586,15 @@ pub struct CreateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<PersonParams>,
 
-    /// A set of key-value pairs that you can attach to an `Account` object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// This can be useful for storing additional information about the account in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
-    /// The set of capabilities you want to unlock for this account (US only).
+    /// The set of capabilities you want to unlock for this account.
     ///
     /// Each capability will be inactive until you have provided its specific requirements and Stripe has verified them.
     /// An account may have some of its requested capabilities be active and some be inactive.
@@ -639,19 +689,17 @@ pub struct UpdateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_token: Option<&'a str>,
 
-    /// Non-essential business information about the account.
+    /// Business information about the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_profile: Option<BusinessProfile>,
 
     /// The business type.
-    ///
-    /// Can be `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<&'a str>,
+    pub business_type: Option<BusinessType>,
 
     /// Information about the company or business.
     ///
-    /// This field is null unless `business_type` is set to `company`.
+    /// This field is null unless `business_type` is set to `company`, `government_entity`, or `non_profit`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<CompanyParams>,
 
@@ -686,13 +734,15 @@ pub struct UpdateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<PersonParams>,
 
-    /// A set of key-value pairs that you can attach to an `Account` object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// This can be useful for storing additional information about the account in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
-    /// The set of capabilities you want to unlock for this account (US only).
+    /// The set of capabilities you want to unlock for this account.
     ///
     /// Each capability will be inactive until you have provided its specific requirements and Stripe has verified them.
     /// An account may have some of its requested capabilities be active and some be inactive.
@@ -730,9 +780,11 @@ impl<'a> UpdateAccount<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AcceptTos {
-    pub date: Timestamp,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Timestamp>,
 
-    pub ip: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
@@ -768,6 +820,9 @@ pub struct CompanyParams {
     pub directors_provided: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub executives_provided: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -781,6 +836,9 @@ pub struct CompanyParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub structure: Option<CompanyParamsStructure>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id: Option<String>,
@@ -862,6 +920,9 @@ pub struct BrandingSettingsParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub primary_color: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub secondary_color: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -876,7 +937,7 @@ pub struct CardPaymentsSettingsParams {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CompanyParamsVerification {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<CompanyParamsVerificationDocument>,
+    pub document: Option<VerificationDocumentParams>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -906,19 +967,10 @@ pub struct PayoutSettingsParams {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonVerificationParams {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_document: Option<PersonVerificationParamsAdditionalDocument>,
+    pub additional_document: Option<VerificationDocumentParams>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<PersonVerificationDocumentParams>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CompanyParamsVerificationDocument {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<String>,
+    pub document: Option<VerificationDocumentParams>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -928,24 +980,6 @@ pub struct DeclineChargeOnParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc_failure: Option<bool>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PersonVerificationDocumentParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PersonVerificationParamsAdditionalDocument {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -964,38 +998,187 @@ pub struct TransferScheduleParams {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct VerificationDocumentParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
 pub enum ExternalAccount {
     BankAccount(BankAccount),
     Card(Card),
 }
 
-/// An enum representing the possible values of an `AccountCapabilities`'s `transfers` field.
+/// An enum representing the possible values of an `AccountRequirementsError`'s `code` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum AccountCapabilitiesTransfers {
-    Active,
-    Inactive,
-    Pending,
+pub enum AccountRequirementsErrorCode {
+    InvalidAddressCityStatePostalCode,
+    InvalidStreetAddress,
+    InvalidValueOther,
+    VerificationDocumentAddressMismatch,
+    VerificationDocumentAddressMissing,
+    VerificationDocumentCorrupt,
+    VerificationDocumentCountryNotSupported,
+    VerificationDocumentDobMismatch,
+    VerificationDocumentDuplicateType,
+    VerificationDocumentExpired,
+    VerificationDocumentFailedCopy,
+    VerificationDocumentFailedGreyscale,
+    VerificationDocumentFailedOther,
+    VerificationDocumentFailedTestMode,
+    VerificationDocumentFraudulent,
+    VerificationDocumentIdNumberMismatch,
+    VerificationDocumentIdNumberMissing,
+    VerificationDocumentIncomplete,
+    VerificationDocumentInvalid,
+    VerificationDocumentManipulated,
+    VerificationDocumentMissingBack,
+    VerificationDocumentMissingFront,
+    VerificationDocumentNameMismatch,
+    VerificationDocumentNameMissing,
+    VerificationDocumentNationalityMismatch,
+    VerificationDocumentNotReadable,
+    VerificationDocumentNotUploaded,
+    VerificationDocumentPhotoMismatch,
+    VerificationDocumentTooLarge,
+    VerificationDocumentTypeNotSupported,
+    VerificationFailedAddressMatch,
+    VerificationFailedBusinessIecNumber,
+    VerificationFailedDocumentMatch,
+    VerificationFailedIdNumberMatch,
+    VerificationFailedKeyedIdentity,
+    VerificationFailedKeyedMatch,
+    VerificationFailedNameMatch,
+    VerificationFailedOther,
 }
 
-impl AccountCapabilitiesTransfers {
+impl AccountRequirementsErrorCode {
     pub fn as_str(self) -> &'static str {
         match self {
-            AccountCapabilitiesTransfers::Active => "active",
-            AccountCapabilitiesTransfers::Inactive => "inactive",
-            AccountCapabilitiesTransfers::Pending => "pending",
+            AccountRequirementsErrorCode::InvalidAddressCityStatePostalCode => {
+                "invalid_address_city_state_postal_code"
+            }
+            AccountRequirementsErrorCode::InvalidStreetAddress => "invalid_street_address",
+            AccountRequirementsErrorCode::InvalidValueOther => "invalid_value_other",
+            AccountRequirementsErrorCode::VerificationDocumentAddressMismatch => {
+                "verification_document_address_mismatch"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentAddressMissing => {
+                "verification_document_address_missing"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentCorrupt => {
+                "verification_document_corrupt"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentCountryNotSupported => {
+                "verification_document_country_not_supported"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentDobMismatch => {
+                "verification_document_dob_mismatch"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentDuplicateType => {
+                "verification_document_duplicate_type"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentExpired => {
+                "verification_document_expired"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentFailedCopy => {
+                "verification_document_failed_copy"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentFailedGreyscale => {
+                "verification_document_failed_greyscale"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentFailedOther => {
+                "verification_document_failed_other"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentFailedTestMode => {
+                "verification_document_failed_test_mode"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentFraudulent => {
+                "verification_document_fraudulent"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentIdNumberMismatch => {
+                "verification_document_id_number_mismatch"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentIdNumberMissing => {
+                "verification_document_id_number_missing"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentIncomplete => {
+                "verification_document_incomplete"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentInvalid => {
+                "verification_document_invalid"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentManipulated => {
+                "verification_document_manipulated"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentMissingBack => {
+                "verification_document_missing_back"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentMissingFront => {
+                "verification_document_missing_front"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentNameMismatch => {
+                "verification_document_name_mismatch"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentNameMissing => {
+                "verification_document_name_missing"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentNationalityMismatch => {
+                "verification_document_nationality_mismatch"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentNotReadable => {
+                "verification_document_not_readable"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentNotUploaded => {
+                "verification_document_not_uploaded"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentPhotoMismatch => {
+                "verification_document_photo_mismatch"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentTooLarge => {
+                "verification_document_too_large"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentTypeNotSupported => {
+                "verification_document_type_not_supported"
+            }
+            AccountRequirementsErrorCode::VerificationFailedAddressMatch => {
+                "verification_failed_address_match"
+            }
+            AccountRequirementsErrorCode::VerificationFailedBusinessIecNumber => {
+                "verification_failed_business_iec_number"
+            }
+            AccountRequirementsErrorCode::VerificationFailedDocumentMatch => {
+                "verification_failed_document_match"
+            }
+            AccountRequirementsErrorCode::VerificationFailedIdNumberMatch => {
+                "verification_failed_id_number_match"
+            }
+            AccountRequirementsErrorCode::VerificationFailedKeyedIdentity => {
+                "verification_failed_keyed_identity"
+            }
+            AccountRequirementsErrorCode::VerificationFailedKeyedMatch => {
+                "verification_failed_keyed_match"
+            }
+            AccountRequirementsErrorCode::VerificationFailedNameMatch => {
+                "verification_failed_name_match"
+            }
+            AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
         }
     }
 }
 
-impl AsRef<str> for AccountCapabilitiesTransfers {
+impl AsRef<str> for AccountRequirementsErrorCode {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for AccountCapabilitiesTransfers {
+impl std::fmt::Display for AccountRequirementsErrorCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -1032,7 +1215,40 @@ impl std::fmt::Display for AccountType {
     }
 }
 
-/// An enum representing the possible values of an `AccountCapabilities`'s `card_payments` field.
+/// An enum representing the possible values of an `CreateAccount`'s `business_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum BusinessType {
+    Company,
+    GovernmentEntity,
+    Individual,
+    NonProfit,
+}
+
+impl BusinessType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            BusinessType::Company => "company",
+            BusinessType::GovernmentEntity => "government_entity",
+            BusinessType::Individual => "individual",
+            BusinessType::NonProfit => "non_profit",
+        }
+    }
+}
+
+impl AsRef<str> for BusinessType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for BusinessType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `au_becs_debit_payments` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CapabilityStatus {
@@ -1063,22 +1279,146 @@ impl std::fmt::Display for CapabilityStatus {
     }
 }
 
+/// An enum representing the possible values of an `CompanyParams`'s `structure` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CompanyParamsStructure {
+    GovernmentInstrumentality,
+    GovernmentalUnit,
+    IncorporatedNonProfit,
+    LimitedLiabilityPartnership,
+    MultiMemberLlc,
+    PrivateCompany,
+    PrivateCorporation,
+    PrivatePartnership,
+    PublicCompany,
+    PublicCorporation,
+    PublicPartnership,
+    SoleProprietorship,
+    TaxExemptGovernmentInstrumentality,
+    UnincorporatedAssociation,
+    UnincorporatedNonProfit,
+}
+
+impl CompanyParamsStructure {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CompanyParamsStructure::GovernmentInstrumentality => "government_instrumentality",
+            CompanyParamsStructure::GovernmentalUnit => "governmental_unit",
+            CompanyParamsStructure::IncorporatedNonProfit => "incorporated_non_profit",
+            CompanyParamsStructure::LimitedLiabilityPartnership => "limited_liability_partnership",
+            CompanyParamsStructure::MultiMemberLlc => "multi_member_llc",
+            CompanyParamsStructure::PrivateCompany => "private_company",
+            CompanyParamsStructure::PrivateCorporation => "private_corporation",
+            CompanyParamsStructure::PrivatePartnership => "private_partnership",
+            CompanyParamsStructure::PublicCompany => "public_company",
+            CompanyParamsStructure::PublicCorporation => "public_corporation",
+            CompanyParamsStructure::PublicPartnership => "public_partnership",
+            CompanyParamsStructure::SoleProprietorship => "sole_proprietorship",
+            CompanyParamsStructure::TaxExemptGovernmentInstrumentality => {
+                "tax_exempt_government_instrumentality"
+            }
+            CompanyParamsStructure::UnincorporatedAssociation => "unincorporated_association",
+            CompanyParamsStructure::UnincorporatedNonProfit => "unincorporated_non_profit",
+        }
+    }
+}
+
+impl AsRef<str> for CompanyParamsStructure {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CompanyParamsStructure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `Company`'s `structure` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CompanyStructure {
+    GovernmentInstrumentality,
+    GovernmentalUnit,
+    IncorporatedNonProfit,
+    LimitedLiabilityPartnership,
+    MultiMemberLlc,
+    PrivateCompany,
+    PrivateCorporation,
+    PrivatePartnership,
+    PublicCompany,
+    PublicCorporation,
+    PublicPartnership,
+    SoleProprietorship,
+    TaxExemptGovernmentInstrumentality,
+    UnincorporatedAssociation,
+    UnincorporatedNonProfit,
+}
+
+impl CompanyStructure {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CompanyStructure::GovernmentInstrumentality => "government_instrumentality",
+            CompanyStructure::GovernmentalUnit => "governmental_unit",
+            CompanyStructure::IncorporatedNonProfit => "incorporated_non_profit",
+            CompanyStructure::LimitedLiabilityPartnership => "limited_liability_partnership",
+            CompanyStructure::MultiMemberLlc => "multi_member_llc",
+            CompanyStructure::PrivateCompany => "private_company",
+            CompanyStructure::PrivateCorporation => "private_corporation",
+            CompanyStructure::PrivatePartnership => "private_partnership",
+            CompanyStructure::PublicCompany => "public_company",
+            CompanyStructure::PublicCorporation => "public_corporation",
+            CompanyStructure::PublicPartnership => "public_partnership",
+            CompanyStructure::SoleProprietorship => "sole_proprietorship",
+            CompanyStructure::TaxExemptGovernmentInstrumentality => {
+                "tax_exempt_government_instrumentality"
+            }
+            CompanyStructure::UnincorporatedAssociation => "unincorporated_association",
+            CompanyStructure::UnincorporatedNonProfit => "unincorporated_non_profit",
+        }
+    }
+}
+
+impl AsRef<str> for CompanyStructure {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CompanyStructure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `CreateAccount`'s `requested_capabilities` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum RequestedCapability {
+    AuBecsDebitPayments,
     CardIssuing,
     CardPayments,
+    JcbPayments,
     LegacyPayments,
+    #[serde(rename = "tax_reporting_us_1099_k")]
+    TaxReportingUs1099K,
+    #[serde(rename = "tax_reporting_us_1099_misc")]
+    TaxReportingUs1099Misc,
     Transfers,
 }
 
 impl RequestedCapability {
     pub fn as_str(self) -> &'static str {
         match self {
+            RequestedCapability::AuBecsDebitPayments => "au_becs_debit_payments",
             RequestedCapability::CardIssuing => "card_issuing",
             RequestedCapability::CardPayments => "card_payments",
+            RequestedCapability::JcbPayments => "jcb_payments",
             RequestedCapability::LegacyPayments => "legacy_payments",
+            RequestedCapability::TaxReportingUs1099K => "tax_reporting_us_1099_k",
+            RequestedCapability::TaxReportingUs1099Misc => "tax_reporting_us_1099_misc",
             RequestedCapability::Transfers => "transfers",
         }
     }

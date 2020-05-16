@@ -20,9 +20,15 @@ pub fn object_mappings() -> ObjectMap {
         // Config for object types
         ("account_business_profile", "business_profile"),
         ("account_business_type", "business_type"),
+        ("account_capabilities_card_issuing", "capability_status"),
         ("account_capabilities_card_payments", "capability_status"),
         ("account_capabilities_legacy_payments", "capability_status"),
         ("account_capabilities_platform_payments", "capability_status"),
+        ("account_capabilities_jcb_payments", "capability_status"),
+        ("account_capabilities_au_becs_debit_payments", "capability_status"),
+        ("account_capabilities_tax_reporting_us_1099_k", "capability_status"),
+        ("account_capabilities_tax_reporting_us_1099_misc", "capability_status"),
+        ("account_capabilities_transfers", "capability_status"),
         ("account_branding_settings", "branding_settings"),
         ("account_card_payments_settings", "card_payments_settings"),
         ("account_dashboard_settings", "dashboard_settings"),
@@ -37,6 +43,7 @@ pub fn object_mappings() -> ObjectMap {
         ("issuing_authorization_merchant_data", "merchant_data"),
         ("issuing_authorization_wallet_provider", "wallet_provider"),
         ("invoice_collection_method", "collection_method"),
+        ("invoices_resource_invoice_tax_id_type", "tax_id_type"),
         ("invoice_tax_amount", "tax_amount"),
         ("invoiceitem", "invoice_item"),
         ("legal_entity_company", "company"),
@@ -54,10 +61,14 @@ pub fn object_mappings() -> ObjectMap {
         ("payment_method_card_wallet_samsung_pay", "wallet_samsung_pay"),
         ("payment_method_card_wallet_visa_checkout", "wallet_visa_checkout"),
         ("payment_method_card_wallet_type", "wallet_type"),
+        ("payment_pages_payment_page_resources_shipping_address_collection", "shipping_address_collection"),
+        ("tax_id_data_type", "tax_id_type"),
 
         // Config for `account` params
         ("create_account_company", "company_params"),
         ("update_account_company", "company_params"),
+        ("company_params_verification_document", "verification_document_params"),
+        ("person_verification_params_additional_document", "verification_document_params"),
         ("create_account_individual", "person_params"),
         ("update_account_individual", "person_params"),
         ("create_account_requested_capabilities", "requested_capability"),
@@ -74,7 +85,7 @@ pub fn object_mappings() -> ObjectMap {
         ("card_payments_settings_params_decline_on", "decline_charge_on_params"),
         ("payout_settings_params_schedule", "transfer_schedule_params"),
         ("person_params_verification", "person_verification_params"),
-        ("person_verification_params_document", "person_verification_document_params"),
+        ("person_verification_params_document", "verification_document_params"),
         ("transfer_schedule_params_interval", "transfer_schedule_interval"),
         ("invoice_setting_subscription_schedule_setting", "subscription_schedule_invoice_settings"),
 
@@ -93,6 +104,9 @@ pub fn object_mappings() -> ObjectMap {
         // Config for `invoiceitem` params
         ("create_invoiceitem", "create_invoice_item"),
         ("update_invoiceitem", "update_invoice_item"),
+        ("create_invoice_item_price_data", "invoice_item_price_data"),
+        ("update_invoice_item_price_data", "invoice_item_price_data"),
+        ("add_invoice_items_price_data", "invoice_item_price_data"),
 
         // Config for `payment_intent` params
         ("create_order_items", "order_item_params"),
@@ -119,6 +133,24 @@ pub fn object_mappings() -> ObjectMap {
         ("create_subscription_schedule_phases", "subscription_schedule_phases_params"),
         ("update_subscription_schedule_phases", "subscription_schedule_phases_params"),
         */
+        ("subscription_pending_invoice_item_interval_interval", "plan_interval"),
+        ("create_subscription_pending_invoice_item_interval_interval", "plan_interval"),
+        ("update_subscription_pending_invoice_item_interval_interval", "plan_interval"),
+        ("subscription_item_price_data_recurring_interval", "plan_interval"),
+        ("create_subscription_item_price_data", "subscription_item_price_data"),
+        ("update_subscription_item_price_data", "subscription_item_price_data"),
+        ("create_subscription_items_price_data", "subscription_item_price_data"),
+        ("update_subscription_items_price_data", "subscription_item_price_data"),
+        ("subscription_schedule_phases_plans_params_price_data", "subscription_item_price_data"),
+        ("subscription_item_payment_behavior", "subscription_payment_behavior"),
+        ("subscription_proration_behavior", "subscription_proration_behavior"),
+        ("subscription_item_proration_behavior", "subscription_proration_behavior"),
+        ("subscription_schedule_proration_behavior", "subscription_proration_behavior"),
+        ("subscription_schedule_phase_configuration_proration_behavior", "subscription_proration_behavior"),
+        ("create_subscription_schedule_phases_proration_behavior", "subscription_proration_behavior"),
+        ("update_subscription_schedule_phases_proration_behavior", "subscription_proration_behavior"),
+        ("create_subscription_schedule_phases_plans", "subscription_schedule_phases_plans_params"),
+        ("update_subscription_schedule_phases_plans", "subscription_schedule_phases_plans_params"),
         ("create_subscription_schedule_phases_plans", "subscription_schedule_phases_plans_params"),
         ("update_subscription_schedule_phases_plans", "subscription_schedule_phases_plans_params"),
         ("create_subscription_schedule_invoice_settings", "subscription_schedule_invoice_settings"),
@@ -127,7 +159,17 @@ pub fn object_mappings() -> ObjectMap {
         ("update_subscription_schedule_phases_invoice_settings", "subscription_schedule_invoice_settings"),
         ("create_subscription_schedule_renewal_interval", "subscription_schedule_renewal_interval_params"),
         ("update_subscription_schedule_renewal_interval", "subscription_schedule_renewal_interval_params"),
+        ("create_subscription_schedule_renewal_interval", "subscription_schedule_renewal_interval_params"),
+        ("update_subscription_schedule_renewal_interval", "subscription_schedule_renewal_interval_params"),
+        ("create_subscription_schedule_default_settings", "subscription_schedule_default_settings_params"),
+        ("update_subscription_schedule_default_settings", "subscription_schedule_default_settings_params"),
+        ("create_subscription_add_invoice_items", "add_invoice_items"),
+        ("update_subscription_add_invoice_items", "add_invoice_items"),
+        ("create_subscription_schedule_phases_add_invoice_items", "add_invoice_items"),
+        ("update_subscription_schedule_phases_add_invoice_items", "add_invoice_items"),
         ("subscription_schedule_end_behavior_filter", "subscription_schedule_renewal_behavior"),
+        ("subscription_schedules_resource_default_settings", "subscription_schedule_default_settings"),
+        ("subscription_schedule_default_settings_params_billing_thresholds", "subscription_schedule_billing_thresholds"),
 
         // Config for `webhook` params
         ("webhook_endpoint_enabled_events", "event_filter"),
@@ -195,7 +237,15 @@ pub fn field_mappings() -> FieldMap {
             ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
         ),
         (
+            ("issuing_authorization_verification_data", "address_postal_code_check"),
+            ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
+        ),
+        (
             ("issuing_authorization_verification_data", "cvc_check"),
+            ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
+        ),
+        (
+            ("issuing_authorization_verification_data", "expiry_check"),
             ("IssuingAuthorizationCheck", "IssuingAuthorizationCheck"),
         ),
         (("issuing_card", "brand"), ("CardBrand", "CardBrand")),
@@ -293,6 +343,14 @@ pub fn field_mappings() -> FieldMap {
             ("subscription_schedule_renewal_interval", "interval"),
             ("PlanInterval", "PlanInterval"),
         ),
+        (
+            ("subscription_schedule_default_settings", "collection_method"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
+        (
+            ("subscription_schedule_default_settings_params", "collection_method"),
+            ("CollectionMethod", "Option<CollectionMethod>"),
+        ),
         (("token", "type"), ("TokenType", "TokenType")),
         (("transfer", "source_type"), ("", "Option<TransferSourceType>")),
         (("transfer_schedule", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
@@ -387,7 +445,7 @@ pub fn field_mappings() -> FieldMap {
             ("SubscriptionBillingThresholds", "Option<SubscriptionBillingThresholds>"),
         ),
         (
-            ("create_subscription_items", "billing_thresholds"),
+            ("create_subscription_item", "billing_thresholds"),
             ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
         ),
         (
@@ -476,6 +534,10 @@ pub fn field_mappings() -> FieldMap {
             ("subscription_schedule_phases_plans_params", "billing_thresholds"),
             ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
         ),
+        (
+            ("subscription_schedule_default_settings_params", "invoice_settings"),
+            ("SubscriptionScheduleInvoiceSettings", "Option<SubscriptionScheduleInvoiceSettings>"),
+        ),
 
         // Miscellaneous params
         (("create_recipient", "type"), ("", "RecipientType")),
@@ -492,10 +554,17 @@ pub fn field_mappings() -> FieldMap {
             ("PackageDimensions", "Option<PackageDimensions>"),
         ),
         (("create_plan_tiers", "up_to"), ("UpTo", "Option<UpTo>")),
+        (("create_price_tiers", "up_to"), ("UpTo", "Option<UpTo>")),
         (("update_file_link", "expires_at"), ("Scheduled", "Option<Scheduled>")),
         (("create_token_account", "business_type"), ("BusinessType", "Option<BusinessType>")),
         (("create_token_account", "company"), ("CompanyParams", "Option<CompanyParams>")),
         (("create_token_account", "individual"), ("PersonParams", "Option<PersonParams>")),
+
+        (("create_token_person", "address"), ("Address", "Option<Address>")),
+        (("create_token_person", "address_kana"), ("Address", "Option<Address>")),
+        (("create_token_person", "address_kanji"), ("Address", "Option<Address>")),
+        (("create_token_person", "dob"), ("Dob", "Option<Address>")),
+        (("create_token_person", "verification"), ("PersonVerificationParams", "Option<PersonVerificationParams>")),
         (
             ("create_payment_method", "billing_details"),
             ("BillingDetails", "Option<BillingDetails>"),

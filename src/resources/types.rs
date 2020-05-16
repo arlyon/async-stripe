@@ -474,10 +474,6 @@ pub struct SubscriptionBillingThresholds {
     pub reset_billing_cycle_anchor: Option<bool>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionItemBillingThresholds {
-    pub usage_gte: i64,
-}
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(untagged)]

@@ -3,8 +3,8 @@
 // ======================================
 
 use crate::ids::IssuingCardholderId;
-use crate::params::{Metadata, Object, Timestamp};
-use crate::resources::{Address, Currency, MerchantCategory, SpendingLimit};
+use crate::params::{Expandable, Metadata, Object, Timestamp};
+use crate::resources::{Address, Currency, File, MerchantCategory, SpendingLimit};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingCardholder".
@@ -13,10 +13,11 @@ pub struct IssuingCardholder {
     /// Unique identifier for the object.
     pub id: IssuingCardholderId,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub authorization_controls: Option<IssuingCardholderAuthorizationControls>,
-
     pub billing: IssuingCardholderAddress,
+
+    /// Additional information about a `company` cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company: Option<IssuingCardholderCompany>,
 
     /// Time at which the object was created.
     ///
@@ -27,8 +28,9 @@ pub struct IssuingCardholder {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
-    /// Whether or not this cardholder is the default cardholder.
-    pub is_default: bool,
+    /// Additional information about an `individual` cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub individual: Option<IssuingCardholderIndividual>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -47,10 +49,18 @@ pub struct IssuingCardholder {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number: Option<String>,
 
-    /// One of `active`, `inactive`, `blocked`, or `pending`.
+    pub requirements: IssuingCardholderRequirements,
+
+    /// Spending rules that give you some control over how this cardholder's cards can be used.
+    ///
+    /// Refer to our [authorizations](https://stripe.com/docs/issuing/purchases/authorizations) documentation for more details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub spending_controls: Option<IssuingCardholderAuthorizationControls>,
+
+    /// Specifies whether to permit authorizations on this cardholder's cards.
     pub status: IssuingCardholderStatus,
 
-    /// One of `individual` or `business_entity`.
+    /// One of `individual` or `company`.
     #[serde(rename = "type")]
     pub type_: IssuingCardholderType,
 }
@@ -68,18 +78,15 @@ impl Object for IssuingCardholder {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderAddress {
     pub address: Address,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderAuthorizationControls {
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations permitted on this card.
+    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations permitted on this cardholder's cards.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_categories: Option<Vec<MerchantCategory>>,
 
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to always decline on this card.
+    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to always decline on this cardholder's cards.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blocked_categories: Option<Vec<MerchantCategory>>,
 
@@ -92,6 +99,153 @@ pub struct IssuingCardholderAuthorizationControls {
     pub spending_limits_currency: Option<Currency>,
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct IssuingCardholderCompany {
+    /// Whether the company's business ID number was provided.
+    pub tax_id_provided: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct IssuingCardholderIndividual {
+    /// The date of birth of this cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<IssuingCardholderIndividualDob>,
+
+    /// The first name of this cardholder.
+    pub first_name: String,
+
+    /// The last name of this cardholder.
+    pub last_name: String,
+
+    /// Government-issued ID document for this cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification: Option<IssuingCardholderVerification>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct IssuingCardholderIndividualDob {
+    /// The day of birth, between 1 and 31.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub day: Option<i64>,
+
+    /// The month of birth, between 1 and 12.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub month: Option<i64>,
+
+    /// The four-digit year of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub year: Option<i64>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct IssuingCardholderRequirements {
+    /// If `disabled_reason` is present, all cards will decline authorizations with `cardholder_verification_required` reason.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disabled_reason: Option<IssuingCardholderRequirementsDisabledReason>,
+
+    /// Array of fields that need to be collected in order to verify and re-enable the cardholder.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub past_due: Option<Vec<IssuingCardholderRequirementsPastDue>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct IssuingCardholderVerification {
+    /// An identifying document, either a passport or local ID card.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<IssuingCardholderIdDocument>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct IssuingCardholderIdDocument {
+    /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<Expandable<File>>,
+
+    /// The front of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<Expandable<File>>,
+}
+
+/// An enum representing the possible values of an `IssuingCardholderRequirements`'s `disabled_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardholderRequirementsDisabledReason {
+    Listed,
+    #[serde(rename = "rejected.listed")]
+    RejectedListed,
+    UnderReview,
+}
+
+impl IssuingCardholderRequirementsDisabledReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingCardholderRequirementsDisabledReason::Listed => "listed",
+            IssuingCardholderRequirementsDisabledReason::RejectedListed => "rejected.listed",
+            IssuingCardholderRequirementsDisabledReason::UnderReview => "under_review",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardholderRequirementsDisabledReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardholderRequirementsDisabledReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `IssuingCardholderRequirements`'s `past_due` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardholderRequirementsPastDue {
+    #[serde(rename = "company.tax_id")]
+    CompanyTaxId,
+    #[serde(rename = "individual.dob.day")]
+    IndividualDobDay,
+    #[serde(rename = "individual.dob.month")]
+    IndividualDobMonth,
+    #[serde(rename = "individual.dob.year")]
+    IndividualDobYear,
+    #[serde(rename = "individual.first_name")]
+    IndividualFirstName,
+    #[serde(rename = "individual.last_name")]
+    IndividualLastName,
+    #[serde(rename = "individual.verification.document")]
+    IndividualVerificationDocument,
+}
+
+impl IssuingCardholderRequirementsPastDue {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingCardholderRequirementsPastDue::CompanyTaxId => "company.tax_id",
+            IssuingCardholderRequirementsPastDue::IndividualDobDay => "individual.dob.day",
+            IssuingCardholderRequirementsPastDue::IndividualDobMonth => "individual.dob.month",
+            IssuingCardholderRequirementsPastDue::IndividualDobYear => "individual.dob.year",
+            IssuingCardholderRequirementsPastDue::IndividualFirstName => "individual.first_name",
+            IssuingCardholderRequirementsPastDue::IndividualLastName => "individual.last_name",
+            IssuingCardholderRequirementsPastDue::IndividualVerificationDocument => {
+                "individual.verification.document"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardholderRequirementsPastDue {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardholderRequirementsPastDue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `IssuingCardholder`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -99,7 +253,6 @@ pub enum IssuingCardholderStatus {
     Active,
     Blocked,
     Inactive,
-    Pending,
 }
 
 impl IssuingCardholderStatus {
@@ -108,7 +261,6 @@ impl IssuingCardholderStatus {
             IssuingCardholderStatus::Active => "active",
             IssuingCardholderStatus::Blocked => "blocked",
             IssuingCardholderStatus::Inactive => "inactive",
-            IssuingCardholderStatus::Pending => "pending",
         }
     }
 }
@@ -129,14 +281,14 @@ impl std::fmt::Display for IssuingCardholderStatus {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardholderType {
-    BusinessEntity,
+    Company,
     Individual,
 }
 
 impl IssuingCardholderType {
     pub fn as_str(self) -> &'static str {
         match self {
-            IssuingCardholderType::BusinessEntity => "business_entity",
+            IssuingCardholderType::Company => "company",
             IssuingCardholderType::Individual => "individual",
         }
     }

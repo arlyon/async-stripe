@@ -155,7 +155,6 @@ pub struct CreateCoupon<'a> {
 
     /// Unique string of your choice that will be used to identify this coupon when applying it to a customer.
     ///
-    /// This is often a specific code you'll give to your customer to use when signing up (e.g., `FALL25OFF`).
     /// If you don't want to specify a particular code, you can leave the ID blank and we'll generate a random code for you.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<&'a str>,
@@ -166,9 +165,11 @@ pub struct CreateCoupon<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_redemptions: Option<i64>,
 
-    /// A set of key-value pairs that you can attach to a coupon object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the coupon in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
@@ -260,9 +261,11 @@ pub struct UpdateCoupon<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A set of key-value pairs that you can attach to a coupon object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the coupon in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 

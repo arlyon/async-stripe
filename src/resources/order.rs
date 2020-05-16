@@ -21,6 +21,7 @@ pub struct Order {
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the order.
     pub amount: i64,
 
+    /// The total amount that was returned to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_returned: Option<i64>,
 
@@ -28,6 +29,10 @@ pub struct Order {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
 
+    /// A fee in cents that will be applied to the order and transferred to the application owner’s Stripe account.
+    ///
+    /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
+    /// For more information, see the application fees documentation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee: Option<i64>,
 
@@ -55,6 +60,7 @@ pub struct Order {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
+    /// External coupon code to load for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_coupon_code: Option<String>,
 
@@ -71,6 +77,7 @@ pub struct Order {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
 
+    /// A list of returns that have taken place for this order.
     #[serde(default)]
     pub returns: List<OrderReturn>,
 
@@ -103,6 +110,9 @@ pub struct Order {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status_transitions: Option<StatusTransitions>,
 
+    /// Time at which the object was last updated.
+    ///
+    /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub updated: Option<Timestamp>,
 
@@ -197,15 +207,19 @@ pub struct DeliveryEstimate {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StatusTransitions {
+    /// The time that the order was canceled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled: Option<Timestamp>,
 
+    /// The time that the order was fulfilled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fulfiled: Option<Timestamp>,
 
+    /// The time that the order was paid.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paid: Option<Timestamp>,
 
+    /// The time that the order was returned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub returned: Option<Timestamp>,
 }
@@ -247,10 +261,11 @@ pub struct CreateOrder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<OrderItemParams>>,
 
-    /// A set of key-value pairs that you can attach to an order object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// Limited to 500 characters.
-    /// Metadata can be useful for storing additional information about the order in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
@@ -361,9 +376,11 @@ pub struct UpdateOrder<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A set of key-value pairs that you can attach to a product object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the order in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 

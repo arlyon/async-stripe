@@ -8,8 +8,8 @@ use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use crate::resources::{
     ApplicationFee, ApplicationFeeRefund, BalanceTransactionStatus, Charge,
     ConnectCollectionTransfer, Currency, Dispute, FeeType, IssuingAuthorization,
-    IssuingTransaction, Payout, PlatformTaxFee, Refund, ReserveTransaction, Topup, Transfer,
-    TransferReversal,
+    IssuingTransaction, Payout, PlatformTaxFee, Refund, ReserveTransaction, TaxDeductedAtSource,
+    Topup, Transfer, TransferReversal,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -43,6 +43,13 @@ pub struct BalanceTransaction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// The exchange rate used, if applicable, for this transaction.
+    ///
+    /// Specifically, if money was converted from currency A to currency B, then the `amount` in currency A, times `exchange_rate`, would be the `amount` in currency B.
+    /// For example, suppose you charged a customer 10.00 EUR.
+    /// Then the PaymentIntent's `amount` would be `1000` and `currency` would be `eur`.
+    /// Suppose this was converted into 12.34 USD in your Stripe account.
+    /// Then the BalanceTransaction's `amount` would be `1234`, `currency` would be `usd`, and `exchange_rate` would be `1.234`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub exchange_rate: Option<f64>,
 
@@ -54,6 +61,9 @@ pub struct BalanceTransaction {
 
     /// Net amount of the transaction, in %s.
     pub net: i64,
+
+    /// [Learn more](https://stripe.com/docs/reports/reporting-categories) about how reporting categories can help you understand balance transactions from an accounting perspective.
+    pub reporting_category: String,
 
     /// The Stripe object to which this transaction is related.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -67,6 +77,7 @@ pub struct BalanceTransaction {
     /// Transaction type: `adjustment`, `advance`, `advance_funding`, `application_fee`, `application_fee_refund`, `charge`, `connect_collection_transfer`, `issuing_authorization_hold`, `issuing_authorization_release`, `issuing_transaction`, `payment`, `payment_failure_refund`, `payment_refund`, `payout`, `payout_cancel`, `payout_failure`, `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `stripe_fee`, `stripe_fx_fee`, `tax_fee`, `topup`, `topup_reversal`, `transfer`, `transfer_cancel`, `transfer_failure`, or `transfer_refund`.
     ///
     /// [Learn more](https://stripe.com/docs/reports/balance-transaction-types) about balance transaction types and what they represent.
+    /// If you are looking to classify transactions for accounting purposes, you might want to consider `reporting_category` instead.
     #[serde(rename = "type")]
     pub type_: BalanceTransactionType,
 }
@@ -109,6 +120,7 @@ pub struct Fee {
     /// Amount of the fee, in cents.
     pub amount: i64,
 
+    /// ID of the Connect application that earned the fee.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
 
@@ -137,6 +149,10 @@ pub struct ListBalanceTransactions<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
+    /// Only return transactions in a certain currency.
+    ///
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
@@ -214,6 +230,7 @@ pub enum BalanceTransactionSource {
     PlatformTaxFee(PlatformTaxFee),
     Refund(Refund),
     ReserveTransaction(ReserveTransaction),
+    TaxDeductedAtSource(TaxDeductedAtSource),
     Topup(Topup),
     Transfer(Transfer),
     TransferReversal(TransferReversal),

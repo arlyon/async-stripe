@@ -21,10 +21,6 @@ pub struct Customer {
     /// Unique identifier for the object.
     pub id: CustomerId,
 
-    /// This field has been renamed to `balance` and will be removed in a future API version.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_balance: Option<i64>,
-
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -49,6 +45,8 @@ pub struct Customer {
     pub currency: Option<Currency>,
 
     /// ID of the default payment source for the customer.
+    ///
+    /// If you are using payment methods created via the PaymentMethods API, see the [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) field instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<Expandable<PaymentSource>>,
 
@@ -97,6 +95,10 @@ pub struct Customer {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
+    /// The suffix of the customer's next invoice number, e.g., 0001.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub next_invoice_sequence: Option<i64>,
+
     /// The customer's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
@@ -129,19 +131,6 @@ pub struct Customer {
     /// The customer's tax IDs.
     #[serde(default)]
     pub tax_ids: List<TaxId>,
-
-    /// The customer's tax information.
-    ///
-    /// Appears on invoices emailed to this customer.
-    /// This field has been deprecated and will be removed in a future API version, for further information view the [migration guide](https://stripe.com/docs/billing/migration/taxes#moving-from-taxinfo-to-customer-tax-ids).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_info: Option<TaxInfo>,
-
-    /// Describes the status of looking up the tax ID provided in `tax_info`.
-    ///
-    /// This field has been deprecated and will be removed in a future API version, for further information view the [migration guide](https://stripe.com/docs/billing/migration/taxes#moving-from-taxinfo-to-customer-tax-ids).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_info_verification: Option<TaxInfoVerification>,
 }
 
 impl Customer {
@@ -204,7 +193,7 @@ pub struct InvoiceSettingCustomerSetting {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<Vec<InvoiceSettingCustomField>>,
 
-    /// ID of the default payment method used for subscriptions and invoices for the customer.
+    /// ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<Expandable<PaymentMethod>>,
 
@@ -222,37 +211,9 @@ pub struct InvoiceSettingCustomField {
     pub value: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TaxInfo {
-    /// The customer's tax ID number.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_id: Option<String>,
-
-    /// The type of ID number.
-    #[serde(rename = "type")]
-    pub type_: String,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TaxInfoVerification {
-    /// The state of verification for this customer.
-    ///
-    /// Possible values are `unverified`, `pending`, or `verified`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
-
-    /// The official name associated with the tax ID returned from the external provider.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified_name: Option<String>,
-}
-
 /// The parameters for `Customer::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCustomer<'a> {
-    /// This field has been renamed to `balance` and will be removed in a future API version.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_balance: Option<i64>,
-
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -293,15 +254,23 @@ pub struct CreateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<CustomerInvoiceSettings>,
 
-    /// A set of key-value pairs that you can attach to a customer object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the customer in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
     /// The customer's full name or business name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<&'a str>,
+
+    /// The sequence to be used on the customer's next invoice.
+    ///
+    /// Defaults to 1.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub next_invoice_sequence: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<PaymentMethodId>,
@@ -332,19 +301,11 @@ pub struct CreateCustomer<'a> {
     /// The customer's tax IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id_data: Option<Vec<TaxIdData>>,
-
-    /// The customer's tax information.
-    ///
-    /// Appears on invoices emailed to this customer.
-    /// This parameter has been deprecated and will be removed in a future API version, for further information view the [migration guide](https://stripe.com/docs/billing/migration/taxes#moving-from-taxinfo-to-customer-tax-ids).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_info: Option<TaxInfoParams>,
 }
 
 impl<'a> CreateCustomer<'a> {
     pub fn new() -> Self {
         CreateCustomer {
-            account_balance: Default::default(),
             address: Default::default(),
             balance: Default::default(),
             coupon: Default::default(),
@@ -355,6 +316,7 @@ impl<'a> CreateCustomer<'a> {
             invoice_settings: Default::default(),
             metadata: Default::default(),
             name: Default::default(),
+            next_invoice_sequence: Default::default(),
             payment_method: Default::default(),
             phone: Default::default(),
             preferred_locales: Default::default(),
@@ -362,7 +324,6 @@ impl<'a> CreateCustomer<'a> {
             source: Default::default(),
             tax_exempt: Default::default(),
             tax_id_data: Default::default(),
-            tax_info: Default::default(),
         }
     }
 }
@@ -420,10 +381,6 @@ impl<'a> ListCustomers<'a> {
 /// The parameters for `Customer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCustomer<'a> {
-    /// This field has been renamed to `balance` and will be removed in a future API version.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_balance: Option<i64>,
-
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -449,6 +406,8 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_card: Option<CardId>,
 
+    /// If you are using payment methods created via the PaymentMethods API, see the [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) parameter.
+    ///
     /// Provide the ID of a payment source already attached to this customer to make it this customer's default payment source.
     ///
     /// If you want to add a new payment source and make it the default, see the [source](https://stripe.com/docs/api/customers/update#update_customer-source) property.
@@ -482,15 +441,23 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<CustomerInvoiceSettings>,
 
-    /// A set of key-value pairs that you can attach to a customer object.
+    /// Set of key-value pairs that you can attach to an object.
     ///
-    /// It can be useful for storing additional information about the customer in a structured format.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
     /// The customer's full name or business name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<&'a str>,
+
+    /// The sequence to be used on the customer's next invoice.
+    ///
+    /// Defaults to 1.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub next_invoice_sequence: Option<i64>,
 
     /// The customer's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -515,13 +482,6 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<CustomerTaxExemptFilter>,
 
-    /// The customer's tax information.
-    ///
-    /// Appears on invoices emailed to this customer.
-    /// This parameter has been deprecated and will be removed in a future API version, for further information view the [migration guide](https://stripe.com/docs/billing/migration/taxes#moving-from-taxinfo-to-customer-tax-ids).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_info: Option<TaxInfoParams>,
-
     /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
     ///
     /// This will always overwrite any trials that might apply via a subscribed plan.
@@ -535,7 +495,6 @@ pub struct UpdateCustomer<'a> {
 impl<'a> UpdateCustomer<'a> {
     pub fn new() -> Self {
         UpdateCustomer {
-            account_balance: Default::default(),
             address: Default::default(),
             balance: Default::default(),
             coupon: Default::default(),
@@ -550,12 +509,12 @@ impl<'a> UpdateCustomer<'a> {
             invoice_settings: Default::default(),
             metadata: Default::default(),
             name: Default::default(),
+            next_invoice_sequence: Default::default(),
             phone: Default::default(),
             preferred_locales: Default::default(),
             shipping: Default::default(),
             source: Default::default(),
             tax_exempt: Default::default(),
-            tax_info: Default::default(),
             trial_end: Default::default(),
         }
     }
@@ -576,17 +535,9 @@ pub struct CustomerInvoiceSettings {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxIdData {
     #[serde(rename = "type")]
-    pub type_: TaxIdDataType,
+    pub type_: TaxIdType,
 
     pub value: String,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TaxInfoParams {
-    pub tax_id: String,
-
-    #[serde(rename = "type")]
-    pub type_: TaxInfoType,
 }
 
 /// An enum representing the possible values of an `Customer`'s `tax_exempt` field.
@@ -654,60 +605,73 @@ impl std::fmt::Display for CustomerTaxExemptFilter {
 /// An enum representing the possible values of an `TaxIdData`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum TaxIdDataType {
+pub enum TaxIdType {
     AuAbn,
+    BrCnpj,
+    BrCpf,
+    CaBn,
+    CaQst,
+    ChVat,
+    EsCif,
     EuVat,
+    HkBr,
     InGst,
+    JpCn,
+    KrBrn,
+    LiUid,
+    MxRfc,
+    MyItn,
+    MySst,
     NoVat,
     NzGst,
+    RuInn,
+    SgGst,
+    SgUen,
+    ThVat,
+    TwVat,
+    UsEin,
+    ZaVat,
 }
 
-impl TaxIdDataType {
+impl TaxIdType {
     pub fn as_str(self) -> &'static str {
         match self {
-            TaxIdDataType::AuAbn => "au_abn",
-            TaxIdDataType::EuVat => "eu_vat",
-            TaxIdDataType::InGst => "in_gst",
-            TaxIdDataType::NoVat => "no_vat",
-            TaxIdDataType::NzGst => "nz_gst",
+            TaxIdType::AuAbn => "au_abn",
+            TaxIdType::BrCnpj => "br_cnpj",
+            TaxIdType::BrCpf => "br_cpf",
+            TaxIdType::CaBn => "ca_bn",
+            TaxIdType::CaQst => "ca_qst",
+            TaxIdType::ChVat => "ch_vat",
+            TaxIdType::EsCif => "es_cif",
+            TaxIdType::EuVat => "eu_vat",
+            TaxIdType::HkBr => "hk_br",
+            TaxIdType::InGst => "in_gst",
+            TaxIdType::JpCn => "jp_cn",
+            TaxIdType::KrBrn => "kr_brn",
+            TaxIdType::LiUid => "li_uid",
+            TaxIdType::MxRfc => "mx_rfc",
+            TaxIdType::MyItn => "my_itn",
+            TaxIdType::MySst => "my_sst",
+            TaxIdType::NoVat => "no_vat",
+            TaxIdType::NzGst => "nz_gst",
+            TaxIdType::RuInn => "ru_inn",
+            TaxIdType::SgGst => "sg_gst",
+            TaxIdType::SgUen => "sg_uen",
+            TaxIdType::ThVat => "th_vat",
+            TaxIdType::TwVat => "tw_vat",
+            TaxIdType::UsEin => "us_ein",
+            TaxIdType::ZaVat => "za_vat",
         }
     }
 }
 
-impl AsRef<str> for TaxIdDataType {
+impl AsRef<str> for TaxIdType {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for TaxIdDataType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `TaxInfoParams`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum TaxInfoType {
-    Vat,
-}
-
-impl TaxInfoType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            TaxInfoType::Vat => "vat",
-        }
-    }
-}
-
-impl AsRef<str> for TaxInfoType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TaxInfoType {
+impl std::fmt::Display for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
