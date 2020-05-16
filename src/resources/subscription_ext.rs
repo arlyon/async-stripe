@@ -29,11 +29,13 @@ impl Subscription {
 }
 
 impl CreateSubscriptionItems {
-    pub fn new(plan: impl AsRef<str>) -> Self {
+    pub fn new() -> Self {
         Self {
             billing_thresholds: Default::default(),
             metadata: Default::default(),
-            plan: plan.as_ref().to_owned(),
+            plan: Default::default(),
+            price: Default::default(),
+            price_data: Default::default(),
             quantity: Default::default(),
             tax_rates: Default::default(),
         }
