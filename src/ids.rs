@@ -2,7 +2,8 @@ macro_rules! def_id_serde_impls {
     ($struct_name:ident) => {
         impl serde::Serialize for $struct_name {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-                where S: serde::ser::Serializer
+            where
+                S: serde::ser::Serializer,
             {
                 self.as_str().serialize(serializer)
             }
@@ -10,7 +11,8 @@ macro_rules! def_id_serde_impls {
 
         impl<'de> serde::Deserialize<'de> for $struct_name {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                where D: serde::de::Deserializer<'de>
+            where
+                D: serde::de::Deserializer<'de>,
             {
                 let s: String = serde::Deserialize::deserialize(deserializer)?;
                 s.parse::<Self>().map_err(::serde::de::Error::custom)
@@ -548,7 +550,8 @@ impl InvoiceId {
 }
 impl serde::Serialize for InvoiceId {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where S: serde::ser::Serializer
+    where
+        S: serde::ser::Serializer,
     {
         if self.0.is_empty() {
             let val: Option<&str> = None;
@@ -560,7 +563,8 @@ impl serde::Serialize for InvoiceId {
 }
 impl<'de> serde::Deserialize<'de> for InvoiceId {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where D: serde::de::Deserializer<'de>
+    where
+        D: serde::de::Deserializer<'de>,
     {
         let s: String = serde::Deserialize::deserialize(deserializer)?;
         if s.is_empty() {
