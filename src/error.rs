@@ -44,6 +44,7 @@ impl Error {
 
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        #[allow(deprecated)]
         f.write_str(std::error::Error::description(self))?;
         match *self {
             Error::Stripe(ref err) => write!(f, ": {}", err),
@@ -111,6 +112,7 @@ pub enum HttpError {
 
 impl std::fmt::Display for HttpError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        #[allow(deprecated)]
         match *self {
             HttpError::Stream(ref err) => err.fmt(f),
             HttpError::Timeout => f.write_str(std::error::Error::description(self)),
@@ -120,6 +122,7 @@ impl std::fmt::Display for HttpError {
 
 impl std::error::Error for HttpError {
     fn description(&self) -> &str {
+        #[allow(deprecated)]
         match *self {
             HttpError::Stream(ref err) => err.description(),
             HttpError::Timeout => "request timed out",
@@ -328,6 +331,7 @@ pub enum WebhookError {
 
 impl std::fmt::Display for WebhookError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        #[allow(deprecated)]
         f.write_str(std::error::Error::description(self))?;
         match *self {
             WebhookError::BadKey => Ok(()),
