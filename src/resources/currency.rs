@@ -451,6 +451,7 @@ pub struct ParseCurrencyError(/* private */ ());
 
 impl std::fmt::Display for ParseCurrencyError {
     fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        #[allow(deprecated)]
         fmt.write_str(::std::error::Error::description(self))
     }
 }
