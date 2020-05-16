@@ -6,7 +6,8 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BusinessType, Card, Currency, DelayDays, Dob, File, Person, Weekday,
+    Address, BankAccount, BusinessType, Card, CompanyVerificationParams, Currency, DelayDays, Dob,
+    File, Person, PersonVerificationParams, Weekday,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -475,16 +476,16 @@ pub struct Company {
 
     /// Information on the verification state of the company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<LegalEntityCompanyVerification>,
+    pub verification: Option<CompanyVerification>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct LegalEntityCompanyVerification {
-    pub document: LegalEntityCompanyVerificationDocument,
+pub struct CompanyVerification {
+    pub document: CompanyVerificationDocument,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct LegalEntityCompanyVerificationDocument {
+pub struct CompanyVerificationDocument {
     /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<Expandable<File>>,
@@ -850,7 +851,7 @@ pub struct CompanyParams {
     pub vat_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<CompanyParamsVerification>,
+    pub verification: Option<CompanyVerificationParams>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -935,12 +936,6 @@ pub struct CardPaymentsSettingsParams {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CompanyParamsVerification {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<VerificationDocumentParams>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentsSettingsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
@@ -965,15 +960,6 @@ pub struct PayoutSettingsParams {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PersonVerificationParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_document: Option<VerificationDocumentParams>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<VerificationDocumentParams>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DeclineChargeOnParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub avs_failure: Option<bool>,
@@ -995,15 +981,6 @@ pub struct TransferScheduleParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weekly_anchor: Option<Weekday>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct VerificationDocumentParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

@@ -1695,7 +1695,7 @@ fn check_object_doc_url(object: &str) -> Option<String> {
     }
 
     // Make a request to the stripe docs to see if the path exists
-    if let Ok(mut resp) = reqwest::blocking::get(&doc_url) {
+    if let Ok(resp) = reqwest::blocking::get(&doc_url) {
         if resp.status().is_success() {
             let text = resp.text().unwrap();
             if text.contains("<title>Stripe API Reference") && text.contains("object</title>") {

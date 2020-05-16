@@ -49,6 +49,8 @@ pub fn object_mappings() -> ObjectMap {
         ("invoiceitem", "invoice_item"),
         ("legal_entity_company", "company"),
         ("legal_entity_japan_address", "address"),
+        ("legal_entity_company_verification", "company_verification"),
+        ("legal_entity_company_verification_document", "company_verification_document"),
         ("legal_entity_person_verification", "person_verification"),
         ("legal_entity_person_verification_document", "person_verification_document"),
         ("line_item", "invoice_line_item"),
@@ -69,6 +71,7 @@ pub fn object_mappings() -> ObjectMap {
         ("create_account_company", "company_params"),
         ("update_account_company", "company_params"),
         ("company_params_verification_document", "verification_document_params"),
+        ("person_verification_params_document", "verification_document_params"),
         ("person_verification_params_additional_document", "verification_document_params"),
         ("create_account_individual", "person_params"),
         ("update_account_individual", "person_params"),
@@ -85,10 +88,10 @@ pub fn object_mappings() -> ObjectMap {
         ("update_account_tos_acceptance", "accept_tos"),
         ("card_payments_settings_params_decline_on", "decline_charge_on_params"),
         ("payout_settings_params_schedule", "transfer_schedule_params"),
-        ("person_params_verification", "person_verification_params"),
         ("person_verification_params_document", "verification_document_params"),
         ("transfer_schedule_params_interval", "transfer_schedule_interval"),
         ("invoice_setting_subscription_schedule_setting", "subscription_schedule_invoice_settings"),
+        ("create_token_person_verification", "person_verification_params"),
 
         // Config for `charge` params
         ("create_charge_transfer_data", "transfer_data_params"),
@@ -367,10 +370,12 @@ pub fn field_mappings() -> FieldMap {
         (("company_params", "address"), ("Address", "Option<Address>")),
         (("company_params", "address_kana"), ("Address", "Option<Address>")),
         (("company_params", "address_kanji"), ("Address", "Option<Address>")),
+        (("company_params", "verification"), ("CompanyVerificationParams", "Option<CompanyVerificationParams>")),
         (("person_params", "address"), ("Address", "Option<Address>")),
         (("person_params", "address_kana"), ("Address", "Option<Address>")),
         (("person_params", "address_kanji"), ("Address", "Option<Address>")),
         (("person_params", "dob"), ("Dob", "Option<Dob>")),
+        (("person_params", "verification"), ("PersonVerificationParams", "Option<PersonVerificationParams>")),
 
         // Config for `charge` params
         (("create_charge", "shipping"), ("Shipping", "Option<Shipping>")),
@@ -567,7 +572,6 @@ pub fn field_mappings() -> FieldMap {
         (("create_token_person", "address_kana"), ("Address", "Option<Address>")),
         (("create_token_person", "address_kanji"), ("Address", "Option<Address>")),
         (("create_token_person", "dob"), ("Dob", "Option<Dob>")),
-        (("create_token_person", "verification"), ("PersonVerificationParams", "Option<PersonVerificationParams>")),
         (
             ("create_payment_method", "billing_details"),
             ("BillingDetails", "Option<BillingDetails>"),

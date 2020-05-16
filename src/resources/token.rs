@@ -6,8 +6,7 @@ use crate::config::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
 use crate::params::{Expand, Metadata, Object, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BusinessType, Card, CompanyParams, Dob, PersonParams,
-    PersonVerificationParams, TokenType,
+    Address, BankAccount, BusinessType, Card, CompanyParams, Dob, PersonParams, TokenType,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -209,4 +208,22 @@ pub struct CreateTokenPersonRelationship {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PersonVerificationParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_document: Option<VerificationDocumentParams>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<VerificationDocumentParams>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct VerificationDocumentParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<String>,
 }
