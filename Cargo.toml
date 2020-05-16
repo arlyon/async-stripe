@@ -10,7 +10,7 @@ version = "0.12.2"
 description = "API bindings for the Stripe v1 HTTP API"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
-  "Kevin Stenerson <kstenerson@developers.wyyerd.com>"
+  "Kevin Stenerson <kestred@users.noreply.github.com>"
 ]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/wyyerd/stripe-rs"
