@@ -59,13 +59,9 @@
 
 mod client {
     pub mod r#async;
-    #[cfg(all(feature = "blocking", not(feature = "async")))]
+    #[cfg(feature = "blocking")]
     pub mod blocking;
 }
-
-// Re-export `pub mod async` to be backward-compatible with 0.11.x
-#[cfg(feature = "async")]
-pub use client::r#async;
 
 mod error;
 mod ids;
@@ -86,7 +82,7 @@ pub use crate::params::{
 };
 pub use crate::resources::*;
 
-#[cfg(all(feature = "blocking", not(feature = "async")))]
+#[cfg(feature = "blocking")]
 mod config {
     pub(crate) use crate::client::blocking::{err, ok};
     pub type Client = crate::client::blocking::Client;
@@ -108,7 +104,7 @@ mod config {
     pub type Response<T> = crate::client::blocking::Response<T>;
 }
 
-#[cfg(any(not(feature = "blocking"), feature = "async"))]
+#[cfg(not(feature = "blocking"))]
 mod config {
     pub(crate) use crate::client::r#async::{err, ok};
     pub type Client = crate::client::r#async::Client;

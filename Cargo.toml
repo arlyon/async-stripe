@@ -56,12 +56,8 @@ webhook-endpoints = []
 webhook-events = ["events", "hmac", "sha2"]
 events = []
 
-# Deprecated. Use either `webhook-events` or `webhook-endpoints` instead.
-webhooks = ["webhook-endpoints", "webhook-events"]
-
 # Enable the blocking client
 blocking = ["tokio/rt-core"]
-async = []
 
 default-tls = ["hyper-tls"]
 rustls-tls = ["hyper-rustls"]

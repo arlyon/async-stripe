@@ -191,7 +191,7 @@ impl<T: Paginate + DeserializeOwned + Send + 'static> List<T> {
     /// Stripe's default page size.
     ///
     /// Requires `feature = "blocking"`.
-    #[cfg(all(feature = "blocking", not(feature = "async")))]
+    #[cfg(feature = "blocking")]
     pub fn get_all(self, client: &Client) -> Response<Vec<T>> {
         let mut data = Vec::new();
         let mut next = self;
