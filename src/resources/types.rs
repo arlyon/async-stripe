@@ -474,7 +474,6 @@ pub struct SubscriptionBillingThresholds {
     pub reset_billing_cycle_anchor: Option<bool>,
 }
 
-
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(untagged)]
 pub enum DelayDays {
