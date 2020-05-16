@@ -1,3 +1,11 @@
+# Unreleased
+
+## Features
+- Enable RustTLS behind a feature flag (@kiljacken)
+
+## Fixes
+- Add missing values to `PaymentMethodType` and `PaymentIntentMethodType` (@ThouCheese)
+
 # Version 0.12.1 (February 6, 2020)
 
 ## Fixes

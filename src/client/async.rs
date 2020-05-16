@@ -15,7 +15,7 @@ use hyper_tls::HttpsConnector;
 #[cfg(all(feature = "default-tls", feature = "rustls-tls"))]
 compile_error!("You must enable only one TLS implementation");
 #[cfg(not(any(feature = "default-tls", feature = "rustls-tls")))]
-compile_error!("You must enable at least one TLS implementation");
+compile_error!("You must enable at least one TLS implementation; add `features = [\"default-tls\"]` to your Cargo.toml");
 
 type HttpClient = hyper::Client<HttpsConnector<hyper::client::HttpConnector>, hyper::Body>;
 
