@@ -6,7 +6,7 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, Card, Currency, DelayDays, Dob, File, Person, Weekday,
+    Address, BankAccount, BusinessType, Card, Currency, DelayDays, Dob, File, Person, Weekday,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -1210,39 +1210,6 @@ impl AsRef<str> for AccountType {
 }
 
 impl std::fmt::Display for AccountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `CreateAccount`'s `business_type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum BusinessType {
-    Company,
-    GovernmentEntity,
-    Individual,
-    NonProfit,
-}
-
-impl BusinessType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            BusinessType::Company => "company",
-            BusinessType::GovernmentEntity => "government_entity",
-            BusinessType::Individual => "individual",
-            BusinessType::NonProfit => "non_profit",
-        }
-    }
-}
-
-impl AsRef<str> for BusinessType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for BusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

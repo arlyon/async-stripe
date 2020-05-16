@@ -5,7 +5,8 @@
 use crate::ids::CheckoutSessionId;
 use crate::params::{Expandable, List, Metadata, Object};
 use crate::resources::{
-    Currency, Customer, Item, PaymentIntent, Plan, SetupIntent, Shipping, Sku, Subscription,
+    CheckoutSessionItem, Currency, Customer, PaymentIntent, Plan, SetupIntent, Shipping, Sku,
+    Subscription,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -56,7 +57,7 @@ pub struct CheckoutSession {
     ///
     /// [Expand](https://stripe.com/docs/api/expanding_objects) this field to include it in the response.
     #[serde(default)]
-    pub line_items: List<Item>,
+    pub line_items: List<CheckoutSessionItem>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,

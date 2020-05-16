@@ -136,7 +136,7 @@ pub struct CreateTokenPerson {
     pub address_kanji: Option<Address>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<Address>,
+    pub dob: Option<Dob>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,

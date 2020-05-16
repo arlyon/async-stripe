@@ -29,7 +29,9 @@
 ./openapi/add issuing_cardholder
 ./openapi/add issuing_dispute
 ./openapi/add issuing_transaction
+./openapi/add item
 ./openapi/add line_item
+./openapi/add mandate
 ./openapi/add order
 ./openapi/add order_item
 ./openapi/add order_return
@@ -38,6 +40,7 @@
 ./openapi/add person
 ./openapi/add plan
 ./openapi/add platform_tax_fee
+./openapi/add price
 ./openapi/add product
 ./openapi/add recipient
 ./openapi/add refund
@@ -54,6 +57,7 @@
 #./openapi/add subscription_schedule_revision
 ./openapi/add topup
 ./openapi/add tax_id
+./openapi/add tax_deducted_at_source
 ./openapi/add tax_rate
 ./openapi/add token
 ./openapi/add transfer

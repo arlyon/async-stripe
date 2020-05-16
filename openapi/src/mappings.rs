@@ -6,6 +6,7 @@ pub fn id_renames() -> BTreeMap<&'static str, &'static str> {
         ("invoiceitem", "invoice_item"),
         ("line_item", "invoice_line_item"),
         ("source_transaction", "charge"),
+        ("item", "checkout_session_item"),
     ]
     .iter()
     .copied()
@@ -19,7 +20,6 @@ pub fn object_mappings() -> ObjectMap {
     [
         // Config for object types
         ("account_business_profile", "business_profile"),
-        ("account_business_type", "business_type"),
         ("account_capabilities_card_issuing", "capability_status"),
         ("account_capabilities_card_payments", "capability_status"),
         ("account_capabilities_legacy_payments", "capability_status"),
@@ -42,6 +42,7 @@ pub fn object_mappings() -> ObjectMap {
         ("fee_refund", "application_fee_refund"),
         ("issuing_authorization_merchant_data", "merchant_data"),
         ("issuing_authorization_wallet_provider", "wallet_provider"),
+        ("item", "checkout_session_item"),
         ("invoice_collection_method", "collection_method"),
         ("invoices_resource_invoice_tax_id_type", "tax_id_type"),
         ("invoice_tax_amount", "tax_amount"),
@@ -361,6 +362,8 @@ pub fn field_mappings() -> FieldMap {
         // Config for `account` params
         (("create_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
         (("update_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
+        (("create_account", "business_type"), ("BusinessType", "Option<BusinessType>")),
+        (("update_account", "business_type"), ("BusinessType", "Option<BusinessType>")),
         (("company_params", "address"), ("Address", "Option<Address>")),
         (("company_params", "address_kana"), ("Address", "Option<Address>")),
         (("company_params", "address_kanji"), ("Address", "Option<Address>")),
@@ -457,6 +460,10 @@ pub fn field_mappings() -> FieldMap {
             ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
         ),
         (
+            ("subscription_schedule_phases_plans_params", "billing_thresholds"),
+            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
+        ),
+        (
             ("list_subscriptions", "billing"),
             ("CollectionMethod", "Option<CollectionMethod>"),
         ),
@@ -531,10 +538,6 @@ pub fn field_mappings() -> FieldMap {
             ("PlanInterval", "PlanInterval"),
         ),
         (
-            ("subscription_schedule_phases_plans_params", "billing_thresholds"),
-            ("SubscriptionItemBillingThresholds", "Option<SubscriptionItemBillingThresholds>"),
-        ),
-        (
             ("subscription_schedule_default_settings_params", "invoice_settings"),
             ("SubscriptionScheduleInvoiceSettings", "Option<SubscriptionScheduleInvoiceSettings>"),
         ),
@@ -563,7 +566,7 @@ pub fn field_mappings() -> FieldMap {
         (("create_token_person", "address"), ("Address", "Option<Address>")),
         (("create_token_person", "address_kana"), ("Address", "Option<Address>")),
         (("create_token_person", "address_kanji"), ("Address", "Option<Address>")),
-        (("create_token_person", "dob"), ("Dob", "Option<Address>")),
+        (("create_token_person", "dob"), ("Dob", "Option<Dob>")),
         (("create_token_person", "verification"), ("PersonVerificationParams", "Option<PersonVerificationParams>")),
         (
             ("create_payment_method", "billing_details"),

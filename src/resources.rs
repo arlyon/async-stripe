@@ -15,6 +15,7 @@ mod customer_ext;
 mod dispute;
 mod file;
 mod file_link;
+mod mandate;
 mod payment_intent;
 mod payment_source;
 mod payout;
@@ -24,6 +25,7 @@ mod product;
 mod refund;
 mod reserve_transaction;
 mod setup_intent;
+mod tax_deducted_at_source;
 mod token;
 mod token_ext;
 pub use self::balance::*;
@@ -36,6 +38,7 @@ pub use self::customer_ext::*;
 pub use self::dispute::*;
 pub use self::file::*;
 pub use self::file_link::*;
+pub use self::mandate::*;
 pub use self::payment_intent::*;
 pub use self::payment_source::*;
 pub use self::payout::*;
@@ -45,6 +48,7 @@ pub use self::product::*;
 pub use self::refund::*;
 pub use self::reserve_transaction::*;
 pub use self::setup_intent::*;
+pub use self::tax_deducted_at_source::*;
 pub use self::token::*;
 pub use self::token_ext::*;
 
@@ -76,7 +80,11 @@ pub use self::event::*;
 #[cfg(feature = "checkout")]
 mod checkout_session;
 #[cfg(feature = "checkout")]
+mod item;
+#[cfg(feature = "checkout")]
 pub use self::checkout_session::*;
+#[cfg(feature = "checkout")]
+pub use self::item::*;
 
 // Billing
 #[cfg(feature = "billing")]
@@ -95,6 +103,8 @@ mod line_item;
 mod line_item_ext;
 #[cfg(feature = "billing")]
 mod plan;
+#[cfg(feature = "billing")]
+mod price;
 #[cfg(feature = "billing")]
 mod subscription;
 #[cfg(feature = "billing")]
@@ -123,6 +133,8 @@ pub use self::line_item::*;
 pub use self::line_item_ext::*;
 #[cfg(feature = "billing")]
 pub use self::plan::*;
+#[cfg(feature = "billing")]
+pub use self::price::*;
 #[cfg(feature = "billing")]
 pub use self::subscription::*;
 #[cfg(feature = "billing")]

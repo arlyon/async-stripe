@@ -593,6 +593,11 @@ pub enum SetupIntentUsage {
     OffSession,
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SubscriptionItemBillingThresholds {
+    pub usage_gte: i64,
+}
+
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum BusinessType {
