@@ -94,10 +94,10 @@ To reduce code size, disable default features and enable just the APIs you use:
 
 ```toml
 # Example: Core-only (enough to create a `Charge` or `Card` or `Customer`)
-stripe-rust = { version = "*", default-features = false, features = ["blocking", "default-tls"] }
+stripe-rust = { version = "*", default-features = false, features = ["default-tls"] }
 
 # Example: Support for "Subscriptions" and "Invoices"
-stripe-rust = { version = "*", default-features = false, features = ["blocking", "default-tls", "billing"] }
+stripe-rust = { version = "*", default-features = false, features = ["default-tls", "billing"] }
 ```
 
 Refer to the [Stripe API docs](https://stripe.com/docs/api) to determine

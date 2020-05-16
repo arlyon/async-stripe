@@ -28,7 +28,7 @@ travis-ci = {repository = "wyyerd/stripe-rs"}
 name = "stripe"
 
 [features]
-default = ["full", "webhook-events", "blocking", "default-tls"]
+default = ["full", "webhook-events", "default-tls"]
 full = [
 #    "core",
 #    "payment-methods",
