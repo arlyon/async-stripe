@@ -7,12 +7,14 @@ members = [
 [package]
 name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
 version = "0.13.0-dev"
-description = "API bindings for the Stripe v1 HTTP API"
+description = "API bindings for the Stripe HTTP API"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
   "Kevin Stenerson <kestred@users.noreply.github.com>"
 ]
-license = "MIT/Apache-2.0"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+homepage = "https://github.com/wyyerd/stripe-rs"
 repository = "https://github.com/wyyerd/stripe-rs"
 documentation = "https://docs.rs/stripe-rust"
 keywords = ["stripe", "v1", "api"]

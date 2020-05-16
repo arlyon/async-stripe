@@ -17,6 +17,7 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Invoice {
     /// Unique identifier for the object.
+    #[serde(default = "InvoiceId::none")]
     pub id: InvoiceId,
 
     /// The country of the business associated with this invoice, most often the business creating the invoice.

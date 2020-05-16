@@ -1,3 +1,27 @@
+macro_rules! def_id_serde_impls {
+    ($struct_name:ident) => {
+        impl serde::Serialize for $struct_name {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: serde::ser::Serializer,
+            {
+                self.as_str().serialize(serializer)
+            }
+        }
+
+        impl<'de> serde::Deserialize<'de> for $struct_name {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: serde::de::Deserializer<'de>,
+            {
+                let s: String = serde::Deserialize::deserialize(deserializer)?;
+                s.parse::<Self>().map_err(::serde::de::Error::custom)
+            }
+        }
+    };
+    ($struct_name:ident, _) => {};
+}
+
 macro_rules! def_id {
     ($struct_name:ident: String) => {
         #[derive(Clone, Debug, Eq, PartialEq, Hash)]
@@ -88,7 +112,7 @@ macro_rules! def_id {
             }
         }
     };
-    ($struct_name:ident, $prefix:literal $(| $alt_prefix:literal)*) => {
+    ($struct_name:ident, $prefix:literal $(| $alt_prefix:literal)* $(, { $generate_hint:tt })?) => {
         /// An id for the corresponding object type.
         ///
         /// This type _typically_ will not allocate and
@@ -183,22 +207,7 @@ macro_rules! def_id {
             }
         }
 
-        impl serde::Serialize for $struct_name {
-            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-                where S: serde::ser::Serializer
-            {
-                self.as_str().serialize(serializer)
-            }
-        }
-
-        impl<'de> serde::Deserialize<'de> for $struct_name {
-            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-                where D: serde::de::Deserializer<'de>
-            {
-                let s: String = serde::Deserialize::deserialize(deserializer)?;
-                s.parse::<Self>().map_err(::serde::de::Error::custom)
-            }
-        }
+        def_id_serde_impls!($struct_name $(, $generate_hint )*);
     };
     (#[optional] enum $enum_name:ident { $( $variant_name:ident($($variant_type:tt)*) ),* $(,)* }) => {
         #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
@@ -469,7 +478,7 @@ def_id!(DisputeId, "dp_");
 def_id!(EventId, "evt_");
 def_id!(FileId, "file_");
 def_id!(FileLinkId, "link_");
-def_id!(InvoiceId, "in_");
+def_id!(InvoiceId, "in_", { _ });
 def_id!(InvoiceItemId, "ii_");
 def_id!(
     enum InvoiceLineItemId {
@@ -530,6 +539,44 @@ def_id!(TopupId, "tu_");
 def_id!(TransferId, "tr_");
 def_id!(TransferReversalId, "trr_");
 def_id!(WebhookEndpointId, "we_");
+
+impl InvoiceId {
+    pub(crate) fn none() -> Self {
+        Self("".into())
+    }
+
+    /// An InvoiceId may have a `None` representation when
+    /// received from Stripe if the Invoice is an upcoming invoice.
+    pub fn is_none(&self) -> bool {
+        self.0.is_empty()
+    }
+}
+impl serde::Serialize for InvoiceId {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        if self.0.is_empty() {
+            let val: Option<&str> = None;
+            val.serialize(serializer)
+        } else {
+            self.as_str().serialize(serializer)
+        }
+    }
+}
+impl<'de> serde::Deserialize<'de> for InvoiceId {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::de::Deserializer<'de>,
+    {
+        let s: String = serde::Deserialize::deserialize(deserializer)?;
+        if s.is_empty() {
+            Ok(InvoiceId::none())
+        } else {
+            s.parse::<Self>().map_err(::serde::de::Error::custom)
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
