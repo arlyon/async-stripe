@@ -84,7 +84,23 @@ sha2 = { version = "0.8", optional = true }
 
 [[example]]
 name = "async_create_charge"
-required-features = ["async"]
+#required-features = ["async"]
+
+[[example]]
+name = "create_charge"
+required-features = ["blocking"]
+
+[[example]]
+name = "create_customer"
+required-features = ["blocking"]
+
+[[example]]
+name = "create_customer_with_source"
+required-features = ["blocking"]
+
+[[example]]
+name = "list_customers"
+required-features = ["blocking"]
 
 [dev-dependencies]
 lazy_static = "1.4.0"
