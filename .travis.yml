@@ -35,17 +35,25 @@ script:
   - rustup component add rustfmt
   - cargo fmt -- --check
 
-  # Check "no default features"
-  - cargo build --verbose --workspace --exclude binary_size --no-default-features --features default-tls
+  # Check minimal features "runtime-blocking"
+  - cargo build --verbose --workspace --exclude binary_size --no-default-features --features runtime-blocking
 
-  # Check "full/blocking"
-  - cargo build --verbose --workspace --exclude binary_size
-  - cargo test --verbose --workspace --exclude binary_size
+  # Check "runtime-blocking"
+  - cargo build --verbose --workspace --exclude binary_size --no-default-features --features "runtime-blocking full webhook-events"
+  - cargo test --verbose --workspace --exclude binary_size --no-default-features --features "runtime-blocking full webhook-events"
 
-  # Check "full/async
-  - cargo build --verbose --features async --workspace --exclude binary_size
-  - cargo test --verbose --features async --example async_create_charge
+  # Check "runtime-blocking-rustls"
+  - cargo build --verbose --workspace --exclude binary_size --no-default-features --features "runtime-blocking-rustls full webhook-events"
+  - cargo test --verbose --workspace --exclude binary_size --no-default-features --features "runtime-blocking-rustls full webhook-events"
 
-  # Check "rustls-tls"
-  - cargo build --verbose --no-default-features --features "full webhook-events blocking rustls-tls" --workspace --exclude binary_size
-  - cargo test --verbose --no-default-features --features "full webhook-events blocking rustls-tls" --workspace --exclude binary_size
+  # Check "runtime-tokio-hyper"
+  - cargo build --verbose --workspace --exclude binary_size --features runtime-tokio-hyper
+  - cargo test --verbose --example async_create_charge --features runtime-tokio-hyper
+
+  # Check "runtime-tokio-hyper-rustls"
+  - cargo build --verbose --workspace --exclude binary_size --features runtime-tokio-hyper-rustls
+  - cargo test --verbose --example async_create_charge --features runtime-tokio-hyper-rustls
+
+  # Check "runtime-async-std-surf"
+  - cargo build --verbose --workspace --exclude binary_size --features runtime-async-std-surf
+  - cargo test --verbose --example async_create_charge --features runtime-async-std-surf
