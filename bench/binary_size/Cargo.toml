@@ -8,7 +8,7 @@ edition = "2018"
 
 [features]
 full = ["stripe-rust/full", "stripe-rust/webhook-events"]
-blocking = ["stripe-rust/blocking"]
+runtime-blocking = ["stripe-rust/runtime-blocking"]
 checkout = ["stripe-rust/checkout"]
 billing = ["stripe-rust/billing"]
 connect = ["stripe-rust/connect"]
@@ -19,4 +19,4 @@ sigma = ["stripe-rust/sigma"]
 webhook-endpoints = ["stripe-rust/webhook-endpoints"]
 
 [dependencies]
-stripe-rust = { path = "../../", default-features = false, features = ["default-tls"] }
+stripe-rust = { path = "../../", default-features = false }
