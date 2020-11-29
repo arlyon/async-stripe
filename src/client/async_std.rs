@@ -3,9 +3,8 @@
 use crate::error::{Error, ErrorResponse, RequestError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
-use futures_util::future;
 use serde::de::DeserializeOwned;
-use std::future::Future;
+use std::future::{self, Future};
 use std::pin::Pin;
 use surf::{Body, Url};
 
