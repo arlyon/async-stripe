@@ -1,0 +1,34 @@
+[tasks.openapi-delete]
+cwd = "openapi"
+command = "rm"
+args = ["spec3.json"]
+
+[tasks.openapi-fetch]
+cwd = "openapi"
+command = "wget"
+args = [
+    "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+]
+dependencies = ["openapi-delete"]
+
+[tasks.openapi-generate]
+cwd = "openapi"
+command = "cargo"
+args = ["run", "spec3.json"]
+dependencies = []
+
+[tasks.openapi-copy]
+cwd = "openapi"
+command = "cp"
+args = ["-a", "out/.", "../src/resources/generated"]
+dependencies = ["openapi-generate"]
+
+[tasks.fmt]
+command = "cargo"
+args = ["fmt"]
+
+[tasks.openapi-install]
+dependencies = ["openapi-copy", "fmt"]
+
+[config]
+default_to_workspace = false

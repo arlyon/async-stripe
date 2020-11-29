@@ -1,16 +1,30 @@
-mod mappings;
-mod metadata;
+use std::fs;
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    fs::File,
+};
 
+use anyhow::{Context, Result};
 use heck::{CamelCase, SnakeCase};
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde_json::{json, Value as Json};
-use std::collections::{BTreeMap, BTreeSet};
-use std::fs;
 
-fn main() {
-    let raw = fs::read_to_string("openapi/spec3.json").unwrap();
-    let spec: Json = serde_json::from_str(&raw).unwrap();
+mod mappings;
+mod metadata;
+
+fn main() -> Result<()> {
+    let mut args = std::env::args().skip(1);
+
+    let in_path = args.next().unwrap_or("spec3.json".to_string());
+    let out_path = args.next().unwrap_or("out".to_string());
+    let cache_path = args.next().unwrap_or("cache".to_string());
+
+    std::fs::create_dir_all(&out_path).context("could not create out folder")?;
+    std::fs::create_dir_all(&cache_path).context("could not create out folder")?;
+
+    let raw = File::open(in_path).context("failed to load the specfile. does it exist?")?;
+    let spec: Json = serde_json::from_reader(&raw).context("failed to read json from specfile")?;
 
     let id_renames = mappings::id_renames();
     let object_mappings = mappings::object_mappings();
@@ -104,7 +118,7 @@ fn main() {
             out.push_str("\tfn id(&self) -> Self::Id { self.id.clone() }\n");
             out.push_str(&format!("\tfn object(&self) -> &'static str {{ \"{}\" }}\n", schema));
             out.push_str("}\n");
-            fs::write("openapi/out/placeholders.rs", out.as_bytes()).unwrap();
+            fs::write(format!("{}/{}", &out_path, "placeholders.rs"), out.as_bytes()).unwrap();
         }
     }
 
@@ -115,13 +129,15 @@ fn main() {
         }
 
         // Generate the types for the object
-        let out = gen_impl_object(&meta, object);
+        let out = gen_impl_object(&meta, object, &cache_path);
         fs::write(
-            &format!("openapi/out/{}.rs", object.replace('.', "_").to_snake_case()),
+            &format!("{}/{}.rs", &out_path, object.replace('.', "_").to_snake_case()),
             out.as_bytes(),
         )
         .unwrap();
     }
+
+    Ok(())
 }
 
 struct Metadata<'a> {
@@ -284,7 +300,7 @@ struct InferredParams {
     parameters: Json,
 }
 
-fn gen_impl_object(meta: &Metadata, object: &str) -> String {
+fn gen_impl_object(meta: &Metadata, object: &str, cache_path: &str) -> String {
     let mut out = String::new();
     let mut state = Generated::default();
     let id_type = meta.schema_to_id_type(object);
@@ -305,7 +321,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
     out.push_str("/// The resource representing a Stripe \"");
     out.push_str(schema_title);
     out.push_str("\".\n");
-    if let Some(doc_url) = check_object_doc_url(object) {
+    if let Some(doc_url) = docs_url_for_object(object, cache_path) {
         out.push_str("///\n");
         out.push_str("/// For more details see [");
         out.push_str(&doc_url);
@@ -1033,7 +1049,7 @@ fn gen_impl_object(meta: &Metadata, object: &str) -> String {
         prelude.push_str("};\n");
     }
     if state.use_resources.len() > 0 {
-        prelude.push_str("use crate::resources::{");
+        prelude.push_str("use self::{");
         for (n, type_) in state
             .use_resources
             .iter()
@@ -1688,11 +1704,11 @@ fn infer_integer_type(state: &mut Generated, name: &str, format: Option<&str>) -
     }
 }
 
-fn check_object_doc_url(object: &str) -> Option<String> {
+fn docs_url_for_object(object: &str, cache_path: &str) -> Option<String> {
     let doc_url =
         format!("https://stripe.com/docs/api/{}s/object", object.replace('.', "_").to_snake_case());
     let cache_file =
-        format!("openapi/cache/{}_object.html", object.replace('.', "_").to_snake_case());
+        format!("{}/{}_object.html", cache_path, object.replace('.', "_").to_snake_case());
     if let Some(cached) = fs::read_to_string(&cache_file).ok() {
         return if cached.is_empty() { None } else { Some(doc_url) };
     }
