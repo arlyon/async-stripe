@@ -59,6 +59,12 @@ jobs:
             blocking,
             blocking-rustls,
           ]
+    services:
+      stripe-mock:
+        image: stripemock/stripe-mock
+        ports:
+          - 12111:12111
+          - 12112:12112
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
