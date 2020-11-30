@@ -3,12 +3,12 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{CouponId, CustomerId, PlanId, PriceId, SubscriptionId};
+use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    CollectionMethod, Currency, Customer, Discount, Invoice, PaymentMethod, PaymentSource, Plan,
+    CollectionMethod, Currency, Customer, Discount, Invoice, PaymentMethod, PaymentSource,
     Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
-    SubscriptionItemBillingThresholds, SubscriptionSchedule, TaxRate,
+    SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -44,7 +44,7 @@ pub struct Subscription {
 
     /// If the subscription has been canceled, the date of that cancellation.
     ///
-    /// If the subscription was canceled with `cancel_at_period_end`, `canceled_at` will still reflect the date of the initial cancellation request, not the end of the subscription period when the subscription is automatically moved to a canceled state.
+    /// If the subscription was canceled with `cancel_at_period_end`, `canceled_at` will reflect the time of the most recent update request, not the end of the subscription period when the subscription is automatically moved to a canceled state.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<Timestamp>,
 
@@ -80,14 +80,16 @@ pub struct Subscription {
     /// ID of the default payment method for the subscription.
     ///
     /// It must belong to the customer associated with the subscription.
-    /// If not set, invoices will use the default payment method in the customer's invoice settings.
+    /// This takes precedence over `default_source`.
+    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<Expandable<PaymentMethod>>,
 
     /// ID of the default payment source for the subscription.
     ///
     /// It must belong to the customer associated with the subscription and be in a chargeable state.
-    /// If not set, defaults to the customer's default source.
+    /// If `default_payment_method` is also set, `default_payment_method` will take precedence.
+    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<Expandable<PaymentSource>>,
 
@@ -107,7 +109,7 @@ pub struct Subscription {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ended_at: Option<Timestamp>,
 
-    /// List of subscription items, each with an attached plan.
+    /// List of subscription items, each with an attached price.
     pub items: List<SubscriptionItem>,
 
     /// The most recent invoice this subscription has generated.
@@ -117,7 +119,7 @@ pub struct Subscription {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
@@ -146,19 +148,6 @@ pub struct Subscription {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_update: Option<SubscriptionsResourcePendingUpdate>,
 
-    /// Hash describing the plan the customer is subscribed to.
-    ///
-    /// Only set if the subscription contains a single plan.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<Plan>,
-
-    /// The quantity of the plan to which the customer is subscribed.
-    ///
-    /// For example, if your plan is $10/user/month, and your customer has 5 users, you could pass 5 as the quantity to have the customer charged $50 (5 x $10) monthly.
-    /// Only set if the subscription contains a single plan.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-
     /// The schedule attached to the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schedule: Option<Expandable<SubscriptionSchedule>>,
@@ -182,9 +171,9 @@ pub struct Subscription {
     /// After receiving updated payment information from a customer, you may choose to reopen and pay their closed invoices.
     pub status: SubscriptionStatus,
 
-    /// If provided, each invoice created by this subscription will apply the tax rate, increasing the amount billed to the customer.
+    /// The account (if any) the subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_percent: Option<f64>,
+    pub transfer_data: Option<SubscriptionTransferData>,
 
     /// If the subscription has a trial, the end of that trial.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -205,7 +194,7 @@ impl Subscription {
 
     /// Creates a new subscription on an existing customer.
     ///
-    /// Each customer can have up to 25 active or scheduled subscriptions.
+    /// Each customer can have up to 500 active or scheduled subscriptions.
     pub fn create(client: &Client, params: CreateSubscription<'_>) -> Response<Subscription> {
         client.post_form("/subscriptions", &params)
     }
@@ -378,14 +367,16 @@ pub struct CreateSubscription<'a> {
     /// ID of the default payment method for the subscription.
     ///
     /// It must belong to the customer associated with the subscription.
-    /// If not set, invoices will use the default payment method in the customer's invoice settings.
+    /// This takes precedence over `default_source`.
+    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<&'a str>,
 
     /// ID of the default payment source for the subscription.
     ///
     /// It must belong to the customer associated with the subscription and be in a chargeable state.
-    /// If not set, defaults to the customer's default source.
+    /// If `default_payment_method` is also set, `default_payment_method` will take precedence.
+    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<&'a str>,
 
@@ -399,11 +390,11 @@ pub struct CreateSubscription<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A list of up to 20 subscription items, each with an attached plan.
+    /// A list of up to 20 subscription items, each with an attached price.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CreateSubscriptionItems>>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -433,11 +424,11 @@ pub struct CreateSubscription<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_invoice_item_interval: Option<CreateSubscriptionPendingInvoiceItemInterval>,
 
-    /// This field has been renamed to `proration_behavior`.
+    /// The API ID of a promotion code to apply to this subscription.
     ///
-    /// `prorate=true` can be replaced with `proration_behavior=create_prorations` and `prorate=false` can be replaced with `proration_behavior=none`.
+    /// A promotion code applied to a subscription will only affect invoices created for that particular subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub prorate: Option<bool>,
+    pub promotion_code: Option<PromotionCodeId>,
 
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) resulting from the `billing_cycle_anchor`.
     ///
@@ -447,14 +438,9 @@ pub struct CreateSubscription<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
 
-    /// A non-negative decimal (with at most four decimal places) between 0 and 100.
-    ///
-    /// This represents the percentage of the subscription invoice subtotal that will be calculated and added as tax to the final amount in each billing period.
-    /// For example, a plan which charges $10/month with a `tax_percent` of `20.0` will charge $12 per invoice.
-    /// To unset a previously-set value, pass an empty string.
-    /// This field has been deprecated and will be removed in a future API version, for further information view the [migration docs](https://stripe.com/docs/billing/migration/taxes) for `tax_rates`.
+    /// If specified, the funds from the subscription's invoices will be transferred to the destination and the ID of the resulting transfers will be found on the resulting charges.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_percent: Option<f64>,
+    pub transfer_data: Option<CreateSubscriptionTransferData>,
 
     /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
     ///
@@ -502,9 +488,9 @@ impl<'a> CreateSubscription<'a> {
             off_session: Default::default(),
             payment_behavior: Default::default(),
             pending_invoice_item_interval: Default::default(),
-            prorate: Default::default(),
+            promotion_code: Default::default(),
             proration_behavior: Default::default(),
-            tax_percent: Default::default(),
+            transfer_data: Default::default(),
             trial_end: Default::default(),
             trial_from_plan: Default::default(),
             trial_period_days: Default::default(),
@@ -551,10 +537,6 @@ pub struct ListSubscriptions<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u64>,
 
-    /// The ID of the plan whose subscriptions will be retrieved.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<PlanId>,
-
     /// Filter for subscriptions that contain this recurring price ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<PriceId>,
@@ -568,8 +550,8 @@ pub struct ListSubscriptions<'a> {
 
     /// The status of the subscriptions to retrieve.
     ///
-    /// One of: `incomplete`, `incomplete_expired`, `trialing`, `active`, `past_due`, `unpaid`, `canceled`, or `all`.
     /// Passing in a value of `canceled` will return all canceled subscriptions, including those belonging to deleted customers.
+    /// Pass `ended` to find subscriptions that are canceled and subscriptions that are expired due to [incomplete payment](https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses).
     /// Passing in a value of `all` will return subscriptions of all statuses.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<SubscriptionStatusFilter>,
@@ -586,7 +568,6 @@ impl<'a> ListSubscriptions<'a> {
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
-            plan: Default::default(),
             price: Default::default(),
             starting_after: Default::default(),
             status: Default::default(),
@@ -658,14 +639,16 @@ pub struct UpdateSubscription<'a> {
     /// ID of the default payment method for the subscription.
     ///
     /// It must belong to the customer associated with the subscription.
-    /// If not set, invoices will use the default payment method in the customer's invoice settings.
+    /// This takes precedence over `default_source`.
+    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<&'a str>,
 
     /// ID of the default payment source for the subscription.
     ///
     /// It must belong to the customer associated with the subscription and be in a chargeable state.
-    /// If not set, defaults to the customer's default source.
+    /// If `default_payment_method` is also set, `default_payment_method` will take precedence.
+    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<&'a str>,
 
@@ -680,11 +663,11 @@ pub struct UpdateSubscription<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// List of subscription items, each with an attached plan.
+    /// A list of up to 20 subscription items, each with an attached price.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<UpdateSubscriptionItems>>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -706,8 +689,8 @@ pub struct UpdateSubscription<'a> {
     /// For example, SCA regulation may require 3DS authentication to complete payment.
     /// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
     /// This is the default behavior.  Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
-    /// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://stripe.com/docs/billing/pending-updates-reference#supported-attributes).  Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's first invoice cannot be paid.
-    /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not create a subscription and returns an error instead.
+    /// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://stripe.com/docs/billing/pending-updates-reference#supported-attributes).  Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
+    /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
     /// This was the default behavior for API versions prior to 2019-03-14.
     /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -719,11 +702,11 @@ pub struct UpdateSubscription<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_invoice_item_interval: Option<UpdateSubscriptionPendingInvoiceItemInterval>,
 
-    /// This field has been renamed to `proration_behavior`.
+    /// The promotion code to apply to this subscription.
     ///
-    /// `prorate=true` can be replaced with `proration_behavior=create_prorations` and `prorate=false` can be replaced with `proration_behavior=none`.
+    /// A promotion code applied to a subscription will only affect invoices created for that particular subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub prorate: Option<bool>,
+    pub promotion_code: Option<PromotionCodeId>,
 
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     ///
@@ -740,14 +723,11 @@ pub struct UpdateSubscription<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_date: Option<Timestamp>,
 
-    /// A non-negative decimal (with at most four decimal places) between 0 and 100.
+    /// If specified, the funds from the subscription's invoices will be transferred to the destination and the ID of the resulting transfers will be found on the resulting charges.
     ///
-    /// This represents the percentage of the subscription invoice subtotal that will be calculated and added as tax to the final amount in each billing period.
-    /// For example, a plan which charges $10/month with a `tax_percent` of `20.0` will charge $12 per invoice.
-    /// To unset a previously-set value, pass an empty string.
-    /// This field has been deprecated and will be removed in a future API version, for further information view the [migration docs](https://stripe.com/docs/billing/migration/taxes) for `tax_rates`.
+    /// This will be unset if you POST an empty value.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_percent: Option<f64>,
+    pub transfer_data: Option<UpdateSubscriptionTransferData>,
 
     /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
     ///
@@ -788,10 +768,10 @@ impl<'a> UpdateSubscription<'a> {
             pause_collection: Default::default(),
             payment_behavior: Default::default(),
             pending_invoice_item_interval: Default::default(),
-            prorate: Default::default(),
+            promotion_code: Default::default(),
             proration_behavior: Default::default(),
             proration_date: Default::default(),
-            tax_percent: Default::default(),
+            transfer_data: Default::default(),
             trial_end: Default::default(),
             trial_from_plan: Default::default(),
         }
@@ -808,6 +788,9 @@ pub struct AddInvoiceItems {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Vec<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -817,9 +800,6 @@ pub struct CreateSubscriptionItems {
 
     #[serde(default)]
     pub metadata: Metadata,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
@@ -843,6 +823,14 @@ pub struct CreateSubscriptionPendingInvoiceItemInterval {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSubscriptionTransferData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_percent: Option<f64>,
+
+    pub destination: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
@@ -858,9 +846,6 @@ pub struct UpdateSubscriptionItems {
 
     #[serde(default)]
     pub metadata: Metadata,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
@@ -889,6 +874,14 @@ pub struct UpdateSubscriptionPendingInvoiceItemInterval {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSubscriptionTransferData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_percent: Option<f64>,
+
+    pub destination: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

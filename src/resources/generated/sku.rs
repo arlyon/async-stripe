@@ -8,7 +8,7 @@ use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Obj
 use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
 use serde_derive::{Deserialize, Serialize};
 
-/// The resource representing a Stripe "SKU".
+/// The resource representing a Stripe "Sku".
 ///
 /// For more details see [https://stripe.com/docs/api/skus/object](https://stripe.com/docs/api/skus/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -53,7 +53,7 @@ pub struct Sku {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub livemode: Option<bool>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
@@ -187,7 +187,7 @@ pub struct CreateSku<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inventory: Option<Inventory>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -333,7 +333,7 @@ pub struct UpdateSku<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inventory: Option<Inventory>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.

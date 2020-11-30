@@ -2,8 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
+use crate::ids::DiscountId;
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{Coupon, Customer};
+use crate::resources::{Coupon, Customer, PromotionCode};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Discount".
@@ -11,8 +12,19 @@ use serde_derive::{Deserialize, Serialize};
 /// For more details see [https://stripe.com/docs/api/discounts/object](https://stripe.com/docs/api/discounts/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Discount {
+    /// The ID of the discount object.
+    ///
+    /// Discounts cannot be fetched by ID.
+    /// Use `expand[]=discounts` in API calls to expand discount IDs in an array.
+    pub id: DiscountId,
+
+    /// The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode.
+    ///
+    /// Will not be present for subscription mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<Coupon>,
+    pub checkout_session: Option<String>,
+
+    pub coupon: Coupon,
 
     /// The ID of the customer associated with this discount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -28,9 +40,20 @@ pub struct Discount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end: Option<Timestamp>,
 
-    /// Date that the coupon was applied.
+    /// The invoice that the discount's coupon was applied to, if it was applied directly to a particular invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub start: Option<Timestamp>,
+    pub invoice: Option<String>,
+
+    /// The invoice item `id` (or invoice line item `id` for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_item: Option<String>,
+
+    /// The promotion code applied to create this discount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<Expandable<PromotionCode>>,
+
+    /// Date that the coupon was applied.
+    pub start: Timestamp,
 
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38,8 +61,10 @@ pub struct Discount {
 }
 
 impl Object for Discount {
-    type Id = ();
-    fn id(&self) -> Self::Id {}
+    type Id = DiscountId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
     fn object(&self) -> &'static str {
         "discount"
     }

@@ -20,6 +20,9 @@ pub struct Coupon {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_off: Option<i64>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub applies_to: Option<CouponAppliesTo>,
+
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -54,7 +57,7 @@ pub struct Coupon {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_redemptions: Option<i64>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
@@ -129,12 +132,22 @@ impl Object for Coupon {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CouponAppliesTo {
+    /// A list of product IDs this coupon applies to.
+    pub products: Vec<String>,
+}
+
 /// The parameters for `Coupon::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateCoupon<'a> {
     /// A positive integer representing the amount to subtract from an invoice total (required if `percent_off` is not passed).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_off: Option<i64>,
+
+    /// A hash containing directions for what this Coupon will apply discounts to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub applies_to: Option<CreateCouponAppliesTo>,
 
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) of the `amount_off` parameter (required if `amount_off` is passed).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -165,7 +178,7 @@ pub struct CreateCoupon<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_redemptions: Option<i64>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -194,6 +207,7 @@ impl<'a> CreateCoupon<'a> {
     pub fn new(duration: CouponDuration) -> Self {
         CreateCoupon {
             amount_off: Default::default(),
+            applies_to: Default::default(),
             currency: Default::default(),
             duration,
             duration_in_months: Default::default(),
@@ -261,7 +275,7 @@ pub struct UpdateCoupon<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -284,6 +298,11 @@ impl<'a> UpdateCoupon<'a> {
             name: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCouponAppliesTo {
+    pub products: Vec<String>,
 }
 
 /// An enum representing the possible values of an `Coupon`'s `duration` field.

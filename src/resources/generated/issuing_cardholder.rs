@@ -35,7 +35,7 @@ pub struct IssuingCardholder {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
@@ -51,9 +51,9 @@ pub struct IssuingCardholder {
 
     pub requirements: IssuingCardholderRequirements,
 
-    /// Spending rules that give you some control over how this cardholder's cards can be used.
+    /// Rules that control spending across this cardholder's cards.
     ///
-    /// Refer to our [authorizations](https://stripe.com/docs/issuing/purchases/authorizations) documentation for more details.
+    /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_controls: Option<IssuingCardholderAuthorizationControls>,
 
@@ -82,19 +82,25 @@ pub struct IssuingCardholderAddress {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderAuthorizationControls {
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations permitted on this cardholder's cards.
+    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
+    ///
+    /// All other categories will be blocked.
+    /// Cannot be set with `blocked_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_categories: Option<Vec<MerchantCategory>>,
 
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to always decline on this cardholder's cards.
+    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
+    ///
+    /// All other categories will be allowed.
+    /// Cannot be set with `allowed_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blocked_categories: Option<Vec<MerchantCategory>>,
 
-    /// Limit the spending with rules based on time intervals and categories.
+    /// Limit spending with amount-based rules that apply across this cardholder's cards.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits: Option<Vec<SpendingLimit>>,
 
-    /// Currency for the amounts within spending_limits.
+    /// Currency of the amounts within `spending_limits`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits_currency: Option<Currency>,
 }

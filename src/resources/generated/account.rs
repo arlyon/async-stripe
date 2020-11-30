@@ -74,7 +74,7 @@ pub struct Account {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<Person>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
@@ -196,6 +196,14 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit_payments: Option<CapabilityStatus>,
 
+    /// The status of the Bacs Direct Debits payments capability of the account, or whether the account can directly process Bacs Direct Debits charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit_payments: Option<AccountCapabilitiesBacsDebitPayments>,
+
+    /// The status of the Bancontact payments capability of the account, or whether the account can directly process Bancontact charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact_payments: Option<AccountCapabilitiesBancontactPayments>,
+
     /// The status of the card issuing capability of the account, or whether you can use Issuing to distribute funds on cards.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_issuing: Option<CapabilityStatus>,
@@ -204,6 +212,30 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_payments: Option<CapabilityStatus>,
 
+    /// The status of the Cartes Bancaires payments capability of the account, or whether the account can directly process Cartes Bancaires card charges in EUR currency.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cartes_bancaires_payments: Option<AccountCapabilitiesCartesBancairesPayments>,
+
+    /// The status of the EPS payments capability of the account, or whether the account can directly process EPS charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eps_payments: Option<AccountCapabilitiesEpsPayments>,
+
+    /// The status of the FPX payments capability of the account, or whether the account can directly process FPX charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx_payments: Option<AccountCapabilitiesFpxPayments>,
+
+    /// The status of the giropay payments capability of the account, or whether the account can directly process giropay charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub giropay_payments: Option<AccountCapabilitiesGiropayPayments>,
+
+    /// The status of the GrabPay payments capability of the account, or whether the account can directly process GrabPay charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay_payments: Option<AccountCapabilitiesGrabpayPayments>,
+
+    /// The status of the iDEAL payments capability of the account, or whether the account can directly process iDEAL charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal_payments: Option<AccountCapabilitiesIdealPayments>,
+
     /// The status of the JCB payments capability of the account, or whether the account (Japan only) can directly process JCB credit card charges in JPY currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jcb_payments: Option<CapabilityStatus>,
@@ -211,6 +243,22 @@ pub struct AccountCapabilities {
     /// The status of the legacy payments capability of the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub legacy_payments: Option<CapabilityStatus>,
+
+    /// The status of the OXXO payments capability of the account, or whether the account can directly process OXXO charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo_payments: Option<AccountCapabilitiesOxxoPayments>,
+
+    /// The status of the P24 payments capability of the account, or whether the account can directly process P24 charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub p24_payments: Option<AccountCapabilitiesP24Payments>,
+
+    /// The status of the SEPA Direct Debits payments capability of the account, or whether the account can directly process SEPA Direct Debits charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit_payments: Option<AccountCapabilitiesSepaDebitPayments>,
+
+    /// The status of the Sofort payments capability of the account, or whether the account can directly process Sofort charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sofort_payments: Option<AccountCapabilitiesSofortPayments>,
 
     /// The status of the tax reporting 1099-K (US) capability of the account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -245,7 +293,7 @@ pub struct AccountRequirements {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disabled_reason: Option<String>,
 
-    /// The fields that need to be collected again because validation or verification failed for some reason.
+    /// The fields that are `currently_due` and need to be collected again because validation or verification failed for some reason.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub errors: Option<Vec<AccountRequirementsError>>,
 
@@ -283,6 +331,9 @@ pub struct AccountRequirementsError {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountSettings {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit_payments: Option<AccountBacsDebitPaymentsSettings>,
+
     pub branding: BrandingSettings,
 
     pub card_payments: CardPaymentsSettings,
@@ -293,6 +344,18 @@ pub struct AccountSettings {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts: Option<PayoutSettings>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit_payments: Option<AccountSepaDebitPaymentsSettings>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountBacsDebitPaymentsSettings {
+    /// The Bacs Direct Debit Display Name for this account.
+    ///
+    /// For payments made with Bacs Direct Debit, this will appear on the mandate, and as the statement descriptor.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_name: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -394,16 +457,27 @@ pub struct PayoutSettings {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountSepaDebitPaymentsSettings {
+    /// SEPA creditor identifier that identifies the company making the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creditor_id: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TosAcceptance {
-    /// The Unix timestamp marking when the Stripe Services Agreement was accepted by the account representative.
+    /// The Unix timestamp marking when the account representative accepted their service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
 
-    /// The IP address from which the Stripe Services Agreement was accepted by the account representative.
+    /// The IP address from which the account representative accepted their service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
 
-    /// The user agent of the browser from which the Stripe Services Agreement was accepted by the account representative.
+    /// The user's service agreement type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_agreement: Option<String>,
+
+    /// The user agent of the browser from which the account representative accepted their service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
 }
@@ -544,9 +618,17 @@ pub struct CreateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_type: Option<BusinessType>,
 
+    /// Each key of the dictionary represents a capability, and each capability maps to its settings (e.g.
+    ///
+    /// whether it has been requested or not).
+    /// Each capability will be inactive until you have provided its specific requirements and Stripe has verified them.
+    /// An account may have some of its requested capabilities be active and some be inactive.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<CreateAccountCapabilities>,
+
     /// Information about the company or business.
     ///
-    /// This field is null unless `business_type` is set to `company`, `government_entity`, or `non_profit`.
+    /// This field is available for any `business_type`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<CompanyParams>,
 
@@ -565,7 +647,8 @@ pub struct CreateAccount<'a> {
 
     /// The email address of the account holder.
     ///
-    /// For Custom accounts, this is only to make the account easier to identify to you: Stripe will never directly email your users.
+    /// This is only to make the account easier to identify to you.
+    /// Stripe will never directly email Custom accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<&'a str>,
 
@@ -573,7 +656,7 @@ pub struct CreateAccount<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A card or bank account to attach to the account.
+    /// A card or bank account to attach to the account for receiving [payouts](https://stripe.com/docs/connect/bank-debit-card-payouts) (you won’t be able to use it for top-ups).
     ///
     /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/stripe.js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
@@ -587,20 +670,13 @@ pub struct CreateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<PersonParams>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
-
-    /// The set of capabilities you want to unlock for this account.
-    ///
-    /// Each capability will be inactive until you have provided its specific requirements and Stripe has verified them.
-    /// An account may have some of its requested capabilities be active and some be inactive.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested_capabilities: Option<Vec<RequestedCapability>>,
 
     /// Options for customizing how the account functions within Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -612,7 +688,7 @@ pub struct CreateAccount<'a> {
 
     /// The type of Stripe account to create.
     ///
-    /// Currently must be `custom`, as only [Custom accounts](https://stripe.com/docs/connect/custom-accounts) may be created via the API.
+    /// May be one of `custom`, `express` or `standard`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<AccountType>,
@@ -624,6 +700,7 @@ impl<'a> CreateAccount<'a> {
             account_token: Default::default(),
             business_profile: Default::default(),
             business_type: Default::default(),
+            capabilities: Default::default(),
             company: Default::default(),
             country: Default::default(),
             default_currency: Default::default(),
@@ -632,7 +709,6 @@ impl<'a> CreateAccount<'a> {
             external_account: Default::default(),
             individual: Default::default(),
             metadata: Default::default(),
-            requested_capabilities: Default::default(),
             settings: Default::default(),
             tos_acceptance: Default::default(),
             type_: Default::default(),
@@ -698,9 +774,17 @@ pub struct UpdateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub business_type: Option<BusinessType>,
 
+    /// Each key of the dictionary represents a capability, and each capability maps to its settings (e.g.
+    ///
+    /// whether it has been requested or not).
+    /// Each capability will be inactive until you have provided its specific requirements and Stripe has verified them.
+    /// An account may have some of its requested capabilities be active and some be inactive.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<UpdateAccountCapabilities>,
+
     /// Information about the company or business.
     ///
-    /// This field is null unless `business_type` is set to `company`, `government_entity`, or `non_profit`.
+    /// This field is available for any `business_type`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<CompanyParams>,
 
@@ -710,10 +794,10 @@ pub struct UpdateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_currency: Option<Currency>,
 
-    /// Email address of the account representative.
+    /// The email address of the account holder.
     ///
-    /// For Standard accounts, this is used to ask them to claim their Stripe account.
-    /// For Custom accounts, this only makes the account easier to identify to platforms; Stripe does not email the account representative.
+    /// This is only to make the account easier to identify to you.
+    /// Stripe will never directly email Custom accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<&'a str>,
 
@@ -721,7 +805,7 @@ pub struct UpdateAccount<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// A card or bank account to attach to the account.
+    /// A card or bank account to attach to the account for receiving [payouts](https://stripe.com/docs/connect/bank-debit-card-payouts) (you won’t be able to use it for top-ups).
     ///
     /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/stripe.js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
@@ -735,20 +819,13 @@ pub struct UpdateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<PersonParams>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
-
-    /// The set of capabilities you want to unlock for this account.
-    ///
-    /// Each capability will be inactive until you have provided its specific requirements and Stripe has verified them.
-    /// An account may have some of its requested capabilities be active and some be inactive.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested_capabilities: Option<Vec<RequestedCapability>>,
 
     /// Options for customizing how the account functions within Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -765,6 +842,7 @@ impl<'a> UpdateAccount<'a> {
             account_token: Default::default(),
             business_profile: Default::default(),
             business_type: Default::default(),
+            capabilities: Default::default(),
             company: Default::default(),
             default_currency: Default::default(),
             email: Default::default(),
@@ -772,7 +850,6 @@ impl<'a> UpdateAccount<'a> {
             external_account: Default::default(),
             individual: Default::default(),
             metadata: Default::default(),
-            requested_capabilities: Default::default(),
             settings: Default::default(),
             tos_acceptance: Default::default(),
         }
@@ -786,6 +863,9 @@ pub struct AcceptTos {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_agreement: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
@@ -839,6 +919,9 @@ pub struct CompanyParams {
     pub phone: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub registration_number: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub structure: Option<CompanyParamsStructure>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -852,6 +935,69 @@ pub struct CompanyParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<CompanyVerificationParams>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilities {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_becs_debit_payments: Option<CreateAccountCapabilitiesAuBecsDebitPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit_payments: Option<CreateAccountCapabilitiesBacsDebitPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact_payments: Option<CreateAccountCapabilitiesBancontactPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_issuing: Option<CreateAccountCapabilitiesCardIssuing>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_payments: Option<CreateAccountCapabilitiesCardPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cartes_bancaires_payments: Option<CreateAccountCapabilitiesCartesBancairesPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eps_payments: Option<CreateAccountCapabilitiesEpsPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx_payments: Option<CreateAccountCapabilitiesFpxPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub giropay_payments: Option<CreateAccountCapabilitiesGiropayPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay_payments: Option<CreateAccountCapabilitiesGrabpayPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal_payments: Option<CreateAccountCapabilitiesIdealPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jcb_payments: Option<CreateAccountCapabilitiesJcbPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legacy_payments: Option<CreateAccountCapabilitiesLegacyPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo_payments: Option<CreateAccountCapabilitiesOxxoPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub p24_payments: Option<CreateAccountCapabilitiesP24Payments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit_payments: Option<CreateAccountCapabilitiesSepaDebitPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sofort_payments: Option<CreateAccountCapabilitiesSofortPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_reporting_us_1099_k: Option<CreateAccountCapabilitiesTaxReportingUs1099K>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_reporting_us_1099_misc: Option<CreateAccountCapabilitiesTaxReportingUs1099Misc>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfers: Option<CreateAccountCapabilitiesTransfers>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -905,10 +1051,76 @@ pub struct PersonParams {
     pub phone: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub political_exposure: Option<PersonParamsPoliticalExposure>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ssn_last_4: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<PersonVerificationParams>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilities {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_becs_debit_payments: Option<UpdateAccountCapabilitiesAuBecsDebitPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit_payments: Option<UpdateAccountCapabilitiesBacsDebitPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact_payments: Option<UpdateAccountCapabilitiesBancontactPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_issuing: Option<UpdateAccountCapabilitiesCardIssuing>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_payments: Option<UpdateAccountCapabilitiesCardPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cartes_bancaires_payments: Option<UpdateAccountCapabilitiesCartesBancairesPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eps_payments: Option<UpdateAccountCapabilitiesEpsPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx_payments: Option<UpdateAccountCapabilitiesFpxPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub giropay_payments: Option<UpdateAccountCapabilitiesGiropayPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay_payments: Option<UpdateAccountCapabilitiesGrabpayPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal_payments: Option<UpdateAccountCapabilitiesIdealPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jcb_payments: Option<UpdateAccountCapabilitiesJcbPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legacy_payments: Option<UpdateAccountCapabilitiesLegacyPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo_payments: Option<UpdateAccountCapabilitiesOxxoPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub p24_payments: Option<UpdateAccountCapabilitiesP24Payments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit_payments: Option<UpdateAccountCapabilitiesSepaDebitPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sofort_payments: Option<UpdateAccountCapabilitiesSofortPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_reporting_us_1099_k: Option<UpdateAccountCapabilitiesTaxReportingUs1099K>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_reporting_us_1099_misc: Option<UpdateAccountCapabilitiesTaxReportingUs1099Misc>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfers: Option<UpdateAccountCapabilitiesTransfers>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -942,6 +1154,126 @@ pub struct CompanyVerificationParams {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesAuBecsDebitPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesBacsDebitPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesBancontactPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesCardIssuing {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesCardPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesCartesBancairesPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesEpsPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesFpxPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesGiropayPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesGrabpayPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesIdealPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesJcbPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesLegacyPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesOxxoPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesP24Payments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesSepaDebitPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesSofortPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesTaxReportingUs1099K {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesTaxReportingUs1099Misc {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesTransfers {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentsSettingsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
@@ -963,6 +1295,126 @@ pub struct PayoutSettingsParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesAuBecsDebitPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesBacsDebitPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesBancontactPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesCardIssuing {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesCardPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesCartesBancairesPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesEpsPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesFpxPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesGiropayPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesGrabpayPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesIdealPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesJcbPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesLegacyPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesOxxoPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesP24Payments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesSepaDebitPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesSofortPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesTaxReportingUs1099K {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesTaxReportingUs1099Misc {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesTransfers {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -996,6 +1448,378 @@ pub enum ExternalAccount {
     Card(Card),
 }
 
+/// An enum representing the possible values of an `AccountCapabilities`'s `bacs_debit_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesBacsDebitPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesBacsDebitPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesBacsDebitPayments::Active => "active",
+            AccountCapabilitiesBacsDebitPayments::Inactive => "inactive",
+            AccountCapabilitiesBacsDebitPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesBacsDebitPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesBacsDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `bancontact_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesBancontactPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesBancontactPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesBancontactPayments::Active => "active",
+            AccountCapabilitiesBancontactPayments::Inactive => "inactive",
+            AccountCapabilitiesBancontactPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesBancontactPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesBancontactPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `cartes_bancaires_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesCartesBancairesPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesCartesBancairesPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesCartesBancairesPayments::Active => "active",
+            AccountCapabilitiesCartesBancairesPayments::Inactive => "inactive",
+            AccountCapabilitiesCartesBancairesPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesCartesBancairesPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesCartesBancairesPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `eps_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesEpsPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesEpsPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesEpsPayments::Active => "active",
+            AccountCapabilitiesEpsPayments::Inactive => "inactive",
+            AccountCapabilitiesEpsPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesEpsPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesEpsPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `fpx_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesFpxPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesFpxPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesFpxPayments::Active => "active",
+            AccountCapabilitiesFpxPayments::Inactive => "inactive",
+            AccountCapabilitiesFpxPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesFpxPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesFpxPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `giropay_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesGiropayPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesGiropayPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesGiropayPayments::Active => "active",
+            AccountCapabilitiesGiropayPayments::Inactive => "inactive",
+            AccountCapabilitiesGiropayPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesGiropayPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesGiropayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `grabpay_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesGrabpayPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesGrabpayPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesGrabpayPayments::Active => "active",
+            AccountCapabilitiesGrabpayPayments::Inactive => "inactive",
+            AccountCapabilitiesGrabpayPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesGrabpayPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesGrabpayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `ideal_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesIdealPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesIdealPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesIdealPayments::Active => "active",
+            AccountCapabilitiesIdealPayments::Inactive => "inactive",
+            AccountCapabilitiesIdealPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesIdealPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesIdealPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `oxxo_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesOxxoPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesOxxoPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesOxxoPayments::Active => "active",
+            AccountCapabilitiesOxxoPayments::Inactive => "inactive",
+            AccountCapabilitiesOxxoPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesOxxoPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesOxxoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `p24_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesP24Payments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesP24Payments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesP24Payments::Active => "active",
+            AccountCapabilitiesP24Payments::Inactive => "inactive",
+            AccountCapabilitiesP24Payments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesP24Payments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesP24Payments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `sepa_debit_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesSepaDebitPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesSepaDebitPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesSepaDebitPayments::Active => "active",
+            AccountCapabilitiesSepaDebitPayments::Inactive => "inactive",
+            AccountCapabilitiesSepaDebitPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesSepaDebitPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesSepaDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `sofort_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesSofortPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesSofortPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesSofortPayments::Active => "active",
+            AccountCapabilitiesSofortPayments::Inactive => "inactive",
+            AccountCapabilitiesSofortPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesSofortPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesSofortPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `AccountRequirementsError`'s `code` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1019,6 +1843,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationDocumentIdNumberMissing,
     VerificationDocumentIncomplete,
     VerificationDocumentInvalid,
+    VerificationDocumentIssueOrExpiryDateMissing,
     VerificationDocumentManipulated,
     VerificationDocumentMissingBack,
     VerificationDocumentMissingFront,
@@ -1026,6 +1851,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationDocumentNameMissing,
     VerificationDocumentNationalityMismatch,
     VerificationDocumentNotReadable,
+    VerificationDocumentNotSigned,
     VerificationDocumentNotUploaded,
     VerificationDocumentPhotoMismatch,
     VerificationDocumentTooLarge,
@@ -1038,6 +1864,8 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedTaxIdMatch,
+    VerificationFailedTaxIdNotIssued,
 }
 
 impl AccountRequirementsErrorCode {
@@ -1096,6 +1924,9 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationDocumentInvalid => {
                 "verification_document_invalid"
             }
+            AccountRequirementsErrorCode::VerificationDocumentIssueOrExpiryDateMissing => {
+                "verification_document_issue_or_expiry_date_missing"
+            }
             AccountRequirementsErrorCode::VerificationDocumentManipulated => {
                 "verification_document_manipulated"
             }
@@ -1116,6 +1947,9 @@ impl AccountRequirementsErrorCode {
             }
             AccountRequirementsErrorCode::VerificationDocumentNotReadable => {
                 "verification_document_not_readable"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentNotSigned => {
+                "verification_document_not_signed"
             }
             AccountRequirementsErrorCode::VerificationDocumentNotUploaded => {
                 "verification_document_not_uploaded"
@@ -1151,6 +1985,12 @@ impl AccountRequirementsErrorCode {
                 "verification_failed_name_match"
             }
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
+            AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => {
+                "verification_failed_tax_id_match"
+            }
+            AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => {
+                "verification_failed_tax_id_not_issued"
+            }
         }
     }
 }
@@ -1343,44 +2183,30 @@ impl std::fmt::Display for CompanyStructure {
     }
 }
 
-/// An enum representing the possible values of an `CreateAccount`'s `requested_capabilities` field.
+/// An enum representing the possible values of an `PersonParams`'s `political_exposure` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum RequestedCapability {
-    AuBecsDebitPayments,
-    CardIssuing,
-    CardPayments,
-    JcbPayments,
-    LegacyPayments,
-    #[serde(rename = "tax_reporting_us_1099_k")]
-    TaxReportingUs1099K,
-    #[serde(rename = "tax_reporting_us_1099_misc")]
-    TaxReportingUs1099Misc,
-    Transfers,
+pub enum PersonParamsPoliticalExposure {
+    Existing,
+    None,
 }
 
-impl RequestedCapability {
+impl PersonParamsPoliticalExposure {
     pub fn as_str(self) -> &'static str {
         match self {
-            RequestedCapability::AuBecsDebitPayments => "au_becs_debit_payments",
-            RequestedCapability::CardIssuing => "card_issuing",
-            RequestedCapability::CardPayments => "card_payments",
-            RequestedCapability::JcbPayments => "jcb_payments",
-            RequestedCapability::LegacyPayments => "legacy_payments",
-            RequestedCapability::TaxReportingUs1099K => "tax_reporting_us_1099_k",
-            RequestedCapability::TaxReportingUs1099Misc => "tax_reporting_us_1099_misc",
-            RequestedCapability::Transfers => "transfers",
+            PersonParamsPoliticalExposure::Existing => "existing",
+            PersonParamsPoliticalExposure::None => "none",
         }
     }
 }
 
-impl AsRef<str> for RequestedCapability {
+impl AsRef<str> for PersonParamsPoliticalExposure {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for RequestedCapability {
+impl std::fmt::Display for PersonParamsPoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

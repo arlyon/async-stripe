@@ -85,6 +85,9 @@ pub struct MandatePaymentMethodDetails {
     pub au_becs_debit: Option<MandateAuBecsDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit: Option<MandateBacsDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CardMandatePaymentMethodDetails>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -106,6 +109,20 @@ pub struct MandateAuBecsDebit {
     /// The URL of the mandate.
     ///
     /// This URL generally contains sensitive information about the customer and should be shared with them exclusively.
+    pub url: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MandateBacsDebit {
+    /// The status of the mandate on the Bacs network.
+    ///
+    /// Can be one of `pending`, `revoked`, `refused`, or `accepted`.
+    pub network_status: MandateBacsDebitNetworkStatus,
+
+    /// The unique reference identifying the mandate on the Bacs network.
+    pub reference: String,
+
+    /// The URL that will contain the mandate that the customer has signed.
     pub url: String,
 }
 
@@ -167,6 +184,39 @@ impl AsRef<str> for CustomerAcceptanceType {
 }
 
 impl std::fmt::Display for CustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `MandateBacsDebit`'s `network_status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum MandateBacsDebitNetworkStatus {
+    Accepted,
+    Pending,
+    Refused,
+    Revoked,
+}
+
+impl MandateBacsDebitNetworkStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            MandateBacsDebitNetworkStatus::Accepted => "accepted",
+            MandateBacsDebitNetworkStatus::Pending => "pending",
+            MandateBacsDebitNetworkStatus::Refused => "refused",
+            MandateBacsDebitNetworkStatus::Revoked => "revoked",
+        }
+    }
+}
+
+impl AsRef<str> for MandateBacsDebitNetworkStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for MandateBacsDebitNetworkStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

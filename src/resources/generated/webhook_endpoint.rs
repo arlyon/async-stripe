@@ -34,7 +34,7 @@ pub struct WebhookEndpoint {
     #[serde(default)]
     pub deleted: bool,
 
-    /// An optional description of what the wehbook is used for.
+    /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
@@ -48,7 +48,7 @@ pub struct WebhookEndpoint {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub livemode: Option<bool>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
@@ -138,7 +138,7 @@ pub struct CreateWebhookEndpoint<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connect: Option<bool>,
 
-    /// An optional description of what the wehbook is used for.
+    /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
 
@@ -151,7 +151,7 @@ pub struct CreateWebhookEndpoint<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -219,7 +219,7 @@ impl<'a> ListWebhookEndpoints<'a> {
 /// The parameters for `WebhookEndpoint::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateWebhookEndpoint<'a> {
-    /// An optional description of what the wehbook is used for.
+    /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
 
@@ -237,7 +237,7 @@ pub struct UpdateWebhookEndpoint<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -317,6 +317,10 @@ pub enum EventFilter {
     ChargeSucceeded,
     #[serde(rename = "charge.updated")]
     ChargeUpdated,
+    #[serde(rename = "checkout.session.async_payment_failed")]
+    CheckoutSessionAsyncPaymentFailed,
+    #[serde(rename = "checkout.session.async_payment_succeeded")]
+    CheckoutSessionAsyncPaymentSucceeded,
     #[serde(rename = "checkout.session.completed")]
     CheckoutSessionCompleted,
     #[serde(rename = "coupon.created")]
@@ -375,10 +379,14 @@ pub enum EventFilter {
     InvoiceCreated,
     #[serde(rename = "invoice.deleted")]
     InvoiceDeleted,
+    #[serde(rename = "invoice.finalization_failed")]
+    InvoiceFinalizationFailed,
     #[serde(rename = "invoice.finalized")]
     InvoiceFinalized,
     #[serde(rename = "invoice.marked_uncollectible")]
     InvoiceMarkedUncollectible,
+    #[serde(rename = "invoice.paid")]
+    InvoicePaid,
     #[serde(rename = "invoice.payment_action_required")]
     InvoicePaymentActionRequired,
     #[serde(rename = "invoice.payment_failed")]
@@ -413,6 +421,16 @@ pub enum EventFilter {
     IssuingCardholderCreated,
     #[serde(rename = "issuing_cardholder.updated")]
     IssuingCardholderUpdated,
+    #[serde(rename = "issuing_dispute.closed")]
+    IssuingDisputeClosed,
+    #[serde(rename = "issuing_dispute.created")]
+    IssuingDisputeCreated,
+    #[serde(rename = "issuing_dispute.funds_reinstated")]
+    IssuingDisputeFundsReinstated,
+    #[serde(rename = "issuing_dispute.submitted")]
+    IssuingDisputeSubmitted,
+    #[serde(rename = "issuing_dispute.updated")]
+    IssuingDisputeUpdated,
     #[serde(rename = "issuing_transaction.created")]
     IssuingTransactionCreated,
     #[serde(rename = "issuing_transaction.updated")]
@@ -439,12 +457,14 @@ pub enum EventFilter {
     PaymentIntentPaymentFailed,
     #[serde(rename = "payment_intent.processing")]
     PaymentIntentProcessing,
+    #[serde(rename = "payment_intent.requires_action")]
+    PaymentIntentRequiresAction,
     #[serde(rename = "payment_intent.succeeded")]
     PaymentIntentSucceeded,
     #[serde(rename = "payment_method.attached")]
     PaymentMethodAttached,
-    #[serde(rename = "payment_method.card_automatically_updated")]
-    PaymentMethodCardAutomaticallyUpdated,
+    #[serde(rename = "payment_method.automatically_updated")]
+    PaymentMethodAutomaticallyUpdated,
     #[serde(rename = "payment_method.detached")]
     PaymentMethodDetached,
     #[serde(rename = "payment_method.updated")]
@@ -471,12 +491,22 @@ pub enum EventFilter {
     PlanDeleted,
     #[serde(rename = "plan.updated")]
     PlanUpdated,
+    #[serde(rename = "price.created")]
+    PriceCreated,
+    #[serde(rename = "price.deleted")]
+    PriceDeleted,
+    #[serde(rename = "price.updated")]
+    PriceUpdated,
     #[serde(rename = "product.created")]
     ProductCreated,
     #[serde(rename = "product.deleted")]
     ProductDeleted,
     #[serde(rename = "product.updated")]
     ProductUpdated,
+    #[serde(rename = "promotion_code.created")]
+    PromotionCodeCreated,
+    #[serde(rename = "promotion_code.updated")]
+    PromotionCodeUpdated,
     #[serde(rename = "radar.early_fraud_warning.created")]
     RadarEarlyFraudWarningCreated,
     #[serde(rename = "radar.early_fraud_warning.updated")]
@@ -501,6 +531,8 @@ pub enum EventFilter {
     SetupIntentCanceled,
     #[serde(rename = "setup_intent.created")]
     SetupIntentCreated,
+    #[serde(rename = "setup_intent.requires_action")]
+    SetupIntentRequiresAction,
     #[serde(rename = "setup_intent.setup_failed")]
     SetupIntentSetupFailed,
     #[serde(rename = "setup_intent.succeeded")]
@@ -595,6 +627,12 @@ impl EventFilter {
             EventFilter::ChargeRefunded => "charge.refunded",
             EventFilter::ChargeSucceeded => "charge.succeeded",
             EventFilter::ChargeUpdated => "charge.updated",
+            EventFilter::CheckoutSessionAsyncPaymentFailed => {
+                "checkout.session.async_payment_failed"
+            }
+            EventFilter::CheckoutSessionAsyncPaymentSucceeded => {
+                "checkout.session.async_payment_succeeded"
+            }
             EventFilter::CheckoutSessionCompleted => "checkout.session.completed",
             EventFilter::CouponCreated => "coupon.created",
             EventFilter::CouponDeleted => "coupon.deleted",
@@ -628,8 +666,10 @@ impl EventFilter {
             EventFilter::FileCreated => "file.created",
             EventFilter::InvoiceCreated => "invoice.created",
             EventFilter::InvoiceDeleted => "invoice.deleted",
+            EventFilter::InvoiceFinalizationFailed => "invoice.finalization_failed",
             EventFilter::InvoiceFinalized => "invoice.finalized",
             EventFilter::InvoiceMarkedUncollectible => "invoice.marked_uncollectible",
+            EventFilter::InvoicePaid => "invoice.paid",
             EventFilter::InvoicePaymentActionRequired => "invoice.payment_action_required",
             EventFilter::InvoicePaymentFailed => "invoice.payment_failed",
             EventFilter::InvoicePaymentSucceeded => "invoice.payment_succeeded",
@@ -647,6 +687,11 @@ impl EventFilter {
             EventFilter::IssuingCardUpdated => "issuing_card.updated",
             EventFilter::IssuingCardholderCreated => "issuing_cardholder.created",
             EventFilter::IssuingCardholderUpdated => "issuing_cardholder.updated",
+            EventFilter::IssuingDisputeClosed => "issuing_dispute.closed",
+            EventFilter::IssuingDisputeCreated => "issuing_dispute.created",
+            EventFilter::IssuingDisputeFundsReinstated => "issuing_dispute.funds_reinstated",
+            EventFilter::IssuingDisputeSubmitted => "issuing_dispute.submitted",
+            EventFilter::IssuingDisputeUpdated => "issuing_dispute.updated",
             EventFilter::IssuingTransactionCreated => "issuing_transaction.created",
             EventFilter::IssuingTransactionUpdated => "issuing_transaction.updated",
             EventFilter::MandateUpdated => "mandate.updated",
@@ -662,10 +707,11 @@ impl EventFilter {
             EventFilter::PaymentIntentCreated => "payment_intent.created",
             EventFilter::PaymentIntentPaymentFailed => "payment_intent.payment_failed",
             EventFilter::PaymentIntentProcessing => "payment_intent.processing",
+            EventFilter::PaymentIntentRequiresAction => "payment_intent.requires_action",
             EventFilter::PaymentIntentSucceeded => "payment_intent.succeeded",
             EventFilter::PaymentMethodAttached => "payment_method.attached",
-            EventFilter::PaymentMethodCardAutomaticallyUpdated => {
-                "payment_method.card_automatically_updated"
+            EventFilter::PaymentMethodAutomaticallyUpdated => {
+                "payment_method.automatically_updated"
             }
             EventFilter::PaymentMethodDetached => "payment_method.detached",
             EventFilter::PaymentMethodUpdated => "payment_method.updated",
@@ -680,9 +726,14 @@ impl EventFilter {
             EventFilter::PlanCreated => "plan.created",
             EventFilter::PlanDeleted => "plan.deleted",
             EventFilter::PlanUpdated => "plan.updated",
+            EventFilter::PriceCreated => "price.created",
+            EventFilter::PriceDeleted => "price.deleted",
+            EventFilter::PriceUpdated => "price.updated",
             EventFilter::ProductCreated => "product.created",
             EventFilter::ProductDeleted => "product.deleted",
             EventFilter::ProductUpdated => "product.updated",
+            EventFilter::PromotionCodeCreated => "promotion_code.created",
+            EventFilter::PromotionCodeUpdated => "promotion_code.updated",
             EventFilter::RadarEarlyFraudWarningCreated => "radar.early_fraud_warning.created",
             EventFilter::RadarEarlyFraudWarningUpdated => "radar.early_fraud_warning.updated",
             EventFilter::RecipientCreated => "recipient.created",
@@ -695,6 +746,7 @@ impl EventFilter {
             EventFilter::ReviewOpened => "review.opened",
             EventFilter::SetupIntentCanceled => "setup_intent.canceled",
             EventFilter::SetupIntentCreated => "setup_intent.created",
+            EventFilter::SetupIntentRequiresAction => "setup_intent.requires_action",
             EventFilter::SetupIntentSetupFailed => "setup_intent.setup_failed",
             EventFilter::SetupIntentSucceeded => "setup_intent.succeeded",
             EventFilter::SigmaScheduledQueryRunCreated => "sigma.scheduled_query_run.created",

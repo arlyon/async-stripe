@@ -20,6 +20,10 @@ pub struct Balance {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub connect_reserved: Option<Vec<BalanceAmount>>,
 
+    /// Funds that can be paid out using Instant Payouts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instant_available: Option<Vec<BalanceAmount>>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing: Option<BalanceDetail>,
 

@@ -6,7 +6,7 @@ use crate::config::{Client, Response};
 use crate::ids::{CustomerId, PaymentMethodId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Account, ApiErrors, Application, Currency, Customer, Mandate, PaymentMethod,
+    Account, ApiErrors, Application, Currency, Customer, Mandate, PaymentMethod, SetupAttempt,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -57,6 +57,10 @@ pub struct SetupIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_setup_error: Option<ApiErrors>,
 
+    /// The most recent SetupAttempt for this SetupIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub latest_attempt: Option<Expandable<SetupAttempt>>,
+
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
@@ -64,7 +68,7 @@ pub struct SetupIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate: Option<Expandable<Mandate>>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
@@ -181,6 +185,9 @@ pub struct SetupIntentNextActionRedirectToUrl {
 pub struct SetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<SetupIntentPaymentMethodOptionsCard>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit: Option<SetupIntentPaymentMethodOptionsSepaDebit>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -194,6 +201,15 @@ pub struct SetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure: Option<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SetupIntentPaymentMethodOptionsSepaDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
 
 /// The parameters for `SetupIntent::create`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -229,7 +245,7 @@ pub struct CreateSetupIntent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_data: Option<CreateSetupIntentMandateData>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -364,7 +380,7 @@ pub struct UpdateSetupIntent<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -411,6 +427,9 @@ pub struct CreateSetupIntentMandateData {
 pub struct CreateSetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateSetupIntentPaymentMethodOptionsCard>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit: Option<CreateSetupIntentPaymentMethodOptionsSepaDebit>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -424,6 +443,9 @@ pub struct CreateSetupIntentSingleUse {
 pub struct UpdateSetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateSetupIntentPaymentMethodOptionsCard>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit: Option<UpdateSetupIntentPaymentMethodOptionsSepaDebit>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -449,10 +471,22 @@ pub struct CreateSetupIntentPaymentMethodOptionsCard {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsSepaDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -464,6 +498,12 @@ pub struct CreateSetupIntentMandateDataCustomerAcceptanceOnline {
 
     pub user_agent: String,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
 /// An enum representing the possible values of an `CreateSetupIntentMandateDataCustomerAcceptance`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]

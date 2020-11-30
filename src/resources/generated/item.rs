@@ -4,10 +4,10 @@
 
 use crate::ids::CheckoutSessionItemId;
 use crate::params::Object;
-use crate::resources::{Currency, Price, TaxRate};
+use crate::resources::{Currency, Discount, Price, TaxRate};
 use serde_derive::{Deserialize, Serialize};
 
-/// The resource representing a Stripe "PaymentPagesCheckoutSessionLineItem".
+/// The resource representing a Stripe "LineItems".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSessionItem {
     /// Unique identifier for the object.
@@ -32,6 +32,10 @@ pub struct CheckoutSessionItem {
     /// Defaults to product name.
     pub description: String,
 
+    /// The discounts applied to the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<LineItemsDiscountAmount>>,
+
     pub price: Price,
 
     /// The quantity of products being purchased.
@@ -40,7 +44,7 @@ pub struct CheckoutSessionItem {
 
     /// The taxes applied to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub taxes: Option<Vec<PaymentPagesCheckoutSessionLineItemResourceLineItemTax>>,
+    pub taxes: Option<Vec<LineItemsTaxAmount>>,
 }
 
 impl Object for CheckoutSessionItem {
@@ -54,8 +58,16 @@ impl Object for CheckoutSessionItem {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentPagesCheckoutSessionLineItemResourceLineItemTax {
-    /// Amount of tax for this line item.
+pub struct LineItemsDiscountAmount {
+    /// The amount discounted.
+    pub amount: i64,
+
+    pub discount: Discount,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct LineItemsTaxAmount {
+    /// Amount of tax applied for this rate.
     pub amount: i64,
 
     pub rate: TaxRate,

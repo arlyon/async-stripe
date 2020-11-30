@@ -54,7 +54,7 @@ pub struct IssuingCard {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
@@ -104,21 +104,27 @@ impl Object for IssuingCard {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardAuthorizationControls {
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations permitted on this card.
+    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
+    ///
+    /// All other categories will be blocked.
+    /// Cannot be set with `blocked_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_categories: Option<Vec<MerchantCategory>>,
 
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to always decline on this card.
+    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
+    ///
+    /// All other categories will be allowed.
+    /// Cannot be set with `allowed_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blocked_categories: Option<Vec<MerchantCategory>>,
 
-    /// Limit the spending with rules based on time intervals and categories.
+    /// Limit spending with amount-based rules.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits: Option<Vec<SpendingLimit>>,
 
-    /// Currency for the amounts within spending_limits.
+    /// Currency of the amounts within `spending_limits`.
     ///
-    /// Locked to the currency of the card.
+    /// Always the same as the currency of the card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits_currency: Option<Currency>,
 }

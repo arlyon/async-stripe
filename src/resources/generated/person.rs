@@ -15,6 +15,7 @@ pub struct Person {
     /// Unique identifier for the object.
     pub id: PersonId,
 
+    /// The account the person is associated with.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
 
@@ -40,44 +41,59 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<Dob>,
 
+    /// The person's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
+    /// The person's first name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_name: Option<String>,
 
+    /// The Kana variation of the person's first name (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_name_kana: Option<String>,
 
+    /// The Kanji variation of the person's first name (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_name_kanji: Option<String>,
 
+    /// The person's gender (International regulations require either "male" or "female").
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<String>,
 
+    /// Whether the person's `id_number` was provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_provided: Option<bool>,
 
+    /// The person's last name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
 
+    /// The Kana variation of the person's last name (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name_kana: Option<String>,
 
+    /// The Kanji variation of the person's last name (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name_kanji: Option<String>,
 
+    /// The person's maiden name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maiden_name: Option<String>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// The person's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+
+    /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub political_exposure: Option<PersonPoliticalExposure>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub relationship: Option<PersonRelationship>,
@@ -85,6 +101,9 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requirements: Option<PersonRequirements>,
 
+    /// Whether the last four digits of the person's Social Security number have been provided (U.S.
+    ///
+    /// only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ssn_last_4_provided: Option<bool>,
 
@@ -193,7 +212,7 @@ pub struct PersonRequirements {
     /// If not collected by the account's `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
     pub currently_due: Vec<String>,
 
-    /// The fields that need to be collected again because validation or verification failed for some reason.
+    /// The fields that are `currently_due` and need to be collected again because validation or verification failed for some reason.
     pub errors: Vec<AccountRequirementsError>,
 
     /// Fields that need to be collected assuming all volume thresholds are reached.
@@ -248,6 +267,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationDocumentIdNumberMissing,
     VerificationDocumentIncomplete,
     VerificationDocumentInvalid,
+    VerificationDocumentIssueOrExpiryDateMissing,
     VerificationDocumentManipulated,
     VerificationDocumentMissingBack,
     VerificationDocumentMissingFront,
@@ -255,6 +275,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationDocumentNameMissing,
     VerificationDocumentNationalityMismatch,
     VerificationDocumentNotReadable,
+    VerificationDocumentNotSigned,
     VerificationDocumentNotUploaded,
     VerificationDocumentPhotoMismatch,
     VerificationDocumentTooLarge,
@@ -267,6 +288,8 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedTaxIdMatch,
+    VerificationFailedTaxIdNotIssued,
 }
 
 impl AccountRequirementsErrorCode {
@@ -325,6 +348,9 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationDocumentInvalid => {
                 "verification_document_invalid"
             }
+            AccountRequirementsErrorCode::VerificationDocumentIssueOrExpiryDateMissing => {
+                "verification_document_issue_or_expiry_date_missing"
+            }
             AccountRequirementsErrorCode::VerificationDocumentManipulated => {
                 "verification_document_manipulated"
             }
@@ -345,6 +371,9 @@ impl AccountRequirementsErrorCode {
             }
             AccountRequirementsErrorCode::VerificationDocumentNotReadable => {
                 "verification_document_not_readable"
+            }
+            AccountRequirementsErrorCode::VerificationDocumentNotSigned => {
+                "verification_document_not_signed"
             }
             AccountRequirementsErrorCode::VerificationDocumentNotUploaded => {
                 "verification_document_not_uploaded"
@@ -380,6 +409,12 @@ impl AccountRequirementsErrorCode {
                 "verification_failed_name_match"
             }
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
+            AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => {
+                "verification_failed_tax_id_match"
+            }
+            AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => {
+                "verification_failed_tax_id_not_issued"
+            }
         }
     }
 }
@@ -391,6 +426,35 @@ impl AsRef<str> for AccountRequirementsErrorCode {
 }
 
 impl std::fmt::Display for AccountRequirementsErrorCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `Person`'s `political_exposure` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PersonPoliticalExposure {
+    Existing,
+    None,
+}
+
+impl PersonPoliticalExposure {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PersonPoliticalExposure::Existing => "existing",
+            PersonPoliticalExposure::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for PersonPoliticalExposure {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PersonPoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
