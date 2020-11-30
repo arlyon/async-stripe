@@ -62,13 +62,14 @@ mod client {
         feature = "runtime-tokio-hyper",
         feature = "runtime-tokio-hyper-rustls",
         feature = "runtime-blocking",
+        feature = "runtime-blocking-rustls",
     ))]
     pub mod tokio;
 
     #[cfg(feature = "runtime-async-std-surf")]
     pub mod async_std;
 
-    #[cfg(feature = "runtime-blocking")]
+    #[cfg(any(feature = "runtime-blocking", feature = "runtime-blocking-rustls"))]
     pub mod blocking;
 }
 
@@ -91,7 +92,7 @@ pub use crate::params::{
 };
 pub use crate::resources::*;
 
-#[cfg(feature = "runtime-blocking")]
+#[cfg(any(feature = "runtime-blocking", feature = "runtime-blocking-rustls"))]
 mod config {
     pub(crate) use crate::client::blocking::{err, ok};
     pub type Client = crate::client::blocking::Client;
@@ -113,7 +114,10 @@ mod config {
     pub type Response<T> = crate::client::blocking::Response<T>;
 }
 
-#[cfg(any(feature = "runtime-tokio-hyper", feature = "runtime-tokio-hyper-rustls",))]
+#[cfg(any(
+    feature = "runtime-tokio-hyper",
+    feature = "runtime-tokio-hyper-rustls"
+))]
 mod config {
     pub(crate) use crate::client::tokio::{err, ok};
     pub type Client = crate::client::tokio::Client;
