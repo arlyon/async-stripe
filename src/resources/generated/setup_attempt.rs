@@ -5,7 +5,10 @@
 use crate::config::{Client, Response};
 use crate::ids::{SetupAttemptId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
-use crate::resources::{Account, ApiErrors, Application, Customer, Mandate, PaymentMethod, SetupIntent, ThreeDSecureDetails};
+use crate::resources::{
+    Account, ApiErrors, Application, Customer, Mandate, PaymentMethod, SetupIntent,
+    ThreeDSecureDetails,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentFlowsSetupIntentSetupAttempt".
@@ -54,7 +57,6 @@ pub struct SetupAttempt {
 }
 
 impl SetupAttempt {
-
     /// Returns a list of SetupAttempts associated with a provided SetupIntent.
     pub fn list(client: &Client, params: ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
         client.get_query("/setup_attempts", &params)
@@ -73,7 +75,6 @@ impl Object for SetupAttempt {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetails {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<SetupAttemptPaymentMethodDetailsBancontact>,
 
@@ -96,7 +97,6 @@ pub struct SetupAttemptPaymentMethodDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsBancontact {
-
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_code: Option<String>,
@@ -136,7 +136,6 @@ pub struct SetupAttemptPaymentMethodDetailsBancontact {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsCard {
-
     /// Populated if this authorization used 3D Secure authentication.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub three_d_secure: Option<ThreeDSecureDetails>,
@@ -144,7 +143,6 @@ pub struct SetupAttemptPaymentMethodDetailsCard {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsIdeal {
-
     /// The customer's bank.
     ///
     /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
@@ -177,7 +175,6 @@ pub struct SetupAttemptPaymentMethodDetailsIdeal {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsSofort {
-
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_code: Option<String>,
@@ -218,7 +215,6 @@ pub struct SetupAttemptPaymentMethodDetailsSofort {
 /// The parameters for `SetupAttempt::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListSetupAttempts<'a> {
-
     /// A filter on the list, based on the object `created` field.
     ///
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.

@@ -297,10 +297,12 @@ fn deserialize_checkout_event() {
           ],
           "livemode": false,
           "locale": null,
+          "mode": "payment",
           "payment_intent": "pi_00000000000000",
           "payment_method_types": [
             "card"
           ],
+          "payment_status": "paid",
           "submit_type": null,
           "subscription": null,
           "success_url": "https://example.com/success"

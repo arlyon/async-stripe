@@ -8,6 +8,7 @@
 
 mod currency;
 mod generated;
+mod placeholders;
 mod types;
 
 #[path = "resources"]
@@ -18,6 +19,7 @@ mod core {
     pub mod payment_intent;
     pub mod payment_source;
     pub mod payout_ext;
+    pub mod placeholders;
     pub mod token_ext;
 }
 
@@ -79,6 +81,7 @@ pub use {
         customer_ext::*,
         payment_intent::*,
         payment_source::*,
+        placeholders::*,
         payout_ext::*,
         token_ext::*,
     },
@@ -96,6 +99,7 @@ pub use {
         product::*,
         refund::*,
         reserve_transaction::*,
+        setup_attempt::*,
         setup_intent::*,
         tax_deducted_at_source::*,
         token::*,
@@ -146,6 +150,7 @@ pub use {
         line_item::*,
         plan::*,
         price::*,
+        promotion_code::*,
         subscription::*,
         subscription_item::*,
         subscription_schedule::*,
