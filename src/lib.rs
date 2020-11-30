@@ -29,7 +29,8 @@
 //!
 //! ```rust,no_run
 //! /* Creating a Stripe Charge */
-//!
+//! # #[cfg(feature = "blocking")]
+//! # {
 //! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! let token = "tok_ID_FROM_CHECKOUT".parse().unwrap();
 //! let mut params = stripe::CreateCharge::new();
@@ -41,15 +42,18 @@
 //! params.currency = Some(stripe::Currency::CAD);
 //! let charge = stripe::Charge::create(&client, params).unwrap();
 //! println!("{:?}", charge); // =>  Charge { id: "ch_12345", amount: 1095, .. }
+//! # }
 //! ```
 //!
 //! ```rust,no_run
 //! /* Listing Stripe Charges */
-//!
+//! # #[cfg(feature = "blocking")]
+//! # {
 //! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! let params = stripe::ListCharges::new();
 //! let charges = stripe::Charge::list(&client, params).unwrap();
 //! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
+//! # }
 //! ```
 
 #![allow(clippy::map_clone)]
