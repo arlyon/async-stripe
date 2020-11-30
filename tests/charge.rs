@@ -31,11 +31,11 @@ fn is_charge_expandable() {
             &[
                 "application",
                 // "application_fee",
-                "balance_transaction",
-                "customer",
-                "dispute",
-                "invoice",
-                "review",
+                // "balance_transaction",
+                // "customer",
+                // "dispute",
+                // "invoice",
+                // "review",
                 // FIXME: Figure out what the `py_` id prefix is for
                 // "source_transfer",
                 // "transfer",

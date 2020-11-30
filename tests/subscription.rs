@@ -25,12 +25,12 @@ fn is_subscription_expandable() {
             &id,
             &[
                 "customer",
-                "schedule",
-                "latest_invoice",
-                "pending_setup_intent",
-                "default_source",
-                "default_tax_rates",
-                "default_payment_method",
+                // "schedule",
+                // "latest_invoice",
+                // "pending_setup_intent",
+                // "default_source",
+                // "default_tax_rates",
+                // "default_payment_method",
             ],
         );
         let subscription = match result {
