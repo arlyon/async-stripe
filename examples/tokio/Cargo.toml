@@ -1,0 +1,9 @@
+[package]
+name = "example-tokio"
+version = "0.1.0"
+authors = ["Alexander Lyon <arlyon@me.com>"]
+edition = "2018"
+
+[dependencies]
+tokio = "0.2"
+stripe-rust = { version = "0.13", path = "../../", features = ["runtime-tokio-hyper"] }

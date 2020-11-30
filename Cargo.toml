@@ -1,7 +1,11 @@
 [workspace]
 members = [
-    "openapi",
-    "bench/binary_size",
+  ".",
+  "openapi",
+  "bench/binary_size",
+  "examples/async-std",
+  "examples/blocking",
+  "examples/tokio",
 ]
 
 [package]
@@ -59,11 +63,20 @@ webhook-events = ["events", "hmac", "sha2"]
 events = []
 
 # runtimes
-runtime-tokio-hyper = ["tokio", "hyper", "hyper-tls"]
-runtime-tokio-hyper-rustls = ["tokio", "hyper", "hyper-rustls"]
-runtime-blocking = ["tokio", "tokio/rt-core", "hyper", "hyper-tls"]
-runtime-blocking-rustls = ["tokio", "tokio/rt-core", "hyper", "hyper-rustls"]
-runtime-async-std-surf = ["async-std", "surf"]
+async = []
+blocking = []
+
+runtime-tokio-hyper = ["tokio", "hyper", "hyper-tls", "async"]
+runtime-tokio-hyper-rustls = ["tokio", "hyper", "hyper-rustls", "async"]
+runtime-blocking = ["tokio", "tokio/rt-core", "hyper", "hyper-tls", "blocking"]
+runtime-blocking-rustls = [
+  "tokio",
+  "tokio/rt-core",
+  "hyper",
+  "hyper-rustls",
+  "blocking",
+]
+runtime-async-std-surf = ["async-std", "surf", "async"]
 
 [dependencies]
 async-std = { version = "1.7", optional = true }
@@ -84,26 +97,6 @@ tokio = { version = "0.2", default-features = false, features = ["tcp", "time"],
 hmac = { version = "0.7", optional = true }
 sha2 = { version = "0.8", optional = true }
 
-[[example]]
-name = "async_create_charge"
-#required-features = ["async"]
-
-[[example]]
-name = "create_charge"
-required-features = ["runtime-blocking"]
-
-[[example]]
-name = "create_customer"
-required-features = ["runtime-blocking"]
-
-[[example]]
-name = "create_customer_with_source"
-required-features = ["runtime-blocking"]
-
-[[example]]
-name = "list_customers"
-required-features = ["runtime-blocking"]
 
 [dev-dependencies]
-lazy_static = "1.4.0"
-tokio = { version = "0.2", features = ["full"] }
+lazy_static = "1.4"
