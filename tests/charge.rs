@@ -1,6 +1,7 @@
 mod mock;
 
 #[test]
+#[cfg(feature = "blocking")]
 fn is_charge_retrievable() {
     mock::with_client(|client| {
         let id = "ch_123".parse().unwrap();
@@ -20,6 +21,7 @@ fn is_charge_retrievable() {
 }
 
 #[test]
+#[cfg(feature = "blocking")]
 fn is_charge_expandable() {
     mock::with_client(|client| {
         let id = "ch_123".parse().unwrap();

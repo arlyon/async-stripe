@@ -1,5 +1,6 @@
 mod mock;
 
+#[cfg(feature = "blocking")]
 fn customer_create_and_delete(client: &stripe::Client) {
     let customer_params = stripe::CreateCustomer::new();
     let customer = stripe::Customer::create(client, customer_params).unwrap();
@@ -11,6 +12,7 @@ fn customer_create_and_delete(client: &stripe::Client) {
 }
 
 #[test]
+#[cfg(feature = "blocking")]
 fn customer_create_and_delete_without_account() {
     mock::with_client(|client| {
         customer_create_and_delete(client);
@@ -18,6 +20,7 @@ fn customer_create_and_delete_without_account() {
 }
 
 #[test]
+#[cfg(feature = "blocking")]
 fn customer_create_and_delete_with_account() {
     mock::with_client(|client| {
         let client = client.with_headers(stripe::Headers {

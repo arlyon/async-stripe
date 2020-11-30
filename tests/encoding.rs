@@ -28,9 +28,18 @@ fn serialize_currency() {
 #[test]
 fn deserialize_currency() {
     use stripe::Currency;
-    assert_eq!(serde_json::from_str::<Currency>("\"aed\"").unwrap(), Currency::AED);
-    assert_eq!(serde_json::from_str::<Currency>("\"usd\"").unwrap(), Currency::USD);
-    assert_eq!(serde_json::from_str::<Currency>("\"zmw\"").unwrap(), Currency::ZMW);
+    assert_eq!(
+        serde_json::from_str::<Currency>("\"aed\"").unwrap(),
+        Currency::AED
+    );
+    assert_eq!(
+        serde_json::from_str::<Currency>("\"usd\"").unwrap(),
+        Currency::USD
+    );
+    assert_eq!(
+        serde_json::from_str::<Currency>("\"zmw\"").unwrap(),
+        Currency::ZMW
+    );
 }
 
 #[test]
@@ -43,23 +52,35 @@ fn serialize_range_query() {
         lt: Some(1504233902),
         lte: None,
     });
-    assert_eq!(urldecode(serde_qs::to_string(&query).unwrap()), "gte=1501598702&lt=1504233902");
+    assert_eq!(
+        urldecode(serde_qs::to_string(&query).unwrap()),
+        "gte=1501598702&lt=1504233902"
+    );
 
     let mut params = ListCustomers::new();
     params.created = Some(RangeQuery::eq(1501598702));
     params.limit = Some(3);
-    assert_eq!(urldecode(serde_qs::to_string(&params).unwrap()), "created=1501598702&limit=3");
+    assert_eq!(
+        urldecode(serde_qs::to_string(&params).unwrap()),
+        "created=1501598702&limit=3"
+    );
 
     let mut params = ListCustomers::new();
     params.created = Some(RangeQuery::gte(1501598702));
     params.limit = Some(3);
-    assert_eq!(urldecode(serde_qs::to_string(&params).unwrap()), "created[gte]=1501598702&limit=3");
+    assert_eq!(
+        urldecode(serde_qs::to_string(&params).unwrap()),
+        "created[gte]=1501598702&limit=3"
+    );
 
     let mut params = ListCustomers::new();
     params.created = Some(query);
     params.limit = Some(3);
     let encoded = urldecode(serde_qs::to_string(&params).unwrap());
-    assert_eq!(encoded, "created[gte]=1501598702&created[lt]=1504233902&limit=3");
+    assert_eq!(
+        encoded,
+        "created[gte]=1501598702&created[lt]=1504233902&limit=3"
+    );
 }
 
 fn urldecode(input: String) -> String {
@@ -73,7 +94,9 @@ fn deserialize_payment_source_params() {
     let examples = [
         (
             json!("src_xyzABC123"),
-            Some(PaymentSourceParams::Source("src_xyzABC123".parse::<SourceId>().unwrap())),
+            Some(PaymentSourceParams::Source(
+                "src_xyzABC123".parse::<SourceId>().unwrap(),
+            )),
         ),
         (
             json!("tok_189g322eZvKYlo2CeoPw2sdy"),
