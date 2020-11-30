@@ -114,10 +114,7 @@ mod config {
     pub type Response<T> = crate::client::blocking::Response<T>;
 }
 
-#[cfg(any(
-    feature = "runtime-tokio-hyper",
-    feature = "runtime-tokio-hyper-rustls"
-))]
+#[cfg(any(feature = "runtime-tokio-hyper", feature = "runtime-tokio-hyper-rustls"))]
 mod config {
     pub(crate) use crate::client::tokio::{err, ok};
     pub type Client = crate::client::tokio::Client;
