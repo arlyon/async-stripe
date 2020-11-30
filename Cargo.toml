@@ -10,7 +10,7 @@ members = [
 
 [package]
 name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
-version = "0.13.0-dev"
+version = "0.13.0"
 description = "API bindings for the Stripe HTTP API"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
@@ -24,9 +24,6 @@ documentation = "https://docs.rs/stripe-rust"
 keywords = ["stripe", "v1", "api"]
 categories = ["api-bindings"]
 edition = "2018"
-
-[badges]
-travis-ci = {repository = "wyyerd/stripe-rs"}
 
 [lib]
 name = "stripe"
