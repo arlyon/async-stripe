@@ -13,3 +13,5 @@ stripe-mock/
 *.swp
 ~*
 
+spec3.json
+

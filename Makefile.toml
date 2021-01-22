@@ -1,7 +1,7 @@
 [tasks.openapi-delete]
 cwd = "openapi"
 command = "rm"
-args = ["spec3.json"]
+args = ["-f", "spec3.json"]
 
 [tasks.openapi-fetch]
 cwd = "openapi"

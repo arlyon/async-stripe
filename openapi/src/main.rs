@@ -1052,7 +1052,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
         prelude.push_str("};\n");
     }
     if state.use_resources.len() > 0 {
-        prelude.push_str("use self::{");
+        prelude.push_str("use crate::resources::{");
         for (n, type_) in state
             .use_resources
             .iter()
