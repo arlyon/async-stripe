@@ -1,4 +1,4 @@
-# stripe-rust
+# async-stripe
 
 ![CI](https://github.com/arlyon/stripe-rs/workflows/CI/badge.svg)
 [![stripe-rust on crates.io](https://img.shields.io/crates/v/stripe-rust.svg)](https://crates.io/crates/stripe-rust)
@@ -24,7 +24,7 @@ If you don't see the specific version you are on, prefer the next available vers
 
 ```toml
 [dependencies]
-stripe-rust = { version = "0.13", features = ["runtime-async-std-surf"] }
+async-stripe = { version = "0.13", features = ["runtime-async-std-surf"] }
 ```
 
 ### Feature Flags
@@ -107,6 +107,9 @@ println!("{:?}", customers); // =>  List { data: [Customer { .. }] }
 See [CONTRIBUTING.md](CONTRIBUTING.md) for information on contributing to rustup.
 
 ## License
+
+This project started as a fork of [stripe-rs](https://github.com/wyyerd/stripe-rs).
+We would not be here without them! :)
 
 Licensed under either of
 

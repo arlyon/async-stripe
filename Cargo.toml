@@ -9,12 +9,13 @@ members = [
 ]
 
 [package]
-name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
+name = "async-stripe"
 version = "0.13.0"
 description = "API bindings for the Stripe HTTP API"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
-  "Kevin Stenerson <kestred@users.noreply.github.com>"
+  "Kevin Stenerson <kestred@users.noreply.github.com>",
+  "Alexander Lyon <arlyon@me.com>",
 ]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
@@ -31,16 +32,16 @@ name = "stripe"
 [features]
 default = ["full", "webhook-events"]
 full = [
-#    "core",
-#    "payment-methods",
-    "checkout",
-    "billing",
-    "connect",
-    "fraud",
-    "issuing",
-    "orders",
-    "sigma",
-    "webhook-endpoints",
+  #    "core",
+  #    "payment-methods",
+  "checkout",
+  "billing",
+  "connect",
+  "fraud",
+  "issuing",
+  "orders",
+  "sigma",
+  "webhook-endpoints",
 ]
 
 # Stripe feature groups
@@ -87,8 +88,8 @@ serde_derive = "1.0.79"
 serde_json = "1.0"
 serde_qs = "0.5"
 smol_str = "0.1"
-surf = { version = "2.1.0", optional = true } 
-tokio = { version = "0.2", default-features = false, features = ["tcp", "time"], optional = true } 
+surf = { version = "2.1.0", optional = true }
+tokio = { version = "0.2", default-features = false, features = ["tcp", "time"], optional = true }
 
 # Webhook support
 hmac = { version = "0.7", optional = true }
