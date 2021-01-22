@@ -1,0 +1,28 @@
+on:
+  schedule:
+    - cron: "0 0 * * 5"
+  workflow_dispatch:
+jobs:
+  update-openapi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install cargo-make
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: --debug cargo-make
+      - name: regenerate openapi
+        uses: actions-rs/cargo@v1
+        with:
+          command: make
+          args: openapi-install
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: Bump OpenAPI version
+          title: Bump OpenAPI version
+          body: Credit new contributors by updating AUTHORS
+          branch: openapi
+          branch-suffix: timestamp
+          assignees: arlyon
