@@ -7,13 +7,13 @@ use crate::params::Object;
 use crate::resources::{Currency, Discount, Price, TaxRate};
 use serde_derive::{Deserialize, Serialize};
 
-/// The resource representing a Stripe "LineItems".
+/// The resource representing a Stripe "LineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSessionItem {
     /// Unique identifier for the object.
     pub id: CheckoutSessionItemId,
 
-    /// Total before any discounts or taxes is applied.
+    /// Total before any discounts or taxes are applied.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_subtotal: Option<i64>,
 
@@ -36,7 +36,9 @@ pub struct CheckoutSessionItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<LineItemsDiscountAmount>>,
 
-    pub price: Price,
+    /// The price used to generate the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Price>,
 
     /// The quantity of products being purchased.
     #[serde(skip_serializing_if = "Option::is_none")]

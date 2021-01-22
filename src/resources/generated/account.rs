@@ -645,6 +645,10 @@ pub struct CreateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_currency: Option<Currency>,
 
+    /// Documents that may be submitted to satisfy various informational requests.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub documents: Option<CreateAccountDocuments>,
+
     /// The email address of the account holder.
     ///
     /// This is only to make the account easier to identify to you.
@@ -704,6 +708,7 @@ impl<'a> CreateAccount<'a> {
             company: Default::default(),
             country: Default::default(),
             default_currency: Default::default(),
+            documents: Default::default(),
             email: Default::default(),
             expand: Default::default(),
             external_account: Default::default(),
@@ -794,6 +799,10 @@ pub struct UpdateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_currency: Option<Currency>,
 
+    /// Documents that may be submitted to satisfy various informational requests.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub documents: Option<UpdateAccountDocuments>,
+
     /// The email address of the account holder.
     ///
     /// This is only to make the account easier to identify to you.
@@ -845,6 +854,7 @@ impl<'a> UpdateAccount<'a> {
             capabilities: Default::default(),
             company: Default::default(),
             default_currency: Default::default(),
+            documents: Default::default(),
             email: Default::default(),
             expand: Default::default(),
             external_account: Default::default(),
@@ -1001,6 +1011,30 @@ pub struct CreateAccountCapabilities {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountDocuments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_account_ownership_verification:
+        Option<CreateAccountDocumentsBankAccountOwnershipVerification>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_license: Option<CreateAccountDocumentsCompanyLicense>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_memorandum_of_association:
+        Option<CreateAccountDocumentsCompanyMemorandumOfAssociation>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_ministerial_decree: Option<CreateAccountDocumentsCompanyMinisterialDecree>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_registration_verification:
+        Option<CreateAccountDocumentsCompanyRegistrationVerification>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_tax_id_verification: Option<CreateAccountDocumentsCompanyTaxIdVerification>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -1121,6 +1155,30 @@ pub struct UpdateAccountCapabilities {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfers: Option<UpdateAccountCapabilitiesTransfers>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountDocuments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_account_ownership_verification:
+        Option<UpdateAccountDocumentsBankAccountOwnershipVerification>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_license: Option<UpdateAccountDocumentsCompanyLicense>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_memorandum_of_association:
+        Option<UpdateAccountDocumentsCompanyMemorandumOfAssociation>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_ministerial_decree: Option<UpdateAccountDocumentsCompanyMinisterialDecree>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_registration_verification:
+        Option<UpdateAccountDocumentsCompanyRegistrationVerification>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_tax_id_verification: Option<UpdateAccountDocumentsCompanyTaxIdVerification>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1274,6 +1332,42 @@ pub struct CreateAccountCapabilitiesTransfers {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountDocumentsBankAccountOwnershipVerification {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountDocumentsCompanyLicense {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountDocumentsCompanyMemorandumOfAssociation {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountDocumentsCompanyMinisterialDecree {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountDocumentsCompanyRegistrationVerification {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountDocumentsCompanyTaxIdVerification {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentsSettingsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
@@ -1415,6 +1509,42 @@ pub struct UpdateAccountCapabilitiesTaxReportingUs1099Misc {
 pub struct UpdateAccountCapabilitiesTransfers {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountDocumentsBankAccountOwnershipVerification {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountDocumentsCompanyLicense {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountDocumentsCompanyMemorandumOfAssociation {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountDocumentsCompanyMinisterialDecree {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountDocumentsCompanyRegistrationVerification {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountDocumentsCompanyTaxIdVerification {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
