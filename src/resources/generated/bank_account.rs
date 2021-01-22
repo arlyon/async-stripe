@@ -27,6 +27,12 @@ pub struct BankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<AccountHolderType>,
 
+    /// A set of available payout methods for this bank account.
+    ///
+    /// Only values from this set should be passed as the `method` when creating a payout.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub available_payout_methods: Option<Vec<BankAccountAvailablePayoutMethods>>,
+
     /// Name of the bank associated with the routing number (e.g., `WELLS FARGO`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_name: Option<String>,
@@ -92,5 +98,34 @@ impl Object for BankAccount {
     }
     fn object(&self) -> &'static str {
         "bank_account"
+    }
+}
+
+/// An enum representing the possible values of an `BankAccount`'s `available_payout_methods` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum BankAccountAvailablePayoutMethods {
+    Instant,
+    Standard,
+}
+
+impl BankAccountAvailablePayoutMethods {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            BankAccountAvailablePayoutMethods::Instant => "instant",
+            BankAccountAvailablePayoutMethods::Standard => "standard",
+        }
+    }
+}
+
+impl AsRef<str> for BankAccountAvailablePayoutMethods {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for BankAccountAvailablePayoutMethods {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
     }
 }

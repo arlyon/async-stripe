@@ -4,7 +4,7 @@
 
 use crate::ids::InvoiceLineItemId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Currency, Period, Plan, Price, TaxRate};
+use crate::resources::{Currency, Discount, Period, Price, TaxRate};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceLineItem".
@@ -27,10 +27,21 @@ pub struct InvoiceLineItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// The amount of discount calculated per discount for this line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount_amounts: Option<Vec<DiscountsResourceDiscountAmount>>,
+
     /// If true, discounts will apply to this line item.
     ///
     /// Always false for prorations.
     pub discountable: bool,
+
+    /// The discounts applied to the invoice line item.
+    ///
+    /// Line item discounts are applied before invoice discounts.
+    /// Use `expand[]=discounts` to expand each discount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<Expandable<Discount>>>,
 
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39,17 +50,13 @@ pub struct InvoiceLineItem {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Note that for line items with `type=subscription` this will reflect the metadata of the subscription that caused the line item to be created.
     pub metadata: Metadata,
 
     pub period: Option<Period>,
-
-    /// The plan of the subscription, if the line item is a subscription or a proration.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<Plan>,
 
     /// The price of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -93,6 +100,15 @@ impl Object for InvoiceLineItem {
     fn object(&self) -> &'static str {
         "line_item"
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DiscountsResourceDiscountAmount {
+    /// The amount, in %s, of the discount.
+    pub amount: i64,
+
+    /// The discount that was applied to get this discount amount.
+    pub discount: Expandable<Discount>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

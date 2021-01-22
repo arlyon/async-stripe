@@ -17,7 +17,7 @@ pub struct TaxRate {
 
     /// Defaults to `true`.
     ///
-    /// When set to `false`, this tax rate cannot be applied to objects in the API, but will still be applied to subscriptions and invoices that already have it set.
+    /// When set to `false`, this tax rate cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
     pub active: bool,
 
     /// Time at which the object was created.
@@ -38,15 +38,19 @@ pub struct TaxRate {
     pub inclusive: bool,
 
     /// The jurisdiction for the tax rate.
+    ///
+    /// You can use this label field for tax reporting purposes.
+    /// It also appears on your customer’s invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jurisdiction: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(default)]
     pub metadata: Metadata,
 
     /// This represents the tax rate percent out of 100.
@@ -90,9 +94,9 @@ impl Object for TaxRate {
 /// The parameters for `TaxRate::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTaxRate<'a> {
-    /// Flag determining whether the tax rate is active or inactive.
+    /// Flag determining whether the tax rate is active or inactive (archived).
     ///
-    /// Inactive tax rates continue to work where they are currently applied however they cannot be used for new applications.
+    /// Inactive tax rates cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
@@ -113,10 +117,13 @@ pub struct CreateTaxRate<'a> {
     pub inclusive: bool,
 
     /// The jurisdiction for the tax rate.
+    ///
+    /// You can use this label field for tax reporting purposes.
+    /// It also appears on your customer’s invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jurisdiction: Option<&'a str>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -146,7 +153,7 @@ impl<'a> CreateTaxRate<'a> {
 /// The parameters for `TaxRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxRates<'a> {
-    /// Optional flag to filter by tax rates that are either active or not active (archived).
+    /// Optional flag to filter by tax rates that are either active or inactive (archived).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
@@ -200,9 +207,9 @@ impl<'a> ListTaxRates<'a> {
 /// The parameters for `TaxRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTaxRate<'a> {
-    /// Flag determining whether the tax rate is active or inactive.
+    /// Flag determining whether the tax rate is active or inactive (archived).
     ///
-    /// Inactive tax rates continue to work where they are currently applied however they cannot be used for new applications.
+    /// Inactive tax rates cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
@@ -221,10 +228,13 @@ pub struct UpdateTaxRate<'a> {
     pub expand: &'a [&'a str],
 
     /// The jurisdiction for the tax rate.
+    ///
+    /// You can use this label field for tax reporting purposes.
+    /// It also appears on your customer’s invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jurisdiction: Option<&'a str>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.

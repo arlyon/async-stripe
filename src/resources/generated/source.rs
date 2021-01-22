@@ -93,7 +93,7 @@ pub struct Source {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
@@ -237,6 +237,12 @@ pub struct SourceOrderItem {
     /// Human-readable description for this order item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+
+    /// The ID of the associated object for this line item.
+    ///
+    /// Expandable if not null (e.g., expandable to a SKU).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parent: Option<String>,
 
     /// The quantity of this order item.
     ///
@@ -672,6 +678,9 @@ pub struct SourceTypeKlarna {
     pub redirect_url: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_delay: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_first_name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -955,7 +964,7 @@ pub struct UpdateSource<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate: Option<SourceMandateParams>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.

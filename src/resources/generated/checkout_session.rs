@@ -5,8 +5,8 @@
 use crate::ids::CheckoutSessionId;
 use crate::params::{Expandable, List, Metadata, Object};
 use crate::resources::{
-    CheckoutSessionItem, Currency, Customer, PaymentIntent, Plan, SetupIntent, Shipping, Sku,
-    Subscription,
+    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, SetupIntent, Shipping,
+    Subscription, TaxRate,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -18,10 +18,21 @@ pub struct CheckoutSession {
     /// Used to pass to `redirectToCheckout` in Stripe.js.
     pub id: CheckoutSessionId,
 
-    /// The value (`auto` or `required`) for whether Checkout collected the
-    /// customer's billing address.
+    /// Enables user redeemable promotion codes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_address_collection: Option<String>,
+    pub allow_promotion_codes: Option<bool>,
+
+    /// Total of all items before discounts or taxes are applied.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_subtotal: Option<i64>,
+
+    /// Total of all items after discounts and taxes are applied.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_total: Option<i64>,
+
+    /// Describes whether Checkout should collect the customer's billing address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_address_collection: Option<CheckoutSessionBillingAddressCollection>,
 
     /// The URL the customer will be directed to if they decide to cancel payment and return to your website.
     pub cancel_url: String,
@@ -31,6 +42,12 @@ pub struct CheckoutSession {
     /// This can be a customer ID, a cart ID, or similar, and can be used to reconcile the session with your internal systems.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub client_reference_id: Option<String>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
 
     /// The ID of the customer for this session.
     /// For Checkout Sessions in `payment` or `subscription` mode, Checkout
@@ -45,17 +62,11 @@ pub struct CheckoutSession {
     /// Use this parameter to prefill customer data if you already have an email
     /// on file.
     ///
-    /// To access information about the customer once a session is complete, use the `customer` field.
+    /// To access information about the customer once a session is complete, use the `customer` attribute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_email: Option<String>,
 
-    /// The line items, plans, or SKUs purchased by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub display_items: Option<Vec<CheckoutSessionDisplayItem>>,
-
     /// The line items purchased by the customer.
-    ///
-    /// [Expand](https://stripe.com/docs/api/expanding_objects) this field to include it in the response.
     #[serde(default)]
     pub line_items: List<CheckoutSessionItem>,
 
@@ -68,15 +79,14 @@ pub struct CheckoutSession {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub locale: Option<CheckoutSessionLocale>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
     pub metadata: Metadata,
 
-    /// The mode of the Checkout Session, one of `payment`, `setup`, or `subscription`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mode: Option<CheckoutSessionMode>,
+    /// The mode of the Checkout Session.
+    pub mode: CheckoutSessionMode,
 
     /// The ID of the PaymentIntent for Checkout Sessions in `payment` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -86,6 +96,10 @@ pub struct CheckoutSession {
     ///
     /// card) this Checkout Session is allowed to accept.
     pub payment_method_types: Vec<String>,
+
+    /// The payment status of the Checkout Session, one of `paid`, `unpaid`, or `no_payment_required`.
+    /// You can use this value to decide when to fulfill your customer's order.
+    pub payment_status: CheckoutSessionPaymentStatus,
 
     /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -113,6 +127,10 @@ pub struct CheckoutSession {
     /// The URL the customer will be directed to after the payment or
     /// subscription creation is successful.
     pub success_url: String,
+
+    /// Tax and discount details for the computed total amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_details: Option<PaymentPagesCheckoutSessionTotalDetails>,
 }
 
 impl Object for CheckoutSession {
@@ -126,50 +144,40 @@ impl Object for CheckoutSession {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CheckoutSessionDisplayItem {
-    /// Amount for the display item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
+pub struct PaymentPagesCheckoutSessionTotalDetails {
+    /// This is the sum of all the line item discounts.
+    pub amount_discount: i64,
 
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
+    /// This is the sum of all the line item tax amounts.
+    pub amount_tax: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom: Option<CheckoutSessionCustomDisplayItemDescription>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub plan: Option<Plan>,
-
-    /// Quantity of the display item being purchased.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sku: Option<Sku>,
-
-    /// The type of display item.
-    ///
-    /// One of `custom`, `plan` or `sku`.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
+    pub breakdown: Option<PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CheckoutSessionCustomDisplayItemDescription {
-    /// The description of the line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
+pub struct PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown {
+    /// The aggregated line item discounts.
+    pub discounts: Vec<LineItemsDiscountAmount>,
 
-    /// The images of the line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub images: Option<Vec<String>>,
+    /// The aggregated line item tax amounts by rate.
+    pub taxes: Vec<LineItemsTaxAmount>,
+}
 
-    /// The name of the line item.
-    pub name: String,
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct LineItemsDiscountAmount {
+    /// The amount discounted.
+    pub amount: i64,
+
+    pub discount: Discount,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct LineItemsTaxAmount {
+    /// Amount of tax applied for this rate.
+    pub amount: i64,
+
+    pub rate: TaxRate,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -181,50 +189,122 @@ pub struct ShippingAddressCollection {
     pub allowed_countries: Vec<ShippingAddressCollectionAllowedCountries>,
 }
 
+/// An enum representing the possible values of an `CheckoutSession`'s `billing_address_collection` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutSessionBillingAddressCollection {
+    Auto,
+    Required,
+}
+
+impl CheckoutSessionBillingAddressCollection {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutSessionBillingAddressCollection::Auto => "auto",
+            CheckoutSessionBillingAddressCollection::Required => "required",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutSessionBillingAddressCollection {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutSessionBillingAddressCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `CheckoutSession`'s `locale` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CheckoutSessionLocale {
     Auto,
+    Bg,
+    Cs,
     Da,
     De,
+    El,
     En,
+    #[serde(rename = "en-GB")]
+    EnGb,
     Es,
+    #[serde(rename = "es-419")]
+    Es419,
+    Et,
     Fi,
     Fr,
+    #[serde(rename = "fr-CA")]
+    FrCa,
+    Hu,
+    Id,
     It,
     Ja,
+    Lt,
+    Lv,
     Ms,
+    Mt,
     Nb,
     Nl,
     Pl,
     Pt,
     #[serde(rename = "pt-BR")]
     PtBr,
+    Ro,
+    Ru,
+    Sk,
+    Sl,
     Sv,
+    Tr,
     Zh,
+    #[serde(rename = "zh-HK")]
+    ZhHk,
+    #[serde(rename = "zh-TW")]
+    ZhTw,
 }
 
 impl CheckoutSessionLocale {
     pub fn as_str(self) -> &'static str {
         match self {
             CheckoutSessionLocale::Auto => "auto",
+            CheckoutSessionLocale::Bg => "bg",
+            CheckoutSessionLocale::Cs => "cs",
             CheckoutSessionLocale::Da => "da",
             CheckoutSessionLocale::De => "de",
+            CheckoutSessionLocale::El => "el",
             CheckoutSessionLocale::En => "en",
+            CheckoutSessionLocale::EnGb => "en-GB",
             CheckoutSessionLocale::Es => "es",
+            CheckoutSessionLocale::Es419 => "es-419",
+            CheckoutSessionLocale::Et => "et",
             CheckoutSessionLocale::Fi => "fi",
             CheckoutSessionLocale::Fr => "fr",
+            CheckoutSessionLocale::FrCa => "fr-CA",
+            CheckoutSessionLocale::Hu => "hu",
+            CheckoutSessionLocale::Id => "id",
             CheckoutSessionLocale::It => "it",
             CheckoutSessionLocale::Ja => "ja",
+            CheckoutSessionLocale::Lt => "lt",
+            CheckoutSessionLocale::Lv => "lv",
             CheckoutSessionLocale::Ms => "ms",
+            CheckoutSessionLocale::Mt => "mt",
             CheckoutSessionLocale::Nb => "nb",
             CheckoutSessionLocale::Nl => "nl",
             CheckoutSessionLocale::Pl => "pl",
             CheckoutSessionLocale::Pt => "pt",
             CheckoutSessionLocale::PtBr => "pt-BR",
+            CheckoutSessionLocale::Ro => "ro",
+            CheckoutSessionLocale::Ru => "ru",
+            CheckoutSessionLocale::Sk => "sk",
+            CheckoutSessionLocale::Sl => "sl",
             CheckoutSessionLocale::Sv => "sv",
+            CheckoutSessionLocale::Tr => "tr",
             CheckoutSessionLocale::Zh => "zh",
+            CheckoutSessionLocale::ZhHk => "zh-HK",
+            CheckoutSessionLocale::ZhTw => "zh-TW",
         }
     }
 }
@@ -267,6 +347,37 @@ impl AsRef<str> for CheckoutSessionMode {
 }
 
 impl std::fmt::Display for CheckoutSessionMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutSession`'s `payment_status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutSessionPaymentStatus {
+    NoPaymentRequired,
+    Paid,
+    Unpaid,
+}
+
+impl CheckoutSessionPaymentStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutSessionPaymentStatus::NoPaymentRequired => "no_payment_required",
+            CheckoutSessionPaymentStatus::Paid => "paid",
+            CheckoutSessionPaymentStatus::Unpaid => "unpaid",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutSessionPaymentStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutSessionPaymentStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

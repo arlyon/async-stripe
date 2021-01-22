@@ -5,6 +5,7 @@
 use crate::config::{Client, Response};
 use crate::ids::{
     AlipayAccountId, BankAccountId, CardId, CouponId, CustomerId, PaymentMethodId, PaymentSourceId,
+    PromotionCodeId,
 };
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
@@ -54,9 +55,9 @@ pub struct Customer {
     #[serde(default)]
     pub deleted: bool,
 
-    /// When the customer's latest invoice is billed by charging automatically, delinquent is true if the invoice's latest charge is failed.
+    /// When the customer's latest invoice is billed by charging automatically, `delinquent` is `true` if the invoice's latest charge failed.
     ///
-    /// When the customer's latest invoice is billed by sending an invoice, delinquent is true if the invoice is not paid by its due date.
+    /// When the customer's latest invoice is billed by sending an invoice, `delinquent` is `true` if the invoice isn't paid by its due date.  If an invoice is marked uncollectible by [dunning](https://stripe.com/docs/billing/automatic-collection), `delinquent` doesn't get reset to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delinquent: Option<bool>,
 
@@ -85,7 +86,7 @@ pub struct Customer {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub livemode: Option<bool>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
@@ -254,7 +255,7 @@ pub struct CreateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<CustomerInvoiceSettings>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -282,6 +283,13 @@ pub struct CreateCustomer<'a> {
     /// Customer's preferred languages, ordered by preference.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locales: Option<Vec<String>>,
+
+    /// The API ID of a promotion code to apply to the customer.
+    ///
+    /// The customer will have a discount applied on all recurring payments.
+    /// Charges you create through the API will not have the discount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<PromotionCodeId>,
 
     /// The customer's shipping information.
     ///
@@ -320,6 +328,7 @@ impl<'a> CreateCustomer<'a> {
             payment_method: Default::default(),
             phone: Default::default(),
             preferred_locales: Default::default(),
+            promotion_code: Default::default(),
             shipping: Default::default(),
             source: Default::default(),
             tax_exempt: Default::default(),
@@ -334,7 +343,7 @@ pub struct ListCustomers<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
-    /// A filter on the list based on the customer's `email` field.
+    /// A case-sensitive filter on the list based on the customer's `email` field.
     ///
     /// The value must be a string.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -441,7 +450,7 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<CustomerInvoiceSettings>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -466,6 +475,13 @@ pub struct UpdateCustomer<'a> {
     /// Customer's preferred languages, ordered by preference.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locales: Option<Vec<String>>,
+
+    /// The API ID of a promotion code to apply to the customer.
+    ///
+    /// The customer will have a discount applied on all recurring payments.
+    /// Charges you create through the API will not have the discount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<PromotionCodeId>,
 
     /// The customer's shipping information.
     ///
@@ -512,6 +528,7 @@ impl<'a> UpdateCustomer<'a> {
             next_invoice_sequence: Default::default(),
             phone: Default::default(),
             preferred_locales: Default::default(),
+            promotion_code: Default::default(),
             shipping: Default::default(),
             source: Default::default(),
             tax_exempt: Default::default(),
@@ -606,25 +623,32 @@ impl std::fmt::Display for CustomerTaxExemptFilter {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxIdType {
+    AeTrn,
     AuAbn,
     BrCnpj,
     BrCpf,
     CaBn,
     CaQst,
     ChVat,
+    ClTin,
     EsCif,
     EuVat,
     HkBr,
+    IdNpwp,
     InGst,
     JpCn,
+    JpRn,
     KrBrn,
     LiUid,
     MxRfc,
+    MyFrp,
     MyItn,
     MySst,
     NoVat,
     NzGst,
     RuInn,
+    RuKpp,
+    SaVat,
     SgGst,
     SgUen,
     ThVat,
@@ -636,25 +660,32 @@ pub enum TaxIdType {
 impl TaxIdType {
     pub fn as_str(self) -> &'static str {
         match self {
+            TaxIdType::AeTrn => "ae_trn",
             TaxIdType::AuAbn => "au_abn",
             TaxIdType::BrCnpj => "br_cnpj",
             TaxIdType::BrCpf => "br_cpf",
             TaxIdType::CaBn => "ca_bn",
             TaxIdType::CaQst => "ca_qst",
             TaxIdType::ChVat => "ch_vat",
+            TaxIdType::ClTin => "cl_tin",
             TaxIdType::EsCif => "es_cif",
             TaxIdType::EuVat => "eu_vat",
             TaxIdType::HkBr => "hk_br",
+            TaxIdType::IdNpwp => "id_npwp",
             TaxIdType::InGst => "in_gst",
             TaxIdType::JpCn => "jp_cn",
+            TaxIdType::JpRn => "jp_rn",
             TaxIdType::KrBrn => "kr_brn",
             TaxIdType::LiUid => "li_uid",
             TaxIdType::MxRfc => "mx_rfc",
+            TaxIdType::MyFrp => "my_frp",
             TaxIdType::MyItn => "my_itn",
             TaxIdType::MySst => "my_sst",
             TaxIdType::NoVat => "no_vat",
             TaxIdType::NzGst => "nz_gst",
             TaxIdType::RuInn => "ru_inn",
+            TaxIdType::RuKpp => "ru_kpp",
+            TaxIdType::SaVat => "sa_vat",
             TaxIdType::SgGst => "sg_gst",
             TaxIdType::SgUen => "sg_uen",
             TaxIdType::ThVat => "th_vat",

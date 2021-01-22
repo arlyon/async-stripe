@@ -44,7 +44,7 @@ impl Client {
         let client = surf::Client::new();
         let mut headers = Headers::default();
         // TODO: Automatically determine the latest supported api version in codegen?
-        headers.stripe_version = Some(ApiVersion::V2019_09_09);
+        headers.stripe_version = Some(ApiVersion::V2020_08_27);
         Client {
             host,
             api_root: "v1".to_string(),

@@ -15,7 +15,7 @@ dependencies = ["openapi-delete"]
 cwd = "openapi"
 command = "cargo"
 args = ["run", "spec3.json"]
-dependencies = []
+dependencies = ["openapi-fetch"]
 
 [tasks.openapi-copy]
 cwd = "openapi"

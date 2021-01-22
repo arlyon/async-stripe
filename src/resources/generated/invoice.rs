@@ -6,8 +6,9 @@ use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, Charge, Currency, CustomField, Customer, Discount, InvoiceLineItem, PaymentIntent,
-    PaymentMethod, PaymentSource, Shipping, Subscription, TaxRate,
+    Account, Address, ApiErrors, Charge, Currency, CustomField, Customer, Discount,
+    InvoiceLineItem, PaymentIntent, PaymentMethod, PaymentSource, Shipping, Subscription, TaxId,
+    TaxRate,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -27,6 +28,12 @@ pub struct Invoice {
     /// The public name of the business associated with this invoice, most often the business creating the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_name: Option<String>,
+
+    /// The account tax IDs associated with the invoice.
+    ///
+    /// Only editable when the invoice is a draft.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_tax_ids: Option<Vec<Expandable<TaxId>>>,
 
     /// Final amount due at this time for this invoice.
     ///
@@ -189,8 +196,17 @@ pub struct Invoice {
     pub description: Option<String>,
 
     /// Describes the current discount applied to this invoice, if there is one.
+    ///
+    /// Not populated if there are multiple discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<Discount>,
+
+    /// The discounts applied to the invoice.
+    ///
+    /// Line item discounts are applied before invoice discounts.
+    /// Use `expand[]=discounts` to expand each discount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<Expandable<Discount>>>,
 
     /// The date on which payment for this invoice is due.
     ///
@@ -221,6 +237,12 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_pdf: Option<String>,
 
+    /// The error encountered during the previous attempt to finalize the invoice.
+    ///
+    /// This field is cleared when the invoice is successfully finalized.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_finalization_error: Option<ApiErrors>,
+
     /// The individual line items that make up the invoice.
     ///
     /// `lines` is sorted as follows: invoice items in reverse chronological order, followed by the subscription, if any.
@@ -231,7 +253,7 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub livemode: Option<bool>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
@@ -311,7 +333,9 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_proration_date: Option<Timestamp>,
 
-    /// Total of all subscriptions, invoice items, and prorations on the invoice before any discount or tax is applied.
+    /// Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.
+    ///
+    /// Item discounts are already incorporated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subtotal: Option<i64>,
 
@@ -321,13 +345,6 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<i64>,
 
-    /// This percentage of the subtotal has been added to the total amount of the invoice, including invoice line items and discounts.
-    ///
-    /// This field is inherited from the subscription's `tax_percent` field, but can be changed before the invoice is paid.
-    /// This field defaults to null.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_percent: Option<f64>,
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub threshold_reason: Option<InvoiceThresholdReason>,
 
@@ -335,9 +352,17 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total: Option<i64>,
 
+    /// The aggregate amounts calculated per discount across all line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_discount_amounts: Option<Vec<DiscountsResourceDiscountAmount>>,
+
     /// The aggregate amounts calculated per tax rate for all line items.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_tax_amounts: Option<Vec<TaxAmount>>,
+
+    /// The account (if any) the payment will be attributed to for tax reporting, and where funds from the payment will be transferred to for the invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_data: Option<InvoiceTransferData>,
 
     /// Invoices are automatically paid or sent 1 hour after webhooks are delivered, or until all webhook delivery attempts have [been exhausted](https://stripe.com/docs/billing/webhooks#understand).
     ///
@@ -358,6 +383,7 @@ impl Invoice {
     /// This endpoint creates a draft invoice for a given customer.
     ///
     /// The draft invoice created pulls in all pending invoice items on that customer, including prorations.
+    /// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
     pub fn create(client: &Client, params: CreateInvoice<'_>) -> Response<Invoice> {
         client.post_form("/invoices", &params)
     }
@@ -376,6 +402,15 @@ impl Object for Invoice {
     fn object(&self) -> &'static str {
         "invoice"
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DiscountsResourceDiscountAmount {
+    /// The amount, in %s, of the discount.
+    pub amount: i64,
+
+    /// The discount that was applied to get this discount amount.
+    pub discount: Expandable<Discount>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -419,8 +454,20 @@ pub struct InvoiceItemThresholdReason {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct InvoiceTransferData {
+    /// The amount in %s that will be transferred to the destination account when the invoice is paid.
+    ///
+    /// By default, the entire amount is transferred to the destination.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+
+    /// The account where funds from the payment will be transferred to upon payment success.
+    pub destination: Expandable<Account>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesResourceInvoiceTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `nz_gst`, `au_abn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `my_sst`, `sg_gst`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `nz_gst`, `au_abn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: TaxIdType,
 
@@ -451,6 +498,12 @@ pub struct InvoicesStatusTransitions {
 /// The parameters for `Invoice::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateInvoice<'a> {
+    /// The account tax IDs associated with the invoice.
+    ///
+    /// Only editable when the invoice is a draft.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_tax_ids: Option<Vec<String>>,
+
     /// A fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account.
     ///
     /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
@@ -510,6 +563,13 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
 
+    /// The coupons to redeem into discounts for the invoice.
+    ///
+    /// If not specified, inherits the discount from the invoice's customer.
+    /// Pass an empty string to avoid inheriting any discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts: Option<Vec<CreateInvoiceDiscounts>>,
+
     /// The date on which payment for this invoice is due.
     ///
     /// Valid only for invoices where `collection_method=send_invoice`.
@@ -524,7 +584,7 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<&'a str>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -547,16 +607,15 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<SubscriptionId>,
 
-    /// The percent tax rate applied to the invoice, represented as a decimal number.
-    ///
-    /// This field has been deprecated and will be removed in a future API version, for further information view the [migration docs](https://stripe.com/docs/billing/migration/taxes) for `tax_rates`.
+    /// If specified, the funds from the invoice will be transferred to the destination and the ID of the resulting transfer will be found on the invoice's charge.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_percent: Option<f64>,
+    pub transfer_data: Option<CreateInvoiceTransferData>,
 }
 
 impl<'a> CreateInvoice<'a> {
     pub fn new(customer: CustomerId) -> Self {
         CreateInvoice {
+            account_tax_ids: Default::default(),
             application_fee_amount: Default::default(),
             auto_advance: Default::default(),
             collection_method: Default::default(),
@@ -567,13 +626,14 @@ impl<'a> CreateInvoice<'a> {
             default_source: Default::default(),
             default_tax_rates: Default::default(),
             description: Default::default(),
+            discounts: Default::default(),
             due_date: Default::default(),
             expand: Default::default(),
             footer: Default::default(),
             metadata: Default::default(),
             statement_descriptor: Default::default(),
             subscription: Default::default(),
-            tax_percent: Default::default(),
+            transfer_data: Default::default(),
         }
     }
 }
@@ -647,6 +707,23 @@ impl<'a> ListInvoices<'a> {
             subscription: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateInvoiceDiscounts {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateInvoiceTransferData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+
+    pub destination: String,
 }
 
 /// An enum representing the possible values of an `Invoice`'s `collection_method` field.
@@ -828,25 +905,32 @@ impl std::fmt::Display for InvoiceStatusFilter {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxIdType {
+    AeTrn,
     AuAbn,
     BrCnpj,
     BrCpf,
     CaBn,
     CaQst,
     ChVat,
+    ClTin,
     EsCif,
     EuVat,
     HkBr,
+    IdNpwp,
     InGst,
     JpCn,
+    JpRn,
     KrBrn,
     LiUid,
     MxRfc,
+    MyFrp,
     MyItn,
     MySst,
     NoVat,
     NzGst,
     RuInn,
+    RuKpp,
+    SaVat,
     SgGst,
     SgUen,
     ThVat,
@@ -859,25 +943,32 @@ pub enum TaxIdType {
 impl TaxIdType {
     pub fn as_str(self) -> &'static str {
         match self {
+            TaxIdType::AeTrn => "ae_trn",
             TaxIdType::AuAbn => "au_abn",
             TaxIdType::BrCnpj => "br_cnpj",
             TaxIdType::BrCpf => "br_cpf",
             TaxIdType::CaBn => "ca_bn",
             TaxIdType::CaQst => "ca_qst",
             TaxIdType::ChVat => "ch_vat",
+            TaxIdType::ClTin => "cl_tin",
             TaxIdType::EsCif => "es_cif",
             TaxIdType::EuVat => "eu_vat",
             TaxIdType::HkBr => "hk_br",
+            TaxIdType::IdNpwp => "id_npwp",
             TaxIdType::InGst => "in_gst",
             TaxIdType::JpCn => "jp_cn",
+            TaxIdType::JpRn => "jp_rn",
             TaxIdType::KrBrn => "kr_brn",
             TaxIdType::LiUid => "li_uid",
             TaxIdType::MxRfc => "mx_rfc",
+            TaxIdType::MyFrp => "my_frp",
             TaxIdType::MyItn => "my_itn",
             TaxIdType::MySst => "my_sst",
             TaxIdType::NoVat => "no_vat",
             TaxIdType::NzGst => "nz_gst",
             TaxIdType::RuInn => "ru_inn",
+            TaxIdType::RuKpp => "ru_kpp",
+            TaxIdType::SaVat => "sa_vat",
             TaxIdType::SgGst => "sg_gst",
             TaxIdType::SgUen => "sg_uen",
             TaxIdType::ThVat => "th_vat",

@@ -60,7 +60,7 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub livemode: Option<bool>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
@@ -90,13 +90,6 @@ pub struct Product {
     /// In the case that multiple products are billed at once, the first statement descriptor will be used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
-
-    /// The type of the product.
-    ///
-    /// The product is either of type `good`, which is eligible for use with Orders and SKUs, or `service`, which is eligible for use with Subscriptions and Plans.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<ProductType>,
 
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
@@ -146,8 +139,8 @@ impl Product {
 
     /// Delete a product.
     ///
-    /// Deleting a product with type=`good` is only possible if it has no SKUs associated with it.
-    /// Deleting a product with type=`service` is only possible if it has no plans associated with it.
+    /// Deleting a product is only possible if it has no prices associated with it.
+    /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
     pub fn delete(client: &Client, id: &ProductId) -> Response<Deleted<ProductId>> {
         client.delete(&format!("/products/{}", id))
     }
@@ -173,6 +166,8 @@ pub struct CreateProduct<'a> {
     pub active: Option<bool>,
 
     /// A list of up to 5 alphanumeric attributes.
+    ///
+    /// Should only be set if type=`good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attributes: Option<Vec<String>>,
 
@@ -208,7 +203,7 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -243,15 +238,6 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 
-    /// The type of the product.
-    ///
-    /// Defaults to `service` if not explicitly specified, enabling use of this product with Subscriptions and Plans.
-    /// Set this parameter to `good` to use this product with Orders and SKUs.
-    /// On API versions before `2018-02-05`, this field defaults to `good` for compatibility reasons.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<ProductType>,
-
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
     /// When set, this will be included in associated invoice line item descriptions.
@@ -281,7 +267,6 @@ impl<'a> CreateProduct<'a> {
             package_dimensions: Default::default(),
             shippable: Default::default(),
             statement_descriptor: Default::default(),
-            type_: Default::default(),
             unit_label: Default::default(),
             url: Default::default(),
         }
@@ -331,11 +316,6 @@ pub struct ListProducts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<ProductId>,
 
-    /// Only return products of this type.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<ProductType>,
-
     /// Only return products with the given url.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<&'a str>,
@@ -352,7 +332,6 @@ impl<'a> ListProducts<'a> {
             limit: Default::default(),
             shippable: Default::default(),
             starting_after: Default::default(),
-            type_: Default::default(),
             url: Default::default(),
         }
     }
@@ -398,7 +377,7 @@ pub struct UpdateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -467,34 +446,5 @@ impl<'a> UpdateProduct<'a> {
             unit_label: Default::default(),
             url: Default::default(),
         }
-    }
-}
-
-/// An enum representing the possible values of an `Product`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum ProductType {
-    Good,
-    Service,
-}
-
-impl ProductType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            ProductType::Good => "good",
-            ProductType::Service => "service",
-        }
-    }
-}
-
-impl AsRef<str> for ProductType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for ProductType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
     }
 }

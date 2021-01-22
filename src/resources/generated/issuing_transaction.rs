@@ -6,7 +6,7 @@ use crate::ids::IssuingTransactionId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
     BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder,
-    IssuingTransactionType, MerchantData,
+    IssuingDispute, IssuingTransactionType, MerchantData,
 };
 use serde_derive::{Deserialize, Serialize};
 
@@ -20,6 +20,12 @@ pub struct IssuingTransaction {
     ///
     /// This amount is in your currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
+
+    /// Detailed breakdown of amount components.
+    ///
+    /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_details: Option<IssuingTransactionAmountDetails>,
 
     /// The `Authorization` object that led to this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -46,6 +52,10 @@ pub struct IssuingTransaction {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// If you've disputed the transaction, the ID of the dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dispute: Option<Expandable<IssuingDispute>>,
+
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
@@ -59,7 +69,7 @@ pub struct IssuingTransaction {
 
     pub merchant_data: MerchantData,
 
-    /// Set of key-value pairs that you can attach to an object.
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
@@ -81,6 +91,13 @@ impl Object for IssuingTransaction {
     fn object(&self) -> &'static str {
         "issuing.transaction"
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct IssuingTransactionAmountDetails {
+    /// The fee charged by the ATM for the cash withdrawal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub atm_fee: Option<i64>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -131,7 +148,7 @@ pub struct IssuingTransactionFlightData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightDataLeg {
-    /// The flight's destination airport code.
+    /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arrival_airport_code: Option<String>,
 
@@ -139,7 +156,7 @@ pub struct IssuingTransactionFlightDataLeg {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub carrier: Option<String>,
 
-    /// The airport code that the flight departed from.
+    /// The three-letter IATA airport code that the flight departed from.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub departure_airport_code: Option<String>,
 
@@ -164,7 +181,7 @@ pub struct IssuingTransactionFuelData {
     #[serde(rename = "type")]
     pub type_: String,
 
-    /// The units for `volume`.
+    /// The units for `volume_decimal`.
     ///
     /// One of `us_gallon` or `liter`.
     pub unit: String,
