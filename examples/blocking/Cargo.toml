@@ -5,4 +5,4 @@ authors = ["Alexander Lyon <arlyon@me.com>"]
 edition = "2018"
 
 [dependencies]
-stripe-rust = { version = "0.13", path = "../../", features = ["runtime-blocking"] }
+async-stripe = { path = "../../", features = ["runtime-blocking"] }

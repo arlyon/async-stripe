@@ -1,8 +1,8 @@
-# stripe-rust
+# async-stripe
 
 ![CI](https://github.com/arlyon/stripe-rs/workflows/CI/badge.svg)
-[![stripe-rust on crates.io](https://img.shields.io/crates/v/stripe-rust.svg)](https://crates.io/crates/stripe-rust)
-[![stripe-rust on docs.rs](https://docs.rs/stripe-rust/badge.svg)](https://docs.rs/stripe-rust)
+[![async-stripe on crates.io](https://img.shields.io/crates/v/async-stripe.svg)](https://crates.io/crates/async-stripe)
+[![async-stripe  on docs.rs](https://docs.rs/async-stripe/badge.svg)](https://docs.rs/async-stripe)
 
 Rust API bindings for the Stripe v1 HTTP API.
 
@@ -20,11 +20,11 @@ If you don't see the specific version you are on, prefer the next available vers
 
 ## Install
 
-`stripe-rust` is compatible with the [`async-std`](https://github.com/async-rs/async-std) and [`tokio`](https://github.com/tokio-rs/tokio) runtimes and the `native-tls` and `rustls` backends. When adding the dependency, you much select a runtime feature.
+`async-stripe` is compatible with the [`async-std`](https://github.com/async-rs/async-std) and [`tokio`](https://github.com/tokio-rs/tokio) runtimes and the `native-tls` and `rustls` backends. When adding the dependency, you much select a runtime feature.
 
 ```toml
 [dependencies]
-stripe-rust = { version = "0.13", features = ["runtime-async-std-surf"] }
+async-stripe = { version = "0.13.0-rc1", features = ["runtime-async-std-surf"] }
 ```
 
 ### Feature Flags
@@ -46,10 +46,10 @@ which APIs are included as part of each feature flag.
 
 ```toml
 # Example: Core-only (enough to create a `Charge` or `Card` or `Customer`)
-stripe-rust = { version = "*", default-features = false, features = ["runtime-async-std-surf"] }
+async-stripe = { version = "*", default-features = false, features = ["runtime-async-std-surf"] }
 
 # Example: Support for "Subscriptions" and "Invoices"
-stripe-rust = { version = "*", default-features = false, features = ["runtime-async-std-surf", "billing"] }
+async-stripe = { version = "*", default-features = false, features = ["runtime-async-std-surf", "billing"] }
 ```
 
 ## Getting Started
@@ -107,6 +107,9 @@ println!("{:?}", customers); // =>  List { data: [Customer { .. }] }
 See [CONTRIBUTING.md](CONTRIBUTING.md) for information on contributing to rustup.
 
 ## License
+
+This project started as a fork of [stripe-rs](https://github.com/wyyerd/stripe-rs).
+We would not be here without them! :)
 
 Licensed under either of
 

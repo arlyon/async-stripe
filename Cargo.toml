@@ -9,18 +9,19 @@ members = [
 ]
 
 [package]
-name = "stripe-rust" # b.c. stripe and stripe-rs were already taken
-version = "0.13.0"
+name = "async-stripe"
+version = "0.13.0-rc1"
 description = "API bindings for the Stripe HTTP API"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
-  "Kevin Stenerson <kestred@users.noreply.github.com>"
+  "Kevin Stenerson <kestred@users.noreply.github.com>",
+  "Alexander Lyon <arlyon@me.com>",
 ]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-homepage = "https://github.com/wyyerd/stripe-rs"
-repository = "https://github.com/wyyerd/stripe-rs"
-documentation = "https://docs.rs/stripe-rust"
+homepage = "https://github.com/arlyon/stripe-rs"
+repository = "https://github.com/arlyon/stripe-rs"
+documentation = "https://docs.rs/async-stripe"
 keywords = ["stripe", "v1", "api"]
 categories = ["api-bindings"]
 edition = "2018"
@@ -31,21 +32,17 @@ name = "stripe"
 [features]
 default = ["full", "webhook-events"]
 full = [
-#    "core",
-#    "payment-methods",
-    "checkout",
-    "billing",
-    "connect",
-    "fraud",
-    "issuing",
-    "orders",
-    "sigma",
-    "webhook-endpoints",
+  "checkout",
+  "billing",
+  "connect",
+  "fraud",
+  "issuing",
+  "orders",
+  "sigma",
+  "webhook-endpoints",
 ]
 
-# Stripe feature groups
-#core = [] # N.B. always enabled for now
-#payment-methods = [] # N.B. always enabled for now
+# stripe feature groups
 checkout = []
 billing = []
 connect = []
@@ -55,7 +52,7 @@ orders = []
 sigma = []
 webhook-endpoints = []
 
-# Deserialize events from webhooks
+# deserialize events from webhooks
 webhook-events = ["events", "hmac", "sha2"]
 events = []
 
@@ -76,21 +73,21 @@ runtime-blocking-rustls = [
 runtime-async-std-surf = ["async-std", "surf", "async"]
 
 [dependencies]
-async-std = { version = "1.7", optional = true }
+async-std = { version = "1.9", optional = true }
 chrono = { version = "0.4", features = ["serde"] }
 http = "0.2"
 hyper = { version = "0.13", default-features = false, features = ["tcp"], optional = true }
 hyper-tls = { version = "0.4", optional = true }
 hyper-rustls = { version = "0.20", optional = true }
-serde = "<1.0.118, >=1.0.79" # N.B. we use `serde(other)` which was introduced in `1.0.79`
+serde = "<1.0.118, >=1.0.79" # we use `serde(other)` which was introduced in 1.0.79
 serde_derive = "<1.0.118, >=1.0.79"
 serde_json = "1.0"
 serde_qs = "0.5"
 smol_str = "0.1"
-surf = { version = "2.1.0", optional = true } 
-tokio = { version = "0.2", default-features = false, features = ["tcp", "time"], optional = true } 
+surf = { version = "2.1", optional = true }
+tokio = { version = "0.2", default-features = false, features = ["tcp", "time"], optional = true }
 
-# Webhook support
+# webhook support
 hmac = { version = "0.7", optional = true }
 sha2 = { version = "0.8", optional = true }
 
