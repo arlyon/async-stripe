@@ -2,14 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::config::{Client, Response};
-use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
+use self::{
     CollectionMethod, Currency, Customer, Discount, Invoice, PaymentMethod, PaymentSource,
     Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
     SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
 };
+use crate::config::{Client, Response};
+use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Subscription".

@@ -2,13 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::IssuingAuthorizationId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
+use self::{
     BalanceTransaction, Currency, IssuingAuthorizationAmountDetails, IssuingAuthorizationCheck,
     IssuingAuthorizationMethod, IssuingAuthorizationReason, IssuingCard, IssuingCardholder,
     IssuingTransaction, MerchantData,
 };
+use crate::ids::IssuingAuthorizationId;
+use crate::params::{Expandable, Metadata, Object, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingAuthorization".

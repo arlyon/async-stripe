@@ -2,8 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{Currency, Sku};
 use crate::params::{Expandable, Object};
-use crate::resources::{Currency, Sku};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "OrderItem".

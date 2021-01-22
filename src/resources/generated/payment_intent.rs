@@ -5,10 +5,12 @@
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Account, ApiErrors, Application, Charge, Currency, Customer, Invoice, Option<PaymentIntentOffSession>, PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, Review, Shipping, ShippingParams};
+use self::{Account, ApiErrors, Application, Charge, Currency, Customer, Invoice, Option<PaymentIntentOffSession>, PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, Review, Shipping, ShippingParams};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentIntent".
+///
+/// For more details see [https://stripe.com/docs/api/payment_intents/object](https://stripe.com/docs/api/payment_intents/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntent {
     /// Unique identifier for the object.
@@ -1078,6 +1080,9 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataEps {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<CreatePaymentIntentPaymentMethodDataEpsBank>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1164,6 +1169,9 @@ pub struct CreatePaymentIntentPaymentMethodOptionsOxxo {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsP24 {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tos_shown_and_accepted: Option<bool>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1224,6 +1232,9 @@ pub struct UpdatePaymentIntentPaymentMethodDataBillingDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataEps {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<UpdatePaymentIntentPaymentMethodDataEpsBank>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1310,6 +1321,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsOxxo {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsP24 {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tos_shown_and_accepted: Option<bool>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1456,6 +1470,85 @@ impl AsRef<str> for CreatePaymentIntentMandateDataCustomerAcceptanceType {
 }
 
 impl std::fmt::Display for CreatePaymentIntentMandateDataCustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodDataEps`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodDataEpsBank {
+    ArzteUndApothekerBank,
+    AustrianAnadiBankAg,
+    BankAustria,
+    BankhausCarlSpangler,
+    BankhausSchelhammerUndSchatteraAg,
+    BawagPskAg,
+    BksBankAg,
+    BrullKallmusBankAg,
+    BtvVierLanderBank,
+    CapitalBankGraweGruppeAg,
+    Dolomitenbank,
+    EasybankAg,
+    ErsteBankUndSparkassen,
+    HypoAlpeadriabankInternationalAg,
+    HypoBankBurgenlandAktiengesellschaft,
+    HypoNoeLbFurNiederosterreichUWien,
+    HypoOberosterreichSalzburgSteiermark,
+    HypoTirolBankAg,
+    HypoVorarlbergBankAg,
+    MarchfelderBank,
+    OberbankAg,
+    RaiffeisenBankengruppeOsterreich,
+    SchoellerbankAg,
+    SpardaBankWien,
+    VolksbankGruppe,
+    VolkskreditbankAg,
+    VrBankBraunau,
+}
+
+impl CreatePaymentIntentPaymentMethodDataEpsBank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodDataEpsBank::ArzteUndApothekerBank => "arzte_und_apotheker_bank",
+            CreatePaymentIntentPaymentMethodDataEpsBank::AustrianAnadiBankAg => "austrian_anadi_bank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::BankAustria => "bank_austria",
+            CreatePaymentIntentPaymentMethodDataEpsBank::BankhausCarlSpangler => "bankhaus_carl_spangler",
+            CreatePaymentIntentPaymentMethodDataEpsBank::BankhausSchelhammerUndSchatteraAg => "bankhaus_schelhammer_und_schattera_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::BawagPskAg => "bawag_psk_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::BksBankAg => "bks_bank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::BrullKallmusBankAg => "brull_kallmus_bank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::BtvVierLanderBank => "btv_vier_lander_bank",
+            CreatePaymentIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => "capital_bank_grawe_gruppe_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::Dolomitenbank => "dolomitenbank",
+            CreatePaymentIntentPaymentMethodDataEpsBank::EasybankAg => "easybank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => "erste_bank_und_sparkassen",
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoAlpeadriabankInternationalAg => "hypo_alpeadriabank_international_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoBankBurgenlandAktiengesellschaft => "hypo_bank_burgenland_aktiengesellschaft",
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoNoeLbFurNiederosterreichUWien => "hypo_noe_lb_fur_niederosterreich_u_wien",
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoOberosterreichSalzburgSteiermark => "hypo_oberosterreich_salzburg_steiermark",
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoTirolBankAg => "hypo_tirol_bank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoVorarlbergBankAg => "hypo_vorarlberg_bank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::MarchfelderBank => "marchfelder_bank",
+            CreatePaymentIntentPaymentMethodDataEpsBank::OberbankAg => "oberbank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::RaiffeisenBankengruppeOsterreich => "raiffeisen_bankengruppe_osterreich",
+            CreatePaymentIntentPaymentMethodDataEpsBank::SchoellerbankAg => "schoellerbank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::SpardaBankWien => "sparda_bank_wien",
+            CreatePaymentIntentPaymentMethodDataEpsBank::VolksbankGruppe => "volksbank_gruppe",
+            CreatePaymentIntentPaymentMethodDataEpsBank::VolkskreditbankAg => "volkskreditbank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::VrBankBraunau => "vr_bank_braunau",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodDataEpsBank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -2281,6 +2374,85 @@ impl AsRef<str> for PaymentMethodOptionsSofortPreferredLanguage {
 }
 
 impl std::fmt::Display for PaymentMethodOptionsSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodDataEps`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodDataEpsBank {
+    ArzteUndApothekerBank,
+    AustrianAnadiBankAg,
+    BankAustria,
+    BankhausCarlSpangler,
+    BankhausSchelhammerUndSchatteraAg,
+    BawagPskAg,
+    BksBankAg,
+    BrullKallmusBankAg,
+    BtvVierLanderBank,
+    CapitalBankGraweGruppeAg,
+    Dolomitenbank,
+    EasybankAg,
+    ErsteBankUndSparkassen,
+    HypoAlpeadriabankInternationalAg,
+    HypoBankBurgenlandAktiengesellschaft,
+    HypoNoeLbFurNiederosterreichUWien,
+    HypoOberosterreichSalzburgSteiermark,
+    HypoTirolBankAg,
+    HypoVorarlbergBankAg,
+    MarchfelderBank,
+    OberbankAg,
+    RaiffeisenBankengruppeOsterreich,
+    SchoellerbankAg,
+    SpardaBankWien,
+    VolksbankGruppe,
+    VolkskreditbankAg,
+    VrBankBraunau,
+}
+
+impl UpdatePaymentIntentPaymentMethodDataEpsBank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodDataEpsBank::ArzteUndApothekerBank => "arzte_und_apotheker_bank",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::AustrianAnadiBankAg => "austrian_anadi_bank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BankAustria => "bank_austria",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BankhausCarlSpangler => "bankhaus_carl_spangler",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BankhausSchelhammerUndSchatteraAg => "bankhaus_schelhammer_und_schattera_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BawagPskAg => "bawag_psk_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BksBankAg => "bks_bank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BrullKallmusBankAg => "brull_kallmus_bank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BtvVierLanderBank => "btv_vier_lander_bank",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => "capital_bank_grawe_gruppe_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::Dolomitenbank => "dolomitenbank",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::EasybankAg => "easybank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => "erste_bank_und_sparkassen",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoAlpeadriabankInternationalAg => "hypo_alpeadriabank_international_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoBankBurgenlandAktiengesellschaft => "hypo_bank_burgenland_aktiengesellschaft",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoNoeLbFurNiederosterreichUWien => "hypo_noe_lb_fur_niederosterreich_u_wien",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoOberosterreichSalzburgSteiermark => "hypo_oberosterreich_salzburg_steiermark",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoTirolBankAg => "hypo_tirol_bank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoVorarlbergBankAg => "hypo_vorarlberg_bank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::MarchfelderBank => "marchfelder_bank",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::OberbankAg => "oberbank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::RaiffeisenBankengruppeOsterreich => "raiffeisen_bankengruppe_osterreich",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::SchoellerbankAg => "schoellerbank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::SpardaBankWien => "sparda_bank_wien",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::VolksbankGruppe => "volksbank_gruppe",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::VolkskreditbankAg => "volkskreditbank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::VrBankBraunau => "vr_bank_braunau",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataEpsBank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

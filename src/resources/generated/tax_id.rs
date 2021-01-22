@@ -2,9 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
+use self::Customer;
 use crate::ids::TaxIdId;
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::Customer;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "tax_id".

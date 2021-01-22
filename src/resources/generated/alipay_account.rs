@@ -2,9 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{Currency, Customer};
 use crate::ids::AlipayAccountId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Currency, Customer};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "AlipayAccount".

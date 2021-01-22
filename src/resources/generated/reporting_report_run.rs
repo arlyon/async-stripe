@@ -4,7 +4,7 @@
 
 use crate::ids::{ReportingReportRunId};
 use crate::params::{Object, Timestamp};
-use crate::resources::{Currency, File};
+use self::{Currency, File};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "reporting_report_run".

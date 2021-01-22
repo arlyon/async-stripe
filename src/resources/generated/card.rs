@@ -4,10 +4,12 @@
 
 use crate::ids::{CardId};
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Account, Currency, Customer, Recipient};
+use self::{Account, Currency, Customer, Recipient};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Card".
+///
+/// For more details see [https://stripe.com/docs/api/cards/object](https://stripe.com/docs/api/cards/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Card {
     /// Unique identifier for the object.

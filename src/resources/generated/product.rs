@@ -2,10 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
+use self::PackageDimensions;
 use crate::config::{Client, Response};
 use crate::ids::ProductId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::PackageDimensions;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Product".

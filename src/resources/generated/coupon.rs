@@ -2,10 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
+use self::Currency;
 use crate::config::{Client, Response};
 use crate::ids::CouponId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Coupon".

@@ -2,12 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{
+    Address, BillingDetails, Charge, Customer, PaymentMethodDetailsCardPresent, SetupAttempt,
+};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
-use crate::resources::{
-    Address, BillingDetails, Charge, Customer, PaymentMethodDetailsCardPresent, SetupAttempt,
-};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentMethod".
@@ -271,6 +271,10 @@ pub struct PaymentMethodCardGeneratedCard {
     /// Transaction-specific details of the payment method used in the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_details: Option<CardGeneratedFromPaymentMethodDetails>,
+
+    /// The ID of the SetupAttempt that generated this PaymentMethod, if any.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_attempt: Option<Expandable<SetupAttempt>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -395,7 +399,13 @@ pub struct WalletVisaCheckout {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodEps {}
+pub struct PaymentMethodEps {
+    /// The customer's bank.
+    ///
+    /// Should be one of `arzte_und_apotheker_bank`, `austrian_anadi_bank_ag`, `bank_austria`, `bankhaus_carl_spangler`, `bankhaus_schelhammer_und_schattera_ag`, `bawag_psk_ag`, `bks_bank_ag`, `brull_kallmus_bank_ag`, `btv_vier_lander_bank`, `capital_bank_grawe_gruppe_ag`, `dolomitenbank`, `easybank_ag`, `erste_bank_und_sparkassen`, `hypo_alpeadriabank_international_ag`, `hypo_noe_lb_fur_niederosterreich_u_wien`, `hypo_oberosterreich_salzburg_steiermark`, `hypo_tirol_bank_ag`, `hypo_vorarlberg_bank_ag`, `hypo_bank_burgenland_aktiengesellschaft`, `marchfelder_bank`, `oberbank_ag`, `raiffeisen_bankengruppe_osterreich`, `schoellerbank_ag`, `sparda_bank_wien`, `volksbank_gruppe`, `volkskreditbank_ag`, or `vr_bank_braunau`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<PaymentMethodEpsBank>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodFpx {
@@ -710,7 +720,10 @@ pub struct CreatePaymentMethodBacsDebit {
 pub struct CreatePaymentMethodBancontact {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentMethodEps {}
+pub struct CreatePaymentMethodEps {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<CreatePaymentMethodEpsBank>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodFpx {
@@ -749,6 +762,97 @@ pub struct CreatePaymentMethodSepaDebit {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodSofort {
     pub country: CreatePaymentMethodSofortCountry,
+}
+
+/// An enum representing the possible values of an `CreatePaymentMethodEps`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentMethodEpsBank {
+    ArzteUndApothekerBank,
+    AustrianAnadiBankAg,
+    BankAustria,
+    BankhausCarlSpangler,
+    BankhausSchelhammerUndSchatteraAg,
+    BawagPskAg,
+    BksBankAg,
+    BrullKallmusBankAg,
+    BtvVierLanderBank,
+    CapitalBankGraweGruppeAg,
+    Dolomitenbank,
+    EasybankAg,
+    ErsteBankUndSparkassen,
+    HypoAlpeadriabankInternationalAg,
+    HypoBankBurgenlandAktiengesellschaft,
+    HypoNoeLbFurNiederosterreichUWien,
+    HypoOberosterreichSalzburgSteiermark,
+    HypoTirolBankAg,
+    HypoVorarlbergBankAg,
+    MarchfelderBank,
+    OberbankAg,
+    RaiffeisenBankengruppeOsterreich,
+    SchoellerbankAg,
+    SpardaBankWien,
+    VolksbankGruppe,
+    VolkskreditbankAg,
+    VrBankBraunau,
+}
+
+impl CreatePaymentMethodEpsBank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentMethodEpsBank::ArzteUndApothekerBank => "arzte_und_apotheker_bank",
+            CreatePaymentMethodEpsBank::AustrianAnadiBankAg => "austrian_anadi_bank_ag",
+            CreatePaymentMethodEpsBank::BankAustria => "bank_austria",
+            CreatePaymentMethodEpsBank::BankhausCarlSpangler => "bankhaus_carl_spangler",
+            CreatePaymentMethodEpsBank::BankhausSchelhammerUndSchatteraAg => {
+                "bankhaus_schelhammer_und_schattera_ag"
+            }
+            CreatePaymentMethodEpsBank::BawagPskAg => "bawag_psk_ag",
+            CreatePaymentMethodEpsBank::BksBankAg => "bks_bank_ag",
+            CreatePaymentMethodEpsBank::BrullKallmusBankAg => "brull_kallmus_bank_ag",
+            CreatePaymentMethodEpsBank::BtvVierLanderBank => "btv_vier_lander_bank",
+            CreatePaymentMethodEpsBank::CapitalBankGraweGruppeAg => "capital_bank_grawe_gruppe_ag",
+            CreatePaymentMethodEpsBank::Dolomitenbank => "dolomitenbank",
+            CreatePaymentMethodEpsBank::EasybankAg => "easybank_ag",
+            CreatePaymentMethodEpsBank::ErsteBankUndSparkassen => "erste_bank_und_sparkassen",
+            CreatePaymentMethodEpsBank::HypoAlpeadriabankInternationalAg => {
+                "hypo_alpeadriabank_international_ag"
+            }
+            CreatePaymentMethodEpsBank::HypoBankBurgenlandAktiengesellschaft => {
+                "hypo_bank_burgenland_aktiengesellschaft"
+            }
+            CreatePaymentMethodEpsBank::HypoNoeLbFurNiederosterreichUWien => {
+                "hypo_noe_lb_fur_niederosterreich_u_wien"
+            }
+            CreatePaymentMethodEpsBank::HypoOberosterreichSalzburgSteiermark => {
+                "hypo_oberosterreich_salzburg_steiermark"
+            }
+            CreatePaymentMethodEpsBank::HypoTirolBankAg => "hypo_tirol_bank_ag",
+            CreatePaymentMethodEpsBank::HypoVorarlbergBankAg => "hypo_vorarlberg_bank_ag",
+            CreatePaymentMethodEpsBank::MarchfelderBank => "marchfelder_bank",
+            CreatePaymentMethodEpsBank::OberbankAg => "oberbank_ag",
+            CreatePaymentMethodEpsBank::RaiffeisenBankengruppeOsterreich => {
+                "raiffeisen_bankengruppe_osterreich"
+            }
+            CreatePaymentMethodEpsBank::SchoellerbankAg => "schoellerbank_ag",
+            CreatePaymentMethodEpsBank::SpardaBankWien => "sparda_bank_wien",
+            CreatePaymentMethodEpsBank::VolksbankGruppe => "volksbank_gruppe",
+            CreatePaymentMethodEpsBank::VolkskreditbankAg => "volkskreditbank_ag",
+            CreatePaymentMethodEpsBank::VrBankBraunau => "vr_bank_braunau",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentMethodEpsBank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentMethodEpsBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `CreatePaymentMethodFpx`'s `bank` field.
@@ -978,6 +1082,97 @@ impl AsRef<str> for CreatePaymentMethodSofortCountry {
 }
 
 impl std::fmt::Display for CreatePaymentMethodSofortCountry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodEps`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodEpsBank {
+    ArzteUndApothekerBank,
+    AustrianAnadiBankAg,
+    BankAustria,
+    BankhausCarlSpangler,
+    BankhausSchelhammerUndSchatteraAg,
+    BawagPskAg,
+    BksBankAg,
+    BrullKallmusBankAg,
+    BtvVierLanderBank,
+    CapitalBankGraweGruppeAg,
+    Dolomitenbank,
+    EasybankAg,
+    ErsteBankUndSparkassen,
+    HypoAlpeadriabankInternationalAg,
+    HypoBankBurgenlandAktiengesellschaft,
+    HypoNoeLbFurNiederosterreichUWien,
+    HypoOberosterreichSalzburgSteiermark,
+    HypoTirolBankAg,
+    HypoVorarlbergBankAg,
+    MarchfelderBank,
+    OberbankAg,
+    RaiffeisenBankengruppeOsterreich,
+    SchoellerbankAg,
+    SpardaBankWien,
+    VolksbankGruppe,
+    VolkskreditbankAg,
+    VrBankBraunau,
+}
+
+impl PaymentMethodEpsBank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodEpsBank::ArzteUndApothekerBank => "arzte_und_apotheker_bank",
+            PaymentMethodEpsBank::AustrianAnadiBankAg => "austrian_anadi_bank_ag",
+            PaymentMethodEpsBank::BankAustria => "bank_austria",
+            PaymentMethodEpsBank::BankhausCarlSpangler => "bankhaus_carl_spangler",
+            PaymentMethodEpsBank::BankhausSchelhammerUndSchatteraAg => {
+                "bankhaus_schelhammer_und_schattera_ag"
+            }
+            PaymentMethodEpsBank::BawagPskAg => "bawag_psk_ag",
+            PaymentMethodEpsBank::BksBankAg => "bks_bank_ag",
+            PaymentMethodEpsBank::BrullKallmusBankAg => "brull_kallmus_bank_ag",
+            PaymentMethodEpsBank::BtvVierLanderBank => "btv_vier_lander_bank",
+            PaymentMethodEpsBank::CapitalBankGraweGruppeAg => "capital_bank_grawe_gruppe_ag",
+            PaymentMethodEpsBank::Dolomitenbank => "dolomitenbank",
+            PaymentMethodEpsBank::EasybankAg => "easybank_ag",
+            PaymentMethodEpsBank::ErsteBankUndSparkassen => "erste_bank_und_sparkassen",
+            PaymentMethodEpsBank::HypoAlpeadriabankInternationalAg => {
+                "hypo_alpeadriabank_international_ag"
+            }
+            PaymentMethodEpsBank::HypoBankBurgenlandAktiengesellschaft => {
+                "hypo_bank_burgenland_aktiengesellschaft"
+            }
+            PaymentMethodEpsBank::HypoNoeLbFurNiederosterreichUWien => {
+                "hypo_noe_lb_fur_niederosterreich_u_wien"
+            }
+            PaymentMethodEpsBank::HypoOberosterreichSalzburgSteiermark => {
+                "hypo_oberosterreich_salzburg_steiermark"
+            }
+            PaymentMethodEpsBank::HypoTirolBankAg => "hypo_tirol_bank_ag",
+            PaymentMethodEpsBank::HypoVorarlbergBankAg => "hypo_vorarlberg_bank_ag",
+            PaymentMethodEpsBank::MarchfelderBank => "marchfelder_bank",
+            PaymentMethodEpsBank::OberbankAg => "oberbank_ag",
+            PaymentMethodEpsBank::RaiffeisenBankengruppeOsterreich => {
+                "raiffeisen_bankengruppe_osterreich"
+            }
+            PaymentMethodEpsBank::SchoellerbankAg => "schoellerbank_ag",
+            PaymentMethodEpsBank::SpardaBankWien => "sparda_bank_wien",
+            PaymentMethodEpsBank::VolksbankGruppe => "volksbank_gruppe",
+            PaymentMethodEpsBank::VolkskreditbankAg => "volkskreditbank_ag",
+            PaymentMethodEpsBank::VrBankBraunau => "vr_bank_braunau",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodEpsBank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

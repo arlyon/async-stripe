@@ -4,7 +4,7 @@
 
 use crate::ids::{SourceMandateNotificationId};
 use crate::params::{Object, Timestamp};
-use crate::resources::{Source};
+use self::{Source};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SourceMandateNotification".

@@ -5,10 +5,12 @@
 use crate::config::{Client, Response};
 use crate::ids::{EventId};
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
-use crate::resources::{NotificationEventData};
+use self::{NotificationEventData};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "NotificationEvent".
+///
+/// For more details see [https://stripe.com/docs/api/events/object](https://stripe.com/docs/api/events/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Event {
     /// Unique identifier for the object.
