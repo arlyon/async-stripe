@@ -1,11 +1,10 @@
 use crate::error::{Error, ErrorResponse, RequestError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
-use futures_util::future;
 use http::header::{HeaderMap, HeaderName, HeaderValue};
 use http::request::Builder as RequestBuilder;
 use serde::de::DeserializeOwned;
-use std::future::Future;
+use std::future::{self, Future};
 use std::pin::Pin;
 
 #[cfg(feature = "hyper-rustls")]

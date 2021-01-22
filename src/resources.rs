@@ -1,289 +1,229 @@
-// Builtin types
+//! resources module
+//!
+//! This module exposes various elements of the
+//! stripe api depending on the features exposed.
+//!
+//! Some of these modules are hand-written, and
+//! some are generated.
+
 mod currency;
+mod generated;
 mod types;
-pub use self::currency::*;
-pub use self::types::*;
 
-// Core Resources
-mod balance;
-mod balance_transaction;
-mod balance_transaction_ext;
-mod charge;
-mod charge_ext;
-mod customer;
-mod customer_ext;
-mod dispute;
-mod file;
-mod file_link;
-mod mandate;
-mod payment_intent;
-mod payment_source;
-mod payout;
-mod payout_ext;
-mod platform_tax_fee;
-mod product;
-mod refund;
-mod reserve_transaction;
-mod setup_intent;
-mod tax_deducted_at_source;
-mod token;
-mod token_ext;
-pub use self::balance::*;
-pub use self::balance_transaction::*;
-pub use self::balance_transaction_ext::*;
-pub use self::charge::*;
-pub use self::charge_ext::*;
-pub use self::customer::*;
-pub use self::customer_ext::*;
-pub use self::dispute::*;
-pub use self::file::*;
-pub use self::file_link::*;
-pub use self::mandate::*;
-pub use self::payment_intent::*;
-pub use self::payment_source::*;
-pub use self::payout::*;
-pub use self::payout_ext::*;
-pub use self::platform_tax_fee::*;
-pub use self::product::*;
-pub use self::refund::*;
-pub use self::reserve_transaction::*;
-pub use self::setup_intent::*;
-pub use self::tax_deducted_at_source::*;
-pub use self::token::*;
-pub use self::token_ext::*;
+#[path = "resources"]
+mod core {
+    pub mod balance_transaction_ext;
+    pub mod charge_ext;
+    pub mod customer_ext;
+    pub mod payment_intent;
+    pub mod payment_source;
+    pub mod payout_ext;
+    pub mod token_ext;
+}
 
-// Payment Methods
-mod alipay_account;
-mod bank_account;
-mod bank_account_ext;
-mod card;
-mod payment_method;
-mod payment_method_ext;
-mod source;
-mod source_ext;
-pub use self::alipay_account::*;
-pub use self::bank_account::*;
-pub use self::bank_account_ext::*;
-pub use self::card::*;
-pub use self::payment_method::*;
-pub use self::payment_method_ext::*;
-pub use self::source::*;
-pub use self::source_ext::*;
+#[path = "resources"]
+mod payment {
+    pub mod bank_account_ext;
+    pub mod card;
+    pub mod payment_method_ext;
+    pub mod source_ext;
+}
 
-// Events
 #[cfg(feature = "events")]
 mod event;
+
+#[path = "resources"]
+#[cfg(feature = "billing")]
+mod billing {
+    pub mod invoice_ext;
+    pub mod line_item_ext;
+    pub mod subscription_ext;
+}
+
+#[path = "resources"]
+#[cfg(feature = "fraud")]
+mod fraud {
+    pub mod review_ext;
+}
+
+#[path = "resources"]
+#[cfg(feature = "issuing")]
+mod issuing {
+    pub mod issuing_authorization_ext;
+    pub mod issuing_card_ext;
+    pub mod issuing_dispute_ext;
+    pub mod issuing_merchant_data;
+    pub mod issuing_transaction_ext;
+}
+
+#[path = "resources"]
+#[cfg(feature = "orders")]
+mod orders {
+    pub mod order_ext;
+}
+
+#[path = "resources"]
+#[cfg(feature = "webhook-endpoints")]
+mod webhook_endpoints {
+    pub mod webhook_endpoint_ext;
+}
+
+#[rustfmt::skip]
+pub use {
+    currency::*,
+    types::*,
+
+    self::core::{
+        balance_transaction_ext::*,
+        charge_ext::*,
+        customer_ext::*,
+        payment_intent::*,
+        payment_source::*,
+        payout_ext::*,
+        token_ext::*,
+    },
+    generated::core::{
+        balance::*,
+        balance_transaction::*,
+        charge::*,
+        customer::*,
+        dispute::*,
+        file::*,
+        file_link::*,
+        mandate::*,
+        payout::*,
+        platform_tax_fee::*,
+        product::*,
+        refund::*,
+        reserve_transaction::*,
+        setup_intent::*,
+        tax_deducted_at_source::*,
+        token::*,
+    },
+
+    payment::{
+        bank_account_ext::*,
+        card::*,
+        payment_method_ext::*,
+        source_ext::*
+    },
+    generated::payment::{
+        alipay_account::*,
+        bank_account::*,
+        payment_method::*,
+        source::*
+    },
+};
+
+#[rustfmt::skip]
 #[cfg(feature = "events")]
-pub use self::event::*;
+pub use {
+    event::*,
+};
 
-// Checkout
+#[rustfmt::skip]
 #[cfg(feature = "checkout")]
-mod checkout_session;
-#[cfg(feature = "checkout")]
-mod item;
-#[cfg(feature = "checkout")]
-pub use self::checkout_session::*;
-#[cfg(feature = "checkout")]
-pub use self::item::*;
+pub use {
+    generated::checkout::{
+        checkout_session::*,
+        item::*
+    },
+};
 
-// Billing
+#[rustfmt::skip]
 #[cfg(feature = "billing")]
-mod coupon;
-#[cfg(feature = "billing")]
-mod discount;
-#[cfg(feature = "billing")]
-mod invoice;
-#[cfg(feature = "billing")]
-mod invoice_ext;
-#[cfg(feature = "billing")]
-mod invoiceitem;
-#[cfg(feature = "billing")]
-mod line_item;
-#[cfg(feature = "billing")]
-mod line_item_ext;
-#[cfg(feature = "billing")]
-mod plan;
-#[cfg(feature = "billing")]
-mod price;
-#[cfg(feature = "billing")]
-mod subscription;
-#[cfg(feature = "billing")]
-mod subscription_ext;
-#[cfg(feature = "billing")]
-mod subscription_item;
-#[cfg(feature = "billing")]
-mod subscription_schedule;
-#[cfg(feature = "billing")]
-mod tax_id;
-#[cfg(feature = "billing")]
-mod tax_rate;
-#[cfg(feature = "billing")]
-pub use self::coupon::*;
-#[cfg(feature = "billing")]
-pub use self::discount::*;
-#[cfg(feature = "billing")]
-pub use self::invoice::*;
-#[cfg(feature = "billing")]
-pub use self::invoice_ext::*;
-#[cfg(feature = "billing")]
-pub use self::invoiceitem::*;
-#[cfg(feature = "billing")]
-pub use self::line_item::*;
-#[cfg(feature = "billing")]
-pub use self::line_item_ext::*;
-#[cfg(feature = "billing")]
-pub use self::plan::*;
-#[cfg(feature = "billing")]
-pub use self::price::*;
-#[cfg(feature = "billing")]
-pub use self::subscription::*;
-#[cfg(feature = "billing")]
-pub use self::subscription_ext::*;
-#[cfg(feature = "billing")]
-pub use self::subscription_item::*;
-#[cfg(feature = "billing")]
-pub use self::subscription_schedule::*;
-#[cfg(feature = "billing")]
-pub use self::tax_id::*;
-#[cfg(feature = "billing")]
-pub use self::tax_rate::*;
+pub use {
+    billing::{
+        invoice_ext::*,
+        line_item_ext::*,
+        subscription_ext::*
+    },
+    generated::billing::{
+        coupon::*,
+        discount::*,
+        invoice::*,
+        invoiceitem::*,
+        line_item::*,
+        plan::*,
+        price::*,
+        subscription::*,
+        subscription_item::*,
+        subscription_schedule::*,
+        tax_id::*,
+        tax_rate::*,
+    },
+};
 
-// Connect
+#[rustfmt::skip]
 #[cfg(feature = "connect")]
-mod account;
-#[cfg(feature = "connect")]
-mod application;
-#[cfg(feature = "connect")]
-mod application_fee;
-#[cfg(feature = "connect")]
-mod connect_collection_transfer;
-#[cfg(feature = "connect")]
-mod fee_refund;
-#[cfg(feature = "connect")]
-mod person;
-#[cfg(feature = "connect")]
-mod recipient;
-#[cfg(feature = "connect")]
-mod topup;
-#[cfg(feature = "connect")]
-mod transfer;
-#[cfg(feature = "connect")]
-mod transfer_reversal;
-#[cfg(feature = "connect")]
-pub use self::account::*;
-#[cfg(feature = "connect")]
-pub use self::application::*;
-#[cfg(feature = "connect")]
-pub use self::application_fee::*;
-#[cfg(feature = "connect")]
-pub use self::connect_collection_transfer::*;
-#[cfg(feature = "connect")]
-pub use self::fee_refund::*;
-#[cfg(feature = "connect")]
-pub use self::person::*;
-#[cfg(feature = "connect")]
-pub use self::recipient::*;
-#[cfg(feature = "connect")]
-pub use self::topup::*;
-#[cfg(feature = "connect")]
-pub use self::transfer::*;
-#[cfg(feature = "connect")]
-pub use self::transfer_reversal::*;
+pub use {
+    generated::connect::{
+        account::*,
+        application::*,
+        application_fee::*,
+        connect_collection_transfer::*,
+        fee_refund::*,
+        person::*,
+        recipient::*,
+        topup::*,
+        transfer::*,
+        transfer_reversal::*,
+    }
+};
 
-// Fraud
+#[rustfmt::skip]
 #[cfg(feature = "fraud")]
-mod review;
-#[cfg(feature = "fraud")]
-mod review_ext;
-#[cfg(feature = "fraud")]
-pub use self::review::*;
-#[cfg(feature = "fraud")]
-pub use self::review_ext::*;
+pub use {
+    fraud::review_ext::*,
+    generated::fraud::review::*
+};
 
-// Issuing
+#[rustfmt::skip]
 #[cfg(feature = "issuing")]
-mod issuing_authorization;
-#[cfg(feature = "issuing")]
-mod issuing_authorization_ext;
-#[cfg(feature = "issuing")]
-mod issuing_card;
-#[cfg(feature = "issuing")]
-mod issuing_card_ext;
-#[cfg(feature = "issuing")]
-mod issuing_cardholder;
-#[cfg(feature = "issuing")]
-mod issuing_dispute;
-#[cfg(feature = "issuing")]
-mod issuing_dispute_ext;
-#[cfg(feature = "issuing")]
-mod issuing_merchant_data;
-#[cfg(feature = "issuing")]
-mod issuing_transaction;
-#[cfg(feature = "issuing")]
-mod issuing_transaction_ext;
-#[cfg(feature = "issuing")]
-pub use self::issuing_authorization::*;
-#[cfg(feature = "issuing")]
-pub use self::issuing_authorization_ext::*;
-#[cfg(feature = "issuing")]
-pub use self::issuing_card::*;
-#[cfg(feature = "issuing")]
-pub use self::issuing_card_ext::*;
-#[cfg(feature = "issuing")]
-pub use self::issuing_cardholder::*;
-#[cfg(feature = "issuing")]
-pub use self::issuing_dispute::*;
-#[cfg(feature = "issuing")]
-pub use self::issuing_dispute_ext::*;
-#[cfg(feature = "issuing")]
-pub use self::issuing_merchant_data::*;
-#[cfg(feature = "issuing")]
-pub use self::issuing_transaction::*;
-#[cfg(feature = "issuing")]
-pub use self::issuing_transaction_ext::*;
+pub use {
+    issuing::{
+        issuing_authorization_ext::*,
+        issuing_card_ext::*,
+        issuing_dispute_ext::*,
+        issuing_merchant_data::*,
+        issuing_transaction_ext::*,
+    },
+    generated::issuing::{
+        issuing_authorization::*,
+        issuing_card::*,
+        issuing_cardholder::*,
+        issuing_dispute::*,
+        issuing_transaction::*,
+    },
+};
 
-// Orders
+#[rustfmt::skip]
 #[cfg(feature = "orders")]
-mod order;
-#[cfg(feature = "orders")]
-mod order_ext;
-#[cfg(feature = "orders")]
-mod order_item;
-#[cfg(feature = "orders")]
-mod order_return;
-#[cfg(feature = "orders")]
-mod sku;
-#[cfg(feature = "orders")]
-pub use self::order::*;
-#[cfg(feature = "orders")]
-pub use self::order_ext::*;
-#[cfg(feature = "orders")]
-pub use self::order_item::*;
-#[cfg(feature = "orders")]
-pub use self::order_return::*;
-#[cfg(feature = "orders")]
-pub use self::sku::*;
+pub use {
+    orders::order_ext::*,
+    generated::orders::{
+        order::*,
+        order_item::*,
+        order_return::*,
+        sku::*
+    },
+};
 
+#[rustfmt::skip]
 #[cfg(feature = "sigma")]
-mod scheduled_query_run;
-#[cfg(feature = "sigma")]
-pub use self::scheduled_query_run::*;
+pub use {
+    generated::scheduled_query_run::*,
+};
 
-// Not-yet-implemented feature flags
+#[rustfmt::skip]
 #[cfg(feature = "webhook-endpoints")]
-mod webhook_endpoint;
-#[cfg(feature = "webhook-endpoints")]
-mod webhook_endpoint_ext;
-#[cfg(feature = "webhook-endpoints")]
-pub use self::webhook_endpoint::*;
-#[cfg(feature = "webhook-endpoints")]
-pub use self::webhook_endpoint_ext::*;
+pub use {
+    webhook_endpoints::webhook_endpoint_ext::*,
+    generated::webhook_endpoints::webhook_endpoint::*, 
+};
 
-// Fallback types
 #[cfg(not(feature = "full"))]
-mod placeholders;
-#[cfg(not(feature = "full"))]
-pub use self::placeholders::*;
+pub use generated::placeholders::*;
 
 #[cfg(not(feature = "account"))]
 #[derive(Clone, Debug, serde_derive::Deserialize, serde_derive::Serialize)]

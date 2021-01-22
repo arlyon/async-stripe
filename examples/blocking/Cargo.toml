@@ -1,0 +1,8 @@
+[package]
+name = "example-blocking"
+version = "0.1.0"
+authors = ["Alexander Lyon <arlyon@me.com>"]
+edition = "2018"
+
+[dependencies]
+stripe-rust = { version = "0.13", path = "../../", features = ["runtime-blocking"] }

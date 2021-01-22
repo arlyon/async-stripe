@@ -1,6 +1,7 @@
 mod mock;
 
 #[test]
+#[cfg(feature = "blocking")]
 fn is_subscription_retrievable() {
     mock::with_client(|client| {
         let id = "sub_123".parse().unwrap();
@@ -15,6 +16,7 @@ fn is_subscription_retrievable() {
 }
 
 #[test]
+#[cfg(feature = "blocking")]
 fn is_subscription_expandable() {
     mock::with_client(|client| {
         let id = "sub_123".parse().unwrap();
@@ -23,12 +25,12 @@ fn is_subscription_expandable() {
             &id,
             &[
                 "customer",
-                "schedule",
-                "latest_invoice",
-                "pending_setup_intent",
-                "default_source",
-                "default_tax_rates",
-                "default_payment_method",
+                // "schedule",
+                // "latest_invoice",
+                // "pending_setup_intent",
+                // "default_source",
+                // "default_tax_rates",
+                // "default_payment_method",
             ],
         );
         let subscription = match result {

@@ -29,7 +29,8 @@
 //!
 //! ```rust,no_run
 //! /* Creating a Stripe Charge */
-//!
+//! # #[cfg(feature = "blocking")]
+//! # {
 //! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! let token = "tok_ID_FROM_CHECKOUT".parse().unwrap();
 //! let mut params = stripe::CreateCharge::new();
@@ -41,15 +42,18 @@
 //! params.currency = Some(stripe::Currency::CAD);
 //! let charge = stripe::Charge::create(&client, params).unwrap();
 //! println!("{:?}", charge); // =>  Charge { id: "ch_12345", amount: 1095, .. }
+//! # }
 //! ```
 //!
 //! ```rust,no_run
 //! /* Listing Stripe Charges */
-//!
+//! # #[cfg(feature = "blocking")]
+//! # {
 //! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! let params = stripe::ListCharges::new();
 //! let charges = stripe::Charge::list(&client, params).unwrap();
 //! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
+//! # }
 //! ```
 
 #![allow(clippy::map_clone)]
@@ -62,13 +66,14 @@ mod client {
         feature = "runtime-tokio-hyper",
         feature = "runtime-tokio-hyper-rustls",
         feature = "runtime-blocking",
+        feature = "runtime-blocking-rustls",
     ))]
     pub mod tokio;
 
     #[cfg(feature = "runtime-async-std-surf")]
     pub mod async_std;
 
-    #[cfg(feature = "runtime-blocking")]
+    #[cfg(any(feature = "runtime-blocking", feature = "runtime-blocking-rustls"))]
     pub mod blocking;
 }
 
@@ -91,7 +96,7 @@ pub use crate::params::{
 };
 pub use crate::resources::*;
 
-#[cfg(feature = "runtime-blocking")]
+#[cfg(any(feature = "runtime-blocking", feature = "runtime-blocking-rustls"))]
 mod config {
     pub(crate) use crate::client::blocking::{err, ok};
     pub type Client = crate::client::blocking::Client;
@@ -113,7 +118,7 @@ mod config {
     pub type Response<T> = crate::client::blocking::Response<T>;
 }
 
-#[cfg(any(feature = "runtime-tokio-hyper", feature = "runtime-tokio-hyper-rustls",))]
+#[cfg(any(feature = "runtime-tokio-hyper", feature = "runtime-tokio-hyper-rustls"))]
 mod config {
     pub(crate) use crate::client::tokio::{err, ok};
     pub type Client = crate::client::tokio::Client;
