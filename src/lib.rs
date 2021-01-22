@@ -58,8 +58,17 @@
 #![allow(clippy::large_enum_variant)]
 
 mod client {
-    pub mod r#async;
-    #[cfg(feature = "blocking")]
+    #[cfg(any(
+        feature = "runtime-tokio-hyper",
+        feature = "runtime-tokio-hyper-rustls",
+        feature = "runtime-blocking",
+    ))]
+    pub mod tokio;
+
+    #[cfg(feature = "runtime-async-std-surf")]
+    pub mod async_std;
+
+    #[cfg(feature = "runtime-blocking")]
     pub mod blocking;
 }
 
@@ -82,7 +91,7 @@ pub use crate::params::{
 };
 pub use crate::resources::*;
 
-#[cfg(feature = "blocking")]
+#[cfg(feature = "runtime-blocking")]
 mod config {
     pub(crate) use crate::client::blocking::{err, ok};
     pub type Client = crate::client::blocking::Client;
@@ -104,11 +113,18 @@ mod config {
     pub type Response<T> = crate::client::blocking::Response<T>;
 }
 
-#[cfg(not(feature = "blocking"))]
+#[cfg(any(feature = "runtime-tokio-hyper", feature = "runtime-tokio-hyper-rustls",))]
 mod config {
-    pub(crate) use crate::client::r#async::{err, ok};
-    pub type Client = crate::client::r#async::Client;
-    pub type Response<T> = crate::client::r#async::Response<T>;
+    pub(crate) use crate::client::tokio::{err, ok};
+    pub type Client = crate::client::tokio::Client;
+    pub type Response<T> = crate::client::tokio::Response<T>;
+}
+
+#[cfg(feature = "runtime-async-std-surf")]
+mod config {
+    pub(crate) use crate::client::async_std::{err, ok};
+    pub type Client = crate::client::async_std::Client;
+    pub type Response<T> = crate::client::async_std::Response<T>;
 }
 
 pub use self::config::Client;

@@ -3,13 +3,13 @@ fn main() {
     let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
     let client = stripe::Client::new(secret_key);
 
-    #[cfg(feature = "blocking")]
+    #[cfg(feature = "runtime-blocking")]
     {
         create_charge(&client);
         create_customer(&client);
     }
 
-    #[cfg(not(feature = "blocking"))]
+    #[cfg(not(feature = "runtime-blocking"))]
     {
         let mut fut = Box::pin(async {
             create_charge(&client).await;
@@ -36,7 +36,7 @@ fn main() {
     // TODO: Use other apis
 }
 
-#[cfg(feature = "blocking")]
+#[cfg(feature = "runtime-blocking")]
 fn create_charge(client: &stripe::Client) {
     // Define a card to charge
     let card = "card_189g322eZvKYlo2CeoPw2sdy".parse().expect("expected card to be valid");
@@ -53,7 +53,7 @@ fn create_charge(client: &stripe::Client) {
     println!("{:?}", charge);
 }
 
-#[cfg(feature = "blocking")]
+#[cfg(feature = "runtime-blocking")]
 fn create_customer(client: &stripe::Client) {
     // Define the customer
     let token = "tok_189g322eZvKYlo2CeoPw2sdy".parse().expect("expected token to be valid");
@@ -68,7 +68,7 @@ fn create_customer(client: &stripe::Client) {
     println!("{:?}", customer);
 }
 
-#[cfg(not(feature = "blocking"))]
+#[cfg(not(feature = "runtime-blocking"))]
 async fn create_charge(client: &stripe::Client) {
     // Define a card to charge
     let card = "card_189g322eZvKYlo2CeoPw2sdy".parse().expect("expected card to be valid");
@@ -85,7 +85,7 @@ async fn create_charge(client: &stripe::Client) {
     println!("{:?}", charge);
 }
 
-#[cfg(not(feature = "blocking"))]
+#[cfg(not(feature = "runtime-blocking"))]
 async fn create_customer(client: &stripe::Client) {
     // Define the customer
     let token = "tok_189g322eZvKYlo2CeoPw2sdy".parse().expect("expected token to be valid");

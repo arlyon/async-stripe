@@ -7,8 +7,6 @@ use std::num::ParseIntError;
 pub enum Error {
     /// An error reported by Stripe in the response body.
     Stripe(RequestError),
-    /// An http or networking error communicating with the Stripe server.
-    Http(HttpError),
     /// An error reading the response body.
     Io(std::io::Error),
     /// An error serializing a request before it is sent to stripe.
@@ -19,14 +17,13 @@ pub enum Error {
     Unsupported(&'static str),
     /// An invariant has been violated. Either a bug in this library or Stripe
     Unexpected(&'static str),
+    /// An http client error
+    ClientError,
+    /// The request timed out.
+    Timeout,
 }
 
 impl Error {
-    #[allow(dead_code)]
-    pub(crate) fn timeout() -> Error {
-        Error::Http(HttpError::Timeout)
-    }
-
     pub(crate) fn serialize<T>(err: T) -> Error
     where
         T: std::error::Error + Send + 'static,
@@ -48,7 +45,8 @@ impl std::fmt::Display for Error {
         f.write_str(std::error::Error::description(self))?;
         match *self {
             Error::Stripe(ref err) => write!(f, ": {}", err),
-            Error::Http(ref err) => write!(f, ": {}", err),
+            Error::Timeout => write!(f, ": timed out"),
+            Error::ClientError => write!(f, ": client error"),
             Error::Io(ref err) => write!(f, ": {}", err),
             Error::Serialize(ref err) => write!(f, ": {}", err),
             Error::Deserialize(ref err) => write!(f, ": {}", err),
@@ -62,7 +60,8 @@ impl std::error::Error for Error {
     fn description(&self) -> &str {
         match *self {
             Error::Stripe(_) => "error reported by stripe",
-            Error::Http(_) => "error communicating with stripe",
+            Error::ClientError => "error communicating with stripe",
+            Error::Timeout => "timeout communicating with stripe",
             Error::Io(_) => "error reading response from stripe",
             Error::Serialize(_) => "error serializing a request",
             Error::Deserialize(_) => "error deserializing a response",
@@ -74,7 +73,8 @@ impl std::error::Error for Error {
     fn cause(&self) -> Option<&dyn std::error::Error> {
         match *self {
             Error::Stripe(ref err) => Some(err),
-            Error::Http(ref err) => Some(err),
+            Error::ClientError => None,
+            Error::Timeout => None,
             Error::Io(ref err) => Some(err),
             Error::Serialize(ref err) => Some(&**err),
             Error::Deserialize(ref err) => Some(&**err),
@@ -90,50 +90,16 @@ impl From<RequestError> for Error {
     }
 }
 
+#[cfg(feature = "hyper")]
 impl From<hyper::Error> for Error {
     fn from(err: hyper::Error) -> Error {
-        Error::Http(HttpError::Stream(err))
+        Error::ClientError
     }
 }
 
 impl From<std::io::Error> for Error {
     fn from(err: std::io::Error) -> Error {
         Error::Io(err)
-    }
-}
-
-#[derive(Debug)]
-pub enum HttpError {
-    /// An error handling HTTP streams.
-    Stream(hyper::Error),
-    /// The request timed out.
-    Timeout,
-}
-
-impl std::fmt::Display for HttpError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        #[allow(deprecated)]
-        match *self {
-            HttpError::Stream(ref err) => err.fmt(f),
-            HttpError::Timeout => f.write_str(std::error::Error::description(self)),
-        }
-    }
-}
-
-impl std::error::Error for HttpError {
-    fn description(&self) -> &str {
-        #[allow(deprecated)]
-        match *self {
-            HttpError::Stream(ref err) => err.description(),
-            HttpError::Timeout => "request timed out",
-        }
-    }
-
-    fn cause(&self) -> Option<&dyn std::error::Error> {
-        match *self {
-            HttpError::Stream(ref err) => Some(err),
-            HttpError::Timeout => None,
-        }
     }
 }
 
@@ -174,6 +140,7 @@ impl std::fmt::Display for ErrorType {
 /// The list of possible values for a RequestError's code.
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 #[serde(rename_all = "snake_case")]
+#[non_exhaustive]
 pub enum ErrorCode {
     AccountAlreadyExists,
     AccountCountryInvalidAddress,
@@ -251,8 +218,6 @@ pub enum ErrorCode {
     TransfersNotAllowed,
     UpstreamOrderCreationFailed,
     UrlInvalid,
-    #[doc(hidden)]
-    __NonExhaustive,
 }
 
 impl std::fmt::Display for ErrorCode {

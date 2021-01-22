@@ -1,23 +1,13 @@
+#![warn(clippy::unwrap_used)]
+
 use crate::error::{Error, ErrorResponse, RequestError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
 use futures_util::future;
-use http::header::{HeaderMap, HeaderName, HeaderValue};
-use http::request::Builder as RequestBuilder;
 use serde::de::DeserializeOwned;
 use std::future::Future;
 use std::pin::Pin;
-
-#[cfg(feature = "rustls-tls")]
-use hyper_rustls::HttpsConnector;
-#[cfg(feature = "default-tls")]
-use hyper_tls::HttpsConnector;
-#[cfg(all(feature = "default-tls", feature = "rustls-tls"))]
-compile_error!("You must enable only one TLS implementation");
-#[cfg(not(any(feature = "default-tls", feature = "rustls-tls")))]
-compile_error!("You must enable at least one TLS implementation; add `features = [\"default-tls\"]` to your Cargo.toml");
-
-type HttpClient = hyper::Client<HttpsConnector<hyper::client::HttpConnector>, hyper::Body>;
+use surf::{Body, Url};
 
 pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, Error>> + Send>>;
 
@@ -35,8 +25,9 @@ pub(crate) fn err<T: Send + 'static>(err: Error) -> Response<T> {
 
 #[derive(Clone)]
 pub struct Client {
-    host: String,
-    client: HttpClient,
+    host: Url,
+    api_root: String,
+    client: surf::Client,
     secret_key: String,
     headers: Headers,
     app_info: Option<AppInfo>,
@@ -49,16 +40,15 @@ impl Client {
     }
 
     /// Creates a new client posted to a custom `scheme://host/`
-    pub fn from_url(scheme_host: impl Into<String>, secret_key: impl Into<String>) -> Client {
-        let url = scheme_host.into();
-        let host = if url.ends_with('/') { format!("{}v1", url) } else { format!("{}/v1", url) };
-        let https = HttpsConnector::new();
-        let client = hyper::Client::builder().build(https);
+    pub fn from_url<'a>(scheme_host: impl Into<&'a str>, secret_key: impl Into<String>) -> Client {
+        let host = Url::parse(scheme_host.into()).unwrap();
+        let client = surf::Client::new();
         let mut headers = Headers::default();
         // TODO: Automatically determine the latest supported api version in codegen?
         headers.stripe_version = Some(ApiVersion::V2019_09_09);
         Client {
             host,
+            api_root: "v1".to_string(),
             client,
             secret_key: secret_key.into(),
             headers,
@@ -91,10 +81,8 @@ impl Client {
     /// Make a `GET` http request with just a path
     pub fn get<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
         let url = self.url(path);
-        let mut req =
-            RequestBuilder::new().method("GET").uri(url).body(hyper::Body::empty()).unwrap();
-        *req.headers_mut() = self.headers();
-        send(&self.client, req)
+        let req = surf::Request::builder(surf::http::Method::Get, url).build();
+        send(&self.client, self.set_headers(req))
     }
 
     /// Make a `GET` http request with url query parameters
@@ -107,19 +95,15 @@ impl Client {
             Err(err) => return Box::pin(future::ready(Err(err))),
             Ok(ok) => ok,
         };
-        let mut req =
-            RequestBuilder::new().method("GET").uri(url).body(hyper::Body::empty()).unwrap();
-        *req.headers_mut() = self.headers();
-        send(&self.client, req)
+        let req = surf::Request::builder(surf::http::Method::Get, url).build();
+        send(&self.client, self.set_headers(req))
     }
 
     /// Make a `DELETE` http request with just a path
     pub fn delete<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
         let url = self.url(path);
-        let mut req =
-            RequestBuilder::new().method("DELETE").uri(url).body(hyper::Body::empty()).unwrap();
-        *req.headers_mut() = self.headers();
-        send(&self.client, req)
+        let req = surf::Request::builder(surf::http::Method::Delete, url).build();
+        send(&self.client, self.set_headers(req))
     }
 
     /// Make a `DELETE` http request with url query parameters
@@ -132,19 +116,15 @@ impl Client {
             Err(err) => return Box::pin(future::ready(Err(err))),
             Ok(ok) => ok,
         };
-        let mut req =
-            RequestBuilder::new().method("DELETE").uri(url).body(hyper::Body::empty()).unwrap();
-        *req.headers_mut() = self.headers();
-        send(&self.client, req)
+        let req = surf::Request::builder(surf::http::Method::Delete, url).build();
+        send(&self.client, self.set_headers(req))
     }
 
     /// Make a `POST` http request with just a path
     pub fn post<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
         let url = self.url(path);
-        let mut req =
-            RequestBuilder::new().method("POST").uri(url).body(hyper::Body::empty()).unwrap();
-        *req.headers_mut() = self.headers();
-        send(&self.client, req)
+        let req = surf::Request::builder(surf::http::Method::Post, url).build();
+        send(&self.client, self.set_headers(req))
     }
 
     /// Make a `POST` http request with urlencoded body
@@ -154,54 +134,39 @@ impl Client {
         form: F,
     ) -> Response<T> {
         let url = self.url(path);
-        let mut req = RequestBuilder::new()
-            .method("POST")
-            .uri(url)
+        let mut req = surf::Request::builder(surf::http::Method::Post, url)
             .body(match serde_qs::to_string(&form) {
                 Err(err) => return Box::pin(future::ready(Err(Error::serialize(err)))),
-                Ok(body) => hyper::Body::from(body),
+                Ok(body) => Body::from_string(body),
             })
-            .unwrap();
-        *req.headers_mut() = self.headers();
-        req.headers_mut().insert(
-            HeaderName::from_static("content-type"),
-            HeaderValue::from_str("application/x-www-form-urlencoded").unwrap(),
-        );
-        send(&self.client, req)
+            .build();
+        req.set_header("content-type", "application/x-www-form-urlencoded");
+        send(&self.client, self.set_headers(req))
     }
 
-    fn url(&self, path: &str) -> String {
-        format!("{}/{}", self.host, path.trim_start_matches('/'))
+    fn url(&self, path: &str) -> Url {
+        let mut url = self.host.clone();
+        url.set_path(&format!("{}/{}", self.api_root, path.trim_start_matches('/')));
+        url
     }
 
-    fn url_with_params<P: serde::Serialize>(&self, path: &str, params: P) -> Result<String, Error> {
+    fn url_with_params<P: serde::Serialize>(&self, path: &str, params: P) -> Result<Url, Error> {
+        let mut url = self.url(path);
         let params = serde_qs::to_string(&params).map_err(Error::serialize)?;
-        Ok(format!("{}/{}?{}", self.host, &path[1..], params))
+        url.set_query(Some(&params));
+        Ok(url)
     }
 
-    fn headers(&self) -> HeaderMap {
-        let mut headers = HeaderMap::new();
-        headers.insert(
-            HeaderName::from_static("authorization"),
-            HeaderValue::from_str(&format!("Bearer {}", self.secret_key)).unwrap(),
-        );
+    fn set_headers(&self, mut req: surf::Request) -> surf::Request {
+        req.set_header("authorization", &format!("Bearer {}", self.secret_key));
         if let Some(account) = &self.headers.stripe_account {
-            headers.insert(
-                HeaderName::from_static("stripe-account"),
-                HeaderValue::from_str(account).unwrap(),
-            );
+            req.set_header("stripe-account", account);
         }
         if let Some(client_id) = &self.headers.client_id {
-            headers.insert(
-                HeaderName::from_static("client-id"),
-                HeaderValue::from_str(client_id).unwrap(),
-            );
+            req.set_header("client-id", client_id);
         }
         if let Some(stripe_version) = &self.headers.stripe_version {
-            headers.insert(
-                HeaderName::from_static("stripe-version"),
-                HeaderValue::from_str(stripe_version.as_str()).unwrap(),
-            );
+            req.set_header("stripe-version", stripe_version.as_str());
         }
         const CRATE_VERSION: &str = env!("CARGO_PKG_VERSION");
         let user_agent: String = format!("Stripe/v3 RustBindings/{}", CRATE_VERSION);
@@ -209,36 +174,31 @@ impl Client {
             let formatted: String = format_app_info(app_info);
             let user_agent_app_info: String =
                 format!("{} {}", user_agent, formatted).trim().to_owned();
-            headers.insert(
-                HeaderName::from_static("user-agent"),
-                HeaderValue::from_str(user_agent_app_info.as_str()).unwrap(),
-            );
+            req.set_header("user-agent", user_agent_app_info.as_str());
         } else {
-            headers.insert(
-                HeaderName::from_static("user-agent"),
-                HeaderValue::from_str(user_agent.as_str()).unwrap(),
-            );
+            req.set_header("user-agent", user_agent.as_str());
         };
-        headers
+
+        req
     }
 }
 
 fn send<T: DeserializeOwned + Send + 'static>(
-    client: &HttpClient,
-    request: hyper::Request<hyper::Body>,
+    client: &surf::Client,
+    request: surf::Request,
 ) -> Response<T> {
     let client = client.clone(); // N.B. Client is send sync;  cloned clients share the same pool.
     Box::pin(async move {
-        let response = client.request(request).await?;
+        let mut response = client.send(request).await.unwrap();
         let status = response.status();
-        let bytes = hyper::body::to_bytes(response.into_body()).await?;
+        let bytes = response.body_bytes().await.unwrap();
         if !status.is_success() {
             let mut err = serde_json::from_slice(&bytes).unwrap_or_else(|err| {
                 let mut req = ErrorResponse { error: RequestError::default() };
                 req.error.message = Some(format!("failed to deserialize error: {}", err));
                 req
             });
-            err.error.http_status = status.as_u16();
+            err.error.http_status = status.into();
             Err(Error::from(err.error))?;
         }
         serde_json::from_slice(&bytes).map_err(Error::deserialize)

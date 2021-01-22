@@ -1,4 +1,4 @@
-use crate::client::r#async::Client as AsyncClient;
+use crate::client::tokio::Client as AsyncClient;
 use crate::error::Error;
 use crate::params::Headers;
 use serde::de::DeserializeOwned;
@@ -112,7 +112,7 @@ impl Client {
 
     fn send_blocking<T: DeserializeOwned + Send + 'static>(
         &self,
-        request: super::r#async::Response<T>,
+        request: super::tokio::Response<T>,
     ) -> Response<T> {
         match self.runtime.borrow_mut().block_on(async {
             // N.B. The `tokio::time::timeout` must be called from within a running async
@@ -120,7 +120,7 @@ impl Client {
             tokio::time::timeout(DEFAULT_TIMEOUT, request).await
         }) {
             Ok(finished) => finished,
-            Err(_) => Err(Error::timeout()),
+            Err(_) => Err(Error::Timeout),
         }
     }
 }
