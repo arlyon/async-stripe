@@ -6,4 +6,4 @@ edition = "2018"
 
 [dependencies]
 tokio = "0.2"
-stripe-rust = { version = "0.13", path = "../../", features = ["runtime-tokio-hyper"] }
+async-stripe = { path = "../../", features = ["runtime-tokio-hyper"] }

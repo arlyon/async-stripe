@@ -6,7 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#![doc(html_root_url = "https://docs.rs/stripe-rust/")]
+#![doc(html_root_url = "https://docs.rs/async-stripe/")]
 #![recursion_limit = "128"]
 
 //! This crate provides Rust bindings to the Stripe HTTP API.
