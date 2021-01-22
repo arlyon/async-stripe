@@ -20,10 +20,12 @@ jobs:
           args: openapi-install
       - name: create pull request
         uses: peter-evans/create-pull-request@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_TOKEN }}
         with:
-          commit-message: Bump OpenAPI version
-          title: Bump OpenAPI version
-          body: This PR pulls in the latest openapi changes from github.
+          commit-message: Generate latest changes from OpenApi spec
+          title: Generate latest changes from OpenApi spec
+          body: This is an automated PR that tries to build the latest changes generated from the [Stripe OpenApi spec](https://github.com/stripe/openapi).
           branch: openapi
           branch-suffix: timestamp
           assignees: arlyon
