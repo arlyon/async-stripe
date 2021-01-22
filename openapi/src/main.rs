@@ -4,7 +4,7 @@ use std::{
     fs::File,
 };
 
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 use heck::{CamelCase, SnakeCase};
 use lazy_static::lazy_static;
 use regex::Regex;
@@ -13,15 +13,16 @@ use serde_json::{json, Value as Json};
 mod mappings;
 mod metadata;
 
+// we use a common user agent, otherwise stripe rejects the connection
+const APP_USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
+
 fn main() -> Result<()> {
     let mut args = std::env::args().skip(1);
 
     let in_path = args.next().unwrap_or("spec3.json".to_string());
     let out_path = args.next().unwrap_or("out".to_string());
-    let cache_path = args.next().unwrap_or("cache".to_string());
 
     std::fs::create_dir_all(&out_path).context("could not create out folder")?;
-    std::fs::create_dir_all(&cache_path).context("could not create out folder")?;
 
     let raw = File::open(in_path).context("failed to load the specfile. does it exist?")?;
     let spec: Json = serde_json::from_reader(&raw).context("failed to read json from specfile")?;
@@ -122,6 +123,8 @@ fn main() -> Result<()> {
         }
     }
 
+    let url_finder = UrlFinder::new()?;
+
     // Generate resources
     for object in &meta.objects {
         if object.starts_with("deleted_") {
@@ -129,7 +132,7 @@ fn main() -> Result<()> {
         }
 
         // Generate the types for the object
-        let out = gen_impl_object(&meta, object, &cache_path);
+        let out = gen_impl_object(&meta, object, &url_finder);
         fs::write(
             &format!("{}/{}.rs", &out_path, object.replace('.', "_").to_snake_case()),
             out.as_bytes(),
@@ -300,7 +303,7 @@ struct InferredParams {
     parameters: Json,
 }
 
-fn gen_impl_object(meta: &Metadata, object: &str, cache_path: &str) -> String {
+fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> String {
     let mut out = String::new();
     let mut state = Generated::default();
     let id_type = meta.schema_to_id_type(object);
@@ -321,7 +324,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, cache_path: &str) -> String {
     out.push_str("/// The resource representing a Stripe \"");
     out.push_str(schema_title);
     out.push_str("\".\n");
-    if let Some(doc_url) = docs_url_for_object(object, cache_path) {
+    if let Some(doc_url) = url_finder.url_for_object(object) {
         out.push_str("///\n");
         out.push_str("/// For more details see [");
         out.push_str(&doc_url);
@@ -1704,31 +1707,36 @@ fn infer_integer_type(state: &mut Generated, name: &str, format: Option<&str>) -
     }
 }
 
-fn docs_url_for_object(object: &str, cache_path: &str) -> Option<String> {
-    let doc_url =
-        format!("https://stripe.com/docs/api/{}s/object", object.replace('.', "_").to_snake_case());
-    let cache_file =
-        format!("{}/{}_object.html", cache_path, object.replace('.', "_").to_snake_case());
-    if let Some(cached) = fs::read_to_string(&cache_file).ok() {
-        return if cached.is_empty() { None } else { Some(doc_url) };
-    }
+struct UrlFinder {
+    html: String,
+}
 
-    // Make a request to the stripe docs to see if the path exists
-    if let Ok(resp) = reqwest::blocking::get(&doc_url) {
+impl UrlFinder {
+    fn new() -> Result<Self> {
+        let client = reqwest::blocking::Client::builder().user_agent(APP_USER_AGENT).build()?;
+        let resp = client.get("https://stripe.com/docs/api").send()?;
+
         if resp.status().is_success() {
-            let text = resp.text().unwrap();
-            if text.contains("<title>Stripe API Reference") && text.contains("object</title>") {
-                fs::write(&cache_file, text.as_bytes()).unwrap();
-                return Some(doc_url);
+            let text = resp.text()?;
+            if text.contains("title: 'Stripe API Reference'") {
+                Ok(Self { html: text })
             } else {
-                eprintln!(
-                    "warning: documentation response at {} didn't match the expected format.",
-                    doc_url
-                );
+                Err(anyhow!("stripe api returned unexpected document"))
             }
+        } else {
+            eprintln!("{}", resp.text()?);
+            Err(anyhow!("request to stripe api returned non-200 status code"))
         }
     }
-    eprintln!("warning: could not determine doc_url for object `{}`", object);
-    fs::write(&cache_file, "").unwrap();
-    None
+
+    fn url_for_object(&self, object: &str) -> Option<String> {
+        let object_name = object.replace('.', "_").to_snake_case();
+        let doc_url = format!("/{}s/object", object_name);
+        if self.html.contains(&doc_url) {
+            Some(format!("https://stripe.com/docs/api{}", doc_url))
+        } else {
+            eprintln!("{} not in html", doc_url);
+            None
+        }
+    }
 }

@@ -1,3 +1,4 @@
+name: OpenAPI
 on:
   schedule:
     - cron: "0 0 * * 5"
@@ -17,12 +18,12 @@ jobs:
         with:
           command: make
           args: openapi-install
-      - name: Create Pull Request
+      - name: create pull request
         uses: peter-evans/create-pull-request@v3
         with:
           commit-message: Bump OpenAPI version
           title: Bump OpenAPI version
-          body: Credit new contributors by updating AUTHORS
+          body: This PR pulls in the latest openapi changes from github.
           branch: openapi
           branch-suffix: timestamp
           assignees: arlyon
