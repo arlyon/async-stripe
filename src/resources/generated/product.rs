@@ -2,15 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use self::PackageDimensions;
 use crate::config::{Client, Response};
 use crate::ids::ProductId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::PackageDimensions;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Product".
-///
-/// For more details see [https://stripe.com/docs/api/products/object](https://stripe.com/docs/api/products/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Product {
     /// Unique identifier for the object.

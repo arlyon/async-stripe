@@ -2,19 +2,17 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::config::{Client, Response};
-use crate::ids::{CustomerId, SubscriptionScheduleId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
+use self::{
     CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled, Subscription,
     SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData,
     TaxRate,
 };
+use crate::config::{Client, Response};
+use crate::ids::{CustomerId, SubscriptionScheduleId};
+use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SubscriptionSchedule".
-///
-/// For more details see [https://stripe.com/docs/api/subscription_schedules/object](https://stripe.com/docs/api/subscription_schedules/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionSchedule {
     /// Unique identifier for the object.
@@ -191,7 +189,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// The end of this phase of the subscription schedule.
     pub end_date: Timestamp,
 
-    /// The subscription schedule's default invoice settings.
+    /// The invoice settings applicable during this phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<SubscriptionScheduleInvoiceSettings>,
 
@@ -253,6 +251,12 @@ pub struct SubscriptionScheduleConfigurationItem {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettings {
+    /// A non-negative decimal between 0 and 100, with at most two decimal places.
+    ///
+    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account during this phase of the schedule.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee_percent: Option<f64>,
+
     /// Possible values are `phase_start` or `automatic`.
     ///
     /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
@@ -529,6 +533,9 @@ pub struct CreateSubscriptionSchedulePhases {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee_percent: Option<f64>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor>,
 

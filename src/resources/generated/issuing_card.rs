@@ -2,12 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::IssuingCardId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
+use self::{
     Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType,
     IssuingCardType, IssuingCardholder, MerchantCategory, SpendingLimit,
 };
+use crate::ids::IssuingCardId;
+use crate::params::{Expandable, Metadata, Object, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingCard".
@@ -118,7 +118,7 @@ pub struct IssuingCardAuthorizationControls {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blocked_categories: Option<Vec<MerchantCategory>>,
 
-    /// Limit spending with amount-based rules.
+    /// Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits: Option<Vec<SpendingLimit>>,
 

@@ -2,10 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{Charge, PaymentIntent, ReviewReason};
 use crate::config::{Client, Response};
 use crate::ids::ReviewId;
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
-use crate::resources::{Charge, PaymentIntent, ReviewReason};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "RadarReview".

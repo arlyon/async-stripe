@@ -2,17 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{CreateProduct, Currency, Product};
 use crate::config::{Client, Response};
 use crate::ids::PlanId;
 use crate::params::{
     Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
 };
-use crate::resources::{CreateProduct, Currency, Product};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Plan".
-///
-/// For more details see [https://stripe.com/docs/api/plans/object](https://stripe.com/docs/api/plans/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Plan {
     /// Unique identifier for the object.

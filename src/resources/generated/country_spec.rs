@@ -5,7 +5,7 @@
 use crate::config::{Client, Response};
 use crate::ids::{CountrySpecId};
 use crate::params::{Expand, List, Object};
-use crate::resources::{Currency};
+use self::{Currency};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CountrySpec".

@@ -4,7 +4,7 @@
 
 use crate::ids::{TerminalLocationId};
 use crate::params::{Metadata, Object};
-use crate::resources::{Address};
+use self::{Address};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TerminalLocationLocation".

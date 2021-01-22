@@ -2,15 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use self::FileLink;
 use crate::config::{Client, Response};
 use crate::ids::FileId;
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
-use crate::resources::FileLink;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "File".
-///
-/// For more details see [https://stripe.com/docs/api/files/object](https://stripe.com/docs/api/files/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct File {
     /// Unique identifier for the object.
@@ -134,6 +132,7 @@ impl<'a> ListFiles<'a> {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FilePurpose {
+    AccountRequirement,
     AdditionalVerification,
     BusinessIcon,
     BusinessLogo,
@@ -150,6 +149,7 @@ pub enum FilePurpose {
 impl FilePurpose {
     pub fn as_str(self) -> &'static str {
         match self {
+            FilePurpose::AccountRequirement => "account_requirement",
             FilePurpose::AdditionalVerification => "additional_verification",
             FilePurpose::BusinessIcon => "business_icon",
             FilePurpose::BusinessLogo => "business_logo",

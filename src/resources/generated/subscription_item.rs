@@ -2,15 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};
 use crate::config::{Client, Response};
 use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
-use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SubscriptionItem".
-///
-/// For more details see [https://stripe.com/docs/api/subscription_items/object](https://stripe.com/docs/api/subscription_items/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItem {
     /// Unique identifier for the object.

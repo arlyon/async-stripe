@@ -2,17 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
-};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceItem".
-///
-/// For more details see [https://stripe.com/docs/api/invoiceitems/object](https://stripe.com/docs/api/invoiceitems/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItem {
     /// Unique identifier for the object.

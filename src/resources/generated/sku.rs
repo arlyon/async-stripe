@@ -2,15 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{CreateProduct, Currency, PackageDimensions, Product};
 use crate::config::{Client, Response};
 use crate::ids::SkuId;
 use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Timestamp};
-use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Sku".
-///
-/// For more details see [https://stripe.com/docs/api/skus/object](https://stripe.com/docs/api/skus/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Sku {
     /// Unique identifier for the object.

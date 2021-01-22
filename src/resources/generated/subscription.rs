@@ -2,19 +2,17 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::config::{Client, Response};
-use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
+use self::{
     CollectionMethod, Currency, Customer, Discount, Invoice, PaymentMethod, PaymentSource,
     Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
     SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
 };
+use crate::config::{Client, Response};
+use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Subscription".
-///
-/// For more details see [https://stripe.com/docs/api/subscriptions/object](https://stripe.com/docs/api/subscriptions/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Subscription {
     /// Unique identifier for the object.

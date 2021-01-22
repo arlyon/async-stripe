@@ -2,15 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{BalanceTransaction, Currency, Source};
 use crate::config::{Client, Response};
 use crate::ids::TopupId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, Currency, Source};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Topup".
-///
-/// For more details see [https://stripe.com/docs/api/topups/object](https://stripe.com/docs/api/topups/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Topup {
     /// Unique identifier for the object.

@@ -2,15 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{File, Scheduled};
 use crate::config::{Client, Response};
 use crate::ids::{FileId, FileLinkId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{File, Scheduled};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "FileLink".
-///
-/// For more details see [https://stripe.com/docs/api/file_links/object](https://stripe.com/docs/api/file_links/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FileLink {
     /// Unique identifier for the object.

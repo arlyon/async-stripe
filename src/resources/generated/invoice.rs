@@ -2,19 +2,17 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::config::{Client, Response};
-use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
+use self::{
     Account, Address, ApiErrors, Charge, Currency, CustomField, Customer, Discount,
     InvoiceLineItem, PaymentIntent, PaymentMethod, PaymentSource, Shipping, Subscription, TaxId,
     TaxRate,
 };
+use crate::config::{Client, Response};
+use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
+use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Invoice".
-///
-/// For more details see [https://stripe.com/docs/api/invoices/object](https://stripe.com/docs/api/invoices/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Invoice {
     /// Unique identifier for the object.
@@ -507,7 +505,7 @@ pub struct CreateInvoice<'a> {
     /// A fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account.
     ///
     /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
-    /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#invoices).
+    /// For more information, see the application fees [documentation](https://stripe.com/docs/billing/invoices/connect#collecting-fees).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
 

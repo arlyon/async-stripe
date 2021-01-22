@@ -4,7 +4,7 @@
 
 use crate::ids::{IssuingSettlementId};
 use crate::params::{Metadata, Object, Timestamp};
-use crate::resources::{Currency};
+use self::{Currency};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingSettlement".

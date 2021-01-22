@@ -2,20 +2,18 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::config::{Client, Response};
-use crate::ids::{BalanceTransactionId, PayoutId, SourceId};
-use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
-use crate::resources::{
+use self::{
     ApplicationFee, ApplicationFeeRefund, BalanceTransactionStatus, Charge,
     ConnectCollectionTransfer, Currency, Dispute, FeeType, IssuingAuthorization, IssuingDispute,
     IssuingTransaction, Payout, PlatformTaxFee, Refund, ReserveTransaction, TaxDeductedAtSource,
     Topup, Transfer, TransferReversal,
 };
+use crate::config::{Client, Response};
+use crate::ids::{BalanceTransactionId, PayoutId, SourceId};
+use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BalanceTransaction".
-///
-/// For more details see [https://stripe.com/docs/api/balance_transactions/object](https://stripe.com/docs/api/balance_transactions/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceTransaction {
     /// Unique identifier for the object.

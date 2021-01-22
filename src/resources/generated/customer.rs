@@ -2,21 +2,19 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{
+    Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
+    Scheduled, Shipping, ShippingParams, Subscription, TaxId,
+};
 use crate::config::{Client, Response};
 use crate::ids::{
     AlipayAccountId, BankAccountId, CardId, CouponId, CustomerId, PaymentMethodId, PaymentSourceId,
     PromotionCodeId,
 };
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
-    Scheduled, Shipping, ShippingParams, Subscription, TaxId,
-};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Customer".
-///
-/// For more details see [https://stripe.com/docs/api/customers/object](https://stripe.com/docs/api/customers/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Customer {
     /// Unique identifier for the object.

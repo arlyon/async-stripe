@@ -4,7 +4,7 @@
 
 use crate::ids::{CreditNoteLineItemId};
 use crate::params::{Expandable, Object};
-use crate::resources::{Discount, TaxRate};
+use self::{Discount, TaxRate};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CreditNoteLineItem".

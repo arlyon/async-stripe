@@ -2,15 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{Currency, PaymentMethod};
 use crate::config::{Client, Response};
 use crate::ids::MandateId;
 use crate::params::{Expand, Expandable, Object, Timestamp};
-use crate::resources::{Currency, PaymentMethod};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Mandate".
-///
-/// For more details see [https://stripe.com/docs/api/mandates/object](https://stripe.com/docs/api/mandates/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Mandate {
     /// Unique identifier for the object.

@@ -2,8 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{Account, Currency};
 use crate::params::{Expandable, Object};
-use crate::resources::{Account, Currency};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ConnectCollectionTransfer".

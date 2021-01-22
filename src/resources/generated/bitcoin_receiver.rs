@@ -4,7 +4,7 @@
 
 use crate::ids::{BitcoinReceiverId};
 use crate::params::{List, Metadata, Object, Timestamp};
-use crate::resources::{BitcoinTransaction, Currency};
+use self::{BitcoinTransaction, Currency};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BitcoinReceiver".

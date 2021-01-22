@@ -2,15 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{BalanceTransaction, Charge, Currency, PaymentIntent, TransferReversal};
 use crate::config::{Client, Response};
 use crate::ids::{ChargeId, PaymentIntentId, RefundId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, Charge, Currency, PaymentIntent, TransferReversal};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Refund".
-///
-/// For more details see [https://stripe.com/docs/api/refunds/object](https://stripe.com/docs/api/refunds/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Refund {
     /// Unique identifier for the object.

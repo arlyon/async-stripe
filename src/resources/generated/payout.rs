@@ -2,15 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{BalanceTransaction, BankAccount, Card, Currency};
 use crate::config::{Client, Response};
 use crate::ids::PayoutId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, BankAccount, Card, Currency};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Payout".
-///
-/// For more details see [https://stripe.com/docs/api/payouts/object](https://stripe.com/docs/api/payouts/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Payout {
     /// Unique identifier for the object.

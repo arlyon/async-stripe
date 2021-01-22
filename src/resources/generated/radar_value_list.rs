@@ -4,7 +4,7 @@
 
 use crate::ids::{RadarValueListId};
 use crate::params::{List, Metadata, Object, Timestamp};
-use crate::resources::{RadarValueListItem};
+use self::{RadarValueListItem};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "RadarListList".

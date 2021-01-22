@@ -3312,7 +3312,7 @@
             "type": "string"
           },
           "client_reference_id": {
-            "description": "A unique string to reference the Checkout Session. This can be a\ncustomer ID, a cart ID, or similar, and can be used to reconcile the\nsession with your internal systems.",
+            "description": "A unique string to reference the Checkout Session. This can be a\ncustomer ID, a cart ID, or similar, and can be used to reconcile the\nSession with your internal systems.",
             "maxLength": 5000,
             "nullable": true,
             "type": "string"
@@ -3335,7 +3335,7 @@
                 "$ref": "#/components/schemas/deleted_customer"
               }
             ],
-            "description": "The ID of the customer for this session.\nFor Checkout Sessions in `payment` or `subscription` mode, Checkout\nwill create a new customer object based on information provided\nduring the session unless an existing customer was provided when\nthe session was created.",
+            "description": "The ID of the customer for this Session.\nFor Checkout Sessions in `payment` or `subscription` mode, Checkout\nwill create a new customer object based on information provided\nduring the payment flow unless an existing customer was provided when\nthe Session was created.",
             "nullable": true,
             "x-expansionResources": {
               "oneOf": [
@@ -3348,8 +3348,17 @@
               ]
             }
           },
+          "customer_details": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/payment_pages_checkout_session_customer_details"
+              }
+            ],
+            "description": "The customer details including the customer's tax exempt status and the customer's tax IDs.",
+            "nullable": true
+          },
           "customer_email": {
-            "description": "If provided, this value will be used when the Customer object is created.\nIf not provided, customers will be asked to enter their email address.\nUse this parameter to prefill customer data if you already have an email\non file. To access information about the customer once a session is\ncomplete, use the `customer` attribute.",
+            "description": "If provided, this value will be used when the Customer object is created.\nIf not provided, customers will be asked to enter their email address.\nUse this parameter to prefill customer data if you already have an email\non file. To access information about the customer once the payment flow is\ncomplete, use the `customer` attribute.",
             "maxLength": 5000,
             "nullable": true,
             "type": "string"
@@ -3606,6 +3615,7 @@
         "type": "object",
         "x-expandableFields": [
           "customer",
+          "customer_details",
           "line_items",
           "payment_intent",
           "setup_intent",
@@ -6887,6 +6897,7 @@
           "purpose": {
             "description": "The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.",
             "enum": [
+              "account_requirement",
               "additional_verification",
               "business_icon",
               "business_logo",
@@ -7102,7 +7113,7 @@
         ]
       },
       "invoice": {
-        "description": "Invoices are statements of amounts owed by a customer, and are either\ngenerated one-off, or generated periodically from a subscription.\n\nThey contain [invoice items](https://stripe.com/docs/api#invoiceitems), and proration adjustments\nthat may be caused by subscription upgrades/downgrades (if necessary).\n\nIf your invoice is configured to be billed through automatic charges,\nStripe automatically finalizes your invoice and attempts payment. Note\nthat finalizing the invoice,\n[when automatic](https://stripe.com/docs/billing/invoices/workflow/#auto_advance), does\nnot happen immediately as the invoice is created. Stripe waits\nuntil one hour after the last webhook was successfully sent (or the last\nwebhook timed out after failing). If you (and the platforms you may have\nconnected to) have no webhooks configured, Stripe waits one hour after\ncreation to finalize the invoice.\n\nIf your invoice is configured to be billed by sending an email, then based on your\n[email settings](https://dashboard.stripe.com/account/billing/automatic'),\nStripe will email the invoice to your customer and await payment. These\nemails can contain a link to a hosted page to pay the invoice.\n\nStripe applies any customer credit on the account before determining the\namount due for the invoice (i.e., the amount that will be actually\ncharged). If the amount due for the invoice is less than Stripe's [minimum allowed charge\nper currency](/docs/currencies#minimum-and-maximum-charge-amounts), the\ninvoice is automatically marked paid, and we add the amount due to the\ncustomer's running account balance which is applied to the next invoice.\n\nMore details on the customer's account balance are\n[here](https://stripe.com/docs/api/customers/object#customer_object-account_balance).\n\nRelated guide: [Send Invoices to Customers](https://stripe.com/docs/billing/invoices/sending).",
+        "description": "Invoices are statements of amounts owed by a customer, and are either\ngenerated one-off, or generated periodically from a subscription.\n\nThey contain [invoice items](https://stripe.com/docs/api#invoiceitems), and proration adjustments\nthat may be caused by subscription upgrades/downgrades (if necessary).\n\nIf your invoice is configured to be billed through automatic charges,\nStripe automatically finalizes your invoice and attempts payment. Note\nthat finalizing the invoice,\n[when automatic](https://stripe.com/docs/billing/invoices/workflow/#auto_advance), does\nnot happen immediately as the invoice is created. Stripe waits\nuntil one hour after the last webhook was successfully sent (or the last\nwebhook timed out after failing). If you (and the platforms you may have\nconnected to) have no webhooks configured, Stripe waits one hour after\ncreation to finalize the invoice.\n\nIf your invoice is configured to be billed by sending an email, then based on your\n[email settings](https://dashboard.stripe.com/account/billing/automatic'),\nStripe will email the invoice to your customer and await payment. These\nemails can contain a link to a hosted page to pay the invoice.\n\nStripe applies any customer credit on the account before determining the\namount due for the invoice (i.e., the amount that will be actually\ncharged). If the amount due for the invoice is less than Stripe's [minimum allowed charge\nper currency](/docs/currencies#minimum-and-maximum-charge-amounts), the\ninvoice is automatically marked paid, and we add the amount due to the\ncustomer's credit balance which is applied to the next invoice.\n\nMore details on the customer's credit balance are\n[here](https://stripe.com/docs/billing/customer/balance).\n\nRelated guide: [Send Invoices to Customers](https://stripe.com/docs/billing/invoices/sending).",
         "properties": {
           "account_country": {
             "description": "The country of the business associated with this invoice, most often the business creating the invoice.",
@@ -8934,9 +8945,15 @@
           }
         },
         "required": [
+          "amount",
+          "created",
+          "currency",
+          "evidence",
           "id",
           "livemode",
+          "metadata",
           "object",
+          "status",
           "transaction"
         ],
         "title": "IssuingDispute",
@@ -9228,7 +9245,6 @@
             "description": "The nature of the transaction.",
             "enum": [
               "capture",
-              "dispute",
               "refund"
             ],
             "type": "string",
@@ -10105,7 +10121,7 @@
             "type": "array"
           },
           "spending_limits": {
-            "description": "Limit spending with amount-based rules.",
+            "description": "Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).",
             "items": {
               "$ref": "#/components/schemas/issuing_card_spending_limit"
             },
@@ -10137,7 +10153,8 @@
               "usps"
             ],
             "nullable": true,
-            "type": "string"
+            "type": "string",
+            "x-stripeBypassValidation": true
           },
           "eta": {
             "description": "A unix timestamp representing a best estimate of when the card will be delivered.",
@@ -12444,7 +12461,7 @@
         "description": "A line item.",
         "properties": {
           "amount_subtotal": {
-            "description": "Total before any discounts or taxes is applied.",
+            "description": "Total before any discounts or taxes are applied.",
             "nullable": true,
             "type": "integer"
           },
@@ -12482,7 +12499,13 @@
             "type": "string"
           },
           "price": {
-            "$ref": "#/components/schemas/price"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/price"
+              }
+            ],
+            "description": "The price used to generate the line item.",
+            "nullable": true
           },
           "quantity": {
             "description": "The quantity of products being purchased.",
@@ -12501,10 +12524,9 @@
           "currency",
           "description",
           "id",
-          "object",
-          "price"
+          "object"
         ],
-        "title": "LineItems",
+        "title": "LineItem",
         "type": "object",
         "x-expandableFields": [
           "discounts",
@@ -14920,12 +14942,33 @@
             ],
             "description": "Transaction-specific details of the payment method used in the payment.",
             "nullable": true
+          },
+          "setup_attempt": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/setup_attempt"
+              }
+            ],
+            "description": "The ID of the SetupAttempt that generated this PaymentMethod, if any.",
+            "nullable": true,
+            "x-expansionResources": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/setup_attempt"
+                }
+              ]
+            }
           }
         },
         "title": "payment_method_card_generated_card",
         "type": "object",
         "x-expandableFields": [
-          "payment_method_details"
+          "payment_method_details",
+          "setup_attempt"
         ]
       },
       "payment_method_card_present": {
@@ -15983,6 +16026,40 @@
       "payment_method_details_eps": {
         "description": "",
         "properties": {
+          "bank": {
+            "description": "The customer's bank. Should be one of `arzte_und_apotheker_bank`, `austrian_anadi_bank_ag`, `bank_austria`, `bankhaus_carl_spangler`, `bankhaus_schelhammer_und_schattera_ag`, `bawag_psk_ag`, `bks_bank_ag`, `brull_kallmus_bank_ag`, `btv_vier_lander_bank`, `capital_bank_grawe_gruppe_ag`, `dolomitenbank`, `easybank_ag`, `erste_bank_und_sparkassen`, `hypo_alpeadriabank_international_ag`, `hypo_noe_lb_fur_niederosterreich_u_wien`, `hypo_oberosterreich_salzburg_steiermark`, `hypo_tirol_bank_ag`, `hypo_vorarlberg_bank_ag`, `hypo_bank_burgenland_aktiengesellschaft`, `marchfelder_bank`, `oberbank_ag`, `raiffeisen_bankengruppe_osterreich`, `schoellerbank_ag`, `sparda_bank_wien`, `volksbank_gruppe`, `volkskreditbank_ag`, or `vr_bank_braunau`.",
+            "enum": [
+              "arzte_und_apotheker_bank",
+              "austrian_anadi_bank_ag",
+              "bank_austria",
+              "bankhaus_carl_spangler",
+              "bankhaus_schelhammer_und_schattera_ag",
+              "bawag_psk_ag",
+              "bks_bank_ag",
+              "brull_kallmus_bank_ag",
+              "btv_vier_lander_bank",
+              "capital_bank_grawe_gruppe_ag",
+              "dolomitenbank",
+              "easybank_ag",
+              "erste_bank_und_sparkassen",
+              "hypo_alpeadriabank_international_ag",
+              "hypo_bank_burgenland_aktiengesellschaft",
+              "hypo_noe_lb_fur_niederosterreich_u_wien",
+              "hypo_oberosterreich_salzburg_steiermark",
+              "hypo_tirol_bank_ag",
+              "hypo_vorarlberg_bank_ag",
+              "marchfelder_bank",
+              "oberbank_ag",
+              "raiffeisen_bankengruppe_osterreich",
+              "schoellerbank_ag",
+              "sparda_bank_wien",
+              "volksbank_gruppe",
+              "volkskreditbank_ag",
+              "vr_bank_braunau"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
           "verified_name": {
             "description": "Owner's verified full name. Values are verified or provided by EPS directly\n(if supported) at the time of authorization or settlement. They cannot be set or mutated.\nEPS rarely provides this information so the attribute is usually empty.",
             "maxLength": 5000,
@@ -16417,6 +16494,38 @@
       "payment_method_details_p24": {
         "description": "",
         "properties": {
+          "bank": {
+            "description": "The customer's bank. Can be one of `ing`, `citi_handlowy`, `tmobile_usbugi_bankowe`, `plus_bank`, `etransfer_pocztowy24`, `banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`, `blik`, `noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`, `nest_przelew`, `mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`, `credit_agricole`, `toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`, `bank_millennium`, `alior_bank`, or `boz`.",
+            "enum": [
+              "alior_bank",
+              "bank_millennium",
+              "bank_nowy_bfg_sa",
+              "bank_pekao_sa",
+              "banki_spbdzielcze",
+              "blik",
+              "bnp_paribas",
+              "boz",
+              "citi_handlowy",
+              "credit_agricole",
+              "envelobank",
+              "etransfer_pocztowy24",
+              "getin_bank",
+              "ideabank",
+              "ing",
+              "inteligo",
+              "mbank_mtransfer",
+              "nest_przelew",
+              "noble_pay",
+              "pbac_z_ipko",
+              "plus_bank",
+              "santander_przelew24",
+              "tmobile_usbugi_bankowe",
+              "toyota_bank",
+              "volkswagen_bank"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
           "reference": {
             "description": "Unique reference for this Przelewy24 payment.",
             "maxLength": 5000,
@@ -16606,6 +16715,40 @@
       "payment_method_eps": {
         "description": "",
         "properties": {
+          "bank": {
+            "description": "The customer's bank. Should be one of `arzte_und_apotheker_bank`, `austrian_anadi_bank_ag`, `bank_austria`, `bankhaus_carl_spangler`, `bankhaus_schelhammer_und_schattera_ag`, `bawag_psk_ag`, `bks_bank_ag`, `brull_kallmus_bank_ag`, `btv_vier_lander_bank`, `capital_bank_grawe_gruppe_ag`, `dolomitenbank`, `easybank_ag`, `erste_bank_und_sparkassen`, `hypo_alpeadriabank_international_ag`, `hypo_noe_lb_fur_niederosterreich_u_wien`, `hypo_oberosterreich_salzburg_steiermark`, `hypo_tirol_bank_ag`, `hypo_vorarlberg_bank_ag`, `hypo_bank_burgenland_aktiengesellschaft`, `marchfelder_bank`, `oberbank_ag`, `raiffeisen_bankengruppe_osterreich`, `schoellerbank_ag`, `sparda_bank_wien`, `volksbank_gruppe`, `volkskreditbank_ag`, or `vr_bank_braunau`.",
+            "enum": [
+              "arzte_und_apotheker_bank",
+              "austrian_anadi_bank_ag",
+              "bank_austria",
+              "bankhaus_carl_spangler",
+              "bankhaus_schelhammer_und_schattera_ag",
+              "bawag_psk_ag",
+              "bks_bank_ag",
+              "brull_kallmus_bank_ag",
+              "btv_vier_lander_bank",
+              "capital_bank_grawe_gruppe_ag",
+              "dolomitenbank",
+              "easybank_ag",
+              "erste_bank_und_sparkassen",
+              "hypo_alpeadriabank_international_ag",
+              "hypo_bank_burgenland_aktiengesellschaft",
+              "hypo_noe_lb_fur_niederosterreich_u_wien",
+              "hypo_oberosterreich_salzburg_steiermark",
+              "hypo_tirol_bank_ag",
+              "hypo_vorarlberg_bank_ag",
+              "marchfelder_bank",
+              "oberbank_ag",
+              "raiffeisen_bankengruppe_osterreich",
+              "schoellerbank_ag",
+              "sparda_bank_wien",
+              "volksbank_gruppe",
+              "volkskreditbank_ag",
+              "vr_bank_braunau"
+            ],
+            "nullable": true,
+            "type": "string"
+          }
         },
         "title": "payment_method_eps",
         "type": "object",
@@ -16961,6 +17104,98 @@
           }
         },
         "title": "payment_method_sofort",
+        "type": "object",
+        "x-expandableFields": [
+
+        ]
+      },
+      "payment_pages_checkout_session_customer_details": {
+        "description": "",
+        "properties": {
+          "email": {
+            "description": "The customer’s email at time of checkout.",
+            "maxLength": 5000,
+            "nullable": true,
+            "type": "string"
+          },
+          "tax_exempt": {
+            "description": "The customer’s tax exempt status at time of checkout.",
+            "enum": [
+              "exempt",
+              "none",
+              "reverse"
+            ],
+            "nullable": true,
+            "type": "string"
+          },
+          "tax_ids": {
+            "description": "The customer’s tax IDs at time of checkout.",
+            "items": {
+              "$ref": "#/components/schemas/payment_pages_checkout_session_tax_id"
+            },
+            "nullable": true,
+            "type": "array"
+          }
+        },
+        "title": "PaymentPagesCheckoutSessionCustomerDetails",
+        "type": "object",
+        "x-expandableFields": [
+          "tax_ids"
+        ]
+      },
+      "payment_pages_checkout_session_tax_id": {
+        "description": "",
+        "properties": {
+          "type": {
+            "description": "The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `nz_gst`, `au_abn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, or `unknown`",
+            "enum": [
+              "ae_trn",
+              "au_abn",
+              "br_cnpj",
+              "br_cpf",
+              "ca_bn",
+              "ca_qst",
+              "ch_vat",
+              "cl_tin",
+              "es_cif",
+              "eu_vat",
+              "hk_br",
+              "id_npwp",
+              "in_gst",
+              "jp_cn",
+              "jp_rn",
+              "kr_brn",
+              "li_uid",
+              "mx_rfc",
+              "my_frp",
+              "my_itn",
+              "my_sst",
+              "no_vat",
+              "nz_gst",
+              "ru_inn",
+              "ru_kpp",
+              "sa_vat",
+              "sg_gst",
+              "sg_uen",
+              "th_vat",
+              "tw_vat",
+              "unknown",
+              "us_ein",
+              "za_vat"
+            ],
+            "type": "string"
+          },
+          "value": {
+            "description": "The value of the tax ID.",
+            "maxLength": 5000,
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "title": "PaymentPagesCheckoutSessionTaxID",
         "type": "object",
         "x-expandableFields": [
 
@@ -17567,7 +17802,7 @@
         ]
       },
       "person": {
-        "description": "This is an object representing a person associated with a Stripe account.\n\nRelated guide: [Handling Identity Verification with the API](https://stripe.com/docs/connect/identity-verification-api#person-information).",
+        "description": "This is an object representing a person associated with a Stripe account.\n\nA platform cannot access a Standard or Express account's persons after the account starts onboarding, such as after generating an account link for the account.\nSee the [Standard onboarding](https://stripe.com/docs/connect/standard-accounts) or [Express onboarding documentation](https://stripe.com/docs/connect/express-accounts) for information about platform pre-filling and account onboarding steps.\n\nRelated guide: [Handling Identity Verification with the API](https://stripe.com/docs/connect/identity-verification-api#person-information).",
         "properties": {
           "account": {
             "description": "The account the person is associated with.",
@@ -19973,6 +20208,9 @@
           "card": {
             "$ref": "#/components/schemas/setup_attempt_payment_method_details_card"
           },
+          "card_present": {
+            "$ref": "#/components/schemas/setup_attempt_payment_method_details_card_present"
+          },
           "ideal": {
             "$ref": "#/components/schemas/setup_attempt_payment_method_details_ideal"
           },
@@ -19993,6 +20231,7 @@
         "x-expandableFields": [
           "bancontact",
           "card",
+          "card_present",
           "ideal",
           "sofort"
         ]
@@ -20106,6 +20345,36 @@
         "type": "object",
         "x-expandableFields": [
           "three_d_secure"
+        ]
+      },
+      "setup_attempt_payment_method_details_card_present": {
+        "description": "",
+        "properties": {
+          "generated_card": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/payment_method"
+              }
+            ],
+            "description": "The ID of the Card PaymentMethod which was generated by this SetupAttempt.",
+            "nullable": true,
+            "x-expansionResources": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/payment_method"
+                }
+              ]
+            }
+          }
+        },
+        "title": "setup_attempt_payment_method_details_card_present",
+        "type": "object",
+        "x-expandableFields": [
+          "generated_card"
         ]
       },
       "setup_attempt_payment_method_details_ideal": {
@@ -23346,7 +23615,7 @@
                 "$ref": "#/components/schemas/invoice_setting_subscription_schedule_setting"
               }
             ],
-            "description": "The subscription schedule's default invoice settings.",
+            "description": "The invoice settings applicable during this phase.",
             "nullable": true
           },
           "items": {
@@ -23409,6 +23678,11 @@
       "subscription_schedules_resource_default_settings": {
         "description": "",
         "properties": {
+          "application_fee_percent": {
+            "description": "A non-negative decimal between 0 and 100, with at most two decimal places. This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account during this phase of the schedule.",
+            "nullable": true,
+            "type": "number"
+          },
           "billing_cycle_anchor": {
             "description": "Possible values are `phase_start` or `automatic`. If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase. If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase. For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).",
             "enum": [
@@ -23800,6 +24074,12 @@
             "description": "Defaults to `true`. When set to `false`, this tax rate cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.",
             "type": "boolean"
           },
+          "country": {
+            "description": "Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).",
+            "maxLength": 5000,
+            "nullable": true,
+            "type": "string"
+          },
           "created": {
             "description": "Time at which the object was created. Measured in seconds since the Unix epoch.",
             "format": "unix-time",
@@ -23854,6 +24134,12 @@
           "percentage": {
             "description": "This represents the tax rate percent out of 100.",
             "type": "number"
+          },
+          "state": {
+            "description": "[ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix. For example, \"NY\" for New York, United States.",
+            "maxLength": 5000,
+            "nullable": true,
+            "type": "string"
           }
         },
         "required": [
@@ -25342,6 +25628,10 @@
                   "explode": true,
                   "style": "deepObject"
                 },
+                "documents": {
+                  "explode": true,
+                  "style": "deepObject"
+                },
                 "expand": {
                   "explode": true,
                   "style": "deepObject"
@@ -25876,6 +26166,91 @@
                   "default_currency": {
                     "description": "Three-letter ISO currency code representing the default currency for the account. This must be a currency that [Stripe supports in the account's country](https://stripe.com/docs/payouts).",
                     "type": "string"
+                  },
+                  "documents": {
+                    "description": "Documents that may be submitted to satisfy various informational requests.",
+                    "properties": {
+                      "bank_account_ownership_verification": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_license": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_memorandum_of_association": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_ministerial_decree": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_registration_verification": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_tax_id_verification": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      }
+                    },
+                    "title": "documents_specs",
+                    "type": "object"
                   },
                   "email": {
                     "description": "The email address of the account holder. This is only to make the account easier to identify to you. Stripe will never directly email Custom accounts.",
@@ -29960,6 +30335,10 @@
                   "explode": true,
                   "style": "deepObject"
                 },
+                "documents": {
+                  "explode": true,
+                  "style": "deepObject"
+                },
                 "expand": {
                   "explode": true,
                   "style": "deepObject"
@@ -30499,6 +30878,91 @@
                   "default_currency": {
                     "description": "Three-letter ISO currency code representing the default currency for the account. This must be a currency that [Stripe supports in the account's country](https://stripe.com/docs/payouts).",
                     "type": "string"
+                  },
+                  "documents": {
+                    "description": "Documents that may be submitted to satisfy various informational requests.",
+                    "properties": {
+                      "bank_account_ownership_verification": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_license": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_memorandum_of_association": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_ministerial_decree": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_registration_verification": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_tax_id_verification": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      }
+                    },
+                    "title": "documents_specs",
+                    "type": "object"
                   },
                   "email": {
                     "description": "The email address of the account holder. This is only to make the account easier to identify to you. Stripe will never directly email Custom accounts.",
@@ -31121,6 +31585,10 @@
                   "explode": true,
                   "style": "deepObject"
                 },
+                "documents": {
+                  "explode": true,
+                  "style": "deepObject"
+                },
                 "expand": {
                   "explode": true,
                   "style": "deepObject"
@@ -31655,6 +32123,91 @@
                   "default_currency": {
                     "description": "Three-letter ISO currency code representing the default currency for the account. This must be a currency that [Stripe supports in the account's country](https://stripe.com/docs/payouts).",
                     "type": "string"
+                  },
+                  "documents": {
+                    "description": "Documents that may be submitted to satisfy various informational requests.",
+                    "properties": {
+                      "bank_account_ownership_verification": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_license": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_memorandum_of_association": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_ministerial_decree": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_registration_verification": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      },
+                      "company_tax_id_verification": {
+                        "properties": {
+                          "files": {
+                            "items": {
+                              "maxLength": 500,
+                              "type": "string"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "title": "documents_param",
+                        "type": "object"
+                      }
+                    },
+                    "title": "documents_specs",
+                    "type": "object"
                   },
                   "email": {
                     "description": "The email address of the account holder. This is only to make the account easier to identify to you. Stripe will never directly email Custom accounts.",
@@ -40028,7 +40581,7 @@
                     "type": "string"
                   },
                   "customer": {
-                    "description": "ID of an existing customer, if one exists. The email stored on the\ncustomer will be used to prefill the email field on the Checkout page.\nIf the customer changes their email on the Checkout page, the Customer\nobject will be updated with the new email.\nIf blank for Checkout Sessions in `payment` or `subscription` mode,\nCheckout will create a new customer object based on information\nprovided during the session.",
+                    "description": "ID of an existing customer, if one exists. The email stored on the\ncustomer will be used to prefill the email field on the Checkout page.\nIf the customer changes their email on the Checkout page, the Customer\nobject will be updated with the new email.\nIf blank for Checkout Sessions in `payment` or `subscription` mode,\nCheckout will create a new customer object based on information\nprovided during the payment flow.",
                     "maxLength": 5000,
                     "type": "string"
                   },
@@ -40037,7 +40590,7 @@
                     "type": "string"
                   },
                   "discounts": {
-                    "description": "The coupon or promotion code to apply to this session. Currently, only up to one may be specified.",
+                    "description": "The coupon or promotion code to apply to this Session. Currently, only up to one may be specified.",
                     "items": {
                       "properties": {
                         "coupon": {
@@ -40075,6 +40628,13 @@
                         "description": {
                           "maxLength": 5000,
                           "type": "string"
+                        },
+                        "dynamic_tax_rates": {
+                          "items": {
+                            "maxLength": 5000,
+                            "type": "string"
+                          },
+                          "type": "array"
                         },
                         "images": {
                           "items": {
@@ -40175,9 +40735,6 @@
                           "type": "array"
                         }
                       },
-                      "required": [
-                        "quantity"
-                      ],
                       "title": "line_item_params",
                       "type": "object"
                     },
@@ -40234,7 +40791,7 @@
                     "type": "object"
                   },
                   "mode": {
-                    "description": "The mode of the Checkout Session. Required when using prices or `setup` mode. Pass `subscription` if Checkout session includes at least one recurring item.",
+                    "description": "The mode of the Checkout Session. Required when using prices or `setup` mode. Pass `subscription` if the Checkout Session includes at least one recurring item.",
                     "enum": [
                       "payment",
                       "setup",
@@ -40369,7 +40926,7 @@
                     "type": "object"
                   },
                   "payment_method_types": {
-                    "description": "A list of the types of payment methods (e.g., `card`) this Checkout session can accept.\n\nRead more about the supported payment methods and their requirements in our [payment\nmethod details guide](/docs/payments/checkout/payment-methods).\n\nIf multiple payment methods are passed, Checkout will dynamically reorder them to\nprioritize the most relevant payment methods based on the customer's location and\nother characteristics.",
+                    "description": "A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.\n\nRead more about the supported payment methods and their requirements in our [payment\nmethod details guide](/docs/payments/checkout/payment-methods).\n\nIf multiple payment methods are passed, Checkout will dynamically reorder them to\nprioritize the most relevant payment methods based on the customer's location and\nother characteristics.",
                     "items": {
                       "enum": [
                         "alipay",
@@ -43126,10 +43683,7 @@
                             "type": "string"
                           }
                         },
-                        "required": [
-                          "line1"
-                        ],
-                        "title": "address",
+                        "title": "optional_fields_address",
                         "type": "object"
                       },
                       {
@@ -43647,10 +44201,7 @@
                             "type": "string"
                           }
                         },
-                        "required": [
-                          "line1"
-                        ],
-                        "title": "address",
+                        "title": "optional_fields_address",
                         "type": "object"
                       },
                       {
@@ -50526,6 +51077,7 @@
             "required": false,
             "schema": {
               "enum": [
+                "account_requirement",
                 "additional_verification",
                 "business_icon",
                 "business_logo",
@@ -50696,6 +51248,7 @@
                   "purpose": {
                     "description": "The [purpose](https://stripe.com/docs/file-upload#uploading-a-file) of the uploaded file.",
                     "enum": [
+                      "account_requirement",
                       "additional_verification",
                       "business_icon",
                       "business_logo",
@@ -51881,7 +52434,7 @@
                     "description": "The account tax IDs associated with the invoice. Only editable when the invoice is a draft."
                   },
                   "application_fee_amount": {
-                    "description": "A fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account. The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee. For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#invoices).",
+                    "description": "A fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account. The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee. For more information, see the application fees [documentation](https://stripe.com/docs/billing/invoices/connect#collecting-fees).",
                     "type": "integer"
                   },
                   "auto_advance": {
@@ -53513,7 +54066,7 @@
                     "description": "The account tax IDs associated with the invoice. Only editable when the invoice is a draft."
                   },
                   "application_fee_amount": {
-                    "description": "A fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account. The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee. For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#invoices).",
+                    "description": "A fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account. The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee. For more information, see the application fees [documentation](https://stripe.com/docs/billing/invoices/connect#collecting-fees).",
                     "type": "integer"
                   },
                   "auto_advance": {
@@ -54437,7 +54990,7 @@
         "operationId": "GetIssuingAuthorizations",
         "parameters": [
           {
-            "description": "Only return issuing transactions that belong to the given card.",
+            "description": "Only return authorizations that belong to the given card.",
             "in": "query",
             "name": "card",
             "required": false,
@@ -54448,7 +55001,7 @@
             "style": "form"
           },
           {
-            "description": "Only return authorizations belonging to the given cardholder.",
+            "description": "Only return authorizations that belong to the given cardholder.",
             "in": "query",
             "name": "cardholder",
             "required": false,
@@ -61890,6 +62443,20 @@
               "type": "string"
             },
             "style": "form"
+          },
+          {
+            "description": "Only return transactions that have the given type. One of `capture` or `refund`.",
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "enum": [
+                "capture",
+                "refund"
+              ],
+              "type": "string"
+            },
+            "style": "form"
           }
         ],
         "requestBody": {
@@ -63823,6 +64390,39 @@
                       },
                       "eps": {
                         "properties": {
+                          "bank": {
+                            "enum": [
+                              "arzte_und_apotheker_bank",
+                              "austrian_anadi_bank_ag",
+                              "bank_austria",
+                              "bankhaus_carl_spangler",
+                              "bankhaus_schelhammer_und_schattera_ag",
+                              "bawag_psk_ag",
+                              "bks_bank_ag",
+                              "brull_kallmus_bank_ag",
+                              "btv_vier_lander_bank",
+                              "capital_bank_grawe_gruppe_ag",
+                              "dolomitenbank",
+                              "easybank_ag",
+                              "erste_bank_und_sparkassen",
+                              "hypo_alpeadriabank_international_ag",
+                              "hypo_bank_burgenland_aktiengesellschaft",
+                              "hypo_noe_lb_fur_niederosterreich_u_wien",
+                              "hypo_oberosterreich_salzburg_steiermark",
+                              "hypo_tirol_bank_ag",
+                              "hypo_vorarlberg_bank_ag",
+                              "marchfelder_bank",
+                              "oberbank_ag",
+                              "raiffeisen_bankengruppe_osterreich",
+                              "schoellerbank_ag",
+                              "sparda_bank_wien",
+                              "volksbank_gruppe",
+                              "volkskreditbank_ag",
+                              "vr_bank_braunau"
+                            ],
+                            "maxLength": 5000,
+                            "type": "string"
+                          }
                         },
                         "title": "param",
                         "type": "object"
@@ -64171,6 +64771,9 @@
                         "anyOf": [
                           {
                             "properties": {
+                              "tos_shown_and_accepted": {
+                                "type": "boolean"
+                              }
                             },
                             "title": "payment_method_options_param",
                             "type": "object"
@@ -64697,6 +65300,39 @@
                       },
                       "eps": {
                         "properties": {
+                          "bank": {
+                            "enum": [
+                              "arzte_und_apotheker_bank",
+                              "austrian_anadi_bank_ag",
+                              "bank_austria",
+                              "bankhaus_carl_spangler",
+                              "bankhaus_schelhammer_und_schattera_ag",
+                              "bawag_psk_ag",
+                              "bks_bank_ag",
+                              "brull_kallmus_bank_ag",
+                              "btv_vier_lander_bank",
+                              "capital_bank_grawe_gruppe_ag",
+                              "dolomitenbank",
+                              "easybank_ag",
+                              "erste_bank_und_sparkassen",
+                              "hypo_alpeadriabank_international_ag",
+                              "hypo_bank_burgenland_aktiengesellschaft",
+                              "hypo_noe_lb_fur_niederosterreich_u_wien",
+                              "hypo_oberosterreich_salzburg_steiermark",
+                              "hypo_tirol_bank_ag",
+                              "hypo_vorarlberg_bank_ag",
+                              "marchfelder_bank",
+                              "oberbank_ag",
+                              "raiffeisen_bankengruppe_osterreich",
+                              "schoellerbank_ag",
+                              "sparda_bank_wien",
+                              "volksbank_gruppe",
+                              "volkskreditbank_ag",
+                              "vr_bank_braunau"
+                            ],
+                            "maxLength": 5000,
+                            "type": "string"
+                          }
                         },
                         "title": "param",
                         "type": "object"
@@ -65045,6 +65681,9 @@
                         "anyOf": [
                           {
                             "properties": {
+                              "tos_shown_and_accepted": {
+                                "type": "boolean"
+                              }
                             },
                             "title": "payment_method_options_param",
                             "type": "object"
@@ -65747,6 +66386,39 @@
                       },
                       "eps": {
                         "properties": {
+                          "bank": {
+                            "enum": [
+                              "arzte_und_apotheker_bank",
+                              "austrian_anadi_bank_ag",
+                              "bank_austria",
+                              "bankhaus_carl_spangler",
+                              "bankhaus_schelhammer_und_schattera_ag",
+                              "bawag_psk_ag",
+                              "bks_bank_ag",
+                              "brull_kallmus_bank_ag",
+                              "btv_vier_lander_bank",
+                              "capital_bank_grawe_gruppe_ag",
+                              "dolomitenbank",
+                              "easybank_ag",
+                              "erste_bank_und_sparkassen",
+                              "hypo_alpeadriabank_international_ag",
+                              "hypo_bank_burgenland_aktiengesellschaft",
+                              "hypo_noe_lb_fur_niederosterreich_u_wien",
+                              "hypo_oberosterreich_salzburg_steiermark",
+                              "hypo_tirol_bank_ag",
+                              "hypo_vorarlberg_bank_ag",
+                              "marchfelder_bank",
+                              "oberbank_ag",
+                              "raiffeisen_bankengruppe_osterreich",
+                              "schoellerbank_ag",
+                              "sparda_bank_wien",
+                              "volksbank_gruppe",
+                              "volkskreditbank_ag",
+                              "vr_bank_braunau"
+                            ],
+                            "maxLength": 5000,
+                            "type": "string"
+                          }
                         },
                         "title": "param",
                         "type": "object"
@@ -66095,6 +66767,9 @@
                         "anyOf": [
                           {
                             "properties": {
+                              "tos_shown_and_accepted": {
+                                "type": "boolean"
+                              }
                             },
                             "title": "payment_method_options_param",
                             "type": "object"
@@ -66705,6 +67380,39 @@
                   "eps": {
                     "description": "If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.",
                     "properties": {
+                      "bank": {
+                        "enum": [
+                          "arzte_und_apotheker_bank",
+                          "austrian_anadi_bank_ag",
+                          "bank_austria",
+                          "bankhaus_carl_spangler",
+                          "bankhaus_schelhammer_und_schattera_ag",
+                          "bawag_psk_ag",
+                          "bks_bank_ag",
+                          "brull_kallmus_bank_ag",
+                          "btv_vier_lander_bank",
+                          "capital_bank_grawe_gruppe_ag",
+                          "dolomitenbank",
+                          "easybank_ag",
+                          "erste_bank_und_sparkassen",
+                          "hypo_alpeadriabank_international_ag",
+                          "hypo_bank_burgenland_aktiengesellschaft",
+                          "hypo_noe_lb_fur_niederosterreich_u_wien",
+                          "hypo_oberosterreich_salzburg_steiermark",
+                          "hypo_tirol_bank_ag",
+                          "hypo_vorarlberg_bank_ag",
+                          "marchfelder_bank",
+                          "oberbank_ag",
+                          "raiffeisen_bankengruppe_osterreich",
+                          "schoellerbank_ag",
+                          "sparda_bank_wien",
+                          "volksbank_gruppe",
+                          "volkskreditbank_ag",
+                          "vr_bank_braunau"
+                        ],
+                        "maxLength": 5000,
+                        "type": "string"
+                      }
                     },
                     "title": "param",
                     "type": "object"
@@ -78478,6 +79186,9 @@
                   "default_settings": {
                     "description": "Object representing the subscription schedule's default settings.",
                     "properties": {
+                      "application_fee_percent": {
+                        "type": "number"
+                      },
                       "billing_cycle_anchor": {
                         "enum": [
                           "automatic",
@@ -79034,6 +79745,9 @@
                   "default_settings": {
                     "description": "Object representing the subscription schedule's default settings.",
                     "properties": {
+                      "application_fee_percent": {
+                        "type": "number"
+                      },
                       "billing_cycle_anchor": {
                         "enum": [
                           "automatic",
@@ -81348,6 +82062,11 @@
                     "description": "Flag determining whether the tax rate is active or inactive (archived). Inactive tax rates cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.",
                     "type": "boolean"
                   },
+                  "country": {
+                    "description": "Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).",
+                    "maxLength": 5000,
+                    "type": "string"
+                  },
                   "description": {
                     "description": "An arbitrary string attached to the tax rate for your internal use only. It will not be visible to your customers.",
                     "maxLength": 5000,
@@ -81385,6 +82104,11 @@
                   "percentage": {
                     "description": "This represents the tax rate percent out of 100.",
                     "type": "number"
+                  },
+                  "state": {
+                    "description": "[ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix. For example, \"NY\" for New York, United States.",
+                    "maxLength": 2,
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -81526,6 +82250,11 @@
                     "description": "Flag determining whether the tax rate is active or inactive (archived). Inactive tax rates cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.",
                     "type": "boolean"
                   },
+                  "country": {
+                    "description": "Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).",
+                    "maxLength": 5000,
+                    "type": "string"
+                  },
                   "description": {
                     "description": "An arbitrary string attached to the tax rate for your internal use only. It will not be visible to your customers.",
                     "maxLength": 5000,
@@ -81565,6 +82294,11 @@
                       }
                     ],
                     "description": "Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object. This can be useful for storing additional information about the object in a structured format. Individual keys can be unset by posting an empty value to them. All keys can be unset by posting an empty value to `metadata`."
+                  },
+                  "state": {
+                    "description": "[ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix. For example, \"NY\" for New York, United States.",
+                    "maxLength": 2,
+                    "type": "string"
                   }
                 },
                 "type": "object"

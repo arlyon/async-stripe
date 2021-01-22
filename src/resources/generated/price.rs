@@ -2,17 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{CreateProduct, Currency, Product, UpTo};
 use crate::config::{Client, Response};
 use crate::ids::PriceId;
 use crate::params::{
     Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
 };
-use crate::resources::{CreateProduct, Currency, Product, UpTo};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Price".
-///
-/// For more details see [https://stripe.com/docs/api/prices/object](https://stripe.com/docs/api/prices/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Price {
     /// Unique identifier for the object.

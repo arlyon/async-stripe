@@ -2,17 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{
+    Account, ApiErrors, Application, Currency, Customer, Mandate, PaymentMethod, SetupAttempt,
+};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, PaymentMethodId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, ApiErrors, Application, Currency, Customer, Mandate, PaymentMethod, SetupAttempt,
-};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SetupIntent".
-///
-/// For more details see [https://stripe.com/docs/api/setup_intents/object](https://stripe.com/docs/api/setup_intents/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntent {
     /// Unique identifier for the object.

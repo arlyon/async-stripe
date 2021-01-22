@@ -2,14 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use self::{Coupon, Customer, PromotionCode};
 use crate::ids::DiscountId;
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{Coupon, Customer, PromotionCode};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Discount".
-///
-/// For more details see [https://stripe.com/docs/api/discounts/object](https://stripe.com/docs/api/discounts/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Discount {
     /// The ID of the discount object.

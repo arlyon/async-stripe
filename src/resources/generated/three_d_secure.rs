@@ -4,7 +4,7 @@
 
 use crate::ids::{ThreeDSecureId};
 use crate::params::{Object, Timestamp};
-use crate::resources::{Card, Currency};
+use self::{Card, Currency};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ThreeDSecure".
