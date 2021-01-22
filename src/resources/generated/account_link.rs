@@ -8,6 +8,8 @@ use crate::params::{Expand, Object, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "AccountLink".
+///
+/// For more details see [https://stripe.com/docs/api/account_links/object](https://stripe.com/docs/api/account_links/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountLink {
 
