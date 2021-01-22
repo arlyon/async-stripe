@@ -18,8 +18,7 @@ pub struct IssuingDispute {
     /// Disputed amount.
     ///
     /// Usually the amount of the `disputed_transaction`, but can differ (usually because of currency fluctuation).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
+    pub amount: i64,
 
     /// List of balance transactions associated with the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -28,15 +27,12 @@ pub struct IssuingDispute {
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<Timestamp>,
+    pub created: Timestamp,
 
     /// The currency the `disputed_transaction` was made in.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
+    pub currency: Currency,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub evidence: Option<IssuingDisputeEvidence>,
+    pub evidence: IssuingDisputeEvidence,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -44,7 +40,6 @@ pub struct IssuingDispute {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
     pub metadata: Metadata,
 
     /// Current status of the dispute.

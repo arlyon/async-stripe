@@ -9,6 +9,8 @@ use crate::resources::{CreditNoteLineItem, Currency, Customer, CustomerBalanceTr
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CreditNote".
+///
+/// For more details see [https://stripe.com/docs/api/credit_notes/object](https://stripe.com/docs/api/credit_notes/object).
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreditNote {
     /// Unique identifier for the object.
