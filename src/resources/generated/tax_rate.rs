@@ -20,6 +20,10 @@ pub struct TaxRate {
     /// When set to `false`, this tax rate cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
     pub active: bool,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -55,6 +59,12 @@ pub struct TaxRate {
 
     /// This represents the tax rate percent out of 100.
     pub percentage: f64,
+
+    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
+    ///
+    /// For example, "NY" for New York, United States.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
 }
 
 impl TaxRate {
@@ -100,6 +110,10 @@ pub struct CreateTaxRate<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+
     /// An arbitrary string attached to the tax rate for your internal use only.
     ///
     /// It will not be visible to your customers.
@@ -133,12 +147,19 @@ pub struct CreateTaxRate<'a> {
 
     /// This represents the tax rate percent out of 100.
     pub percentage: f64,
+
+    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
+    ///
+    /// For example, "NY" for New York, United States.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
 }
 
 impl<'a> CreateTaxRate<'a> {
     pub fn new(display_name: &'a str, percentage: f64) -> Self {
         CreateTaxRate {
             active: Default::default(),
+            country: Default::default(),
             description: Default::default(),
             display_name,
             expand: Default::default(),
@@ -146,6 +167,7 @@ impl<'a> CreateTaxRate<'a> {
             jurisdiction: Default::default(),
             metadata: Default::default(),
             percentage,
+            state: Default::default(),
         }
     }
 }
@@ -213,6 +235,10 @@ pub struct UpdateTaxRate<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<&'a str>,
+
     /// An arbitrary string attached to the tax rate for your internal use only.
     ///
     /// It will not be visible to your customers.
@@ -241,17 +267,25 @@ pub struct UpdateTaxRate<'a> {
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
+    ///
+    /// For example, "NY" for New York, United States.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<&'a str>,
 }
 
 impl<'a> UpdateTaxRate<'a> {
     pub fn new() -> Self {
         UpdateTaxRate {
             active: Default::default(),
+            country: Default::default(),
             description: Default::default(),
             display_name: Default::default(),
             expand: Default::default(),
             jurisdiction: Default::default(),
             metadata: Default::default(),
+            state: Default::default(),
         }
     }
 }

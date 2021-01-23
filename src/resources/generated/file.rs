@@ -134,6 +134,7 @@ impl<'a> ListFiles<'a> {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FilePurpose {
+    AccountRequirement,
     AdditionalVerification,
     BusinessIcon,
     BusinessLogo,
@@ -150,6 +151,7 @@ pub enum FilePurpose {
 impl FilePurpose {
     pub fn as_str(self) -> &'static str {
         match self {
+            FilePurpose::AccountRequirement => "account_requirement",
             FilePurpose::AdditionalVerification => "additional_verification",
             FilePurpose::BusinessIcon => "business_icon",
             FilePurpose::BusinessLogo => "business_logo",
