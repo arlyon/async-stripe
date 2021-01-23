@@ -1,13 +1,5 @@
 //! Setup and teardown for the stripe mock service.
 
-use lazy_static::lazy_static;
-use std::process::{Child, Command};
-use std::sync::{Arc, Mutex};
-
-lazy_static! {
-    static ref STRIPE_MOCK_PROCESS: Arc<Mutex<Option<Child>>> = Arc::new(Mutex::new(None));
-}
-
 pub fn with_client<T>(test: T) -> ()
 where
     T: FnOnce(&stripe::Client) -> () + std::panic::UnwindSafe,

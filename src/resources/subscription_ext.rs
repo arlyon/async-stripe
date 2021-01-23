@@ -41,3 +41,9 @@ impl CreateSubscriptionItems {
         }
     }
 }
+
+impl Default for CreateSubscriptionItems {
+    fn default() -> Self {
+        Self::new()
+    }
+}
