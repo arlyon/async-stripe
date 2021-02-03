@@ -16,7 +16,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Customer".
 ///
-/// For more details see [https://stripe.com/docs/api/customers/object](https://stripe.com/docs/api/customers/object).
+/// For more details see <https://stripe.com/docs/api/customers/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Customer {
     /// Unique identifier for the object.
@@ -633,6 +633,7 @@ pub enum TaxIdType {
     ClTin,
     EsCif,
     EuVat,
+    GbVat,
     HkBr,
     IdNpwp,
     InGst,
@@ -670,6 +671,7 @@ impl TaxIdType {
             TaxIdType::ClTin => "cl_tin",
             TaxIdType::EsCif => "es_cif",
             TaxIdType::EuVat => "eu_vat",
+            TaxIdType::GbVat => "gb_vat",
             TaxIdType::HkBr => "hk_br",
             TaxIdType::IdNpwp => "id_npwp",
             TaxIdType::InGst => "in_gst",

@@ -10,7 +10,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "File".
 ///
-/// For more details see [https://stripe.com/docs/api/files/object](https://stripe.com/docs/api/files/object).
+/// For more details see <https://stripe.com/docs/api/files/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct File {
     /// Unique identifier for the object.

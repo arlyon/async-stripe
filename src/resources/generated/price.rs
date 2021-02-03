@@ -12,7 +12,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Price".
 ///
-/// For more details see [https://stripe.com/docs/api/prices/object](https://stripe.com/docs/api/prices/object).
+/// For more details see <https://stripe.com/docs/api/prices/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Price {
     /// Unique identifier for the object.

@@ -13,7 +13,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Source".
 ///
-/// For more details see [https://stripe.com/docs/api/sources/object](https://stripe.com/docs/api/sources/object).
+/// For more details see <https://stripe.com/docs/api/sources/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Source {
     /// Unique identifier for the object.

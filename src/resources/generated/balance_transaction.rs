@@ -15,7 +15,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BalanceTransaction".
 ///
-/// For more details see [https://stripe.com/docs/api/balance_transactions/object](https://stripe.com/docs/api/balance_transactions/object).
+/// For more details see <https://stripe.com/docs/api/balance_transactions/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceTransaction {
     /// Unique identifier for the object.

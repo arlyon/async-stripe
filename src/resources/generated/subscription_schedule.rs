@@ -14,7 +14,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SubscriptionSchedule".
 ///
-/// For more details see [https://stripe.com/docs/api/subscription_schedules/object](https://stripe.com/docs/api/subscription_schedules/object).
+/// For more details see <https://stripe.com/docs/api/subscription_schedules/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionSchedule {
     /// Unique identifier for the object.

@@ -13,7 +13,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Account".
 ///
-/// For more details see [https://stripe.com/docs/api/accounts/object](https://stripe.com/docs/api/accounts/object).
+/// For more details see <https://stripe.com/docs/api/accounts/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Account {
     /// Unique identifier for the object.

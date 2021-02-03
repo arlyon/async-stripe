@@ -302,7 +302,7 @@ impl std::fmt::Display for ApiVersion {
 
 /// An enum representing the possible values of a `BankAccount`'s `account_holder_type` field.
 ///
-/// For more details see [https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-account_holder_type](https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-account_holder_type)
+/// For more details see <https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-account_holder_type>
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum AccountHolderType {

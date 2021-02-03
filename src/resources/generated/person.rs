@@ -9,7 +9,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Person".
 ///
-/// For more details see [https://stripe.com/docs/api/persons/object](https://stripe.com/docs/api/persons/object).
+/// For more details see <https://stripe.com/docs/api/persons/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Person {
     /// Unique identifier for the object.
@@ -86,6 +86,10 @@ pub struct Person {
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
     pub metadata: Metadata,
+
+    /// The country where the person is a national.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nationality: Option<String>,
 
     /// The person's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]

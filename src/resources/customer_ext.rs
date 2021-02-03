@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 impl Customer {
     /// Attaches a source to a customer, does not change default Source for the Customer
     ///
-    /// For more details see [https://stripe.com/docs/api#attach_source](https://stripe.com/docs/api#attach_source).
+    /// For more details see <https://stripe.com/docs/api#attach_source>.
     pub fn attach_source(
         client: &Client,
         customer_id: &CustomerId,
@@ -23,7 +23,7 @@ impl Customer {
 
     /// Detaches a source from a customer
     ///
-    /// For more details see [https://stripe.com/docs/api#detach_source](https://stripe.com/docs/api#detach_source).
+    /// For more details see <https://stripe.com/docs/api#detach_source>.
     pub fn detach_source(
         client: &Client,
         customer_id: &CustomerId,
@@ -43,7 +43,7 @@ impl Customer {
 
     /// Verifies a Bank Account for a Customer.
     ///
-    /// For more details see https://stripe.com/docs/api/customer_bank_accounts/verify.
+    /// For more details see <https://stripe.com/docs/api/customer_bank_accounts/verify>.
     pub fn verify_bank_account(
         client: &Client,
         customer_id: &CustomerId,
@@ -59,7 +59,7 @@ impl Customer {
 
 /// The set of parameters that can be used when verifying a Bank Account.
 ///
-/// For more details see https://stripe.com/docs/api/customer_bank_accounts/verify?lang=curl.
+/// For more details see <https://stripe.com/docs/api/customer_bank_accounts/verify>.
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct VerifyBankAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]

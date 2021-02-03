@@ -10,7 +10,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CountrySpec".
 ///
-/// For more details see [https://stripe.com/docs/api/country_specs/object](https://stripe.com/docs/api/country_specs/object).
+/// For more details see <https://stripe.com/docs/api/country_specs/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CountrySpec {
     /// Unique identifier for the object.

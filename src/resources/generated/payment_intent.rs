@@ -10,7 +10,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentIntent".
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/object](https://stripe.com/docs/api/payment_intents/object).
+/// For more details see <https://stripe.com/docs/api/payment_intents/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntent {
     /// Unique identifier for the object.
@@ -251,7 +251,7 @@ pub struct PaymentIntentNextAction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect_to_url: Option<PaymentIntentNextActionRedirectToUrl>,
 
-    /// Type of the next action to perform, one of `redirect_to_url` or `use_stripe_sdk`.
+    /// Type of the next action to perform, one of `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, or `oxxo_display_details`.
     #[serde(rename = "type")]
     pub type_: String,
 
