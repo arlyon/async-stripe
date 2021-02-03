@@ -51,9 +51,11 @@ impl Client {
         let host = if url.ends_with('/') { format!("{}v1", url) } else { format!("{}/v1", url) };
         let https = HttpsConnector::new();
         let client = hyper::Client::builder().build(https);
-        let mut headers = Headers::default();
+
         // TODO: Automatically determine the latest supported api version in codegen?
-        headers.stripe_version = Some(ApiVersion::V2020_08_27);
+        let headers =
+            Headers { stripe_version: Some(ApiVersion::V2020_08_27), ..Default::default() };
+
         Client {
             host,
             client,
@@ -236,7 +238,7 @@ fn send<T: DeserializeOwned + Send + 'static>(
                 req
             });
             err.error.http_status = status.as_u16();
-            Err(Error::from(err.error))?;
+            return Err(Error::from(err.error));
         }
         serde_json::from_slice(&bytes).map_err(Error::deserialize)
     })

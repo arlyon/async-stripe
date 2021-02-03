@@ -42,9 +42,9 @@ impl Client {
     pub fn from_url<'a>(scheme_host: impl Into<&'a str>, secret_key: impl Into<String>) -> Client {
         let host = Url::parse(scheme_host.into()).unwrap();
         let client = surf::Client::new();
-        let mut headers = Headers::default();
-        // TODO: Automatically determine the latest supported api version in codegen?
-        headers.stripe_version = Some(ApiVersion::V2020_08_27);
+        let headers =
+            Headers { stripe_version: Some(ApiVersion::V2020_08_27), ..Default::default() };
+
         Client {
             host,
             api_root: "v1".to_string(),
@@ -198,7 +198,7 @@ fn send<T: DeserializeOwned + Send + 'static>(
                 req
             });
             err.error.http_status = status.into();
-            Err(Error::from(err.error))?;
+            return Err(Error::from(err.error));
         }
         serde_json::from_slice(&bytes).map_err(Error::deserialize)
     })

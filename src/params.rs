@@ -258,30 +258,22 @@ impl<T> RangeQuery<T> {
 
     /// Filter results to be after a given value
     pub fn gt(value: T) -> RangeQuery<T> {
-        let mut bounds = RangeBounds::default();
-        bounds.gt = Some(value);
-        RangeQuery::Bounds(bounds)
+        RangeQuery::Bounds(RangeBounds { gt: Some(value), ..Default::default() })
     }
 
     /// Filter results to be after or equal to a given value
     pub fn gte(value: T) -> RangeQuery<T> {
-        let mut bounds = RangeBounds::default();
-        bounds.gte = Some(value);
-        RangeQuery::Bounds(bounds)
+        RangeQuery::Bounds(RangeBounds { gte: Some(value), ..Default::default() })
     }
 
     /// Filter results to be before to a given value
     pub fn lt(value: T) -> RangeQuery<T> {
-        let mut bounds = RangeBounds::default();
-        bounds.lt = Some(value);
-        RangeQuery::Bounds(bounds)
+        RangeQuery::Bounds(RangeBounds { lt: Some(value), ..Default::default() })
     }
 
     /// Filter results to be before or equal to a given value
     pub fn lte(value: T) -> RangeQuery<T> {
-        let mut bounds = RangeBounds::default();
-        bounds.lte = Some(value);
-        RangeQuery::Bounds(bounds)
+        RangeQuery::Bounds(RangeBounds { lte: Some(value), ..Default::default() })
     }
 }
 

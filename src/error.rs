@@ -92,7 +92,7 @@ impl From<RequestError> for Error {
 
 #[cfg(feature = "hyper")]
 impl From<hyper::Error> for Error {
-    fn from(err: hyper::Error) -> Error {
+    fn from(_err: hyper::Error) -> Error {
         Error::ClientError
     }
 }
@@ -267,7 +267,7 @@ impl std::fmt::Display for RequestError {
 
 impl std::error::Error for RequestError {
     fn description(&self) -> &str {
-        self.message.as_ref().map(|s| s.as_str()).unwrap_or("request error")
+        self.message.as_deref().unwrap_or("request error")
     }
 }
 
