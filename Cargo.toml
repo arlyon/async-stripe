@@ -26,6 +26,9 @@ keywords = ["stripe", "v1", "api"]
 categories = ["api-bindings"]
 edition = "2018"
 
+[package.metadata.docs.rs]
+features = ["runtime-async-std-surf"]
+
 [lib]
 name = "stripe"
 
