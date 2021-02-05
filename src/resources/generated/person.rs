@@ -87,6 +87,10 @@ pub struct Person {
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// The country where the person is a national.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nationality: Option<String>,
+
     /// The person's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
