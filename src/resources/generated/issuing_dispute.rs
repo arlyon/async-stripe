@@ -17,7 +17,7 @@ pub struct IssuingDispute {
 
     /// Disputed amount.
     ///
-    /// Usually the amount of the `disputed_transaction`, but can differ (usually because of currency fluctuation).
+    /// Usually the amount of the `transaction`, but can differ (usually because of currency fluctuation).
     pub amount: i64,
 
     /// List of balance transactions associated with the dispute.
@@ -29,7 +29,7 @@ pub struct IssuingDispute {
     /// Measured in seconds since the Unix epoch.
     pub created: Timestamp,
 
-    /// The currency the `disputed_transaction` was made in.
+    /// The currency the `transaction` was made in.
     pub currency: Currency,
 
     pub evidence: IssuingDisputeEvidence,
