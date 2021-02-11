@@ -5,7 +5,7 @@ use crate::ids::EventId;
 use crate::resources::*;
 
 #[cfg(feature = "webhook-events")]
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, Mac, NewMac};
 use serde_derive::{Deserialize, Serialize};
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
@@ -263,9 +263,9 @@ impl Webhook {
         // and signed_payload string as the message.
         let mut mac =
             Hmac::<Sha256>::new_varkey(secret.as_bytes()).map_err(|_| WebhookError::BadKey)?;
-        mac.input(signed_payload.as_bytes());
-        let mac_result = mac.result();
-        let hex = to_hex(mac_result.code().as_slice());
+        mac.update(signed_payload.as_bytes());
+        let mac_result = mac.finalize();
+        let hex = to_hex(&mac_result.into_bytes());
         if hex != signature.v1 {
             return Err(WebhookError::BadSignature);
         }
