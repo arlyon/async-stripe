@@ -97,6 +97,8 @@ pub enum EventType {
     InvoiceFinalized,
     #[serde(rename = "invoice.marked_uncollectible")]
     InvoiceMarkedUncollectible,
+    #[serde(rename = "invoice.paid")]
+    InvoicePaid,
     #[serde(rename = "invoice.payment_action_required")]
     InvoicePaymentActionRequired,
     #[serde(rename = "invoice.payment_failed")]
