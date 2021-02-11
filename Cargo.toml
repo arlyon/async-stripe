@@ -65,10 +65,10 @@ blocking = []
 
 runtime-tokio-hyper = ["tokio", "hyper", "hyper-tls", "async"]
 runtime-tokio-hyper-rustls = ["tokio", "hyper", "hyper-rustls", "async"]
-runtime-blocking = ["tokio", "tokio/rt-core", "hyper", "hyper-tls", "blocking"]
+runtime-blocking = ["tokio", "tokio/rt", "hyper", "hyper-tls", "blocking"]
 runtime-blocking-rustls = [
   "tokio",
-  "tokio/rt-core",
+  "tokio/rt",
   "hyper",
   "hyper-rustls",
   "blocking",
@@ -78,16 +78,16 @@ runtime-async-std-surf = ["async-std", "surf", "async"]
 [dependencies]
 async-std = { version = "1.9", optional = true }
 http = "0.2"
-hyper = { version = "0.13", default-features = false, features = ["tcp"], optional = true }
-hyper-tls = { version = "0.4", optional = true }
-hyper-rustls = { version = "0.20", optional = true }
+hyper = { version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true }
+hyper-tls = { version = "0.5", optional = true }
+hyper-rustls = { version = "0.22", optional = true }
 serde = ">=1.0.79" # we use `serde(other)` which was introduced in 1.0.79
 serde_derive = ">=1.0.79"
 serde_json = "1.0"
 serde_qs = "0.8"
 smol_str = "0.1"
 surf = { version = "2.1", optional = true }
-tokio = { version = "0.2", default-features = false, features = ["tcp", "time"], optional = true }
+tokio = { version = "1.2", optional = true }
 
 # webhook support
 hmac = { version = "0.10", optional = true }
