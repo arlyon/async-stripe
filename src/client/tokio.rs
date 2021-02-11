@@ -3,18 +3,35 @@ use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
 use http::header::{HeaderMap, HeaderName, HeaderValue};
 use http::request::Builder as RequestBuilder;
+use hyper::{client::HttpConnector, Body};
 use serde::de::DeserializeOwned;
 use std::future::{self, Future};
 use std::pin::Pin;
 
 #[cfg(feature = "hyper-rustls")]
-use hyper_rustls::HttpsConnector;
+mod connector {
+    use hyper::client::{connect::dns::GaiResolver, HttpConnector};
+    pub use hyper_rustls::HttpsConnector;
+
+    pub fn create() -> HttpsConnector<HttpConnector<GaiResolver>> {
+        HttpsConnector::with_native_roots()
+    }
+}
+
 #[cfg(feature = "hyper-tls")]
-use hyper_tls::HttpsConnector;
+mod connector {
+    use hyper::client::{connect::dns::GaiResolver, HttpConnector};
+    pub use hyper_tls::HttpsConnector;
+
+    pub fn create() -> HttpsConnector<HttpConnector<GaiResolver>> {
+        HttpsConnector::new()
+    }
+}
+
 #[cfg(all(feature = "hyper-tls", feature = "hyper-rustls"))]
 compile_error!("You must enable only one TLS implementation");
 
-type HttpClient = hyper::Client<HttpsConnector<hyper::client::HttpConnector>, hyper::Body>;
+type HttpClient = hyper::Client<connector::HttpsConnector<HttpConnector>, Body>;
 
 pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, Error>> + Send>>;
 
@@ -49,7 +66,7 @@ impl Client {
     pub fn from_url(scheme_host: impl Into<String>, secret_key: impl Into<String>) -> Client {
         let url = scheme_host.into();
         let host = if url.ends_with('/') { format!("{}v1", url) } else { format!("{}/v1", url) };
-        let https = HttpsConnector::new();
+        let https = connector::create();
         let client = hyper::Client::builder().build(https);
 
         // TODO: Automatically determine the latest supported api version in codegen?
