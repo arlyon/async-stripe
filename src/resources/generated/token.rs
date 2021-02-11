@@ -12,7 +12,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Token".
 ///
-/// For more details see [https://stripe.com/docs/api/tokens/object](https://stripe.com/docs/api/tokens/object).
+/// For more details see <https://stripe.com/docs/api/tokens/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Token {
     /// Unique identifier for the object.

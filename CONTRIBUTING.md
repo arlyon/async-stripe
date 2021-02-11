@@ -71,3 +71,15 @@ cargo test --features runtime-async-std-surf
 
 It is encouraged to open an issue before you create a PR as a place for pre-implementation
 discussion. If you're unsure about your contribution or simply want to ask a question about anything just open an issue and we'll chat.
+
+## Architecture
+
+This project makes wide use of code generation, with API types generated directly from the stripe
+openapi spec. This is what the openapi tool does. All generated code ends up in the handily named
+generated folder which is exposed based on features specified.
+
+In some cases, it is helpful to have additional logic associated with a datatype to, for example,
+capture a create `Charge` object. This additional impl goes in the `charge_ext.rs` file in the
+`resources` folder, to provide a clean seperation between generated and hand maintained files.
+If you notice that logic is missing, please add it to (or create) the appropriate `ext` file.
+ 

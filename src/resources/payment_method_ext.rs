@@ -5,7 +5,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The parameters for `PaymentMethod::attach`
 ///
-/// For more details see [https://stripe.com/docs/api/payment_methods/attach](https://stripe.com/docs/api/payment_methods/attach).
+/// For more details see <https://stripe.com/docs/api/payment_methods/attach>.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AttachPaymentMethod {
     pub customer: CustomerId,
@@ -14,7 +14,7 @@ pub struct AttachPaymentMethod {
 impl PaymentMethod {
     /// Attach a payment method to a customer
     ///
-    /// For more details see [https://stripe.com/docs/api/payment_methods/attach](https://stripe.com/docs/api/payment_methods/attach).
+    /// For more details see <https://stripe.com/docs/api/payment_methods/attach>.
     pub fn attach(
         client: &Client,
         payment_method_id: &PaymentMethodId,

@@ -10,7 +10,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Dispute".
 ///
-/// For more details see [https://stripe.com/docs/api/disputes/object](https://stripe.com/docs/api/disputes/object).
+/// For more details see <https://stripe.com/docs/api/disputes/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Dispute {
     /// Unique identifier for the object.

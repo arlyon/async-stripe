@@ -10,7 +10,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Product".
 ///
-/// For more details see [https://stripe.com/docs/api/products/object](https://stripe.com/docs/api/products/object).
+/// For more details see <https://stripe.com/docs/api/products/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Product {
     /// Unique identifier for the object.

@@ -10,14 +10,14 @@ pub type InvoiceCollectionMethod = CollectionMethod;
 impl Invoice {
     /// Retrieves the details of an upcoming invoice_id
     ///
-    /// For more details see https://stripe.com/docs/api#upcoming_invoice
+    /// For more details see <https://stripe.com/docs/api#upcoming_invoice>.
     pub fn upcoming(client: &Client, params: RetrieveUpcomingInvoice) -> Response<Invoice> {
         client.get_query("/invoices/upcoming", &params)
     }
 
     /// Pays an invoice.
     ///
-    /// For more details see https://stripe.com/docs/api#pay_invoice.
+    /// For more details see <https://stripe.com/docs/api#pay_invoice.>.
     pub fn pay(client: &Client, invoice_id: &InvoiceId) -> Response<Invoice> {
         client.post(&format!("/invoices/{}/pay", invoice_id))
     }

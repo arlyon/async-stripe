@@ -10,7 +10,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "FileLink".
 ///
-/// For more details see [https://stripe.com/docs/api/file_links/object](https://stripe.com/docs/api/file_links/object).
+/// For more details see <https://stripe.com/docs/api/file_links/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FileLink {
     /// Unique identifier for the object.

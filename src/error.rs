@@ -228,7 +228,7 @@ impl std::fmt::Display for ErrorCode {
 
 /// An error reported by stripe in a request's response.
 ///
-/// For more details see https://stripe.com/docs/api#errors.
+/// For more details see <https://stripe.com/docs/api#errors>.
 #[derive(Debug, Default, Deserialize)]
 pub struct RequestError {
     /// The HTTP status in the response.

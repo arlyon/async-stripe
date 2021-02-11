@@ -18,7 +18,7 @@ impl CancelSubscription {
 impl Subscription {
     /// Cancels a subscription.
     ///
-    /// For more details see https://stripe.com/docs/api#cancel_subscription.
+    /// For more details see <https://stripe.com/docs/api#cancel_subscription>.
     pub fn cancel(
         client: &Client,
         subscription_id: &SubscriptionId,

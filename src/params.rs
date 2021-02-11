@@ -63,7 +63,7 @@ impl Expand<'_> {
 /// Charge::retrieve(&client, &charge_id, &["invoice.customer"])
 /// ```
 ///
-/// See [https://stripe.com/docs/api/expanding_objects](https://stripe.com/docs/api/expanding_objects).
+/// For more details see <https://stripe.com/docs/api/expanding_objects>.
 #[derive(Clone, Debug, Serialize, Deserialize)] // TODO: Implement deserialize by hand for better error messages
 #[serde(untagged)]
 pub enum Expandable<T: Object> {

@@ -10,7 +10,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentIntent".
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/object](https://stripe.com/docs/api/payment_intents/object).
+/// For more details see <https://stripe.com/docs/api/payment_intents/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntent {
     /// Unique identifier for the object.

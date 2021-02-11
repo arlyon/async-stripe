@@ -13,7 +13,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentFlowsSetupIntentSetupAttempt".
 ///
-/// For more details see [https://stripe.com/docs/api/setup_attempts/object](https://stripe.com/docs/api/setup_attempts/object).
+/// For more details see <https://stripe.com/docs/api/setup_attempts/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttempt {
     /// Unique identifier for the object.

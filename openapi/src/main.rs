@@ -326,11 +326,9 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
     out.push_str("\".\n");
     if let Some(doc_url) = url_finder.url_for_object(object) {
         out.push_str("///\n");
-        out.push_str("/// For more details see [");
+        out.push_str("/// For more details see <");
         out.push_str(&doc_url);
-        out.push_str("](");
-        out.push_str(&doc_url);
-        out.push_str(").\n");
+        out.push_str(">\n");
     }
     out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
     out.push_str("pub struct ");

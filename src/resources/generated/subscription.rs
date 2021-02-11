@@ -14,7 +14,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Subscription".
 ///
-/// For more details see [https://stripe.com/docs/api/subscriptions/object](https://stripe.com/docs/api/subscriptions/object).
+/// For more details see <https://stripe.com/docs/api/subscriptions/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Subscription {
     /// Unique identifier for the object.

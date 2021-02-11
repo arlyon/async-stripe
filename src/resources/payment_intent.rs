@@ -9,7 +9,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentIntent".
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/object](https://stripe.com/docs/api/payment_intents/object).
+/// For more details see <https://stripe.com/docs/api/payment_intents/object>.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntent {
     /// Unique identifier for the object.
@@ -169,21 +169,21 @@ pub struct PaymentIntent {
 impl PaymentIntent {
     /// Creates a new payment_intent.
     ///
-    /// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create).
+    /// For more details see <https://stripe.com/docs/api/payment_intents/create>.
     pub fn create(client: &Client, params: CreatePaymentIntent<'_>) -> Response<PaymentIntent> {
         client.post_form("/payment_intents", params)
     }
 
     /// Retrieves the details of a payment_intent.
     ///
-    /// For more details see [https://stripe.com/docs/api/payment_intents/retrieve](https://stripe.com/docs/api/payment_intents/retrieve).
+    /// For more details see <https://stripe.com/docs/api/payment_intents/retrieve>.
     pub fn retrieve(client: &Client, payment_intent_id: &str) -> Response<PaymentIntent> {
         client.get(&format!("/payment_intents/{}", payment_intent_id))
     }
 
     /// Updates a payment_intent's properties.
     ///
-    /// For more details see [https://stripe.com/docs/api/payment_intents/update](https://stripe.com/docs/api/payment_intents/update).
+    /// For more details see <https://stripe.com/docs/api/payment_intents/update>.
     pub fn update(
         client: &Client,
         payment_intent_id: &str,
@@ -194,7 +194,7 @@ impl PaymentIntent {
 
     /// Confirm that customer intends to pay with current or provided source. Upon confirmation, the PaymentIntent will attempt to initiate a payment.
     ///
-    /// For more details see [https://stripe.com/docs/api/payment_intents/confirm](https://stripe.com/docs/api/payment_intents/confirm).
+    /// For more details see <https://stripe.com/docs/api/payment_intents/confirm>.
     pub fn confirm(
         client: &Client,
         payment_intent_id: &str,
@@ -205,7 +205,7 @@ impl PaymentIntent {
 
     /// Capture the funds of an existing uncaptured PaymentIntent where required_action="requires_capture".
     ///
-    /// For more details see [https://stripe.com/docs/api/payment_intents/capture](https://stripe.com/docs/api/payment_intents/capture).
+    /// For more details see <https://stripe.com/docs/api/payment_intents/capture>.
     pub fn capture(
         client: &Client,
         payment_intent_id: &str,
@@ -216,7 +216,7 @@ impl PaymentIntent {
 
     /// A PaymentIntent object can be canceled when it is in one of these statuses: requires_source, requires_capture, requires_confirmation, requires_source_action.
     ///
-    /// For more details see [https://stripe.com/docs/api/payment_intents/cancel](https://stripe.com/docs/api/payment_intents/cancel).
+    /// For more details see <https://stripe.com/docs/api/payment_intents/cancel>.
     pub fn cancel(
         client: &Client,
         payment_intent_id: &str,
@@ -227,7 +227,7 @@ impl PaymentIntent {
 
     /// List all payment_intents.
     ///
-    /// For more details see [https://stripe.com/docs/api/payment_intents/list](https://stripe.com/docs/api/payment_intents/list).
+    /// For more details see <https://stripe.com/docs/api/payment_intents/list>.
     pub fn list(client: &Client, params: ListPaymentIntents) -> Response<List<PaymentIntent>> {
         client.get_query("/payment_intents", &params)
     }
@@ -245,7 +245,7 @@ impl Object for PaymentIntent {
 
 /// The resource representing a Stripe PaymentError object.
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-last_payment_error](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-last_payment_error).
+/// For more details see <https://stripe.com/docs/api/payment_intents/object#payment_intent_object-last_payment_error>.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentError {
     #[serde(rename = "type")]
@@ -261,7 +261,7 @@ pub struct PaymentError {
 
 /// The resource representing a Stripe PaymentErrorType object.
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-last_payment_error-type](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-last_payment_error-type).
+/// For more details see <https://stripe.com/docs/api/payment_intents/object#payment_intent_object-last_payment_error-type>.
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 pub enum PaymentErrorType {
     #[serde(rename = "api_error")]
@@ -305,7 +305,7 @@ pub enum PaymentIntentMethodType {
 
 /// The resource representing a Stripe CaptureMethod object.
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-capture_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-capture_method).
+/// For more details see <https://stripe.com/docs/api/payment_intents/object#payment_intent_object-capture_method>.
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum CaptureMethod {
@@ -319,7 +319,7 @@ pub enum CaptureMethod {
 }
 /// The resource representing a Stripe ConfirmationMethod object.
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/object#payment_intent_object-confirmation_method](https://stripe.com/docs/api/payment_intents/object#payment_intent_object-confirmation_method).
+/// For more details see <https://stripe.com/docs/api/payment_intents/object#payment_intent_object-confirmation_method>.
 #[derive(Deserialize, Serialize, PartialEq, Debug, Clone, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum ConfirmationMethod {
@@ -381,7 +381,7 @@ pub struct TransferData {
 
 /// The set of parameters that can be used when creating a payment_intent object.
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/create](https://stripe.com/docs/api/payment_intents/create)
+/// For more details see <https://stripe.com/docs/api/payment_intents/create>
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct CreatePaymentIntent<'a> {
     /// The list of payment types (e.g. card) that this PaymentIntent is allowed to use.
@@ -455,7 +455,7 @@ impl<'a> CreatePaymentIntent<'a> {
 
 /// The set of parameters that can be used when updating a payment_intent object.
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/update](https://stripe.com/docs/api/payment_intents/update)
+/// For more details see <https://stripe.com/docs/api/payment_intents/update>
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct PaymentIntentUpdateParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -484,7 +484,7 @@ pub struct PaymentIntentUpdateParams<'a> {
 
 /// The set of parameters that can be used when confirming a payment_intent object.
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/confirm](https://stripe.com/docs/api/payment_intents/confirm)
+/// For more details see <https://stripe.com/docs/api/payment_intents/confirm>
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct PaymentIntentConfirmParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -501,7 +501,7 @@ pub struct PaymentIntentConfirmParams<'a> {
 
 /// The set of parameters that can be used when capturing a payment_intent object.
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/capture](https://stripe.com/docs/api/payment_intents/capture)
+/// For more details see <https://stripe.com/docs/api/payment_intents/capture>
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct CapturePaymentIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -512,7 +512,7 @@ pub struct CapturePaymentIntent {
 
 /// The set of parameters that can be used when canceling a payment_intent object.
 ///
-/// For more details see [https://stripe.com/docs/api/payment_intents/cancel](https://stripe.com/docs/api/payment_intents/cancel)
+/// For more details see <https://stripe.com/docs/api/payment_intents/cancel>
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct CancelPaymentIntent {
     #[serde(skip_serializing_if = "Option::is_none")]

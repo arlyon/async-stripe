@@ -10,7 +10,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "RadarReview".
 ///
-/// For more details see [https://stripe.com/docs/api/reviews/object](https://stripe.com/docs/api/reviews/object).
+/// For more details see <https://stripe.com/docs/api/reviews/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Review {
     /// Unique identifier for the object.

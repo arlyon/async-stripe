@@ -8,7 +8,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "UsageRecord".
 ///
-/// For more details see [https://stripe.com/docs/api/usage_records/object](https://stripe.com/docs/api/usage_records/object).
+/// For more details see <https://stripe.com/docs/api/usage_records/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UsageRecord {
     /// Unique identifier for the object.

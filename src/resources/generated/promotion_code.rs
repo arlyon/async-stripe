@@ -10,7 +10,7 @@ use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PromotionCode".
 ///
-/// For more details see [https://stripe.com/docs/api/promotion_codes/object](https://stripe.com/docs/api/promotion_codes/object).
+/// For more details see <https://stripe.com/docs/api/promotion_codes/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PromotionCode {
     /// Unique identifier for the object.
