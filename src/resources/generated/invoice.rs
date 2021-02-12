@@ -284,6 +284,9 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<Expandable<PaymentIntent>>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_settings: Option<InvoicesPaymentSettings>,
+
     /// End of the usage period during which invoice items were added to this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period_end: Option<Timestamp>,
@@ -466,6 +469,47 @@ pub struct InvoiceTransferData {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct InvoicesPaymentSettings {
+    /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_options: Option<InvoicesPaymentMethodOptions>,
+
+    /// The list of payment method types (e.g.
+    ///
+    /// card) to provide to the invoice’s PaymentIntent.
+    /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_types: Option<Vec<InvoicesPaymentSettingsPaymentMethodTypes>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct InvoicesPaymentMethodOptions {
+    /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact: Option<InvoicePaymentMethodOptionsBancontact>,
+
+    /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<InvoicePaymentMethodOptionsCard>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct InvoicePaymentMethodOptionsBancontact {
+    /// Preferred language of the Bancontact authorization page that the customer is redirected to.
+    pub preferred_language: InvoicePaymentMethodOptionsBancontactPreferredLanguage,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct InvoicePaymentMethodOptionsCard {
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    ///
+    /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
+    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_three_d_secure: Option<InvoicePaymentMethodOptionsCardRequestThreeDSecure>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesResourceInvoiceTaxId {
     /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, or `unknown`.
     #[serde(rename = "type")]
@@ -592,6 +636,10 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
+    /// Configuration settings for the PaymentIntent that is generated when the invoice is finalized.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_settings: Option<CreateInvoicePaymentSettings>,
+
     /// Extra information about a charge for the customer's credit card statement.
     ///
     /// It must contain at least one letter.
@@ -631,6 +679,7 @@ impl<'a> CreateInvoice<'a> {
             expand: Default::default(),
             footer: Default::default(),
             metadata: Default::default(),
+            payment_settings: Default::default(),
             statement_descriptor: Default::default(),
             subscription: Default::default(),
             transfer_data: Default::default(),
@@ -719,11 +768,43 @@ pub struct CreateInvoiceDiscounts {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettings {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_options: Option<CreateInvoicePaymentSettingsPaymentMethodOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_types: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodTypes>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
     pub destination: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCard>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_language:
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_three_d_secure:
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
 }
 
 /// An enum representing the possible values of an `Invoice`'s `collection_method` field.
@@ -750,6 +831,121 @@ impl AsRef<str> for CollectionMethod {
 }
 
 impl std::fmt::Display for CollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact`'s `preferred_language` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
+    De,
+    En,
+    Fr,
+    Nl,
+}
+
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::De => "de",
+            CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::En => "en",
+            CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::Fr => "fr",
+            CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::Nl => "nl",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoicePaymentSettingsPaymentMethodOptionsCard`'s `request_three_d_secure` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
+    Any,
+    Automatic,
+}
+
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
+            CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Automatic => {
+                "automatic"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoicePaymentSettings`'s `payment_method_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
+    AchCreditTransfer,
+    AchDebit,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Card,
+    Fpx,
+    Giropay,
+    Ideal,
+    SepaDebit,
+    Sofort,
+}
+
+impl CreateInvoicePaymentSettingsPaymentMethodTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoicePaymentSettingsPaymentMethodTypes::AchCreditTransfer => {
+                "ach_credit_transfer"
+            }
+            CreateInvoicePaymentSettingsPaymentMethodTypes::AchDebit => "ach_debit",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::BacsDebit => "bacs_debit",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::Card => "card",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::Fpx => "fpx",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::Giropay => "giropay",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::Ideal => "ideal",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::Sofort => "sofort",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoicePaymentSettingsPaymentMethodTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoicePaymentSettingsPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -829,6 +1025,68 @@ impl std::fmt::Display for InvoiceCustomerTaxExempt {
     }
 }
 
+/// An enum representing the possible values of an `InvoicePaymentMethodOptionsBancontact`'s `preferred_language` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoicePaymentMethodOptionsBancontactPreferredLanguage {
+    De,
+    En,
+    Fr,
+    Nl,
+}
+
+impl InvoicePaymentMethodOptionsBancontactPreferredLanguage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoicePaymentMethodOptionsBancontactPreferredLanguage::De => "de",
+            InvoicePaymentMethodOptionsBancontactPreferredLanguage::En => "en",
+            InvoicePaymentMethodOptionsBancontactPreferredLanguage::Fr => "fr",
+            InvoicePaymentMethodOptionsBancontactPreferredLanguage::Nl => "nl",
+        }
+    }
+}
+
+impl AsRef<str> for InvoicePaymentMethodOptionsBancontactPreferredLanguage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoicePaymentMethodOptionsBancontactPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `InvoicePaymentMethodOptionsCard`'s `request_three_d_secure` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoicePaymentMethodOptionsCardRequestThreeDSecure {
+    Any,
+    Automatic,
+}
+
+impl InvoicePaymentMethodOptionsCardRequestThreeDSecure {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoicePaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
+            InvoicePaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
+        }
+    }
+}
+
+impl AsRef<str> for InvoicePaymentMethodOptionsCardRequestThreeDSecure {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoicePaymentMethodOptionsCardRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `Invoice`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -896,6 +1154,53 @@ impl AsRef<str> for InvoiceStatusFilter {
 }
 
 impl std::fmt::Display for InvoiceStatusFilter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `InvoicesPaymentSettings`'s `payment_method_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoicesPaymentSettingsPaymentMethodTypes {
+    AchCreditTransfer,
+    AchDebit,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Card,
+    Fpx,
+    Giropay,
+    Ideal,
+    SepaDebit,
+    Sofort,
+}
+
+impl InvoicesPaymentSettingsPaymentMethodTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoicesPaymentSettingsPaymentMethodTypes::AchCreditTransfer => "ach_credit_transfer",
+            InvoicesPaymentSettingsPaymentMethodTypes::AchDebit => "ach_debit",
+            InvoicesPaymentSettingsPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
+            InvoicesPaymentSettingsPaymentMethodTypes::BacsDebit => "bacs_debit",
+            InvoicesPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
+            InvoicesPaymentSettingsPaymentMethodTypes::Card => "card",
+            InvoicesPaymentSettingsPaymentMethodTypes::Fpx => "fpx",
+            InvoicesPaymentSettingsPaymentMethodTypes::Giropay => "giropay",
+            InvoicesPaymentSettingsPaymentMethodTypes::Ideal => "ideal",
+            InvoicesPaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
+            InvoicesPaymentSettingsPaymentMethodTypes::Sofort => "sofort",
+        }
+    }
+}
+
+impl AsRef<str> for InvoicesPaymentSettingsPaymentMethodTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoicesPaymentSettingsPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
