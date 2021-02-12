@@ -14,12 +14,10 @@ pub struct CheckoutSessionItem {
     pub id: CheckoutSessionItemId,
 
     /// Total before any discounts or taxes are applied.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_subtotal: Option<i64>,
+    pub amount_subtotal: i64,
 
     /// Total after discounts and taxes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_total: Option<i64>,
+    pub amount_total: i64,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
