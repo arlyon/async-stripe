@@ -1,3 +1,5 @@
+use std::iter::once;
+
 use crate::error::WebhookError;
 use crate::ids::EventId;
 use crate::resources::*;
@@ -285,15 +287,11 @@ impl Webhook {
 
 // TODO: If there is a lightweight hex crate, we should just rely on that instead.
 fn to_hex(bytes: &[u8]) -> String {
-    const CHARS: &[u8] = b"0123456789abcdef";
-
-    let mut v = Vec::with_capacity(bytes.len() * 2);
-    for &byte in bytes {
-        v.push(CHARS[(byte >> 4) as usize]);
-        v.push(CHARS[(byte & 0xf) as usize]);
-    }
-
-    unsafe { String::from_utf8_unchecked(v) }
+    let chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+    bytes
+        .iter()
+        .flat_map(|b| once(chars[(b >> 4) as usize]).chain(once(chars[(b & 0xf) as usize])))
+        .collect()
 }
 
 #[cfg(feature = "webhook-events")]
