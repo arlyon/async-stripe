@@ -9,6 +9,7 @@ edition = "2018"
 [features]
 full = ["async-stripe/full", "async-stripe/webhook-events"]
 runtime-blocking = ["async-stripe/runtime-blocking"]
+runtime-async = ["async-stripe/runtime-async-std-surf", "async-std"]
 checkout = ["async-stripe/checkout"]
 billing = ["async-stripe/billing"]
 connect = ["async-stripe/connect"]
@@ -20,3 +21,4 @@ webhook-endpoints = ["async-stripe/webhook-endpoints"]
 
 [dependencies]
 async-stripe = { path = "../../", default-features = false }
+async-std = { version = "1.7.0", features = ["attributes"], optional = true }
