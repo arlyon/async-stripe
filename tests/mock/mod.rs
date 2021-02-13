@@ -1,5 +1,6 @@
 //! Setup and teardown for the stripe mock service.
 
+#[allow(dead_code)]
 pub fn with_client<T>(test: T) -> ()
 where
     T: FnOnce(&stripe::Client) -> () + std::panic::UnwindSafe,
