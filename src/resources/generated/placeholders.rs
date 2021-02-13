@@ -29,7 +29,7 @@ pub struct Application {
 impl Object for Application {
     type Id = ();
     fn id(&self) -> Self::Id {
-        self.id.clone()
+        self.id
     }
     fn object(&self) -> &'static str {
         "application"
@@ -80,7 +80,7 @@ pub struct ConnectCollectionTransfer {
 impl Object for ConnectCollectionTransfer {
     type Id = ();
     fn id(&self) -> Self::Id {
-        self.id.clone()
+        self.id
     }
     fn object(&self) -> &'static str {
         "connect_collection_transfer"
@@ -301,7 +301,7 @@ pub struct OrderItem {
 impl Object for OrderItem {
     type Id = ();
     fn id(&self) -> Self::Id {
-        self.id.clone()
+        self.id
     }
     fn object(&self) -> &'static str {
         "order_item"
@@ -488,7 +488,7 @@ pub struct SubscriptionScheduleRevision {
 impl Object for SubscriptionScheduleRevision {
     type Id = ();
     fn id(&self) -> Self::Id {
-        self.id.clone()
+        self.id
     }
     fn object(&self) -> &'static str {
         "subscription_schedule_revision"

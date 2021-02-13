@@ -19,8 +19,8 @@ const APP_USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
 fn main() -> Result<()> {
     let mut args = std::env::args().skip(1);
 
-    let in_path = args.next().unwrap_or("spec3.json".to_string());
-    let out_path = args.next().unwrap_or("out".to_string());
+    let in_path = args.next().unwrap_or_else(|| "spec3.json".to_string());
+    let out_path = args.next().unwrap_or_else(|| "out".to_string());
 
     std::fs::create_dir_all(&out_path).context("could not create out folder")?;
 
@@ -51,7 +51,10 @@ fn main() -> Result<()> {
                     } else {
                         id_src.replace('.', "_").to_camel_case() + "Id"
                     };
-                    id_mappings.insert(schema_name.replace(".", "_").to_owned(), id_type);
+                    id_mappings.insert(
+                        schema_name.replace(".", "_").to_owned(),
+                        (id_type, CopyOrClone::Clone),
+                    );
                 }
             }
         }
@@ -73,7 +76,7 @@ fn main() -> Result<()> {
 
     let mut requests: BTreeMap<_, BTreeSet<_>> = BTreeMap::new();
     for (path, _) in spec["paths"].as_object().unwrap() {
-        let seg = path.trim_start_matches("/v1/").split("/").into_iter().next().unwrap();
+        let seg = path.trim_start_matches("/v1/").split('/').into_iter().next().unwrap();
         let seg_like = &seg[0..seg.len() - 1];
         if seg == "account" {
             // This isn't documented in the API reference so let's skip it
@@ -82,7 +85,7 @@ fn main() -> Result<()> {
 
         if objects.contains(seg) {
             requests.entry(seg).or_default().insert(path.as_str());
-        } else if seg.ends_with("s") && objects.contains(seg_like) {
+        } else if seg.ends_with('s') && objects.contains(seg_like) {
             requests.entry(seg_like).or_default().insert(path.as_str());
         }
     }
@@ -106,7 +109,8 @@ fn main() -> Result<()> {
         out.push_str("use serde_derive::{Deserialize, Serialize};\n");
         for (schema, feature) in &feature_groups {
             out.push('\n');
-            let id_type = meta.schema_to_id_type(schema).unwrap_or_else(|| "()".into());
+            let (id_type, c_c) =
+                meta.schema_to_id_type(schema).unwrap_or_else(|| ("()".into(), CopyOrClone::Copy));
             let struct_type = meta.schema_to_rust_type(schema);
             out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
             out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
@@ -116,7 +120,13 @@ fn main() -> Result<()> {
             out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
             out.push_str(&format!("impl Object for {} {{\n", struct_type));
             out.push_str(&format!("\ttype Id = {};\n", id_type));
-            out.push_str("\tfn id(&self) -> Self::Id { self.id.clone() }\n");
+            out.push_str(&format!(
+                "\tfn id(&self) -> Self::Id {{ self.id{} }}\n",
+                match c_c {
+                    CopyOrClone::Clone => ".clone()",
+                    CopyOrClone::Copy => "",
+                }
+            ));
             out.push_str(&format!("\tfn object(&self) -> &'static str {{ \"{}\" }}\n", schema));
             out.push_str("}\n");
             fs::write(format!("{}/{}", &out_path, "placeholders.rs"), out.as_bytes()).unwrap();
@@ -143,6 +153,12 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+#[derive(Clone, Copy)]
+enum CopyOrClone {
+    Copy,
+    Clone,
+}
+
 struct Metadata<'a> {
     spec: &'a Json,
     /// The set of schemas which should implement `Object`.
@@ -151,7 +167,7 @@ struct Metadata<'a> {
     /// A one to many map of schema to depending types.
     dependents: BTreeMap<&'a str, BTreeSet<&'a str>>,
     /// A map of `objects` to their rust id type
-    id_mappings: BTreeMap<String, String>,
+    id_mappings: BTreeMap<String, (String, CopyOrClone)>,
     /// How a particular schema should be renamed.
     object_mappings: mappings::ObjectMap,
     /// An override for the rust-type of a particular object/field pair.
@@ -164,9 +180,9 @@ struct Metadata<'a> {
 }
 
 impl<'a> Metadata<'a> {
-    fn schema_to_id_type(&self, schema: &str) -> Option<String> {
+    fn schema_to_id_type(&self, schema: &str) -> Option<(String, CopyOrClone)> {
         let schema = schema.replace('.', "_");
-        self.id_mappings.get(schema.as_str()).cloned()
+        self.id_mappings.get(schema.as_str()).map(ToOwned::to_owned)
     }
 
     fn schema_to_rust_type(&self, schema: &str) -> String {
@@ -259,7 +275,7 @@ impl Generated {
             return Ok(());
         }
         if let Some(other) = self.inferred_structs.get(&name) {
-            let mut self_schema = struct_.schema.clone();
+            let mut self_schema = struct_.schema;
             let mut other_schema = other.schema.clone();
             if let Some(x) = self_schema.as_object_mut() {
                 x.remove("description");
@@ -334,7 +350,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
     out.push_str("pub struct ");
     out.push_str(&struct_name);
     out.push_str(" {\n");
-    if let Some(id_type) = &id_type {
+    if let Some((id_type, _)) = &id_type {
         state.use_ids.insert(id_type.clone());
         if let Some(doc) = schema["properties"]["id"]["description"].as_str() {
             print_doc_comment(&mut out, doc, 1);
@@ -391,7 +407,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
         &mut state,
         meta,
         object,
-        id_type.as_ref().map(|x| x.as_str()),
+        id_type.as_ref().map(|(x, _)| x.as_str()),
     ));
 
     // Generate an `impl Object` block
@@ -401,7 +417,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
     out.push_str(&struct_name);
     out.push_str(" {\n");
     out.push_str("    type Id = ");
-    if let Some(id_type) = &id_type {
+    if let Some((id_type, _)) = &id_type {
         out.push_str(&id_type);
         out.push_str(";\n");
         out.push_str("    fn id(&self) -> Self::Id {\n        self.id.clone()\n    }\n");
@@ -542,7 +558,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                 }
                 "ending_before" => {
                     print_doc(&mut out);
-                    let cursor_type = id_type.as_ref().map(|x| x.as_str()).unwrap_or("str");
+                    let cursor_type = id_type.as_ref().map(|(x, _)| x.as_str()).unwrap_or("str");
                     initializers.push(("ending_before".into(), cursor_type.into(), false));
                     if required {
                         panic!("unexpected \"required\" `ending_before` parameter");
@@ -555,7 +571,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                 }
                 "starting_after" => {
                     print_doc(&mut out);
-                    let cursor_type = id_type.as_ref().map(|x| x.as_str()).unwrap_or("str");
+                    let cursor_type = id_type.as_ref().map(|(x, _)| x.as_str()).unwrap_or("str");
                     initializers.push(("starting_after".into(), cursor_type.into(), false));
                     if required {
                         panic!("unexpected \"required\" `starting_after` parameter");
@@ -598,7 +614,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                         && param["schema"]["type"].as_str() == Some("string")
                         && param_name != "tax_id"
                     {
-                        let id_type = meta.schema_to_id_type(param_name).unwrap();
+                        let (id_type, _) = meta.schema_to_id_type(param_name).unwrap();
                         print_doc(&mut out);
                         initializers.push((param_name.into(), id_type.clone(), required));
                         state.use_ids.insert(id_type.clone());
@@ -707,7 +723,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                             options: param["schema"]["enum"]
                                 .as_array()
                                 .unwrap()
-                                .into_iter()
+                                .iter()
                                 .map(|x| x.as_str().unwrap().into())
                                 .collect(),
                         };
@@ -919,7 +935,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
             }
             out.push_str("    ");
             out.push_str(&variant_name);
-            out.push_str("(");
+            out.push('(');
             out.push_str(&type_name);
             out.push_str("),\n");
         }
@@ -1019,7 +1035,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
     prelude.push_str("// ======================================\n");
     prelude.push_str("// This file was automatically generated.\n");
     prelude.push_str("// ======================================\n\n");
-    if state.use_config.len() > 0 {
+    if !state.use_config.is_empty() {
         prelude.push_str("use crate::config::{");
         for (n, type_) in state.use_config.iter().enumerate() {
             if n > 0 {
@@ -1029,7 +1045,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
         }
         prelude.push_str("};\n");
     }
-    if state.use_ids.len() > 0 {
+    if !state.use_ids.is_empty() {
         prelude.push_str("use crate::ids::{");
         for (n, type_) in state.use_ids.iter().enumerate() {
             if n > 0 {
@@ -1039,7 +1055,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
         }
         prelude.push_str("};\n");
     }
-    if state.use_params.len() > 0 {
+    if !state.use_params.is_empty() {
         prelude.push_str("use crate::params::{");
         for (n, type_) in state.use_params.iter().enumerate() {
             if n > 0 {
@@ -1049,7 +1065,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
         }
         prelude.push_str("};\n");
     }
-    if state.use_resources.len() > 0 {
+    if !state.use_resources.is_empty() {
         prelude.push_str("use crate::resources::{");
         for (n, type_) in state
             .use_resources
@@ -1094,7 +1110,7 @@ fn gen_field(
     if field_rename == "type" {
         field_rename = "type_".into();
     }
-    if &field_rename != field_name {
+    if field_rename != field_name {
         out.push_str("    #[serde(rename = \"");
         out.push_str(field_name);
         out.push_str("\")]\n");
@@ -1177,7 +1193,7 @@ fn gen_field_rust_type(
                 let enum_ = InferredEnum {
                     parent: parent_type,
                     field: field_name.into(),
-                    options: variants.into_iter().map(|x| x.as_str().unwrap().into()).collect(),
+                    options: variants.iter().map(|x| x.as_str().unwrap().into()).collect(),
                 };
                 state.insert_enum(enum_name.clone(), enum_);
                 enum_name
@@ -1195,7 +1211,7 @@ fn gen_field_rust_type(
             if field["properties"]["object"]["enum"][0].as_str() == Some("list") {
                 state.use_params.insert("List");
                 let element = &field["properties"]["data"]["items"];
-                let element_field_name = if field_name.ends_with("s") {
+                let element_field_name = if field_name.ends_with('s') {
                     field_name[0..field_name.len() - 1].into()
                 } else if field_name.ends_with("ies") {
                     format!("{}y", &field_name[0..field_name.len() - 3])
@@ -1236,10 +1252,12 @@ fn gen_field_rust_type(
                     }
                 }
                 type_name
-            } else if let Some(any_of) = field["anyOf"].as_array().or(field["oneOf"].as_array()) {
-                if any_of.len() == 1 {
-                    gen_field_rust_type(state, meta, object, field_name, &any_of[0], true, false)
-                } else if any_of.len() == 2 && any_of[1]["enum"][0].as_str() == Some("") {
+            } else if let Some(any_of) =
+                field["anyOf"].as_array().or_else(|| field["oneOf"].as_array())
+            {
+                if any_of.len() == 1
+                    || (any_of.len() == 2 && any_of[1]["enum"][0].as_str() == Some(""))
+                {
                     gen_field_rust_type(state, meta, object, field_name, &any_of[0], true, false)
                 } else if field["x-expansionResources"].is_object() {
                     let ty_ = gen_field_rust_type(
@@ -1269,7 +1287,7 @@ fn gen_field_rust_type(
                     let union_ = InferredUnion {
                         field: field_name.into(),
                         schema_variants: any_of
-                            .into_iter()
+                            .iter()
                             .map(|x| {
                                 let schema_name = x["$ref"]
                                     .as_str()
@@ -1287,7 +1305,7 @@ fn gen_field_rust_type(
                                         .unwrap_or(0)
                                         > 1
                                 {
-                                    state.use_resources.insert(type_name.clone());
+                                    state.use_resources.insert(type_name);
                                 } else if !state.generated_schemas.contains_key(schema_name) {
                                     state.generated_schemas.insert(schema_name.into(), false);
                                 }
@@ -1326,7 +1344,7 @@ fn gen_impl_requests(
     let mut methods = Vec::new();
     for path in requests {
         let request = &meta.spec["paths"][path];
-        let segments = path.trim_start_matches("/v1/").split("/").collect::<Vec<_>>();
+        let segments = path.trim_start_matches("/v1/").split('/').collect::<Vec<_>>();
         let get_request = &request["get"];
         if get_request.is_object() {
             let ok_schema =
@@ -1341,7 +1359,7 @@ fn gen_impl_requests(
             let doc_comment = get_request["description"].as_str().unwrap_or_default();
             if ok_schema["properties"]["object"]["enum"][0].as_str() == Some("list") {
                 if segments.len() == 1 {
-                    let params_name = if rust_struct.ends_with("y") {
+                    let params_name = if rust_struct.ends_with('y') {
                         format!("List{}ies", &rust_struct[0..rust_struct.len() - 1])
                     } else {
                         format!("List{}s", rust_struct)
@@ -1635,7 +1653,7 @@ fn print_doc_comment(out: &mut String, description: &str, depth: u8) {
             out.push_str("///");
         }
     }
-    if !head.ends_with(".") {
+    if !head.ends_with('.') {
         out.push('.');
     }
     out.push('\n');
@@ -1646,7 +1664,7 @@ fn print_doc_comment(out: &mut String, description: &str, depth: u8) {
             print_indent(out, depth);
             out.push_str("/// ");
             out.push_str(&part.replace('\n', " ").trim());
-            if !part.ends_with(".") {
+            if !part.ends_with('.') {
                 out.push('.');
             }
             out.push('\n');
@@ -1687,7 +1705,7 @@ fn format_doc_comment(doc: &str) -> String {
 
 fn infer_integer_type(state: &mut Generated, name: &str, format: Option<&str>) -> String {
     let name_snake = name.to_snake_case();
-    let name_words = name_snake.split("_").collect::<Vec<_>>();
+    let name_words = name_snake.split('_').collect::<Vec<_>>();
     if format == Some("unix-time") || name_words.contains(&"date") {
         state.use_params.insert("Timestamp");
         "Timestamp".into()
