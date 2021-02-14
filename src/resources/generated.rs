@@ -67,6 +67,7 @@ pub mod billing {
 #[cfg(feature = "connect")]
 pub mod connect {
     pub mod account;
+    pub mod account_link;
     pub mod application;
     pub mod application_fee;
     pub mod connect_collection_transfer;

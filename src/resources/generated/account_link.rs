@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{AccountId};
+use crate::ids::AccountId;
 use crate::params::{Expand, Object, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
@@ -12,7 +12,6 @@ use serde_derive::{Deserialize, Serialize};
 /// For more details see <https://stripe.com/docs/api/account_links/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountLink {
-
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -26,7 +25,6 @@ pub struct AccountLink {
 }
 
 impl AccountLink {
-
     /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
     pub fn create(client: &Client, params: CreateAccountLink<'_>) -> Response<AccountLink> {
         client.post_form("/account_links", &params)
@@ -44,7 +42,6 @@ impl Object for AccountLink {
 /// The parameters for `AccountLink::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateAccountLink<'a> {
-
     /// The identifier of the account to create an account link for.
     pub account: AccountId,
 
