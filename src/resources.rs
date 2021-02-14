@@ -163,6 +163,7 @@ pub use {
 #[cfg(feature = "connect")]
 pub use {
     generated::connect::{
+        account_link::*,
         account::*,
         application::*,
         application_fee::*,
