@@ -4,7 +4,7 @@
 
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Address, ApiErrors, Charge, Currency, CustomField, Customer, Discount,
     InvoiceLineItem, PaymentIntent, PaymentMethod, PaymentSource, Shipping, Subscription, TaxId,
@@ -394,6 +394,14 @@ impl Invoice {
     /// Retrieves the invoice with the given ID.
     pub fn retrieve(client: &Client, id: &InvoiceId, expand: &[&str]) -> Response<Invoice> {
         client.get_query(&format!("/invoices/{}", id), &Expand { expand })
+    }
+
+    /// Permanently deletes a one-off invoice draft.
+    ///
+    /// This cannot be undone.
+    /// Attempts to delete invoices that are no longer in a draft state will fail; once an invoice has been finalized or if an invoice is for a subscription, it must be [voided](https://stripe.com/docs/api#void_invoice).
+    pub fn delete(client: &Client, id: &InvoiceId) -> Response<Deleted<InvoiceId>> {
+        client.delete(&format!("/invoices/{}", id))
     }
 }
 

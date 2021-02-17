@@ -75,17 +75,24 @@ fn main() -> Result<()> {
 
     let mut requests: BTreeMap<_, BTreeSet<_>> = BTreeMap::new();
     for (path, _) in spec["paths"].as_object().unwrap() {
-        let seg = path.trim_start_matches("/v1/").split('/').into_iter().next().unwrap();
-        let seg_like = &seg[0..seg.len() - 1];
-        if seg == "account" {
-            // This isn't documented in the API reference so let's skip it
+        let mut seg_iterator = path.trim_start_matches("/v1/").split('/').into_iter();
+        let object = match (seg_iterator.next(), seg_iterator.next()) {
+            // handle special case for sessions
+            (Some(x), Some("sessions")) => format!("{}.session", x),
+            (Some(x), _) => x.to_string(),
+            _ => continue,
+        };
+
+        // This isn't documented in the API reference so let's skip it
+        if object == "account" {
             continue;
         }
 
-        if objects.contains(seg) {
-            requests.entry(seg).or_default().insert(path.as_str());
-        } else if seg.ends_with('s') && objects.contains(seg_like) {
-            requests.entry(seg_like).or_default().insert(path.as_str());
+        let seg_like = &object[0..object.len() - 1];
+        if objects.contains(object.as_str()) {
+            requests.entry(object).or_default().insert(path.as_str());
+        } else if object.ends_with('s') && objects.contains(seg_like) {
+            requests.entry(seg_like.to_string()).or_default().insert(path.as_str());
         }
     }
 
@@ -174,7 +181,7 @@ struct Metadata<'a> {
     /// implemented for that object.
     ///
     /// This is typically determined by the first segment in the path.
-    requests: BTreeMap<&'a str, BTreeSet<&'a str>>,
+    requests: BTreeMap<String, BTreeSet<&'a str>>,
 }
 
 impl<'a> Metadata<'a> {
@@ -403,12 +410,12 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
     out.push_str("}\n");
 
     // Generate request methods
-    out.push_str(&gen_impl_requests(
-        &mut state,
-        meta,
-        object,
-        id_type.as_ref().map(|(x, _)| x.as_str()),
-    ));
+    if let Some(impls) =
+        gen_impl_requests(&mut state, meta, object, id_type.as_ref().map(|(x, _)| x.as_str()))
+    {
+        out.push('\n');
+        out.push_str(&impls);
+    }
 
     // Generate an `impl Object` block
     state.use_params.insert("Object");
@@ -1326,26 +1333,32 @@ fn gen_field_rust_type(
     }
 }
 
+#[derive(Eq, PartialEq, Hash, PartialOrd, Ord)]
+enum MethodTypes {
+    List,
+    Create,
+    Retrieve,
+    Update,
+    Delete,
+}
+
 fn gen_impl_requests(
     state: &mut Generated,
     meta: &Metadata,
     object: &str,
     object_id: Option<&str>,
-) -> String {
-    let requests = match meta.requests.get(object) {
-        Some(some) => some,
-        None => return String::new(),
-    };
+) -> Option<String> {
+    let requests = meta.requests.get(object)?;
     let rust_struct = meta.schema_to_rust_type(object);
     println!("impl {} {{ ... }}", rust_struct);
 
-    // Collect all methods we know how to auto-generate
-    let mut methods = Vec::new();
+    let mut methods = BTreeMap::new();
+
     for path in requests {
         let request = &meta.spec["paths"][path];
         let segments = path.trim_start_matches("/v1/").split('/').collect::<Vec<_>>();
-        let get_request = &request["get"];
-        if get_request.is_object() {
+
+        if let Some(get_request) = &request["get"].as_object() {
             let ok_schema =
                 &get_request["responses"]["200"]["content"]["application/json"]["schema"];
             let err_schema =
@@ -1356,36 +1369,36 @@ fn gen_impl_requests(
                 continue; // skip generating this unusual request (for now...)
             }
             let doc_comment = get_request["description"].as_str().unwrap_or_default();
-            if ok_schema["properties"]["object"]["enum"][0].as_str() == Some("list") {
-                if segments.len() == 1 {
-                    let params_name = if rust_struct.ends_with('y') {
-                        format!("List{}ies", &rust_struct[0..rust_struct.len() - 1])
-                    } else {
-                        format!("List{}s", rust_struct)
-                    };
-                    let params = InferredParams {
-                        method: "list".into(),
-                        rust_type: params_name.clone(),
-                        parameters: get_request["parameters"].clone(),
-                    };
-                    state.inferred_parameters.insert(params_name.to_snake_case(), params);
-                    state.use_params.insert("List");
+            if ok_schema["properties"]["object"]["enum"][0].as_str() == Some("list")
+                && !methods.contains_key(&MethodTypes::List)
+            {
+                let params_name = if rust_struct.ends_with('y') {
+                    format!("List{}ies", &rust_struct[0..rust_struct.len() - 1])
+                } else {
+                    format!("List{}s", rust_struct)
+                };
+                let params = InferredParams {
+                    method: "list".into(),
+                    rust_type: params_name.clone(),
+                    parameters: get_request["parameters"].clone(),
+                };
+                state.inferred_parameters.insert(params_name.to_snake_case(), params);
+                state.use_params.insert("List");
 
-                    let mut out = String::new();
-                    out.push('\n');
-                    print_doc_comment(&mut out, doc_comment, 1);
-                    out.push_str("    pub fn list(client: &Client, params: ");
-                    out.push_str(&params_name);
-                    out.push_str("<'_>) -> Response<List<");
-                    out.push_str(&rust_struct);
-                    out.push_str(">> {\n");
-                    out.push_str("        client.get_query(\"/");
-                    out.push_str(&segments.join("/"));
-                    out.push_str("\", &params)\n");
-                    out.push_str("    }\n");
-                    methods.push(out);
-                }
-            } else if segments.len() == 2 {
+                let mut out = String::new();
+                out.push('\n');
+                print_doc_comment(&mut out, doc_comment, 1);
+                out.push_str("    pub fn list(client: &Client, params: ");
+                out.push_str(&params_name);
+                out.push_str("<'_>) -> Response<List<");
+                out.push_str(&rust_struct);
+                out.push_str(">> {\n");
+                out.push_str("        client.get_query(\"/");
+                out.push_str(&segments.join("/"));
+                out.push_str("\", &params)\n");
+                out.push_str("    }");
+                methods.insert(MethodTypes::List, out);
+            } else if segments.len() == 2 && !methods.contains_key(&MethodTypes::Retrieve) {
                 let id_param = get_request["parameters"]
                     .as_array()
                     .and_then(|arr| arr.iter().find(|p| p["in"].as_str() == Some("path")));
@@ -1422,13 +1435,13 @@ fn gen_impl_requests(
                         out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
                         out.push_str(")\n");
                     }
-                    out.push_str("    }\n");
-                    methods.push(out);
+                    out.push_str("    }");
+                    methods.insert(MethodTypes::Retrieve, out);
                 }
             }
         }
-        let post_request = &request["post"];
-        if post_request.is_object() {
+
+        if let Some(post_request) = &request["post"].as_object() {
             let ok_schema =
                 &post_request["responses"]["200"]["content"]["application/json"]["schema"];
             let err_schema =
@@ -1447,17 +1460,24 @@ fn gen_impl_requests(
             };
 
             let doc_comment = post_request["description"].as_str().unwrap_or_default();
-            if segments.len() == 1 {
-                let contains_create =
-                    doc_comment.contains("Create") || doc_comment.contains("create");
-                let contains_adds = doc_comment.contains("Adds") || doc_comment.contains("adds");
-                if !contains_create && !contains_adds {
-                    continue; // skip requests which don't appear to be `create` for now
-                }
+            let parameter_count = post_request
+                .get("parameters")
+                .and_then(|p| p.as_array())
+                .map(|a| a.len())
+                .unwrap_or_default();
 
+            if !methods.contains_key(&MethodTypes::Create)
+                && parameter_count == 0
+                && (doc_comment.contains("Create")
+                    || doc_comment.contains("create")
+                    || doc_comment.contains("Adds")
+                    || doc_comment.contains("adds"))
+            {
                 // Just make sure I don't miss anything unexpected
-                let query_params: &[_] =
-                    post_request["parameters"].as_array().map(|x| x.as_ref()).unwrap_or_default();
+                let query_params: &[_] = post_request
+                    .get("parameters")
+                    .and_then(|p| p.as_array().map(|x| x.as_ref()))
+                    .unwrap_or_default();
                 assert!(query_params.is_empty());
 
                 // Construct `parameters` from the request body schema
@@ -1495,18 +1515,12 @@ fn gen_impl_requests(
                 out.push_str("        client.post_form(\"/");
                 out.push_str(&segments.join("/"));
                 out.push_str("\", &params)\n");
-                out.push_str("    }\n");
-                methods.push(out);
-            } else if segments.len() == 2 {
-                if !doc_comment.contains("Update") && !doc_comment.contains("update") {
-                    continue; // skip requests which don't appear to be `update` for now
-                }
-
-                // Just make sure I don't miss anything unexpected
-                let query_params: &[_] =
-                    post_request["parameters"].as_array().map(|x| x.as_ref()).unwrap_or_default();
-                assert_eq!(query_params.len(), 1);
-
+                out.push_str("    }");
+                methods.insert(MethodTypes::Create, out);
+            } else if !methods.contains_key(&MethodTypes::Update)
+                && parameter_count == 1
+                && (doc_comment.contains("Update") || doc_comment.contains("update"))
+            {
                 // Get the id parameter
                 let id_param = post_request["parameters"]
                     .as_array()
@@ -1557,13 +1571,13 @@ fn gen_impl_requests(
                     out.push_str("        client.post_form(");
                     out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
                     out.push_str(", &params)\n");
-                    out.push_str("    }\n");
-                    methods.push(out);
+                    out.push_str("    }");
+                    methods.insert(MethodTypes::Update, out);
                 }
             }
         }
-        let delete_request = &request["delete"];
-        if delete_request.is_object() {
+
+        if let Some(delete_request) = &request["delete"].as_object() {
             let ok_schema =
                 &delete_request["responses"]["200"]["content"]["application/json"]["schema"];
             let err_schema =
@@ -1575,7 +1589,7 @@ fn gen_impl_requests(
             }
 
             let doc_comment = delete_request["description"].as_str().unwrap_or_default();
-            if segments.len() == 2 {
+            if segments.len() == 2 && !methods.contains_key(&MethodTypes::Delete) {
                 let id_param = delete_request["parameters"]
                     .as_array()
                     .and_then(|arr| arr.iter().find(|p| p["in"].as_str() == Some("path")));
@@ -1599,31 +1613,27 @@ fn gen_impl_requests(
                     out.push_str("        client.delete(");
                     out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
                     out.push_str(")\n");
-                    out.push_str("    }\n");
-                    methods.push(out);
+                    out.push_str("    }");
+                    methods.insert(MethodTypes::Delete, out);
                 }
             }
         }
     }
+
     if methods.is_empty() {
-        return String::new();
-    }
+        None
+    } else {
+        // Add imports
+        state.use_config.insert("Client");
+        state.use_config.insert("Response");
 
-    // Add imports
-    state.use_config.insert("Client");
-    state.use_config.insert("Response");
-
-    // Output the impl block
-    let mut out = String::new();
-    out.push('\n');
-    out.push_str("impl ");
-    out.push_str(&rust_struct);
-    out.push_str(" {\n");
-    for method in methods {
-        out.push_str(&method);
+        // Output the impl block
+        Some(format!(
+            "impl {} {{\n{}\n}}\n",
+            rust_struct,
+            methods.values().map(String::as_str).collect::<Vec<_>>().join("\n")
+        ))
     }
-    out.push_str("}\n");
-    out
 }
 
 fn print_indent(out: &mut String, depth: u8) {
