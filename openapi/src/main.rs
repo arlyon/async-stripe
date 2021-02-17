@@ -557,7 +557,8 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                 }
                 "ending_before" => {
                     print_doc(&mut out);
-                    let cursor_type = id_type.as_ref().map(|(x, _)| x.as_str()).unwrap_or("str");
+                    let cursor_type =
+                        id_type.as_ref().map(|(x, _)| x.as_str()).unwrap_or("&'a str");
                     initializers.push(("ending_before".into(), cursor_type.into(), false));
                     if required {
                         panic!("unexpected \"required\" `ending_before` parameter");
@@ -570,7 +571,8 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                 }
                 "starting_after" => {
                     print_doc(&mut out);
-                    let cursor_type = id_type.as_ref().map(|(x, _)| x.as_str()).unwrap_or("str");
+                    let cursor_type =
+                        id_type.as_ref().map(|(x, _)| x.as_str()).unwrap_or("&'a str");
                     initializers.push(("starting_after".into(), cursor_type.into(), false));
                     if required {
                         panic!("unexpected \"required\" `starting_after` parameter");
