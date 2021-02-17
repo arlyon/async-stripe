@@ -16,7 +16,7 @@ mod core {
     pub mod balance_transaction_ext;
     pub mod charge_ext;
     pub mod customer_ext;
-    pub mod payment_intent;
+    pub mod payment_intent_ext;
     pub mod payment_source;
     pub mod payout_ext;
     pub mod placeholders;
@@ -32,7 +32,7 @@ mod payment {
 }
 
 #[cfg(feature = "events")]
-mod event;
+mod webhook_events;
 
 #[path = "resources"]
 #[cfg(feature = "billing")]
@@ -79,7 +79,7 @@ pub use {
         balance_transaction_ext::*,
         charge_ext::*,
         customer_ext::*,
-        payment_intent::*,
+        payment_intent_ext::*,
         payment_source::*,
         placeholders::*,
         payout_ext::*,
@@ -94,6 +94,7 @@ pub use {
         file::*,
         file_link::*,
         mandate::*,
+        payment_intent::*,
         payout::*,
         platform_tax_fee::*,
         product::*,
@@ -113,6 +114,7 @@ pub use {
     },
     generated::payment::{
         alipay_account::*,
+        card::*,
         bank_account::*,
         payment_method::*,
         source::*
@@ -122,7 +124,8 @@ pub use {
 #[rustfmt::skip]
 #[cfg(feature = "events")]
 pub use {
-    event::*,
+    webhook_events::*,
+    generated::event::*,
 };
 
 #[rustfmt::skip]

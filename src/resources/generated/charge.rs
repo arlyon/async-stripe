@@ -344,6 +344,9 @@ pub struct PaymentMethodDetails {
     pub ach_debit: Option<PaymentMethodDetailsAchDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay: Option<PaymentMethodDetailsAfterpayClearpay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<PaymentFlowsPrivatePaymentMethodsAlipayDetails>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -472,6 +475,9 @@ pub struct PaymentMethodDetailsAchDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsAfterpayClearpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAuBecsDebit {

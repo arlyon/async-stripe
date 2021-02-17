@@ -19,6 +19,7 @@ pub mod core {
     pub mod file;
     pub mod file_link;
     pub mod mandate;
+    pub mod payment_intent;
     pub mod payout;
     pub mod platform_tax_fee;
     pub mod product;
@@ -34,6 +35,7 @@ pub mod core {
 pub mod payment {
     pub mod alipay_account;
     pub mod bank_account;
+    pub mod card;
     pub mod payment_method;
     pub mod source;
 }
@@ -106,6 +108,9 @@ pub mod orders {
 
 #[cfg(feature = "sigma")]
 pub mod scheduled_query_run;
+
+#[cfg(feature = "events")]
+pub mod event;
 
 #[path = "generated"]
 #[cfg(feature = "webhook-endpoints")]

@@ -19,6 +19,9 @@ pub struct PaymentMethod {
     pub id: PaymentMethodId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay: Option<PaymentMethodAfterpayClearpay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<PaymentFlowsPrivatePaymentMethodsAlipay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -142,6 +145,9 @@ impl Object for PaymentMethod {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentFlowsPrivatePaymentMethodsAlipay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodAfterpayClearpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodAuBecsDebit {
@@ -503,6 +509,10 @@ pub struct ThreeDSecureUsage {
 /// The parameters for `PaymentMethod::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreatePaymentMethod<'a> {
+    /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay: Option<CreatePaymentMethodAfterpayClearpay>,
+
     /// If this is an `Alipay` PaymentMethod, this hash contains details about the Alipay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<CreatePaymentMethodAlipay>,
@@ -595,6 +605,7 @@ pub struct CreatePaymentMethod<'a> {
 impl<'a> CreatePaymentMethod<'a> {
     pub fn new() -> Self {
         CreatePaymentMethod {
+            afterpay_clearpay: Default::default(),
             alipay: Default::default(),
             au_becs_debit: Default::default(),
             bacs_debit: Default::default(),
@@ -696,6 +707,9 @@ impl<'a> UpdatePaymentMethod<'a> {
         }
     }
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentMethodAfterpayClearpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodAlipay {}
@@ -1432,6 +1446,7 @@ impl std::fmt::Display for PaymentMethodP24Bank {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodType {
+    AfterpayClearpay,
     Alipay,
     AuBecsDebit,
     BacsDebit,
@@ -1453,6 +1468,7 @@ pub enum PaymentMethodType {
 impl PaymentMethodType {
     pub fn as_str(self) -> &'static str {
         match self {
+            PaymentMethodType::AfterpayClearpay => "afterpay_clearpay",
             PaymentMethodType::Alipay => "alipay",
             PaymentMethodType::AuBecsDebit => "au_becs_debit",
             PaymentMethodType::BacsDebit => "bacs_debit",
@@ -1489,6 +1505,7 @@ impl std::fmt::Display for PaymentMethodType {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodTypeFilter {
+    AfterpayClearpay,
     Alipay,
     AuBecsDebit,
     BacsDebit,
@@ -1508,6 +1525,7 @@ pub enum PaymentMethodTypeFilter {
 impl PaymentMethodTypeFilter {
     pub fn as_str(self) -> &'static str {
         match self {
+            PaymentMethodTypeFilter::AfterpayClearpay => "afterpay_clearpay",
             PaymentMethodTypeFilter::Alipay => "alipay",
             PaymentMethodTypeFilter::AuBecsDebit => "au_becs_debit",
             PaymentMethodTypeFilter::BacsDebit => "bacs_debit",

@@ -2,8 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{BillingPortalSessionId};
-use crate::params::{Object, Timestamp};
+use crate::config::{Client, Response};
+use crate::ids::{BillingPortalSessionId, CustomerId};
+use crate::params::{Expand, Object, Timestamp};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PortalSession".
@@ -30,6 +31,14 @@ pub struct BillingPortalSession {
     pub url: String,
 }
 
+impl BillingPortalSession {
+
+    /// Creates a session of the customer portal.
+    pub fn create(client: &Client, params: CreateBillingPortalSession<'_>) -> Response<BillingPortalSession> {
+        client.post_form("/billing_portal/sessions", &params)
+    }
+}
+
 impl Object for BillingPortalSession {
     type Id = BillingPortalSessionId;
     fn id(&self) -> Self::Id {
@@ -37,5 +46,33 @@ impl Object for BillingPortalSession {
     }
     fn object(&self) -> &'static str {
         "billing_portal.session"
+    }
+}
+
+/// The parameters for `BillingPortalSession::create`.
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateBillingPortalSession<'a> {
+
+    /// The ID of an existing customer.
+    pub customer: CustomerId,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    pub expand: &'a [&'a str],
+
+    /// The URL to which Stripe should send customers when they click on the link to return to your website.
+    ///
+    /// This field is required if a default return URL has not been configured for the portal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_url: Option<&'a str>,
+}
+
+impl<'a> CreateBillingPortalSession<'a> {
+    pub fn new(customer: CustomerId) -> Self {
+        CreateBillingPortalSession {
+            customer,
+            expand: Default::default(),
+            return_url: Default::default(),
+        }
     }
 }

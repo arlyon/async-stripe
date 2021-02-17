@@ -78,6 +78,12 @@ impl Object for SetupAttempt {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_becs_debit: Option<SetupAttemptPaymentMethodDetailsAuBecsDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit: Option<SetupAttemptPaymentMethodDetailsBacsDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<SetupAttemptPaymentMethodDetailsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -90,6 +96,9 @@ pub struct SetupAttemptPaymentMethodDetails {
     pub ideal: Option<SetupAttemptPaymentMethodDetailsIdeal>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit: Option<SetupAttemptPaymentMethodDetailsSepaDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<SetupAttemptPaymentMethodDetailsSofort>,
 
     /// The type of the payment method used in the SetupIntent (e.g., `card`).
@@ -99,6 +108,12 @@ pub struct SetupAttemptPaymentMethodDetails {
     #[serde(rename = "type")]
     pub type_: String,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsAuBecsDebit {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsBacsDebit {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsBancontact {
@@ -184,6 +199,9 @@ pub struct SetupAttemptPaymentMethodDetailsIdeal {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_name: Option<String>,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsSepaDebit {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsSofort {

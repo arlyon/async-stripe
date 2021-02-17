@@ -80,9 +80,10 @@ pub struct IssuingAuthorization {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_request: Option<IssuingAuthorizationPendingRequest>,
 
-    /// History of every time the authorization was approved/denied (whether approved/denied by you directly or by Stripe based on your `spending_controls`).
+    /// History of every time `pending_request` was approved/denied, either by you directly or by Stripe (e.g.
     ///
-    /// If the merchant changes the authorization by performing an [incremental authorization or partial capture](https://stripe.com/docs/issuing/purchases/authorizations), you can look at this field to see the previous states of the authorization.
+    /// based on your `spending_controls`).
+    /// If the merchant changes the authorization by performing an [incremental authorization](https://stripe.com/docs/issuing/purchases/authorizations), you can look at this field to see the previous requests for the authorization.
     pub request_history: Vec<IssuingAuthorizationRequest>,
 
     /// The current status of the authorization in its lifecycle.
@@ -140,7 +141,7 @@ pub struct IssuingAuthorizationPendingRequest {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationRequest {
-    /// The authorization amount in your card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// The `pending_request.amount` at the time of the request, presented in your card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
     /// Stripe held this amount from your account to fund the authorization if the request was approved.
     pub amount: i64,
@@ -164,9 +165,7 @@ pub struct IssuingAuthorizationRequest {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
-    /// The amount that was authorized at the time of this request.
-    ///
-    /// This amount is in the `merchant_currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// The `pending_request.merchant_amount` at the time of the request, presented in the `merchant_currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub merchant_amount: i64,
 
     /// The currency that was collected by the merchant and presented to the cardholder for the authorization.

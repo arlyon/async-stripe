@@ -426,7 +426,7 @@ pub fn field_mappings() -> FieldMap {
         (("create_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (
             ("create_payment_intent", "off_session"),
-            ("Option<PaymentIntentOffSession>", "Option<PaymentIntentOffSession>"),
+            ("PaymentIntentOffSession", "Option<PaymentIntentOffSession>"),
         ),
         (("update_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("create_setup_intent", "usage"), ("", "Option<SetupIntentUsage>")),
