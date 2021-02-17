@@ -141,10 +141,9 @@ fn main() -> Result<()> {
         }
 
         // Generate the types for the object
-        let out = gen_impl_object(&meta, object, &url_finder);
         fs::write(
             &format!("{}/{}.rs", &out_path, object.replace('.', "_").to_snake_case()),
-            out.as_bytes(),
+            gen_impl_object(&meta, object, &url_finder).as_bytes(),
         )
         .unwrap();
     }
@@ -335,6 +334,8 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
         None => return String::new(),
     };
 
+    println!("struct {} {{...}}", struct_name);
+
     // Generate the struct type
     out.push_str("/// The resource representing a Stripe \"");
     out.push_str(schema_title);
@@ -429,12 +430,8 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
     out.push_str("\"\n    }\n");
     out.push_str("}\n");
 
-    while let Some(schema_name) = state
-        .generated_schemas
-        .iter()
-        .filter_map(|(k, &v)| if !v { Some(k) } else { None })
-        .next()
-        .cloned()
+    while let Some(schema_name) =
+        state.generated_schemas.iter().find_map(|(k, &v)| if !v { Some(k) } else { None }).cloned()
     {
         let struct_name = meta.schema_to_rust_type(&schema_name);
         out.push('\n');
@@ -1340,6 +1337,7 @@ fn gen_impl_requests(
         None => return String::new(),
     };
     let rust_struct = meta.schema_to_rust_type(object);
+    println!("impl {} {{ ... }}", rust_struct);
 
     // Collect all methods we know how to auto-generate
     let mut methods = Vec::new();
