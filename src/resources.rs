@@ -16,7 +16,7 @@ mod core {
     pub mod balance_transaction_ext;
     pub mod charge_ext;
     pub mod customer_ext;
-    pub mod payment_intent;
+    pub mod payment_intent_ext;
     pub mod payment_source;
     pub mod payout_ext;
     pub mod placeholders;
@@ -79,7 +79,7 @@ pub use {
         balance_transaction_ext::*,
         charge_ext::*,
         customer_ext::*,
-        payment_intent::*,
+        payment_intent_ext::*,
         payment_source::*,
         placeholders::*,
         payout_ext::*,
