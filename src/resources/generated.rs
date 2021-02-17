@@ -19,6 +19,7 @@ pub mod core {
     pub mod file;
     pub mod file_link;
     pub mod mandate;
+    pub mod payment_intent;
     pub mod payout;
     pub mod platform_tax_fee;
     pub mod product;
