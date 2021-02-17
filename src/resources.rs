@@ -32,7 +32,7 @@ mod payment {
 }
 
 #[cfg(feature = "events")]
-mod event;
+mod webhook_events;
 
 #[path = "resources"]
 #[cfg(feature = "billing")]
@@ -122,7 +122,8 @@ pub use {
 #[rustfmt::skip]
 #[cfg(feature = "events")]
 pub use {
-    event::*,
+    webhook_events::*,
+    generated::event::*,
 };
 
 #[rustfmt::skip]

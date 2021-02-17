@@ -3,9 +3,9 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{EventId};
+use crate::ids::EventId;
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
-use crate::resources::{NotificationEventData};
+use crate::resources::NotificationEventData;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "NotificationEvent".
@@ -49,7 +49,6 @@ pub struct Event {
 }
 
 impl Event {
-
     /// List events, going back up to 30 days.
     ///
     /// Each event data is rendered according to Stripe API version at its creation time, specified in [event object](https://stripe.com/docs/api/events/object) `api_version` attribute (not according to your current Stripe API version or `Stripe-Version` header).
@@ -77,7 +76,6 @@ impl Object for Event {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NotificationEventRequest {
-
     /// ID of the API request that caused the event.
     ///
     /// If null, the event was automatic (e.g., Stripe's automatic subscription handling).
@@ -95,7 +93,6 @@ pub struct NotificationEventRequest {
 /// The parameters for `Event::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListEvents<'a> {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 

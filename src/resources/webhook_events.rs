@@ -192,7 +192,7 @@ pub enum EventType {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Event {
+pub struct WebhookEvent {
     pub id: EventId,
     #[serde(rename = "type")]
     pub event_type: EventType,
@@ -244,7 +244,11 @@ pub struct Webhook {
 
 #[cfg(feature = "webhook-events")]
 impl Webhook {
-    pub fn construct_event(payload: &str, sig: &str, secret: &str) -> Result<Event, WebhookError> {
+    pub fn construct_event(
+        payload: &str,
+        sig: &str,
+        secret: &str,
+    ) -> Result<WebhookEvent, WebhookError> {
         Self { current_timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() }
             .do_construct_event(payload, sig, secret)
     }
@@ -254,7 +258,7 @@ impl Webhook {
         payload: &str,
         sig: &str,
         secret: &str,
-    ) -> Result<Event, WebhookError> {
+    ) -> Result<WebhookEvent, WebhookError> {
         // Get Stripe signature from header
         let signature = Signature::parse(&sig)?;
         let signed_payload = format!("{}{}{}", signature.t, ".", payload);

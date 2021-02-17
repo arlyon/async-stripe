@@ -107,6 +107,9 @@ pub mod orders {
 #[cfg(feature = "sigma")]
 pub mod scheduled_query_run;
 
+#[cfg(feature = "events")]
+pub mod event;
+
 #[path = "generated"]
 #[cfg(feature = "webhook-endpoints")]
 pub mod webhook_endpoints {
