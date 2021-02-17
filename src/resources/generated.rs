@@ -35,6 +35,7 @@ pub mod core {
 pub mod payment {
     pub mod alipay_account;
     pub mod bank_account;
+    pub mod card;
     pub mod payment_method;
     pub mod source;
 }
