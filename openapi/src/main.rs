@@ -1,7 +1,6 @@
-use std::fs;
 use std::{
     collections::{BTreeMap, BTreeSet},
-    fs::File,
+    fs,
 };
 
 use anyhow::{anyhow, Context, Result};
@@ -22,9 +21,9 @@ fn main() -> Result<()> {
     let in_path = args.next().unwrap_or_else(|| "spec3.json".to_string());
     let out_path = args.next().unwrap_or_else(|| "out".to_string());
 
-    std::fs::create_dir_all(&out_path).context("could not create out folder")?;
+    fs::create_dir_all(&out_path).context("could not create out folder")?;
 
-    let raw = File::open(in_path).context("failed to load the specfile. does it exist?")?;
+    let raw = fs::File::open(in_path).context("failed to load the specfile. does it exist?")?;
     let spec: Json = serde_json::from_reader(&raw).context("failed to read json from specfile")?;
 
     let id_renames = mappings::id_renames();
