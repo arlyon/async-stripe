@@ -4,12 +4,12 @@ use crate::error::WebhookError;
 use crate::ids::EventId;
 use crate::resources::*;
 
+use chrono::Utc;
 #[cfg(feature = "webhook-events")]
 use hmac::{Hmac, Mac, NewMac};
 use serde_derive::{Deserialize, Serialize};
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 pub enum EventType {
@@ -239,7 +239,7 @@ pub enum EventObject {
 
 #[cfg(feature = "webhook-events")]
 pub struct Webhook {
-    current_timestamp: u64,
+    current_timestamp: i64,
 }
 
 #[cfg(feature = "webhook-events")]
@@ -249,8 +249,7 @@ impl Webhook {
         sig: &str,
         secret: &str,
     ) -> Result<WebhookEvent, WebhookError> {
-        Self { current_timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() }
-            .do_construct_event(payload, sig, secret)
+        Self { current_timestamp: Utc::now().timestamp() }.do_construct_event(payload, sig, secret)
     }
 
     fn do_construct_event(
@@ -275,17 +274,11 @@ impl Webhook {
         }
 
         // Get current timestamp to compare to signature timestamp
-        let diff = if self.current_timestamp > signature.t {
-            self.current_timestamp - signature.t
-        } else {
-            signature.t - self.current_timestamp
-        };
-
-        if diff > 300 {
-            Err(WebhookError::BadTimestamp(signature.t))
-        } else {
-            serde_json::from_str(&payload).map_err(WebhookError::BadParse)
+        if (self.current_timestamp - signature.t).abs() > 300 {
+            return Err(WebhookError::BadTimestamp(signature.t));
         }
+
+        serde_json::from_str(&payload).map_err(WebhookError::BadParse)
     }
 }
 
@@ -301,7 +294,7 @@ fn to_hex(bytes: &[u8]) -> String {
 #[cfg(feature = "webhook-events")]
 #[derive(Debug)]
 struct Signature<'r> {
-    t: u64,
+    t: i64,
     v1: &'r str,
     v0: Option<&'r str>,
 }
@@ -326,7 +319,7 @@ impl<'r> Signature<'r> {
         let t = headers.get("t").ok_or(WebhookError::BadSignature)?;
         let v1 = headers.get("v1").ok_or(WebhookError::BadSignature)?;
         let v0 = headers.get("v0").map(|r| *r);
-        Ok(Signature { t: t.parse::<u64>().map_err(WebhookError::BadHeader)?, v1, v0 })
+        Ok(Signature { t: t.parse::<i64>().map_err(WebhookError::BadHeader)?, v1, v0 })
     }
 }
 
