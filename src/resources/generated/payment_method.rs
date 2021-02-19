@@ -431,7 +431,7 @@ pub struct PaymentMethodGrabpay {}
 pub struct PaymentMethodIdeal {
     /// The customer's bank, if provided.
     ///
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<PaymentMethodIdealBank>,
 
@@ -947,6 +947,7 @@ pub enum CreatePaymentMethodIdealBank {
     Moneyou,
     Rabobank,
     Regiobank,
+    Revolut,
     SnsBank,
     TriodosBank,
     VanLanschot,
@@ -964,6 +965,7 @@ impl CreatePaymentMethodIdealBank {
             CreatePaymentMethodIdealBank::Moneyou => "moneyou",
             CreatePaymentMethodIdealBank::Rabobank => "rabobank",
             CreatePaymentMethodIdealBank::Regiobank => "regiobank",
+            CreatePaymentMethodIdealBank::Revolut => "revolut",
             CreatePaymentMethodIdealBank::SnsBank => "sns_bank",
             CreatePaymentMethodIdealBank::TriodosBank => "triodos_bank",
             CreatePaymentMethodIdealBank::VanLanschot => "van_lanschot",
@@ -1270,6 +1272,7 @@ pub enum PaymentMethodIdealBank {
     Moneyou,
     Rabobank,
     Regiobank,
+    Revolut,
     SnsBank,
     TriodosBank,
     VanLanschot,
@@ -1287,6 +1290,7 @@ impl PaymentMethodIdealBank {
             PaymentMethodIdealBank::Moneyou => "moneyou",
             PaymentMethodIdealBank::Rabobank => "rabobank",
             PaymentMethodIdealBank::Regiobank => "regiobank",
+            PaymentMethodIdealBank::Revolut => "revolut",
             PaymentMethodIdealBank::SnsBank => "sns_bank",
             PaymentMethodIdealBank::TriodosBank => "triodos_bank",
             PaymentMethodIdealBank::VanLanschot => "van_lanschot",
@@ -1330,6 +1334,8 @@ pub enum PaymentMethodIdealBic {
     Rabonl2u,
     #[serde(rename = "RBRBNL21")]
     Rbrbnl21,
+    #[serde(rename = "REVOLT21")]
+    Revolt21,
     #[serde(rename = "SNSBNL2A")]
     Snsbnl2a,
     #[serde(rename = "TRIONL2U")]
@@ -1349,6 +1355,7 @@ impl PaymentMethodIdealBic {
             PaymentMethodIdealBic::Moyonl21 => "MOYONL21",
             PaymentMethodIdealBic::Rabonl2u => "RABONL2U",
             PaymentMethodIdealBic::Rbrbnl21 => "RBRBNL21",
+            PaymentMethodIdealBic::Revolt21 => "REVOLT21",
             PaymentMethodIdealBic::Snsbnl2a => "SNSBNL2A",
             PaymentMethodIdealBic::Trionl2u => "TRIONL2U",
         }

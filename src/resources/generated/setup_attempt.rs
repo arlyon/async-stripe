@@ -172,7 +172,7 @@ pub struct SetupAttemptPaymentMethodDetailsCardPresent {
 pub struct SetupAttemptPaymentMethodDetailsIdeal {
     /// The customer's bank.
     ///
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<SetupAttemptPaymentMethodDetailsIdealBank>,
 
@@ -339,6 +339,7 @@ pub enum SetupAttemptPaymentMethodDetailsIdealBank {
     Moneyou,
     Rabobank,
     Regiobank,
+    Revolut,
     SnsBank,
     TriodosBank,
     VanLanschot,
@@ -356,6 +357,7 @@ impl SetupAttemptPaymentMethodDetailsIdealBank {
             SetupAttemptPaymentMethodDetailsIdealBank::Moneyou => "moneyou",
             SetupAttemptPaymentMethodDetailsIdealBank::Rabobank => "rabobank",
             SetupAttemptPaymentMethodDetailsIdealBank::Regiobank => "regiobank",
+            SetupAttemptPaymentMethodDetailsIdealBank::Revolut => "revolut",
             SetupAttemptPaymentMethodDetailsIdealBank::SnsBank => "sns_bank",
             SetupAttemptPaymentMethodDetailsIdealBank::TriodosBank => "triodos_bank",
             SetupAttemptPaymentMethodDetailsIdealBank::VanLanschot => "van_lanschot",
@@ -399,6 +401,8 @@ pub enum SetupAttemptPaymentMethodDetailsIdealBic {
     Rabonl2u,
     #[serde(rename = "RBRBNL21")]
     Rbrbnl21,
+    #[serde(rename = "REVOLT21")]
+    Revolt21,
     #[serde(rename = "SNSBNL2A")]
     Snsbnl2a,
     #[serde(rename = "TRIONL2U")]
@@ -418,6 +422,7 @@ impl SetupAttemptPaymentMethodDetailsIdealBic {
             SetupAttemptPaymentMethodDetailsIdealBic::Moyonl21 => "MOYONL21",
             SetupAttemptPaymentMethodDetailsIdealBic::Rabonl2u => "RABONL2U",
             SetupAttemptPaymentMethodDetailsIdealBic::Rbrbnl21 => "RBRBNL21",
+            SetupAttemptPaymentMethodDetailsIdealBic::Revolt21 => "REVOLT21",
             SetupAttemptPaymentMethodDetailsIdealBic::Snsbnl2a => "SNSBNL2A",
             SetupAttemptPaymentMethodDetailsIdealBic::Trionl2u => "TRIONL2U",
         }
