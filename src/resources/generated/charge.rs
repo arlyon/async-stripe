@@ -813,7 +813,7 @@ pub struct PaymentMethodDetailsGrabpay {
 pub struct PaymentMethodDetailsIdeal {
     /// The customer's bank.
     ///
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<PaymentMethodDetailsIdealBank>,
 
@@ -1639,6 +1639,7 @@ pub enum PaymentMethodDetailsIdealBank {
     Moneyou,
     Rabobank,
     Regiobank,
+    Revolut,
     SnsBank,
     TriodosBank,
     VanLanschot,
@@ -1656,6 +1657,7 @@ impl PaymentMethodDetailsIdealBank {
             PaymentMethodDetailsIdealBank::Moneyou => "moneyou",
             PaymentMethodDetailsIdealBank::Rabobank => "rabobank",
             PaymentMethodDetailsIdealBank::Regiobank => "regiobank",
+            PaymentMethodDetailsIdealBank::Revolut => "revolut",
             PaymentMethodDetailsIdealBank::SnsBank => "sns_bank",
             PaymentMethodDetailsIdealBank::TriodosBank => "triodos_bank",
             PaymentMethodDetailsIdealBank::VanLanschot => "van_lanschot",
@@ -1699,6 +1701,8 @@ pub enum PaymentMethodDetailsIdealBic {
     Rabonl2u,
     #[serde(rename = "RBRBNL21")]
     Rbrbnl21,
+    #[serde(rename = "REVOLT21")]
+    Revolt21,
     #[serde(rename = "SNSBNL2A")]
     Snsbnl2a,
     #[serde(rename = "TRIONL2U")]
@@ -1718,6 +1722,7 @@ impl PaymentMethodDetailsIdealBic {
             PaymentMethodDetailsIdealBic::Moyonl21 => "MOYONL21",
             PaymentMethodDetailsIdealBic::Rabonl2u => "RABONL2U",
             PaymentMethodDetailsIdealBic::Rbrbnl21 => "RBRBNL21",
+            PaymentMethodDetailsIdealBic::Revolt21 => "REVOLT21",
             PaymentMethodDetailsIdealBic::Snsbnl2a => "SNSBNL2A",
             PaymentMethodDetailsIdealBic::Trionl2u => "TRIONL2U",
         }

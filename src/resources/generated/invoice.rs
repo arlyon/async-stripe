@@ -271,6 +271,13 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
 
+    /// The account (if any) for which the funds of the invoice payment are intended.
+    ///
+    /// If set, the invoice will be presented with the branding and support information of the specified account.
+    /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<Expandable<Account>>,
+
     /// Whether payment was successfully collected for this invoice.
     ///
     /// An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
@@ -644,6 +651,13 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
+    /// The account (if any) for which the funds of the invoice payment are intended.
+    ///
+    /// If set, the invoice will be presented with the branding and support information of the specified account.
+    /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<&'a str>,
+
     /// Configuration settings for the PaymentIntent that is generated when the invoice is finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_settings: Option<CreateInvoicePaymentSettings>,
@@ -687,6 +701,7 @@ impl<'a> CreateInvoice<'a> {
             expand: Default::default(),
             footer: Default::default(),
             metadata: Default::default(),
+            on_behalf_of: Default::default(),
             payment_settings: Default::default(),
             statement_descriptor: Default::default(),
             subscription: Default::default(),
