@@ -289,7 +289,7 @@ pub enum WebhookError {
     /// The event signature could not be verified.
     BadSignature,
     /// The event signature's timestamp was too old.
-    BadTimestamp(u64),
+    BadTimestamp(i64),
     /// An error deserializing an event received from stripe.
     BadParse(serde_json::Error),
 }
