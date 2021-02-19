@@ -1,105 +1,29 @@
 use crate::params::to_snakecase;
 use serde_derive::{Deserialize, Serialize};
 use std::num::ParseIntError;
+use thiserror::Error;
 
 /// An error encountered when communicating with the Stripe API.
-#[derive(Debug)]
-pub enum Error {
-    /// An error reported by Stripe in the response body.
-    Stripe(RequestError),
-    /// An error reading the response body.
-    Io(std::io::Error),
-    /// An error serializing a request before it is sent to stripe.
-    Serialize(Box<dyn std::error::Error + Send>),
-    /// An error deserializing a response received from stripe.
-    Deserialize(Box<dyn std::error::Error + Send>),
-    /// Indicates an operation not supported (yet?) by this library.
+#[derive(Debug, Error)]
+pub enum StripeError {
+    #[error("error reported by stripe")]
+    Stripe(#[from] RequestError),
+    #[error("error serializing or deserializing a querystring: {0}")]
+    QueryStringSerialize(#[from] serde_qs::Error),
+    #[error("error serializing or deserializing a request")]
+    JSONSerialize(#[from] serde_json::Error),
+    #[error("an unsupported operation was attempted")]
     Unsupported(&'static str),
-    /// An invariant has been violated. Either a bug in this library or Stripe
-    Unexpected(&'static str),
-    /// An http client error
+    #[error("error communicating with stripe")]
     ClientError,
-    /// The request timed out.
+    #[error("timeout communicating with stripe")]
     Timeout,
 }
 
-impl Error {
-    pub(crate) fn serialize<T>(err: T) -> Error
-    where
-        T: std::error::Error + Send + 'static,
-    {
-        Error::Serialize(Box::new(err))
-    }
-
-    pub(crate) fn deserialize<T>(err: T) -> Error
-    where
-        T: std::error::Error + Send + 'static,
-    {
-        Error::Deserialize(Box::new(err))
-    }
-}
-
-impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        #[allow(deprecated)]
-        f.write_str(std::error::Error::description(self))?;
-        match *self {
-            Error::Stripe(ref err) => write!(f, ": {}", err),
-            Error::Timeout => write!(f, ": timed out"),
-            Error::ClientError => write!(f, ": client error"),
-            Error::Io(ref err) => write!(f, ": {}", err),
-            Error::Serialize(ref err) => write!(f, ": {}", err),
-            Error::Deserialize(ref err) => write!(f, ": {}", err),
-            Error::Unsupported(msg) => write!(f, "{}", msg),
-            Error::Unexpected(msg) => write!(f, "{}", msg),
-        }
-    }
-}
-
-impl std::error::Error for Error {
-    fn description(&self) -> &str {
-        match *self {
-            Error::Stripe(_) => "error reported by stripe",
-            Error::ClientError => "error communicating with stripe",
-            Error::Timeout => "timeout communicating with stripe",
-            Error::Io(_) => "error reading response from stripe",
-            Error::Serialize(_) => "error serializing a request",
-            Error::Deserialize(_) => "error deserializing a response",
-            Error::Unsupported(_) => "an unsupported operation was attempted",
-            Error::Unexpected(_) => "an unexpected error has occurred",
-        }
-    }
-
-    fn cause(&self) -> Option<&dyn std::error::Error> {
-        match *self {
-            Error::Stripe(ref err) => Some(err),
-            Error::ClientError => None,
-            Error::Timeout => None,
-            Error::Io(ref err) => Some(err),
-            Error::Serialize(ref err) => Some(&**err),
-            Error::Deserialize(ref err) => Some(&**err),
-            Error::Unsupported(_) => None,
-            Error::Unexpected(_) => None,
-        }
-    }
-}
-
-impl From<RequestError> for Error {
-    fn from(err: RequestError) -> Error {
-        Error::Stripe(err)
-    }
-}
-
 #[cfg(feature = "hyper")]
-impl From<hyper::Error> for Error {
-    fn from(_err: hyper::Error) -> Error {
-        Error::ClientError
-    }
-}
-
-impl From<std::io::Error> for Error {
-    fn from(err: std::io::Error) -> Error {
-        Error::Io(err)
+impl From<hyper::Error> for StripeError {
+    fn from(_err: hyper::Error) -> StripeError {
+        StripeError::ClientError
     }
 }
 
@@ -108,7 +32,6 @@ impl From<std::io::Error> for Error {
 pub enum ErrorType {
     #[serde(skip_deserializing)]
     Unknown,
-
     #[serde(rename = "api_error")]
     Api,
     #[serde(rename = "api_connection_error")]
@@ -229,7 +152,8 @@ impl std::fmt::Display for ErrorCode {
 /// An error reported by stripe in a request's response.
 ///
 /// For more details see <https://stripe.com/docs/api#errors>.
-#[derive(Debug, Default, Deserialize)]
+#[derive(Debug, Default, Deserialize, Error)]
+#[error("{error_type} ({http_status}) with message: {message:?}")]
 pub struct RequestError {
     /// The HTTP status in the response.
     #[serde(skip_deserializing)]
@@ -255,22 +179,6 @@ pub struct RequestError {
     pub charge: Option<String>,
 }
 
-impl std::fmt::Display for RequestError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}({})", self.error_type, self.http_status)?;
-        if let Some(ref message) = self.message {
-            write!(f, ": {}", message)?;
-        }
-        Ok(())
-    }
-}
-
-impl std::error::Error for RequestError {
-    fn description(&self) -> &str {
-        self.message.as_deref().unwrap_or("request error")
-    }
-}
-
 /// The structure of the json body when an error is included in
 /// the response from Stripe.
 #[derive(Deserialize)]
@@ -279,53 +187,16 @@ pub struct ErrorResponse {
 }
 
 /// An error encountered when communicating with the Stripe API webhooks.
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum WebhookError {
-    /// The provided secret could not be parsed as a key
-    /// (e.g. it may not be the correct size).
+    #[error("invalid key length")]
     BadKey,
-    /// The event's headers are in an unexpected format.
-    BadHeader(ParseIntError),
-    /// The event signature could not be verified.
+    #[error("error parsing timestamp")]
+    BadHeader(#[from] ParseIntError),
+    #[error("error comparing signatures")]
     BadSignature,
-    /// The event signature's timestamp was too old.
+    #[error("error comparing timestamps - over tolerance")]
     BadTimestamp(i64),
-    /// An error deserializing an event received from stripe.
-    BadParse(serde_json::Error),
-}
-
-impl std::fmt::Display for WebhookError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        #[allow(deprecated)]
-        f.write_str(std::error::Error::description(self))?;
-        match *self {
-            WebhookError::BadKey => Ok(()),
-            WebhookError::BadHeader(ref err) => write!(f, ": {}", err),
-            WebhookError::BadSignature => Ok(()),
-            WebhookError::BadTimestamp(ref err) => write!(f, ": {}", err),
-            WebhookError::BadParse(ref err) => write!(f, ": {}", err),
-        }
-    }
-}
-
-impl std::error::Error for WebhookError {
-    fn description(&self) -> &str {
-        match *self {
-            WebhookError::BadKey => "invalid key length",
-            WebhookError::BadHeader(_) => "error parsing timestamp",
-            WebhookError::BadSignature => "error comparing signatures",
-            WebhookError::BadTimestamp(_) => "error comparing timestamps - over tolerance",
-            WebhookError::BadParse(_) => "error parsing event object",
-        }
-    }
-
-    fn cause(&self) -> Option<&dyn std::error::Error> {
-        match *self {
-            WebhookError::BadKey => None,
-            WebhookError::BadHeader(ref err) => Some(err),
-            WebhookError::BadSignature => None,
-            WebhookError::BadTimestamp(_) => None,
-            WebhookError::BadParse(ref err) => Some(err),
-        }
-    }
+    #[error("error parsing event object")]
+    BadParse(#[from] serde_json::Error),
 }

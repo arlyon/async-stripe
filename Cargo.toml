@@ -93,7 +93,9 @@ tokio = { version = "1.2", optional = true }
 # webhook support
 hmac = { version = "0.10", optional = true }
 sha2 = { version = "0.9", optional = true }
+thiserror = "1.0.24"
 
 
 [dev-dependencies]
+anyhow = "1.0.38"
 lazy_static = "1.4"

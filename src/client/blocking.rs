@@ -1,5 +1,5 @@
 use crate::client::tokio::Client as AsyncClient;
-use crate::error::Error;
+use crate::error::StripeError;
 use crate::params::Headers;
 use serde::de::DeserializeOwned;
 use std::cell::RefCell;
@@ -9,7 +9,7 @@ use std::time::Duration;
 /// The delay after which the blocking `Client` will assume the request has failed.
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
 
-pub type Response<T> = Result<T, Error>;
+pub type Response<T> = Result<T, StripeError>;
 
 #[inline(always)]
 pub(crate) fn ok<T>(ok: T) -> Response<T> {
@@ -17,7 +17,7 @@ pub(crate) fn ok<T>(ok: T) -> Response<T> {
 }
 
 #[inline(always)]
-pub(crate) fn err<T>(err: crate::Error) -> Response<T> {
+pub(crate) fn err<T>(err: crate::StripeError) -> Response<T> {
     Err(err)
 }
 
@@ -119,7 +119,7 @@ impl Client {
             tokio::time::timeout(DEFAULT_TIMEOUT, request).await
         }) {
             Ok(finished) => finished,
-            Err(_) => Err(Error::Timeout),
+            Err(_) => Err(StripeError::Timeout),
         }
     }
 }

@@ -90,7 +90,7 @@ mod resources;
 //
 // See https://github.com/wyyerd/stripe-rs/issues/24#issuecomment-451514187
 // See https://github.com/rust-lang/rust/issues/44265
-pub use crate::error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
+pub use crate::error::{ErrorCode, ErrorType, RequestError, StripeError, WebhookError};
 pub use crate::ids::*;
 pub use crate::params::{
     Expandable, Headers, IdOrCreate, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,

@@ -1,4 +1,4 @@
-use crate::error::{Error, ErrorResponse, RequestError};
+use crate::error::{ErrorResponse, RequestError, StripeError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
 use http::header::{HeaderMap, HeaderName, HeaderValue};
@@ -33,7 +33,7 @@ compile_error!("You must enable only one TLS implementation");
 
 type HttpClient = hyper::Client<connector::HttpsConnector<HttpConnector>, Body>;
 
-pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, Error>> + Send>>;
+pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
 
 #[allow(dead_code)]
 #[inline(always)]
@@ -43,7 +43,7 @@ pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
 
 #[allow(dead_code)]
 #[inline(always)]
-pub(crate) fn err<T: Send + 'static>(err: Error) -> Response<T> {
+pub(crate) fn err<T: Send + 'static>(err: StripeError) -> Response<T> {
     Box::pin(future::ready(Err(err)))
 }
 
@@ -174,7 +174,9 @@ impl Client {
             .method("POST")
             .uri(url)
             .body(match serde_qs::to_string(&form) {
-                Err(err) => return Box::pin(future::ready(Err(Error::serialize(err)))),
+                Err(err) => {
+                    return Box::pin(future::ready(Err(StripeError::QueryStringSerialize(err))))
+                }
                 Ok(body) => hyper::Body::from(body),
             })
             .unwrap();
@@ -190,8 +192,12 @@ impl Client {
         format!("{}/{}", self.host, path.trim_start_matches('/'))
     }
 
-    fn url_with_params<P: serde::Serialize>(&self, path: &str, params: P) -> Result<String, Error> {
-        let params = serde_qs::to_string(&params).map_err(Error::serialize)?;
+    fn url_with_params<P: serde::Serialize>(
+        &self,
+        path: &str,
+        params: P,
+    ) -> Result<String, StripeError> {
+        let params = serde_qs::to_string(&params).map_err(StripeError::from)?;
         Ok(format!("{}/{}?{}", self.host, &path[1..], params))
     }
 
@@ -249,15 +255,15 @@ fn send<T: DeserializeOwned + Send + 'static>(
         let status = response.status();
         let bytes = hyper::body::to_bytes(response.into_body()).await?;
         if !status.is_success() {
-            let mut err = serde_json::from_slice(&bytes).unwrap_or_else(|err| {
-                let mut req = ErrorResponse { error: RequestError::default() };
-                req.error.message = Some(format!("failed to deserialize error: {}", err));
-                req
-            });
-            err.error.http_status = status.as_u16();
-            return Err(Error::from(err.error));
+            Err(serde_json::from_slice(&bytes)
+                .map(|mut e: ErrorResponse| {
+                    e.error.http_status = status.into();
+                    StripeError::from(e.error)
+                })
+                .unwrap_or_else(StripeError::from))
+        } else {
+            serde_json::from_slice(&bytes).map_err(StripeError::from)
         }
-        serde_json::from_slice(&bytes).map_err(Error::deserialize)
     })
 }
 
