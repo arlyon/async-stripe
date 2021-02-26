@@ -289,6 +289,10 @@ pub enum EventFilter {
     ApplicationFeeRefunded,
     #[serde(rename = "balance.available")]
     BalanceAvailable,
+    #[serde(rename = "billing_portal.configuration.created")]
+    BillingPortalConfigurationCreated,
+    #[serde(rename = "billing_portal.configuration.updated")]
+    BillingPortalConfigurationUpdated,
     #[serde(rename = "capability.updated")]
     CapabilityUpdated,
     #[serde(rename = "charge.captured")]
@@ -613,6 +617,12 @@ impl EventFilter {
             EventFilter::ApplicationFeeRefundUpdated => "application_fee.refund.updated",
             EventFilter::ApplicationFeeRefunded => "application_fee.refunded",
             EventFilter::BalanceAvailable => "balance.available",
+            EventFilter::BillingPortalConfigurationCreated => {
+                "billing_portal.configuration.created"
+            }
+            EventFilter::BillingPortalConfigurationUpdated => {
+                "billing_portal.configuration.updated"
+            }
             EventFilter::CapabilityUpdated => "capability.updated",
             EventFilter::ChargeCaptured => "charge.captured",
             EventFilter::ChargeDisputeClosed => "charge.dispute.closed",
