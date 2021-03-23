@@ -78,7 +78,6 @@ runtime-async-std-surf = ["async-std", "surf", "async"]
 [dependencies]
 async-std = { version = "1.9", optional = true }
 chrono = { version = "0.4", features = ["serde"], optional = true }
-http = "0.2"
 hyper = { version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true }
 hyper-tls = { version = "0.5", optional = true }
 hyper-rustls = { version = "0.22", optional = true }

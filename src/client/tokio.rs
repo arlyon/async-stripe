@@ -1,9 +1,11 @@
 use crate::error::{ErrorResponse, RequestError, StripeError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
-use http::header::{HeaderMap, HeaderName, HeaderValue};
-use http::request::Builder as RequestBuilder;
-use hyper::{client::HttpConnector, Body};
+use hyper::{
+    client::HttpConnector,
+    header::{HeaderMap, HeaderName, HeaderValue},
+    Body, Request,
+};
 use serde::de::DeserializeOwned;
 use std::future::{self, Future};
 use std::pin::Pin;
