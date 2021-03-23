@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::ids::PersonId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, Dob, File};
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Person".
 ///

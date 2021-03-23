@@ -1,6 +1,7 @@
+use serde_derive::{Deserialize, Serialize};
+
 use crate::params::Timestamp;
 use crate::resources::{CardBrand, CardType};
-use serde_derive::{Deserialize, Serialize};
 
 /// An enum representing the versions of the Stripe API.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]

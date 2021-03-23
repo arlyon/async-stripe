@@ -1,8 +1,10 @@
+use std::{cell::RefCell, sync::Arc, time::Duration};
+
+use serde::de::DeserializeOwned;
+
 use crate::client::tokio::Client as AsyncClient;
 use crate::error::StripeError;
 use crate::params::Headers;
-use serde::de::DeserializeOwned;
-use std::{cell::RefCell, sync::Arc, time::Duration};
 
 /// The delay after which the blocking `Client` will assume the request has failed.
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);

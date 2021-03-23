@@ -2,6 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{BalanceTransactionId, PayoutId, SourceId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
@@ -11,7 +13,6 @@ use crate::resources::{
     IssuingTransaction, Payout, PlatformTaxFee, Refund, ReserveTransaction, TaxDeductedAtSource,
     Topup, Transfer, TransferReversal,
 };
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BalanceTransaction".
 ///

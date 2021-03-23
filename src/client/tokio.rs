@@ -1,14 +1,16 @@
-use crate::error::{ErrorResponse, StripeError};
-use crate::params::{AppInfo, Headers};
-use crate::resources::ApiVersion;
+use std::future::{self, Future};
+use std::pin::Pin;
+
 use hyper::{
     client::HttpConnector,
     header::{HeaderMap, HeaderName, HeaderValue},
     Body, Request,
 };
 use serde::de::DeserializeOwned;
-use std::future::{self, Future};
-use std::pin::Pin;
+
+use crate::error::{ErrorResponse, StripeError};
+use crate::params::{AppInfo, Headers};
+use crate::resources::ApiVersion;
 
 static USER_AGENT: &str = concat!("Stripe/v3 RustBindings/", env!("CARGO_PKG_VERSION"));
 

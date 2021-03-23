@@ -1,10 +1,11 @@
+use serde_derive::{Deserialize, Serialize};
+
 use crate::params::{Expandable, Metadata};
 use crate::resources::{Currency, PaymentIntent, PaymentSource, Shipping};
 use crate::{
     config::{Client, Response},
     PaymentIntentCancellationReason,
 };
-use serde_derive::{Deserialize, Serialize};
 
 impl PaymentIntent {
     /// Confirm that customer intends to pay with current or provided source. Upon confirmation, the PaymentIntent will attempt to initiate a payment.

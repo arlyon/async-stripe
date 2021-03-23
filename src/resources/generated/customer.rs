@@ -2,6 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{
     AlipayAccountId, BankAccountId, CardId, CouponId, CustomerId, PaymentMethodId, PaymentSourceId,
@@ -12,7 +14,6 @@ use crate::resources::{
     Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
     Scheduled, Shipping, ShippingParams, Subscription, TaxId,
 };
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Customer".
 ///

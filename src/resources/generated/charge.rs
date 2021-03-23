@@ -2,6 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
@@ -11,7 +13,6 @@ use crate::resources::{
     PaymentIntent, PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan,
     PaymentMethodDetailsCardPresent, Refund, Review, Shipping, ThreeDSecureDetails, Transfer,
 };
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Charge".
 ///

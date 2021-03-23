@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::TaxRateId;
 use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TaxRate".
 ///

@@ -58,7 +58,8 @@ pub struct AccountCapabilityRequirements {
 
     /// If the capability is disabled, this string describes why.
     ///
-    /// Possible values are `requirement.fields_needed`, `pending.onboarding`, `pending.review`, `rejected_fraud`, or `rejected.other`.
+    /// Possible values are `requirement.fields_needed`, `pending.onboarding`, `pending.review`, `rejected_fraud`, `rejected.unsupported_business` or `rejected.other`.  `rejected.unsupported_business` means that the account's business is not supported by the capability.
+    /// For example, payment methods may restrict the businesses they support in their terms of service:  - [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses)  If you believe that the rejection is in error, please contact support@stripe.com for assistance.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disabled_reason: Option<String>,
 

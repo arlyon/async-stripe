@@ -2,13 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::PriceId;
 use crate::params::{
     Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
 };
 use crate::resources::{CreateProduct, Currency, Product, UpTo};
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Price".
 ///
@@ -60,7 +61,7 @@ pub struct Price {
     #[serde(default)]
     pub metadata: Metadata,
 
-    /// A brief description of the plan, hidden from customers.
+    /// A brief description of the price, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<String>,
 

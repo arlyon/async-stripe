@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::RecipientId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BankAccount, Card};
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TransferRecipient".
 #[derive(Clone, Debug, Deserialize, Serialize)]
