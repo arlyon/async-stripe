@@ -2,9 +2,7 @@ use crate::client::tokio::Client as AsyncClient;
 use crate::error::StripeError;
 use crate::params::Headers;
 use serde::de::DeserializeOwned;
-use std::cell::RefCell;
-use std::sync::Arc;
-use std::time::Duration;
+use std::{cell::RefCell, sync::Arc, time::Duration};
 
 /// The delay after which the blocking `Client` will assume the request has failed.
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
@@ -43,7 +41,7 @@ impl Client {
             .enable_io()
             .enable_time() // use separate `io/time` instead of `all` to ensure `tokio/time` is enabled
             .build()
-            .unwrap();
+            .expect("should be able to get a runtime");
         Client { inner, runtime: Arc::new(RefCell::new(runtime)) }
     }
 
