@@ -25,6 +25,7 @@ dependencies = ["openapi-generate"]
 
 [tasks.fmt]
 command = "cargo"
+toolchain = "nightly"
 args = ["fmt"]
 
 [tasks.openapi-install]
