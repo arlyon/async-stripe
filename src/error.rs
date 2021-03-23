@@ -12,8 +12,8 @@ pub enum StripeError {
     QueryStringSerialize(#[from] serde_qs::Error),
     #[error("error serializing or deserializing a request")]
     JSONSerialize(#[from] serde_json::Error),
-    #[error("an unsupported operation was attempted")]
-    Unsupported(&'static str),
+    #[error("attempted to access an unsupported version of the api")]
+    UnsupportedVersion,
     #[error("error communicating with stripe")]
     ClientError,
     #[error("timeout communicating with stripe")]

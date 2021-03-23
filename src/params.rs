@@ -183,9 +183,7 @@ impl<T: DeserializeOwned + Send + 'static> List<T> {
             }
             client.get(&url)
         } else {
-            err(StripeError::Unsupported(
-                "URL for fetching additional data uses different API version",
-            ))
+            err(StripeError::UnsupportedVersion)
         }
     }
 }
