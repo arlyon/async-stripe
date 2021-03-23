@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::ProductId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::PackageDimensions;
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Product".
 ///
@@ -20,27 +21,11 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
-    /// A list of up to 5 attributes that each SKU can provide values for (e.g., `["color", "size"]`).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-
-    /// A short one-line description of the product, meant to be displayable to the customer.
-    ///
-    /// Only applicable to products of `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<String>,
-
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<Timestamp>,
-
-    /// An array of connect application identifiers that cannot purchase this product.
-    ///
-    /// Only applicable to products of `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deactivate_on: Option<Vec<String>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -73,15 +58,10 @@ pub struct Product {
     pub name: Option<String>,
 
     /// The dimensions of this product for shipping purposes.
-    ///
-    /// A SKU associated with this product can override this value by having its own `package_dimensions`.
-    /// Only applicable to products of `type=good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<PackageDimensions>,
 
-    /// Whether this product is a shipped good.
-    ///
-    /// Only applicable to products of `type=good`.
+    /// Whether this product is shipped (i.e., physical goods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shippable: Option<bool>,
 
@@ -104,8 +84,6 @@ pub struct Product {
     pub updated: Option<Timestamp>,
 
     /// A URL of a publicly-accessible webpage for this product.
-    ///
-    /// Only applicable to products of `type=good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -165,24 +143,6 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
-    /// A list of up to 5 alphanumeric attributes.
-    ///
-    /// Should only be set if type=`good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-
-    /// A short one-line description of the product, meant to be displayable to the customer.
-    ///
-    /// May only be set if type=`good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<&'a str>,
-
-    /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
-    ///
-    /// May only be set if type=`good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deactivate_on: Option<Vec<String>>,
-
     /// The product's description, meant to be displayable to the customer.
     ///
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
@@ -217,16 +177,10 @@ pub struct CreateProduct<'a> {
     pub name: &'a str,
 
     /// The dimensions of this product for shipping purposes.
-    ///
-    /// A SKU associated with this product can override this value by having its own `package_dimensions`.
-    /// May only be set if type=`good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<PackageDimensions>,
 
     /// Whether this product is shipped (i.e., physical goods).
-    ///
-    /// Defaults to `true`.
-    /// May only be set if type=`good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shippable: Option<bool>,
 
@@ -245,8 +199,6 @@ pub struct CreateProduct<'a> {
     pub unit_label: Option<&'a str>,
 
     /// A URL of a publicly-accessible webpage for this product.
-    ///
-    /// May only be set if type=`good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<&'a str>,
 }
@@ -255,9 +207,6 @@ impl<'a> CreateProduct<'a> {
     pub fn new(name: &'a str) -> Self {
         CreateProduct {
             active: Default::default(),
-            attributes: Default::default(),
-            caption: Default::default(),
-            deactivate_on: Default::default(),
             description: Default::default(),
             expand: Default::default(),
             id: Default::default(),
@@ -344,25 +293,6 @@ pub struct UpdateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
-    /// A list of up to 5 alphanumeric attributes that each SKU can provide values for (e.g., `["color", "size"]`).
-    ///
-    /// If a value for `attributes` is specified, the list specified will replace the existing attributes list on this product.
-    /// Any attributes not present after the update will be deleted from the SKUs for this product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-
-    /// A short one-line description of the product, meant to be displayable to the customer.
-    ///
-    /// May only be set if `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub caption: Option<&'a str>,
-
-    /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
-    ///
-    /// May only be set if `type=good`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deactivate_on: Option<Vec<String>>,
-
     /// The product's description, meant to be displayable to the customer.
     ///
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
@@ -392,16 +322,10 @@ pub struct UpdateProduct<'a> {
     pub name: Option<&'a str>,
 
     /// The dimensions of this product for shipping purposes.
-    ///
-    /// A SKU associated with this product can override this value by having its own `package_dimensions`.
-    /// May only be set if `type=good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<PackageDimensions>,
 
     /// Whether this product is shipped (i.e., physical goods).
-    ///
-    /// Defaults to `true`.
-    /// May only be set if `type=good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shippable: Option<bool>,
 
@@ -422,8 +346,6 @@ pub struct UpdateProduct<'a> {
     pub unit_label: Option<&'a str>,
 
     /// A URL of a publicly-accessible webpage for this product.
-    ///
-    /// May only be set if `type=good`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<&'a str>,
 }
@@ -432,9 +354,6 @@ impl<'a> UpdateProduct<'a> {
     pub fn new() -> Self {
         UpdateProduct {
             active: Default::default(),
-            attributes: Default::default(),
-            caption: Default::default(),
-            deactivate_on: Default::default(),
             description: Default::default(),
             expand: Default::default(),
             images: Default::default(),

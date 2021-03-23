@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::MandateId;
 use crate::params::{Expand, Expandable, Object, Timestamp};
 use crate::resources::{Currency, PaymentMethod};
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Mandate".
 ///

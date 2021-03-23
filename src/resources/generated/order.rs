@@ -2,13 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, OrderId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Charge, Currency, Customer, OrderItem, OrderReturn, OrderStatusFilter, Shipping, ShippingParams,
 };
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Order".
 ///

@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::FileId;
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
 use crate::resources::FileLink;
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "File".
 ///

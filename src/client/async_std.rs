@@ -1,12 +1,14 @@
 #![warn(clippy::unwrap_used)]
 
+use std::future::{self, Future};
+use std::pin::Pin;
+
+use serde::de::DeserializeOwned;
+use surf::{http::url::ParseError, Body, Url};
+
 use crate::error::{ErrorResponse, StripeError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
-use serde::de::DeserializeOwned;
-use std::future::{self, Future};
-use std::pin::Pin;
-use surf::{http::url::ParseError, Body, Url};
 
 pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
 

@@ -2,6 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
@@ -9,7 +11,6 @@ use crate::resources::{
     Address, BankAccount, BusinessType, Card, Currency, DelayDays, Dob, File, Person,
     PersonVerificationParams, VerificationDocumentParams, Weekday,
 };
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Account".
 ///
@@ -63,7 +64,9 @@ pub struct Account {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub details_submitted: Option<bool>,
 
-    /// The primary user's email address.
+    /// An email address associated with the account.
+    ///
+    /// You can treat this as metadata: it is not used for authentication or messaging account holders.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 

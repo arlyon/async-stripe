@@ -1,7 +1,8 @@
+use serde_derive::Serialize;
+
 use crate::config::{Client, Response};
 use crate::ids::SubscriptionId;
 use crate::resources::{CreateSubscriptionItems, Subscription};
-use serde_derive::Serialize;
 
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct CancelSubscription {

@@ -1,7 +1,9 @@
-use crate::params::to_snakecase;
-use serde_derive::{Deserialize, Serialize};
 use std::num::ParseIntError;
+
+use serde_derive::{Deserialize, Serialize};
 use thiserror::Error;
+
+use crate::params::to_snakecase;
 
 /// An error encountered when communicating with the Stripe API.
 #[derive(Debug, Error)]

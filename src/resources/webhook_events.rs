@@ -1,15 +1,15 @@
 use std::iter::once;
 
-use crate::error::WebhookError;
-use crate::ids::EventId;
-use crate::resources::*;
-
 use chrono::Utc;
 #[cfg(feature = "webhook-events")]
 use hmac::{Hmac, Mac, NewMac};
 use serde_derive::{Deserialize, Serialize};
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
+
+use crate::error::WebhookError;
+use crate::ids::EventId;
+use crate::resources::*;
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 pub enum EventType {

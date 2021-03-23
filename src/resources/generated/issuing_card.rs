@@ -2,13 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::ids::IssuingCardId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{
     Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType,
     IssuingCardType, IssuingCardholder, MerchantCategory, SpendingLimit,
 };
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingCard".
 #[derive(Clone, Debug, Deserialize, Serialize)]

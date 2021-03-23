@@ -2,6 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, SourceId, TokenId};
 use crate::params::{Expand, List, Metadata, Object, Timestamp};
@@ -9,7 +11,6 @@ use crate::resources::{
     Address, BillingDetails, Currency, Shipping, SourceRedirectFlowFailureReason,
     SourceRedirectFlowStatus, SourceStatus, SourceUsage,
 };
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Source".
 ///

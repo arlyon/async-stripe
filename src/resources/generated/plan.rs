@@ -2,13 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::PlanId;
 use crate::params::{
     Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
 };
 use crate::resources::{CreateProduct, Currency, Product};
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Plan".
 ///

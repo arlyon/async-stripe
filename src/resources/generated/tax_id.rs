@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::ids::TaxIdId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::Customer;
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "tax_id".
 #[derive(Clone, Debug, Deserialize, Serialize)]

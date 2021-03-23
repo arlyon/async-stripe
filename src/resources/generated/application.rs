@@ -2,8 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::params::Object;
 use serde_derive::{Deserialize, Serialize};
+
+use crate::params::Object;
 
 /// The resource representing a Stripe "Application".
 #[derive(Clone, Debug, Deserialize, Serialize)]

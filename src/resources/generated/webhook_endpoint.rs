@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::WebhookEndpointId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{ApiVersion, WebhookEndpointStatus};
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "NotificationWebhookEndpoint".
 ///

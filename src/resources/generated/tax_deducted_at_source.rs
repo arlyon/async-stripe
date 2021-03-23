@@ -2,8 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::params::{Object, Timestamp};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "TaxDeductedAtSource".
 #[derive(Clone, Debug, Deserialize, Serialize)]

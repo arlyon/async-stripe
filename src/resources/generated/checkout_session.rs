@@ -2,6 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
@@ -9,7 +11,6 @@ use crate::resources::{
     CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, SetupIntent, Shipping,
     Subscription, TaxRate,
 };
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Session".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -193,6 +194,10 @@ pub struct PaymentPagesCheckoutSessionTaxId {
 pub struct PaymentPagesCheckoutSessionTotalDetails {
     /// This is the sum of all the line item discounts.
     pub amount_discount: i64,
+
+    /// This is the sum of all the line item shipping amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_shipping: Option<i64>,
 
     /// This is the sum of all the line item tax amounts.
     pub amount_tax: i64,

@@ -1,5 +1,6 @@
-use crate::params::to_snakecase;
 use serde_derive::{Deserialize, Serialize};
+
+use crate::params::to_snakecase;
 
 /// Currency is the list of supported currencies.
 ///

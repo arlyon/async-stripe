@@ -1,8 +1,9 @@
+use serde::ser::SerializeStruct;
+use serde_derive::{Deserialize, Serialize};
+
 use crate::ids::{PaymentSourceId, SourceId, TokenId};
 use crate::params::Object;
 use crate::resources::{Account, AlipayAccount, BankAccount, Card, Currency, Source};
-use serde::ser::SerializeStruct;
-use serde_derive::{Deserialize, Serialize};
 
 /// A PaymentSourceParams represents all of the supported ways that can
 /// be used to creating a new customer with a payment method or creating

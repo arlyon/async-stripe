@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::ids::CheckoutSessionItemId;
 use crate::params::Object;
 use crate::resources::{Currency, Discount, Price, TaxRate};
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "LineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
