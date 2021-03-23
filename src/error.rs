@@ -27,6 +27,13 @@ impl From<hyper::Error> for StripeError {
     }
 }
 
+#[cfg(feature = "surf")]
+impl From<surf::Error> for StripeError {
+    fn from(_err: surf::Error) -> StripeError {
+        StripeError::ClientError
+    }
+}
+
 /// The list of possible values for a RequestError's type.
 #[derive(Debug, PartialEq, Deserialize)]
 pub enum ErrorType {

@@ -1,12 +1,12 @@
 #![warn(clippy::unwrap_used)]
 
-use crate::error::{ErrorResponse, RequestError, StripeError};
+use crate::error::{ErrorResponse, StripeError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
 use serde::de::DeserializeOwned;
 use std::future::{self, Future};
 use std::pin::Pin;
-use surf::{Body, Url};
+use surf::{http::url::ParseError, Body, Url};
 
 pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
 
@@ -35,24 +35,27 @@ pub struct Client {
 impl Client {
     /// Creates a new client pointed to `https://api.stripe.com/`
     pub fn new(secret_key: impl Into<String>) -> Client {
-        Client::from_url("https://api.stripe.com/", secret_key)
+        Client::from_url("https://api.stripe.com/", secret_key).expect("this url is valid")
     }
 
     /// Creates a new client posted to a custom `scheme://host/`
-    pub fn from_url<'a>(scheme_host: impl Into<&'a str>, secret_key: impl Into<String>) -> Client {
-        let host = Url::parse(scheme_host.into()).unwrap();
+    pub fn from_url<'a>(
+        scheme_host: impl Into<&'a str>,
+        secret_key: impl Into<String>,
+    ) -> Result<Client, ParseError> {
+        let host = Url::parse(scheme_host.into())?;
         let client = surf::Client::new();
         let headers =
             Headers { stripe_version: Some(ApiVersion::V2020_08_27), ..Default::default() };
 
-        Client {
+        Ok(Client {
             host,
             api_root: "v1".to_string(),
             client,
             secret_key: secret_key.into(),
             headers,
             app_info: Some(AppInfo::default()),
-        }
+        })
     }
 
     /// Clones a new client with different headers.
@@ -194,9 +197,9 @@ fn send<T: DeserializeOwned + Send + 'static>(
 ) -> Response<T> {
     let client = client.clone(); // N.B. Client is send sync;  cloned clients share the same pool.
     Box::pin(async move {
-        let mut response = client.send(request).await.unwrap();
+        let mut response = client.send(request).await?;
         let status = response.status();
-        let bytes = response.body_bytes().await.unwrap();
+        let bytes = response.body_bytes().await?;
         if !status.is_success() {
             Err(serde_json::from_slice(&bytes)
                 .map(|mut e: ErrorResponse| {
