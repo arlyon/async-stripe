@@ -1,14 +1,14 @@
 #![warn(clippy::unwrap_used)]
 
-use crate::error::{Error, ErrorResponse, RequestError};
+use crate::error::{ErrorResponse, StripeError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
 use serde::de::DeserializeOwned;
 use std::future::{self, Future};
 use std::pin::Pin;
-use surf::{Body, Url};
+use surf::{http::url::ParseError, Body, Url};
 
-pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, Error>> + Send>>;
+pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
 
 #[allow(dead_code)]
 #[inline(always)]
@@ -18,7 +18,7 @@ pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
 
 #[allow(dead_code)]
 #[inline(always)]
-pub(crate) fn err<T: Send + 'static>(err: Error) -> Response<T> {
+pub(crate) fn err<T: Send + 'static>(err: StripeError) -> Response<T> {
     Box::pin(future::ready(Err(err)))
 }
 
@@ -40,7 +40,7 @@ impl Client {
 
     /// Creates a new client posted to a custom `scheme://host/`
     pub fn from_url<'a>(scheme_host: impl Into<&'a str>, secret_key: impl Into<String>) -> Client {
-        let host = Url::parse(scheme_host.into()).unwrap();
+        let host = Url::parse(scheme_host.into()).expect("invalid url");
         let client = surf::Client::new();
         let headers =
             Headers { stripe_version: Some(ApiVersion::V2020_08_27), ..Default::default() };
@@ -135,7 +135,9 @@ impl Client {
         let url = self.url(path);
         let mut req = surf::Request::builder(surf::http::Method::Post, url)
             .body(match serde_qs::to_string(&form) {
-                Err(err) => return Box::pin(future::ready(Err(Error::serialize(err)))),
+                Err(err) => {
+                    return Box::pin(future::ready(Err(StripeError::QueryStringSerialize(err))))
+                }
                 Ok(body) => Body::from_string(body),
             })
             .build();
@@ -149,9 +151,13 @@ impl Client {
         url
     }
 
-    fn url_with_params<P: serde::Serialize>(&self, path: &str, params: P) -> Result<Url, Error> {
+    fn url_with_params<P: serde::Serialize>(
+        &self,
+        path: &str,
+        params: P,
+    ) -> Result<Url, StripeError> {
         let mut url = self.url(path);
-        let params = serde_qs::to_string(&params).map_err(Error::serialize)?;
+        let params = serde_qs::to_string(&params).map_err(StripeError::from)?;
         url.set_query(Some(&params));
         Ok(url)
     }
@@ -188,19 +194,19 @@ fn send<T: DeserializeOwned + Send + 'static>(
 ) -> Response<T> {
     let client = client.clone(); // N.B. Client is send sync;  cloned clients share the same pool.
     Box::pin(async move {
-        let mut response = client.send(request).await.unwrap();
+        let mut response = client.send(request).await?;
         let status = response.status();
-        let bytes = response.body_bytes().await.unwrap();
+        let bytes = response.body_bytes().await?;
         if !status.is_success() {
-            let mut err = serde_json::from_slice(&bytes).unwrap_or_else(|err| {
-                let mut req = ErrorResponse { error: RequestError::default() };
-                req.error.message = Some(format!("failed to deserialize error: {}", err));
-                req
-            });
-            err.error.http_status = status.into();
-            return Err(Error::from(err.error));
+            Err(serde_json::from_slice(&bytes)
+                .map(|mut e: ErrorResponse| {
+                    e.error.http_status = status.into();
+                    StripeError::from(e.error)
+                })
+                .unwrap_or_else(StripeError::from))
+        } else {
+            serde_json::from_slice(&bytes).map_err(StripeError::from)
         }
-        serde_json::from_slice(&bytes).map_err(Error::deserialize)
     })
 }
 

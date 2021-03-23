@@ -1,5 +1,5 @@
 use crate::config::{err, ok, Client, Response};
-use crate::error::Error;
+use crate::error::StripeError;
 use crate::resources::ApiVersion;
 use serde::de::DeserializeOwned;
 use serde_derive::{Deserialize, Serialize};
@@ -143,6 +143,8 @@ where
 }
 
 /// A single page of a cursor-paginated list of an object.
+///
+/// For more details, see <https://stripe.com/docs/api/pagination>
 #[derive(Debug, Deserialize, Serialize)]
 pub struct List<T> {
     pub data: Vec<T>,
@@ -181,7 +183,7 @@ impl<T: DeserializeOwned + Send + 'static> List<T> {
             }
             client.get(&url)
         } else {
-            err(Error::Unsupported("URL for fetching additional data uses different API version"))
+            err(StripeError::UnsupportedVersion)
         }
     }
 }

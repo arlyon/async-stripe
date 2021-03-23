@@ -57,9 +57,8 @@
 //! ```
 
 #![allow(clippy::map_clone)]
-// N.B. not sure if this rule will break compatibility with older rust versions we might want to support
-#![allow(clippy::needless_pass_by_value)]
 #![allow(clippy::large_enum_variant)]
+#![warn(clippy::unwrap_used)]
 #![forbid(unsafe_code)]
 
 mod client {
@@ -90,7 +89,7 @@ mod resources;
 //
 // See https://github.com/wyyerd/stripe-rs/issues/24#issuecomment-451514187
 // See https://github.com/rust-lang/rust/issues/44265
-pub use crate::error::{Error, ErrorCode, ErrorType, RequestError, WebhookError};
+pub use crate::error::{ErrorCode, ErrorType, RequestError, StripeError, WebhookError};
 pub use crate::ids::*;
 pub use crate::params::{
     Expandable, Headers, IdOrCreate, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,

@@ -1,12 +1,16 @@
-use crate::error::{Error, ErrorResponse, RequestError};
+use crate::error::{ErrorResponse, StripeError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
-use http::header::{HeaderMap, HeaderName, HeaderValue};
-use http::request::Builder as RequestBuilder;
-use hyper::{client::HttpConnector, Body};
+use hyper::{
+    client::HttpConnector,
+    header::{HeaderMap, HeaderName, HeaderValue},
+    Body, Request,
+};
 use serde::de::DeserializeOwned;
 use std::future::{self, Future};
 use std::pin::Pin;
+
+static USER_AGENT: &str = concat!("Stripe/v3 RustBindings/", env!("CARGO_PKG_VERSION"));
 
 #[cfg(feature = "hyper-rustls")]
 mod connector {
@@ -33,7 +37,7 @@ compile_error!("You must enable only one TLS implementation");
 
 type HttpClient = hyper::Client<connector::HttpsConnector<HttpConnector>, Body>;
 
-pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, Error>> + Send>>;
+pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
 
 #[allow(dead_code)]
 #[inline(always)]
@@ -43,7 +47,7 @@ pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
 
 #[allow(dead_code)]
 #[inline(always)]
-pub(crate) fn err<T: Send + 'static>(err: Error) -> Response<T> {
+pub(crate) fn err<T: Send + 'static>(err: StripeError) -> Response<T> {
     Box::pin(future::ready(Err(err)))
 }
 
@@ -107,8 +111,11 @@ impl Client {
     /// Make a `GET` http request with just a path
     pub fn get<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
         let url = self.url(path);
-        let mut req =
-            RequestBuilder::new().method("GET").uri(url).body(hyper::Body::empty()).unwrap();
+        let mut req = Request::builder()
+            .method("GET")
+            .uri(url)
+            .body(Body::empty())
+            .expect("request is correct");
         *req.headers_mut() = self.headers();
         send(&self.client, req)
     }
@@ -123,8 +130,11 @@ impl Client {
             Err(err) => return Box::pin(future::ready(Err(err))),
             Ok(ok) => ok,
         };
-        let mut req =
-            RequestBuilder::new().method("GET").uri(url).body(hyper::Body::empty()).unwrap();
+        let mut req = Request::builder()
+            .method("GET")
+            .uri(url)
+            .body(Body::empty())
+            .expect("request is correct");
         *req.headers_mut() = self.headers();
         send(&self.client, req)
     }
@@ -132,8 +142,11 @@ impl Client {
     /// Make a `DELETE` http request with just a path
     pub fn delete<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
         let url = self.url(path);
-        let mut req =
-            RequestBuilder::new().method("DELETE").uri(url).body(hyper::Body::empty()).unwrap();
+        let mut req = Request::builder()
+            .method("DELETE")
+            .uri(url)
+            .body(Body::empty())
+            .expect("request is correct");
         *req.headers_mut() = self.headers();
         send(&self.client, req)
     }
@@ -148,8 +161,11 @@ impl Client {
             Err(err) => return Box::pin(future::ready(Err(err))),
             Ok(ok) => ok,
         };
-        let mut req =
-            RequestBuilder::new().method("DELETE").uri(url).body(hyper::Body::empty()).unwrap();
+        let mut req = Request::builder()
+            .method("DELETE")
+            .uri(url)
+            .body(Body::empty())
+            .expect("request is correct");
         *req.headers_mut() = self.headers();
         send(&self.client, req)
     }
@@ -157,8 +173,11 @@ impl Client {
     /// Make a `POST` http request with just a path
     pub fn post<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
         let url = self.url(path);
-        let mut req =
-            RequestBuilder::new().method("POST").uri(url).body(hyper::Body::empty()).unwrap();
+        let mut req = Request::builder()
+            .method("POST")
+            .uri(url)
+            .body(Body::empty())
+            .expect("request is correct");
         *req.headers_mut() = self.headers();
         send(&self.client, req)
     }
@@ -170,18 +189,20 @@ impl Client {
         form: F,
     ) -> Response<T> {
         let url = self.url(path);
-        let mut req = RequestBuilder::new()
+        let mut req = Request::builder()
             .method("POST")
             .uri(url)
             .body(match serde_qs::to_string(&form) {
-                Err(err) => return Box::pin(future::ready(Err(Error::serialize(err)))),
-                Ok(body) => hyper::Body::from(body),
+                Err(err) => {
+                    return Box::pin(future::ready(Err(StripeError::QueryStringSerialize(err))))
+                }
+                Ok(body) => Body::from(body),
             })
-            .unwrap();
+            .expect("request is correct");
         *req.headers_mut() = self.headers();
         req.headers_mut().insert(
             HeaderName::from_static("content-type"),
-            HeaderValue::from_str("application/x-www-form-urlencoded").unwrap(),
+            HeaderValue::from_static("application/x-www-form-urlencoded"),
         );
         send(&self.client, req)
     }
@@ -190,8 +211,12 @@ impl Client {
         format!("{}/{}", self.host, path.trim_start_matches('/'))
     }
 
-    fn url_with_params<P: serde::Serialize>(&self, path: &str, params: P) -> Result<String, Error> {
-        let params = serde_qs::to_string(&params).map_err(Error::serialize)?;
+    fn url_with_params<P: serde::Serialize>(
+        &self,
+        path: &str,
+        params: P,
+    ) -> Result<String, StripeError> {
+        let params = serde_qs::to_string(&params).map_err(StripeError::from)?;
         Ok(format!("{}/{}?{}", self.host, &path[1..], params))
     }
 
@@ -199,40 +224,39 @@ impl Client {
         let mut headers = HeaderMap::new();
         headers.insert(
             HeaderName::from_static("authorization"),
-            HeaderValue::from_str(&format!("Bearer {}", self.secret_key)).unwrap(),
+            HeaderValue::from_str(&format!("Bearer {}", self.secret_key))
+                .expect("secret key is valid header value"),
         );
         if let Some(account) = &self.headers.stripe_account {
             headers.insert(
                 HeaderName::from_static("stripe-account"),
-                HeaderValue::from_str(account).unwrap(),
+                HeaderValue::from_str(account).expect("stripe account is valid header value"),
             );
         }
         if let Some(client_id) = &self.headers.client_id {
             headers.insert(
                 HeaderName::from_static("client-id"),
-                HeaderValue::from_str(client_id).unwrap(),
+                HeaderValue::from_str(client_id).expect("client id valid header value"),
             );
         }
         if let Some(stripe_version) = &self.headers.stripe_version {
             headers.insert(
                 HeaderName::from_static("stripe-version"),
-                HeaderValue::from_str(stripe_version.as_str()).unwrap(),
+                HeaderValue::from_str(stripe_version.as_str())
+                    .expect("stripe version is valid header value"),
             );
         }
-        const CRATE_VERSION: &str = env!("CARGO_PKG_VERSION");
-        let user_agent: String = format!("Stripe/v3 RustBindings/{}", CRATE_VERSION);
         if let Some(app_info) = &self.app_info {
-            let formatted: String = format_app_info(app_info);
-            let user_agent_app_info: String =
-                format!("{} {}", user_agent, formatted).trim().to_owned();
+            let user_agent_app_info = format!("{} {}", USER_AGENT, format_app_info(app_info));
             headers.insert(
                 HeaderName::from_static("user-agent"),
-                HeaderValue::from_str(user_agent_app_info.as_str()).unwrap(),
+                HeaderValue::from_str(user_agent_app_info.trim())
+                    .expect("app info is valid header value"),
             );
         } else {
             headers.insert(
                 HeaderName::from_static("user-agent"),
-                HeaderValue::from_str(user_agent.as_str()).unwrap(),
+                HeaderValue::from_static(USER_AGENT),
             );
         };
         headers
@@ -241,7 +265,7 @@ impl Client {
 
 fn send<T: DeserializeOwned + Send + 'static>(
     client: &HttpClient,
-    request: hyper::Request<hyper::Body>,
+    request: hyper::Request<Body>,
 ) -> Response<T> {
     let client = client.clone(); // N.B. Client is send sync;  cloned clients share the same pool.
     Box::pin(async move {
@@ -249,15 +273,15 @@ fn send<T: DeserializeOwned + Send + 'static>(
         let status = response.status();
         let bytes = hyper::body::to_bytes(response.into_body()).await?;
         if !status.is_success() {
-            let mut err = serde_json::from_slice(&bytes).unwrap_or_else(|err| {
-                let mut req = ErrorResponse { error: RequestError::default() };
-                req.error.message = Some(format!("failed to deserialize error: {}", err));
-                req
-            });
-            err.error.http_status = status.as_u16();
-            return Err(Error::from(err.error));
+            Err(serde_json::from_slice(&bytes)
+                .map(|mut e: ErrorResponse| {
+                    e.error.http_status = status.into();
+                    StripeError::from(e.error)
+                })
+                .unwrap_or_else(StripeError::from))
+        } else {
+            serde_json::from_slice(&bytes).map_err(StripeError::from)
         }
-        serde_json::from_slice(&bytes).map_err(Error::deserialize)
     })
 }
 
