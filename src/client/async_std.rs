@@ -35,27 +35,24 @@ pub struct Client {
 impl Client {
     /// Creates a new client pointed to `https://api.stripe.com/`
     pub fn new(secret_key: impl Into<String>) -> Client {
-        Client::from_url("https://api.stripe.com/", secret_key).expect("this url is valid")
+        Client::from_url("https://api.stripe.com/", secret_key)
     }
 
     /// Creates a new client posted to a custom `scheme://host/`
-    pub fn from_url<'a>(
-        scheme_host: impl Into<&'a str>,
-        secret_key: impl Into<String>,
-    ) -> Result<Client, ParseError> {
-        let host = Url::parse(scheme_host.into())?;
+    pub fn from_url<'a>(scheme_host: impl Into<&'a str>, secret_key: impl Into<String>) -> Client {
+        let host = Url::parse(scheme_host.into()).expect("invalid url");
         let client = surf::Client::new();
         let headers =
             Headers { stripe_version: Some(ApiVersion::V2020_08_27), ..Default::default() };
 
-        Ok(Client {
+        Client {
             host,
             api_root: "v1".to_string(),
             client,
             secret_key: secret_key.into(),
             headers,
             app_info: Some(AppInfo::default()),
-        })
+        }
     }
 
     /// Clones a new client with different headers.
