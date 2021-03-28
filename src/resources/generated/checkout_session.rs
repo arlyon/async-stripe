@@ -334,6 +334,12 @@ pub struct CreateCheckoutSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<CreateCheckoutSessionShippingAddressCollection>,
 
+    /// The shipping rate to apply to this Session.
+    ///
+    /// Currently, only up to one may be specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_rates: Option<Vec<String>>,
+
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button.
     ///
@@ -375,6 +381,7 @@ impl<'a> CreateCheckoutSession<'a> {
             payment_method_types,
             setup_intent_data: Default::default(),
             shipping_address_collection: Default::default(),
+            shipping_rates: Default::default(),
             submit_type: Default::default(),
             subscription_data: Default::default(),
             success_url,
@@ -730,6 +737,7 @@ pub enum CheckoutSessionLocale {
     Sk,
     Sl,
     Sv,
+    Th,
     Tr,
     Zh,
     #[serde(rename = "zh-HK")]
@@ -773,6 +781,7 @@ impl CheckoutSessionLocale {
             CheckoutSessionLocale::Sk => "sk",
             CheckoutSessionLocale::Sl => "sl",
             CheckoutSessionLocale::Sv => "sv",
+            CheckoutSessionLocale::Th => "th",
             CheckoutSessionLocale::Tr => "tr",
             CheckoutSessionLocale::Zh => "zh",
             CheckoutSessionLocale::ZhHk => "zh-HK",

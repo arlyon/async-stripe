@@ -343,6 +343,9 @@ pub struct AccountSettings {
 
     pub branding: BrandingSettings,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_issuing: Option<AccountCardIssuingSettings>,
+
     pub card_payments: CardPaymentsSettings,
 
     pub dashboard: DashboardSettings,
@@ -386,6 +389,12 @@ pub struct BrandingSettings {
     /// A CSS hex color value representing the secondary branding color for this account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secondary_color: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountCardIssuingSettings {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tos_acceptance: Option<CardIssuingAccountTermsOfService>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -485,6 +494,21 @@ pub struct TosAcceptance {
     pub service_agreement: Option<String>,
 
     /// The user agent of the browser from which the account representative accepted their service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CardIssuingAccountTermsOfService {
+    /// The Unix timestamp marking when the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Timestamp>,
+
+    /// The IP address from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+
+    /// The user agent of the browser from which the account representative accepted the service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
 }
@@ -894,6 +918,9 @@ pub struct AccountSettingsParams {
     pub branding: Option<BrandingSettingsParams>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_issuing: Option<AccountSettingsParamsCardIssuing>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card_payments: Option<CardPaymentsSettingsParams>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1192,6 +1219,12 @@ pub struct UpdateAccountDocuments {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company_tax_id_verification: Option<UpdateAccountDocumentsCompanyTaxIdVerification>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountSettingsParamsCardIssuing {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tos_acceptance: Option<AccountSettingsParamsCardIssuingTosAcceptance>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1570,6 +1603,18 @@ pub struct UpdateAccountDocumentsCompanyRegistrationVerification {
 pub struct UpdateAccountDocumentsCompanyTaxIdVerification {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountSettingsParamsCardIssuingTosAcceptance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Timestamp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -2052,131 +2097,59 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedOther,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
+    VerificationMissingExecutives,
+    VerificationMissingOwners,
+    VerificationRequiresAdditionalMemorandumOfAssociations,
 }
 
 impl AccountRequirementsErrorCode {
     pub fn as_str(self) -> &'static str {
         match self {
-            AccountRequirementsErrorCode::InvalidAddressCityStatePostalCode => {
-                "invalid_address_city_state_postal_code"
-            }
+            AccountRequirementsErrorCode::InvalidAddressCityStatePostalCode => "invalid_address_city_state_postal_code",
             AccountRequirementsErrorCode::InvalidStreetAddress => "invalid_street_address",
             AccountRequirementsErrorCode::InvalidValueOther => "invalid_value_other",
-            AccountRequirementsErrorCode::VerificationDocumentAddressMismatch => {
-                "verification_document_address_mismatch"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentAddressMissing => {
-                "verification_document_address_missing"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentCorrupt => {
-                "verification_document_corrupt"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentCountryNotSupported => {
-                "verification_document_country_not_supported"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentDobMismatch => {
-                "verification_document_dob_mismatch"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentDuplicateType => {
-                "verification_document_duplicate_type"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentExpired => {
-                "verification_document_expired"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentFailedCopy => {
-                "verification_document_failed_copy"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentFailedGreyscale => {
-                "verification_document_failed_greyscale"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentFailedOther => {
-                "verification_document_failed_other"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentFailedTestMode => {
-                "verification_document_failed_test_mode"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentFraudulent => {
-                "verification_document_fraudulent"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentIdNumberMismatch => {
-                "verification_document_id_number_mismatch"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentIdNumberMissing => {
-                "verification_document_id_number_missing"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentIncomplete => {
-                "verification_document_incomplete"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentInvalid => {
-                "verification_document_invalid"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentIssueOrExpiryDateMissing => {
-                "verification_document_issue_or_expiry_date_missing"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentManipulated => {
-                "verification_document_manipulated"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentMissingBack => {
-                "verification_document_missing_back"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentMissingFront => {
-                "verification_document_missing_front"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentNameMismatch => {
-                "verification_document_name_mismatch"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentNameMissing => {
-                "verification_document_name_missing"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentNationalityMismatch => {
-                "verification_document_nationality_mismatch"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentNotReadable => {
-                "verification_document_not_readable"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentNotSigned => {
-                "verification_document_not_signed"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentNotUploaded => {
-                "verification_document_not_uploaded"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentPhotoMismatch => {
-                "verification_document_photo_mismatch"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentTooLarge => {
-                "verification_document_too_large"
-            }
-            AccountRequirementsErrorCode::VerificationDocumentTypeNotSupported => {
-                "verification_document_type_not_supported"
-            }
-            AccountRequirementsErrorCode::VerificationFailedAddressMatch => {
-                "verification_failed_address_match"
-            }
-            AccountRequirementsErrorCode::VerificationFailedBusinessIecNumber => {
-                "verification_failed_business_iec_number"
-            }
-            AccountRequirementsErrorCode::VerificationFailedDocumentMatch => {
-                "verification_failed_document_match"
-            }
-            AccountRequirementsErrorCode::VerificationFailedIdNumberMatch => {
-                "verification_failed_id_number_match"
-            }
-            AccountRequirementsErrorCode::VerificationFailedKeyedIdentity => {
-                "verification_failed_keyed_identity"
-            }
-            AccountRequirementsErrorCode::VerificationFailedKeyedMatch => {
-                "verification_failed_keyed_match"
-            }
-            AccountRequirementsErrorCode::VerificationFailedNameMatch => {
-                "verification_failed_name_match"
-            }
+            AccountRequirementsErrorCode::VerificationDocumentAddressMismatch => "verification_document_address_mismatch",
+            AccountRequirementsErrorCode::VerificationDocumentAddressMissing => "verification_document_address_missing",
+            AccountRequirementsErrorCode::VerificationDocumentCorrupt => "verification_document_corrupt",
+            AccountRequirementsErrorCode::VerificationDocumentCountryNotSupported => "verification_document_country_not_supported",
+            AccountRequirementsErrorCode::VerificationDocumentDobMismatch => "verification_document_dob_mismatch",
+            AccountRequirementsErrorCode::VerificationDocumentDuplicateType => "verification_document_duplicate_type",
+            AccountRequirementsErrorCode::VerificationDocumentExpired => "verification_document_expired",
+            AccountRequirementsErrorCode::VerificationDocumentFailedCopy => "verification_document_failed_copy",
+            AccountRequirementsErrorCode::VerificationDocumentFailedGreyscale => "verification_document_failed_greyscale",
+            AccountRequirementsErrorCode::VerificationDocumentFailedOther => "verification_document_failed_other",
+            AccountRequirementsErrorCode::VerificationDocumentFailedTestMode => "verification_document_failed_test_mode",
+            AccountRequirementsErrorCode::VerificationDocumentFraudulent => "verification_document_fraudulent",
+            AccountRequirementsErrorCode::VerificationDocumentIdNumberMismatch => "verification_document_id_number_mismatch",
+            AccountRequirementsErrorCode::VerificationDocumentIdNumberMissing => "verification_document_id_number_missing",
+            AccountRequirementsErrorCode::VerificationDocumentIncomplete => "verification_document_incomplete",
+            AccountRequirementsErrorCode::VerificationDocumentInvalid => "verification_document_invalid",
+            AccountRequirementsErrorCode::VerificationDocumentIssueOrExpiryDateMissing => "verification_document_issue_or_expiry_date_missing",
+            AccountRequirementsErrorCode::VerificationDocumentManipulated => "verification_document_manipulated",
+            AccountRequirementsErrorCode::VerificationDocumentMissingBack => "verification_document_missing_back",
+            AccountRequirementsErrorCode::VerificationDocumentMissingFront => "verification_document_missing_front",
+            AccountRequirementsErrorCode::VerificationDocumentNameMismatch => "verification_document_name_mismatch",
+            AccountRequirementsErrorCode::VerificationDocumentNameMissing => "verification_document_name_missing",
+            AccountRequirementsErrorCode::VerificationDocumentNationalityMismatch => "verification_document_nationality_mismatch",
+            AccountRequirementsErrorCode::VerificationDocumentNotReadable => "verification_document_not_readable",
+            AccountRequirementsErrorCode::VerificationDocumentNotSigned => "verification_document_not_signed",
+            AccountRequirementsErrorCode::VerificationDocumentNotUploaded => "verification_document_not_uploaded",
+            AccountRequirementsErrorCode::VerificationDocumentPhotoMismatch => "verification_document_photo_mismatch",
+            AccountRequirementsErrorCode::VerificationDocumentTooLarge => "verification_document_too_large",
+            AccountRequirementsErrorCode::VerificationDocumentTypeNotSupported => "verification_document_type_not_supported",
+            AccountRequirementsErrorCode::VerificationFailedAddressMatch => "verification_failed_address_match",
+            AccountRequirementsErrorCode::VerificationFailedBusinessIecNumber => "verification_failed_business_iec_number",
+            AccountRequirementsErrorCode::VerificationFailedDocumentMatch => "verification_failed_document_match",
+            AccountRequirementsErrorCode::VerificationFailedIdNumberMatch => "verification_failed_id_number_match",
+            AccountRequirementsErrorCode::VerificationFailedKeyedIdentity => "verification_failed_keyed_identity",
+            AccountRequirementsErrorCode::VerificationFailedKeyedMatch => "verification_failed_keyed_match",
+            AccountRequirementsErrorCode::VerificationFailedNameMatch => "verification_failed_name_match",
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
-            AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => {
-                "verification_failed_tax_id_match"
-            }
-            AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => {
-                "verification_failed_tax_id_not_issued"
-            }
+            AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
+            AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
+            AccountRequirementsErrorCode::VerificationMissingExecutives => "verification_missing_executives",
+            AccountRequirementsErrorCode::VerificationMissingOwners => "verification_missing_owners",
+            AccountRequirementsErrorCode::VerificationRequiresAdditionalMemorandumOfAssociations => "verification_requires_additional_memorandum_of_associations",
         }
     }
 }
