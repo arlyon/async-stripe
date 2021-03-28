@@ -142,6 +142,9 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedOther,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
+    VerificationMissingExecutives,
+    VerificationMissingOwners,
+    VerificationRequiresAdditionalMemorandumOfAssociations,
 }
 
 impl AccountRequirementsErrorCode {
@@ -189,6 +192,9 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
             AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
+            AccountRequirementsErrorCode::VerificationMissingExecutives => "verification_missing_executives",
+            AccountRequirementsErrorCode::VerificationMissingOwners => "verification_missing_owners",
+            AccountRequirementsErrorCode::VerificationRequiresAdditionalMemorandumOfAssociations => "verification_requires_additional_memorandum_of_associations",
         }
     }
 }
