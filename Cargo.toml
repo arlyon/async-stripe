@@ -10,7 +10,7 @@ members = [
 
 [package]
 name = "async-stripe"
-version = "0.13.0-rc2"
+version = "0.13.0-rc3"
 description = "API bindings for the Stripe HTTP API"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",

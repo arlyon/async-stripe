@@ -24,7 +24,7 @@ If you don't see the specific version you are on, prefer the next available vers
 
 ```toml
 [dependencies]
-async-stripe = { version = "0.13.0-rc1", features = ["runtime-async-std-surf"] }
+async-stripe = { version = "0.13.0-rc3", features = ["runtime-async-std-surf"] }
 ```
 
 ### Feature Flags
