@@ -51,10 +51,10 @@ to run `cargo fmt` to make sure it conforms to the standard.
 
 This library is (mostly) authored via code generation by parsing the OpenAPI specification for Stripe.
 To automatically update the generated code, copy it into the `generated` folder, and format, use the `cargo make` target
-`install-openapi`. This will also fetch the latest spec from the repository.
+`openapi-install`. This will also fetch the latest spec from the repository.
 
 ```sh
-cargo make install-openapi
+cargo make openapi-install
 ```
 
 ## Testing
@@ -82,4 +82,3 @@ In some cases, it is helpful to have additional logic associated with a datatype
 capture a create `Charge` object. This additional impl goes in the `charge_ext.rs` file in the
 `resources` folder, to provide a clean seperation between generated and hand maintained files.
 If you notice that logic is missing, please add it to (or create) the appropriate `ext` file.
- 
