@@ -300,7 +300,7 @@ pub struct SubscriptionsResourcePendingUpdate {
 pub struct CreateSubscription<'a> {
     /// A list of prices and quantities that will generate invoice items appended to the first invoice for this subscription.
     ///
-    /// You may pass up to 10 items.
+    /// You may pass up to 20 items.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub add_invoice_items: Option<Vec<AddInvoiceItems>>,
 
@@ -581,7 +581,7 @@ impl<'a> ListSubscriptions<'a> {
 pub struct UpdateSubscription<'a> {
     /// A list of prices and quantities that will generate invoice items appended to the first invoice for this subscription.
     ///
-    /// You may pass up to 10 items.
+    /// You may pass up to 20 items.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub add_invoice_items: Option<Vec<AddInvoiceItems>>,
 

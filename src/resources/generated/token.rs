@@ -8,7 +8,7 @@ use crate::config::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
 use crate::params::{Expand, Metadata, Object, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BusinessType, Card, CompanyParams, Currency, Dob, PersonParams, TokenType,
+    Address, BankAccount, BusinessType, Card, CompanyParams, Dob, PersonParams, TokenType,
 };
 
 /// The resource representing a Stripe "Token".
@@ -77,10 +77,6 @@ pub struct CreateToken<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<CreateTokenAccount>,
 
-    /// Information for the card this token will represent.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<CreateTokenCard>,
-
     /// The customer (owned by the application's account) for which to create a token.
     ///
     /// This can be used only with an [OAuth access token](https://stripe.com/docs/connect/standard-accounts) or [Stripe-Account header](https://stripe.com/docs/connect/authentication).
@@ -109,7 +105,6 @@ impl<'a> CreateToken<'a> {
     pub fn new() -> Self {
         CreateToken {
             account: Default::default(),
-            card: Default::default(),
             customer: Default::default(),
             cvc_update: Default::default(),
             expand: Default::default(),
@@ -132,58 +127,6 @@ pub struct CreateTokenAccount {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<bool>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize, Default)]
-pub struct CreateTokenCard {
-    /// City/District/Suburb/Town/Village.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_city: Option<String>,
-
-    /// Billing address country, if provided.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_country: Option<String>,
-
-    /// Address line 1 (Street address/PO Box/Company name).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_line1: Option<String>,
-
-    /// Address line 2 (Apartment/Suite/Unit/Building).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_line2: Option<String>,
-
-    /// State/County/Province/Region.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_state: Option<String>,
-
-    /// ZIP or postal code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_zip: Option<String>,
-
-    /// Required in order to add the card to an account;
-    /// in all other cases, this parameter is not used.
-    /// When added to an account, the card (which must be a debit card) can be used
-    /// as a transfer destination for funds in this currency.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
-
-    /// Card security code. Highly recommended to always include this value,
-    /// but it's required only for accounts based in European countries.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cvc: Option<String>,
-
-    /// Two-digit number representing the card's expiration month.
-    pub exp_month: i64,
-
-    /// Four-digit number representing the card's expiration year.
-    pub exp_year: i64,
-
-    /// Cardholder's full name.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-
-    /// The card number, as a string without any separators.
-    pub number: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
