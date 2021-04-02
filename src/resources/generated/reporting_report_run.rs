@@ -23,7 +23,7 @@ pub struct ReportingReportRun {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
 
-    /// Always `true`: reports can only be run on live-mode data.
+    /// `true` if the report is run on live mode data and `false` if it is run on test mode data.
     pub livemode: bool,
 
     pub parameters: FinancialReportingFinanceReportRunRunParameters,
