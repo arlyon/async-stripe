@@ -287,7 +287,8 @@ pub struct CreateCheckoutSession<'a> {
 
     /// A list of items the customer is purchasing.
     ///
-    /// Use this parameter to pass one-time or recurring [Prices](https://stripe.com/docs/api/prices). One-time Prices in `subscription` mode will be on the initial invoice only.  There is a maximum of 100 line items, however it is recommended to consolidate line items if there are more than a few dozen.
+    /// Use this parameter to pass one-time or recurring [Prices](https://stripe.com/docs/api/prices).  For `payment` mode, there is a maximum of 100 line items, however it is recommended to consolidate line items if there are more than a few dozen.  For `subscription` mode, there is a maximum of 20 line items with recurring Prices and 20 line items with one-time Prices.
+    /// Line items with one-time Prices in will be on the initial invoice only.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line_items: Option<Vec<CreateCheckoutSessionLineItems>>,
 
@@ -554,6 +555,9 @@ pub struct CreateCheckoutSessionSubscriptionData {
     pub metadata: Metadata,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_data: Option<CreateCheckoutSessionSubscriptionDataTransferData>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Timestamp>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -624,6 +628,14 @@ pub struct CreateCheckoutSessionSubscriptionDataItems {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionSubscriptionDataTransferData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_percent: Option<f64>,
+
+    pub destination: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
