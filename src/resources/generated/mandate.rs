@@ -83,6 +83,9 @@ pub struct MandateMultiUse {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandatePaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<MandateAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<MandateAuBecsDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -104,6 +107,21 @@ pub struct MandatePaymentMethodDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CardMandatePaymentMethodDetails {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct MandateAcssDebit {
+    /// Description of the interval.
+    ///
+    /// Only required if 'payment_schedule' parmeter is 'interval' or 'combined'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_description: Option<String>,
+
+    /// Payment schedule for the mandate.
+    pub payment_schedule: MandateAcssDebitPaymentSchedule,
+
+    /// Transaction type of the mandate.
+    pub transaction_type: MandateAcssDebitTransactionType,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandateAuBecsDebit {
@@ -185,6 +203,66 @@ impl AsRef<str> for CustomerAcceptanceType {
 }
 
 impl std::fmt::Display for CustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `MandateAcssDebit`'s `payment_schedule` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum MandateAcssDebitPaymentSchedule {
+    Combined,
+    Interval,
+    Sporadic,
+}
+
+impl MandateAcssDebitPaymentSchedule {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            MandateAcssDebitPaymentSchedule::Combined => "combined",
+            MandateAcssDebitPaymentSchedule::Interval => "interval",
+            MandateAcssDebitPaymentSchedule::Sporadic => "sporadic",
+        }
+    }
+}
+
+impl AsRef<str> for MandateAcssDebitPaymentSchedule {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for MandateAcssDebitPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `MandateAcssDebit`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum MandateAcssDebitTransactionType {
+    Business,
+    Personal,
+}
+
+impl MandateAcssDebitTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            MandateAcssDebitTransactionType::Business => "business",
+            MandateAcssDebitTransactionType::Personal => "personal",
+        }
+    }
+}
+
+impl AsRef<str> for MandateAcssDebitTransactionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for MandateAcssDebitTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

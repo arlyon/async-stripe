@@ -83,6 +83,8 @@ pub struct PortalFeatures {
 
     pub subscription_cancel: PortalSubscriptionCancel,
 
+    pub subscription_pause: PortalSubscriptionPause,
+
     pub subscription_update: PortalSubscriptionUpdate,
 }
 
@@ -125,6 +127,13 @@ pub struct PortalSubscriptionCancel {
     ///
     /// Possible values are `none` and `create_prorations`.
     pub proration_behavior: PortalSubscriptionCancelProrationBehavior,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PortalSubscriptionPause {
+
+    /// Whether the feature is enabled.
+    pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
