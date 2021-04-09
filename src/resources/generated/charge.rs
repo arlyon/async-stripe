@@ -345,6 +345,9 @@ pub struct PaymentMethodDetails {
     pub ach_debit: Option<PaymentMethodDetailsAchDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<PaymentMethodDetailsAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<PaymentMethodDetailsAfterpayClearpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -478,6 +481,35 @@ pub struct PaymentMethodDetailsAchDebit {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsAcssDebit {
+    /// Name of the bank associated with the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_name: Option<String>,
+
+    /// Uniquely identifies this particular bank account.
+    ///
+    /// You can use this attribute to check whether two bank accounts are the same.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<String>,
+
+    /// Institution number of the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub institution_number: Option<String>,
+
+    /// Last four digits of the bank account number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last4: Option<String>,
+
+    /// ID of the mandate used to make this payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate: Option<String>,
+
+    /// Transit number of the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transit_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAfterpayClearpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -590,7 +622,7 @@ pub struct PaymentMethodDetailsCard {
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
-    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 
@@ -875,7 +907,7 @@ pub struct PaymentMethodDetailsInteracPresent {
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
-    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 

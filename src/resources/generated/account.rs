@@ -195,6 +195,10 @@ pub struct BusinessProfile {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilities {
+    /// The status of the ACSS Direct Debits payments capability of the account, or whether the account can directly process ACSS Direct Debits charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit_payments: Option<AccountCapabilitiesAcssDebitPayments>,
+
     /// The status of the Afterpay Clearpay capability of the account, or whether the account can directly process Afterpay Clearpay charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay_payments: Option<AccountCapabilitiesAfterpayClearpayPayments>,
@@ -984,6 +988,9 @@ pub struct CompanyParams {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateAccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit_payments: Option<CreateAccountCapabilitiesAcssDebitPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay_payments: Option<CreateAccountCapabilitiesAfterpayClearpayPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1134,6 +1141,9 @@ pub struct PersonParams {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit_payments: Option<UpdateAccountCapabilitiesAcssDebitPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay_payments: Option<UpdateAccountCapabilitiesAfterpayClearpayPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1255,6 +1265,12 @@ pub struct CardPaymentsSettingsParams {
 pub struct CompanyVerificationParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<VerificationDocumentParams>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesAcssDebitPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1441,6 +1457,12 @@ pub struct PayoutSettingsParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesAcssDebitPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1646,6 +1668,37 @@ pub struct TransferScheduleParams {
 pub enum ExternalAccount {
     BankAccount(BankAccount),
     Card(Card),
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `acss_debit_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesAcssDebitPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesAcssDebitPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesAcssDebitPayments::Active => "active",
+            AccountCapabilitiesAcssDebitPayments::Inactive => "inactive",
+            AccountCapabilitiesAcssDebitPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesAcssDebitPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesAcssDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `AccountCapabilities`'s `afterpay_clearpay_payments` field.

@@ -270,6 +270,9 @@ pub struct PaymentIntentNextAction {
     /// The shape of the contents is subject to change and is only intended to be used by Stripe.js.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub use_stripe_sdk: Option<serde_json::Value>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verify_with_microdeposits: Option<PaymentIntentNextActionVerifyWithMicrodeposits>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -318,7 +321,19 @@ pub struct PaymentIntentNextActionRedirectToUrl {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionVerifyWithMicrodeposits {
+    /// The timestamp when the microdeposits are expected to land.
+    pub arrival_date: Timestamp,
+
+    /// The URL for the hosted verification page, which allows customers to verify their bank account.
+    pub hosted_verification_url: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<PaymentIntentPaymentMethodOptionsAcssDebit>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<PaymentMethodOptionsAlipay>,
 
@@ -339,6 +354,16 @@ pub struct PaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<PaymentMethodOptionsSofort>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentIntentPaymentMethodOptionsAcssDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
+
+    /// Bank account verification method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -364,6 +389,29 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure: Option<PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
+    /// A URL for custom mandate text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_mandate_url: Option<String>,
+
+    /// Description of the interval.
+    ///
+    /// Only required if 'payment_schedule' parmeter is 'interval' or 'combined'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_description: Option<String>,
+
+    /// Payment schedule for the mandate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_schedule:
+        Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
+
+    /// Transaction type of the mandate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_type:
+        Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -839,6 +887,9 @@ pub struct CreatePaymentIntentMandateData {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<CreatePaymentIntentPaymentMethodDataAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<CreatePaymentIntentPaymentMethodDataAfterpayClearpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -896,6 +947,9 @@ pub struct CreatePaymentIntentPaymentMethodData {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<CreatePaymentIntentPaymentMethodOptionsAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<CreatePaymentIntentPaymentMethodOptionsAlipay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -927,6 +981,9 @@ pub struct CreatePaymentIntentTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<UpdatePaymentIntentPaymentMethodDataAcssDebit>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<UpdatePaymentIntentPaymentMethodDataAfterpayClearpay>,
 
@@ -985,6 +1042,9 @@ pub struct UpdatePaymentIntentPaymentMethodData {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<UpdatePaymentIntentPaymentMethodOptionsAlipay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1025,6 +1085,15 @@ pub struct CreatePaymentIntentMandateDataCustomerAcceptance {
 
     #[serde(rename = "type")]
     pub type_: CreatePaymentIntentMandateDataCustomerAcceptanceType,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataAcssDebit {
+    pub account_number: String,
+
+    pub institution_number: String,
+
+    pub transit_number: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1113,6 +1182,16 @@ pub struct CreatePaymentIntentPaymentMethodDataSofort {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method:
+        Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAlipay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1160,6 +1239,15 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit {
 pub struct CreatePaymentIntentPaymentMethodOptionsSofort {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language: Option<CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataAcssDebit {
+    pub account_number: String,
+
+    pub institution_number: String,
+
+    pub transit_number: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1248,6 +1336,16 @@ pub struct UpdatePaymentIntentPaymentMethodDataSofort {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method:
+        Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAlipay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1329,6 +1427,23 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_mandate_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_schedule:
+        Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_type:
+        Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -1359,6 +1474,23 @@ pub struct UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_mandate_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_schedule:
+        Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_type:
+        Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1773,6 +1905,7 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataSofortCountry {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentIntentPaymentMethodDataType {
+    AcssDebit,
     AfterpayClearpay,
     Alipay,
     AuBecsDebit,
@@ -1792,6 +1925,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
 impl CreatePaymentIntentPaymentMethodDataType {
     pub fn as_str(self) -> &'static str {
         match self {
+            CreatePaymentIntentPaymentMethodDataType::AcssDebit => "acss_debit",
             CreatePaymentIntentPaymentMethodDataType::AfterpayClearpay => "afterpay_clearpay",
             CreatePaymentIntentPaymentMethodDataType::Alipay => "alipay",
             CreatePaymentIntentPaymentMethodDataType::AuBecsDebit => "au_becs_debit",
@@ -1817,6 +1951,107 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodDataType {
 }
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions`'s `payment_schedule` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+    Combined,
+    Interval,
+    Sporadic,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    Business,
+    Personal,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsAcssDebit`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => {
+                "automatic"
+            }
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => {
+                "instant"
+            }
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -2125,6 +2360,39 @@ impl std::fmt::Display for PaymentIntentConfirmationMethod {
     }
 }
 
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsAcssDebit`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+            PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+            PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsCard`'s `network` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2198,6 +2466,76 @@ impl AsRef<str> for PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
 }
 
 impl std::fmt::Display for PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit`'s `payment_schedule` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+    Combined,
+    Interval,
+    Sporadic,
+}
+
+impl PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Combined => {
+                "combined"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Interval => {
+                "interval"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Sporadic => {
+                "sporadic"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+    Business,
+    Personal,
+}
+
+impl PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Business => {
+                "business"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Personal => {
+                "personal"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -2723,6 +3061,7 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataSofortCountry {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentIntentPaymentMethodDataType {
+    AcssDebit,
     AfterpayClearpay,
     Alipay,
     AuBecsDebit,
@@ -2742,6 +3081,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
 impl UpdatePaymentIntentPaymentMethodDataType {
     pub fn as_str(self) -> &'static str {
         match self {
+            UpdatePaymentIntentPaymentMethodDataType::AcssDebit => "acss_debit",
             UpdatePaymentIntentPaymentMethodDataType::AfterpayClearpay => "afterpay_clearpay",
             UpdatePaymentIntentPaymentMethodDataType::Alipay => "alipay",
             UpdatePaymentIntentPaymentMethodDataType::AuBecsDebit => "au_becs_debit",
@@ -2767,6 +3107,107 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodDataType {
 }
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions`'s `payment_schedule` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+    Combined,
+    Interval,
+    Sporadic,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    Business,
+    Personal,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsAcssDebit`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => {
+                "automatic"
+            }
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => {
+                "instant"
+            }
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

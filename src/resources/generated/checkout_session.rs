@@ -98,6 +98,10 @@ pub struct CheckoutSession {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<Expandable<PaymentIntent>>,
 
+    /// Payment-method-specific configuration for the PaymentIntent or SetupIntent of this CheckoutSession.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_options: Option<CheckoutSessionPaymentMethodOptionsForPayment>,
+
     /// A list of the types of payment methods (e.g.
     ///
     /// card) this Checkout Session is allowed to accept.
@@ -163,6 +167,9 @@ impl Object for CheckoutSession {
         "checkout.session"
     }
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutSessionPaymentMethodOptionsForPayment {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomerDetails {
@@ -260,9 +267,11 @@ pub struct CreateCheckoutSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub client_reference_id: Option<&'a str>,
 
-    /// ID of an existing customer, if one exists.
+    /// ID of an existing Customer, if one exists.
     ///
-    /// The email stored on the customer will be used to prefill the email field on the Checkout page. If the customer changes their email on the Checkout page, the Customer object will be updated with the new email. If blank for Checkout Sessions in `payment` or `subscription` mode, Checkout will create a new customer object based on information provided during the payment flow.
+    /// In `payment` mode, the customer’s most recent card payment method will be used to prefill the email, name, card details, and billing address on the Checkout page.
+    /// In `subscription` mode, the customer’s [default payment method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) will be used if it’s a card, and otherwise the most recent card will be used.
+    /// A valid billing address is required for Checkout to prefill the customer's card details.  If the customer changes their email on the Checkout page, the Customer object will be updated with the new email.  If blank for Checkout Sessions in `payment` or `subscription` mode, Checkout will create a new Customer object based on information provided during the payment flow.  You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
 
@@ -316,6 +325,10 @@ pub struct CreateCheckoutSession<'a> {
     /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent_data: Option<CreateCheckoutSessionPaymentIntentData>,
+
+    /// Payment-method-specific configuration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_options: Option<CreateCheckoutSessionPaymentMethodOptions>,
 
     /// A list of the types of payment methods (e.g., `card`) this Checkout Session can accept.
     ///
@@ -379,6 +392,7 @@ impl<'a> CreateCheckoutSession<'a> {
             metadata: Default::default(),
             mode: Default::default(),
             payment_intent_data: Default::default(),
+            payment_method_options: Default::default(),
             payment_method_types,
             setup_intent_data: Default::default(),
             shipping_address_collection: Default::default(),
@@ -524,6 +538,12 @@ pub struct CreateCheckoutSessionPaymentIntentData {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebit>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSetupIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -620,6 +640,19 @@ pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method:
+        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataItems {
     pub plan: String,
 
@@ -678,6 +711,23 @@ pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_mandate_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_schedule:
+        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_type:
+        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 
 /// An enum representing the possible values of an `CheckoutSession`'s `billing_address_collection` field.
@@ -1000,10 +1050,116 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentIntentDataSetupFutureUsag
     }
 }
 
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions`'s `payment_schedule` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+    Combined,
+    Interval,
+    Sporadic,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    Business,
+    Personal,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsAcssDebit`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => {
+                "automatic"
+            }
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod::Instant => {
+                "instant"
+            }
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `CreateCheckoutSession`'s `payment_method_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CreateCheckoutSessionPaymentMethodTypes {
+    AcssDebit,
     AfterpayClearpay,
     Alipay,
     BacsDebit,
@@ -1022,6 +1178,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
 impl CreateCheckoutSessionPaymentMethodTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            CreateCheckoutSessionPaymentMethodTypes::AcssDebit => "acss_debit",
             CreateCheckoutSessionPaymentMethodTypes::AfterpayClearpay => "afterpay_clearpay",
             CreateCheckoutSessionPaymentMethodTypes::Alipay => "alipay",
             CreateCheckoutSessionPaymentMethodTypes::BacsDebit => "bacs_debit",

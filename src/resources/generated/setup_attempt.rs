@@ -79,6 +79,9 @@ impl Object for SetupAttempt {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<SetupAttemptPaymentMethodDetailsAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<SetupAttemptPaymentMethodDetailsAuBecsDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -109,6 +112,9 @@ pub struct SetupAttemptPaymentMethodDetails {
     #[serde(rename = "type")]
     pub type_: String,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsAcssDebit {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsAuBecsDebit {}

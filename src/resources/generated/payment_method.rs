@@ -20,6 +20,9 @@ pub struct PaymentMethod {
     pub id: PaymentMethodId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<PaymentMethodAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<PaymentMethodAfterpayClearpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -148,6 +151,31 @@ impl Object for PaymentMethod {
 pub struct PaymentFlowsPrivatePaymentMethodsAlipay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodAcssDebit {
+    /// Name of the bank associated with the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_name: Option<String>,
+
+    /// Uniquely identifies this particular bank account.
+    ///
+    /// You can use this attribute to check whether two bank accounts are the same.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<String>,
+
+    /// Institution number of the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub institution_number: Option<String>,
+
+    /// Last four digits of the bank account number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last4: Option<String>,
+
+    /// Transit number of the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transit_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodAfterpayClearpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -215,7 +243,7 @@ pub struct CardDetails {
     /// Uniquely identifies this particular card number.
     ///
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
-    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 
@@ -510,6 +538,10 @@ pub struct ThreeDSecureUsage {
 /// The parameters for `PaymentMethod::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreatePaymentMethod<'a> {
+    /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<CreatePaymentMethodAcssDebit>,
+
     /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<CreatePaymentMethodAfterpayClearpay>,
@@ -606,6 +638,7 @@ pub struct CreatePaymentMethod<'a> {
 impl<'a> CreatePaymentMethod<'a> {
     pub fn new() -> Self {
         CreatePaymentMethod {
+            acss_debit: Default::default(),
             afterpay_clearpay: Default::default(),
             alipay: Default::default(),
             au_becs_debit: Default::default(),
@@ -707,6 +740,15 @@ impl<'a> UpdatePaymentMethod<'a> {
             metadata: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentMethodAcssDebit {
+    pub account_number: String,
+
+    pub institution_number: String,
+
+    pub transit_number: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1454,6 +1496,7 @@ impl std::fmt::Display for PaymentMethodP24Bank {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodType {
+    AcssDebit,
     AfterpayClearpay,
     Alipay,
     AuBecsDebit,
@@ -1476,6 +1519,7 @@ pub enum PaymentMethodType {
 impl PaymentMethodType {
     pub fn as_str(self) -> &'static str {
         match self {
+            PaymentMethodType::AcssDebit => "acss_debit",
             PaymentMethodType::AfterpayClearpay => "afterpay_clearpay",
             PaymentMethodType::Alipay => "alipay",
             PaymentMethodType::AuBecsDebit => "au_becs_debit",
@@ -1513,6 +1557,7 @@ impl std::fmt::Display for PaymentMethodType {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodTypeFilter {
+    AcssDebit,
     AfterpayClearpay,
     Alipay,
     AuBecsDebit,
@@ -1533,6 +1578,7 @@ pub enum PaymentMethodTypeFilter {
 impl PaymentMethodTypeFilter {
     pub fn as_str(self) -> &'static str {
         match self {
+            PaymentMethodTypeFilter::AcssDebit => "acss_debit",
             PaymentMethodTypeFilter::AfterpayClearpay => "afterpay_clearpay",
             PaymentMethodTypeFilter::Alipay => "alipay",
             PaymentMethodTypeFilter::AuBecsDebit => "au_becs_debit",
