@@ -27,6 +27,9 @@ pub struct Source {
     pub ach_debit: Option<SourceTypeAchDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<SourceTypeAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<SourceTypeAlipay>,
 
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount associated with the source.
@@ -409,6 +412,39 @@ pub struct SourceTypeAchDebit {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SourceTypeAcssDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_address_city: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_address_line_1: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_address_line_2: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_address_postal_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub category: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last4: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub routing_number: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1478,6 +1514,7 @@ impl std::fmt::Display for SourceRefundNotificationMethod {
 pub enum SourceType {
     AchCreditTransfer,
     AchDebit,
+    AcssDebit,
     Alipay,
     AuBecsDebit,
     Bancontact,
@@ -1500,6 +1537,7 @@ impl SourceType {
         match self {
             SourceType::AchCreditTransfer => "ach_credit_transfer",
             SourceType::AchDebit => "ach_debit",
+            SourceType::AcssDebit => "acss_debit",
             SourceType::Alipay => "alipay",
             SourceType::AuBecsDebit => "au_becs_debit",
             SourceType::Bancontact => "bancontact",
