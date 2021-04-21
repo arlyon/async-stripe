@@ -234,14 +234,22 @@ pub use {
 #[cfg(not(feature = "full"))]
 pub use generated::placeholders::*;
 
-#[cfg(not(feature = "account"))]
+/// this struct is just a stub for code not using the "connect" feature
+/// see https://github.com/arlyon/async-stripe/issues/49 for more context
+/// if there are more features that requires a fully fledged CompanyParams
+/// we probably need to update the code generation and move to a shared place
+#[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, serde_derive::Deserialize, serde_derive::Serialize)]
 pub struct CompanyParams {
     #[serde(default)]
     pub metadata: crate::params::Metadata,
 }
 
-#[cfg(not(feature = "account"))]
+/// this struct is just a stub for code not using the "connect" feature
+/// see https://github.com/arlyon/async-stripe/issues/49 for more context
+/// if there are more features that requires a fully fledged PersonParams
+/// we probably need to update the code generation and move to a shared place
+#[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, serde_derive::Deserialize, serde_derive::Serialize)]
 pub struct PersonParams {
     #[serde(default)]
