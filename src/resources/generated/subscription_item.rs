@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SubscriptionItem".
 ///
@@ -56,49 +55,33 @@ pub struct SubscriptionItem {
 }
 
 impl SubscriptionItem {
+
     /// Returns a list of your subscription items for a given subscription.
-    pub fn list(
-        client: &Client,
-        params: ListSubscriptionItems<'_>,
-    ) -> Response<List<SubscriptionItem>> {
+    pub fn list(client: &Client, params: ListSubscriptionItems<'_>) -> Response<List<SubscriptionItem>> {
         client.get_query("/subscription_items", &params)
     }
 
     /// Adds a new item to an existing subscription.
     ///
     /// No existing items will be changed or replaced.
-    pub fn create(
-        client: &Client,
-        params: CreateSubscriptionItem<'_>,
-    ) -> Response<SubscriptionItem> {
+    pub fn create(client: &Client, params: CreateSubscriptionItem<'_>) -> Response<SubscriptionItem> {
         client.post_form("/subscription_items", &params)
     }
 
     /// Retrieves the subscription item with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionItemId,
-        expand: &[&str],
-    ) -> Response<SubscriptionItem> {
+    pub fn retrieve(client: &Client, id: &SubscriptionItemId, expand: &[&str]) -> Response<SubscriptionItem> {
         client.get_query(&format!("/subscription_items/{}", id), &Expand { expand })
     }
 
     /// Updates the plan or quantity of an item on a current subscription.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionItemId,
-        params: UpdateSubscriptionItem<'_>,
-    ) -> Response<SubscriptionItem> {
+    pub fn update(client: &Client, id: &SubscriptionItemId, params: UpdateSubscriptionItem<'_>) -> Response<SubscriptionItem> {
         client.post_form(&format!("/subscription_items/{}", id), &params)
     }
 
     /// Deletes an item from the subscription.
     ///
     /// Removing a subscription item from a subscription will not cancel the subscription.
-    pub fn delete(
-        client: &Client,
-        id: &SubscriptionItemId,
-    ) -> Response<Deleted<SubscriptionItemId>> {
+    pub fn delete(client: &Client, id: &SubscriptionItemId) -> Response<Deleted<SubscriptionItemId>> {
         client.delete(&format!("/subscription_items/{}", id))
     }
 }
@@ -116,6 +99,7 @@ impl Object for SubscriptionItem {
 /// The parameters for `SubscriptionItem::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateSubscriptionItem<'a> {
+
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     ///
     /// When updating, pass an empty string to remove previously-defined thresholds.
@@ -205,6 +189,7 @@ impl<'a> CreateSubscriptionItem<'a> {
 /// The parameters for `SubscriptionItem::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListSubscriptionItems<'a> {
+
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -248,6 +233,7 @@ impl<'a> ListSubscriptionItems<'a> {
 /// The parameters for `SubscriptionItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionItem<'a> {
+
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     ///
     /// When updating, pass an empty string to remove previously-defined thresholds.
@@ -337,6 +323,7 @@ impl<'a> UpdateSubscriptionItem<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceData {
+
     pub currency: Currency,
 
     pub product: String,
@@ -352,6 +339,7 @@ pub struct SubscriptionItemPriceData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceDataRecurring {
+
     pub interval: PlanInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
