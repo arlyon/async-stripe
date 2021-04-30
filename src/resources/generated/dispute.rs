@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{ChargeId, DisputeId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Charge, Currency, File, PaymentIntent};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Dispute".
 ///
@@ -72,6 +71,7 @@ pub struct Dispute {
 }
 
 impl Dispute {
+
     /// Returns a list of your disputes.
     pub fn list(client: &Client, params: ListDisputes<'_>) -> Response<List<Dispute>> {
         client.get_query("/disputes", &params)
@@ -95,6 +95,7 @@ impl Object for Dispute {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DisputeEvidence {
+
     /// Any server or activity logs showing proof that the customer accessed or downloaded the purchased digital product.
     ///
     /// This information should include IP addresses, corresponding timestamps, and any detailed recorded activity.
@@ -223,6 +224,7 @@ pub struct DisputeEvidence {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DisputeEvidenceDetails {
+
     /// Date by which evidence must be submitted in order to successfully challenge dispute.
     ///
     /// Will be null if the customer's bank or credit card company doesn't allow a response for this particular dispute.
@@ -247,6 +249,7 @@ pub struct DisputeEvidenceDetails {
 /// The parameters for `Dispute::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListDisputes<'a> {
+
     /// Only return disputes associated to the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,
