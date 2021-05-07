@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
-use crate::ids::ProductId;
+use crate::ids::{ProductId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::PackageDimensions;
+use crate::resources::{PackageDimensions};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Product".
 ///
@@ -89,6 +88,7 @@ pub struct Product {
 }
 
 impl Product {
+
     /// Returns a list of your products.
     ///
     /// The products are returned sorted by creation date, with the most recently created products appearing first.
@@ -137,6 +137,7 @@ impl Object for Product {
 /// The parameters for `Product::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateProduct<'a> {
+
     /// Whether the product is currently available for purchase.
     ///
     /// Defaults to `true`.
@@ -225,6 +226,7 @@ impl<'a> CreateProduct<'a> {
 /// The parameters for `Product::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListProducts<'a> {
+
     /// Only return products that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -289,6 +291,7 @@ impl<'a> ListProducts<'a> {
 /// The parameters for `Product::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateProduct<'a> {
+
     /// Whether the product is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
