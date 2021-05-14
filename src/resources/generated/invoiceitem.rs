@@ -2,14 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
-};
+use crate::resources::{Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceItem".
 ///
@@ -119,6 +116,7 @@ pub struct InvoiceItem {
 }
 
 impl InvoiceItem {
+
     /// Returns a list of your invoice items.
     ///
     /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
@@ -141,11 +139,7 @@ impl InvoiceItem {
     /// Updates the amount or description of an invoice item on an upcoming invoice.
     ///
     /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
-    pub fn update(
-        client: &Client,
-        id: &InvoiceItemId,
-        params: UpdateInvoiceItem<'_>,
-    ) -> Response<InvoiceItem> {
+    pub fn update(client: &Client, id: &InvoiceItemId, params: UpdateInvoiceItem<'_>) -> Response<InvoiceItem> {
         client.post_form(&format!("/invoiceitems/{}", id), &params)
     }
 
@@ -170,6 +164,7 @@ impl Object for InvoiceItem {
 /// The parameters for `InvoiceItem::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateInvoiceItem<'a> {
+
     /// The integer amount in %s of the charge to be applied to the upcoming invoice.
     ///
     /// Passing in a negative `amount` will reduce the `amount_due` on the invoice.
@@ -294,6 +289,7 @@ impl<'a> CreateInvoiceItem<'a> {
 /// The parameters for `InvoiceItem::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoiceItems<'a> {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -360,6 +356,7 @@ impl<'a> ListInvoiceItems<'a> {
 /// The parameters for `InvoiceItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateInvoiceItem<'a> {
+
     /// The integer amount in %s of the charge to be applied to the upcoming invoice.
     ///
     /// If you want to apply a credit to the customer's account, pass a negative amount.
@@ -459,6 +456,7 @@ impl<'a> UpdateInvoiceItem<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceItemDiscounts {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
@@ -468,6 +466,7 @@ pub struct CreateInvoiceItemDiscounts {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
+
     pub currency: Currency,
 
     pub product: String,
@@ -481,6 +480,7 @@ pub struct InvoiceItemPriceData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateInvoiceItemDiscounts {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 

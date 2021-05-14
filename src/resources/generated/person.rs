@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
-use crate::ids::PersonId;
+use crate::ids::{PersonId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, Dob, File};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Person".
 ///
@@ -128,6 +127,7 @@ impl Object for Person {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonVerification {
+
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_document: Option<PersonVerificationDocument>,
@@ -155,6 +155,7 @@ pub struct PersonVerification {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonVerificationDocument {
+
     /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<Expandable<File>>,
@@ -178,6 +179,7 @@ pub struct PersonVerificationDocument {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonRelationship {
+
     /// Whether the person is a director of the account's legal entity.
     ///
     /// Currently only required for accounts in the EU.
@@ -212,33 +214,35 @@ pub struct PersonRelationship {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonRequirements {
+
     /// Fields that need to be collected to keep the person's account enabled.
     ///
     /// If not collected by the account's `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
     pub currently_due: Vec<String>,
 
-    /// The fields that are `currently_due` and need to be collected again because validation or verification failed for some reason.
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<AccountRequirementsError>,
 
     /// Fields that need to be collected assuming all volume thresholds are reached.
     ///
-    /// As fields are needed, they are moved to `currently_due` and the account's `current_deadline` is set.
+    /// As they become required, they appear in `currently_due` as well, and the account's `current_deadline` becomes set.
     pub eventually_due: Vec<String>,
 
     /// Fields that weren't collected by the account's `current_deadline`.
     ///
-    /// These fields need to be collected to enable payouts for the person's account.
+    /// These fields need to be collected to enable the person's account.
     pub past_due: Vec<String>,
 
     /// Fields that may become required depending on the results of verification or review.
     ///
-    /// An empty array unless an asynchronous verification is pending.
-    /// If verification fails, the fields in this array become required and move to `currently_due` or `past_due`.
+    /// Will be an empty array unless an asynchronous verification is pending.
+    /// If verification fails, these fields become required and move to `currently_due` or `past_due`.
     pub pending_verification: Vec<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountRequirementsError {
+
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
 
