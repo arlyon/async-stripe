@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
-use crate::ids::InvoiceLineItemId;
+use crate::ids::{InvoiceLineItemId};
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Currency, Discount, Period, Price, TaxRate};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "InvoiceLineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -105,6 +104,7 @@ impl Object for InvoiceLineItem {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
+
     /// The amount, in %s, of the discount.
     pub amount: i64,
 
@@ -114,6 +114,7 @@ pub struct DiscountsResourceDiscountAmount {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxAmount {
+
     /// The amount, in %s, of the tax.
     pub amount: i64,
 

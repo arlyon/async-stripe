@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
-use crate::ids::BankAccountId;
+use crate::ids::{BankAccountId};
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Account, AccountHolderType, BankAccountStatus, Currency, Customer};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankAccount".
 #[derive(Clone, Debug, Deserialize, Serialize)]
