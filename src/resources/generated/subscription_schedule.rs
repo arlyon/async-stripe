@@ -2,16 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, SubscriptionScheduleId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled, Subscription,
-    SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData,
-    TaxRate,
-};
+use crate::resources::{CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled, Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData, TaxRate};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SubscriptionSchedule".
 ///
@@ -86,41 +81,28 @@ pub struct SubscriptionSchedule {
 }
 
 impl SubscriptionSchedule {
+
     /// Retrieves the list of your subscription schedules.
-    pub fn list(
-        client: &Client,
-        params: ListSubscriptionSchedules<'_>,
-    ) -> Response<List<SubscriptionSchedule>> {
+    pub fn list(client: &Client, params: ListSubscriptionSchedules<'_>) -> Response<List<SubscriptionSchedule>> {
         client.get_query("/subscription_schedules", &params)
     }
 
     /// Creates a new subscription schedule object.
     ///
     /// Each customer can have up to 500 active or scheduled subscriptions.
-    pub fn create(
-        client: &Client,
-        params: CreateSubscriptionSchedule<'_>,
-    ) -> Response<SubscriptionSchedule> {
+    pub fn create(client: &Client, params: CreateSubscriptionSchedule<'_>) -> Response<SubscriptionSchedule> {
         client.post_form("/subscription_schedules", &params)
     }
 
     /// Retrieves the details of an existing subscription schedule.
     ///
     /// You only need to supply the unique subscription schedule identifier that was returned upon subscription schedule creation.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionScheduleId,
-        expand: &[&str],
-    ) -> Response<SubscriptionSchedule> {
+    pub fn retrieve(client: &Client, id: &SubscriptionScheduleId, expand: &[&str]) -> Response<SubscriptionSchedule> {
         client.get_query(&format!("/subscription_schedules/{}", id), &Expand { expand })
     }
 
     /// Updates an existing subscription schedule.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionScheduleId,
-        params: UpdateSubscriptionSchedule<'_>,
-    ) -> Response<SubscriptionSchedule> {
+    pub fn update(client: &Client, id: &SubscriptionScheduleId, params: UpdateSubscriptionSchedule<'_>) -> Response<SubscriptionSchedule> {
         client.post_form(&format!("/subscription_schedules/{}", id), &params)
     }
 }
@@ -137,6 +119,7 @@ impl Object for SubscriptionSchedule {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleCurrentPhase {
+
     /// The end of this phase of the subscription schedule.
     pub end_date: Timestamp,
 
@@ -146,6 +129,7 @@ pub struct SubscriptionScheduleCurrentPhase {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionSchedulePhaseConfiguration {
+
     /// A list of prices and quantities that will generate invoice items appended to the first invoice for this phase.
     pub add_invoice_items: Vec<SubscriptionScheduleAddInvoiceItem>,
 
@@ -218,6 +202,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleAddInvoiceItem {
+
     /// ID of the price used to generate the invoice item.
     pub price: Expandable<Price>,
 
@@ -234,6 +219,7 @@ pub struct SubscriptionScheduleAddInvoiceItem {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleConfigurationItem {
+
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
@@ -254,6 +240,7 @@ pub struct SubscriptionScheduleConfigurationItem {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettings {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account during this phase of the schedule.
@@ -296,6 +283,7 @@ pub struct SubscriptionScheduleDefaultSettings {
 /// The parameters for `SubscriptionSchedule::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateSubscriptionSchedule<'a> {
+
     /// The identifier of the customer to create the subscription schedule for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
@@ -364,6 +352,7 @@ impl<'a> CreateSubscriptionSchedule<'a> {
 /// The parameters for `SubscriptionSchedule::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptionSchedules<'a> {
+
     /// Only return subscription schedules that were created canceled the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<RangeQuery<Timestamp>>,
@@ -433,6 +422,7 @@ impl<'a> ListSubscriptionSchedules<'a> {
 /// The parameters for `SubscriptionSchedule::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionSchedule<'a> {
+
     /// Object representing the subscription schedule's default settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_settings: Option<SubscriptionScheduleDefaultSettingsParams>,
@@ -486,6 +476,7 @@ impl<'a> UpdateSubscriptionSchedule<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhases {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub add_invoice_items: Option<Vec<AddInvoiceItems>>,
 
@@ -536,6 +527,7 @@ pub struct CreateSubscriptionSchedulePhases {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParams {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
 
@@ -560,6 +552,7 @@ pub struct SubscriptionScheduleDefaultSettingsParams {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhases {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub add_invoice_items: Option<Vec<AddInvoiceItems>>,
 
@@ -613,6 +606,7 @@ pub struct UpdateSubscriptionSchedulePhases {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
 
@@ -628,6 +622,7 @@ pub struct AddInvoiceItems {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItems {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<CreateSubscriptionSchedulePhasesItemsBillingThresholds>,
 
@@ -646,6 +641,7 @@ pub struct CreateSubscriptionSchedulePhasesItems {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesTransferData {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
 
@@ -654,6 +650,7 @@ pub struct CreateSubscriptionSchedulePhasesTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleBillingThresholds {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_gte: Option<i64>,
 
@@ -663,6 +660,7 @@ pub struct SubscriptionScheduleBillingThresholds {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
 
@@ -671,12 +669,14 @@ pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleInvoiceSettings {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub days_until_due: Option<u32>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItems {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<UpdateSubscriptionSchedulePhasesItemsBillingThresholds>,
 
@@ -695,6 +695,7 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesTransferData {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
 
@@ -703,11 +704,13 @@ pub struct UpdateSubscriptionSchedulePhasesTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsBillingThresholds {
+
     pub usage_gte: i64,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
+
     pub currency: Currency,
 
     pub product: String,
@@ -723,6 +726,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
+
     pub currency: Currency,
 
     pub product: String,
@@ -736,11 +740,13 @@ pub struct InvoiceItemPriceData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsBillingThresholds {
+
     pub usage_gte: i64,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
+
     pub currency: Currency,
 
     pub product: String,
@@ -756,6 +762,7 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
+
     pub interval: CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -764,6 +771,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
+
     pub interval: UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -903,9 +911,7 @@ pub enum SubscriptionScheduleDefaultSettingsCollectionMethod {
 impl SubscriptionScheduleDefaultSettingsCollectionMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            SubscriptionScheduleDefaultSettingsCollectionMethod::ChargeAutomatically => {
-                "charge_automatically"
-            }
+            SubscriptionScheduleDefaultSettingsCollectionMethod::ChargeAutomatically => "charge_automatically",
             SubscriptionScheduleDefaultSettingsCollectionMethod::SendInvoice => "send_invoice",
         }
     }
@@ -935,9 +941,7 @@ impl SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor {
     pub fn as_str(self) -> &'static str {
         match self {
             SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor::Automatic => "automatic",
-            SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor::PhaseStart => {
-                "phase_start"
-            }
+            SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor::PhaseStart => "phase_start",
         }
     }
 }

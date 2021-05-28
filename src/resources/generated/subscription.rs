@@ -2,16 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    CollectionMethod, Currency, Customer, Discount, Invoice, PaymentMethod, PaymentSource,
-    Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
-    SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
-};
+use crate::resources::{CollectionMethod, Currency, Customer, Discount, Invoice, PaymentMethod, PaymentSource, Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Subscription".
 ///
@@ -186,6 +181,7 @@ pub struct Subscription {
 }
 
 impl Subscription {
+
     /// By default, returns a list of subscriptions that have not been canceled.
     ///
     /// In order to list canceled subscriptions, specify `status=canceled`.
@@ -201,11 +197,7 @@ impl Subscription {
     }
 
     /// Retrieves the subscription with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionId,
-        expand: &[&str],
-    ) -> Response<Subscription> {
+    pub fn retrieve(client: &Client, id: &SubscriptionId, expand: &[&str]) -> Response<Subscription> {
         client.get_query(&format!("/subscriptions/{}", id), &Expand { expand })
     }
 
@@ -213,11 +205,7 @@ impl Subscription {
     ///
     /// When changing plans or quantities, we will optionally prorate the price we charge next month to make up for any price changes.
     /// To preview how the proration will be calculated, use the [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionId,
-        params: UpdateSubscription<'_>,
-    ) -> Response<Subscription> {
+    pub fn update(client: &Client, id: &SubscriptionId, params: UpdateSubscription<'_>) -> Response<Subscription> {
         client.post_form(&format!("/subscriptions/{}", id), &params)
     }
 
@@ -246,6 +234,7 @@ impl Object for Subscription {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionPendingInvoiceItemInterval {
+
     /// Specifies invoicing frequency.
     ///
     /// Either `day`, `week`, `month` or `year`.
@@ -260,6 +249,7 @@ pub struct SubscriptionPendingInvoiceItemInterval {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePauseCollection {
+
     /// The payment collection behavior for this subscription while paused.
     ///
     /// One of `keep_as_draft`, `mark_uncollectible`, or `void`.
@@ -272,6 +262,7 @@ pub struct SubscriptionsResourcePauseCollection {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePendingUpdate {
+
     /// If the update is applied, determines the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<Timestamp>,
@@ -298,6 +289,7 @@ pub struct SubscriptionsResourcePendingUpdate {
 /// The parameters for `Subscription::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateSubscription<'a> {
+
     /// A list of prices and quantities that will generate invoice items appended to the first invoice for this subscription.
     ///
     /// You may pass up to 20 items.
@@ -412,7 +404,11 @@ pub struct CreateSubscription<'a> {
     /// Creating subscriptions with this status allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
     /// For example, SCA regulation may require 3DS authentication to complete payment.
     /// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
-    /// This is the default behavior.  Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's first invoice cannot be paid.
+    /// This is the default behavior.  Use `default_incomplete` to create Subscriptions with `status=incomplete` when the first invoice requires payment, otherwise start as active.
+    /// Subscriptions transition to `status=active` when successfully confirming the payment intent on the first invoice.
+    /// This allows simpler management of scenarios where additional user actions are needed to pay a subscription’s invoice.
+    /// Such as failed payments, [SCA regulation](https://stripe.com/docs/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
+    /// If the payment intent is not confirmed within 23 hours subscriptions transition to `status=expired_incomplete`, which is a terminal state.  Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's first invoice cannot be paid.
     /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not create a subscription and returns an error instead.
     /// This was the default behavior for API versions prior to 2019-03-14.
     /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.  `pending_if_incomplete` is only used with updates and cannot be passed when creating a subscription.
@@ -502,6 +498,7 @@ impl<'a> CreateSubscription<'a> {
 /// The parameters for `Subscription::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptions<'a> {
+
     /// The collection method of the subscriptions to retrieve.
     ///
     /// Either `charge_automatically` or `send_invoice`.
@@ -554,6 +551,7 @@ pub struct ListSubscriptions<'a> {
     /// Passing in a value of `canceled` will return all canceled subscriptions, including those belonging to deleted customers.
     /// Pass `ended` to find subscriptions that are canceled and subscriptions that are expired due to [incomplete payment](https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses).
     /// Passing in a value of `all` will return subscriptions of all statuses.
+    /// If no value is supplied, all subscriptions that have not been canceled are returned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<SubscriptionStatusFilter>,
 }
@@ -579,6 +577,7 @@ impl<'a> ListSubscriptions<'a> {
 /// The parameters for `Subscription::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscription<'a> {
+
     /// A list of prices and quantities that will generate invoice items appended to the first invoice for this subscription.
     ///
     /// You may pass up to 20 items.
@@ -689,7 +688,9 @@ pub struct UpdateSubscription<'a> {
     /// This allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
     /// For example, SCA regulation may require 3DS authentication to complete payment.
     /// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
-    /// This is the default behavior.  Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
+    /// This is the default behavior.  Use `default_incomplete` to transition the subscription to `status=past_due` when payment is required and await explicit confirmation of the invoice's payment intent.
+    /// This allows simpler management of scenarios where additional user actions are needed to pay a subscription’s invoice.
+    /// Such as failed payments, [SCA regulation](https://stripe.com/docs/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.  Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
     /// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://stripe.com/docs/billing/pending-updates-reference#supported-attributes).  Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
     /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
     /// This was the default behavior for API versions prior to 2019-03-14.
@@ -781,6 +782,7 @@ impl<'a> UpdateSubscription<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
 
@@ -796,6 +798,7 @@ pub struct AddInvoiceItems {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionItems {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<CreateSubscriptionItemsBillingThresholds>,
 
@@ -817,6 +820,7 @@ pub struct CreateSubscriptionItems {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPendingInvoiceItemInterval {
+
     pub interval: PlanInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -825,6 +829,7 @@ pub struct CreateSubscriptionPendingInvoiceItemInterval {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionTransferData {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
 
@@ -833,6 +838,7 @@ pub struct CreateSubscriptionTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionItems {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
 
@@ -863,6 +869,7 @@ pub struct UpdateSubscriptionItems {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPauseCollection {
+
     pub behavior: UpdateSubscriptionPauseCollectionBehavior,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -871,6 +878,7 @@ pub struct UpdateSubscriptionPauseCollection {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPendingInvoiceItemInterval {
+
     pub interval: PlanInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -879,6 +887,7 @@ pub struct UpdateSubscriptionPendingInvoiceItemInterval {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionTransferData {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
 
@@ -887,11 +896,13 @@ pub struct UpdateSubscriptionTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionItemsBillingThresholds {
+
     pub usage_gte: i64,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
+
     pub currency: Currency,
 
     pub product: String,
@@ -905,6 +916,7 @@ pub struct InvoiceItemPriceData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceData {
+
     pub currency: Currency,
 
     pub product: String,
@@ -920,6 +932,7 @@ pub struct SubscriptionItemPriceData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceDataRecurring {
+
     pub interval: PlanInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -993,6 +1006,7 @@ impl std::fmt::Display for SubscriptionBillingCycleAnchor {
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionPaymentBehavior {
     AllowIncomplete,
+    DefaultIncomplete,
     ErrorIfIncomplete,
     PendingIfIncomplete,
 }
@@ -1001,6 +1015,7 @@ impl SubscriptionPaymentBehavior {
     pub fn as_str(self) -> &'static str {
         match self {
             SubscriptionPaymentBehavior::AllowIncomplete => "allow_incomplete",
+            SubscriptionPaymentBehavior::DefaultIncomplete => "default_incomplete",
             SubscriptionPaymentBehavior::ErrorIfIncomplete => "error_if_incomplete",
             SubscriptionPaymentBehavior::PendingIfIncomplete => "pending_if_incomplete",
         }

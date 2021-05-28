@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
-use crate::ids::TaxRateId;
+use crate::ids::{TaxRateId};
 use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TaxRate".
 ///
@@ -69,6 +68,7 @@ pub struct TaxRate {
 }
 
 impl TaxRate {
+
     /// Returns a list of your tax rates.
     ///
     /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
@@ -105,6 +105,7 @@ impl Object for TaxRate {
 /// The parameters for `TaxRate::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTaxRate<'a> {
+
     /// Flag determining whether the tax rate is active or inactive (archived).
     ///
     /// Inactive tax rates cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
@@ -176,6 +177,7 @@ impl<'a> CreateTaxRate<'a> {
 /// The parameters for `TaxRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxRates<'a> {
+
     /// Optional flag to filter by tax rates that are either active or inactive (archived).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -230,6 +232,7 @@ impl<'a> ListTaxRates<'a> {
 /// The parameters for `TaxRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTaxRate<'a> {
+
     /// Flag determining whether the tax rate is active or inactive (archived).
     ///
     /// Inactive tax rates cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
