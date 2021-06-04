@@ -2,16 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, Address, ApiErrors, Charge, Currency, CustomField, Customer, Discount,
-    InvoiceLineItem, PaymentIntent, PaymentMethod, PaymentSource, Shipping, Subscription, TaxId,
-    TaxRate,
-};
+use crate::resources::{Account, Address, ApiErrors, Charge, Currency, CustomField, Customer, Discount, InvoiceLineItem, PaymentIntent, PaymentMethod, PaymentSource, Shipping, Subscription, TaxId, TaxRate};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Invoice".
 ///
@@ -19,8 +14,7 @@ use crate::resources::{
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Invoice {
     /// Unique identifier for the object.
-    #[serde(default = "InvoiceId::none")]
-    pub id: InvoiceId,
+    #[serde(default = "InvoiceId::none")]    pub id: InvoiceId,
 
     /// The country of the business associated with this invoice, most often the business creating the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -74,6 +68,9 @@ pub struct Invoice {
     /// When `false`, the invoice's state will not automatically advance without an explicit action.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_advance: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub automatic_tax: Option<AutomaticTax>,
 
     /// Indicates the reason why the invoice was created.
     ///
@@ -384,6 +381,7 @@ pub struct Invoice {
 }
 
 impl Invoice {
+
     /// You can list all invoices, or list the invoices for a specific customer.
     ///
     /// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
@@ -424,7 +422,19 @@ impl Object for Invoice {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AutomaticTax {
+
+    /// Whether Stripe automatically computes tax on this invoice.
+    pub enabled: bool,
+
+    /// The status of the most recent automated tax calculation for this invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<AutomaticTaxStatus>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
+
     /// The amount, in %s, of the discount.
     pub amount: i64,
 
@@ -434,6 +444,7 @@ pub struct DiscountsResourceDiscountAmount {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomField {
+
     /// The name of the custom field.
     pub name: String,
 
@@ -443,6 +454,7 @@ pub struct InvoiceSettingCustomField {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxAmount {
+
     /// The amount, in %s, of the tax.
     pub amount: i64,
 
@@ -455,6 +467,7 @@ pub struct TaxAmount {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceThresholdReason {
+
     /// The total invoice amount threshold boundary if it triggered the threshold invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_gte: Option<i64>,
@@ -465,6 +478,7 @@ pub struct InvoiceThresholdReason {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItemThresholdReason {
+
     /// The IDs of the line items that triggered the threshold invoice.
     pub line_item_ids: Vec<String>,
 
@@ -474,6 +488,7 @@ pub struct InvoiceItemThresholdReason {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceTransferData {
+
     /// The amount in %s that will be transferred to the destination account when the invoice is paid.
     ///
     /// By default, the entire amount is transferred to the destination.
@@ -486,6 +501,7 @@ pub struct InvoiceTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesPaymentSettings {
+
     /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<InvoicesPaymentMethodOptions>,
@@ -500,6 +516,7 @@ pub struct InvoicesPaymentSettings {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesPaymentMethodOptions {
+
     /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<InvoicePaymentMethodOptionsBancontact>,
@@ -511,12 +528,14 @@ pub struct InvoicesPaymentMethodOptions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsBancontact {
+
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     pub preferred_language: InvoicePaymentMethodOptionsBancontactPreferredLanguage,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsCard {
+
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     ///
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
@@ -527,6 +546,7 @@ pub struct InvoicePaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesResourceInvoiceTaxId {
+
     /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: TaxIdType,
@@ -538,6 +558,7 @@ pub struct InvoicesResourceInvoiceTaxId {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesStatusTransitions {
+
     /// The time that the invoice draft was finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub finalized_at: Option<Timestamp>,
@@ -558,6 +579,7 @@ pub struct InvoicesStatusTransitions {
 /// The parameters for `Invoice::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateInvoice<'a> {
+
     /// The account tax IDs associated with the invoice.
     ///
     /// Only editable when the invoice is a draft.
@@ -576,6 +598,10 @@ pub struct CreateInvoice<'a> {
     /// When `false`, the invoice's state will not automatically advance without an explicit action.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auto_advance: Option<bool>,
+
+    /// Settings for automatic tax lookup for this invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub automatic_tax: Option<CreateInvoiceAutomaticTax>,
 
     /// Either `charge_automatically`, or `send_invoice`.
     ///
@@ -689,6 +715,7 @@ impl<'a> CreateInvoice<'a> {
             account_tax_ids: Default::default(),
             application_fee_amount: Default::default(),
             auto_advance: Default::default(),
+            automatic_tax: Default::default(),
             collection_method: Default::default(),
             custom_fields: Default::default(),
             customer,
@@ -714,6 +741,7 @@ impl<'a> CreateInvoice<'a> {
 /// The parameters for `Invoice::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoices<'a> {
+
     /// The collection method of the invoice to retrieve.
     ///
     /// Either `charge_automatically` or `send_invoice`.
@@ -783,7 +811,14 @@ impl<'a> ListInvoices<'a> {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateInvoiceAutomaticTax {
+
+    pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceDiscounts {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
@@ -793,6 +828,7 @@ pub struct CreateInvoiceDiscounts {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettings {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<CreateInvoicePaymentSettingsPaymentMethodOptions>,
 
@@ -802,6 +838,7 @@ pub struct CreateInvoicePaymentSettings {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceTransferData {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
@@ -810,6 +847,7 @@ pub struct CreateInvoiceTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact>,
 
@@ -819,16 +857,47 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact {
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language:
-        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
+    pub preferred_language: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
+
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub request_three_d_secure:
-        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
+    pub request_three_d_secure: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
+}
+
+/// An enum representing the possible values of an `AutomaticTax`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AutomaticTaxStatus {
+    Complete,
+    Failed,
+    RequiresLocationInputs,
+}
+
+impl AutomaticTaxStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AutomaticTaxStatus::Complete => "complete",
+            AutomaticTaxStatus::Failed => "failed",
+            AutomaticTaxStatus::RequiresLocationInputs => "requires_location_inputs",
+        }
+    }
+}
+
+impl AsRef<str> for AutomaticTaxStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AutomaticTaxStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Invoice`'s `collection_method` field.
@@ -887,9 +956,7 @@ impl AsRef<str> for CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPr
     }
 }
 
-impl std::fmt::Display
-    for CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
-{
+impl std::fmt::Display for CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -907,9 +974,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
         match self {
             CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
-            CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Automatic => {
-                "automatic"
-            }
+            CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
         }
     }
 }
@@ -946,9 +1011,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
 impl CreateInvoicePaymentSettingsPaymentMethodTypes {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateInvoicePaymentSettingsPaymentMethodTypes::AchCreditTransfer => {
-                "ach_credit_transfer"
-            }
+            CreateInvoicePaymentSettingsPaymentMethodTypes::AchCreditTransfer => "ach_credit_transfer",
             CreateInvoicePaymentSettingsPaymentMethodTypes::AchDebit => "ach_debit",
             CreateInvoicePaymentSettingsPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             CreateInvoicePaymentSettingsPaymentMethodTypes::BacsDebit => "bacs_debit",
@@ -992,9 +1055,7 @@ pub enum InvoiceBillingReason {
 impl InvoiceBillingReason {
     pub fn as_str(self) -> &'static str {
         match self {
-            InvoiceBillingReason::AutomaticPendingInvoiceItemInvoice => {
-                "automatic_pending_invoice_item_invoice"
-            }
+            InvoiceBillingReason::AutomaticPendingInvoiceItemInvoice => "automatic_pending_invoice_item_invoice",
             InvoiceBillingReason::Manual => "manual",
             InvoiceBillingReason::Subscription => "subscription",
             InvoiceBillingReason::SubscriptionCreate => "subscription_create",
