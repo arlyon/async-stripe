@@ -104,7 +104,7 @@ println!("{:?}", customers); // =>  List { data: [Customer { .. }] }
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for information on contributing to rustup.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for information on contributing to async-stripe.
 
 ## License
 
