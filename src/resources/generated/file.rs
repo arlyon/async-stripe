@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
-use crate::ids::FileId;
+use crate::ids::{FileId};
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
-use crate::resources::FileLink;
+use crate::resources::{FileLink};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "File".
 ///
@@ -55,6 +54,7 @@ pub struct File {
 }
 
 impl File {
+
     /// Returns a list of the files that your account has access to.
     ///
     /// The files are returned sorted by creation date, with the most recently created files appearing first.
@@ -84,6 +84,7 @@ impl Object for File {
 /// The parameters for `File::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFiles<'a> {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -144,7 +145,9 @@ pub enum FilePurpose {
     DocumentProviderIdentityDocument,
     FinanceReportRun,
     IdentityDocument,
+    IdentityDocumentDownloadable,
     PciDocument,
+    Selfie,
     SigmaScheduledQuery,
     TaxDocumentUserUpload,
 }
@@ -161,7 +164,9 @@ impl FilePurpose {
             FilePurpose::DocumentProviderIdentityDocument => "document_provider_identity_document",
             FilePurpose::FinanceReportRun => "finance_report_run",
             FilePurpose::IdentityDocument => "identity_document",
+            FilePurpose::IdentityDocumentDownloadable => "identity_document_downloadable",
             FilePurpose::PciDocument => "pci_document",
+            FilePurpose::Selfie => "selfie",
             FilePurpose::SigmaScheduledQuery => "sigma_scheduled_query",
             FilePurpose::TaxDocumentUserUpload => "tax_document_user_upload",
         }
