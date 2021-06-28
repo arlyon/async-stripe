@@ -2,9 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{IssuingTransactionId};
+use crate::ids::IssuingTransactionId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder, IssuingDispute, IssuingTransactionType, MerchantData};
+use crate::resources::{
+    BalanceTransaction, Currency, IssuingAuthorization, IssuingCard, IssuingCardholder,
+    IssuingDispute, IssuingTransactionType, MerchantData,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingTransaction".
@@ -92,7 +95,6 @@ impl Object for IssuingTransaction {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionAmountDetails {
-
     /// The fee charged by the ATM for the cash withdrawal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub atm_fee: Option<i64>,
@@ -100,7 +102,6 @@ pub struct IssuingTransactionAmountDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionPurchaseDetails {
-
     /// Information about the flight that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flight: Option<IssuingTransactionFlightData>,
@@ -124,7 +125,6 @@ pub struct IssuingTransactionPurchaseDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightData {
-
     /// The time that the flight departed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub departure_at: Option<i64>,
@@ -148,7 +148,6 @@ pub struct IssuingTransactionFlightData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightDataLeg {
-
     /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arrival_airport_code: Option<String>,
@@ -176,7 +175,6 @@ pub struct IssuingTransactionFlightDataLeg {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionFuelData {
-
     /// The type of fuel that was purchased.
     ///
     /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
@@ -198,7 +196,6 @@ pub struct IssuingTransactionFuelData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionLodgingData {
-
     /// The time of checking into the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub check_in_at: Option<i64>,
@@ -210,7 +207,6 @@ pub struct IssuingTransactionLodgingData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionReceiptData {
-
     /// The description of the item.
     ///
     /// The maximum length of this field is 26 characters.

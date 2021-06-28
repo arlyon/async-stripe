@@ -2,9 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{IssuingDisputeId};
+use crate::ids::IssuingDisputeId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{BalanceTransaction, Currency, File, IssuingDisputeStatus, IssuingTransaction};
+use crate::resources::{
+    BalanceTransaction, Currency, File, IssuingDisputeStatus, IssuingTransaction,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingDispute".
@@ -59,7 +61,6 @@ impl Object for IssuingDispute {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeEvidence {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled: Option<IssuingDisputeCanceledEvidence>,
 
@@ -89,7 +90,6 @@ pub struct IssuingDisputeEvidence {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeCanceledEvidence {
-
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_documentation: Option<Expandable<File>>,
@@ -133,7 +133,6 @@ pub struct IssuingDisputeCanceledEvidence {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeDuplicateEvidence {
-
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_documentation: Option<Expandable<File>>,
@@ -163,7 +162,6 @@ pub struct IssuingDisputeDuplicateEvidence {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeFraudulentEvidence {
-
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_documentation: Option<Expandable<File>>,
@@ -175,7 +173,6 @@ pub struct IssuingDisputeFraudulentEvidence {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
-
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_documentation: Option<Expandable<File>>,
@@ -203,7 +200,6 @@ pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeNotReceivedEvidence {
-
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_documentation: Option<Expandable<File>>,
@@ -227,7 +223,6 @@ pub struct IssuingDisputeNotReceivedEvidence {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeOtherEvidence {
-
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_documentation: Option<Expandable<File>>,
@@ -247,7 +242,6 @@ pub struct IssuingDisputeOtherEvidence {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeServiceNotAsDescribedEvidence {
-
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_documentation: Option<Expandable<File>>,
@@ -346,7 +340,9 @@ impl IssuingDisputeEvidenceReason {
             IssuingDisputeEvidenceReason::Canceled => "canceled",
             IssuingDisputeEvidenceReason::Duplicate => "duplicate",
             IssuingDisputeEvidenceReason::Fraudulent => "fraudulent",
-            IssuingDisputeEvidenceReason::MerchandiseNotAsDescribed => "merchandise_not_as_described",
+            IssuingDisputeEvidenceReason::MerchandiseNotAsDescribed => {
+                "merchandise_not_as_described"
+            }
             IssuingDisputeEvidenceReason::NotReceived => "not_received",
             IssuingDisputeEvidenceReason::Other => "other",
             IssuingDisputeEvidenceReason::ServiceNotAsDescribed => "service_not_as_described",
@@ -377,7 +373,9 @@ pub enum IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
 impl IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::MerchantRejected => "merchant_rejected",
+            IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::MerchantRejected => {
+                "merchant_rejected"
+            }
             IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus::Successful => "successful",
         }
     }

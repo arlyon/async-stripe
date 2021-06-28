@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{PayoutId};
+use crate::ids::PayoutId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, BankAccount, Card, Currency};
 use serde_derive::{Deserialize, Serialize};
@@ -110,7 +110,6 @@ pub struct Payout {
 }
 
 impl Payout {
-
     /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
     ///
     /// The payouts are returned in sorted order, with the most recently created payouts appearing first.
@@ -155,7 +154,6 @@ impl Object for Payout {
 /// The parameters for `Payout::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePayout<'a> {
-
     /// A positive integer in cents representing how much to payout.
     pub amount: i64,
 
@@ -225,7 +223,6 @@ impl<'a> CreatePayout<'a> {
 /// The parameters for `Payout::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPayouts<'a> {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub arrival_date: Option<RangeQuery<Timestamp>>,
 
@@ -278,7 +275,6 @@ impl<'a> ListPayouts<'a> {
 /// The parameters for `Payout::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePayout<'a> {
-
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -294,10 +290,7 @@ pub struct UpdatePayout<'a> {
 
 impl<'a> UpdatePayout<'a> {
     pub fn new() -> Self {
-        UpdatePayout {
-            expand: Default::default(),
-            metadata: Default::default(),
-        }
+        UpdatePayout { expand: Default::default(), metadata: Default::default() }
     }
 }
 

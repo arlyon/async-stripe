@@ -3,9 +3,9 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{FileId};
+use crate::ids::FileId;
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
-use crate::resources::{FileLink};
+use crate::resources::FileLink;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "File".
@@ -54,7 +54,6 @@ pub struct File {
 }
 
 impl File {
-
     /// Returns a list of the files that your account has access to.
     ///
     /// The files are returned sorted by creation date, with the most recently created files appearing first.
@@ -84,7 +83,6 @@ impl Object for File {
 /// The parameters for `File::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFiles<'a> {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 

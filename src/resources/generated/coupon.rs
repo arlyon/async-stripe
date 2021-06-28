@@ -3,9 +3,9 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{CouponId};
+use crate::ids::CouponId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Currency};
+use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Coupon".
@@ -87,7 +87,6 @@ pub struct Coupon {
 }
 
 impl Coupon {
-
     /// Returns a list of your coupons.
     pub fn list(client: &Client, params: ListCoupons<'_>) -> Response<List<Coupon>> {
         client.get_query("/coupons", &params)
@@ -135,7 +134,6 @@ impl Object for Coupon {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CouponAppliesTo {
-
     /// A list of product IDs this coupon applies to.
     pub products: Vec<String>,
 }
@@ -143,7 +141,6 @@ pub struct CouponAppliesTo {
 /// The parameters for `Coupon::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCoupon<'a> {
-
     /// A positive integer representing the amount to subtract from an invoice total (required if `percent_off` is not passed).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_off: Option<i64>,
@@ -230,7 +227,6 @@ impl<'a> CreateCoupon<'a> {
 /// The parameters for `Coupon::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCoupons<'a> {
-
     /// A filter on the list, based on the object `created` field.
     ///
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
@@ -277,7 +273,6 @@ impl<'a> ListCoupons<'a> {
 /// The parameters for `Coupon::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCoupon<'a> {
-
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -309,7 +304,6 @@ impl<'a> UpdateCoupon<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCouponAppliesTo {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub products: Option<Vec<String>>,
 }

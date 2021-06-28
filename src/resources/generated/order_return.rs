@@ -45,7 +45,6 @@ pub struct OrderReturn {
 }
 
 impl OrderReturn {
-
     /// Returns a list of your order returns.
     ///
     /// The returns are returned sorted by creation date, with the most recently created return appearing first.
@@ -74,7 +73,6 @@ impl Object for OrderReturn {
 /// The parameters for `OrderReturn::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListOrderReturns<'a> {
-
     /// Date this return was created.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,

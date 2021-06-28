@@ -2,14 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::params::{Object};
-use crate::resources::{Currency};
+use crate::params::Object;
+use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ReserveTransaction".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ReserveTransaction {
-
     pub amount: i64,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.

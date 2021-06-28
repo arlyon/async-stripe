@@ -3,8 +3,10 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{PlanId};
-use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::ids::PlanId;
+use crate::params::{
+    Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
+};
 use crate::resources::{CreateProduct, Currency, Product};
 use serde_derive::{Deserialize, Serialize};
 
@@ -128,7 +130,6 @@ pub struct Plan {
 }
 
 impl Plan {
-
     /// Returns a list of your plans.
     pub fn list(client: &Client, params: ListPlans<'_>) -> Response<List<Plan>> {
         client.get_query("/plans", &params)
@@ -167,7 +168,6 @@ impl Object for Plan {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PlanTier {
-
     /// Price for the entire tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
@@ -191,7 +191,6 @@ pub struct PlanTier {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransformUsage {
-
     /// Divide usage by this number.
     pub divide_by: i64,
 
@@ -202,7 +201,6 @@ pub struct TransformUsage {
 /// The parameters for `Plan::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPlans<'a> {
-
     /// Only return plans that are active or inactive (e.g., pass `false` to list all inactive plans).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -259,7 +257,6 @@ impl<'a> ListPlans<'a> {
 /// The parameters for `Plan::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePlan<'a> {
-
     /// Whether the plan is currently available for new subscriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,

@@ -5,7 +5,10 @@
 use crate::config::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
-use crate::resources::{CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, SetupIntent, Shipping, Subscription, TaxRate};
+use crate::resources::{
+    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, SetupIntent, Shipping,
+    Subscription, TaxRate,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Session".
@@ -151,9 +154,11 @@ pub struct CheckoutSession {
 }
 
 impl CheckoutSession {
-
     /// Returns a list of Checkout Sessions.
-    pub fn list(client: &Client, params: ListCheckoutSessions<'_>) -> Response<List<CheckoutSession>> {
+    pub fn list(
+        client: &Client,
+        params: ListCheckoutSessions<'_>,
+    ) -> Response<List<CheckoutSession>> {
         client.get_query("/checkout/sessions", &params)
     }
 
@@ -175,14 +180,12 @@ impl Object for CheckoutSession {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSessionPaymentMethodOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CheckoutAcssDebitPaymentMethodOptions>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutAcssDebitPaymentMethodOptions {
-
     /// Currency supported by the bank account.
     ///
     /// Returned when the Session is in `setup` mode.
@@ -199,7 +202,6 @@ pub struct CheckoutAcssDebitPaymentMethodOptions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutAcssDebitMandateOptions {
-
     /// A URL for custom mandate text.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
@@ -221,7 +223,6 @@ pub struct CheckoutAcssDebitMandateOptions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionAutomaticTax {
-
     /// Indicates whether automatic tax is enabled for the session.
     pub enabled: bool,
 
@@ -232,7 +233,6 @@ pub struct PaymentPagesCheckoutSessionAutomaticTax {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomerDetails {
-
     /// The customer’s email at time of checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
@@ -248,7 +248,6 @@ pub struct PaymentPagesCheckoutSessionCustomerDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
-
     /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
@@ -260,14 +259,12 @@ pub struct PaymentPagesCheckoutSessionTaxId {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxIdCollection {
-
     /// Indicates whether tax ID collection is enabled for the session.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTotalDetails {
-
     /// This is the sum of all the line item discounts.
     pub amount_discount: i64,
 
@@ -284,7 +281,6 @@ pub struct PaymentPagesCheckoutSessionTotalDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown {
-
     /// The aggregated line item discounts.
     pub discounts: Vec<LineItemsDiscountAmount>,
 
@@ -294,7 +290,6 @@ pub struct PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LineItemsDiscountAmount {
-
     /// The amount discounted.
     pub amount: i64,
 
@@ -303,7 +298,6 @@ pub struct LineItemsDiscountAmount {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LineItemsTaxAmount {
-
     /// Amount of tax applied for this rate.
     pub amount: i64,
 
@@ -312,7 +306,6 @@ pub struct LineItemsTaxAmount {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingAddressCollection {
-
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
     /// shipping locations.
     ///
@@ -323,7 +316,6 @@ pub struct ShippingAddressCollection {
 /// The parameters for `CheckoutSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateCheckoutSession<'a> {
-
     /// Enables user redeemable promotion codes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_promotion_codes: Option<bool>,
@@ -494,7 +486,6 @@ impl<'a> CreateCheckoutSession<'a> {
 /// The parameters for `CheckoutSession::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCheckoutSessions<'a> {
-
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -543,13 +534,11 @@ impl<'a> ListCheckoutSessions<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAutomaticTax {
-
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomerUpdate {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<CreateCheckoutSessionCustomerUpdateAddress>,
 
@@ -562,7 +551,6 @@ pub struct CreateCheckoutSessionCustomerUpdate {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionDiscounts {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
@@ -572,7 +560,6 @@ pub struct CreateCheckoutSessionDiscounts {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItems {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<CreateCheckoutSessionLineItemsAdjustableQuantity>,
 
@@ -609,7 +596,6 @@ pub struct CreateCheckoutSessionLineItems {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
 
@@ -649,14 +635,12 @@ pub struct CreateCheckoutSessionPaymentIntentData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebit>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSetupIntentData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
@@ -669,13 +653,11 @@ pub struct CreateCheckoutSessionSetupIntentData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingAddressCollection {
-
     pub allowed_countries: Vec<CreateCheckoutSessionShippingAddressCollectionAllowedCountries>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
 
@@ -700,13 +682,11 @@ pub struct CreateCheckoutSessionSubscriptionData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionTaxIdCollection {
-
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsAdjustableQuantity {
-
     pub enabled: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -718,7 +698,6 @@ pub struct CreateCheckoutSessionLineItemsAdjustableQuantity {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceData {
-
     pub currency: Currency,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -742,7 +721,6 @@ pub struct CreateCheckoutSessionLineItemsPriceData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataShipping {
-
     pub address: CreateCheckoutSessionPaymentIntentDataShippingAddress,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -759,7 +737,6 @@ pub struct CreateCheckoutSessionPaymentIntentDataShipping {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
@@ -768,7 +745,6 @@ pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
@@ -776,12 +752,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
     pub mandate_options: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method:
+        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataItems {
-
     pub plan: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -793,7 +769,6 @@ pub struct CreateCheckoutSessionSubscriptionDataItems {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataTransferData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
 
@@ -802,7 +777,6 @@ pub struct CreateCheckoutSessionSubscriptionDataTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceDataProductData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
@@ -820,7 +794,6 @@ pub struct CreateCheckoutSessionLineItemsPriceDataProductData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
-
     pub interval: CreateCheckoutSessionLineItemsPriceDataRecurringInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -829,7 +802,6 @@ pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
@@ -850,7 +822,6 @@ pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
 
@@ -858,10 +829,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     pub interval_description: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule:
+        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type:
+        Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 
 /// An enum representing the possible values of an `CheckoutAcssDebitMandateOptions`'s `payment_schedule` field.
@@ -938,7 +911,9 @@ impl CheckoutAcssDebitPaymentMethodOptionsVerificationMethod {
         match self {
             CheckoutAcssDebitPaymentMethodOptionsVerificationMethod::Automatic => "automatic",
             CheckoutAcssDebitPaymentMethodOptionsVerificationMethod::Instant => "instant",
-            CheckoutAcssDebitPaymentMethodOptionsVerificationMethod::Microdeposits => "microdeposits",
+            CheckoutAcssDebitPaymentMethodOptionsVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }
@@ -1412,13 +1387,17 @@ impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSche
     }
 }
 
-impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+impl AsRef<str>
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -1441,13 +1420,17 @@ impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransaction
     }
 }
 
-impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+impl AsRef<str>
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -1465,9 +1448,15 @@ pub enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod {
 impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
-            CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => {
+                "automatic"
+            }
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod::Instant => {
+                "instant"
+            }
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }
@@ -2287,7 +2276,9 @@ impl PaymentPagesCheckoutSessionAutomaticTaxStatus {
         match self {
             PaymentPagesCheckoutSessionAutomaticTaxStatus::Complete => "complete",
             PaymentPagesCheckoutSessionAutomaticTaxStatus::Failed => "failed",
-            PaymentPagesCheckoutSessionAutomaticTaxStatus::RequiresLocationInputs => "requires_location_inputs",
+            PaymentPagesCheckoutSessionAutomaticTaxStatus::RequiresLocationInputs => {
+                "requires_location_inputs"
+            }
         }
     }
 }

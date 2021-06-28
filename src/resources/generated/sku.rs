@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{SkuId};
+use crate::ids::SkuId;
 use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Timestamp};
 use crate::resources::{CreateProduct, Currency, Inventory, PackageDimensions, Product};
 use serde_derive::{Deserialize, Serialize};
@@ -81,7 +81,6 @@ pub struct Sku {
 }
 
 impl Sku {
-
     /// Returns a list of your SKUs.
     ///
     /// The SKUs are returned sorted by creation date, with the most recently created SKUs appearing first.
@@ -129,7 +128,6 @@ impl Object for Sku {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SkuInventory {
-
     /// The count of inventory available.
     ///
     /// Will be present if and only if `type` is `finite`.
@@ -153,7 +151,6 @@ pub struct SkuInventory {
 /// The parameters for `Sku::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateSku<'a> {
-
     /// Whether the SKU is available for purchase.
     ///
     /// Default to `true`.
@@ -212,7 +209,12 @@ pub struct CreateSku<'a> {
 }
 
 impl<'a> CreateSku<'a> {
-    pub fn new(currency: Currency, inventory: Option<Inventory>, price: i64, product: IdOrCreate<'a, CreateProduct<'a>>) -> Self {
+    pub fn new(
+        currency: Currency,
+        inventory: Option<Inventory>,
+        price: i64,
+        product: IdOrCreate<'a, CreateProduct<'a>>,
+    ) -> Self {
         CreateSku {
             active: Default::default(),
             attributes: Default::default(),
@@ -232,7 +234,6 @@ impl<'a> CreateSku<'a> {
 /// The parameters for `Sku::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSkus<'a> {
-
     /// Only return SKUs that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -304,7 +305,6 @@ impl<'a> ListSkus<'a> {
 /// The parameters for `Sku::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSku<'a> {
-
     /// Whether this SKU is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,

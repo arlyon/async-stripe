@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{BankAccountId};
+use crate::ids::BankAccountId;
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Account, AccountHolderType, BankAccountStatus, Currency, Customer};
 use serde_derive::{Deserialize, Serialize};

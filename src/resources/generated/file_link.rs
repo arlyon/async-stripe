@@ -45,7 +45,6 @@ pub struct FileLink {
 }
 
 impl FileLink {
-
     /// Returns a list of file links.
     pub fn list(client: &Client, params: ListFileLinks<'_>) -> Response<List<FileLink>> {
         client.get_query("/file_links", &params)
@@ -64,7 +63,11 @@ impl FileLink {
     /// Updates an existing file link object.
     ///
     /// Expired links can no longer be updated.
-    pub fn update(client: &Client, id: &FileLinkId, params: UpdateFileLink<'_>) -> Response<FileLink> {
+    pub fn update(
+        client: &Client,
+        id: &FileLinkId,
+        params: UpdateFileLink<'_>,
+    ) -> Response<FileLink> {
         client.post_form(&format!("/file_links/{}", id), &params)
     }
 }
@@ -82,7 +85,6 @@ impl Object for FileLink {
 /// The parameters for `FileLink::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateFileLink<'a> {
-
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -119,7 +121,6 @@ impl<'a> CreateFileLink<'a> {
 /// The parameters for `FileLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFileLinks<'a> {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -175,7 +176,6 @@ impl<'a> ListFileLinks<'a> {
 /// The parameters for `FileLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateFileLink<'a> {
-
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],

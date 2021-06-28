@@ -5,13 +5,12 @@
 use crate::config::{Client, Response};
 use crate::ids::{PayoutId, SourceId};
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
-use crate::resources::{Currency};
+use crate::resources::Currency;
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Balance".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Balance {
-
     /// Funds that are available to be transferred or paid out, whether automatically by Stripe or explicitly via the [Transfers API](https://stripe.com/docs/api#transfers) or [Payouts API](https://stripe.com/docs/api#payouts).
     ///
     /// The available balance for each currency and payment type can be found in the `source_types` property.
@@ -40,7 +39,6 @@ pub struct Balance {
 }
 
 impl Balance {
-
     /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
     ///
     /// The transactions are returned in sorted order, with the most recent transactions appearing first.  Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
@@ -59,7 +57,6 @@ impl Object for Balance {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceAmount {
-
     /// Balance amount.
     pub amount: i64,
 
@@ -74,7 +71,6 @@ pub struct BalanceAmount {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceAmountBySourceType {
-
     /// Amount for bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_account: Option<i64>,
@@ -90,7 +86,6 @@ pub struct BalanceAmountBySourceType {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceDetail {
-
     /// Funds that are available for use.
     pub available: Vec<BalanceAmount>,
 }
@@ -98,7 +93,6 @@ pub struct BalanceDetail {
 /// The parameters for `Balance::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListBalances<'a> {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub available_on: Option<RangeQuery<Timestamp>>,
 

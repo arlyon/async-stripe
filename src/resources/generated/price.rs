@@ -3,8 +3,10 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{PriceId};
-use crate::params::{Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::ids::PriceId;
+use crate::params::{
+    Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
+};
 use crate::resources::{CreateProduct, Currency, Product, UpTo};
 use serde_derive::{Deserialize, Serialize};
 
@@ -116,7 +118,6 @@ pub struct Price {
 }
 
 impl Price {
-
     /// Returns a list of your prices.
     pub fn list(client: &Client, params: ListPrices<'_>) -> Response<List<Price>> {
         client.get_query("/prices", &params)
@@ -154,7 +155,6 @@ impl Object for Price {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PriceTier {
-
     /// Price for the entire tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
@@ -178,7 +178,6 @@ pub struct PriceTier {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Recurring {
-
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
     ///
     /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
@@ -207,7 +206,6 @@ pub struct Recurring {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransformQuantity {
-
     /// Divide usage by this number.
     pub divide_by: i64,
 
@@ -218,7 +216,6 @@ pub struct TransformQuantity {
 /// The parameters for `Price::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePrice<'a> {
-
     /// Whether the price can be used for new purchases.
     ///
     /// Defaults to `true`.
@@ -338,7 +335,6 @@ impl<'a> CreatePrice<'a> {
 /// The parameters for `Price::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPrices<'a> {
-
     /// Only return prices that are active or inactive (e.g., pass `false` to list all inactive prices).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -416,7 +412,6 @@ impl<'a> ListPrices<'a> {
 /// The parameters for `Price::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePrice<'a> {
-
     /// Whether the price can be used for new purchases.
     ///
     /// Defaults to `true`.
@@ -471,7 +466,6 @@ impl<'a> UpdatePrice<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceProductData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
@@ -495,7 +489,6 @@ pub struct CreatePriceProductData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceRecurring {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_usage: Option<CreatePriceRecurringAggregateUsage>,
 
@@ -510,7 +503,6 @@ pub struct CreatePriceRecurring {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceTiers {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
 
@@ -528,7 +520,6 @@ pub struct CreatePriceTiers {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceTransformQuantity {
-
     pub divide_by: i64,
 
     pub round: CreatePriceTransformQuantityRound,
@@ -536,7 +527,6 @@ pub struct CreatePriceTransformQuantity {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ListPricesRecurring {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval: Option<ListPricesRecurringInterval>,
 

@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{WebhookEndpointId};
+use crate::ids::WebhookEndpointId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{ApiVersion, WebhookEndpointStatus};
 use serde_derive::{Deserialize, Serialize};
@@ -72,9 +72,11 @@ pub struct WebhookEndpoint {
 }
 
 impl WebhookEndpoint {
-
     /// Returns a list of your webhook endpoints.
-    pub fn list(client: &Client, params: ListWebhookEndpoints<'_>) -> Response<List<WebhookEndpoint>> {
+    pub fn list(
+        client: &Client,
+        params: ListWebhookEndpoints<'_>,
+    ) -> Response<List<WebhookEndpoint>> {
         client.get_query("/webhook_endpoints", &params)
     }
 
@@ -88,14 +90,22 @@ impl WebhookEndpoint {
     }
 
     /// Retrieves the webhook endpoint with the given ID.
-    pub fn retrieve(client: &Client, id: &WebhookEndpointId, expand: &[&str]) -> Response<WebhookEndpoint> {
+    pub fn retrieve(
+        client: &Client,
+        id: &WebhookEndpointId,
+        expand: &[&str],
+    ) -> Response<WebhookEndpoint> {
         client.get_query(&format!("/webhook_endpoints/{}", id), &Expand { expand })
     }
 
     /// Updates the webhook endpoint.
     ///
     /// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
-    pub fn update(client: &Client, id: &WebhookEndpointId, params: UpdateWebhookEndpoint<'_>) -> Response<WebhookEndpoint> {
+    pub fn update(
+        client: &Client,
+        id: &WebhookEndpointId,
+        params: UpdateWebhookEndpoint<'_>,
+    ) -> Response<WebhookEndpoint> {
         client.post_form(&format!("/webhook_endpoints/{}", id), &params)
     }
 
@@ -118,7 +128,6 @@ impl Object for WebhookEndpoint {
 /// The parameters for `WebhookEndpoint::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateWebhookEndpoint<'a> {
-
     /// Events sent to this endpoint will be generated with this Stripe Version instead of your account's default Stripe Version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub api_version: Option<ApiVersion>,
@@ -171,7 +180,6 @@ impl<'a> CreateWebhookEndpoint<'a> {
 /// The parameters for `WebhookEndpoint::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListWebhookEndpoints<'a> {
-
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -211,7 +219,6 @@ impl<'a> ListWebhookEndpoints<'a> {
 /// The parameters for `WebhookEndpoint::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateWebhookEndpoint<'a> {
-
     /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
@@ -622,8 +629,12 @@ impl EventFilter {
             EventFilter::ApplicationFeeRefundUpdated => "application_fee.refund.updated",
             EventFilter::ApplicationFeeRefunded => "application_fee.refunded",
             EventFilter::BalanceAvailable => "balance.available",
-            EventFilter::BillingPortalConfigurationCreated => "billing_portal.configuration.created",
-            EventFilter::BillingPortalConfigurationUpdated => "billing_portal.configuration.updated",
+            EventFilter::BillingPortalConfigurationCreated => {
+                "billing_portal.configuration.created"
+            }
+            EventFilter::BillingPortalConfigurationUpdated => {
+                "billing_portal.configuration.updated"
+            }
             EventFilter::CapabilityUpdated => "capability.updated",
             EventFilter::ChargeCaptured => "charge.captured",
             EventFilter::ChargeDisputeClosed => "charge.dispute.closed",
@@ -638,8 +649,12 @@ impl EventFilter {
             EventFilter::ChargeRefunded => "charge.refunded",
             EventFilter::ChargeSucceeded => "charge.succeeded",
             EventFilter::ChargeUpdated => "charge.updated",
-            EventFilter::CheckoutSessionAsyncPaymentFailed => "checkout.session.async_payment_failed",
-            EventFilter::CheckoutSessionAsyncPaymentSucceeded => "checkout.session.async_payment_succeeded",
+            EventFilter::CheckoutSessionAsyncPaymentFailed => {
+                "checkout.session.async_payment_failed"
+            }
+            EventFilter::CheckoutSessionAsyncPaymentSucceeded => {
+                "checkout.session.async_payment_succeeded"
+            }
             EventFilter::CheckoutSessionCompleted => "checkout.session.completed",
             EventFilter::CouponCreated => "coupon.created",
             EventFilter::CouponDeleted => "coupon.deleted",
@@ -658,8 +673,12 @@ impl EventFilter {
             EventFilter::CustomerSourceUpdated => "customer.source.updated",
             EventFilter::CustomerSubscriptionCreated => "customer.subscription.created",
             EventFilter::CustomerSubscriptionDeleted => "customer.subscription.deleted",
-            EventFilter::CustomerSubscriptionPendingUpdateApplied => "customer.subscription.pending_update_applied",
-            EventFilter::CustomerSubscriptionPendingUpdateExpired => "customer.subscription.pending_update_expired",
+            EventFilter::CustomerSubscriptionPendingUpdateApplied => {
+                "customer.subscription.pending_update_applied"
+            }
+            EventFilter::CustomerSubscriptionPendingUpdateExpired => {
+                "customer.subscription.pending_update_expired"
+            }
             EventFilter::CustomerSubscriptionTrialWillEnd => "customer.subscription.trial_will_end",
             EventFilter::CustomerSubscriptionUpdated => "customer.subscription.updated",
             EventFilter::CustomerTaxIdCreated => "customer.tax_id.created",
@@ -667,12 +686,24 @@ impl EventFilter {
             EventFilter::CustomerTaxIdUpdated => "customer.tax_id.updated",
             EventFilter::CustomerUpdated => "customer.updated",
             EventFilter::FileCreated => "file.created",
-            EventFilter::IdentityVerificationSessionCanceled => "identity.verification_session.canceled",
-            EventFilter::IdentityVerificationSessionCreated => "identity.verification_session.created",
-            EventFilter::IdentityVerificationSessionProcessing => "identity.verification_session.processing",
-            EventFilter::IdentityVerificationSessionRedacted => "identity.verification_session.redacted",
-            EventFilter::IdentityVerificationSessionRequiresInput => "identity.verification_session.requires_input",
-            EventFilter::IdentityVerificationSessionVerified => "identity.verification_session.verified",
+            EventFilter::IdentityVerificationSessionCanceled => {
+                "identity.verification_session.canceled"
+            }
+            EventFilter::IdentityVerificationSessionCreated => {
+                "identity.verification_session.created"
+            }
+            EventFilter::IdentityVerificationSessionProcessing => {
+                "identity.verification_session.processing"
+            }
+            EventFilter::IdentityVerificationSessionRedacted => {
+                "identity.verification_session.redacted"
+            }
+            EventFilter::IdentityVerificationSessionRequiresInput => {
+                "identity.verification_session.requires_input"
+            }
+            EventFilter::IdentityVerificationSessionVerified => {
+                "identity.verification_session.verified"
+            }
             EventFilter::InvoiceCreated => "invoice.created",
             EventFilter::InvoiceDeleted => "invoice.deleted",
             EventFilter::InvoiceFinalizationFailed => "invoice.finalization_failed",
@@ -709,7 +740,9 @@ impl EventFilter {
             EventFilter::OrderPaymentSucceeded => "order.payment_succeeded",
             EventFilter::OrderUpdated => "order.updated",
             EventFilter::OrderReturnCreated => "order_return.created",
-            EventFilter::PaymentIntentAmountCapturableUpdated => "payment_intent.amount_capturable_updated",
+            EventFilter::PaymentIntentAmountCapturableUpdated => {
+                "payment_intent.amount_capturable_updated"
+            }
             EventFilter::PaymentIntentCanceled => "payment_intent.canceled",
             EventFilter::PaymentIntentCreated => "payment_intent.created",
             EventFilter::PaymentIntentPaymentFailed => "payment_intent.payment_failed",
@@ -717,7 +750,9 @@ impl EventFilter {
             EventFilter::PaymentIntentRequiresAction => "payment_intent.requires_action",
             EventFilter::PaymentIntentSucceeded => "payment_intent.succeeded",
             EventFilter::PaymentMethodAttached => "payment_method.attached",
-            EventFilter::PaymentMethodAutomaticallyUpdated => "payment_method.automatically_updated",
+            EventFilter::PaymentMethodAutomaticallyUpdated => {
+                "payment_method.automatically_updated"
+            }
             EventFilter::PaymentMethodDetached => "payment_method.detached",
             EventFilter::PaymentMethodUpdated => "payment_method.updated",
             EventFilter::PayoutCanceled => "payout.canceled",

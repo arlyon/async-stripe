@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{PersonId};
+use crate::ids::PersonId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, Dob, File};
 use serde_derive::{Deserialize, Serialize};
@@ -127,7 +127,6 @@ impl Object for Person {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonVerification {
-
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_document: Option<PersonVerificationDocument>,
@@ -155,7 +154,6 @@ pub struct PersonVerification {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonVerificationDocument {
-
     /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<Expandable<File>>,
@@ -179,7 +177,6 @@ pub struct PersonVerificationDocument {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonRelationship {
-
     /// Whether the person is a director of the account's legal entity.
     ///
     /// Currently only required for accounts in the EU.
@@ -214,7 +211,6 @@ pub struct PersonRelationship {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonRequirements {
-
     /// Fields that need to be collected to keep the person's account enabled.
     ///
     /// If not collected by the account's `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
@@ -242,7 +238,6 @@ pub struct PersonRequirements {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountRequirementsError {
-
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
 

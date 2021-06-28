@@ -9,7 +9,6 @@ use serde_derive::{Deserialize, Serialize};
 /// The resource representing a Stripe "ConnectCollectionTransfer".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ConnectCollectionTransfer {
-
     /// Amount transferred, in %s.
     pub amount: i64,
 

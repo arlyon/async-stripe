@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{TopupId};
+use crate::ids::TopupId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Currency, Source};
 use serde_derive::{Deserialize, Serialize};
@@ -82,7 +82,6 @@ pub struct Topup {
 }
 
 impl Topup {
-
     /// Returns a list of top-ups.
     pub fn list(client: &Client, params: ListTopups<'_>) -> Response<List<Topup>> {
         client.get_query("/topups", &params)
@@ -116,7 +115,6 @@ impl Object for Topup {
 /// The parameters for `Topup::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTopups<'a> {
-
     /// A positive integer representing how much to transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<RangeQuery<Timestamp>>,
@@ -175,7 +173,6 @@ impl<'a> ListTopups<'a> {
 /// The parameters for `Topup::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTopup<'a> {
-
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.

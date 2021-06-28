@@ -2,9 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{IssuingCardId};
+use crate::ids::IssuingCardId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType, IssuingCardType, IssuingCardholder, MerchantCategory, SpendingLimit};
+use crate::resources::{
+    Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType,
+    IssuingCardType, IssuingCardholder, MerchantCategory, SpendingLimit,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingCard".
@@ -101,7 +104,6 @@ impl Object for IssuingCard {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardAuthorizationControls {
-
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     ///
     /// All other categories will be blocked.
@@ -129,7 +131,6 @@ pub struct IssuingCardAuthorizationControls {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardShipping {
-
     pub address: Address,
 
     /// The delivery company that shipped a card.

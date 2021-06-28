@@ -61,21 +61,28 @@ pub struct PromotionCode {
 }
 
 impl PromotionCode {
-
     /// Returns a list of your promotion codes.
     pub fn list(client: &Client, params: ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
         client.get_query("/promotion_codes", &params)
     }
 
     /// Retrieves the promotion code with the given ID.
-    pub fn retrieve(client: &Client, id: &PromotionCodeId, expand: &[&str]) -> Response<PromotionCode> {
+    pub fn retrieve(
+        client: &Client,
+        id: &PromotionCodeId,
+        expand: &[&str],
+    ) -> Response<PromotionCode> {
         client.get_query(&format!("/promotion_codes/{}", id), &Expand { expand })
     }
 
     /// Updates the specified promotion code by setting the values of the parameters passed.
     ///
     /// Most fields are, by design, not editable.
-    pub fn update(client: &Client, id: &PromotionCodeId, params: UpdatePromotionCode<'_>) -> Response<PromotionCode> {
+    pub fn update(
+        client: &Client,
+        id: &PromotionCodeId,
+        params: UpdatePromotionCode<'_>,
+    ) -> Response<PromotionCode> {
         client.post_form(&format!("/promotion_codes/{}", id), &params)
     }
 }
@@ -92,7 +99,6 @@ impl Object for PromotionCode {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PromotionCodesResourceRestrictions {
-
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
     pub first_time_transaction: bool,
 
@@ -108,7 +114,6 @@ pub struct PromotionCodesResourceRestrictions {
 /// The parameters for `PromotionCode::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPromotionCodes<'a> {
-
     /// Filter promotion codes by whether they are active.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -175,7 +180,6 @@ impl<'a> ListPromotionCodes<'a> {
 /// The parameters for `PromotionCode::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePromotionCode<'a> {
-
     /// Whether the promotion code is currently active.
     ///
     /// A promotion code can only be reactivated when the coupon is still valid and the promotion code is otherwise redeemable.

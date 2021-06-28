@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{CardId};
+use crate::ids::CardId;
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Account, Currency, Customer, Recipient};
 use serde_derive::{Deserialize, Serialize};

@@ -2,9 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{IssuingAuthorizationId};
+use crate::ids::IssuingAuthorizationId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{BalanceTransaction, Currency, IssuingAuthorizationAmountDetails, IssuingAuthorizationCheck, IssuingAuthorizationMethod, IssuingAuthorizationReason, IssuingCard, IssuingCardholder, IssuingTransaction, MerchantData};
+use crate::resources::{
+    BalanceTransaction, Currency, IssuingAuthorizationAmountDetails, IssuingAuthorizationCheck,
+    IssuingAuthorizationMethod, IssuingAuthorizationReason, IssuingCard, IssuingCardholder,
+    IssuingTransaction, MerchantData,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingAuthorization".
@@ -109,7 +113,6 @@ impl Object for IssuingAuthorization {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationPendingRequest {
-
     /// The additional amount Stripe will hold if the authorization is approved, in the card's [currency](https://stripe.com/docs/api#issuing_authorization_object-pending-request-currency) and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
 
@@ -138,7 +141,6 @@ pub struct IssuingAuthorizationPendingRequest {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationRequest {
-
     /// The `pending_request.amount` at the time of the request, presented in your card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
     /// Stripe held this amount from your account to fund the authorization if the request was approved.
@@ -178,7 +180,6 @@ pub struct IssuingAuthorizationRequest {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationVerificationData {
-
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
     pub address_line1_check: IssuingAuthorizationCheck,
 

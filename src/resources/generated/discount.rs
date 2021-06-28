@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{DiscountId};
+use crate::ids::DiscountId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{Coupon, Customer, PromotionCode};
 use serde_derive::{Deserialize, Serialize};

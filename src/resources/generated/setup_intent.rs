@@ -5,7 +5,9 @@
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, PaymentMethodId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Account, ApiErrors, Application, Currency, Customer, Mandate, PaymentMethod, SetupAttempt};
+use crate::resources::{
+    Account, ApiErrors, Application, Currency, Customer, Mandate, PaymentMethod, SetupAttempt,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SetupIntent".
@@ -110,7 +112,6 @@ pub struct SetupIntent {
 }
 
 impl SetupIntent {
-
     /// Returns a list of SetupIntents.
     pub fn list(client: &Client, params: ListSetupIntents<'_>) -> Response<List<SetupIntent>> {
         client.get_query("/setup_intents", &params)
@@ -134,7 +135,11 @@ impl SetupIntent {
     }
 
     /// Updates a SetupIntent object.
-    pub fn update(client: &Client, id: &SetupIntentId, params: UpdateSetupIntent<'_>) -> Response<SetupIntent> {
+    pub fn update(
+        client: &Client,
+        id: &SetupIntentId,
+        params: UpdateSetupIntent<'_>,
+    ) -> Response<SetupIntent> {
         client.post_form(&format!("/setup_intents/{}", id), &params)
     }
 }
@@ -151,7 +156,6 @@ impl Object for SetupIntent {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentNextAction {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect_to_url: Option<SetupIntentNextActionRedirectToUrl>,
 
@@ -171,7 +175,6 @@ pub struct SetupIntentNextAction {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentNextActionRedirectToUrl {
-
     /// If the customer does not exit their browser while authenticating, they will be redirected to this specified URL after completion.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
@@ -183,7 +186,6 @@ pub struct SetupIntentNextActionRedirectToUrl {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentNextActionVerifyWithMicrodeposits {
-
     /// The timestamp when the microdeposits are expected to land.
     pub arrival_date: Timestamp,
 
@@ -193,7 +195,6 @@ pub struct SetupIntentNextActionVerifyWithMicrodeposits {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<SetupIntentPaymentMethodOptionsAcssDebit>,
 
@@ -206,7 +207,6 @@ pub struct SetupIntentPaymentMethodOptions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsAcssDebit {
-
     /// Currency supported by the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
@@ -221,7 +221,6 @@ pub struct SetupIntentPaymentMethodOptionsAcssDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsCard {
-
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     ///
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
@@ -234,7 +233,6 @@ pub struct SetupIntentPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit {
-
     /// A URL for custom mandate text.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
@@ -247,28 +245,27 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit {
 
     /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
+    pub payment_schedule:
+        Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
 
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
+    pub transaction_type:
+        Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsSepaDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit {
-}
+pub struct SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
 
 /// The parameters for `SetupIntent::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateSetupIntent<'a> {
-
     /// Set to `true` to attempt to confirm this SetupIntent immediately.
     ///
     /// This parameter defaults to `false`.
@@ -361,7 +358,6 @@ impl<'a> CreateSetupIntent<'a> {
 /// The parameters for `SetupIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSetupIntents<'a> {
-
     /// A filter on the list, based on the object `created` field.
     ///
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
@@ -418,7 +414,6 @@ impl<'a> ListSetupIntents<'a> {
 /// The parameters for `SetupIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSetupIntent<'a> {
-
     /// ID of the Customer this SetupIntent belongs to, if one exists.
     ///
     /// If present, the SetupIntent's payment method will be attached to the Customer on successful setup.
@@ -477,13 +472,11 @@ impl<'a> UpdateSetupIntent<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateData {
-
     pub customer_acceptance: CreateSetupIntentMandateDataCustomerAcceptance,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreateSetupIntentPaymentMethodOptionsAcssDebit>,
 
@@ -496,7 +489,6 @@ pub struct CreateSetupIntentPaymentMethodOptions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentSingleUse {
-
     pub amount: i64,
 
     pub currency: Currency,
@@ -504,7 +496,6 @@ pub struct CreateSetupIntentSingleUse {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebit>,
 
@@ -517,7 +508,6 @@ pub struct UpdateSetupIntentPaymentMethodOptions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateDataCustomerAcceptance {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub accepted_at: Option<Timestamp>,
 
@@ -533,7 +523,6 @@ pub struct CreateSetupIntentMandateDataCustomerAcceptance {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
@@ -541,26 +530,25 @@ pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit {
     pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method: Option<CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method:
+        Option<CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsCard {
-
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub request_three_d_secure: Option<CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+    pub request_three_d_secure:
+        Option<CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsSepaDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
@@ -568,30 +556,28 @@ pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
     pub mandate_options: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method:
+        Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsCard {
-
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub request_three_d_secure: Option<UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+    pub request_three_d_secure:
+        Option<UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreateSetupIntentMandateDataCustomerAcceptanceOffline {
-}
+pub struct CreateSetupIntentMandateDataCustomerAcceptanceOffline {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateDataCustomerAcceptanceOnline {
-
     pub ip_address: String,
 
     pub user_agent: String,
@@ -599,7 +585,6 @@ pub struct CreateSetupIntentMandateDataCustomerAcceptanceOnline {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
 
@@ -607,19 +592,19 @@ pub struct CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
     pub interval_description: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule:
+        Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type:
+        Option<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
-}
+pub struct CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
 
@@ -627,15 +612,16 @@ pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
     pub interval_description: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule:
+        Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type:
+        Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {
-}
+pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
 /// An enum representing the possible values of an `CreateSetupIntentMandateDataCustomerAcceptance`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -691,7 +677,9 @@ impl AsRef<str> for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions
     }
 }
 
-impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+impl std::fmt::Display
+    for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -720,7 +708,9 @@ impl AsRef<str> for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions
     }
 }
 
-impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+impl std::fmt::Display
+    for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -738,9 +728,13 @@ pub enum CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
 impl CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+            CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => {
+                "automatic"
+            }
             CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+            CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }
@@ -831,7 +825,9 @@ impl SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
         match self {
             SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
             SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+            SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }
@@ -862,7 +858,9 @@ impl SetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             SetupIntentPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
             SetupIntentPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
-            SetupIntentPaymentMethodOptionsCardRequestThreeDSecure::ChallengeOnly => "challenge_only",
+            SetupIntentPaymentMethodOptionsCardRequestThreeDSecure::ChallengeOnly => {
+                "challenge_only"
+            }
         }
     }
 }
@@ -891,9 +889,15 @@ pub enum SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
 impl SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
     pub fn as_str(self) -> &'static str {
         match self {
-            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Combined => "combined",
-            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Interval => "interval",
-            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Sporadic => "sporadic",
+            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Combined => {
+                "combined"
+            }
+            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Interval => {
+                "interval"
+            }
+            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Sporadic => {
+                "sporadic"
+            }
         }
     }
 }
@@ -921,8 +925,12 @@ pub enum SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
 impl SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Business => "business",
-            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Personal => "personal",
+            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Business => {
+                "business"
+            }
+            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Personal => {
+                "personal"
+            }
         }
     }
 }
@@ -1001,7 +1009,9 @@ impl AsRef<str> for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions
     }
 }
 
-impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+impl std::fmt::Display
+    for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -1030,7 +1040,9 @@ impl AsRef<str> for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions
     }
 }
 
-impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+impl std::fmt::Display
+    for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -1048,9 +1060,13 @@ pub enum UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
 impl UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+            UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => {
+                "automatic"
+            }
             UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+            UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }

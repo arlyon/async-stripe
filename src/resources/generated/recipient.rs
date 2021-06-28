@@ -3,7 +3,7 @@
 // ======================================
 
 use crate::config::{Client, Response};
-use crate::ids::{RecipientId};
+use crate::ids::RecipientId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BankAccount, Card};
 use serde_derive::{Deserialize, Serialize};
@@ -74,7 +74,6 @@ pub struct Recipient {
 }
 
 impl Recipient {
-
     /// Returns a list of your recipients.
     ///
     /// The recipients are returned sorted by creation date, with the most recently created recipients appearing first.
@@ -100,7 +99,11 @@ impl Recipient {
     ///
     /// If you update the name or tax ID, the identity verification will automatically be rerun.
     /// If you update the bank account, the bank account validation will automatically be rerun.
-    pub fn update(client: &Client, id: &RecipientId, params: UpdateRecipient<'_>) -> Response<Recipient> {
+    pub fn update(
+        client: &Client,
+        id: &RecipientId,
+        params: UpdateRecipient<'_>,
+    ) -> Response<Recipient> {
         client.post_form(&format!("/recipients/{}", id), &params)
     }
 
@@ -125,7 +128,6 @@ impl Object for Recipient {
 /// The parameters for `Recipient::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateRecipient<'a> {
-
     /// An arbitrary string which you can attach to a `Recipient` object.
     ///
     /// It is displayed alongside the recipient in the web interface.
@@ -184,7 +186,6 @@ impl<'a> CreateRecipient<'a> {
 /// The parameters for `Recipient::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListRecipients<'a> {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -238,7 +239,6 @@ impl<'a> ListRecipients<'a> {
 /// The parameters for `Recipient::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRecipient<'a> {
-
     /// ID of the card to set as the recipient's new default for payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_card: Option<&'a str>,

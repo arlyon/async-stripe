@@ -5,7 +5,12 @@
 use crate::config::{Client, Response};
 use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails, ChargeSourceParams, Currency, Customer, FraudDetailsReport, Invoice, Mandate, Order, PaymentIntent, PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodDetailsCardPresent, Refund, Review, Shipping, ThreeDSecureDetails, Transfer};
+use crate::resources::{
+    Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
+    ChargeSourceParams, Currency, Customer, FraudDetailsReport, Invoice, Mandate, Order,
+    PaymentIntent, PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan,
+    PaymentMethodDetailsCardPresent, Refund, Review, Shipping, ThreeDSecureDetails, Transfer,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Charge".
@@ -213,7 +218,6 @@ pub struct Charge {
 }
 
 impl Charge {
-
     /// Returns a list of charges you’ve previously created.
     ///
     /// The charges are returned in sorted order, with the most recent charges appearing first.
@@ -257,7 +261,6 @@ impl Object for Charge {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetails {
-
     /// Assessments from Stripe.
     ///
     /// If set, the value is `fraudulent`.
@@ -273,7 +276,6 @@ pub struct FraudDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ChargeOutcome {
-
     /// Possible values are `approved_by_network`, `declined_by_network`, `not_sent_to_network`, and `reversed_after_approval`.
     ///
     /// The value `reversed_after_approval` indicates the payment was [blocked by Stripe](https://stripe.com/docs/declines#blocked-payments) after bank authorization, and may temporarily appear as "pending" on a cardholder's statement.
@@ -323,7 +325,6 @@ pub struct ChargeOutcome {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransferData {
-
     /// The amount transferred to the destination account, if specified.
     ///
     /// By default, the entire charge amount is transferred to the destination account.
@@ -336,7 +337,6 @@ pub struct TransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetails {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach_credit_transfer: Option<PaymentMethodDetailsAchCreditTransfer>,
 
@@ -421,7 +421,6 @@ pub struct PaymentMethodDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentFlowsPrivatePaymentMethodsAlipayDetails {
-
     /// Uniquely identifies this particular Alipay account.
     ///
     /// You can use this attribute to check whether two Alipay accounts are the same.
@@ -435,7 +434,6 @@ pub struct PaymentFlowsPrivatePaymentMethodsAlipayDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAchCreditTransfer {
-
     /// Account number to transfer funds to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<String>,
@@ -455,7 +453,6 @@ pub struct PaymentMethodDetailsAchCreditTransfer {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAchDebit {
-
     /// Type of entity that holds the account.
     ///
     /// This can be either `individual` or `company`.
@@ -487,7 +484,6 @@ pub struct PaymentMethodDetailsAchDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAcssDebit {
-
     /// Name of the bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_name: Option<String>,
@@ -517,7 +513,6 @@ pub struct PaymentMethodDetailsAcssDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAfterpayClearpay {
-
     /// Order identifier shown to the merchant in Afterpay’s online portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
@@ -525,7 +520,6 @@ pub struct PaymentMethodDetailsAfterpayClearpay {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAuBecsDebit {
-
     /// Bank-State-Branch number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bsb_number: Option<String>,
@@ -547,7 +541,6 @@ pub struct PaymentMethodDetailsAuBecsDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsBacsDebit {
-
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
@@ -571,7 +564,6 @@ pub struct PaymentMethodDetailsBacsDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsBancontact {
-
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_code: Option<String>,
@@ -611,14 +603,12 @@ pub struct PaymentMethodDetailsBancontact {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsBoleto {
-
     /// Uniquely identifies this customer tax_id (CNPJ or CPF).
     pub tax_id: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCard {
-
     /// Card brand.
     ///
     /// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
@@ -681,7 +671,6 @@ pub struct PaymentMethodDetailsCard {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardChecks {
-
     /// If a address line1 was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line1_check: Option<String>,
@@ -697,7 +686,6 @@ pub struct PaymentMethodDetailsCardChecks {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardInstallments {
-
     /// Installment plan selected for the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<PaymentMethodDetailsCardInstallmentsPlan>,
@@ -705,7 +693,6 @@ pub struct PaymentMethodDetailsCardInstallments {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWallet {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amex_express_checkout: Option<PaymentMethodDetailsCardWalletAmexExpressCheckout>,
 
@@ -737,20 +724,16 @@ pub struct PaymentMethodDetailsCardWallet {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsCardWalletAmexExpressCheckout {
-}
+pub struct PaymentMethodDetailsCardWalletAmexExpressCheckout {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsCardWalletApplePay {
-}
+pub struct PaymentMethodDetailsCardWalletApplePay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsCardWalletGooglePay {
-}
+pub struct PaymentMethodDetailsCardWalletGooglePay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWalletMasterpass {
-
     /// Owner's verified billing address.
     ///
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
@@ -781,12 +764,10 @@ pub struct PaymentMethodDetailsCardWalletMasterpass {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsCardWalletSamsungPay {
-}
+pub struct PaymentMethodDetailsCardWalletSamsungPay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWalletVisaCheckout {
-
     /// Owner's verified billing address.
     ///
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
@@ -818,7 +799,6 @@ pub struct PaymentMethodDetailsCardWalletVisaCheckout {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsEps {
-
     /// The customer's bank.
     ///
     /// Should be one of `arzte_und_apotheker_bank`, `austrian_anadi_bank_ag`, `bank_austria`, `bankhaus_carl_spangler`, `bankhaus_schelhammer_und_schattera_ag`, `bawag_psk_ag`, `bks_bank_ag`, `brull_kallmus_bank_ag`, `btv_vier_lander_bank`, `capital_bank_grawe_gruppe_ag`, `dolomitenbank`, `easybank_ag`, `erste_bank_und_sparkassen`, `hypo_alpeadriabank_international_ag`, `hypo_noe_lb_fur_niederosterreich_u_wien`, `hypo_oberosterreich_salzburg_steiermark`, `hypo_tirol_bank_ag`, `hypo_vorarlberg_bank_ag`, `hypo_bank_burgenland_aktiengesellschaft`, `marchfelder_bank`, `oberbank_ag`, `raiffeisen_bankengruppe_osterreich`, `schoellerbank_ag`, `sparda_bank_wien`, `volksbank_gruppe`, `volkskreditbank_ag`, or `vr_bank_braunau`.
@@ -835,7 +815,6 @@ pub struct PaymentMethodDetailsEps {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsFpx {
-
     /// The customer's bank.
     ///
     /// Can be one of `affin_bank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, or `pb_enterprise`.
@@ -848,7 +827,6 @@ pub struct PaymentMethodDetailsFpx {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsGiropay {
-
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_code: Option<String>,
@@ -871,7 +849,6 @@ pub struct PaymentMethodDetailsGiropay {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsGrabpay {
-
     /// Unique transaction id generated by GrabPay.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_id: Option<String>,
@@ -879,7 +856,6 @@ pub struct PaymentMethodDetailsGrabpay {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsIdeal {
-
     /// The customer's bank.
     ///
     /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
@@ -912,7 +888,6 @@ pub struct PaymentMethodDetailsIdeal {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsInteracPresent {
-
     /// Card brand.
     ///
     /// Can be `interac`, `mastercard` or `visa`.
@@ -989,7 +964,6 @@ pub struct PaymentMethodDetailsInteracPresent {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsInteracPresentReceipt {
-
     /// The type of account being debited or credited.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_type: Option<PaymentMethodDetailsInteracPresentReceiptAccountType>,
@@ -1032,12 +1006,10 @@ pub struct PaymentMethodDetailsInteracPresentReceipt {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsKlarna {
-}
+pub struct PaymentMethodDetailsKlarna {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsMultibanco {
-
     /// Entity number associated with this Multibanco payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entity: Option<String>,
@@ -1049,7 +1021,6 @@ pub struct PaymentMethodDetailsMultibanco {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsOxxo {
-
     /// OXXO reference number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
@@ -1057,7 +1028,6 @@ pub struct PaymentMethodDetailsOxxo {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsP24 {
-
     /// The customer's bank.
     ///
     /// Can be one of `ing`, `citi_handlowy`, `tmobile_usbugi_bankowe`, `plus_bank`, `etransfer_pocztowy24`, `banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`, `blik`, `noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`, `nest_przelew`, `mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`, `credit_agricole`, `toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`, `bank_millennium`, `alior_bank`, or `boz`.
@@ -1078,7 +1048,6 @@ pub struct PaymentMethodDetailsP24 {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsSepaDebit {
-
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_code: Option<String>,
@@ -1108,7 +1077,6 @@ pub struct PaymentMethodDetailsSepaDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsSofort {
-
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_code: Option<String>,
@@ -1151,16 +1119,13 @@ pub struct PaymentMethodDetailsSofort {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsStripeAccount {
-}
+pub struct PaymentMethodDetailsStripeAccount {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsWechat {
-}
+pub struct PaymentMethodDetailsWechat {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rule {
-
     /// The action taken on the payment.
     pub action: String,
 
@@ -1174,7 +1139,6 @@ pub struct Rule {
 /// The parameters for `Charge::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCharge<'a> {
-
     /// Amount intended to be collected by this payment.
     ///
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
@@ -1313,7 +1277,6 @@ impl<'a> CreateCharge<'a> {
 /// The parameters for `Charge::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCharges<'a> {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -1372,7 +1335,6 @@ impl<'a> ListCharges<'a> {
 /// The parameters for `Charge::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCharge<'a> {
-
     /// The ID of an existing customer that will be associated with this request.
     ///
     /// This field may only be updated if there is no existing associated customer with this charge.
@@ -1443,13 +1405,11 @@ impl<'a> UpdateCharge<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetailsParams {
-
     pub user_report: FraudDetailsReport,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransferDataParams {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
@@ -1595,7 +1555,9 @@ impl PaymentMethodDetailsEpsBank {
             PaymentMethodDetailsEpsBank::AustrianAnadiBankAg => "austrian_anadi_bank_ag",
             PaymentMethodDetailsEpsBank::BankAustria => "bank_austria",
             PaymentMethodDetailsEpsBank::BankhausCarlSpangler => "bankhaus_carl_spangler",
-            PaymentMethodDetailsEpsBank::BankhausSchelhammerUndSchatteraAg => "bankhaus_schelhammer_und_schattera_ag",
+            PaymentMethodDetailsEpsBank::BankhausSchelhammerUndSchatteraAg => {
+                "bankhaus_schelhammer_und_schattera_ag"
+            }
             PaymentMethodDetailsEpsBank::BawagPskAg => "bawag_psk_ag",
             PaymentMethodDetailsEpsBank::BksBankAg => "bks_bank_ag",
             PaymentMethodDetailsEpsBank::BrullKallmusBankAg => "brull_kallmus_bank_ag",
@@ -1604,15 +1566,25 @@ impl PaymentMethodDetailsEpsBank {
             PaymentMethodDetailsEpsBank::Dolomitenbank => "dolomitenbank",
             PaymentMethodDetailsEpsBank::EasybankAg => "easybank_ag",
             PaymentMethodDetailsEpsBank::ErsteBankUndSparkassen => "erste_bank_und_sparkassen",
-            PaymentMethodDetailsEpsBank::HypoAlpeadriabankInternationalAg => "hypo_alpeadriabank_international_ag",
-            PaymentMethodDetailsEpsBank::HypoBankBurgenlandAktiengesellschaft => "hypo_bank_burgenland_aktiengesellschaft",
-            PaymentMethodDetailsEpsBank::HypoNoeLbFurNiederosterreichUWien => "hypo_noe_lb_fur_niederosterreich_u_wien",
-            PaymentMethodDetailsEpsBank::HypoOberosterreichSalzburgSteiermark => "hypo_oberosterreich_salzburg_steiermark",
+            PaymentMethodDetailsEpsBank::HypoAlpeadriabankInternationalAg => {
+                "hypo_alpeadriabank_international_ag"
+            }
+            PaymentMethodDetailsEpsBank::HypoBankBurgenlandAktiengesellschaft => {
+                "hypo_bank_burgenland_aktiengesellschaft"
+            }
+            PaymentMethodDetailsEpsBank::HypoNoeLbFurNiederosterreichUWien => {
+                "hypo_noe_lb_fur_niederosterreich_u_wien"
+            }
+            PaymentMethodDetailsEpsBank::HypoOberosterreichSalzburgSteiermark => {
+                "hypo_oberosterreich_salzburg_steiermark"
+            }
             PaymentMethodDetailsEpsBank::HypoTirolBankAg => "hypo_tirol_bank_ag",
             PaymentMethodDetailsEpsBank::HypoVorarlbergBankAg => "hypo_vorarlberg_bank_ag",
             PaymentMethodDetailsEpsBank::MarchfelderBank => "marchfelder_bank",
             PaymentMethodDetailsEpsBank::OberbankAg => "oberbank_ag",
-            PaymentMethodDetailsEpsBank::RaiffeisenBankengruppeOsterreich => "raiffeisen_bankengruppe_osterreich",
+            PaymentMethodDetailsEpsBank::RaiffeisenBankengruppeOsterreich => {
+                "raiffeisen_bankengruppe_osterreich"
+            }
             PaymentMethodDetailsEpsBank::SchoellerbankAg => "schoellerbank_ag",
             PaymentMethodDetailsEpsBank::SpardaBankWien => "sparda_bank_wien",
             PaymentMethodDetailsEpsBank::VolksbankGruppe => "volksbank_gruppe",
@@ -1830,9 +1802,15 @@ impl PaymentMethodDetailsInteracPresentReadMethod {
         match self {
             PaymentMethodDetailsInteracPresentReadMethod::ContactEmv => "contact_emv",
             PaymentMethodDetailsInteracPresentReadMethod::ContactlessEmv => "contactless_emv",
-            PaymentMethodDetailsInteracPresentReadMethod::ContactlessMagstripeMode => "contactless_magstripe_mode",
-            PaymentMethodDetailsInteracPresentReadMethod::MagneticStripeFallback => "magnetic_stripe_fallback",
-            PaymentMethodDetailsInteracPresentReadMethod::MagneticStripeTrack2 => "magnetic_stripe_track2",
+            PaymentMethodDetailsInteracPresentReadMethod::ContactlessMagstripeMode => {
+                "contactless_magstripe_mode"
+            }
+            PaymentMethodDetailsInteracPresentReadMethod::MagneticStripeFallback => {
+                "magnetic_stripe_fallback"
+            }
+            PaymentMethodDetailsInteracPresentReadMethod::MagneticStripeTrack2 => {
+                "magnetic_stripe_track2"
+            }
         }
     }
 }

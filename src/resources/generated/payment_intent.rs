@@ -5,7 +5,10 @@
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Account, ApiErrors, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession, PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, Review, Shipping, ShippingParams};
+use crate::resources::{
+    Account, ApiErrors, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession,
+    PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, Review, Shipping, ShippingParams,
+};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PaymentIntent".
@@ -191,7 +194,6 @@ pub struct PaymentIntent {
 }
 
 impl PaymentIntent {
-
     /// Returns a list of PaymentIntents.
     pub fn list(client: &Client, params: ListPaymentIntents<'_>) -> Response<List<PaymentIntent>> {
         client.get_query("/payment_intents", &params)
@@ -213,7 +215,11 @@ impl PaymentIntent {
     /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
     /// When retrieved with a publishable key, only a subset of properties will be returned.
     /// Please refer to the [payment intent](https://stripe.com/docs/api#payment_intent_object) object reference for more details.
-    pub fn retrieve(client: &Client, id: &PaymentIntentId, expand: &[&str]) -> Response<PaymentIntent> {
+    pub fn retrieve(
+        client: &Client,
+        id: &PaymentIntentId,
+        expand: &[&str],
+    ) -> Response<PaymentIntent> {
         client.get_query(&format!("/payment_intents/{}", id), &Expand { expand })
     }
 
@@ -224,7 +230,11 @@ impl PaymentIntent {
     ///
     /// For example, updating the `payment_method` will always require you to confirm the PaymentIntent again.
     /// If you prefer to update and confirm at the same time, we recommend updating properties via the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) instead.
-    pub fn update(client: &Client, id: &PaymentIntentId, params: UpdatePaymentIntent<'_>) -> Response<PaymentIntent> {
+    pub fn update(
+        client: &Client,
+        id: &PaymentIntentId,
+        params: UpdatePaymentIntent<'_>,
+    ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}", id), &params)
     }
 }
@@ -241,7 +251,6 @@ impl Object for PaymentIntent {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextAction {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay_handle_redirect: Option<PaymentIntentNextActionAlipayHandleRedirect>,
 
@@ -270,7 +279,6 @@ pub struct PaymentIntentNextAction {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionAlipayHandleRedirect {
-
     /// The native data to be used with Alipay SDK you must redirect your customer to in order to authenticate the payment in an Android App.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub native_data: Option<String>,
@@ -290,7 +298,6 @@ pub struct PaymentIntentNextActionAlipayHandleRedirect {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionBoleto {
-
     /// The timestamp after which the boleto expires.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<Timestamp>,
@@ -310,7 +317,6 @@ pub struct PaymentIntentNextActionBoleto {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionDisplayOxxoDetails {
-
     /// The timestamp after which the OXXO voucher expires.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after: Option<Timestamp>,
@@ -326,7 +332,6 @@ pub struct PaymentIntentNextActionDisplayOxxoDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionRedirectToUrl {
-
     /// If the customer does not exit their browser while authenticating, they will be redirected to this specified URL after completion.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
@@ -338,7 +343,6 @@ pub struct PaymentIntentNextActionRedirectToUrl {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionVerifyWithMicrodeposits {
-
     /// The timestamp when the microdeposits are expected to land.
     pub arrival_date: Timestamp,
 
@@ -348,7 +352,6 @@ pub struct PaymentIntentNextActionVerifyWithMicrodeposits {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<PaymentIntentPaymentMethodOptionsAcssDebit>,
 
@@ -385,7 +388,6 @@ pub struct PaymentIntentPaymentMethodOptions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsAcssDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
 
@@ -396,7 +398,6 @@ pub struct PaymentIntentPaymentMethodOptionsAcssDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsCard {
-
     /// Installment details for this payment (Mexico only).
     ///
     /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
@@ -422,7 +423,6 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
-
     /// A URL for custom mandate text.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
@@ -435,27 +435,26 @@ pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
 
     /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
+    pub payment_schedule:
+        Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
 
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
+    pub transaction_type:
+        Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsSepaDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit {
-}
+pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsAfterpayClearpay {
-
     /// Order identifier shown to the merchant in Afterpay’s online portal.
     ///
     /// We recommend using a value that helps you answer any questions a customer might have about the payment.
@@ -465,19 +464,16 @@ pub struct PaymentMethodOptionsAfterpayClearpay {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodOptionsAlipay {
-}
+pub struct PaymentMethodOptionsAlipay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsBancontact {
-
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     pub preferred_language: PaymentMethodOptionsBancontactPreferredLanguage,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsBoleto {
-
     /// The number of calendar days before a Boleto voucher expires.
     ///
     /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto voucher will expire on Wednesday at 23:59 America/Sao_Paulo time.
@@ -486,7 +482,6 @@ pub struct PaymentMethodOptionsBoleto {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsCardInstallments {
-
     /// Installment plans that may be selected for this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub available_plans: Option<Vec<PaymentMethodDetailsCardInstallmentsPlan>>,
@@ -500,12 +495,10 @@ pub struct PaymentMethodOptionsCardInstallments {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodOptionsCardPresent {
-}
+pub struct PaymentMethodOptionsCardPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsOxxo {
-
     /// The number of calendar days before an OXXO invoice expires.
     ///
     /// For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
@@ -513,12 +506,10 @@ pub struct PaymentMethodOptionsOxxo {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodOptionsP24 {
-}
+pub struct PaymentMethodOptionsP24 {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsSofort {
-
     /// Preferred language of the SOFORT authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language: Option<PaymentMethodOptionsSofortPreferredLanguage>,
@@ -526,7 +517,6 @@ pub struct PaymentMethodOptionsSofort {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransferData {
-
     /// Amount intended to be collected by this PaymentIntent.
     ///
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
@@ -544,7 +534,6 @@ pub struct TransferData {
 /// The parameters for `PaymentIntent::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePaymentIntent<'a> {
-
     /// Amount intended to be collected by this PaymentIntent.
     ///
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
@@ -753,7 +742,6 @@ impl<'a> CreatePaymentIntent<'a> {
 /// The parameters for `PaymentIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPaymentIntents<'a> {
-
     /// A filter on the list, based on the object `created` field.
     ///
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
@@ -805,7 +793,6 @@ impl<'a> ListPaymentIntents<'a> {
 /// The parameters for `PaymentIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentIntent<'a> {
-
     /// Amount intended to be collected by this PaymentIntent.
     ///
     /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
@@ -945,13 +932,11 @@ impl<'a> UpdatePaymentIntent<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentMandateData {
-
     pub customer_acceptance: CreatePaymentIntentMandateDataCustomerAcceptance,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreatePaymentIntentPaymentMethodDataAcssDebit>,
 
@@ -1015,7 +1000,6 @@ pub struct CreatePaymentIntentPaymentMethodData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreatePaymentIntentPaymentMethodOptionsAcssDebit>,
 
@@ -1052,7 +1036,6 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentTransferData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
@@ -1061,7 +1044,6 @@ pub struct CreatePaymentIntentTransferData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<UpdatePaymentIntentPaymentMethodDataAcssDebit>,
 
@@ -1125,7 +1107,6 @@ pub struct UpdatePaymentIntentPaymentMethodData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebit>,
 
@@ -1162,14 +1143,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentTransferData {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentMandateDataCustomerAcceptance {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub accepted_at: Option<Timestamp>,
 
@@ -1185,7 +1164,6 @@ pub struct CreatePaymentIntentMandateDataCustomerAcceptance {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataAcssDebit {
-
     pub account_number: String,
 
     pub institution_number: String,
@@ -1194,16 +1172,13 @@ pub struct CreatePaymentIntentPaymentMethodDataAcssDebit {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodDataAfterpayClearpay {
-}
+pub struct CreatePaymentIntentPaymentMethodDataAfterpayClearpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodDataAlipay {
-}
+pub struct CreatePaymentIntentPaymentMethodDataAlipay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataAuBecsDebit {
-
     pub account_number: String,
 
     pub bsb_number: String,
@@ -1211,7 +1186,6 @@ pub struct CreatePaymentIntentPaymentMethodDataAuBecsDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBacsDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<String>,
 
@@ -1220,12 +1194,10 @@ pub struct CreatePaymentIntentPaymentMethodDataBacsDebit {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodDataBancontact {
-}
+pub struct CreatePaymentIntentPaymentMethodDataBancontact {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBillingDetails {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<CreatePaymentIntentPaymentMethodDataBillingDetailsAddress>,
 
@@ -1241,103 +1213,88 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBoleto {
-
     pub tax_id: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataEps {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentIntentPaymentMethodDataEpsBank>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataFpx {
-
     pub bank: CreatePaymentIntentPaymentMethodDataFpxBank,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodDataGiropay {
-}
+pub struct CreatePaymentIntentPaymentMethodDataGiropay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodDataGrabpay {
-}
+pub struct CreatePaymentIntentPaymentMethodDataGrabpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataIdeal {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentIntentPaymentMethodDataIdealBank>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodDataInteracPresent {
-}
+pub struct CreatePaymentIntentPaymentMethodDataInteracPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodDataOxxo {
-}
+pub struct CreatePaymentIntentPaymentMethodDataOxxo {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataP24 {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentIntentPaymentMethodDataP24Bank>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataSepaDebit {
-
     pub iban: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataSofort {
-
     pub country: CreatePaymentIntentPaymentMethodDataSofortCountry,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method: Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method:
+        Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodOptionsAlipay {
-}
+pub struct CreatePaymentIntentPaymentMethodOptionsAlipay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBancontact {
-
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language: Option<CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage>,
+    pub preferred_language:
+        Option<CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBoleto {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCard {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc_token: Option<String>,
 
@@ -1348,44 +1305,39 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
     pub network: Option<CreatePaymentIntentPaymentMethodOptionsCardNetwork>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub request_three_d_secure: Option<CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+    pub request_three_d_secure:
+        Option<CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {
-}
+pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsOxxo {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsP24 {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<bool>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSofort {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language: Option<CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataAcssDebit {
-
     pub account_number: String,
 
     pub institution_number: String,
@@ -1394,16 +1346,13 @@ pub struct UpdatePaymentIntentPaymentMethodDataAcssDebit {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodDataAfterpayClearpay {
-}
+pub struct UpdatePaymentIntentPaymentMethodDataAfterpayClearpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodDataAlipay {
-}
+pub struct UpdatePaymentIntentPaymentMethodDataAlipay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataAuBecsDebit {
-
     pub account_number: String,
 
     pub bsb_number: String,
@@ -1411,7 +1360,6 @@ pub struct UpdatePaymentIntentPaymentMethodDataAuBecsDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBacsDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<String>,
 
@@ -1420,12 +1368,10 @@ pub struct UpdatePaymentIntentPaymentMethodDataBacsDebit {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodDataBancontact {
-}
+pub struct UpdatePaymentIntentPaymentMethodDataBancontact {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBillingDetails {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress>,
 
@@ -1441,103 +1387,88 @@ pub struct UpdatePaymentIntentPaymentMethodDataBillingDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBoleto {
-
     pub tax_id: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataEps {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<UpdatePaymentIntentPaymentMethodDataEpsBank>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataFpx {
-
     pub bank: UpdatePaymentIntentPaymentMethodDataFpxBank,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodDataGiropay {
-}
+pub struct UpdatePaymentIntentPaymentMethodDataGiropay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodDataGrabpay {
-}
+pub struct UpdatePaymentIntentPaymentMethodDataGrabpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataIdeal {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<UpdatePaymentIntentPaymentMethodDataIdealBank>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodDataInteracPresent {
-}
+pub struct UpdatePaymentIntentPaymentMethodDataInteracPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodDataOxxo {
-}
+pub struct UpdatePaymentIntentPaymentMethodDataOxxo {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataP24 {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<UpdatePaymentIntentPaymentMethodDataP24Bank>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataSepaDebit {
-
     pub iban: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataSofort {
-
     pub country: UpdatePaymentIntentPaymentMethodDataSofortCountry,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method: Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method:
+        Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodOptionsAlipay {
-}
+pub struct UpdatePaymentIntentPaymentMethodOptionsAlipay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBancontact {
-
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language: Option<UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage>,
+    pub preferred_language:
+        Option<UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBoleto {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc_token: Option<String>,
 
@@ -1548,48 +1479,42 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
     pub network: Option<UpdatePaymentIntentPaymentMethodOptionsCardNetwork>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub request_three_d_secure: Option<UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+    pub request_three_d_secure:
+        Option<UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {
-}
+pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsOxxo {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsP24 {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<bool>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSofort {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language: Option<UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentMandateDataCustomerAcceptanceOffline {
-}
+pub struct CreatePaymentIntentMandateDataCustomerAcceptanceOffline {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentMandateDataCustomerAcceptanceOnline {
-
     pub ip_address: String,
 
     pub user_agent: String,
@@ -1597,7 +1522,6 @@ pub struct CreatePaymentIntentMandateDataCustomerAcceptanceOnline {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
@@ -1619,7 +1543,6 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
 
@@ -1627,15 +1550,16 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     pub interval_description: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule:
+        Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type:
+        Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallments {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 
@@ -1644,12 +1568,10 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallments {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
-}
+pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
@@ -1671,7 +1593,6 @@ pub struct UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
 
@@ -1679,15 +1600,16 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     pub interval_description: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
+    pub payment_schedule:
+        Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type:
+        Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallments {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 
@@ -1696,12 +1618,10 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallments {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
-}
+pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
-
     pub count: u64,
 
     pub interval: CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval,
@@ -1712,7 +1632,6 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
-
     pub count: u64,
 
     pub interval: UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval,
@@ -1786,28 +1705,56 @@ pub enum CreatePaymentIntentPaymentMethodDataEpsBank {
 impl CreatePaymentIntentPaymentMethodDataEpsBank {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreatePaymentIntentPaymentMethodDataEpsBank::ArzteUndApothekerBank => "arzte_und_apotheker_bank",
-            CreatePaymentIntentPaymentMethodDataEpsBank::AustrianAnadiBankAg => "austrian_anadi_bank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::ArzteUndApothekerBank => {
+                "arzte_und_apotheker_bank"
+            }
+            CreatePaymentIntentPaymentMethodDataEpsBank::AustrianAnadiBankAg => {
+                "austrian_anadi_bank_ag"
+            }
             CreatePaymentIntentPaymentMethodDataEpsBank::BankAustria => "bank_austria",
-            CreatePaymentIntentPaymentMethodDataEpsBank::BankhausCarlSpangler => "bankhaus_carl_spangler",
-            CreatePaymentIntentPaymentMethodDataEpsBank::BankhausSchelhammerUndSchatteraAg => "bankhaus_schelhammer_und_schattera_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::BankhausCarlSpangler => {
+                "bankhaus_carl_spangler"
+            }
+            CreatePaymentIntentPaymentMethodDataEpsBank::BankhausSchelhammerUndSchatteraAg => {
+                "bankhaus_schelhammer_und_schattera_ag"
+            }
             CreatePaymentIntentPaymentMethodDataEpsBank::BawagPskAg => "bawag_psk_ag",
             CreatePaymentIntentPaymentMethodDataEpsBank::BksBankAg => "bks_bank_ag",
-            CreatePaymentIntentPaymentMethodDataEpsBank::BrullKallmusBankAg => "brull_kallmus_bank_ag",
-            CreatePaymentIntentPaymentMethodDataEpsBank::BtvVierLanderBank => "btv_vier_lander_bank",
-            CreatePaymentIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => "capital_bank_grawe_gruppe_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::BrullKallmusBankAg => {
+                "brull_kallmus_bank_ag"
+            }
+            CreatePaymentIntentPaymentMethodDataEpsBank::BtvVierLanderBank => {
+                "btv_vier_lander_bank"
+            }
+            CreatePaymentIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => {
+                "capital_bank_grawe_gruppe_ag"
+            }
             CreatePaymentIntentPaymentMethodDataEpsBank::Dolomitenbank => "dolomitenbank",
             CreatePaymentIntentPaymentMethodDataEpsBank::EasybankAg => "easybank_ag",
-            CreatePaymentIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => "erste_bank_und_sparkassen",
-            CreatePaymentIntentPaymentMethodDataEpsBank::HypoAlpeadriabankInternationalAg => "hypo_alpeadriabank_international_ag",
-            CreatePaymentIntentPaymentMethodDataEpsBank::HypoBankBurgenlandAktiengesellschaft => "hypo_bank_burgenland_aktiengesellschaft",
-            CreatePaymentIntentPaymentMethodDataEpsBank::HypoNoeLbFurNiederosterreichUWien => "hypo_noe_lb_fur_niederosterreich_u_wien",
-            CreatePaymentIntentPaymentMethodDataEpsBank::HypoOberosterreichSalzburgSteiermark => "hypo_oberosterreich_salzburg_steiermark",
+            CreatePaymentIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => {
+                "erste_bank_und_sparkassen"
+            }
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoAlpeadriabankInternationalAg => {
+                "hypo_alpeadriabank_international_ag"
+            }
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoBankBurgenlandAktiengesellschaft => {
+                "hypo_bank_burgenland_aktiengesellschaft"
+            }
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoNoeLbFurNiederosterreichUWien => {
+                "hypo_noe_lb_fur_niederosterreich_u_wien"
+            }
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoOberosterreichSalzburgSteiermark => {
+                "hypo_oberosterreich_salzburg_steiermark"
+            }
             CreatePaymentIntentPaymentMethodDataEpsBank::HypoTirolBankAg => "hypo_tirol_bank_ag",
-            CreatePaymentIntentPaymentMethodDataEpsBank::HypoVorarlbergBankAg => "hypo_vorarlberg_bank_ag",
+            CreatePaymentIntentPaymentMethodDataEpsBank::HypoVorarlbergBankAg => {
+                "hypo_vorarlberg_bank_ag"
+            }
             CreatePaymentIntentPaymentMethodDataEpsBank::MarchfelderBank => "marchfelder_bank",
             CreatePaymentIntentPaymentMethodDataEpsBank::OberbankAg => "oberbank_ag",
-            CreatePaymentIntentPaymentMethodDataEpsBank::RaiffeisenBankengruppeOsterreich => "raiffeisen_bankengruppe_osterreich",
+            CreatePaymentIntentPaymentMethodDataEpsBank::RaiffeisenBankengruppeOsterreich => {
+                "raiffeisen_bankengruppe_osterreich"
+            }
             CreatePaymentIntentPaymentMethodDataEpsBank::SchoellerbankAg => "schoellerbank_ag",
             CreatePaymentIntentPaymentMethodDataEpsBank::SpardaBankWien => "sparda_bank_wien",
             CreatePaymentIntentPaymentMethodDataEpsBank::VolksbankGruppe => "volksbank_gruppe",
@@ -1990,7 +1937,9 @@ impl CreatePaymentIntentPaymentMethodDataP24Bank {
             CreatePaymentIntentPaymentMethodDataP24Bank::CitiHandlowy => "citi_handlowy",
             CreatePaymentIntentPaymentMethodDataP24Bank::CreditAgricole => "credit_agricole",
             CreatePaymentIntentPaymentMethodDataP24Bank::Envelobank => "envelobank",
-            CreatePaymentIntentPaymentMethodDataP24Bank::EtransferPocztowy24 => "etransfer_pocztowy24",
+            CreatePaymentIntentPaymentMethodDataP24Bank::EtransferPocztowy24 => {
+                "etransfer_pocztowy24"
+            }
             CreatePaymentIntentPaymentMethodDataP24Bank::GetinBank => "getin_bank",
             CreatePaymentIntentPaymentMethodDataP24Bank::Ideabank => "ideabank",
             CreatePaymentIntentPaymentMethodDataP24Bank::Ing => "ing",
@@ -2000,8 +1949,12 @@ impl CreatePaymentIntentPaymentMethodDataP24Bank {
             CreatePaymentIntentPaymentMethodDataP24Bank::NoblePay => "noble_pay",
             CreatePaymentIntentPaymentMethodDataP24Bank::PbacZIpko => "pbac_z_ipko",
             CreatePaymentIntentPaymentMethodDataP24Bank::PlusBank => "plus_bank",
-            CreatePaymentIntentPaymentMethodDataP24Bank::SantanderPrzelew24 => "santander_przelew24",
-            CreatePaymentIntentPaymentMethodDataP24Bank::TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
+            CreatePaymentIntentPaymentMethodDataP24Bank::SantanderPrzelew24 => {
+                "santander_przelew24"
+            }
+            CreatePaymentIntentPaymentMethodDataP24Bank::TmobileUsbugiBankowe => {
+                "tmobile_usbugi_bankowe"
+            }
             CreatePaymentIntentPaymentMethodDataP24Bank::ToyotaBank => "toyota_bank",
             CreatePaymentIntentPaymentMethodDataP24Bank::VolkswagenBank => "volkswagen_bank",
         }
@@ -2145,7 +2098,9 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptio
     }
 }
 
-impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+impl std::fmt::Display
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -2174,7 +2129,9 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptio
     }
 }
 
-impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+impl std::fmt::Display
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -2192,9 +2149,15 @@ pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
 impl CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
-            CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => {
+                "automatic"
+            }
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => {
+                "instant"
+            }
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }
@@ -2281,7 +2244,9 @@ pub enum CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
 impl CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType::FixedCount => "fixed_count",
+            CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType::FixedCount => {
+                "fixed_count"
+            }
         }
     }
 }
@@ -2318,7 +2283,9 @@ impl CreatePaymentIntentPaymentMethodOptionsCardNetwork {
     pub fn as_str(self) -> &'static str {
         match self {
             CreatePaymentIntentPaymentMethodOptionsCardNetwork::Amex => "amex",
-            CreatePaymentIntentPaymentMethodOptionsCardNetwork::CartesBancaires => "cartes_bancaires",
+            CreatePaymentIntentPaymentMethodOptionsCardNetwork::CartesBancaires => {
+                "cartes_bancaires"
+            }
             CreatePaymentIntentPaymentMethodOptionsCardNetwork::Diners => "diners",
             CreatePaymentIntentPaymentMethodOptionsCardNetwork::Discover => "discover",
             CreatePaymentIntentPaymentMethodOptionsCardNetwork::Interac => "interac",
@@ -2355,7 +2322,9 @@ impl CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
         match self {
             CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
-            CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
+            CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Automatic => {
+                "automatic"
+            }
         }
     }
 }
@@ -2522,7 +2491,9 @@ impl PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
         match self {
             PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
             PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+            PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }
@@ -2598,7 +2569,9 @@ impl PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
         match self {
             PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
             PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
-            PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::ChallengeOnly => "challenge_only",
+            PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::ChallengeOnly => {
+                "challenge_only"
+            }
         }
     }
 }
@@ -2627,9 +2600,15 @@ pub enum PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
 impl PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
     pub fn as_str(self) -> &'static str {
         match self {
-            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Combined => "combined",
-            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Interval => "interval",
-            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Sporadic => "sporadic",
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Combined => {
+                "combined"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Interval => {
+                "interval"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Sporadic => {
+                "sporadic"
+            }
         }
     }
 }
@@ -2657,8 +2636,12 @@ pub enum PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType
 impl PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Business => "business",
-            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Personal => "personal",
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Business => {
+                "business"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Personal => {
+                "personal"
+            }
         }
     }
 }
@@ -2880,28 +2863,56 @@ pub enum UpdatePaymentIntentPaymentMethodDataEpsBank {
 impl UpdatePaymentIntentPaymentMethodDataEpsBank {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdatePaymentIntentPaymentMethodDataEpsBank::ArzteUndApothekerBank => "arzte_und_apotheker_bank",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::AustrianAnadiBankAg => "austrian_anadi_bank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::ArzteUndApothekerBank => {
+                "arzte_und_apotheker_bank"
+            }
+            UpdatePaymentIntentPaymentMethodDataEpsBank::AustrianAnadiBankAg => {
+                "austrian_anadi_bank_ag"
+            }
             UpdatePaymentIntentPaymentMethodDataEpsBank::BankAustria => "bank_austria",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::BankhausCarlSpangler => "bankhaus_carl_spangler",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::BankhausSchelhammerUndSchatteraAg => "bankhaus_schelhammer_und_schattera_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BankhausCarlSpangler => {
+                "bankhaus_carl_spangler"
+            }
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BankhausSchelhammerUndSchatteraAg => {
+                "bankhaus_schelhammer_und_schattera_ag"
+            }
             UpdatePaymentIntentPaymentMethodDataEpsBank::BawagPskAg => "bawag_psk_ag",
             UpdatePaymentIntentPaymentMethodDataEpsBank::BksBankAg => "bks_bank_ag",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::BrullKallmusBankAg => "brull_kallmus_bank_ag",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::BtvVierLanderBank => "btv_vier_lander_bank",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => "capital_bank_grawe_gruppe_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BrullKallmusBankAg => {
+                "brull_kallmus_bank_ag"
+            }
+            UpdatePaymentIntentPaymentMethodDataEpsBank::BtvVierLanderBank => {
+                "btv_vier_lander_bank"
+            }
+            UpdatePaymentIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => {
+                "capital_bank_grawe_gruppe_ag"
+            }
             UpdatePaymentIntentPaymentMethodDataEpsBank::Dolomitenbank => "dolomitenbank",
             UpdatePaymentIntentPaymentMethodDataEpsBank::EasybankAg => "easybank_ag",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => "erste_bank_und_sparkassen",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoAlpeadriabankInternationalAg => "hypo_alpeadriabank_international_ag",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoBankBurgenlandAktiengesellschaft => "hypo_bank_burgenland_aktiengesellschaft",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoNoeLbFurNiederosterreichUWien => "hypo_noe_lb_fur_niederosterreich_u_wien",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoOberosterreichSalzburgSteiermark => "hypo_oberosterreich_salzburg_steiermark",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => {
+                "erste_bank_und_sparkassen"
+            }
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoAlpeadriabankInternationalAg => {
+                "hypo_alpeadriabank_international_ag"
+            }
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoBankBurgenlandAktiengesellschaft => {
+                "hypo_bank_burgenland_aktiengesellschaft"
+            }
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoNoeLbFurNiederosterreichUWien => {
+                "hypo_noe_lb_fur_niederosterreich_u_wien"
+            }
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoOberosterreichSalzburgSteiermark => {
+                "hypo_oberosterreich_salzburg_steiermark"
+            }
             UpdatePaymentIntentPaymentMethodDataEpsBank::HypoTirolBankAg => "hypo_tirol_bank_ag",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoVorarlbergBankAg => "hypo_vorarlberg_bank_ag",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::HypoVorarlbergBankAg => {
+                "hypo_vorarlberg_bank_ag"
+            }
             UpdatePaymentIntentPaymentMethodDataEpsBank::MarchfelderBank => "marchfelder_bank",
             UpdatePaymentIntentPaymentMethodDataEpsBank::OberbankAg => "oberbank_ag",
-            UpdatePaymentIntentPaymentMethodDataEpsBank::RaiffeisenBankengruppeOsterreich => "raiffeisen_bankengruppe_osterreich",
+            UpdatePaymentIntentPaymentMethodDataEpsBank::RaiffeisenBankengruppeOsterreich => {
+                "raiffeisen_bankengruppe_osterreich"
+            }
             UpdatePaymentIntentPaymentMethodDataEpsBank::SchoellerbankAg => "schoellerbank_ag",
             UpdatePaymentIntentPaymentMethodDataEpsBank::SpardaBankWien => "sparda_bank_wien",
             UpdatePaymentIntentPaymentMethodDataEpsBank::VolksbankGruppe => "volksbank_gruppe",
@@ -3084,7 +3095,9 @@ impl UpdatePaymentIntentPaymentMethodDataP24Bank {
             UpdatePaymentIntentPaymentMethodDataP24Bank::CitiHandlowy => "citi_handlowy",
             UpdatePaymentIntentPaymentMethodDataP24Bank::CreditAgricole => "credit_agricole",
             UpdatePaymentIntentPaymentMethodDataP24Bank::Envelobank => "envelobank",
-            UpdatePaymentIntentPaymentMethodDataP24Bank::EtransferPocztowy24 => "etransfer_pocztowy24",
+            UpdatePaymentIntentPaymentMethodDataP24Bank::EtransferPocztowy24 => {
+                "etransfer_pocztowy24"
+            }
             UpdatePaymentIntentPaymentMethodDataP24Bank::GetinBank => "getin_bank",
             UpdatePaymentIntentPaymentMethodDataP24Bank::Ideabank => "ideabank",
             UpdatePaymentIntentPaymentMethodDataP24Bank::Ing => "ing",
@@ -3094,8 +3107,12 @@ impl UpdatePaymentIntentPaymentMethodDataP24Bank {
             UpdatePaymentIntentPaymentMethodDataP24Bank::NoblePay => "noble_pay",
             UpdatePaymentIntentPaymentMethodDataP24Bank::PbacZIpko => "pbac_z_ipko",
             UpdatePaymentIntentPaymentMethodDataP24Bank::PlusBank => "plus_bank",
-            UpdatePaymentIntentPaymentMethodDataP24Bank::SantanderPrzelew24 => "santander_przelew24",
-            UpdatePaymentIntentPaymentMethodDataP24Bank::TmobileUsbugiBankowe => "tmobile_usbugi_bankowe",
+            UpdatePaymentIntentPaymentMethodDataP24Bank::SantanderPrzelew24 => {
+                "santander_przelew24"
+            }
+            UpdatePaymentIntentPaymentMethodDataP24Bank::TmobileUsbugiBankowe => {
+                "tmobile_usbugi_bankowe"
+            }
             UpdatePaymentIntentPaymentMethodDataP24Bank::ToyotaBank => "toyota_bank",
             UpdatePaymentIntentPaymentMethodDataP24Bank::VolkswagenBank => "volkswagen_bank",
         }
@@ -3239,7 +3256,9 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptio
     }
 }
 
-impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
+impl std::fmt::Display
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -3268,7 +3287,9 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptio
     }
 }
 
-impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+impl std::fmt::Display
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -3286,9 +3307,15 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
 impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
-            UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => {
+                "automatic"
+            }
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => {
+                "instant"
+            }
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }
@@ -3375,7 +3402,9 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
 impl UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType::FixedCount => "fixed_count",
+            UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType::FixedCount => {
+                "fixed_count"
+            }
         }
     }
 }
@@ -3412,7 +3441,9 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
     pub fn as_str(self) -> &'static str {
         match self {
             UpdatePaymentIntentPaymentMethodOptionsCardNetwork::Amex => "amex",
-            UpdatePaymentIntentPaymentMethodOptionsCardNetwork::CartesBancaires => "cartes_bancaires",
+            UpdatePaymentIntentPaymentMethodOptionsCardNetwork::CartesBancaires => {
+                "cartes_bancaires"
+            }
             UpdatePaymentIntentPaymentMethodOptionsCardNetwork::Diners => "diners",
             UpdatePaymentIntentPaymentMethodOptionsCardNetwork::Discover => "discover",
             UpdatePaymentIntentPaymentMethodOptionsCardNetwork::Interac => "interac",
@@ -3449,7 +3480,9 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
         match self {
             UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
-            UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
+            UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::Automatic => {
+                "automatic"
+            }
         }
     }
 }
