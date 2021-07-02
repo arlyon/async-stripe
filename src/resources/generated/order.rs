@@ -2,14 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, OrderId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Charge, Currency, Customer, OrderItem, OrderReturn, OrderStatusFilter, Shipping, ShippingParams,
-};
+use crate::resources::{Charge, Currency, Customer, OrderItem, OrderReturn, OrderStatusFilter, Shipping, ShippingParams};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Order".
 ///
@@ -124,6 +121,7 @@ pub struct Order {
 }
 
 impl Order {
+
     /// Returns a list of your orders.
     ///
     /// The orders are returned sorted by creation date, with the most recently created orders appearing first.
@@ -163,6 +161,7 @@ impl Object for Order {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingMethod {
+
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the line item.
     pub amount: i64,
 
@@ -188,6 +187,7 @@ pub struct ShippingMethod {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DeliveryEstimate {
+
     /// If `type` is `"exact"`, `date` will be the expected delivery date in the format YYYY-MM-DD.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<String>,
@@ -209,6 +209,7 @@ pub struct DeliveryEstimate {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StatusTransitions {
+
     /// The time that the order was canceled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled: Option<Timestamp>,
@@ -229,6 +230,7 @@ pub struct StatusTransitions {
 /// The parameters for `Order::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateOrder<'a> {
+
     /// A coupon code that represents a discount to be applied to this order.
     ///
     /// Must be one-time duration and in same currency as the order.
@@ -296,6 +298,7 @@ impl<'a> CreateOrder<'a> {
 /// The parameters for `Order::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListOrders<'a> {
+
     /// Date this order was created.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
@@ -367,6 +370,7 @@ impl<'a> ListOrders<'a> {
 /// The parameters for `Order::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateOrder<'a> {
+
     /// A coupon code that represents a discount to be applied to this order.
     ///
     /// Must be one-time duration and in same currency as the order.
@@ -420,6 +424,7 @@ impl<'a> UpdateOrder<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ListOrdersStatusTransitions {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled: Option<RangeQuery<Timestamp>>,
 
@@ -435,6 +440,7 @@ pub struct ListOrdersStatusTransitions {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderItemParams {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
