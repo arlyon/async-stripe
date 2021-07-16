@@ -47,39 +47,41 @@ impl Object for Capability {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilityRequirements {
 
-    /// The date the fields in `currently_due` must be collected by to keep the capability enabled for the account.
+    /// Date by which the fields in `currently_due` must be collected to keep the capability enabled for the account.
+    ///
+    /// These fields may disable the capability sooner if the next threshold is reached before they are collected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub current_deadline: Option<Timestamp>,
 
-    /// The fields that need to be collected to keep the capability enabled.
+    /// Fields that need to be collected to keep the capability enabled.
     ///
-    /// If not collected by the `current_deadline`, these fields appear in `past_due` as well, and the capability is disabled.
+    /// If not collected by `current_deadline`, these fields appear in `past_due` as well, and the capability is disabled.
     pub currently_due: Vec<String>,
 
     /// If the capability is disabled, this string describes why.
     ///
-    /// Possible values are `requirement.fields_needed`, `pending.onboarding`, `pending.review`, `rejected_fraud`, `rejected.unsupported_business` or `rejected.other`.  `rejected.unsupported_business` means that the account's business is not supported by the capability.
+    /// Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.  `rejected.unsupported_business` means that the account's business is not supported by the capability.
     /// For example, payment methods may restrict the businesses they support in their terms of service:  - [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses)  If you believe that the rejection is in error, please contact support@stripe.com for assistance.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disabled_reason: Option<String>,
 
-    /// The fields that are `currently_due` and need to be collected again because validation or verification failed for some reason.
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<AccountRequirementsError>,
 
-    /// The fields that need to be collected assuming all volume thresholds are reached.
+    /// Fields that need to be collected assuming all volume thresholds are reached.
     ///
-    /// As they become required, these fields appear in `currently_due` as well, and the `current_deadline` is set.
+    /// As they become required, they appear in `currently_due` as well, and `current_deadline` becomes set.
     pub eventually_due: Vec<String>,
 
-    /// The fields that weren't collected by the `current_deadline`.
+    /// Fields that weren't collected by `current_deadline`.
     ///
-    /// These fields need to be collected to enable the capability for the account.
+    /// These fields need to be collected to enable the capability on the account.
     pub past_due: Vec<String>,
 
     /// Fields that may become required depending on the results of verification or review.
     ///
-    /// An empty array unless an asynchronous verification is pending.
-    /// If verification fails, the fields in this array become required and move to `currently_due` or `past_due`.
+    /// Will be an empty array unless an asynchronous verification is pending.
+    /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
     pub pending_verification: Vec<String>,
 }
 

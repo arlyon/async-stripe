@@ -65,7 +65,7 @@ impl Object for BillingPortalSession {
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateBillingPortalSession<'a> {
 
-    /// The [configuration](https://stripe.com/docs/api/customer_portal/configuration) to use for this session, describing its functionality and features.
+    /// The ID of an existing [configuration](https://stripe.com/docs/api/customer_portal/configuration) to use for this session, describing its functionality and features.
     ///
     /// If not specified, the session uses the default configuration.
     #[serde(skip_serializing_if = "Option::is_none")]

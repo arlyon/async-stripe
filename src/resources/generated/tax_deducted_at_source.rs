@@ -2,13 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::params::{Object, Timestamp};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TaxDeductedAtSource".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxDeductedAtSource {
+
     /// The end of the invoicing period.
     ///
     /// This TDS applies to Stripe fees collected during this invoicing period.

@@ -3,7 +3,8 @@
 // ======================================
 
 use crate::ids::{TerminalReaderId};
-use crate::params::{Metadata, Object};
+use crate::params::{Expandable, Metadata, Object};
+use crate::resources::{TerminalLocation};
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TerminalReaderReader".
@@ -38,7 +39,7 @@ pub struct TerminalReader {
 
     /// The location identifier of the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub location: Option<String>,
+    pub location: Option<Expandable<TerminalLocation>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
