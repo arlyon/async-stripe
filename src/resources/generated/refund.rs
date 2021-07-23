@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{ChargeId, PaymentIntentId, RefundId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Charge, Currency, PaymentIntent, TransferReversal};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Refund".
 ///
@@ -96,6 +95,7 @@ pub struct Refund {
 }
 
 impl Refund {
+
     /// Returns a list of all refunds you’ve previously created.
     ///
     /// The refunds are returned in sorted order, with the most recent refunds appearing first.
@@ -135,6 +135,7 @@ impl Object for Refund {
 /// The parameters for `Refund::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateRefund<'a> {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
@@ -184,6 +185,7 @@ impl<'a> CreateRefund<'a> {
 /// The parameters for `Refund::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListRefunds<'a> {
+
     /// Only return refunds for the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,
@@ -237,6 +239,7 @@ impl<'a> ListRefunds<'a> {
 /// The parameters for `Refund::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRefund<'a> {
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -252,7 +255,10 @@ pub struct UpdateRefund<'a> {
 
 impl<'a> UpdateRefund<'a> {
     pub fn new() -> Self {
-        UpdateRefund { expand: Default::default(), metadata: Default::default() }
+        UpdateRefund {
+            expand: Default::default(),
+            metadata: Default::default(),
+        }
     }
 }
 
