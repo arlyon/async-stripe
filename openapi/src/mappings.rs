@@ -436,8 +436,8 @@ pub fn field_mappings() -> FieldMap {
         (("list_skus", "attributes"), ("Metadata", "Option<Metadata>")),
         (("create_sku", "attributes"), ("Metadata", "Option<Metadata>")),
         (("update_sku", "attributes"), ("Metadata", "Option<Metadata>")),
-        (("create_sku", "inventory"), ("Inventory", "Option<Inventory>")),
-        (("update_sku", "inventory"), ("Inventory", "Option<Inventory>")),
+        (("create_sku", "inventory"), ("SkuInventory", "Option<SkuInventory>")),
+        (("update_sku", "inventory"), ("SkuInventory", "Option<SkuInventory>")),
         (("create_sku", "package_dimensions"), ("PackageDimensions", "Option<PackageDimensions>")),
         (("update_sku", "package_dimensions"), ("PackageDimensions", "Option<PackageDimensions>")),
 

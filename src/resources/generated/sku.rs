@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::SkuId;
 use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Timestamp};
-use crate::resources::{CreateProduct, Currency, Inventory, PackageDimensions, Product};
+use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
 
 /// The resource representing a Stripe "Sku".
 ///
@@ -186,7 +186,7 @@ pub struct CreateSku<'a> {
 
     /// Description of the SKU's inventory.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub inventory: Option<Inventory>,
+    pub inventory: Option<SkuInventory>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -212,7 +212,7 @@ pub struct CreateSku<'a> {
 impl<'a> CreateSku<'a> {
     pub fn new(
         currency: Currency,
-        inventory: Option<Inventory>,
+        inventory: Option<SkuInventory>,
         price: i64,
         product: IdOrCreate<'a, CreateProduct<'a>>,
     ) -> Self {
@@ -332,7 +332,7 @@ pub struct UpdateSku<'a> {
 
     /// Description of the SKU's inventory.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub inventory: Option<Inventory>,
+    pub inventory: Option<SkuInventory>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
