@@ -16,7 +16,16 @@ jobs:
           profile: minimal
           toolchain: nightly
           components: rustfmt
-      - run: cargo +nightly fmt --all -- --check
+      - name: install cargo-make
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: --debug cargo-make
+      - name: regenerate openapi
+        uses: actions-rs/cargo@v1
+        with:
+          command: make
+          args: check
   clippy:
     runs-on: ubuntu-20.04
     strategy:
