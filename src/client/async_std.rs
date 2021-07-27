@@ -4,7 +4,7 @@ use std::future::{self, Future};
 use std::pin::Pin;
 
 use serde::de::DeserializeOwned;
-use surf::{http::url::ParseError, Body, Url};
+use surf::{Body, Url};
 
 use crate::error::{ErrorResponse, StripeError};
 use crate::params::{AppInfo, Headers};
