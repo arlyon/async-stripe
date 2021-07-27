@@ -24,9 +24,11 @@ args = ["-a", "out/.", "../src/resources/generated"]
 dependencies = ["openapi-generate"]
 
 [tasks.fmt]
+env = { RUST_FILES = { glob = "./**/*.rs", include_files = true, include_dirs = false, ignore_type = "git" } }
 command = "cargo"
 toolchain = "nightly"
-args = ["fmt"]
+install_crate = "rustfmt"
+args = ["fmt", "--", "@@split(RUST_FILES,;)"]
 
 [tasks.openapi-install]
 dependencies = ["openapi-copy", "fmt"]
