@@ -123,6 +123,9 @@ pub struct Customer {
     #[serde(default)]
     pub subscriptions: List<Subscription>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<CustomerTax>,
+
     /// Describes the customer's tax exemption status.
     ///
     /// One of `none`, `exempt`, or `reverse`.
@@ -187,6 +190,33 @@ impl Object for Customer {
     fn object(&self) -> &'static str {
         "customer"
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CustomerTax {
+    /// Surfaces if automatic tax computation is possible given the current customer location information.
+    pub automatic_tax: CustomerTaxAutomaticTax,
+
+    /// A recent IP address of the customer used for tax reporting and tax location inference.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<String>,
+
+    /// The customer's location as identified by Stripe Tax.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location: Option<CustomerTaxLocation>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CustomerTaxLocation {
+    /// The customer's country as identified by Stripe Tax.
+    pub country: String,
+
+    /// The data source used to infer the customer's location.
+    pub source: CustomerTaxLocationSource,
+
+    /// The customer's state, county, province, or region as identified by Stripe Tax.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -301,6 +331,10 @@ pub struct CreateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<PaymentSourceParams>,
 
+    /// Tax details about the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<CreateCustomerTax>,
+
     /// The customer's tax exemption.
     ///
     /// One of `none`, `exempt`, or `reverse`.
@@ -332,6 +366,7 @@ impl<'a> CreateCustomer<'a> {
             promotion_code: Default::default(),
             shipping: Default::default(),
             source: Default::default(),
+            tax: Default::default(),
             tax_exempt: Default::default(),
             tax_id_data: Default::default(),
         }
@@ -493,6 +528,10 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<PaymentSourceParams>,
 
+    /// Tax details about the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<UpdateCustomerTax>,
+
     /// The customer's tax exemption.
     ///
     /// One of `none`, `exempt`, or `reverse`.
@@ -532,10 +571,17 @@ impl<'a> UpdateCustomer<'a> {
             promotion_code: Default::default(),
             shipping: Default::default(),
             source: Default::default(),
+            tax: Default::default(),
             tax_exempt: Default::default(),
             trial_end: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCustomerTax {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -556,6 +602,45 @@ pub struct TaxIdData {
     pub type_: TaxIdType,
 
     pub value: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateCustomerTax {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<String>,
+}
+
+/// An enum representing the possible values of an `CustomerTax`'s `automatic_tax` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CustomerTaxAutomaticTax {
+    Failed,
+    NotCollecting,
+    Supported,
+    UnrecognizedLocation,
+}
+
+impl CustomerTaxAutomaticTax {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CustomerTaxAutomaticTax::Failed => "failed",
+            CustomerTaxAutomaticTax::NotCollecting => "not_collecting",
+            CustomerTaxAutomaticTax::Supported => "supported",
+            CustomerTaxAutomaticTax::UnrecognizedLocation => "unrecognized_location",
+        }
+    }
+}
+
+impl AsRef<str> for CustomerTaxAutomaticTax {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CustomerTaxAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `Customer`'s `tax_exempt` field.
@@ -620,6 +705,39 @@ impl std::fmt::Display for CustomerTaxExemptFilter {
     }
 }
 
+/// An enum representing the possible values of an `CustomerTaxLocation`'s `source` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CustomerTaxLocationSource {
+    BillingAddress,
+    IpAddress,
+    PaymentMethod,
+    ShippingDestination,
+}
+
+impl CustomerTaxLocationSource {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CustomerTaxLocationSource::BillingAddress => "billing_address",
+            CustomerTaxLocationSource::IpAddress => "ip_address",
+            CustomerTaxLocationSource::PaymentMethod => "payment_method",
+            CustomerTaxLocationSource::ShippingDestination => "shipping_destination",
+        }
+    }
+}
+
+impl AsRef<str> for CustomerTaxLocationSource {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CustomerTaxLocationSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `TaxIdData`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -629,6 +747,10 @@ pub enum TaxIdType {
     BrCnpj,
     BrCpf,
     CaBn,
+    CaGstHst,
+    CaPstBc,
+    CaPstMb,
+    CaPstSk,
     CaQst,
     ChVat,
     ClTin,
@@ -637,6 +759,7 @@ pub enum TaxIdType {
     GbVat,
     HkBr,
     IdNpwp,
+    IlVat,
     InGst,
     JpCn,
     JpRn,
@@ -667,6 +790,10 @@ impl TaxIdType {
             TaxIdType::BrCnpj => "br_cnpj",
             TaxIdType::BrCpf => "br_cpf",
             TaxIdType::CaBn => "ca_bn",
+            TaxIdType::CaGstHst => "ca_gst_hst",
+            TaxIdType::CaPstBc => "ca_pst_bc",
+            TaxIdType::CaPstMb => "ca_pst_mb",
+            TaxIdType::CaPstSk => "ca_pst_sk",
             TaxIdType::CaQst => "ca_qst",
             TaxIdType::ChVat => "ch_vat",
             TaxIdType::ClTin => "cl_tin",
@@ -675,6 +802,7 @@ impl TaxIdType {
             TaxIdType::GbVat => "gb_vat",
             TaxIdType::HkBr => "hk_br",
             TaxIdType::IdNpwp => "id_npwp",
+            TaxIdType::IlVat => "il_vat",
             TaxIdType::InGst => "in_gst",
             TaxIdType::JpCn => "jp_cn",
             TaxIdType::JpRn => "jp_rn",

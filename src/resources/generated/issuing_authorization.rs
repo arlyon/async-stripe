@@ -95,7 +95,7 @@ pub struct IssuingAuthorization {
 
     pub verification_data: IssuingAuthorizationVerificationData,
 
-    /// What, if any, digital wallet was used for this authorization.
+    /// The digital wallet used for this authorization.
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -66,6 +66,10 @@ pub struct TaxRate {
     /// For example, "NY" for New York, United States.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+
+    /// The high-level tax type, such as `vat` or `sales_tax`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_type: Option<TaxRateTaxType>,
 }
 
 impl TaxRate {
@@ -154,6 +158,10 @@ pub struct CreateTaxRate<'a> {
     /// For example, "NY" for New York, United States.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<&'a str>,
+
+    /// The high-level tax type, such as `vat` or `sales_tax`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_type: Option<TaxRateTaxType>,
 }
 
 impl<'a> CreateTaxRate<'a> {
@@ -169,6 +177,7 @@ impl<'a> CreateTaxRate<'a> {
             metadata: Default::default(),
             percentage,
             state: Default::default(),
+            tax_type: Default::default(),
         }
     }
 }
@@ -274,6 +283,10 @@ pub struct UpdateTaxRate<'a> {
     /// For example, "NY" for New York, United States.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<&'a str>,
+
+    /// The high-level tax type, such as `vat` or `sales_tax`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_type: Option<TaxRateTaxType>,
 }
 
 impl<'a> UpdateTaxRate<'a> {
@@ -287,6 +300,44 @@ impl<'a> UpdateTaxRate<'a> {
             jurisdiction: Default::default(),
             metadata: Default::default(),
             state: Default::default(),
+            tax_type: Default::default(),
         }
+    }
+}
+
+/// An enum representing the possible values of an `TaxRate`'s `tax_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TaxRateTaxType {
+    Gst,
+    Hst,
+    Pst,
+    Qst,
+    SalesTax,
+    Vat,
+}
+
+impl TaxRateTaxType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TaxRateTaxType::Gst => "gst",
+            TaxRateTaxType::Hst => "hst",
+            TaxRateTaxType::Pst => "pst",
+            TaxRateTaxType::Qst => "qst",
+            TaxRateTaxType::SalesTax => "sales_tax",
+            TaxRateTaxType::Vat => "vat",
+        }
+    }
+}
+
+impl AsRef<str> for TaxRateTaxType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxRateTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
     }
 }

@@ -473,6 +473,9 @@ pub struct InvoiceItemPriceData {
     pub product: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<InvoiceItemPriceDataTaxBehavior>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -486,4 +489,35 @@ pub struct UpdateInvoiceItemDiscounts {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
+}
+
+/// An enum representing the possible values of an `InvoiceItemPriceData`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoiceItemPriceDataTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl InvoiceItemPriceDataTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoiceItemPriceDataTaxBehavior::Exclusive => "exclusive",
+            InvoiceItemPriceDataTaxBehavior::Inclusive => "inclusive",
+            InvoiceItemPriceDataTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for InvoiceItemPriceDataTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoiceItemPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

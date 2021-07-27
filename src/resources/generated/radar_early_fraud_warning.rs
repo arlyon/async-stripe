@@ -34,6 +34,10 @@ pub struct RadarEarlyFraudWarning {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+
+    /// ID of the Payment Intent this early fraud warning is for, optionally expanded.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent: Option<Expandable<PaymentIntent>>,
 }
 
 impl Object for RadarEarlyFraudWarning {

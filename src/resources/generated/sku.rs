@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::SkuId;
 use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Timestamp};
-use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
+use crate::resources::{CreateProduct, Currency, Inventory, PackageDimensions, Product};
 
 /// The resource representing a Stripe "Sku".
 ///
@@ -48,7 +48,7 @@ pub struct Sku {
     pub image: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub inventory: Option<Inventory>,
+    pub inventory: Option<SkuInventory>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -128,7 +128,7 @@ impl Object for Sku {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Inventory {
+pub struct SkuInventory {
     /// The count of inventory available.
     ///
     /// Will be present if and only if `type` is `finite`.

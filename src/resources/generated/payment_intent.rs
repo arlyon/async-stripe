@@ -9,7 +9,8 @@ use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession,
-    PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, Review, Shipping, ShippingParams,
+    PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsBoleto,
+    PaymentMethodOptionsOxxo, Review, Shipping, ShippingParams,
 };
 
 /// The resource representing a Stripe "PaymentIntent".
@@ -256,6 +257,9 @@ pub struct PaymentIntentNextAction {
     pub alipay_handle_redirect: Option<PaymentIntentNextActionAlipayHandleRedirect>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto_display_details: Option<PaymentIntentNextActionBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo_display_details: Option<PaymentIntentNextActionDisplayOxxoDetails>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -273,6 +277,16 @@ pub struct PaymentIntentNextAction {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verify_with_microdeposits: Option<PaymentIntentNextActionVerifyWithMicrodeposits>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay_display_qr_code: Option<PaymentIntentNextActionWechatPayDisplayQrCode>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay_redirect_to_android_app:
+        Option<PaymentIntentNextActionWechatPayRedirectToAndroidApp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay_redirect_to_ios_app: Option<PaymentIntentNextActionWechatPayRedirectToIosApp>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -292,6 +306,25 @@ pub struct PaymentIntentNextActionAlipayHandleRedirect {
     /// The URL you must redirect your customer to in order to authenticate the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionBoleto {
+    /// The timestamp after which the boleto expires.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<Timestamp>,
+
+    /// The URL to the hosted boleto voucher page, which allows customers to view the boleto voucher.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hosted_voucher_url: Option<String>,
+
+    /// The boleto number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number: Option<String>,
+
+    /// The URL to the downloadable boleto voucher PDF.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pdf: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -330,9 +363,51 @@ pub struct PaymentIntentNextActionVerifyWithMicrodeposits {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionWechatPayDisplayQrCode {
+    /// The data being used to generate QR code.
+    pub data: String,
+
+    /// The base64 image data for a pre-generated QR code.
+    pub image_data_url: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionWechatPayRedirectToAndroidApp {
+    /// app_id is the APP ID registered on WeChat open platform.
+    pub app_id: String,
+
+    /// nonce_str is a random string.
+    pub nonce_str: String,
+
+    /// package is static value.
+    pub package: String,
+
+    /// an unique merchant ID assigned by Wechat Pay.
+    pub partner_id: String,
+
+    /// an unique trading ID assigned by Wechat Pay.
+    pub prepay_id: String,
+
+    /// A signature.
+    pub sign: String,
+
+    /// Specifies the current time in epoch format.
+    pub timestamp: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionWechatPayRedirectToIosApp {
+    /// An universal link that redirect to Wechat Pay APP.
+    pub native_url: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<PaymentIntentPaymentMethodOptionsAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay: Option<PaymentMethodOptionsAfterpayClearpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<PaymentMethodOptionsAlipay>,
@@ -341,7 +416,16 @@ pub struct PaymentIntentPaymentMethodOptions {
     pub bancontact: Option<PaymentMethodOptionsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<PaymentMethodOptionsBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<PaymentIntentPaymentMethodOptionsCard>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_present: Option<PaymentMethodOptionsCardPresent>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal: Option<PaymentMethodOptionsIdeal>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<PaymentMethodOptionsOxxo>,
@@ -354,6 +438,9 @@ pub struct PaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<PaymentMethodOptionsSofort>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<PaymentMethodOptionsWechatPay>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -374,9 +461,9 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub installments: Option<PaymentMethodOptionsCardInstallments>,
 
-    /// Selected network to process this PaymentIntent on.
+    /// Selected network to process this payment intent on.
     ///
-    /// Depends on the available networks of the card attached to the PaymentIntent.
+    /// Depends on the available networks of the card attached to the payment intent.
     /// Can be only set confirm-time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network: Option<PaymentIntentPaymentMethodOptionsCardNetwork>,
@@ -399,7 +486,7 @@ pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
 
     /// Description of the interval.
     ///
-    /// Only required if 'payment_schedule' parmeter is 'interval' or 'combined'.
+    /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
 
@@ -422,6 +509,16 @@ pub struct PaymentIntentPaymentMethodOptionsSepaDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsAfterpayClearpay {
+    /// Order identifier shown to the merchant in Afterpay’s online portal.
+    ///
+    /// We recommend using a value that helps you answer any questions a customer might have about the payment.
+    /// The identifier is limited to 128 characters and may contain only letters, digits, underscores, backslashes and dashes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsAlipay {}
@@ -447,12 +544,10 @@ pub struct PaymentMethodOptionsCardInstallments {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodOptionsOxxo {
-    /// The number of calendar days before an OXXO invoice expires.
-    ///
-    /// For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
-    pub expires_after_days: u32,
-}
+pub struct PaymentMethodOptionsCardPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsIdeal {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsP24 {}
@@ -462,6 +557,19 @@ pub struct PaymentMethodOptionsSofort {
     /// Preferred language of the SOFORT authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language: Option<PaymentMethodOptionsSofortPreferredLanguage>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsWechatPay {
+    /// The app ID registered with WeChat Pay.
+    ///
+    /// Only required when client is ios or android.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub app_id: Option<String>,
+
+    /// The client type that the end customer will pay from.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub client: Option<PaymentMethodOptionsWechatPayClient>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -908,6 +1016,9 @@ pub struct CreatePaymentIntentPaymentMethodData {
     pub billing_details: Option<CreatePaymentIntentPaymentMethodDataBillingDetails>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<CreatePaymentIntentPaymentMethodDataBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CreatePaymentIntentPaymentMethodDataEps>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -942,6 +1053,9 @@ pub struct CreatePaymentIntentPaymentMethodData {
 
     #[serde(rename = "type")]
     pub type_: CreatePaymentIntentPaymentMethodDataType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<CreatePaymentIntentPaymentMethodDataWechatPay>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -950,13 +1064,25 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     pub acss_debit: Option<CreatePaymentIntentPaymentMethodOptionsAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay: Option<CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<CreatePaymentIntentPaymentMethodOptionsAlipay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<CreatePaymentIntentPaymentMethodOptionsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<CreatePaymentIntentPaymentMethodOptionsBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreatePaymentIntentPaymentMethodOptionsCard>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_present: Option<CreatePaymentIntentPaymentMethodOptionsCardPresent>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal: Option<CreatePaymentIntentPaymentMethodOptionsIdeal>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<CreatePaymentIntentPaymentMethodOptionsOxxo>,
@@ -969,6 +1095,9 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreatePaymentIntentPaymentMethodOptionsSofort>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<CreatePaymentIntentPaymentMethodOptionsWechatPay>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1001,6 +1130,9 @@ pub struct UpdatePaymentIntentPaymentMethodData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<UpdatePaymentIntentPaymentMethodDataBillingDetails>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<UpdatePaymentIntentPaymentMethodDataBoleto>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<UpdatePaymentIntentPaymentMethodDataEps>,
@@ -1037,6 +1169,9 @@ pub struct UpdatePaymentIntentPaymentMethodData {
 
     #[serde(rename = "type")]
     pub type_: UpdatePaymentIntentPaymentMethodDataType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<UpdatePaymentIntentPaymentMethodDataWechatPay>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1045,13 +1180,25 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     pub acss_debit: Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay: Option<UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<UpdatePaymentIntentPaymentMethodOptionsAlipay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<UpdatePaymentIntentPaymentMethodOptionsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<UpdatePaymentIntentPaymentMethodOptionsBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdatePaymentIntentPaymentMethodOptionsCard>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_present: Option<UpdatePaymentIntentPaymentMethodOptionsCardPresent>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal: Option<UpdatePaymentIntentPaymentMethodOptionsIdeal>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<UpdatePaymentIntentPaymentMethodOptionsOxxo>,
@@ -1064,6 +1211,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<UpdatePaymentIntentPaymentMethodOptionsSofort>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<UpdatePaymentIntentPaymentMethodOptionsWechatPay>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1137,6 +1287,11 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetails {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataBoleto {
+    pub tax_id: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataEps {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentIntentPaymentMethodDataEpsBank>,
@@ -1182,6 +1337,9 @@ pub struct CreatePaymentIntentPaymentMethodDataSofort {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataWechatPay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions>,
@@ -1192,6 +1350,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAlipay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1199,6 +1363,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language:
         Option<CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsBoleto {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_after_days: Option<u32>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1216,6 +1386,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
     pub request_three_d_secure:
         Option<CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsIdeal {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsOxxo {
@@ -1239,6 +1415,14 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit {
 pub struct CreatePaymentIntentPaymentMethodOptionsSofort {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language: Option<CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsWechatPay {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub app_id: Option<String>,
+
+    pub client: CreatePaymentIntentPaymentMethodOptionsWechatPayClient,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1291,6 +1475,11 @@ pub struct UpdatePaymentIntentPaymentMethodDataBillingDetails {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataBoleto {
+    pub tax_id: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataEps {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<UpdatePaymentIntentPaymentMethodDataEpsBank>,
@@ -1336,6 +1525,9 @@ pub struct UpdatePaymentIntentPaymentMethodDataSofort {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataWechatPay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions>,
@@ -1346,6 +1538,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAlipay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1353,6 +1551,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language:
         Option<UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsBoleto {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_after_days: Option<u32>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1370,6 +1574,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
     pub request_three_d_secure:
         Option<UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsIdeal {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsOxxo {
@@ -1393,6 +1603,14 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
 pub struct UpdatePaymentIntentPaymentMethodOptionsSofort {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language: Option<UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsWechatPay {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub app_id: Option<String>,
+
+    pub client: UpdatePaymentIntentPaymentMethodOptionsWechatPayClient,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1911,6 +2129,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Boleto,
     Eps,
     Fpx,
     Giropay,
@@ -1920,6 +2139,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
     P24,
     SepaDebit,
     Sofort,
+    WechatPay,
 }
 
 impl CreatePaymentIntentPaymentMethodDataType {
@@ -1931,6 +2151,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
             CreatePaymentIntentPaymentMethodDataType::AuBecsDebit => "au_becs_debit",
             CreatePaymentIntentPaymentMethodDataType::BacsDebit => "bacs_debit",
             CreatePaymentIntentPaymentMethodDataType::Bancontact => "bancontact",
+            CreatePaymentIntentPaymentMethodDataType::Boleto => "boleto",
             CreatePaymentIntentPaymentMethodDataType::Eps => "eps",
             CreatePaymentIntentPaymentMethodDataType::Fpx => "fpx",
             CreatePaymentIntentPaymentMethodDataType::Giropay => "giropay",
@@ -1940,6 +2161,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
             CreatePaymentIntentPaymentMethodDataType::P24 => "p24",
             CreatePaymentIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
             CreatePaymentIntentPaymentMethodDataType::Sofort => "sofort",
+            CreatePaymentIntentPaymentMethodDataType::WechatPay => "wechat_pay",
         }
     }
 }
@@ -2258,6 +2480,37 @@ impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLangua
 }
 
 impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsWechatPay`'s `client` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    Android,
+    Ios,
+    Web,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsWechatPayClient::Android => "android",
+            CreatePaymentIntentPaymentMethodOptionsWechatPayClient::Ios => "ios",
+            CreatePaymentIntentPaymentMethodOptionsWechatPayClient::Web => "web",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -2710,6 +2963,37 @@ impl std::fmt::Display for PaymentMethodOptionsSofortPreferredLanguage {
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodOptionsWechatPay`'s `client` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsWechatPayClient {
+    Android,
+    Ios,
+    Web,
+}
+
+impl PaymentMethodOptionsWechatPayClient {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsWechatPayClient::Android => "android",
+            PaymentMethodOptionsWechatPayClient::Ios => "ios",
+            PaymentMethodOptionsWechatPayClient::Web => "web",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsWechatPayClient {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsWechatPayClient {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodDataEps`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3067,6 +3351,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Boleto,
     Eps,
     Fpx,
     Giropay,
@@ -3076,6 +3361,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
     P24,
     SepaDebit,
     Sofort,
+    WechatPay,
 }
 
 impl UpdatePaymentIntentPaymentMethodDataType {
@@ -3087,6 +3373,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
             UpdatePaymentIntentPaymentMethodDataType::AuBecsDebit => "au_becs_debit",
             UpdatePaymentIntentPaymentMethodDataType::BacsDebit => "bacs_debit",
             UpdatePaymentIntentPaymentMethodDataType::Bancontact => "bancontact",
+            UpdatePaymentIntentPaymentMethodDataType::Boleto => "boleto",
             UpdatePaymentIntentPaymentMethodDataType::Eps => "eps",
             UpdatePaymentIntentPaymentMethodDataType::Fpx => "fpx",
             UpdatePaymentIntentPaymentMethodDataType::Giropay => "giropay",
@@ -3096,6 +3383,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
             UpdatePaymentIntentPaymentMethodDataType::P24 => "p24",
             UpdatePaymentIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
             UpdatePaymentIntentPaymentMethodDataType::Sofort => "sofort",
+            UpdatePaymentIntentPaymentMethodDataType::WechatPay => "wechat_pay",
         }
     }
 }
@@ -3414,6 +3702,37 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLangua
 }
 
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsWechatPay`'s `client` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    Android,
+    Ios,
+    Web,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsWechatPayClient::Android => "android",
+            UpdatePaymentIntentPaymentMethodOptionsWechatPayClient::Ios => "ios",
+            UpdatePaymentIntentPaymentMethodOptionsWechatPayClient::Web => "web",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

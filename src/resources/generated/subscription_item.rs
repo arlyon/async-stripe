@@ -139,7 +139,9 @@ pub struct CreateSubscriptionItem<'a> {
     /// This allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
     /// For example, SCA regulation may require 3DS authentication to complete payment.
     /// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
-    /// This is the default behavior.  Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
+    /// This is the default behavior.  Use `default_incomplete` to transition the subscription to `status=past_due` when payment is required and await explicit confirmation of the invoice's payment intent.
+    /// This allows simpler management of scenarios where additional user actions are needed to pay a subscription’s invoice.
+    /// Such as failed payments, [SCA regulation](https://stripe.com/docs/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.  Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
     /// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://stripe.com/docs/billing/pending-updates-reference#supported-attributes).  Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
     /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
     /// This was the default behavior for API versions prior to 2019-03-14.
@@ -275,7 +277,9 @@ pub struct UpdateSubscriptionItem<'a> {
     /// This allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
     /// For example, SCA regulation may require 3DS authentication to complete payment.
     /// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
-    /// This is the default behavior.  Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
+    /// This is the default behavior.  Use `default_incomplete` to transition the subscription to `status=past_due` when payment is required and await explicit confirmation of the invoice's payment intent.
+    /// This allows simpler management of scenarios where additional user actions are needed to pay a subscription’s invoice.
+    /// Such as failed payments, [SCA regulation](https://stripe.com/docs/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.  Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
     /// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://stripe.com/docs/billing/pending-updates-reference#supported-attributes).  Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
     /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
     /// This was the default behavior for API versions prior to 2019-03-14.
@@ -284,6 +288,8 @@ pub struct UpdateSubscriptionItem<'a> {
     pub payment_behavior: Option<SubscriptionPaymentBehavior>,
 
     /// The ID of the price object.
+    ///
+    /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<PriceId>,
 
@@ -344,6 +350,9 @@ pub struct SubscriptionItemPriceData {
     pub recurring: SubscriptionItemPriceDataRecurring,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<SubscriptionItemPriceDataTaxBehavior>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -391,11 +400,43 @@ impl std::fmt::Display for PlanInterval {
     }
 }
 
+/// An enum representing the possible values of an `SubscriptionItemPriceData`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionItemPriceDataTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl SubscriptionItemPriceDataTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SubscriptionItemPriceDataTaxBehavior::Exclusive => "exclusive",
+            SubscriptionItemPriceDataTaxBehavior::Inclusive => "inclusive",
+            SubscriptionItemPriceDataTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionItemPriceDataTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionItemPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `CreateSubscriptionItem`'s `payment_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionPaymentBehavior {
     AllowIncomplete,
+    DefaultIncomplete,
     ErrorIfIncomplete,
     PendingIfIncomplete,
 }
@@ -404,6 +445,7 @@ impl SubscriptionPaymentBehavior {
     pub fn as_str(self) -> &'static str {
         match self {
             SubscriptionPaymentBehavior::AllowIncomplete => "allow_incomplete",
+            SubscriptionPaymentBehavior::DefaultIncomplete => "default_incomplete",
             SubscriptionPaymentBehavior::ErrorIfIncomplete => "error_if_incomplete",
             SubscriptionPaymentBehavior::PendingIfIncomplete => "pending_if_incomplete",
         }

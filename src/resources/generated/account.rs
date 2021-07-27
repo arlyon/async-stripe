@@ -38,6 +38,9 @@ pub struct Account {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<Company>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub controller: Option<AccountController>,
+
     /// The account's country.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
@@ -124,21 +127,21 @@ impl Account {
         client.get_query(&format!("/accounts/{}", id), &Expand { expand })
     }
 
-    /// Updates a connected [Express or Custom account](https://stripe.com/docs/connect/accounts) by setting the values of the parameters passed.
+    /// Updates a [connected account](https://stripe.com/docs/connect/accounts) by setting the values of the parameters passed.
     ///
     /// Any parameters not provided are left unchanged.
     /// Most parameters can be changed only for Custom accounts.
-    /// (These are marked **Custom Only** below.) Parameters marked **Custom and Express** are supported by both account types.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
+    /// (These are marked **Custom Only** below.) Parameters marked **Custom and Express** are not supported for Standard accounts.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
     /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
     pub fn update(client: &Client, id: &AccountId, params: UpdateAccount<'_>) -> Response<Account> {
         client.post_form(&format!("/accounts/{}", id), &params)
     }
 
-    /// With [Connect](https://stripe.com/docs/connect), you can delete Custom or Express accounts you manage.
+    /// With [Connect](https://stripe.com/docs/connect), you can delete accounts you manage.
     ///
     /// Accounts created using test-mode keys can be deleted at any time.
     ///
-    /// Accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
+    /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
     pub fn delete(client: &Client, id: &AccountId) -> Response<Deleted<AccountId>> {
         client.delete(&format!("/accounts/{}", id))
     }
@@ -215,6 +218,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact_payments: Option<AccountCapabilitiesBancontactPayments>,
 
+    /// The status of the boleto payments capability of the account, or whether the account can directly process boleto charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto_payments: Option<AccountCapabilitiesBoletoPayments>,
+
     /// The status of the card issuing capability of the account, or whether you can use Issuing to distribute funds on cards.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_issuing: Option<CapabilityStatus>,
@@ -285,45 +292,61 @@ pub struct AccountCapabilities {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AccountRequirements {
-    /// The date the fields in `currently_due` must be collected by to keep payouts enabled for the account.
+pub struct AccountController {
+    /// `true` if the Connect application retrieving the resource controls the account and can therefore exercise [platform controls](https://stripe.com/docs/connect/platform-controls-for-standard-accounts).
     ///
-    /// These fields might block payouts sooner if the next threshold is reached before these fields are collected.
+    /// Otherwise, this field is null.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_controller: Option<bool>,
+
+    /// The controller type.
+    ///
+    /// Can be `application`, if a Connect application controls the account, or `account`, if the account controls itself.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<AccountControllerType>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountRequirements {
+    /// Date by which the fields in `currently_due` must be collected to keep the account enabled.
+    ///
+    /// These fields may disable the account sooner if the next threshold is reached before they are collected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub current_deadline: Option<Timestamp>,
 
-    /// The fields that need to be collected to keep the account enabled.
+    /// Fields that need to be collected to keep the account enabled.
     ///
-    /// If not collected by the `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
+    /// If not collected by `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currently_due: Option<Vec<String>>,
 
-    /// If the account is disabled, this string describes why the account can’t create charges or receive payouts.
+    /// If the account is disabled, this string describes why.
     ///
-    /// Can be `requirements.past_due`, `requirements.pending_verification`, `rejected.fraud`, `rejected.terms_of_service`, `rejected.listed`, `rejected.other`, `listed`, `under_review`, or `other`.
+    /// Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disabled_reason: Option<String>,
 
-    /// The fields that are `currently_due` and need to be collected again because validation or verification failed for some reason.
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub errors: Option<Vec<AccountRequirementsError>>,
 
-    /// The fields that need to be collected assuming all volume thresholds are reached.
+    /// Fields that need to be collected assuming all volume thresholds are reached.
     ///
-    /// As they become required, these fields appear in `currently_due` as well, and the `current_deadline` is set.
+    /// As they become required, they appear in `currently_due` as well, and `current_deadline` becomes set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eventually_due: Option<Vec<String>>,
 
-    /// The fields that weren't collected by the `current_deadline`.
+    /// Fields that weren't collected by `current_deadline`.
     ///
-    /// These fields need to be collected to re-enable the account.
+    /// These fields need to be collected to enable the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub past_due: Option<Vec<String>>,
 
     /// Fields that may become required depending on the results of verification or review.
     ///
-    /// An empty array unless an asynchronous verification is pending.
-    /// If verification fails, the fields in this array become required and move to `currently_due` or `past_due`.
+    /// Will be an empty array unless an asynchronous verification is pending.
+    /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_verification: Option<Vec<String>>,
 }
@@ -697,7 +720,7 @@ pub struct CreateAccount<'a> {
 
     /// A card or bank account to attach to the account for receiving [payouts](https://stripe.com/docs/connect/bank-debit-card-payouts) (you won’t be able to use it for top-ups).
     ///
-    /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/stripe.js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
+    /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/stripe-js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
     /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -851,7 +874,7 @@ pub struct UpdateAccount<'a> {
 
     /// A card or bank account to attach to the account for receiving [payouts](https://stripe.com/docs/connect/bank-debit-card-payouts) (you won’t be able to use it for top-ups).
     ///
-    /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/stripe.js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
+    /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/stripe-js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
     /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1001,6 +1024,9 @@ pub struct CreateAccountCapabilities {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact_payments: Option<CreateAccountCapabilitiesBancontactPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto_payments: Option<CreateAccountCapabilitiesBoletoPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_issuing: Option<CreateAccountCapabilitiesCardIssuing>,
@@ -1156,6 +1182,9 @@ pub struct UpdateAccountCapabilities {
     pub bancontact_payments: Option<UpdateAccountCapabilitiesBancontactPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto_payments: Option<UpdateAccountCapabilitiesBoletoPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card_issuing: Option<UpdateAccountCapabilitiesCardIssuing>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1293,6 +1322,12 @@ pub struct CreateAccountCapabilitiesBacsDebitPayments {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesBancontactPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesBoletoPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -1485,6 +1520,12 @@ pub struct UpdateAccountCapabilitiesBacsDebitPayments {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesBancontactPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesBoletoPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -1789,6 +1830,37 @@ impl AsRef<str> for AccountCapabilitiesBancontactPayments {
 }
 
 impl std::fmt::Display for AccountCapabilitiesBancontactPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `boleto_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesBoletoPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesBoletoPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesBoletoPayments::Active => "active",
+            AccountCapabilitiesBoletoPayments::Inactive => "inactive",
+            AccountCapabilitiesBoletoPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesBoletoPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesBoletoPayments {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -2104,6 +2176,35 @@ impl std::fmt::Display for AccountCapabilitiesSofortPayments {
     }
 }
 
+/// An enum representing the possible values of an `AccountController`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountControllerType {
+    Account,
+    Application,
+}
+
+impl AccountControllerType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountControllerType::Account => "account",
+            AccountControllerType::Application => "application",
+        }
+    }
+}
+
+impl AsRef<str> for AccountControllerType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountControllerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `AccountRequirementsError`'s `code` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2285,10 +2386,13 @@ impl std::fmt::Display for CapabilityStatus {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CompanyParamsStructure {
+    FreeZoneEstablishment,
+    FreeZoneLlc,
     GovernmentInstrumentality,
     GovernmentalUnit,
     IncorporatedNonProfit,
     LimitedLiabilityPartnership,
+    Llc,
     MultiMemberLlc,
     PrivateCompany,
     PrivateCorporation,
@@ -2296,6 +2400,8 @@ pub enum CompanyParamsStructure {
     PublicCompany,
     PublicCorporation,
     PublicPartnership,
+    SingleMemberLlc,
+    SoleEstablishment,
     SoleProprietorship,
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
@@ -2305,10 +2411,13 @@ pub enum CompanyParamsStructure {
 impl CompanyParamsStructure {
     pub fn as_str(self) -> &'static str {
         match self {
+            CompanyParamsStructure::FreeZoneEstablishment => "free_zone_establishment",
+            CompanyParamsStructure::FreeZoneLlc => "free_zone_llc",
             CompanyParamsStructure::GovernmentInstrumentality => "government_instrumentality",
             CompanyParamsStructure::GovernmentalUnit => "governmental_unit",
             CompanyParamsStructure::IncorporatedNonProfit => "incorporated_non_profit",
             CompanyParamsStructure::LimitedLiabilityPartnership => "limited_liability_partnership",
+            CompanyParamsStructure::Llc => "llc",
             CompanyParamsStructure::MultiMemberLlc => "multi_member_llc",
             CompanyParamsStructure::PrivateCompany => "private_company",
             CompanyParamsStructure::PrivateCorporation => "private_corporation",
@@ -2316,6 +2425,8 @@ impl CompanyParamsStructure {
             CompanyParamsStructure::PublicCompany => "public_company",
             CompanyParamsStructure::PublicCorporation => "public_corporation",
             CompanyParamsStructure::PublicPartnership => "public_partnership",
+            CompanyParamsStructure::SingleMemberLlc => "single_member_llc",
+            CompanyParamsStructure::SoleEstablishment => "sole_establishment",
             CompanyParamsStructure::SoleProprietorship => "sole_proprietorship",
             CompanyParamsStructure::TaxExemptGovernmentInstrumentality => {
                 "tax_exempt_government_instrumentality"
@@ -2342,10 +2453,13 @@ impl std::fmt::Display for CompanyParamsStructure {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CompanyStructure {
+    FreeZoneEstablishment,
+    FreeZoneLlc,
     GovernmentInstrumentality,
     GovernmentalUnit,
     IncorporatedNonProfit,
     LimitedLiabilityPartnership,
+    Llc,
     MultiMemberLlc,
     PrivateCompany,
     PrivateCorporation,
@@ -2353,6 +2467,8 @@ pub enum CompanyStructure {
     PublicCompany,
     PublicCorporation,
     PublicPartnership,
+    SingleMemberLlc,
+    SoleEstablishment,
     SoleProprietorship,
     TaxExemptGovernmentInstrumentality,
     UnincorporatedAssociation,
@@ -2362,10 +2478,13 @@ pub enum CompanyStructure {
 impl CompanyStructure {
     pub fn as_str(self) -> &'static str {
         match self {
+            CompanyStructure::FreeZoneEstablishment => "free_zone_establishment",
+            CompanyStructure::FreeZoneLlc => "free_zone_llc",
             CompanyStructure::GovernmentInstrumentality => "government_instrumentality",
             CompanyStructure::GovernmentalUnit => "governmental_unit",
             CompanyStructure::IncorporatedNonProfit => "incorporated_non_profit",
             CompanyStructure::LimitedLiabilityPartnership => "limited_liability_partnership",
+            CompanyStructure::Llc => "llc",
             CompanyStructure::MultiMemberLlc => "multi_member_llc",
             CompanyStructure::PrivateCompany => "private_company",
             CompanyStructure::PrivateCorporation => "private_corporation",
@@ -2373,6 +2492,8 @@ impl CompanyStructure {
             CompanyStructure::PublicCompany => "public_company",
             CompanyStructure::PublicCorporation => "public_corporation",
             CompanyStructure::PublicPartnership => "public_partnership",
+            CompanyStructure::SingleMemberLlc => "single_member_llc",
+            CompanyStructure::SoleEstablishment => "sole_establishment",
             CompanyStructure::SoleProprietorship => "sole_proprietorship",
             CompanyStructure::TaxExemptGovernmentInstrumentality => {
                 "tax_exempt_government_instrumentality"

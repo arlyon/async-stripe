@@ -217,23 +217,23 @@ pub struct PersonRequirements {
     /// If not collected by the account's `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
     pub currently_due: Vec<String>,
 
-    /// The fields that are `currently_due` and need to be collected again because validation or verification failed for some reason.
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<AccountRequirementsError>,
 
     /// Fields that need to be collected assuming all volume thresholds are reached.
     ///
-    /// As fields are needed, they are moved to `currently_due` and the account's `current_deadline` is set.
+    /// As they become required, they appear in `currently_due` as well, and the account's `current_deadline` becomes set.
     pub eventually_due: Vec<String>,
 
     /// Fields that weren't collected by the account's `current_deadline`.
     ///
-    /// These fields need to be collected to enable payouts for the person's account.
+    /// These fields need to be collected to enable the person's account.
     pub past_due: Vec<String>,
 
     /// Fields that may become required depending on the results of verification or review.
     ///
-    /// An empty array unless an asynchronous verification is pending.
-    /// If verification fails, the fields in this array become required and move to `currently_due` or `past_due`.
+    /// Will be an empty array unless an asynchronous verification is pending.
+    /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
     pub pending_verification: Vec<String>,
 }
 
