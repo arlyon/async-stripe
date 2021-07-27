@@ -27,6 +27,7 @@ pub mod core {
     pub mod reserve_transaction;
     pub mod setup_attempt;
     pub mod setup_intent;
+    pub mod tax_code;
     pub mod tax_deducted_at_source;
     pub mod token;
 }
@@ -58,6 +59,7 @@ pub mod billing {
     pub mod plan;
     pub mod price;
     pub mod promotion_code;
+    pub mod quote;
     pub mod subscription;
     pub mod subscription_item;
     pub mod subscription_schedule;
