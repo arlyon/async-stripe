@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
-use crate::ids::BankAccountId;
+use crate::ids::{BankAccountId};
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Account, AccountHolderType, BankAccountStatus, Currency, Customer};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankAccount".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -27,6 +26,13 @@ pub struct BankAccount {
     /// This can be either `individual` or `company`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<AccountHolderType>,
+
+    /// The bank account type.
+    ///
+    /// This can only be `checking` or `savings` in most countries.
+    /// In Japan, this can only be `futsu` or `toza`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_type: Option<String>,
 
     /// A set of available payout methods for this bank account.
     ///
