@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
-use crate::ids::ProductId;
-use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::PackageDimensions;
+use crate::ids::{ProductId, TaxCodeId};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::resources::{PackageDimensions, TaxCode};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Product".
 ///
@@ -71,6 +70,10 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<Expandable<TaxCode>>,
+
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
     /// When set, this will be included in associated invoice line item descriptions.
@@ -89,6 +92,7 @@ pub struct Product {
 }
 
 impl Product {
+
     /// Returns a list of your products.
     ///
     /// The products are returned sorted by creation date, with the most recently created products appearing first.
@@ -137,6 +141,7 @@ impl Object for Product {
 /// The parameters for `Product::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateProduct<'a> {
+
     /// Whether the product is currently available for purchase.
     ///
     /// Defaults to `true`.
@@ -192,6 +197,10 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<TaxCodeId>,
+
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
     /// When set, this will be included in associated invoice line item descriptions.
@@ -216,6 +225,7 @@ impl<'a> CreateProduct<'a> {
             package_dimensions: Default::default(),
             shippable: Default::default(),
             statement_descriptor: Default::default(),
+            tax_code: Default::default(),
             unit_label: Default::default(),
             url: Default::default(),
         }
@@ -225,6 +235,7 @@ impl<'a> CreateProduct<'a> {
 /// The parameters for `Product::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListProducts<'a> {
+
     /// Only return products that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -289,6 +300,7 @@ impl<'a> ListProducts<'a> {
 /// The parameters for `Product::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateProduct<'a> {
+
     /// Whether the product is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -338,6 +350,10 @@ pub struct UpdateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
     /// When set, this will be included in associated invoice line item descriptions.
@@ -362,6 +378,7 @@ impl<'a> UpdateProduct<'a> {
             package_dimensions: Default::default(),
             shippable: Default::default(),
             statement_descriptor: Default::default(),
+            tax_code: Default::default(),
             unit_label: Default::default(),
             url: Default::default(),
         }

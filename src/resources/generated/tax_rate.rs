@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
-use crate::ids::TaxRateId;
+use crate::ids::{TaxRateId};
 use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
+use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TaxRate".
 ///
@@ -66,9 +65,14 @@ pub struct TaxRate {
     /// For example, "NY" for New York, United States.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+
+    /// The high-level tax type, such as `vat` or `sales_tax`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_type: Option<TaxRateTaxType>,
 }
 
 impl TaxRate {
+
     /// Returns a list of your tax rates.
     ///
     /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
@@ -105,6 +109,7 @@ impl Object for TaxRate {
 /// The parameters for `TaxRate::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTaxRate<'a> {
+
     /// Flag determining whether the tax rate is active or inactive (archived).
     ///
     /// Inactive tax rates cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
@@ -154,6 +159,10 @@ pub struct CreateTaxRate<'a> {
     /// For example, "NY" for New York, United States.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<&'a str>,
+
+    /// The high-level tax type, such as `vat` or `sales_tax`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_type: Option<TaxRateTaxType>,
 }
 
 impl<'a> CreateTaxRate<'a> {
@@ -169,6 +178,7 @@ impl<'a> CreateTaxRate<'a> {
             metadata: Default::default(),
             percentage,
             state: Default::default(),
+            tax_type: Default::default(),
         }
     }
 }
@@ -176,6 +186,7 @@ impl<'a> CreateTaxRate<'a> {
 /// The parameters for `TaxRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxRates<'a> {
+
     /// Optional flag to filter by tax rates that are either active or inactive (archived).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -230,6 +241,7 @@ impl<'a> ListTaxRates<'a> {
 /// The parameters for `TaxRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTaxRate<'a> {
+
     /// Flag determining whether the tax rate is active or inactive (archived).
     ///
     /// Inactive tax rates cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
@@ -274,6 +286,10 @@ pub struct UpdateTaxRate<'a> {
     /// For example, "NY" for New York, United States.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<&'a str>,
+
+    /// The high-level tax type, such as `vat` or `sales_tax`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_type: Option<TaxRateTaxType>,
 }
 
 impl<'a> UpdateTaxRate<'a> {
@@ -287,6 +303,44 @@ impl<'a> UpdateTaxRate<'a> {
             jurisdiction: Default::default(),
             metadata: Default::default(),
             state: Default::default(),
+            tax_type: Default::default(),
         }
+    }
+}
+
+/// An enum representing the possible values of an `TaxRate`'s `tax_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TaxRateTaxType {
+    Gst,
+    Hst,
+    Pst,
+    Qst,
+    SalesTax,
+    Vat,
+}
+
+impl TaxRateTaxType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TaxRateTaxType::Gst => "gst",
+            TaxRateTaxType::Hst => "hst",
+            TaxRateTaxType::Pst => "pst",
+            TaxRateTaxType::Qst => "qst",
+            TaxRateTaxType::SalesTax => "sales_tax",
+            TaxRateTaxType::Vat => "vat",
+        }
+    }
+}
+
+impl AsRef<str> for TaxRateTaxType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxRateTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
     }
 }
