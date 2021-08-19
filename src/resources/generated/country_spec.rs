@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::config::{Client, Response};
-use crate::ids::{CountrySpecId};
-use crate::params::{Expand, List, Object};
-use crate::resources::{Currency};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::config::{Client, Response};
+use crate::ids::CountrySpecId;
+use crate::params::{Expand, List, Object};
+use crate::resources::Currency;
 
 /// The resource representing a Stripe "CountrySpec".
 ///
@@ -42,7 +43,6 @@ pub struct CountrySpec {
 }
 
 impl CountrySpec {
-
     /// Lists all Country Spec objects available in the API.
     pub fn list(client: &Client, params: ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
         client.get_query("/country_specs", &params)
@@ -66,7 +66,6 @@ impl Object for CountrySpec {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFields {
-
     pub company: CountrySpecVerificationFieldDetails,
 
     pub individual: CountrySpecVerificationFieldDetails,
@@ -74,7 +73,6 @@ pub struct CountrySpecVerificationFields {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFieldDetails {
-
     /// Additional fields which are only required for some users.
     pub additional: Vec<String>,
 
@@ -85,7 +83,6 @@ pub struct CountrySpecVerificationFieldDetails {
 /// The parameters for `CountrySpec::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCountrySpecs<'a> {
-
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.

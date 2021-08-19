@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{BitcoinTransactionId};
-use crate::params::{Object, Timestamp};
-use crate::resources::{Currency};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::ids::BitcoinTransactionId;
+use crate::params::{Object, Timestamp};
+use crate::resources::Currency;
 
 /// The resource representing a Stripe "BitcoinTransaction".
 #[derive(Clone, Debug, Deserialize, Serialize)]

@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{ChargeId, IssuerFraudRecordId};
 use crate::params::{Expand, Expandable, List, Object, Timestamp};
-use crate::resources::{Charge};
-use serde_derive::{Deserialize, Serialize};
+use crate::resources::Charge;
 
 /// The resource representing a Stripe "IssuerFraudRecord".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -43,16 +44,22 @@ pub struct IssuerFraudRecord {
 }
 
 impl IssuerFraudRecord {
-
     /// Returns a list of issuer fraud records.
-    pub fn list(client: &Client, params: ListIssuerFraudRecords<'_>) -> Response<List<IssuerFraudRecord>> {
+    pub fn list(
+        client: &Client,
+        params: ListIssuerFraudRecords<'_>,
+    ) -> Response<List<IssuerFraudRecord>> {
         client.get_query("/issuer_fraud_records", &params)
     }
 
     /// Retrieves the details of an issuer fraud record that has previously been created.
     ///
     /// Please refer to the [issuer fraud record](https://stripe.com/docs/api#issuer_fraud_record_object) object reference for more details.
-    pub fn retrieve(client: &Client, id: &IssuerFraudRecordId, expand: &[&str]) -> Response<IssuerFraudRecord> {
+    pub fn retrieve(
+        client: &Client,
+        id: &IssuerFraudRecordId,
+        expand: &[&str],
+    ) -> Response<IssuerFraudRecord> {
         client.get_query(&format!("/issuer_fraud_records/{}", id), &Expand { expand })
     }
 }
@@ -70,7 +77,6 @@ impl Object for IssuerFraudRecord {
 /// The parameters for `IssuerFraudRecord::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListIssuerFraudRecords<'a> {
-
     /// Only return issuer fraud records for the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,

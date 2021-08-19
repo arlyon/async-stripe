@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{CapabilityId};
-use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{Account};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::ids::CapabilityId;
+use crate::params::{Expandable, Object, Timestamp};
+use crate::resources::Account;
 
 /// The resource representing a Stripe "AccountCapability".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -46,7 +47,6 @@ impl Object for Capability {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilityRequirements {
-
     /// The date the fields in `currently_due` must be collected by to keep the capability enabled for the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub current_deadline: Option<Timestamp>,
@@ -85,7 +85,6 @@ pub struct AccountCapabilityRequirements {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountRequirementsError {
-
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
 
