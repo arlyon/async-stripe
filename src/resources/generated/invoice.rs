@@ -9,8 +9,8 @@ use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Address, ApiErrors, Charge, Currency, CustomField, Customer, Discount,
-    InvoiceLineItem, InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsCard,
-    PaymentIntent, PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
+    InvoiceLineItem, PaymentIntent, PaymentMethod, PaymentSource, Shipping, Subscription, TaxId,
+    TaxRate,
 };
 
 /// The resource representing a Stripe "Invoice".
@@ -314,10 +314,6 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pre_payment_credit_notes_amount: Option<i64>,
 
-    /// The quote this invoice was generated from.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quote: Option<Expandable<Quote>>,
-
     /// This is the transaction number that appears on email receipts sent for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receipt_number: Option<String>,
@@ -516,15 +512,7 @@ pub struct InvoicesPaymentSettings {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct InvoicesPaymentMethodOptions {
-    /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<InvoicePaymentMethodOptionsBancontact>,
-
-    /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<InvoicePaymentMethodOptionsCard>,
-}
+pub struct InvoicesPaymentMethodOptions {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesResourceInvoiceTaxId {

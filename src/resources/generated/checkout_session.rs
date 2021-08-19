@@ -8,8 +8,8 @@ use crate::config::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentMethodOptionsBoleto,
-    PaymentMethodOptionsOxxo, SetupIntent, Shipping, Subscription, TaxRate,
+    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, SetupIntent, Shipping,
+    Subscription, TaxRate,
 };
 
 /// The resource representing a Stripe "Session".
@@ -183,12 +183,6 @@ impl Object for CheckoutSession {
 pub struct CheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CheckoutAcssDebitPaymentMethodOptions>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto: Option<PaymentMethodOptionsBoleto>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<PaymentMethodOptionsOxxo>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
