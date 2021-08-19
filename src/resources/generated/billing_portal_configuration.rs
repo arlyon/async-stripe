@@ -2,9 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{BillingPortalConfigurationId};
-use crate::params::{Object, Timestamp};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::ids::BillingPortalConfigurationId;
+use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "PortalConfiguration".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -60,7 +61,6 @@ impl Object for BillingPortalConfiguration {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalBusinessProfile {
-
     /// The messaging shown to customers in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub headline: Option<String>,
@@ -74,7 +74,6 @@ pub struct PortalBusinessProfile {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalFeatures {
-
     pub customer_update: PortalCustomerUpdate,
 
     pub invoice_history: PortalInvoiceList,
@@ -90,7 +89,6 @@ pub struct PortalFeatures {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalCustomerUpdate {
-
     /// The types of customer updates that are supported.
     ///
     /// When empty, customers are not updateable.
@@ -102,21 +100,18 @@ pub struct PortalCustomerUpdate {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalInvoiceList {
-
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalPaymentMethodUpdate {
-
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionCancel {
-
     /// Whether the feature is enabled.
     pub enabled: bool,
 
@@ -131,14 +126,12 @@ pub struct PortalSubscriptionCancel {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionPause {
-
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionUpdate {
-
     /// The types of subscription updates that are supported for items listed in the `products` attribute.
     ///
     /// When empty, subscriptions are not updateable.
@@ -159,7 +152,6 @@ pub struct PortalSubscriptionUpdate {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionUpdateProduct {
-
     /// The list of price IDs which, when subscribed to, a subscription can be updated.
     pub prices: Vec<String>,
 

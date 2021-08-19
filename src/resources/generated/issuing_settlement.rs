@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{IssuingSettlementId};
-use crate::params::{Metadata, Object, Timestamp};
-use crate::resources::{Currency};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::ids::IssuingSettlementId;
+use crate::params::{Metadata, Object, Timestamp};
+use crate::resources::Currency;
 
 /// The resource representing a Stripe "IssuingSettlement".
 #[derive(Clone, Debug, Deserialize, Serialize)]

@@ -2,9 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TerminalReaderId};
-use crate::params::{Metadata, Object};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::ids::TerminalReaderId;
+use crate::params::{Metadata, Object};
 
 /// The resource representing a Stripe "TerminalReaderReader".
 #[derive(Clone, Debug, Deserialize, Serialize)]

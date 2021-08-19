@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{CreditNoteLineItemId};
+use serde_derive::{Deserialize, Serialize};
+
+use crate::ids::CreditNoteLineItemId;
 use crate::params::{Expandable, Object};
 use crate::resources::{Discount, TaxRate};
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CreditNoteLineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -70,7 +71,6 @@ impl Object for CreditNoteLineItem {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreditNoteTaxAmount {
-
     /// The amount, in %s, of the tax.
     pub amount: i64,
 
@@ -83,7 +83,6 @@ pub struct CreditNoteTaxAmount {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
-
     /// The amount, in %s, of the discount.
     pub amount: i64,
 

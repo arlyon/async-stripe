@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{SourceMandateNotificationId};
-use crate::params::{Object, Timestamp};
-use crate::resources::{Source};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::ids::SourceMandateNotificationId;
+use crate::params::{Object, Timestamp};
+use crate::resources::Source;
 
 /// The resource representing a Stripe "SourceMandateNotification".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -68,7 +69,6 @@ impl Object for SourceMandateNotification {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateNotificationAcssDebitData {
-
     /// The statement descriptor associate with the debit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
@@ -76,7 +76,6 @@ pub struct SourceMandateNotificationAcssDebitData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateNotificationBacsDebitData {
-
     /// Last 4 digits of the account number associated with the debit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
@@ -84,7 +83,6 @@ pub struct SourceMandateNotificationBacsDebitData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateNotificationSepaDebitData {
-
     /// SEPA creditor ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creditor_identifier: Option<String>,

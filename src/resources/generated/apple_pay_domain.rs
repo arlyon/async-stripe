@@ -2,9 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{ApplePayDomainId};
-use crate::params::{Object, Timestamp};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::ids::ApplePayDomainId;
+use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "ApplePayDomain".
 #[derive(Clone, Debug, Deserialize, Serialize)]

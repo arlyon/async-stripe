@@ -2,11 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{CreditNoteId, CustomerId, InvoiceId, RefundId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
-use crate::resources::{CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice, Refund, TaxRate};
-use serde_derive::{Deserialize, Serialize};
+use crate::resources::{
+    CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice, Refund,
+    TaxRate,
+};
 
 /// The resource representing a Stripe "CreditNote".
 ///
@@ -106,7 +110,6 @@ pub struct CreditNote {
 }
 
 impl CreditNote {
-
     /// Returns a list of credit notes.
     pub fn list(client: &Client, params: ListCreditNotes<'_>) -> Response<List<CreditNote>> {
         client.get_query("/credit_notes", &params)
@@ -128,7 +131,11 @@ impl CreditNote {
     }
 
     /// Updates an existing credit note.
-    pub fn update(client: &Client, id: &CreditNoteId, params: UpdateCreditNote<'_>) -> Response<CreditNote> {
+    pub fn update(
+        client: &Client,
+        id: &CreditNoteId,
+        params: UpdateCreditNote<'_>,
+    ) -> Response<CreditNote> {
         client.post_form(&format!("/credit_notes/{}", id), &params)
     }
 }
@@ -145,7 +152,6 @@ impl Object for CreditNote {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreditNoteTaxAmount {
-
     /// The amount, in %s, of the tax.
     pub amount: i64,
 
@@ -158,7 +164,6 @@ pub struct CreditNoteTaxAmount {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
-
     /// The amount, in %s, of the discount.
     pub amount: i64,
 
@@ -169,7 +174,6 @@ pub struct DiscountsResourceDiscountAmount {
 /// The parameters for `CreditNote::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateCreditNote<'a> {
-
     /// The integer amount in %s representing the total amount of the credit note.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -241,7 +245,6 @@ impl<'a> CreateCreditNote<'a> {
 /// The parameters for `CreditNote::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCreditNotes<'a> {
-
     /// Only return credit notes for the customer specified by this customer ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
@@ -291,7 +294,6 @@ impl<'a> ListCreditNotes<'a> {
 /// The parameters for `CreditNote::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCreditNote<'a> {
-
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -321,7 +323,6 @@ impl<'a> UpdateCreditNote<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCreditNoteLines {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
