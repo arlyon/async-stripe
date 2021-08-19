@@ -48,7 +48,7 @@ pub struct Sku {
     pub image: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub inventory: Option<Inventory>,
+    pub inventory: Option<SkuInventory>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -128,7 +128,7 @@ impl Object for Sku {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Inventory {
+pub struct SkuInventory {
     /// The count of inventory available.
     ///
     /// Will be present if and only if `type` is `finite`.
@@ -186,7 +186,7 @@ pub struct CreateSku<'a> {
 
     /// Description of the SKU's inventory.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub inventory: Option<Inventory>,
+    pub inventory: Option<SkuInventory>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -212,7 +212,7 @@ pub struct CreateSku<'a> {
 impl<'a> CreateSku<'a> {
     pub fn new(
         currency: Currency,
-        inventory: Option<Inventory>,
+        inventory: Option<SkuInventory>,
         price: i64,
         product: IdOrCreate<'a, CreateProduct<'a>>,
     ) -> Self {
@@ -332,7 +332,7 @@ pub struct UpdateSku<'a> {
 
     /// Description of the SKU's inventory.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub inventory: Option<Inventory>,
+    pub inventory: Option<SkuInventory>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///

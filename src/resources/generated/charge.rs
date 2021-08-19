@@ -363,6 +363,9 @@ pub struct PaymentMethodDetails {
     pub bancontact: Option<PaymentMethodDetailsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<PaymentMethodDetailsBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<PaymentMethodDetailsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -415,6 +418,9 @@ pub struct PaymentMethodDetails {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat: Option<PaymentMethodDetailsWechat>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<PaymentMethodDetailsWechatPay>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -510,7 +516,11 @@ pub struct PaymentMethodDetailsAcssDebit {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsAfterpayClearpay {}
+pub struct PaymentMethodDetailsAfterpayClearpay {
+    /// Order identifier shown to the merchant in Afterpay’s online portal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAuBecsDebit {
@@ -593,6 +603,12 @@ pub struct PaymentMethodDetailsBancontact {
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_name: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsBoleto {
+    /// Uniquely identifies this customer tax_id (CNPJ or CPF).
+    pub tax_id: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1111,6 +1127,19 @@ pub struct PaymentMethodDetailsStripeAccount {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsWechat {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsWechatPay {
+    /// Uniquely identifies this particular WeChat Pay account.
+    ///
+    /// You can use this attribute to check whether two WeChat accounts are the same.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<String>,
+
+    /// Transaction ID of this particular WeChat Pay transaction.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_id: Option<String>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rule {

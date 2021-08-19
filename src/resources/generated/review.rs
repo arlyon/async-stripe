@@ -27,7 +27,7 @@ pub struct Review {
 
     /// The reason the review was closed, or null if it has not yet been closed.
     ///
-    /// One of `approved`, `refunded`, `refunded_as_fraud`, or `disputed`.
+    /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, or `redacted`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub closed_reason: Option<ReviewClosedReason>,
 
@@ -63,7 +63,7 @@ pub struct Review {
 
     /// The reason the review is currently open or closed.
     ///
-    /// One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`, or `disputed`.
+    /// One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`, `disputed`, or `redacted`.
     pub reason: ReviewReason,
 
     /// Information related to the browsing session of the user who initiated the payment.
@@ -186,6 +186,7 @@ impl<'a> ListReviews<'a> {
 pub enum ReviewClosedReason {
     Approved,
     Disputed,
+    Redacted,
     Refunded,
     RefundedAsFraud,
 }
@@ -195,6 +196,7 @@ impl ReviewClosedReason {
         match self {
             ReviewClosedReason::Approved => "approved",
             ReviewClosedReason::Disputed => "disputed",
+            ReviewClosedReason::Redacted => "redacted",
             ReviewClosedReason::Refunded => "refunded",
             ReviewClosedReason::RefundedAsFraud => "refunded_as_fraud",
         }

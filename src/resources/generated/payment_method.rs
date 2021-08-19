@@ -40,6 +40,9 @@ pub struct PaymentMethod {
     pub billing_details: BillingDetails,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<PaymentMethodBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CardDetails>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -101,6 +104,9 @@ pub struct PaymentMethod {
     /// It contains additional information specific to the PaymentMethod type.
     #[serde(rename = "type")]
     pub type_: PaymentMethodType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<PaymentMethodWechatPay>,
 }
 
 impl PaymentMethod {
@@ -111,7 +117,7 @@ impl PaymentMethod {
 
     /// Creates a PaymentMethod object.
     ///
-    /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.
+    /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.  Instead of creating a PaymentMethod directly, we recommend using the [PaymentIntents](https://stripe.com/docs/payments/accept-a-payment) API to accept a payment immediately or the [SetupIntent](https://stripe.com/docs/payments/save-and-reuse) API to collect payment method details ahead of a future payment.
     pub fn create(client: &Client, params: CreatePaymentMethod<'_>) -> Response<PaymentMethod> {
         client.post_form("/payment_methods", &params)
     }
@@ -216,6 +222,12 @@ pub struct PaymentMethodBacsDebit {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodBancontact {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodBoleto {
+    /// Uniquely identifies the customer tax id (CNPJ or CPF).
+    pub tax_id: String,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CardDetails {
@@ -519,6 +531,9 @@ pub struct PaymentMethodSofort {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodWechatPay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SepaDebitGeneratedFrom {
     /// The ID of the Charge that generated this PaymentMethod, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -565,6 +580,10 @@ pub struct CreatePaymentMethod<'a> {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetails>,
+
+    /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<CreatePaymentMethodBoleto>,
 
     /// The `Customer` to whom the original PaymentMethod is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -633,6 +652,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<PaymentMethodTypeFilter>,
+
+    /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<CreatePaymentMethodWechatPay>,
 }
 
 impl<'a> CreatePaymentMethod<'a> {
@@ -645,6 +668,7 @@ impl<'a> CreatePaymentMethod<'a> {
             bacs_debit: Default::default(),
             bancontact: Default::default(),
             billing_details: Default::default(),
+            boleto: Default::default(),
             customer: Default::default(),
             eps: Default::default(),
             expand: Default::default(),
@@ -660,6 +684,7 @@ impl<'a> CreatePaymentMethod<'a> {
             sepa_debit: Default::default(),
             sofort: Default::default(),
             type_: Default::default(),
+            wechat_pay: Default::default(),
         }
     }
 }
@@ -777,6 +802,11 @@ pub struct CreatePaymentMethodBacsDebit {
 pub struct CreatePaymentMethodBancontact {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentMethodBoleto {
+    pub tax_id: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodEps {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentMethodEpsBank>,
@@ -820,6 +850,9 @@ pub struct CreatePaymentMethodSepaDebit {
 pub struct CreatePaymentMethodSofort {
     pub country: CreatePaymentMethodSofortCountry,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentMethodWechatPay {}
 
 /// An enum representing the possible values of an `CreatePaymentMethodEps`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1502,6 +1535,7 @@ pub enum PaymentMethodType {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Boleto,
     Card,
     CardPresent,
     Eps,
@@ -1514,6 +1548,7 @@ pub enum PaymentMethodType {
     P24,
     SepaDebit,
     Sofort,
+    WechatPay,
 }
 
 impl PaymentMethodType {
@@ -1525,6 +1560,7 @@ impl PaymentMethodType {
             PaymentMethodType::AuBecsDebit => "au_becs_debit",
             PaymentMethodType::BacsDebit => "bacs_debit",
             PaymentMethodType::Bancontact => "bancontact",
+            PaymentMethodType::Boleto => "boleto",
             PaymentMethodType::Card => "card",
             PaymentMethodType::CardPresent => "card_present",
             PaymentMethodType::Eps => "eps",
@@ -1537,6 +1573,7 @@ impl PaymentMethodType {
             PaymentMethodType::P24 => "p24",
             PaymentMethodType::SepaDebit => "sepa_debit",
             PaymentMethodType::Sofort => "sofort",
+            PaymentMethodType::WechatPay => "wechat_pay",
         }
     }
 }
@@ -1563,6 +1600,7 @@ pub enum PaymentMethodTypeFilter {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Boleto,
     Card,
     Eps,
     Fpx,
@@ -1573,6 +1611,7 @@ pub enum PaymentMethodTypeFilter {
     P24,
     SepaDebit,
     Sofort,
+    WechatPay,
 }
 
 impl PaymentMethodTypeFilter {
@@ -1584,6 +1623,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::AuBecsDebit => "au_becs_debit",
             PaymentMethodTypeFilter::BacsDebit => "bacs_debit",
             PaymentMethodTypeFilter::Bancontact => "bancontact",
+            PaymentMethodTypeFilter::Boleto => "boleto",
             PaymentMethodTypeFilter::Card => "card",
             PaymentMethodTypeFilter::Eps => "eps",
             PaymentMethodTypeFilter::Fpx => "fpx",
@@ -1594,6 +1634,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::P24 => "p24",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",
             PaymentMethodTypeFilter::Sofort => "sofort",
+            PaymentMethodTypeFilter::WechatPay => "wechat_pay",
         }
     }
 }

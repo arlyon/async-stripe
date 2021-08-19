@@ -380,6 +380,18 @@ pub enum EventFilter {
     CustomerUpdated,
     #[serde(rename = "file.created")]
     FileCreated,
+    #[serde(rename = "identity.verification_session.canceled")]
+    IdentityVerificationSessionCanceled,
+    #[serde(rename = "identity.verification_session.created")]
+    IdentityVerificationSessionCreated,
+    #[serde(rename = "identity.verification_session.processing")]
+    IdentityVerificationSessionProcessing,
+    #[serde(rename = "identity.verification_session.redacted")]
+    IdentityVerificationSessionRedacted,
+    #[serde(rename = "identity.verification_session.requires_input")]
+    IdentityVerificationSessionRequiresInput,
+    #[serde(rename = "identity.verification_session.verified")]
+    IdentityVerificationSessionVerified,
     #[serde(rename = "invoice.created")]
     InvoiceCreated,
     #[serde(rename = "invoice.deleted")]
@@ -512,6 +524,14 @@ pub enum EventFilter {
     PromotionCodeCreated,
     #[serde(rename = "promotion_code.updated")]
     PromotionCodeUpdated,
+    #[serde(rename = "quote.accepted")]
+    QuoteAccepted,
+    #[serde(rename = "quote.canceled")]
+    QuoteCanceled,
+    #[serde(rename = "quote.created")]
+    QuoteCreated,
+    #[serde(rename = "quote.finalized")]
+    QuoteFinalized,
     #[serde(rename = "radar.early_fraud_warning.created")]
     RadarEarlyFraudWarningCreated,
     #[serde(rename = "radar.early_fraud_warning.updated")]
@@ -675,6 +695,24 @@ impl EventFilter {
             EventFilter::CustomerTaxIdUpdated => "customer.tax_id.updated",
             EventFilter::CustomerUpdated => "customer.updated",
             EventFilter::FileCreated => "file.created",
+            EventFilter::IdentityVerificationSessionCanceled => {
+                "identity.verification_session.canceled"
+            }
+            EventFilter::IdentityVerificationSessionCreated => {
+                "identity.verification_session.created"
+            }
+            EventFilter::IdentityVerificationSessionProcessing => {
+                "identity.verification_session.processing"
+            }
+            EventFilter::IdentityVerificationSessionRedacted => {
+                "identity.verification_session.redacted"
+            }
+            EventFilter::IdentityVerificationSessionRequiresInput => {
+                "identity.verification_session.requires_input"
+            }
+            EventFilter::IdentityVerificationSessionVerified => {
+                "identity.verification_session.verified"
+            }
             EventFilter::InvoiceCreated => "invoice.created",
             EventFilter::InvoiceDeleted => "invoice.deleted",
             EventFilter::InvoiceFinalizationFailed => "invoice.finalization_failed",
@@ -745,6 +783,10 @@ impl EventFilter {
             EventFilter::ProductUpdated => "product.updated",
             EventFilter::PromotionCodeCreated => "promotion_code.created",
             EventFilter::PromotionCodeUpdated => "promotion_code.updated",
+            EventFilter::QuoteAccepted => "quote.accepted",
+            EventFilter::QuoteCanceled => "quote.canceled",
+            EventFilter::QuoteCreated => "quote.created",
+            EventFilter::QuoteFinalized => "quote.finalized",
             EventFilter::RadarEarlyFraudWarningCreated => "radar.early_fraud_warning.created",
             EventFilter::RadarEarlyFraudWarningUpdated => "radar.early_fraud_warning.updated",
             EventFilter::RecipientCreated => "recipient.created",

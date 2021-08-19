@@ -5,8 +5,8 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::ProductId;
-use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::ids::{ProductId, TaxCodeId};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::PackageDimensions;
 
 /// The resource representing a Stripe "Product".
@@ -192,6 +192,10 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<TaxCodeId>,
+
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
     /// When set, this will be included in associated invoice line item descriptions.
@@ -216,6 +220,7 @@ impl<'a> CreateProduct<'a> {
             package_dimensions: Default::default(),
             shippable: Default::default(),
             statement_descriptor: Default::default(),
+            tax_code: Default::default(),
             unit_label: Default::default(),
             url: Default::default(),
         }
@@ -338,6 +343,10 @@ pub struct UpdateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
     /// When set, this will be included in associated invoice line item descriptions.
@@ -362,6 +371,7 @@ impl<'a> UpdateProduct<'a> {
             package_dimensions: Default::default(),
             shippable: Default::default(),
             statement_descriptor: Default::default(),
+            tax_code: Default::default(),
             unit_label: Default::default(),
             url: Default::default(),
         }

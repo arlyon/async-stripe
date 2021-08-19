@@ -112,7 +112,7 @@ pub struct CardMandatePaymentMethodDetails {}
 pub struct MandateAcssDebit {
     /// Description of the interval.
     ///
-    /// Only required if 'payment_schedule' parmeter is 'interval' or 'combined'.
+    /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
 

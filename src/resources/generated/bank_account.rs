@@ -28,6 +28,13 @@ pub struct BankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<AccountHolderType>,
 
+    /// The bank account type.
+    ///
+    /// This can only be `checking` or `savings` in most countries.
+    /// In Japan, this can only be `futsu` or `toza`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_type: Option<String>,
+
     /// A set of available payout methods for this bank account.
     ///
     /// Only values from this set should be passed as the `method` when creating a payout.

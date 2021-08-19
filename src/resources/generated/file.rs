@@ -144,7 +144,9 @@ pub enum FilePurpose {
     DocumentProviderIdentityDocument,
     FinanceReportRun,
     IdentityDocument,
+    IdentityDocumentDownloadable,
     PciDocument,
+    Selfie,
     SigmaScheduledQuery,
     TaxDocumentUserUpload,
 }
@@ -161,7 +163,9 @@ impl FilePurpose {
             FilePurpose::DocumentProviderIdentityDocument => "document_provider_identity_document",
             FilePurpose::FinanceReportRun => "finance_report_run",
             FilePurpose::IdentityDocument => "identity_document",
+            FilePurpose::IdentityDocumentDownloadable => "identity_document_downloadable",
             FilePurpose::PciDocument => "pci_document",
+            FilePurpose::Selfie => "selfie",
             FilePurpose::SigmaScheduledQuery => "sigma_scheduled_query",
             FilePurpose::TaxDocumentUserUpload => "tax_document_user_upload",
         }

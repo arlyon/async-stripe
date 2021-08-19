@@ -231,14 +231,18 @@ impl std::fmt::Display for IssuingCardReplacementReason {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardShippingCarrier {
+    Dhl,
     Fedex,
+    RoyalMail,
     Usps,
 }
 
 impl IssuingCardShippingCarrier {
     pub fn as_str(self) -> &'static str {
         match self {
+            IssuingCardShippingCarrier::Dhl => "dhl",
             IssuingCardShippingCarrier::Fedex => "fedex",
+            IssuingCardShippingCarrier::RoyalMail => "royal_mail",
             IssuingCardShippingCarrier::Usps => "usps",
         }
     }

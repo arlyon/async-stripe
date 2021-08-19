@@ -140,7 +140,7 @@ pub struct CouponAppliesTo {
 }
 
 /// The parameters for `Coupon::create`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCoupon<'a> {
     /// A positive integer representing the amount to subtract from an invoice total (required if `percent_off` is not passed).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -154,10 +154,12 @@ pub struct CreateCoupon<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
-    /// Specifies how long the discount will be in effect.
+    /// Specifies how long the discount will be in effect if used on a subscription.
     ///
     /// Can be `forever`, `once`, or `repeating`.
-    pub duration: CouponDuration,
+    /// Defaults to `once`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<CouponDuration>,
 
     /// Required only if `duration` is `repeating`, in which case it must be a positive integer that specifies the number of months the discount will be in effect.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -205,12 +207,12 @@ pub struct CreateCoupon<'a> {
 }
 
 impl<'a> CreateCoupon<'a> {
-    pub fn new(duration: CouponDuration) -> Self {
+    pub fn new() -> Self {
         CreateCoupon {
             amount_off: Default::default(),
             applies_to: Default::default(),
             currency: Default::default(),
-            duration,
+            duration: Default::default(),
             duration_in_months: Default::default(),
             expand: Default::default(),
             id: Default::default(),
@@ -303,7 +305,8 @@ impl<'a> UpdateCoupon<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCouponAppliesTo {
-    pub products: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub products: Option<Vec<String>>,
 }
 
 /// An enum representing the possible values of an `Coupon`'s `duration` field.

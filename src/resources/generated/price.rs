@@ -73,6 +73,13 @@ pub struct Price {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<Recurring>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<PriceTaxBehavior>,
+
     /// Each element represents a pricing tier.
     ///
     /// This parameter requires `billing_scheme` to be set to `tiered`.
@@ -261,6 +268,13 @@ pub struct CreatePrice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreatePriceRecurring>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<PriceTaxBehavior>,
+
     /// Each element represents a pricing tier.
     ///
     /// This parameter requires `billing_scheme` to be set to `tiered`.
@@ -308,6 +322,7 @@ impl<'a> CreatePrice<'a> {
             product: Default::default(),
             product_data: Default::default(),
             recurring: Default::default(),
+            tax_behavior: Default::default(),
             tiers: Default::default(),
             tiers_mode: Default::default(),
             transfer_lookup_key: Default::default(),
@@ -424,6 +439,13 @@ pub struct UpdatePrice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<&'a str>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<PriceTaxBehavior>,
+
     /// If set to true, will atomically remove the lookup key from the existing price, and assign it to this price.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_lookup_key: Option<bool>,
@@ -437,6 +459,7 @@ impl<'a> UpdatePrice<'a> {
             lookup_key: Default::default(),
             metadata: Default::default(),
             nickname: Default::default(),
+            tax_behavior: Default::default(),
             transfer_lookup_key: Default::default(),
         }
     }
@@ -457,6 +480,9 @@ pub struct CreatePriceProductData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
@@ -719,6 +745,37 @@ impl AsRef<str> for PriceBillingScheme {
 }
 
 impl std::fmt::Display for PriceBillingScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `Price`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PriceTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl PriceTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PriceTaxBehavior::Exclusive => "exclusive",
+            PriceTaxBehavior::Inclusive => "inclusive",
+            PriceTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for PriceTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PriceTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
