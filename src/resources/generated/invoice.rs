@@ -9,8 +9,8 @@ use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Address, ApiErrors, Charge, Currency, CustomField, Customer, Discount,
-    InvoiceLineItem, PaymentIntent, PaymentMethod, PaymentSource, Shipping, Subscription, TaxId,
-    TaxRate,
+    InvoiceLineItem, InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsCard,
+    PaymentIntent, PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
 };
 
 /// The resource representing a Stripe "Invoice".
@@ -314,6 +314,10 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pre_payment_credit_notes_amount: Option<i64>,
 
+    /// The quote this invoice was generated from.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quote: Option<Expandable<Quote>>,
+
     /// This is the transaction number that appears on email receipts sent for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receipt_number: Option<String>,
@@ -512,11 +516,19 @@ pub struct InvoicesPaymentSettings {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct InvoicesPaymentMethodOptions {}
+pub struct InvoicesPaymentMethodOptions {
+    /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact: Option<InvoicePaymentMethodOptionsBancontact>,
+
+    /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<InvoicePaymentMethodOptionsCard>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesResourceInvoiceTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: TaxIdType,
 
@@ -1214,6 +1226,7 @@ impl std::fmt::Display for InvoicesPaymentSettingsPaymentMethodTypes {
 pub enum TaxIdType {
     AeTrn,
     AuAbn,
+    AuArn,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -1258,6 +1271,7 @@ impl TaxIdType {
         match self {
             TaxIdType::AeTrn => "ae_trn",
             TaxIdType::AuAbn => "au_abn",
+            TaxIdType::AuArn => "au_arn",
             TaxIdType::BrCnpj => "br_cnpj",
             TaxIdType::BrCpf => "br_cpf",
             TaxIdType::CaBn => "ca_bn",

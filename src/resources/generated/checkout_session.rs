@@ -8,8 +8,8 @@ use crate::config::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, SetupIntent, Shipping,
-    Subscription, TaxRate,
+    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentMethodOptionsBoleto,
+    PaymentMethodOptionsOxxo, SetupIntent, Shipping, Subscription, TaxRate,
 };
 
 /// The resource representing a Stripe "Session".
@@ -183,6 +183,12 @@ impl Object for CheckoutSession {
 pub struct CheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CheckoutAcssDebitPaymentMethodOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<PaymentMethodOptionsBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo: Option<PaymentMethodOptionsOxxo>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -249,7 +255,7 @@ pub struct PaymentPagesCheckoutSessionCustomerDetails {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
 
@@ -1008,6 +1014,7 @@ pub enum CheckoutSessionLocale {
     Es419,
     Et,
     Fi,
+    Fil,
     Fr,
     #[serde(rename = "fr-CA")]
     FrCa,
@@ -1057,6 +1064,7 @@ impl CheckoutSessionLocale {
             CheckoutSessionLocale::Es419 => "es-419",
             CheckoutSessionLocale::Et => "et",
             CheckoutSessionLocale::Fi => "fi",
+            CheckoutSessionLocale::Fil => "fil",
             CheckoutSessionLocale::Fr => "fr",
             CheckoutSessionLocale::FrCa => "fr-CA",
             CheckoutSessionLocale::Hr => "hr",
@@ -2406,6 +2414,7 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
 pub enum PaymentPagesCheckoutSessionTaxIdType {
     AeTrn,
     AuAbn,
+    AuArn,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -2450,6 +2459,7 @@ impl PaymentPagesCheckoutSessionTaxIdType {
         match self {
             PaymentPagesCheckoutSessionTaxIdType::AeTrn => "ae_trn",
             PaymentPagesCheckoutSessionTaxIdType::AuAbn => "au_abn",
+            PaymentPagesCheckoutSessionTaxIdType::AuArn => "au_arn",
             PaymentPagesCheckoutSessionTaxIdType::BrCnpj => "br_cnpj",
             PaymentPagesCheckoutSessionTaxIdType::BrCpf => "br_cpf",
             PaymentPagesCheckoutSessionTaxIdType::CaBn => "ca_bn",
