@@ -112,6 +112,9 @@ pub struct PortalPaymentMethodUpdate {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionCancel {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancellation_reason: Option<PortalSubscriptionCancellationReason>,
+
     /// Whether the feature is enabled.
     pub enabled: bool,
 
@@ -122,6 +125,15 @@ pub struct PortalSubscriptionCancel {
     ///
     /// Possible values are `none` and `create_prorations`.
     pub proration_behavior: PortalSubscriptionCancelProrationBehavior,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PortalSubscriptionCancellationReason {
+    /// Whether the feature is enabled.
+    pub enabled: bool,
+
+    /// Which cancellation reasons will be given as options to the customer.
+    pub options: Vec<PortalSubscriptionCancellationReasonOptions>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -249,6 +261,47 @@ impl AsRef<str> for PortalSubscriptionCancelProrationBehavior {
 }
 
 impl std::fmt::Display for PortalSubscriptionCancelProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PortalSubscriptionCancellationReason`'s `options` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PortalSubscriptionCancellationReasonOptions {
+    CustomerService,
+    LowQuality,
+    MissingFeatures,
+    Other,
+    SwitchedService,
+    TooComplex,
+    TooExpensive,
+    Unused,
+}
+
+impl PortalSubscriptionCancellationReasonOptions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PortalSubscriptionCancellationReasonOptions::CustomerService => "customer_service",
+            PortalSubscriptionCancellationReasonOptions::LowQuality => "low_quality",
+            PortalSubscriptionCancellationReasonOptions::MissingFeatures => "missing_features",
+            PortalSubscriptionCancellationReasonOptions::Other => "other",
+            PortalSubscriptionCancellationReasonOptions::SwitchedService => "switched_service",
+            PortalSubscriptionCancellationReasonOptions::TooComplex => "too_complex",
+            PortalSubscriptionCancellationReasonOptions::TooExpensive => "too_expensive",
+            PortalSubscriptionCancellationReasonOptions::Unused => "unused",
+        }
+    }
+}
+
+impl AsRef<str> for PortalSubscriptionCancellationReasonOptions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PortalSubscriptionCancellationReasonOptions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
