@@ -8,9 +8,10 @@ use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    CollectionMethod, Currency, Customer, Discount, Invoice, PaymentMethod, PaymentSource,
-    Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
-    SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
+    CollectionMethod, Currency, Customer, Discount, Invoice, InvoicePaymentMethodOptionsBancontact,
+    InvoicePaymentMethodOptionsCard, PaymentMethod, PaymentSource, Scheduled, SetupIntent,
+    SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds,
+    SubscriptionSchedule, SubscriptionTransferData, TaxRate,
 };
 
 /// The resource representing a Stripe "Subscription".
@@ -295,7 +296,15 @@ pub struct SubscriptionsResourcePaymentSettings {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionsResourcePaymentMethodOptions {}
+pub struct SubscriptionsResourcePaymentMethodOptions {
+    /// This sub-hash contains details about the Bancontact payment method options to pass to invoices created by the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact: Option<InvoicePaymentMethodOptionsBancontact>,
+
+    /// This sub-hash contains details about the Card payment method options to pass to invoices created by the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<InvoicePaymentMethodOptionsCard>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePendingUpdate {
