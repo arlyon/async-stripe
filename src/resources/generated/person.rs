@@ -58,6 +58,9 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_name_kanji: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub future_requirements: Option<PersonFutureRequirements>,
+
     /// The person's gender (International regulations require either "male" or "female").
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<String>,
@@ -177,6 +180,59 @@ pub struct PersonVerificationDocument {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PersonFutureRequirements {
+    /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
+
+    /// Fields that need to be collected to keep the person's account enabled.
+    ///
+    /// If not collected by the account's `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash, and may immediately become `past_due`, but the account may also be given a grace period depending on the account's enablement state prior to transition.
+    pub currently_due: Vec<String>,
+
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
+    pub errors: Vec<AccountRequirementsError>,
+
+    /// Fields that need to be collected assuming all volume thresholds are reached.
+    ///
+    /// As they become required, they appear in `currently_due` as well, and the account's `future_requirements[current_deadline]` becomes set.
+    pub eventually_due: Vec<String>,
+
+    /// Fields that weren't collected by the account's `requirements.current_deadline`.
+    ///
+    /// These fields need to be collected to enable the person's account.
+    /// New fields will never appear here; `future_requirements.past_due` will always be a subset of `requirements.past_due`.
+    pub past_due: Vec<String>,
+
+    /// Fields that may become required depending on the results of verification or review.
+    ///
+    /// Will be an empty array unless an asynchronous verification is pending.
+    /// If verification fails, these fields move to `eventually_due` or `currently_due`.
+    pub pending_verification: Vec<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountRequirementsAlternative {
+    /// Fields that can be provided to satisfy all fields in `original_fields_due`.
+    pub alternative_fields_due: Vec<String>,
+
+    /// Fields that are due and can be satisfied by providing all fields in `alternative_fields_due`.
+    pub original_fields_due: Vec<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountRequirementsError {
+    /// The code for the type of error.
+    pub code: AccountRequirementsErrorCode,
+
+    /// An informative message that indicates the error type and provides additional details about the error.
+    pub reason: String,
+
+    /// The specific user onboarding requirement field (in the requirements hash) that needs to be resolved.
+    pub requirement: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonRelationship {
     /// Whether the person is a director of the account's legal entity.
     ///
@@ -212,6 +268,10 @@ pub struct PersonRelationship {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonRequirements {
+    /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
+
     /// Fields that need to be collected to keep the person's account enabled.
     ///
     /// If not collected by the account's `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
@@ -235,18 +295,6 @@ pub struct PersonRequirements {
     /// Will be an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
     pub pending_verification: Vec<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AccountRequirementsError {
-    /// The code for the type of error.
-    pub code: AccountRequirementsErrorCode,
-
-    /// An informative message that indicates the error type and provides additional details about the error.
-    pub reason: String,
-
-    /// The specific user onboarding requirement field (in the requirements hash) that needs to be resolved.
-    pub requirement: String,
 }
 
 /// An enum representing the possible values of an `AccountRequirementsError`'s `code` field.
