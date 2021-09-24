@@ -164,6 +164,9 @@ pub struct CreateTokenPerson {
     pub first_name_kanji: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub full_name_aliases: Option<Vec<String>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
