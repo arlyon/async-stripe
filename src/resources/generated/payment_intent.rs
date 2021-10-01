@@ -9,7 +9,8 @@ use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession,
-    PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, Review, Shipping, ShippingParams,
+    PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsBoleto,
+    PaymentMethodOptionsOxxo, Review, Shipping, ShippingParams,
 };
 
 /// The resource representing a Stripe "PaymentIntent".
@@ -415,6 +416,9 @@ pub struct PaymentIntentPaymentMethodOptions {
     pub bancontact: Option<PaymentMethodOptionsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<PaymentMethodOptionsBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<PaymentIntentPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -422,6 +426,9 @@ pub struct PaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<PaymentMethodOptionsIdeal>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo: Option<PaymentMethodOptionsOxxo>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<PaymentMethodOptionsP24>,
