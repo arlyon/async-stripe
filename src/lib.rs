@@ -55,6 +55,10 @@
 //! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
 //! # }
 //! ```
+//!
+//! > **A note about creating card tokens**: Stripe introduced the [PaymentIntent](crate::PaymentIntent) api
+//! > to replace the old token and charge API. This library only supports the former. To migrate, you can
+//! > have a look at [the official migration guide](https://stripe.com/docs/payments/payment-intents/migration).
 
 #![allow(clippy::map_clone)]
 #![allow(clippy::large_enum_variant)]
