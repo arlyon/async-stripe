@@ -46,7 +46,7 @@ full = [
 ]
 
 # stripe feature groups
-checkout = []
+checkout = ["billing"]
 billing = []
 connect = []
 fraud = []
