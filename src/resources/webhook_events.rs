@@ -6,6 +6,8 @@ use hmac::{Hmac, Mac, NewMac};
 use serde_derive::{Deserialize, Serialize};
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
+#[cfg(feature = "webhook-events")]
+use subtle::ConstantTimeEq;
 
 use crate::error::WebhookError;
 use crate::ids::EventId;
@@ -259,17 +261,20 @@ impl Webhook {
         secret: &str,
     ) -> Result<WebhookEvent, WebhookError> {
         // Get Stripe signature from header
-        let signature = Signature::parse(&sig)?;
-        let signed_payload = format!("{}{}{}", signature.t, ".", payload);
+        let signature = Signature::parse(sig)?;
+        let signed_payload = format!("{}.{}", signature.t, payload);
 
         // Compute HMAC with the SHA256 hash function, using endpoing secret as key
         // and signed_payload string as the message.
-        let mut mac =
-            Hmac::<Sha256>::new_varkey(secret.as_bytes()).map_err(|_| WebhookError::BadKey)?;
-        mac.update(signed_payload.as_bytes());
-        let mac_result = mac.finalize();
-        let hex = to_hex(&mac_result.into_bytes());
-        if hex != signature.v1 {
+        let hex = {
+            let mut mac = Hmac::<Sha256>::new_from_slice(secret.as_bytes())
+                .map_err(|_| WebhookError::BadKey)?;
+            mac.update(signed_payload.as_bytes());
+            to_hex(&mac.finalize().into_bytes())
+        };
+
+        // if the hex signature doesn't equal the stripe signature
+        if hex.as_bytes().ct_eq(signature.v1.as_bytes()).unwrap_u8() == 0 {
             return Err(WebhookError::BadSignature);
         }
 
@@ -278,7 +283,7 @@ impl Webhook {
             return Err(WebhookError::BadTimestamp(signature.t));
         }
 
-        serde_json::from_str(&payload).map_err(WebhookError::BadParse)
+        Ok(serde_json::from_str(&payload)?)
     }
 }
 
