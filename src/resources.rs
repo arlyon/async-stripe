@@ -152,10 +152,17 @@ pub use {
         invoiceitem::*,
         line_item::*,
         plan::*,
+        plan::PlanInterval,
         price::*,
         promotion_code::*,
-        subscription::*,
         subscription_item::*,
+        subscription_item::PlanInterval as SubscriptionItemInterval,
+        subscription_item::SubscriptionItemPriceDataRecurring as SubscriptionItemPriceDataRecurring,
+        // need to import this afterwards so that the SubscriptionItemPriceDataRecurring
+        // isn't silently ignored
+        subscription::*,
+        subscription::PlanInterval as SubscriptionInterval,
+        subscription::SubscriptionItemPriceDataRecurring as SubscriptionPriceDataRecurring,
         subscription_schedule::*,
         tax_id::*,
         tax_rate::*,

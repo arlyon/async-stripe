@@ -64,7 +64,7 @@ to run a [`stripe-mock`](https://github.com/stripe/stripe-mock) server and selec
 
 ```sh
 docker run --rm -d -it -p 12111-12112:12111-12112 stripemock/stripe-mock:latest
-cargo test --features runtime-async-std-surf
+cargo test --features runtime-blocking
 ```
 
 ## Communication
