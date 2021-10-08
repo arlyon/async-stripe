@@ -283,7 +283,7 @@ impl Webhook {
             return Err(WebhookError::BadTimestamp(signature.t));
         }
 
-        Ok(serde_json::from_str(&payload)?)
+        Ok(serde_json::from_str(payload)?)
     }
 }
 
