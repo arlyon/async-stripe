@@ -238,6 +238,10 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
 
+    /// List of Stripe products where this mandate can be selected automatically.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_for: Option<Vec<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor>>,
+
     /// Description of the interval.
     ///
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
@@ -590,6 +594,10 @@ pub struct CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
     pub custom_mandate_url: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_for:
+        Option<Vec<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -608,6 +616,10 @@ pub struct CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_for:
+        Option<Vec<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
@@ -648,6 +660,35 @@ impl AsRef<str> for CreateSetupIntentMandateDataCustomerAcceptanceType {
 }
 
 impl std::fmt::Display for CreateSetupIntentMandateDataCustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions`'s `default_for` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
+    Invoice,
+    Subscription,
+}
+
+impl CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Invoice => "invoice",
+            CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Subscription => "subscription",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -878,6 +919,37 @@ impl std::fmt::Display for SetupIntentPaymentMethodOptionsCardRequestThreeDSecur
     }
 }
 
+/// An enum representing the possible values of an `SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit`'s `default_for` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor {
+    Invoice,
+    Subscription,
+}
+
+impl SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor::Invoice => "invoice",
+            SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor::Subscription => {
+                "subscription"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit`'s `payment_schedule` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -980,6 +1052,35 @@ impl AsRef<str> for SetupIntentStatus {
 }
 
 impl std::fmt::Display for SetupIntentStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions`'s `default_for` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
+    Invoice,
+    Subscription,
+}
+
+impl UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Invoice => "invoice",
+            UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Subscription => "subscription",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

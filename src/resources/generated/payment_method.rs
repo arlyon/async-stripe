@@ -693,7 +693,8 @@ impl<'a> CreatePaymentMethod<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPaymentMethods<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
-    pub customer: CustomerId,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<CustomerId>,
 
     /// A cursor for use in pagination.
     ///
@@ -725,9 +726,9 @@ pub struct ListPaymentMethods<'a> {
 }
 
 impl<'a> ListPaymentMethods<'a> {
-    pub fn new(customer: CustomerId, type_: PaymentMethodTypeFilter) -> Self {
+    pub fn new(type_: PaymentMethodTypeFilter) -> Self {
         ListPaymentMethods {
-            customer,
+            customer: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
