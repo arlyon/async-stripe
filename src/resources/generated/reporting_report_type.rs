@@ -29,6 +29,9 @@ pub struct ReportingReportType {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_columns: Option<Vec<String>>,
 
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    pub livemode: bool,
+
     /// Human-readable name of the Report Type.
     pub name: String,
 

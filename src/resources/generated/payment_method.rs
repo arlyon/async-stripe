@@ -77,6 +77,9 @@ pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interac_present: Option<PaymentMethodInteracPresent>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<PaymentMethodKlarna>,
+
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
@@ -485,6 +488,28 @@ pub struct PaymentMethodIdeal {
 pub struct PaymentMethodInteracPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodKlarna {
+    /// The customer's date of birth, if provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<PaymentFlowsPrivatePaymentMethodsKlarnaDob>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentFlowsPrivatePaymentMethodsKlarnaDob {
+    /// The day of birth, between 1 and 31.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub day: Option<i64>,
+
+    /// The month of birth, between 1 and 12.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub month: Option<i64>,
+
+    /// The four-digit year of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub year: Option<i64>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOxxo {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -617,6 +642,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interac_present: Option<CreatePaymentMethodInteracPresent>,
 
+    /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<CreatePaymentMethodKlarna>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -677,6 +706,7 @@ impl<'a> CreatePaymentMethod<'a> {
             grabpay: Default::default(),
             ideal: Default::default(),
             interac_present: Default::default(),
+            klarna: Default::default(),
             metadata: Default::default(),
             oxxo: Default::default(),
             p24: Default::default(),
@@ -693,7 +723,8 @@ impl<'a> CreatePaymentMethod<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPaymentMethods<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
-    pub customer: CustomerId,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<CustomerId>,
 
     /// A cursor for use in pagination.
     ///
@@ -725,9 +756,9 @@ pub struct ListPaymentMethods<'a> {
 }
 
 impl<'a> ListPaymentMethods<'a> {
-    pub fn new(customer: CustomerId, type_: PaymentMethodTypeFilter) -> Self {
+    pub fn new(type_: PaymentMethodTypeFilter) -> Self {
         ListPaymentMethods {
-            customer,
+            customer: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
@@ -833,6 +864,12 @@ pub struct CreatePaymentMethodIdeal {
 pub struct CreatePaymentMethodInteracPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentMethodKlarna {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<CreatePaymentMethodKlarnaDob>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodOxxo {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -853,6 +890,15 @@ pub struct CreatePaymentMethodSofort {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodWechatPay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentMethodKlarnaDob {
+    pub day: i64,
+
+    pub month: i64,
+
+    pub year: i64,
+}
 
 /// An enum representing the possible values of an `CreatePaymentMethodEps`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1544,6 +1590,7 @@ pub enum PaymentMethodType {
     Grabpay,
     Ideal,
     InteracPresent,
+    Klarna,
     Oxxo,
     P24,
     SepaDebit,
@@ -1569,6 +1616,7 @@ impl PaymentMethodType {
             PaymentMethodType::Grabpay => "grabpay",
             PaymentMethodType::Ideal => "ideal",
             PaymentMethodType::InteracPresent => "interac_present",
+            PaymentMethodType::Klarna => "klarna",
             PaymentMethodType::Oxxo => "oxxo",
             PaymentMethodType::P24 => "p24",
             PaymentMethodType::SepaDebit => "sepa_debit",
@@ -1607,6 +1655,7 @@ pub enum PaymentMethodTypeFilter {
     Giropay,
     Grabpay,
     Ideal,
+    Klarna,
     Oxxo,
     P24,
     SepaDebit,
@@ -1630,6 +1679,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Giropay => "giropay",
             PaymentMethodTypeFilter::Grabpay => "grabpay",
             PaymentMethodTypeFilter::Ideal => "ideal",
+            PaymentMethodTypeFilter::Klarna => "klarna",
             PaymentMethodTypeFilter::Oxxo => "oxxo",
             PaymentMethodTypeFilter::P24 => "p24",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",

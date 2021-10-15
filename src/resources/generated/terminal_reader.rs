@@ -22,7 +22,7 @@ pub struct TerminalReader {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_sw_version: Option<String>,
 
-    /// Type of reader, one of `bbpos_chipper2x` or `verifone_P400`.
+    /// Type of reader, one of `bbpos_chipper2x`, `bbpos_wisepos_e`, or `verifone_P400`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_type: Option<TerminalReaderDeviceType>,
 
@@ -72,6 +72,7 @@ impl Object for TerminalReader {
 #[serde(rename_all = "snake_case")]
 pub enum TerminalReaderDeviceType {
     BbposChipper2x,
+    BbposWiseposE,
     #[serde(rename = "verifone_P400")]
     VerifoneP400,
 }
@@ -80,6 +81,7 @@ impl TerminalReaderDeviceType {
     pub fn as_str(self) -> &'static str {
         match self {
             TerminalReaderDeviceType::BbposChipper2x => "bbpos_chipper2x",
+            TerminalReaderDeviceType::BbposWiseposE => "bbpos_wisepos_e",
             TerminalReaderDeviceType::VerifoneP400 => "verifone_P400",
         }
     }

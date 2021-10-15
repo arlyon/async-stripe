@@ -78,6 +78,9 @@ pub struct Account {
     pub external_accounts: List<ExternalAccount>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub future_requirements: Option<AccountFutureRequirements>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<Person>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -198,7 +201,7 @@ pub struct BusinessProfile {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilities {
-    /// The status of the ACSS Direct Debits payments capability of the account, or whether the account can directly process ACSS Direct Debits charges.
+    /// The status of the Canadian pre-authorized debits payments capability of the account, or whether the account can directly process Canadian pre-authorized debits charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit_payments: Option<AccountCapabilitiesAcssDebitPayments>,
 
@@ -258,6 +261,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jcb_payments: Option<CapabilityStatus>,
 
+    /// The status of the Klarna payments capability of the account, or whether the account can directly process Klarna charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna_payments: Option<AccountCapabilitiesKlarnaPayments>,
+
     /// The status of the legacy payments capability of the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub legacy_payments: Option<CapabilityStatus>,
@@ -308,7 +315,58 @@ pub struct AccountController {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountFutureRequirements {
+    /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
+
+    /// Date on which `future_requirements` merges with the main `requirements` hash and `future_requirements` becomes empty.
+    ///
+    /// After the transition, `currently_due` requirements may immediately become `past_due`, but the account may also be given a grace period depending on its enablement state prior to transitioning.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub current_deadline: Option<Timestamp>,
+
+    /// Fields that need to be collected to keep the account enabled.
+    ///
+    /// If not collected by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currently_due: Option<Vec<String>>,
+
+    /// This is typed as a string for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is empty because fields in `future_requirements` will never disable the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disabled_reason: Option<String>,
+
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub errors: Option<Vec<AccountRequirementsError>>,
+
+    /// Fields that need to be collected assuming all volume thresholds are reached.
+    ///
+    /// As they become required, they appear in `currently_due` as well.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eventually_due: Option<Vec<String>>,
+
+    /// Fields that weren't collected by `requirements.current_deadline`.
+    ///
+    /// These fields need to be collected to enable the capability on the account.
+    /// New fields will never appear here; `future_requirements.past_due` will always be a subset of `requirements.past_due`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub past_due: Option<Vec<String>>,
+
+    /// Fields that may become required depending on the results of verification or review.
+    ///
+    /// Will be an empty array unless an asynchronous verification is pending.
+    /// If verification fails, these fields move to `eventually_due` or `currently_due`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pending_verification: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountRequirements {
+    /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
+
     /// Date by which the fields in `currently_due` must be collected to keep the account enabled.
     ///
     /// These fields may disable the account sooner if the next threshold is reached before they are collected.
@@ -349,6 +407,15 @@ pub struct AccountRequirements {
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_verification: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountRequirementsAlternative {
+    /// Fields that can be provided to satisfy all fields in `original_fields_due`.
+    pub alternative_fields_due: Vec<String>,
+
+    /// Fields that are due and can be satisfied by providing all fields in `alternative_fields_due`.
+    pub original_fields_due: Vec<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -487,7 +554,7 @@ pub struct PayoutSettings {
     /// A Boolean indicating if Stripe should try to reclaim negative balances from an attached bank account.
     ///
     /// See our [Understanding Connect Account Balances](https://stripe.com/docs/connect/account-balances) documentation for details.
-    /// Default value is `true` for Express accounts and `false` for Custom accounts.
+    /// Default value is `false` for Custom accounts, otherwise `true`.
     pub debit_negative_balances: bool,
 
     pub schedule: TransferSchedule,
@@ -710,7 +777,7 @@ pub struct CreateAccount<'a> {
     /// The email address of the account holder.
     ///
     /// This is only to make the account easier to identify to you.
-    /// Stripe will never directly email Custom accounts.
+    /// Stripe only emails Custom accounts with your consent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<&'a str>,
 
@@ -864,7 +931,7 @@ pub struct UpdateAccount<'a> {
     /// The email address of the account holder.
     ///
     /// This is only to make the account easier to identify to you.
-    /// Stripe will never directly email Custom accounts.
+    /// Stripe only emails Custom accounts with your consent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<&'a str>,
 
@@ -1056,6 +1123,9 @@ pub struct CreateAccountCapabilities {
     pub jcb_payments: Option<CreateAccountCapabilitiesJcbPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna_payments: Option<CreateAccountCapabilitiesKlarnaPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub legacy_payments: Option<CreateAccountCapabilitiesLegacyPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1129,6 +1199,9 @@ pub struct PersonParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_name_kanji: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub full_name_aliases: Option<Vec<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gender: Option<String>,
@@ -1210,6 +1283,9 @@ pub struct UpdateAccountCapabilities {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jcb_payments: Option<UpdateAccountCapabilitiesJcbPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna_payments: Option<UpdateAccountCapabilitiesKlarnaPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub legacy_payments: Option<UpdateAccountCapabilitiesLegacyPayments>,
@@ -1382,6 +1458,12 @@ pub struct CreateAccountCapabilitiesIdealPayments {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesJcbPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesKlarnaPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -1580,6 +1662,12 @@ pub struct UpdateAccountCapabilitiesIdealPayments {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesJcbPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesKlarnaPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -2047,6 +2135,37 @@ impl AsRef<str> for AccountCapabilitiesIdealPayments {
 }
 
 impl std::fmt::Display for AccountCapabilitiesIdealPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `klarna_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesKlarnaPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesKlarnaPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesKlarnaPayments::Active => "active",
+            AccountCapabilitiesKlarnaPayments::Inactive => "inactive",
+            AccountCapabilitiesKlarnaPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesKlarnaPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesKlarnaPayments {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
