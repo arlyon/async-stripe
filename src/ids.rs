@@ -482,10 +482,13 @@ def_id!(FileId, "file_");
 def_id!(FileLinkId, "link_");
 def_id!(InvoiceId, "in_", { _ });
 def_id!(InvoiceItemId, "ii_");
+def_id!(InvoiceLineItemIdWebhook, "il_");
+
 def_id!(
     enum InvoiceLineItemId {
         Item(InvoiceItemId),
         Subscription(SubscriptionLineId),
+        InvoiceLineItemIdWebhook(InvoiceLineItemIdWebhook),
     }
 );
 def_id!(IssuingAuthorizationId, "iauth_");
@@ -497,7 +500,7 @@ def_id!(OrderId, "or_");
 def_id!(OrderReturnId, "orret_");
 def_id!(MandateId: String); // TODO: Figure out what prefix this id has
 def_id!(PaymentIntentId, "pi_");
-def_id!(PaymentMethodId, "pm");
+def_id!(PaymentMethodId, "pm" | "card");
 def_id!(
     enum PaymentSourceId {
         Account(AccountId),
