@@ -102,6 +102,10 @@ let customers = stripe::Customer::list(&client, params).unwrap();
 println!("{:?}", customers); // =>  List { data: [Customer { .. }] }
 ```
 
+## MSRV
+
+We currently have `1.49.0` pinned in CI, so any version of rustc newer than that should work. If this is not the case, please open an issue.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for information on contributing to async-stripe.
