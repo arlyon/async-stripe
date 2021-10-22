@@ -81,7 +81,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: "1.49.0"
           override: true
       - uses: actions/cache@v2
         with:
