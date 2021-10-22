@@ -6,6 +6,21 @@ cwd = "openapi"
 command = "rm"
 args = ["-f", "spec3.json"]
 
+# verifies if all the apis are exported, and reports which are missing
+[tasks.verify]
+script = '''
+#!/usr/bin/env bash
+for filename in src/resources/generated/*.rs ; do
+    BASE=$(basename $filename '.rs')
+    if ! grep -Fq "pub mod $BASE;" src/resources/generated.rs ; then
+        echo $BASE missing module
+    fi
+    if ! grep -Fq "$BASE::*," src/resources.rs ; then
+        echo $BASE missing export
+    fi
+done
+'''
+
 [tasks.openapi-fetch]
 cwd = "openapi"
 command = "wget"
