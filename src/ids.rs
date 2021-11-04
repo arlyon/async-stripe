@@ -578,11 +578,16 @@ impl<'de> serde::Deserialize<'de> for InvoiceId {
     where
         D: serde::de::Deserializer<'de>,
     {
-        let s: String = serde::Deserialize::deserialize(deserializer)?;
-        if s.is_empty() {
-            Ok(InvoiceId::none())
-        } else {
-            s.parse::<Self>().map_err(::serde::de::Error::custom)
+        let s: Option<String> = serde::Deserialize::deserialize(deserializer)?;
+        match s {
+            None => Ok(InvoiceId::none()),
+            Some(s) => {
+                if s.is_empty() {
+                    Ok(InvoiceId::none())
+                } else {
+                    s.parse::<Self>().map_err(::serde::de::Error::custom)
+                }
+            }
         }
     }
 }
