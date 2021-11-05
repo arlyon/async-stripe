@@ -8,8 +8,8 @@ use crate::config::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, SetupIntent, Shipping,
-    Subscription, TaxRate,
+    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentMethodOptionsBoleto,
+    PaymentMethodOptionsOxxo, SetupIntent, Shipping, Subscription, TaxRate,
 };
 
 /// The resource representing a Stripe "Session".
@@ -19,6 +19,10 @@ pub struct CheckoutSession {
     ///
     /// Used to pass to `redirectToCheckout` in Stripe.js.
     pub id: CheckoutSessionId,
+
+    /// When set, provides configuration for actions to take if this Checkout Session expires.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_expiration: Option<PaymentPagesCheckoutSessionAfterExpiration>,
 
     /// Enables user redeemable promotion codes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -46,6 +50,14 @@ pub struct CheckoutSession {
     /// This can be a customer ID, a cart ID, or similar, and can be used to reconcile the Session with your internal systems.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub client_reference_id: Option<String>,
+
+    /// Results of `consent_collection` for this session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub consent: Option<PaymentPagesCheckoutSessionConsent>,
+
+    /// When set, provides configuration for the Checkout Session to gather active consent from customers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub consent_collection: Option<PaymentPagesCheckoutSessionConsentCollection>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -75,6 +87,9 @@ pub struct CheckoutSession {
     /// To access information about the customer once the payment flow is complete, use the `customer` attribute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_email: Option<String>,
+
+    /// The timestamp at which the Checkout Session will expire.
+    pub expires_at: Timestamp,
 
     /// The line items purchased by the customer.
     #[serde(default)]
@@ -114,6 +129,13 @@ pub struct CheckoutSession {
     /// The payment status of the Checkout Session, one of `paid`, `unpaid`, or `no_payment_required`.
     /// You can use this value to decide when to fulfill your customer's order.
     pub payment_status: CheckoutSessionPaymentStatus,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone_number_collection: Option<PaymentPagesCheckoutSessionPhoneNumberCollection>,
+
+    /// The ID of the original expired Checkout Session that triggered the recovery flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recovered_from: Option<String>,
 
     /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -183,6 +205,12 @@ impl Object for CheckoutSession {
 pub struct CheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CheckoutAcssDebitPaymentMethodOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<PaymentMethodOptionsBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo: Option<PaymentMethodOptionsOxxo>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -207,6 +235,12 @@ pub struct CheckoutAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
 
+    /// List of Stripe products where this mandate can be selected automatically.
+    ///
+    /// Returned when the Session is in `setup` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_for: Option<Vec<CheckoutAcssDebitMandateOptionsDefaultFor>>,
+
     /// Description of the interval.
     ///
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
@@ -223,6 +257,35 @@ pub struct CheckoutAcssDebitMandateOptions {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionAfterExpiration {
+    /// When set, configuration used to recover the Checkout Session on expiry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recovery: Option<PaymentPagesCheckoutSessionAfterExpirationRecovery>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionAfterExpirationRecovery {
+    /// Enables user redeemable promotion codes on the recovered Checkout Sessions.
+    ///
+    /// Defaults to `false`.
+    pub allow_promotion_codes: bool,
+
+    /// If `true`, a recovery url will be generated to recover this Checkout Session if it
+    /// expires before a transaction is completed.
+    ///
+    /// It will be attached to the Checkout Session object upon expiration.
+    pub enabled: bool,
+
+    /// The timestamp at which the recovery URL will expire.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<Timestamp>,
+
+    /// URL that creates a new Checkout Session when clicked that is a copy of this expired Checkout Session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionAutomaticTax {
     /// Indicates whether automatic tax is enabled for the session.
     pub enabled: bool,
@@ -233,10 +296,33 @@ pub struct PaymentPagesCheckoutSessionAutomaticTax {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionConsent {
+    /// If `opt_in`, the customer consents to receiving promotional communications
+    /// from the merchant about this Checkout Session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotions: Option<PaymentPagesCheckoutSessionConsentPromotions>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionConsentCollection {
+    /// If set to `auto`, enables the collection of customer consent for promotional communications.
+    ///
+    /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
+    /// Only available to US merchants.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotions: Option<PaymentPagesCheckoutSessionConsentCollectionPromotions>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomerDetails {
-    /// The customer’s email at time of checkout.
+    /// The email associated with the Customer, if one exists, on the Checkout Session at the time of checkout or at time of session expiry.
+    /// Otherwise, if the customer has consented to promotional content, this value is the most recent valid email provided by the customer on the Checkout form.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
+
+    /// The customer's phone number at the time of checkout.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
 
     /// The customer’s tax exempt status at time of checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -248,8 +334,14 @@ pub struct PaymentPagesCheckoutSessionCustomerDetails {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionPhoneNumberCollection {
+    /// Indicates whether phone number collection is enabled for the session.
+    pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
 
@@ -317,6 +409,10 @@ pub struct ShippingAddressCollection {
 /// The parameters for `CheckoutSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateCheckoutSession<'a> {
+    /// Configure actions after a Checkout Session has expired.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_expiration: Option<CreateCheckoutSessionAfterExpiration>,
+
     /// Enables user redeemable promotion codes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_promotion_codes: Option<bool>,
@@ -337,6 +433,10 @@ pub struct CreateCheckoutSession<'a> {
     /// This can be a customer ID, a cart ID, or similar, and can be used to reconcile the session with your internal systems.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub client_reference_id: Option<&'a str>,
+
+    /// Configure fields for the Checkout Session to gather active consent from customers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub consent_collection: Option<CreateCheckoutSessionConsentCollection>,
 
     /// ID of an existing Customer, if one exists.
     ///
@@ -370,6 +470,13 @@ pub struct CreateCheckoutSession<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// The Epoch time in seconds at which the Checkout Session will expire.
+    ///
+    /// It can be anywhere from 1 to 24 hours after Checkout Session creation.
+    /// By default, this value is 24 hours from creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<Timestamp>,
 
     /// A list of items the customer is purchasing.
     ///
@@ -418,6 +525,15 @@ pub struct CreateCheckoutSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<CreateCheckoutSessionPaymentMethodTypes>>,
 
+    /// Controls phone number collection settings for the session.
+    ///
+    /// We recommend that you review your privacy policy and check with your legal contacts
+    /// before using this feature.
+    ///
+    /// Learn more about [collecting phone numbers with Checkout](https://stripe.com/docs/payments/checkout/phone-numbers).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone_number_collection: Option<CreateCheckoutSessionPhoneNumberCollection>,
+
     /// A subset of parameters to be passed to SetupIntent creation for Checkout Sessions in `setup` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_intent_data: Option<CreateCheckoutSessionSetupIntentData>,
@@ -445,8 +561,8 @@ pub struct CreateCheckoutSession<'a> {
 
     /// The URL to which Stripe should send customers when payment or setup
     /// is complete.
-    /// If you’d like access to the Checkout Session for the successful
-    /// payment, read more about it in the guide on [fulfilling orders](https://stripe.com/docs/payments/checkout/fulfill-orders).
+    /// If you’d like to use information from the successful Checkout Session on your page,
+    /// read the guide on [customizing your success page](https://stripe.com/docs/payments/checkout/custom-success-page).
     pub success_url: &'a str,
 
     /// Controls tax ID collection settings for the session.
@@ -457,16 +573,19 @@ pub struct CreateCheckoutSession<'a> {
 impl<'a> CreateCheckoutSession<'a> {
     pub fn new(cancel_url: &'a str, success_url: &'a str) -> Self {
         CreateCheckoutSession {
+            after_expiration: Default::default(),
             allow_promotion_codes: Default::default(),
             automatic_tax: Default::default(),
             billing_address_collection: Default::default(),
             cancel_url,
             client_reference_id: Default::default(),
+            consent_collection: Default::default(),
             customer: Default::default(),
             customer_email: Default::default(),
             customer_update: Default::default(),
             discounts: Default::default(),
             expand: Default::default(),
+            expires_at: Default::default(),
             line_items: Default::default(),
             locale: Default::default(),
             metadata: Default::default(),
@@ -474,6 +593,7 @@ impl<'a> CreateCheckoutSession<'a> {
             payment_intent_data: Default::default(),
             payment_method_options: Default::default(),
             payment_method_types: Default::default(),
+            phone_number_collection: Default::default(),
             setup_intent_data: Default::default(),
             shipping_address_collection: Default::default(),
             shipping_rates: Default::default(),
@@ -535,8 +655,20 @@ impl<'a> ListCheckoutSessions<'a> {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionAfterExpiration {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recovery: Option<CreateCheckoutSessionAfterExpirationRecovery>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAutomaticTax {
     pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionConsentCollection {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotions: Option<CreateCheckoutSessionConsentCollectionPromotions>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -651,6 +783,11 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPhoneNumberCollection {
+    pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSetupIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -693,6 +830,14 @@ pub struct CreateCheckoutSessionSubscriptionData {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionTaxIdCollection {
+    pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionAfterExpirationRecovery {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_promotion_codes: Option<bool>,
+
     pub enabled: bool,
 }
 
@@ -857,6 +1002,10 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     pub custom_mandate_url: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_for:
+        Option<Vec<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -866,6 +1015,35 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type:
         Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+}
+
+/// An enum representing the possible values of an `CheckoutAcssDebitMandateOptions`'s `default_for` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutAcssDebitMandateOptionsDefaultFor {
+    Invoice,
+    Subscription,
+}
+
+impl CheckoutAcssDebitMandateOptionsDefaultFor {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutAcssDebitMandateOptionsDefaultFor::Invoice => "invoice",
+            CheckoutAcssDebitMandateOptionsDefaultFor::Subscription => "subscription",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutAcssDebitMandateOptionsDefaultFor {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutAcssDebitMandateOptionsDefaultFor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `CheckoutAcssDebitMandateOptions`'s `payment_schedule` field.
@@ -1008,6 +1186,7 @@ pub enum CheckoutSessionLocale {
     Es419,
     Et,
     Fi,
+    Fil,
     Fr,
     #[serde(rename = "fr-CA")]
     FrCa,
@@ -1057,6 +1236,7 @@ impl CheckoutSessionLocale {
             CheckoutSessionLocale::Es419 => "es-419",
             CheckoutSessionLocale::Et => "et",
             CheckoutSessionLocale::Fi => "fi",
+            CheckoutSessionLocale::Fil => "fil",
             CheckoutSessionLocale::Fr => "fr",
             CheckoutSessionLocale::FrCa => "fr-CA",
             CheckoutSessionLocale::Hr => "hr",
@@ -1191,6 +1371,33 @@ impl AsRef<str> for CheckoutSessionSubmitType {
 }
 
 impl std::fmt::Display for CheckoutSessionSubmitType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionConsentCollection`'s `promotions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionConsentCollectionPromotions {
+    Auto,
+}
+
+impl CreateCheckoutSessionConsentCollectionPromotions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionConsentCollectionPromotions::Auto => "auto",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionConsentCollectionPromotions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionConsentCollectionPromotions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -1405,6 +1612,37 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentIntentDataSetupFutureUsag
     }
 }
 
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions`'s `default_for` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
+    Invoice,
+    Subscription,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Invoice => "invoice",
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Subscription => "subscription",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions`'s `payment_schedule` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1557,6 +1795,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Giropay,
     Grabpay,
     Ideal,
+    Klarna,
     Oxxo,
     P24,
     SepaDebit,
@@ -1579,6 +1818,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             CreateCheckoutSessionPaymentMethodTypes::Giropay => "giropay",
             CreateCheckoutSessionPaymentMethodTypes::Grabpay => "grabpay",
             CreateCheckoutSessionPaymentMethodTypes::Ideal => "ideal",
+            CreateCheckoutSessionPaymentMethodTypes::Klarna => "klarna",
             CreateCheckoutSessionPaymentMethodTypes::Oxxo => "oxxo",
             CreateCheckoutSessionPaymentMethodTypes::P24 => "p24",
             CreateCheckoutSessionPaymentMethodTypes::SepaDebit => "sepa_debit",
@@ -2369,6 +2609,62 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionAutomaticTaxStatus {
     }
 }
 
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionConsentCollection`'s `promotions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionConsentCollectionPromotions {
+    Auto,
+}
+
+impl PaymentPagesCheckoutSessionConsentCollectionPromotions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionConsentCollectionPromotions::Auto => "auto",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionConsentCollectionPromotions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionConsentCollectionPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionConsent`'s `promotions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionConsentPromotions {
+    OptIn,
+    OptOut,
+}
+
+impl PaymentPagesCheckoutSessionConsentPromotions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionConsentPromotions::OptIn => "opt_in",
+            PaymentPagesCheckoutSessionConsentPromotions::OptOut => "opt_out",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionConsentPromotions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionConsentPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `PaymentPagesCheckoutSessionCustomerDetails`'s `tax_exempt` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2406,6 +2702,7 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
 pub enum PaymentPagesCheckoutSessionTaxIdType {
     AeTrn,
     AuAbn,
+    AuArn,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -2450,6 +2747,7 @@ impl PaymentPagesCheckoutSessionTaxIdType {
         match self {
             PaymentPagesCheckoutSessionTaxIdType::AeTrn => "ae_trn",
             PaymentPagesCheckoutSessionTaxIdType::AuAbn => "au_abn",
+            PaymentPagesCheckoutSessionTaxIdType::AuArn => "au_arn",
             PaymentPagesCheckoutSessionTaxIdType::BrCnpj => "br_cnpj",
             PaymentPagesCheckoutSessionTaxIdType::BrCpf => "br_cpf",
             PaymentPagesCheckoutSessionTaxIdType::CaBn => "ca_bn",

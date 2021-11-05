@@ -8,8 +8,9 @@ use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    CollectionMethod, Currency, Customer, Discount, Invoice, PaymentMethod, PaymentSource,
-    Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
+    CollectionMethod, Currency, Customer, Discount, Invoice, InvoicePaymentMethodOptionsAcssDebit,
+    InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsCard, PaymentMethod,
+    PaymentSource, Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
     SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
 };
 
@@ -295,7 +296,19 @@ pub struct SubscriptionsResourcePaymentSettings {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionsResourcePaymentMethodOptions {}
+pub struct SubscriptionsResourcePaymentMethodOptions {
+    /// This sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to invoices created by the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<InvoicePaymentMethodOptionsAcssDebit>,
+
+    /// This sub-hash contains details about the Bancontact payment method options to pass to invoices created by the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact: Option<InvoicePaymentMethodOptionsBancontact>,
+
+    /// This sub-hash contains details about the Card payment method options to pass to invoices created by the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<InvoicePaymentMethodOptionsCard>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePendingUpdate {
@@ -975,6 +988,9 @@ pub struct CreateSubscriptionItemsBillingThresholds {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1018,10 +1034,24 @@ pub struct SubscriptionItemPriceData {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options:
+        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method:
+        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1047,6 +1077,17 @@ pub struct SubscriptionItemPriceDataRecurring {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options:
+        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method:
+        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language:
@@ -1058,6 +1099,91 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_type: Option<
+        CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType,
+    >,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_type: Option<
+        UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType,
+    >,
+}
+
+/// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    Business,
+    Personal,
+}
+
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact`'s `preferred_language` field.
@@ -1134,6 +1260,7 @@ impl std::fmt::Display
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
+    AcssDebit,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
@@ -1154,6 +1281,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
                 "ach_credit_transfer"
             }
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::AchDebit => "ach_debit",
+            CreateSubscriptionPaymentSettingsPaymentMethodTypes::AcssDebit => "acss_debit",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::BacsDebit => "bacs_debit",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
@@ -1488,6 +1616,7 @@ impl std::fmt::Display for SubscriptionsResourcePauseCollectionBehavior {
 pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
+    AcssDebit,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
@@ -1508,6 +1637,7 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
                 "ach_credit_transfer"
             }
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::AchDebit => "ach_debit",
+            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::AcssDebit => "acss_debit",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::BacsDebit => "bacs_debit",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
@@ -1561,6 +1691,75 @@ impl AsRef<str> for UpdateSubscriptionPauseCollectionBehavior {
 }
 
 impl std::fmt::Display for UpdateSubscriptionPauseCollectionBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    Business,
+    Personal,
+}
+
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
+{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -1640,6 +1839,7 @@ impl std::fmt::Display
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
+    AcssDebit,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
@@ -1660,6 +1860,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
                 "ach_credit_transfer"
             }
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::AchDebit => "ach_debit",
+            UpdateSubscriptionPaymentSettingsPaymentMethodTypes::AcssDebit => "acss_debit",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::BacsDebit => "bacs_debit",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
