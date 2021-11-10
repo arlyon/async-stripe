@@ -1,7 +1,6 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::params::Timestamp;
-use crate::resources::{CardBrand, CardType};
 use crate::resources::Address;
 
 /// An enum representing the versions of the Stripe API.
@@ -332,46 +331,6 @@ pub struct Dob {
 pub enum FraudDetailsReport {
     Fraudulent,
     Safe,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentMethodCard {
-    /// Can be `American Express`, `Diners Club`, `Discover`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub brand: Option<CardBrand>,
-
-    /// Two-letter ISO code representing the country of the card.
-    ///
-    /// You could use this attribute to get a sense of the international breakdown of cards you've collected.
-    pub country: String,
-
-    /// Two-digit number representing the card's expiration month.
-    pub exp_month: i64,
-
-    /// Four-digit number representing the card's expiration year.
-    pub exp_year: i64,
-
-    /// Uniquely identifies this particular card number.
-    ///
-    /// You can use this attribute to check whether two customers who've signed up with you are using the same card number, for example.
-    pub fingerprint: String,
-
-    /// Card funding type.
-    ///
-    /// Can be `credit`, `debit`, `prepaid`, or `unknown`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub funding: Option<CardType>,
-
-    /// The last four digits of the card.
-    pub last4: String,
-}
-
-// TODO: Implement
-/// This type is a stub that still needs to be implemented.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct PaymentMethodDetails {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<PaymentMethodCard>,
 }
 
 /// Period is a structure representing a start and end dates.

@@ -11,8 +11,8 @@
 
 #[path = "generated"]
 pub mod core {
-    pub mod api_errors;
     pub mod address;
+    pub mod api_errors;
     pub mod balance;
     pub mod balance_transaction;
     pub mod billing_details;
@@ -22,11 +22,11 @@ pub mod core {
     pub mod file;
     pub mod file_link;
     pub mod mandate;
+    pub mod package_dimensions;
     pub mod payment_intent;
     pub mod payout;
     pub mod platform_tax_fee;
     pub mod product;
-    pub mod package_dimensions;
     pub mod refund;
     pub mod reserve_transaction;
     pub mod setup_attempt;
