@@ -105,6 +105,7 @@ pub use {
         tax_code::*,
         tax_deducted_at_source::*,
         token::*,
+        api_errors::*,
     },
 
     payment::{

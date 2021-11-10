@@ -11,8 +11,7 @@ pub struct InvoicePaymentMethodOptionsCard {
     ///
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub request_three_d_secure: Option<InvoicePaymentMethodOptionsCardRequestThreeDSecure>,
+    pub request_three_d_secure: Box<Option<InvoicePaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
 /// An enum representing the possible values of an `InvoicePaymentMethodOptionsCard`'s `request_three_d_secure` field.

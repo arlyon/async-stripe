@@ -27,8 +27,7 @@ pub struct CustomerBalanceTransaction {
     pub created: Timestamp,
 
     /// The ID of the credit note (if any) related to the transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub credit_note: Option<Expandable<CreditNote>>,
+    pub credit_note: Box<Option<Expandable<CreditNote>>>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -41,8 +40,7 @@ pub struct CustomerBalanceTransaction {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
+    pub description: Box<Option<String>>,
 
     /// The customer's `balance` after the transaction was applied.
     ///
@@ -51,8 +49,7 @@ pub struct CustomerBalanceTransaction {
     pub ending_balance: i64,
 
     /// The ID of the invoice (if any) related to the transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice: Option<Expandable<Invoice>>,
+    pub invoice: Box<Option<Expandable<Invoice>>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,

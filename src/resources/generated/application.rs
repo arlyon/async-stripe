@@ -10,8 +10,7 @@ use crate::params::Object;
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Application {
     /// The name of the application.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: Box<Option<String>>,
 }
 
 impl Object for Application {

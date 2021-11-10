@@ -21,8 +21,7 @@ pub struct IssuingCard {
     pub brand: CardBrand,
 
     /// The reason why the card was canceled.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancellation_reason: Option<IssuingCardCancellationReason>,
+    pub cancellation_reason: Box<Option<IssuingCardCancellationReason>>,
 
     pub cardholder: IssuingCardholder,
 
@@ -40,8 +39,7 @@ pub struct IssuingCard {
     ///
     /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
     /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cvc: Option<String>,
+    pub cvc: Box<Option<String>>,
 
     /// The expiration month of the card.
     pub exp_month: i64,
@@ -64,24 +62,19 @@ pub struct IssuingCard {
     ///
     /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
     /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub number: Option<String>,
+    pub number: Box<Option<String>>,
 
     /// The latest card that replaces this card, if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub replaced_by: Option<Expandable<IssuingCard>>,
+    pub replaced_by: Box<Option<Expandable<IssuingCard>>>,
 
     /// The card this card replaces, if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub replacement_for: Option<Expandable<IssuingCard>>,
+    pub replacement_for: Box<Option<Expandable<IssuingCard>>>,
 
     /// The reason why the previous card needed to be replaced.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub replacement_reason: Option<IssuingCardReplacementReason>,
+    pub replacement_reason: Box<Option<IssuingCardReplacementReason>>,
 
     /// Where and how the card will be shipped.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<IssuingCardShipping>,
+    pub shipping: Box<Option<IssuingCardShipping>>,
 
     pub spending_controls: IssuingCardAuthorizationControls,
 
@@ -135,12 +128,10 @@ pub struct IssuingCardShipping {
     pub address: Address,
 
     /// The delivery company that shipped a card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub carrier: Option<IssuingCardShippingCarrier>,
+    pub carrier: Box<Option<IssuingCardShippingCarrier>>,
 
     /// A unix timestamp representing a best estimate of when the card will be delivered.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eta: Option<Timestamp>,
+    pub eta: Box<Option<Timestamp>>,
 
     /// Recipient name.
     pub name: String,
@@ -153,12 +144,10 @@ pub struct IssuingCardShipping {
     pub status: Option<IssuingCardShippingStatus>,
 
     /// A tracking number for a card shipment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tracking_number: Option<String>,
+    pub tracking_number: Box<Option<String>>,
 
     /// A link to the shipping carrier's site where you can view detailed information about a card shipment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tracking_url: Option<String>,
+    pub tracking_url: Box<Option<String>>,
 
     /// Packaging options.
     #[serde(rename = "type")]

@@ -608,21 +608,21 @@ pub enum BusinessType {
     Company,
 }
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum ApiErrors {
-    #[serde(rename = "api_connection_error")]
-    ApiConnectionError,
-    #[serde(rename = "api_error")]
-    ApiError,
-    #[serde(rename = "authentication_error")]
-    AuthenticationError,
-    #[serde(rename = "card_error")]
-    CardError,
-    #[serde(rename = "idempotency_error")]
-    IdempotencyError,
-    #[serde(rename = "invalid_request_error")]
-    InvalidRequestError,
-    #[serde(rename = "rate_limit_error")]
-    RateLimitError,
-}
+//#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+//#[serde(rename_all = "snake_case")]
+//pub enum ApiErrors {
+//    #[serde(rename = "api_connection_error")]
+//    ApiConnectionError,
+//    #[serde(rename = "api_error")]
+//    ApiError,
+//    #[serde(rename = "authentication_error")]
+//    AuthenticationError,
+//    #[serde(rename = "card_error")]
+//    CardError,
+//    #[serde(rename = "idempotency_error")]
+//    IdempotencyError,
+//    #[serde(rename = "invalid_request_error")]
+//    InvalidRequestError,
+//    #[serde(rename = "rate_limit_error")]
+//    RateLimitError,
+//}

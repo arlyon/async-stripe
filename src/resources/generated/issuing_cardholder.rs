@@ -17,8 +17,7 @@ pub struct IssuingCardholder {
     pub billing: IssuingCardholderAddress,
 
     /// Additional information about a `company` cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company: Option<IssuingCardholderCompany>,
+    pub company: Box<Option<IssuingCardholderCompany>>,
 
     /// Time at which the object was created.
     ///
@@ -26,12 +25,10 @@ pub struct IssuingCardholder {
     pub created: Timestamp,
 
     /// The cardholder's email address.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
+    pub email: Box<Option<String>>,
 
     /// Additional information about an `individual` cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub individual: Option<IssuingCardholderIndividual>,
+    pub individual: Box<Option<IssuingCardholderIndividual>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -50,16 +47,14 @@ pub struct IssuingCardholder {
     ///
     /// This is required for all cardholders who will be creating EU cards.
     /// See the [3D Secure documentation](https://stripe.com/docs/issuing/3d-secure#when-is-3d-secure-applied) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone_number: Option<String>,
+    pub phone_number: Box<Option<String>>,
 
     pub requirements: IssuingCardholderRequirements,
 
     /// Rules that control spending across this cardholder's cards.
     ///
     /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub spending_controls: Option<IssuingCardholderAuthorizationControls>,
+    pub spending_controls: Box<Option<IssuingCardholderAuthorizationControls>>,
 
     /// Specifies whether to permit authorizations on this cardholder's cards.
     pub status: IssuingCardholderStatus,
@@ -118,8 +113,7 @@ pub struct IssuingCardholderCompany {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividual {
     /// The date of birth of this cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<IssuingCardholderIndividualDob>,
+    pub dob: Box<Option<IssuingCardholderIndividualDob>>,
 
     /// The first name of this cardholder.
     pub first_name: String,
@@ -128,52 +122,43 @@ pub struct IssuingCardholderIndividual {
     pub last_name: String,
 
     /// Government-issued ID document for this cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<IssuingCardholderVerification>,
+    pub verification: Box<Option<IssuingCardholderVerification>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividualDob {
     /// The day of birth, between 1 and 31.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub day: Option<i64>,
+    pub day: Box<Option<i64>>,
 
     /// The month of birth, between 1 and 12.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub month: Option<i64>,
+    pub month: Box<Option<i64>>,
 
     /// The four-digit year of birth.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub year: Option<i64>,
+    pub year: Box<Option<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderRequirements {
     /// If `disabled_reason` is present, all cards will decline authorizations with `cardholder_verification_required` reason.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub disabled_reason: Option<IssuingCardholderRequirementsDisabledReason>,
+    pub disabled_reason: Box<Option<IssuingCardholderRequirementsDisabledReason>>,
 
     /// Array of fields that need to be collected in order to verify and re-enable the cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub past_due: Option<Vec<IssuingCardholderRequirementsPastDue>>,
+    pub past_due: Box<Option<Vec<IssuingCardholderRequirementsPastDue>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderVerification {
     /// An identifying document, either a passport or local ID card.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<IssuingCardholderIdDocument>,
+    pub document: Box<Option<IssuingCardholderIdDocument>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderIdDocument {
     /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<Expandable<File>>,
+    pub back: Box<Option<Expandable<File>>>,
 
     /// The front of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<Expandable<File>>,
+    pub front: Box<Option<Expandable<File>>>,
 }
 
 /// An enum representing the possible values of an `IssuingCardholderRequirements`'s `disabled_reason` field.

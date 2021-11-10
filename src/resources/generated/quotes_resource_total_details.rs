@@ -13,14 +13,12 @@ pub struct QuotesResourceTotalDetails {
     pub amount_discount: i64,
 
     /// This is the sum of all the line item shipping amounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_shipping: Option<i64>,
+    pub amount_shipping: Box<Option<i64>>,
 
     /// This is the sum of all the line item tax amounts.
     pub amount_tax: i64,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub breakdown: Option<QuotesResourceTotalDetailsResourceBreakdown>,
+    pub breakdown: Box<Option<QuotesResourceTotalDetailsResourceBreakdown>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

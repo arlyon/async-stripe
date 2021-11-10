@@ -11,6 +11,7 @@
 
 #[path = "generated"]
 pub mod core {
+    pub mod api_errors;
     pub mod balance;
     pub mod balance_transaction;
     pub mod charge;
@@ -38,9 +39,9 @@ pub mod payment {
     pub mod bank_account;
     pub mod card;
     pub mod payment_method;
-    pub mod source;
     pub mod payment_method_options_boleto;
     pub mod payment_method_options_oxxo;
+    pub mod source;
 }
 
 #[path = "generated"]

@@ -7,19 +7,17 @@ use serde_derive::{Deserialize, Serialize};
 /// The resource representing a Stripe "invoice_payment_method_options_acss_debit".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsAcssDebit {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<InvoicePaymentMethodOptionsAcssDebitMandateOptions>,
+    pub mandate_options: Box<Option<InvoicePaymentMethodOptionsAcssDebitMandateOptions>>,
 
     /// Bank account verification method.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method: Option<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>,
+    pub verification_method: Box<Option<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsAcssDebitMandateOptions {
     /// Transaction type of the mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+    pub transaction_type:
+        Box<Option<InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
 }
 
 /// An enum representing the possible values of an `InvoicePaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
