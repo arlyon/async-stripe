@@ -12,6 +12,7 @@
 #[path = "generated"]
 pub mod core {
     pub mod api_errors;
+    pub mod address;
     pub mod balance;
     pub mod balance_transaction;
     pub mod charge;

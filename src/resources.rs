@@ -86,6 +86,7 @@ pub use {
         token_ext::*,
     },
     generated::core::{
+        address::*,
         balance::*,
         balance_transaction::*,
         charge::*,

@@ -2,6 +2,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::params::Timestamp;
 use crate::resources::{CardBrand, CardType};
+use crate::resources::Address;
 
 /// An enum representing the versions of the Stripe API.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -309,24 +310,6 @@ impl std::fmt::Display for ApiVersion {
 pub enum AccountHolderType {
     Individual,
     Company,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Address {
-    /// Address line 1 or block/building number (e.g. Street address/PO Box/Company name)
-    pub line1: Option<String>,
-    /// Address line 2 or building details (e.g. Apartment/Suite/Unit/Building)
-    pub line2: Option<String>,
-    /// City (or Ward)
-    pub city: Option<String>,
-    /// State (or Prefecture)
-    pub state: Option<String>,
-    /// ZIP or postal code
-    pub postal_code: Option<String>,
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))
-    pub country: Option<String>,
-    /// The town/cho-me (Japan only)
-    pub town: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
