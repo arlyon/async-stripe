@@ -503,11 +503,9 @@ fn gen_generated_schemas(
     meta: &Metadata,
     shared_objects: &mut BTreeSet<String>,
 ) {
-    println!("generated_schemas: {:#?}", state.generated_schemas);
     while let Some(schema_name) =
         state.generated_schemas.iter().find_map(|(k, &v)| if !v { Some(k) } else { None }).cloned()
     {
-        println!("generated schemas: {:#?}", state.generated_schemas);
         let struct_name = meta.schema_to_rust_type(&schema_name);
         out.push('\n');
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");

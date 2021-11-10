@@ -39,6 +39,8 @@ pub mod payment {
     pub mod card;
     pub mod payment_method;
     pub mod source;
+    pub mod payment_method_options_boleto;
+    pub mod payment_method_options_oxxo;
 }
 
 #[path = "generated"]
@@ -54,12 +56,16 @@ pub mod billing {
     pub mod coupon;
     pub mod discount;
     pub mod invoice;
+    pub mod invoice_payment_method_options_acss_debit;
+    pub mod invoice_payment_method_options_bancontact;
+    pub mod invoice_payment_method_options_card;
     pub mod invoiceitem;
     pub mod line_item;
     pub mod plan;
     pub mod price;
     pub mod promotion_code;
     pub mod quote;
+    pub mod quotes_resource_total_details;
     pub mod subscription;
     pub mod subscription_item;
     pub mod subscription_schedule;
