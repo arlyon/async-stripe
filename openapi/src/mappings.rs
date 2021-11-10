@@ -400,8 +400,6 @@ pub fn field_mappings() -> FieldMap {
         (("update_customer", "default_card"), ("CardId", "Option<CardId>")),
         (("create_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
         (("update_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
-        (("create_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-        (("update_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("create_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams>")),
         (("update_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams>")),
         (("update_customer", "trial_end"), ("Scheduled", "Option<Scheduled>")),
@@ -421,18 +419,14 @@ pub fn field_mappings() -> FieldMap {
 
         // Config for `order` params
         (("list_orders", "status"), ("OrderStatusFilter", "Option<OrderStatusFilter>")),
-        (("create_order", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-        (("update_order", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
 
         // Config for `payment_intent` params
         (("payment_intent", "source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
         (("payment_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
-        (("create_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (
             ("create_payment_intent", "off_session"),
             ("PaymentIntentOffSession", "Option<PaymentIntentOffSession>"),
         ),
-        (("update_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("create_setup_intent", "usage"), ("", "Option<SetupIntentUsage>")),
         (("setup_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
 

@@ -12,7 +12,7 @@ use crate::ids::{
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
-    Scheduled, Shipping, ShippingParams, Subscription, TaxId,
+    Scheduled, Shipping, Subscription, TaxId,
 };
 
 /// The resource representing a Stripe "Customer".
@@ -304,7 +304,7 @@ pub struct CreateCustomer<'a> {
     ///
     /// Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<ShippingParams>,
+    pub shipping: Box<Option<CreateCustomerShipping>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<PaymentSourceParams>,
@@ -501,7 +501,7 @@ pub struct UpdateCustomer<'a> {
     ///
     /// Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<ShippingParams>,
+    pub shipping: Box<Option<UpdateCustomerShipping>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<PaymentSourceParams>,
@@ -557,6 +557,15 @@ impl<'a> UpdateCustomer<'a> {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCustomerShipping {
+    pub address: CreateCustomerShippingAddress,
+
+    pub name: String,
+
+    pub phone: Box<Option<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCustomerTax {
     pub ip_address: Box<Option<String>>,
 }
@@ -580,8 +589,47 @@ pub struct TaxIdData {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateCustomerShipping {
+    pub address: UpdateCustomerShippingAddress,
+
+    pub name: String,
+
+    pub phone: Box<Option<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateCustomerTax {
     pub ip_address: Box<Option<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCustomerShippingAddress {
+    pub city: Box<Option<String>>,
+
+    pub country: Box<Option<String>>,
+
+    pub line1: Box<Option<String>>,
+
+    pub line2: Box<Option<String>>,
+
+    pub postal_code: Box<Option<String>>,
+
+    pub state: Box<Option<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateCustomerShippingAddress {
+    pub city: Box<Option<String>>,
+
+    pub country: Box<Option<String>>,
+
+    pub line1: Box<Option<String>>,
+
+    pub line2: Box<Option<String>>,
+
+    pub postal_code: Box<Option<String>>,
+
+    pub state: Box<Option<String>>,
 }
 
 /// An enum representing the possible values of an `CustomerTax`'s `automatic_tax` field.

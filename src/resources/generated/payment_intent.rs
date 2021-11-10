@@ -10,7 +10,7 @@ use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Time
 use crate::resources::{
     Account, ApiErrors, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession,
     PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsBoleto,
-    PaymentMethodOptionsOxxo, Review, Shipping, ShippingParams,
+    PaymentMethodOptionsOxxo, Review, Shipping,
 };
 
 /// The resource representing a Stripe "PaymentIntent".
@@ -667,7 +667,7 @@ pub struct CreatePaymentIntent<'a> {
 
     /// Shipping information for this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<ShippingParams>,
+    pub shipping: Box<Option<CreatePaymentIntentShipping>>,
 
     /// For non-card charges, you can use this value as the complete description that appears on your customers’ statements.
     ///
@@ -870,7 +870,7 @@ pub struct UpdatePaymentIntent<'a> {
 
     /// Shipping information for this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<ShippingParams>,
+    pub shipping: Box<Option<UpdatePaymentIntentShipping>>,
 
     /// For non-card charges, you can use this value as the complete description that appears on your customers’ statements.
     ///
@@ -1010,6 +1010,19 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentShipping {
+    pub address: CreatePaymentIntentShippingAddress,
+
+    pub carrier: Box<Option<String>>,
+
+    pub name: String,
+
+    pub phone: Box<Option<String>>,
+
+    pub tracking_number: Box<Option<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentTransferData {
     pub amount: Box<Option<i64>>,
 
@@ -1094,6 +1107,19 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     pub sofort: Box<Option<UpdatePaymentIntentPaymentMethodOptionsSofort>>,
 
     pub wechat_pay: Box<Option<UpdatePaymentIntentPaymentMethodOptionsWechatPay>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentShipping {
+    pub address: UpdatePaymentIntentShippingAddress,
+
+    pub carrier: Box<Option<String>>,
+
+    pub name: String,
+
+    pub phone: Box<Option<String>>,
+
+    pub tracking_number: Box<Option<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1292,6 +1318,21 @@ pub struct CreatePaymentIntentPaymentMethodOptionsWechatPay {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentShippingAddress {
+    pub city: Box<Option<String>>,
+
+    pub country: Box<Option<String>>,
+
+    pub line1: Box<Option<String>>,
+
+    pub line2: Box<Option<String>>,
+
+    pub postal_code: Box<Option<String>>,
+
+    pub state: Box<Option<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataAcssDebit {
     pub account_number: String,
 
@@ -1467,6 +1508,21 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsWechatPay {
     pub app_id: Box<Option<String>>,
 
     pub client: UpdatePaymentIntentPaymentMethodOptionsWechatPayClient,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentShippingAddress {
+    pub city: Box<Option<String>>,
+
+    pub country: Box<Option<String>>,
+
+    pub line1: Box<Option<String>>,
+
+    pub line2: Box<Option<String>>,
+
+    pub postal_code: Box<Option<String>>,
+
+    pub state: Box<Option<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

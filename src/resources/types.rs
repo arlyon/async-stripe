@@ -1,7 +1,6 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::params::Timestamp;
-use crate::resources::Address;
 
 /// An enum representing the versions of the Stripe API.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -331,14 +330,6 @@ pub struct Dob {
 pub enum FraudDetailsReport {
     Fraudulent,
     Safe,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct ShippingParams {
-    pub address: Address,
-    pub name: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

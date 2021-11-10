@@ -8,7 +8,7 @@ use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, OrderId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Charge, Currency, Customer, OrderItem, OrderReturn, OrderStatusFilter, Shipping, ShippingParams,
+    Charge, Currency, Customer, OrderItem, OrderReturn, OrderStatusFilter, Shipping,
 };
 
 /// The resource representing a Stripe "Order".
@@ -252,7 +252,7 @@ pub struct CreateOrder<'a> {
     ///
     /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<ShippingParams>,
+    pub shipping: Box<Option<CreateOrderShipping>>,
 }
 
 impl<'a> CreateOrder<'a> {
@@ -372,7 +372,7 @@ pub struct UpdateOrder<'a> {
 
     /// Tracking information once the order has been fulfilled.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<ShippingParams>,
+    pub shipping: Box<Option<UpdateOrderShipping>>,
 
     /// Current order status.
     ///
@@ -393,6 +393,15 @@ impl<'a> UpdateOrder<'a> {
             status: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateOrderShipping {
+    pub address: CreateOrderShippingAddress,
+
+    pub name: String,
+
+    pub phone: Box<Option<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -421,6 +430,28 @@ pub struct OrderItemParams {
 
     #[serde(rename = "type")]
     pub type_: Box<Option<OrderItemParamsType>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateOrderShipping {
+    pub carrier: String,
+
+    pub tracking_number: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateOrderShippingAddress {
+    pub city: Box<Option<String>>,
+
+    pub country: Box<Option<String>>,
+
+    pub line1: Box<Option<String>>,
+
+    pub line2: Box<Option<String>>,
+
+    pub postal_code: Box<Option<String>>,
+
+    pub state: Box<Option<String>>,
 }
 
 /// An enum representing the possible values of an `OrderItemParams`'s `type` field.
