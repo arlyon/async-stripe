@@ -333,13 +333,6 @@ pub enum FraudDetailsReport {
     Safe,
 }
 
-/// Period is a structure representing a start and end dates.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Period {
-    pub start: Timestamp,
-    pub end: Timestamp,
-}
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Shipping {
     pub name: String,

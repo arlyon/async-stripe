@@ -178,6 +178,7 @@ pub use {
         subscription_schedule::*,
         tax_id::*,
         tax_rate::*,
+        usage_record_summary::*,
     },
 };
 
