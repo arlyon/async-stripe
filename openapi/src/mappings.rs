@@ -206,6 +206,10 @@ pub fn field_mappings() -> FieldMap {
             ("bank_account", "account_holder_type"),
             ("AccountHolderType", "Option<AccountHolderType>"),
         ),
+        (
+            ("payment_method_details_ach_debit", "account_holder_type"),
+            ("AccountHolderType", "Option<AccountHolderType>"),
+        ),
         (("bank_account", "status"), ("BankAccountStatus", "Option<BankAccountStatus>")),
         (("fee", "type"), ("FeeType", "FeeType")),
         (("charge", "source"), ("PaymentSource", "Option<PaymentSource>")),
