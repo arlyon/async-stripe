@@ -957,6 +957,182 @@ fn gen_inferred_params(
     }
 }
 
+fn gen_emitted_structs(
+    out: &mut String,
+    state: &mut Generated,
+    meta: &Metadata,
+    shared_objects: &mut BTreeSet<String>,
+) {
+    let mut emitted_structs = BTreeSet::new();
+    while state
+        .inferred_structs
+        .keys()
+        .cloned()
+        .collect::<BTreeSet<_>>()
+        .difference(&emitted_structs)
+        .any(|_| true)
+    {
+        for (struct_name, struct_) in state.inferred_structs.clone() {
+            if emitted_structs.contains(&struct_name) {
+                continue;
+            } else {
+                emitted_structs.insert(struct_name.clone());
+                println!("struct {} {{ ... }}", struct_name);
+            }
+
+            let fields = match struct_.schema["properties"].as_object() {
+                Some(some) => some,
+                None => {
+                    // TODO: Handle these objects
+                    // eprintln!("warning: {} has no properties ({})", struct_name, struct_.schema);
+                    continue;
+                }
+            };
+            out.push('\n');
+            out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+            out.push_str("pub struct ");
+            out.push_str(&struct_name.to_camel_case());
+            out.push_str(" {\n");
+            for (key, field) in fields {
+                let required = struct_.schema["required"]
+                    .as_array()
+                    .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
+                    .unwrap_or(false);
+                out.push('\n');
+                out.push_str(&gen_field(
+                    state,
+                    meta,
+                    &struct_name.to_snake_case(),
+                    &key,
+                    &field,
+                    required,
+                    false,
+                    shared_objects,
+                ));
+            }
+            out.push_str("}\n");
+        }
+    }
+}
+
+fn gen_unions(out: &mut String, state: &mut Generated, meta: &Metadata) {
+    for (union_name, union_) in state.inferred_unions.clone() {
+        println!("union {} {{ ... }}", union_name);
+
+        out.push('\n');
+        out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+        out.push_str("#[serde(tag = \"object\", rename_all = \"snake_case\")]\n");
+        out.push_str("pub enum ");
+        out.push_str(&union_name.to_camel_case());
+        out.push_str(" {\n");
+        for variant_schema in &union_.schema_variants {
+            let object_name = meta.spec["components"]["schemas"][&variant_schema]["properties"]
+                ["object"]["enum"][0]
+                .as_str()
+                .unwrap();
+            let variant_name = meta.schema_to_rust_type(object_name);
+            let type_name = meta.schema_to_rust_type(&variant_schema);
+            if variant_name.to_snake_case() != object_name {
+                out.push_str("    #[serde(rename = \"");
+                out.push_str(object_name);
+                out.push_str("\")]\n");
+            }
+            out.push_str("    ");
+            out.push_str(&variant_name);
+            out.push('(');
+            out.push_str(&type_name);
+            out.push_str("),\n");
+        }
+        out.push_str("}\n");
+    }
+}
+
+fn gen_variant_name(wire_name: &str, meta: &Metadata) -> String {
+    match wire_name {
+        "*" => "All".to_string(),
+        n => {
+            if n.chars().next().unwrap().is_digit(10) {
+                format!("V{}", n.to_string().replace('-', "_").replace('.', "_"))
+            } else {
+                meta.schema_to_rust_type(wire_name)
+            }
+        }
+    }
+}
+
+fn gen_enums(out: &mut String, state: &mut Generated, meta: &Metadata) {
+    for (enum_name, enum_) in state.inferred_enums.clone() {
+        println!("enum {} {{ ... }}", enum_name);
+
+        out.push('\n');
+        out.push_str(&format!(
+            "/// An enum representing the possible values of an `{}`'s `{}` field.\n",
+            enum_.parent, enum_.field
+        ));
+        out.push_str("#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]\n");
+        out.push_str("#[serde(rename_all = \"snake_case\")]\n");
+        out.push_str("pub enum ");
+        out.push_str(&enum_name);
+        out.push_str(" {\n");
+        for wire_name in &enum_.options {
+            if wire_name.trim().is_empty() {
+                continue;
+            }
+            let variant_name = gen_variant_name(&wire_name.as_str(), meta);
+            if variant_name.trim().is_empty() {
+                panic!("unhandled enum variant: {:?}", wire_name)
+            }
+            if &variant_name.to_snake_case() != wire_name {
+                out.push_str("    #[serde(rename = \"");
+                out.push_str(wire_name);
+                out.push_str("\")]\n");
+            }
+            out.push_str("    ");
+            out.push_str(&variant_name);
+            out.push_str(",\n");
+        }
+        out.push_str("}\n");
+        out.push('\n');
+        out.push_str("impl ");
+        out.push_str(&enum_name);
+        out.push_str(" {\n");
+        out.push_str("    pub fn as_str(self) -> &'static str {\n");
+        out.push_str("        match self {\n");
+        for wire_name in &enum_.options {
+            if wire_name.trim().is_empty() {
+                continue;
+            }
+            let variant_name = gen_variant_name(&wire_name.as_str(), meta);
+            out.push_str("            ");
+            out.push_str(&enum_name);
+            out.push_str("::");
+            out.push_str(&variant_name);
+            out.push_str(" => ");
+            out.push_str(&format!("{:?}", wire_name));
+            out.push_str(",\n");
+        }
+        out.push_str("        }\n");
+        out.push_str("    }\n");
+        out.push_str("}\n");
+        out.push('\n');
+        out.push_str("impl AsRef<str> for ");
+        out.push_str(&enum_name);
+        out.push_str(" {\n");
+        out.push_str("    fn as_ref(&self) -> &str {\n");
+        out.push_str("        self.as_str()\n");
+        out.push_str("    }\n");
+        out.push_str("}\n");
+        out.push('\n');
+        out.push_str("impl std::fmt::Display for ");
+        out.push_str(&enum_name);
+        out.push_str(" {\n");
+        out.push_str("    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {\n");
+        out.push_str("        self.as_str().fmt(f)\n");
+        out.push_str("    }\n");
+        out.push_str("}\n");
+    }
+}
+
 fn gen_extra_object(
     meta: &Metadata,
     object: &str,
@@ -980,6 +1156,12 @@ fn gen_extra_object(
     gen_generated_schemas(&mut out, &mut state, meta, shared_objects);
 
     gen_inferred_params(&mut out, &mut state, meta, object, shared_objects);
+
+    gen_emitted_structs(&mut out, &mut state, meta, shared_objects);
+
+    gen_unions(&mut out, &mut state, meta);
+
+    gen_enums(&mut out, &mut state, meta);
 
     let prelude = gen_prelude(&state, meta, object);
 
@@ -1147,7 +1329,6 @@ fn gen_impl_object(
 
     //println!("inferred_parameters: {:#?}", state.inferred_parameters);
 
-    println!("Inferred parameters: {:#?}", state.inferred_parameters);
     for (_, params) in state.inferred_parameters.clone() {
         let params_schema = params.rust_type.to_snake_case();
         let parameters = match params.parameters.as_array() {
