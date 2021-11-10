@@ -26,6 +26,7 @@ pub mod core {
     pub mod payout;
     pub mod platform_tax_fee;
     pub mod product;
+    pub mod package_dimensions;
     pub mod refund;
     pub mod reserve_transaction;
     pub mod setup_attempt;

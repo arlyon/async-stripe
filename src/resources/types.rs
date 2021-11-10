@@ -335,14 +335,6 @@ pub enum FraudDetailsReport {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PackageDimensions {
-    pub height: f64,
-    pub length: f64,
-    pub weight: f64,
-    pub width: f64,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodCard {
     /// Can be `American Express`, `Diners Club`, `Discover`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
     #[serde(skip_serializing_if = "Option::is_none")]

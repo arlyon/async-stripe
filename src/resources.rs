@@ -96,6 +96,7 @@ pub use {
         file::*,
         file_link::*,
         mandate::*,
+        package_dimensions::*,
         payment_intent::*,
         payout::*,
         platform_tax_fee::*,
