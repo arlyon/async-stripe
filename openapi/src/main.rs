@@ -1081,6 +1081,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                     && !state.inferred_structs.contains_key(x)
                     && !state.inferred_unions.contains_key(x)
                     && !state.inferred_enums.contains_key(x)
+                    && x != &meta.schema_to_rust_type(object)
             })
             .enumerate()
         {

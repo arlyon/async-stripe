@@ -8,8 +8,8 @@ use crate::config::{Client, Response};
 use crate::ids::{CustomerId, QuoteId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    Account, CheckoutSessionItem, Currency, Customer, Discount, Invoice, Subscription,
-    SubscriptionSchedule, TaxRate,
+    Account, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
+    QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate,
 };
 
 /// The resource representing a Stripe "Quote".
@@ -145,6 +145,8 @@ pub struct Quote {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_schedule: Option<Expandable<SubscriptionSchedule>>,
 
+    pub total_details: QuotesResourceTotalDetails,
+
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<QuotesResourceTransferData>,
@@ -229,6 +231,8 @@ pub struct QuotesResourceRecurring {
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     pub interval_count: u64,
+
+    pub total_details: QuotesResourceTotalDetails,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -298,6 +302,8 @@ pub struct QuotesResourceUpfront {
     /// This does not include pending invoice items that exist on the customer but may still be included in the next invoice.
     #[serde(default)]
     pub line_items: List<CheckoutSessionItem>,
+
+    pub total_details: QuotesResourceTotalDetails,
 }
 
 /// The parameters for `Quote::list`.

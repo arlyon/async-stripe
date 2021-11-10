@@ -95,9 +95,6 @@ pub struct BalanceDetail {
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListBalances<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub available_on: Option<RangeQuery<Timestamp>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
     /// Only return transactions in a certain currency.
@@ -150,7 +147,6 @@ pub struct ListBalances<'a> {
 impl<'a> ListBalances<'a> {
     pub fn new() -> Self {
         ListBalances {
-            available_on: Default::default(),
             created: Default::default(),
             currency: Default::default(),
             ending_before: Default::default(),

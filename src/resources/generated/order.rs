@@ -12,8 +12,6 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "Order".
-///
-/// For more details see <https://stripe.com/docs/api/orders/object>
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Order {
     /// Unique identifier for the object.
