@@ -334,18 +334,6 @@ pub enum FraudDetailsReport {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Shipping {
-    pub name: String,
-    pub address: Address,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub carrier: Option<String>, // eg. Fedex, UPS, USPS
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tracking_number: Option<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingParams {
     pub address: Address,
     pub name: String,

@@ -105,6 +105,7 @@ pub use {
         reserve_transaction::*,
         setup_attempt::*,
         setup_intent::*,
+        shipping::*,
         tax_code::*,
         tax_deducted_at_source::*,
         token::*,

@@ -31,6 +31,7 @@ pub mod core {
     pub mod reserve_transaction;
     pub mod setup_attempt;
     pub mod setup_intent;
+    pub mod shipping;
     pub mod tax_code;
     pub mod tax_deducted_at_source;
     pub mod token;
