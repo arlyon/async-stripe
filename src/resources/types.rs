@@ -333,35 +333,6 @@ pub enum FraudDetailsReport {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SpendingLimit {
-    /// Maximum amount allowed to spend per time interval.
-    pub amount: i64,
-
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) on which to apply the spending limit.
-    ///
-    /// Leave this blank to limit all charges.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub categories: Option<Vec<String>>,
-
-    /// The time interval with which to apply this spending limit towards.
-    ///
-    /// Allowed values are `per_authorization`, `daily`, `weekly`, `monthly`, `yearly`, or `all_time`.
-    pub interval: SpendingLimitInterval,
-}
-
-/// An enum representing the possible values of an `SpendingLimit`'s `interval` field.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum SpendingLimitInterval {
-    AllTime,
-    Daily,
-    Monthly,
-    PerAuthorization,
-    Weekly,
-    Yearly,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionBillingThresholds {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_gte: Option<i64>,

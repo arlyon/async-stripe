@@ -266,20 +266,12 @@ pub fn field_mappings() -> FieldMap {
             ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
         ),
         (
-            ("issuing_card_authorization_controls", "spending_limits"),
-            ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
-        ),
-        (
             ("issuing_cardholder_authorization_controls", "allowed_categories"),
             ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
         ),
         (
             ("issuing_cardholder_authorization_controls", "blocked_categories"),
             ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
-        ),
-        (
-            ("issuing_cardholder_authorization_controls", "spending_limits"),
-            ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
         ),
         (
             ("issuing_card_pin", "status"),
