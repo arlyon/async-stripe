@@ -177,6 +177,7 @@ pub use {
         subscription::PlanInterval as SubscriptionInterval,
         subscription::SubscriptionItemPriceDataRecurring as SubscriptionPriceDataRecurring,
         subscription_schedule::*,
+        subscription_billing_thresholds::*,
         tax_id::*,
         tax_rate::*,
         usage_record_summary::*,

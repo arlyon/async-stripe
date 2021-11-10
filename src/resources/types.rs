@@ -332,14 +332,6 @@ pub enum FraudDetailsReport {
     Safe,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionBillingThresholds {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_gte: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reset_billing_cycle_anchor: Option<bool>,
-}
-
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(untagged)]
 pub enum DelayDays {
