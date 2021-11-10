@@ -89,6 +89,7 @@ pub use {
         address::*,
         balance::*,
         balance_transaction::*,
+        billing_details::*,
         charge::*,
         customer::*,
         dispute::*,

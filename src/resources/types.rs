@@ -313,21 +313,6 @@ pub enum AccountHolderType {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct BillingDetails {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<Address>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomField {
     pub name: String,
     pub value: String,

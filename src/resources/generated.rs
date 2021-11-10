@@ -15,6 +15,7 @@ pub mod core {
     pub mod address;
     pub mod balance;
     pub mod balance_transaction;
+    pub mod billing_details;
     pub mod charge;
     pub mod customer;
     pub mod dispute;
