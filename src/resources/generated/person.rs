@@ -6,7 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::PersonId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Address, Dob, File};
+use crate::resources::{Address, File};
 
 /// The resource representing a Stripe "Person".
 ///
@@ -35,8 +35,7 @@ pub struct Person {
     #[serde(default)]
     pub deleted: bool,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<Dob>,
+    pub dob: Box<Option<LegalEntityDob>>,
 
     /// The person's email address.
     pub email: Box<Option<String>>,
@@ -108,6 +107,18 @@ impl Object for Person {
     fn object(&self) -> &'static str {
         "person"
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct LegalEntityDob {
+    /// The day of birth, between 1 and 31.
+    pub day: Box<Option<i64>>,
+
+    /// The month of birth, between 1 and 12.
+    pub month: Box<Option<i64>>,
+
+    /// The four-digit year of birth.
+    pub year: Box<Option<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

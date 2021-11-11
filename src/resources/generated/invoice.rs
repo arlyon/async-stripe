@@ -8,8 +8,8 @@ use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Account, Address, ApiErrors, Charge, Currency, CustomField, Customer, Discount,
-    InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
+    Account, Address, ApiErrors, Charge, Currency, Customer, Discount, InvoiceLineItem,
+    InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
     InvoicePaymentMethodOptionsCard, PaymentIntent, PaymentMethod, PaymentSource, Quote, Shipping,
     Subscription, TaxId, TaxRate,
 };
@@ -523,7 +523,7 @@ pub struct CreateInvoice<'a> {
 
     /// A list of up to 4 custom fields to be displayed on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<Vec<CustomField>>,
+    pub custom_fields: Box<Option<Vec<CreateInvoiceCustomFields>>>,
 
     /// The ID of the customer who will be billed.
     pub customer: CustomerId,
@@ -722,6 +722,13 @@ impl<'a> ListInvoices<'a> {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceAutomaticTax {
     pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateInvoiceCustomFields {
+    pub name: String,
+
+    pub value: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

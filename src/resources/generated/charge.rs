@@ -8,10 +8,10 @@ use crate::config::{Client, Response};
 use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Account, AccountHolderType, Address, Application, ApplicationFee, BalanceTransaction,
-    BillingDetails, ChargeSourceParams, Currency, Customer, FraudDetailsReport, Invoice, Mandate,
-    Order, PaymentIntent, PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan,
-    PaymentMethodDetailsCardPresent, Refund, Review, Shipping, ThreeDSecureDetails, Transfer,
+    Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
+    ChargeSourceParams, Currency, Customer, Invoice, Mandate, Order, PaymentIntent, PaymentMethod,
+    PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodDetailsCardPresent, Refund, Review,
+    Shipping, ThreeDSecureDetails, Transfer,
 };
 
 /// The resource representing a Stripe "Charge".
@@ -237,8 +237,7 @@ pub struct FraudDetails {
     /// Assessments from Stripe.
     ///
     /// If set, the value is `fraudulent`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub stripe_report: Option<FraudDetailsReport>,
+    pub stripe_report: Box<Option<String>>,
 
     /// Assessments reported by you.
     ///
@@ -397,8 +396,7 @@ pub struct PaymentMethodDetailsAchDebit {
     /// Type of entity that holds the account.
     ///
     /// This can be either `individual` or `company`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<AccountHolderType>,
+    pub account_holder_type: Box<Option<PaymentMethodDetailsAchDebitAccountHolderType>>,
 
     /// Name of the bank associated with the bank account.
     pub bank_name: Box<Option<String>>,
@@ -1254,7 +1252,7 @@ impl<'a> UpdateCharge<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetailsParams {
-    pub user_report: FraudDetailsReport,
+    pub user_report: FraudDetailsParamsUserReport,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1262,6 +1260,64 @@ pub struct TransferDataParams {
     pub amount: Box<Option<i64>>,
 
     pub destination: String,
+}
+
+/// An enum representing the possible values of an `FraudDetailsParams`'s `user_report` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum FraudDetailsParamsUserReport {
+    Fraudulent,
+    Safe,
+}
+
+impl FraudDetailsParamsUserReport {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            FraudDetailsParamsUserReport::Fraudulent => "fraudulent",
+            FraudDetailsParamsUserReport::Safe => "safe",
+        }
+    }
+}
+
+impl AsRef<str> for FraudDetailsParamsUserReport {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for FraudDetailsParamsUserReport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodDetailsAchDebit`'s `account_holder_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodDetailsAchDebitAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl PaymentMethodDetailsAchDebitAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodDetailsAchDebitAccountHolderType::Company => "company",
+            PaymentMethodDetailsAchDebitAccountHolderType::Individual => "individual",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodDetailsAchDebitAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodDetailsAchDebitAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `PaymentMethodDetailsBancontact`'s `preferred_language` field.

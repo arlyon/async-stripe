@@ -201,21 +201,9 @@ pub fn field_mappings() -> FieldMap {
         // Config for object types
         (("account", "type"), ("AccountType", "Option<AccountType>")),
         (("balance_transaction", "status"), ("BalanceTransactionStatus", "BalanceTransactionStatus")),
-        (
-            ("bank_account", "account_holder_type"),
-            ("AccountHolderType", "Option<AccountHolderType>"),
-        ),
-        (
-            ("payment_method_details_ach_debit", "account_holder_type"),
-            ("AccountHolderType", "Option<AccountHolderType>"),
-        ),
         (("bank_account", "status"), ("BankAccountStatus", "Option<BankAccountStatus>")),
         (("fee", "type"), ("FeeType", "FeeType")),
         (("charge", "source"), ("PaymentSource", "Option<PaymentSource>")),
-        (
-            ("charge_fraud_details", "stripe_report"),
-            ("FraudDetailsReport", "Option<FraudDetailsReport>"),
-        ),
         (("customer", "default_source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
         (("customer", "sources"), ("PaymentSource", "List<PaymentSource>")),
         (("invoice", "billing"), ("", "Option<CollectionMethod>")),
@@ -298,7 +286,6 @@ pub fn field_mappings() -> FieldMap {
         ),
         (("file", "purpose"), ("", "FilePurpose")),
         (("order", "status"), ("", "OrderStatus")),
-        (("person", "dob"), ("Dob", "Option<Dob>")),
         (("recipient", "type"), ("", "Option<RecipientType>")),
         (("review", "reason"), ("ReviewReason", "ReviewReason")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
@@ -365,7 +352,6 @@ pub fn field_mappings() -> FieldMap {
         (("person_params", "address"), ("Address", "Option<Address>")),
         (("person_params", "address_kana"), ("Address", "Option<Address>")),
         (("person_params", "address_kanji"), ("Address", "Option<Address>")),
-        (("person_params", "dob"), ("Dob", "Option<Dob>")),
         (("person_params", "verification"), ("PersonVerificationParams", "Option<PersonVerificationParams>")),
         (("company_verification_params", "document"), ("VerificationDocumentParams", "Option<VerificationDocumentParams>")),
         // (("person_verification_params", "document"), ("VerificationDocumentParams", "Option<VerificationDocumentParams>")),
@@ -375,7 +361,6 @@ pub fn field_mappings() -> FieldMap {
         (("create_charge", "shipping"), ("Shipping", "Option<Shipping>")),
         (("create_charge", "source"), ("ChargeSourceParams", "Option<ChargeSourceParams>")),
         (("update_charge", "shipping"), ("Shipping", "Option<Shipping>")),
-        (("fraud_details_params", "user_report"), ("FraudDetailsReport", "FraudDetailsReport")),
 
         // Config for `customer` params
         (("create_customer", "address"), ("Address", "Option<Address>")),
@@ -391,15 +376,10 @@ pub fn field_mappings() -> FieldMap {
         (("create_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams>")),
         (("update_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams>")),
         (("update_customer", "trial_end"), ("Scheduled", "Option<Scheduled>")),
-        (
-            ("customer_invoice_settings", "custom_fields"),
-            ("CustomField", "Option<Vec<CustomField>>"),
-        ),
 
         // Config for `invoice` params
         (("list_invoices", "billing"), ("", "Option<CollectionMethod>")),
         (("create_invoice", "billing"), ("", "Option<CollectionMethod>")),
-        (("create_invoice", "custom_fields"), ("CustomField", "Option<Vec<CustomField>>")),
 
         // Config for `invoiceitem` params
         (("create_invoice_item", "period"), ("Period", "Option<Period>")),
@@ -558,7 +538,6 @@ pub fn field_mappings() -> FieldMap {
         (("create_token_person", "address"), ("Address", "Option<Address>")),
         (("create_token_person", "address_kana"), ("Address", "Option<Address>")),
         (("create_token_person", "address_kanji"), ("Address", "Option<Address>")),
-        (("create_token_person", "dob"), ("Dob", "Option<Dob>")),
         (
             ("create_payment_method", "billing_details"),
             ("BillingDetails", "Option<BillingDetails>"),

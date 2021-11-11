@@ -11,8 +11,8 @@ use crate::ids::{
 };
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, Currency, CustomField, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
-    Scheduled, Shipping, Subscription, TaxId,
+    Address, Currency, Discount, PaymentMethod, PaymentSource, PaymentSourceParams, Scheduled,
+    Shipping, Subscription, TaxId,
 };
 
 /// The resource representing a Stripe "Customer".
@@ -572,8 +572,7 @@ pub struct CreateCustomerTax {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettings {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<Vec<CustomField>>,
+    pub custom_fields: Box<Option<Vec<CustomerInvoiceSettingsCustomFields>>>,
 
     pub default_payment_method: Box<Option<String>>,
 
@@ -615,6 +614,13 @@ pub struct CreateCustomerShippingAddress {
     pub postal_code: Box<Option<String>>,
 
     pub state: Box<Option<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CustomerInvoiceSettingsCustomFields {
+    pub name: String,
+
+    pub value: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

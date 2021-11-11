@@ -300,38 +300,6 @@ impl std::fmt::Display for ApiVersion {
     }
 }
 
-/// An enum representing the possible values of a `BankAccount`'s `account_holder_type` field.
-///
-/// For more details see <https://stripe.com/docs/api/customer_bank_accounts/object#customer_bank_account_object-account_holder_type>
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum AccountHolderType {
-    Individual,
-    Company,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CustomField {
-    pub name: String,
-    pub value: String,
-}
-
-/// A date of birth.
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Dob {
-    pub day: i64,
-    pub month: i64,
-    pub year: i64,
-}
-
-/// An enum representing the possible values of a `FraudDetails`'s `report` fields.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum FraudDetailsReport {
-    Fraudulent,
-    Safe,
-}
-
 /* Developers note -- DelayDays and DelayDaysOther are not worth the trouble
  * to automate.  Recommend letting the mapping stand*/
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -429,4 +397,3 @@ impl PaymentIntentOffSession {
         }
     }
 }
-

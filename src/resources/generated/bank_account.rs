@@ -6,7 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::BankAccountId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Account, AccountHolderType, BankAccountStatus, Currency, Customer};
+use crate::resources::{Account, BankAccountStatus, Currency, Customer};
 
 /// The resource representing a Stripe "BankAccount".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -23,8 +23,7 @@ pub struct BankAccount {
     /// The type of entity that holds the account.
     ///
     /// This can be either `individual` or `company`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<AccountHolderType>,
+    pub account_holder_type: Box<Option<String>>,
 
     /// The bank account type.
     ///

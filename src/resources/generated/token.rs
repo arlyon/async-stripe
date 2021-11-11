@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
 use crate::params::{Expand, Metadata, Object, Timestamp};
-use crate::resources::{Address, BankAccount, Card, CompanyParams, Dob, PersonParams, TokenType};
+use crate::resources::{Address, BankAccount, Card, CompanyParams, PersonParams, TokenType};
 
 /// The resource representing a Stripe "Token".
 ///
@@ -138,8 +138,7 @@ pub struct CreateTokenPerson {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kanji: Option<Address>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<Dob>,
+    pub dob: Box<Option<CreateTokenPersonDob>>,
 
     pub documents: Box<Option<CreateTokenPersonDocuments>>,
 
@@ -184,6 +183,15 @@ pub struct CreateTokenPerson {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenPii {
     pub id_number: Box<Option<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateTokenPersonDob {
+    pub day: i64,
+
+    pub month: i64,
+
+    pub year: i64,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

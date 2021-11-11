@@ -8,7 +8,7 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, Card, Currency, DelayDays, Dob, File, Person, PersonVerificationParams,
+    Address, BankAccount, Card, Currency, DelayDays, File, Person, PersonVerificationParams,
     VerificationDocumentParams,
 };
 
@@ -1040,8 +1040,7 @@ pub struct PersonParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kanji: Option<Address>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<Dob>,
+    pub dob: Box<Option<PersonParamsDob>>,
 
     pub email: Box<Option<String>>,
 
@@ -1358,6 +1357,15 @@ pub struct PayoutSettingsParams {
     pub schedule: Box<Option<TransferScheduleParams>>,
 
     pub statement_descriptor: Box<Option<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PersonParamsDob {
+    pub day: i64,
+
+    pub month: i64,
+
+    pub year: i64,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
