@@ -43,6 +43,12 @@ mod billing {
 }
 
 #[path = "resources"]
+#[cfg(feature = "connect")]
+mod connect {
+    pub mod login_links_ext;
+}
+
+#[path = "resources"]
 #[cfg(feature = "fraud")]
 mod fraud {
     pub mod review_ext;
@@ -188,6 +194,9 @@ pub use {
 #[rustfmt::skip]
 #[cfg(feature = "connect")]
 pub use {
+    connect::{
+        login_links_ext::*,
+    },
     generated::connect::{
         account_link::*,
         account::*,
@@ -195,6 +204,7 @@ pub use {
         application_fee::*,
         connect_collection_transfer::*,
         fee_refund::*,
+        login_link::*,
         person::*,
         recipient::*,
         topup::*,
