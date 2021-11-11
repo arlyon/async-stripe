@@ -1455,7 +1455,7 @@ fn gen_field_rust_type(
                                 let schema_name = x["$ref"]
                                     .as_str()
                                     .expect(&format!(
-                                        "invalid union for `{}.{}`:  {:?}",
+                                        "invalid union for `{}.{}`:  {:#?}",
                                         object, field_name, field
                                     ))
                                     .trim_start_matches("#/components/schemas/");

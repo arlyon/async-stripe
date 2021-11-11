@@ -200,7 +200,6 @@ pub fn field_mappings() -> FieldMap {
     [
         // Config for object types
         (("account", "type"), ("AccountType", "Option<AccountType>")),
-        (("account", "business_type"), ("BusinessType", "Option<BusinessType>")),
         (("balance_transaction", "status"), ("BalanceTransactionStatus", "BalanceTransactionStatus")),
         (
             ("bank_account", "account_holder_type"),
@@ -352,7 +351,6 @@ pub fn field_mappings() -> FieldMap {
         ),
         (("token", "type"), ("TokenType", "TokenType")),
         (("transfer", "source_type"), ("", "Option<TransferSourceType>")),
-        (("transfer_schedule", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
         (("webhook_endpoint", "api_version"), ("ApiVersion", "Option<ApiVersion>")),
         (("webhook_endpoint", "enabled_events"), ("", "Option<Vec<EventFilter>>")),
         (("webhook_endpoint", "status"), ("WebhookEndpointStatus", "Option<WebhookEndpointStatus>")),
@@ -360,8 +358,6 @@ pub fn field_mappings() -> FieldMap {
         // Config for `account` params
         (("create_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
         (("update_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
-        (("create_account", "business_type"), ("BusinessType", "Option<BusinessType>")),
-        (("update_account", "business_type"), ("BusinessType", "Option<BusinessType>")),
         (("company_params", "address"), ("Address", "Option<Address>")),
         (("company_params", "address_kana"), ("Address", "Option<Address>")),
         (("company_params", "address_kanji"), ("Address", "Option<Address>")),
@@ -556,7 +552,6 @@ pub fn field_mappings() -> FieldMap {
         (("create_plan_tiers", "up_to"), ("UpTo", "Option<UpTo>")),
         (("create_price_tiers", "up_to"), ("UpTo", "Option<UpTo>")),
         (("update_file_link", "expires_at"), ("Scheduled", "Option<Scheduled>")),
-        (("create_token_account", "business_type"), ("BusinessType", "Option<BusinessType>")),
         (("create_token_account", "company"), ("CompanyParams", "Option<CompanyParams>")),
         (("create_token_account", "individual"), ("PersonParams", "Option<PersonParams>")),
 
@@ -569,7 +564,6 @@ pub fn field_mappings() -> FieldMap {
             ("BillingDetails", "Option<BillingDetails>"),
         ),
         (("transfer_schedule_params", "delay_days"), ("DelayDays", "Option<DelayDays>")),
-        (("transfer_schedule_params", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
         (("create_webhook_endpoint", "api_version"), ("ApiVersion", "Option<ApiVersion>")),
     ]
     .iter()

@@ -7,9 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
 use crate::params::{Expand, Metadata, Object, Timestamp};
-use crate::resources::{
-    Address, BankAccount, BusinessType, Card, CompanyParams, Dob, PersonParams, TokenType,
-};
+use crate::resources::{Address, BankAccount, Card, CompanyParams, Dob, PersonParams, TokenType};
 
 /// The resource representing a Stripe "Token".
 ///
@@ -113,8 +111,7 @@ impl<'a> CreateToken<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenAccount {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<BusinessType>,
+    pub business_type: Box<Option<CreateTokenAccountBusinessType>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<CompanyParams>,
@@ -240,4 +237,37 @@ pub struct VerificationDocumentParams {
     pub back: Box<Option<String>>,
 
     pub front: Box<Option<String>>,
+}
+
+/// An enum representing the possible values of an `CreateTokenAccount`'s `business_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateTokenAccountBusinessType {
+    Company,
+    GovernmentEntity,
+    Individual,
+    NonProfit,
+}
+
+impl CreateTokenAccountBusinessType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateTokenAccountBusinessType::Company => "company",
+            CreateTokenAccountBusinessType::GovernmentEntity => "government_entity",
+            CreateTokenAccountBusinessType::Individual => "individual",
+            CreateTokenAccountBusinessType::NonProfit => "non_profit",
+        }
+    }
+}
+
+impl AsRef<str> for CreateTokenAccountBusinessType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateTokenAccountBusinessType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

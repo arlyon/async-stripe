@@ -8,8 +8,8 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, BankAccount, BusinessType, Card, Currency, DelayDays, Dob, File, Person,
-    PersonVerificationParams, VerificationDocumentParams, Weekday,
+    Address, BankAccount, Card, Currency, DelayDays, Dob, File, Person, PersonVerificationParams,
+    VerificationDocumentParams,
 };
 
 /// The resource representing a Stripe "Account".
@@ -24,8 +24,7 @@ pub struct Account {
     pub business_profile: Box<Option<BusinessProfile>>,
 
     /// The business type.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<BusinessType>,
+    pub business_type: Box<Option<AccountBusinessType>>,
 
     pub capabilities: Box<Option<AccountCapabilities>>,
 
@@ -629,8 +628,7 @@ pub struct TransferSchedule {
     /// The day of the week funds will be paid out, of the style 'monday', 'tuesday', etc.
     ///
     /// Only shown if `interval` is weekly.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub weekly_anchor: Option<Weekday>,
+    pub weekly_anchor: Box<Option<String>>,
 }
 
 /// The parameters for `Account::create`.
@@ -646,7 +644,7 @@ pub struct CreateAccount<'a> {
 
     /// The business type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<BusinessType>,
+    pub business_type: Option<AccountBusinessType>,
 
     /// Each key of the dictionary represents a capability, and each capability maps to its settings (e.g.
     ///
@@ -807,7 +805,7 @@ pub struct UpdateAccount<'a> {
 
     /// The business type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<BusinessType>,
+    pub business_type: Option<AccountBusinessType>,
 
     /// Each key of the dictionary represents a capability, and each capability maps to its settings (e.g.
     ///
@@ -1542,8 +1540,7 @@ pub struct TransferScheduleParams {
 
     pub monthly_anchor: Box<Option<u8>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub weekly_anchor: Option<Weekday>,
+    pub weekly_anchor: Box<Option<TransferScheduleParamsWeeklyAnchor>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1551,6 +1548,39 @@ pub struct TransferScheduleParams {
 pub enum ExternalAccount {
     BankAccount(BankAccount),
     Card(Card),
+}
+
+/// An enum representing the possible values of an `Account`'s `business_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountBusinessType {
+    Company,
+    GovernmentEntity,
+    Individual,
+    NonProfit,
+}
+
+impl AccountBusinessType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountBusinessType::Company => "company",
+            AccountBusinessType::GovernmentEntity => "government_entity",
+            AccountBusinessType::Individual => "individual",
+            AccountBusinessType::NonProfit => "non_profit",
+        }
+    }
+}
+
+impl AsRef<str> for AccountBusinessType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountBusinessType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `AccountCapabilities`'s `acss_debit_payments` field.
@@ -2446,6 +2476,45 @@ impl AsRef<str> for TransferScheduleInterval {
 }
 
 impl std::fmt::Display for TransferScheduleInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `TransferScheduleParams`'s `weekly_anchor` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TransferScheduleParamsWeeklyAnchor {
+    Friday,
+    Monday,
+    Saturday,
+    Sunday,
+    Thursday,
+    Tuesday,
+    Wednesday,
+}
+
+impl TransferScheduleParamsWeeklyAnchor {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TransferScheduleParamsWeeklyAnchor::Friday => "friday",
+            TransferScheduleParamsWeeklyAnchor::Monday => "monday",
+            TransferScheduleParamsWeeklyAnchor::Saturday => "saturday",
+            TransferScheduleParamsWeeklyAnchor::Sunday => "sunday",
+            TransferScheduleParamsWeeklyAnchor::Thursday => "thursday",
+            TransferScheduleParamsWeeklyAnchor::Tuesday => "tuesday",
+            TransferScheduleParamsWeeklyAnchor::Wednesday => "wednesday",
+        }
+    }
+}
+
+impl AsRef<str> for TransferScheduleParamsWeeklyAnchor {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TransferScheduleParamsWeeklyAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

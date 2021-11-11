@@ -332,6 +332,8 @@ pub enum FraudDetailsReport {
     Safe,
 }
 
+/* Developers note -- DelayDays and DelayDaysOther are not worth the trouble
+ * to automate.  Recommend letting the mapping stand*/
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(untagged)]
 pub enum DelayDays {
@@ -398,19 +400,6 @@ impl UpTo {
     }
 }
 
-/// A day of the week.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum Weekday {
-    Sunday,
-    Monday,
-    Tuesday,
-    Wednesday,
-    Thursday,
-    Friday,
-    Saturday,
-}
-
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(untagged)]
 pub enum PaymentIntentOffSession {
@@ -441,23 +430,3 @@ impl PaymentIntentOffSession {
     }
 }
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SetupIntentUsage {
-    #[serde(rename = "on_session")]
-    OnSession,
-    #[serde(rename = "off_session")]
-    OffSession,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionItemBillingThresholds {
-    pub usage_gte: i64,
-}
-
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum BusinessType {
-    Individual,
-    Company,
-}

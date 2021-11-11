@@ -72,9 +72,10 @@ pub mod billing {
     pub mod quote;
     pub mod quotes_resource_total_details;
     pub mod subscription;
-    pub mod subscription_item;
-    pub mod subscription_schedule;
     pub mod subscription_billing_thresholds;
+    pub mod subscription_item;
+    pub mod subscription_item_billing_thresholds;
+    pub mod subscription_schedule;
     pub mod tax_id;
     pub mod tax_rate;
     pub mod usage_record_summary;
