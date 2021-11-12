@@ -52,6 +52,8 @@ pub struct Price {
     pub livemode: Option<bool>,
 
     /// A lookup key used to retrieve prices dynamically from a static string.
+    ///
+    /// This may be up to 200 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lookup_key: Option<String>,
 
@@ -241,6 +243,8 @@ pub struct CreatePrice<'a> {
     pub expand: &'a [&'a str],
 
     /// A lookup key used to retrieve prices dynamically from a static string.
+    ///
+    /// This may be up to 200 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lookup_key: Option<&'a str>,
 
@@ -424,6 +428,8 @@ pub struct UpdatePrice<'a> {
     pub expand: &'a [&'a str],
 
     /// A lookup key used to retrieve prices dynamically from a static string.
+    ///
+    /// This may be up to 200 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lookup_key: Option<&'a str>,
 

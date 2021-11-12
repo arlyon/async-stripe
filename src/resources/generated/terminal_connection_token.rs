@@ -12,7 +12,7 @@ pub struct TerminalConnectionToken {
     /// The id of the location that this connection token is scoped to.
     ///
     /// Note that location scoping only applies to internet-connected readers.
-    /// For more details, see [the docs on scoping connection tokens](https://stripe.com/docs/terminal/readers/fleet-management#connection-tokens).
+    /// For more details, see [the docs on scoping connection tokens](https://stripe.com/docs/terminal/fleet/locations#connection-tokens).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
 
