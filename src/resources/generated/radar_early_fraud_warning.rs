@@ -6,7 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::RadarEarlyFraudWarningId;
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::Charge;
+use crate::resources::{Charge, PaymentIntent};
 
 /// The resource representing a Stripe "RadarEarlyFraudWarning".
 #[derive(Clone, Debug, Deserialize, Serialize)]

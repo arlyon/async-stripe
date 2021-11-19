@@ -17,6 +17,9 @@ pub struct Capability {
     /// The account for which the capability enables functionality.
     pub account: Expandable<Account>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub future_requirements: Option<AccountCapabilityFutureRequirements>,
+
     /// Whether the capability has been requested.
     pub requested: bool,
 
@@ -46,7 +49,53 @@ impl Object for Capability {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountCapabilityFutureRequirements {
+    /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
+
+    /// Date on which `future_requirements` merges with the main `requirements` hash and `future_requirements` becomes empty.
+    ///
+    /// After the transition, `currently_due` requirements may immediately become `past_due`, but the account may also be given a grace period depending on the capability's enablement state prior to transitioning.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub current_deadline: Option<Timestamp>,
+
+    /// Fields that need to be collected to keep the capability enabled.
+    ///
+    /// If not collected by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.
+    pub currently_due: Vec<String>,
+
+    /// This is typed as a string for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is empty because fields in `future_requirements` will never disable the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disabled_reason: Option<String>,
+
+    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
+    pub errors: Vec<AccountRequirementsError>,
+
+    /// Fields that need to be collected assuming all volume thresholds are reached.
+    ///
+    /// As they become required, they appear in `currently_due` as well.
+    pub eventually_due: Vec<String>,
+
+    /// Fields that weren't collected by `requirements.current_deadline`.
+    ///
+    /// These fields need to be collected to enable the capability on the account.
+    /// New fields will never appear here; `future_requirements.past_due` will always be a subset of `requirements.past_due`.
+    pub past_due: Vec<String>,
+
+    /// Fields that may become required depending on the results of verification or review.
+    ///
+    /// Will be an empty array unless an asynchronous verification is pending.
+    /// If verification fails, these fields move to `eventually_due` or `currently_due`.
+    pub pending_verification: Vec<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilityRequirements {
+    /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
+
     /// Date by which the fields in `currently_due` must be collected to keep the capability enabled for the account.
     ///
     /// These fields may disable the capability sooner if the next threshold is reached before they are collected.
@@ -60,7 +109,7 @@ pub struct AccountCapabilityRequirements {
 
     /// If the capability is disabled, this string describes why.
     ///
-    /// Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.  `rejected.unsupported_business` means that the account's business is not supported by the capability.
+    /// Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.listed`, `rejected.terms_of_service`, `rejected.card_casher`, `rejected.auto_fraud_shutdown`, `rejected.fraud`, `rejected.dishonest_merchant`, `rejected.identity_fraud`, `rejected.platform_fraud`, `rejected.platform_terms_of_service`, `rejected.other`, `under_review`, or `other`.  `rejected.unsupported_business` means that the account's business is not supported by the capability.
     /// For example, payment methods may restrict the businesses they support in their terms of service:  - [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses)  If you believe that the rejection is in error, please contact support@stripe.com for assistance.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disabled_reason: Option<String>,
@@ -83,6 +132,15 @@ pub struct AccountCapabilityRequirements {
     /// Will be an empty array unless an asynchronous verification is pending.
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
     pub pending_verification: Vec<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct AccountRequirementsAlternative {
+    /// Fields that can be provided to satisfy all fields in `original_fields_due`.
+    pub alternative_fields_due: Vec<String>,
+
+    /// Fields that are due and can be satisfied by providing all fields in `alternative_fields_due`.
+    pub original_fields_due: Vec<String>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

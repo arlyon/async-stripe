@@ -744,6 +744,7 @@ impl std::fmt::Display for CustomerTaxLocationSource {
 pub enum TaxIdType {
     AeTrn,
     AuAbn,
+    AuArn,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -787,6 +788,7 @@ impl TaxIdType {
         match self {
             TaxIdType::AeTrn => "ae_trn",
             TaxIdType::AuAbn => "au_abn",
+            TaxIdType::AuArn => "au_arn",
             TaxIdType::BrCnpj => "br_cnpj",
             TaxIdType::BrCpf => "br_cpf",
             TaxIdType::CaBn => "ca_bn",
