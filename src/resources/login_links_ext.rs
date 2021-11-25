@@ -6,7 +6,7 @@ use crate::AccountId;
 use crate::params::Expand;
 
 pub trait CreateLoginLinkExt {
-    fn create_login_link(client: &Client, id: &AccountId, redirect_url: &str) -> Response<Self> where Self: Sized;
+    fn create(client: &Client, id: &AccountId, redirect_url: &str) -> Response<Self> where Self: Sized;
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -21,7 +21,7 @@ pub struct CreateLoginLink<'a> {
 }
 
 impl CreateLoginLinkExt for LoginLink {
-    fn create_login_link(client: &Client, id: &AccountId, redirect_url: &str) -> Response<Self> {
+    fn create(client: &Client, id: &AccountId, redirect_url: &str) -> Response<Self> {
         let create_login_link =
             CreateLoginLink { expand: &[], redirect_url: Some(redirect_url.to_string()) };
 
