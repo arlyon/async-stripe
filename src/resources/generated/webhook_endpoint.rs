@@ -328,6 +328,8 @@ pub enum EventFilter {
     CheckoutSessionAsyncPaymentSucceeded,
     #[serde(rename = "checkout.session.completed")]
     CheckoutSessionCompleted,
+    #[serde(rename = "checkout.session.expired")]
+    CheckoutSessionExpired,
     #[serde(rename = "coupon.created")]
     CouponCreated,
     #[serde(rename = "coupon.deleted")]
@@ -665,6 +667,7 @@ impl EventFilter {
                 "checkout.session.async_payment_succeeded"
             }
             EventFilter::CheckoutSessionCompleted => "checkout.session.completed",
+            EventFilter::CheckoutSessionExpired => "checkout.session.expired",
             EventFilter::CouponCreated => "coupon.created",
             EventFilter::CouponDeleted => "coupon.deleted",
             EventFilter::CouponUpdated => "coupon.updated",

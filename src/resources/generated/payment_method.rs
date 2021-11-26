@@ -77,6 +77,9 @@ pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interac_present: Option<PaymentMethodInteracPresent>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<PaymentMethodKlarna>,
+
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
@@ -110,7 +113,9 @@ pub struct PaymentMethod {
 }
 
 impl PaymentMethod {
-    /// Returns a list of PaymentMethods for a given Customer.
+    /// Returns a list of PaymentMethods.
+    ///
+    /// For listing a customer’s payment methods, you should use [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list).
     pub fn list(client: &Client, params: ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
         client.get_query("/payment_methods", &params)
     }
@@ -458,7 +463,7 @@ pub struct PaymentMethodEps {
 pub struct PaymentMethodFpx {
     /// The customer's bank, if provided.
     ///
-    /// Can be one of `affin_bank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, or `pb_enterprise`.
+    /// Can be one of `affin_bank`, `agrobank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, or `pb_enterprise`.
     pub bank: PaymentMethodFpxBank,
 }
 
@@ -483,6 +488,28 @@ pub struct PaymentMethodIdeal {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodInteracPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodKlarna {
+    /// The customer's date of birth, if provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<PaymentFlowsPrivatePaymentMethodsKlarnaDob>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentFlowsPrivatePaymentMethodsKlarnaDob {
+    /// The day of birth, between 1 and 31.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub day: Option<i64>,
+
+    /// The month of birth, between 1 and 12.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub month: Option<i64>,
+
+    /// The four-digit year of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub year: Option<i64>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOxxo {}
@@ -617,6 +644,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interac_present: Option<CreatePaymentMethodInteracPresent>,
 
+    /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<CreatePaymentMethodKlarna>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -677,6 +708,7 @@ impl<'a> CreatePaymentMethod<'a> {
             grabpay: Default::default(),
             ideal: Default::default(),
             interac_present: Default::default(),
+            klarna: Default::default(),
             metadata: Default::default(),
             oxxo: Default::default(),
             p24: Default::default(),
@@ -693,7 +725,8 @@ impl<'a> CreatePaymentMethod<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPaymentMethods<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
-    pub customer: CustomerId,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<CustomerId>,
 
     /// A cursor for use in pagination.
     ///
@@ -725,9 +758,9 @@ pub struct ListPaymentMethods<'a> {
 }
 
 impl<'a> ListPaymentMethods<'a> {
-    pub fn new(customer: CustomerId, type_: PaymentMethodTypeFilter) -> Self {
+    pub fn new(type_: PaymentMethodTypeFilter) -> Self {
         ListPaymentMethods {
-            customer,
+            customer: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
@@ -833,6 +866,12 @@ pub struct CreatePaymentMethodIdeal {
 pub struct CreatePaymentMethodInteracPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentMethodKlarna {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<CreatePaymentMethodKlarnaDob>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodOxxo {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -853,6 +892,15 @@ pub struct CreatePaymentMethodSofort {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodWechatPay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentMethodKlarnaDob {
+    pub day: i64,
+
+    pub month: i64,
+
+    pub year: i64,
+}
 
 /// An enum representing the possible values of an `CreatePaymentMethodEps`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -950,6 +998,7 @@ impl std::fmt::Display for CreatePaymentMethodEpsBank {
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentMethodFpxBank {
     AffinBank,
+    Agrobank,
     AllianceBank,
     Ambank,
     BankIslam,
@@ -975,6 +1024,7 @@ impl CreatePaymentMethodFpxBank {
     pub fn as_str(self) -> &'static str {
         match self {
             CreatePaymentMethodFpxBank::AffinBank => "affin_bank",
+            CreatePaymentMethodFpxBank::Agrobank => "agrobank",
             CreatePaymentMethodFpxBank::AllianceBank => "alliance_bank",
             CreatePaymentMethodFpxBank::Ambank => "ambank",
             CreatePaymentMethodFpxBank::BankIslam => "bank_islam",
@@ -1275,6 +1325,7 @@ impl std::fmt::Display for PaymentMethodEpsBank {
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodFpxBank {
     AffinBank,
+    Agrobank,
     AllianceBank,
     Ambank,
     BankIslam,
@@ -1300,6 +1351,7 @@ impl PaymentMethodFpxBank {
     pub fn as_str(self) -> &'static str {
         match self {
             PaymentMethodFpxBank::AffinBank => "affin_bank",
+            PaymentMethodFpxBank::Agrobank => "agrobank",
             PaymentMethodFpxBank::AllianceBank => "alliance_bank",
             PaymentMethodFpxBank::Ambank => "ambank",
             PaymentMethodFpxBank::BankIslam => "bank_islam",
@@ -1544,6 +1596,7 @@ pub enum PaymentMethodType {
     Grabpay,
     Ideal,
     InteracPresent,
+    Klarna,
     Oxxo,
     P24,
     SepaDebit,
@@ -1569,6 +1622,7 @@ impl PaymentMethodType {
             PaymentMethodType::Grabpay => "grabpay",
             PaymentMethodType::Ideal => "ideal",
             PaymentMethodType::InteracPresent => "interac_present",
+            PaymentMethodType::Klarna => "klarna",
             PaymentMethodType::Oxxo => "oxxo",
             PaymentMethodType::P24 => "p24",
             PaymentMethodType::SepaDebit => "sepa_debit",
@@ -1607,6 +1661,7 @@ pub enum PaymentMethodTypeFilter {
     Giropay,
     Grabpay,
     Ideal,
+    Klarna,
     Oxxo,
     P24,
     SepaDebit,
@@ -1630,6 +1685,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Giropay => "giropay",
             PaymentMethodTypeFilter::Grabpay => "grabpay",
             PaymentMethodTypeFilter::Ideal => "ideal",
+            PaymentMethodTypeFilter::Klarna => "klarna",
             PaymentMethodTypeFilter::Oxxo => "oxxo",
             PaymentMethodTypeFilter::P24 => "p24",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",
