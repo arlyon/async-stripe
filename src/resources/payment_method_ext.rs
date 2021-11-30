@@ -23,4 +23,11 @@ impl PaymentMethod {
     ) -> Response<PaymentMethod> {
         client.post_form(&format!("/payment_methods/{}/attach", payment_method_id), params)
     }
+
+    /// Detach a PaymentMethod from a Customer
+    ///
+    /// For more details see <https://stripe.com/docs/api/payment_methods/detach>.
+    pub fn detach(client: &Client, payment_method_id: &PaymentMethodId) -> Response<PaymentMethod> {
+        client.post(&format!("/payment_methods/{}/detach", payment_method_id))
+    }
 }
