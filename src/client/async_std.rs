@@ -196,20 +196,25 @@ fn send<T: DeserializeOwned + Send + 'static>(
 ) -> Response<T> {
     let client = client.clone(); // N.B. Client is send sync;  cloned clients share the same pool.
     Box::pin(async move {
-        let mut response = client.send(request).await?;
-        let status = response.status();
-        let bytes = response.body_bytes().await?;
-        if !status.is_success() {
-            Err(serde_json::from_slice(&bytes)
-                .map(|mut e: ErrorResponse| {
-                    e.error.http_status = status.into();
-                    StripeError::from(e.error)
-                })
-                .unwrap_or_else(StripeError::from))
-        } else {
-            serde_json::from_slice(&bytes).map_err(StripeError::from)
-        }
+        let bytes = send_inner(&client, request).await?;
+        serde_json::from_slice(&bytes).map_err(StripeError::from)
     })
+}
+
+async fn send_inner(client: &surf::Client, request: surf::Request) -> Result<Vec<u8>, StripeError> {
+    let mut response = client.send(request).await?;
+    let status = response.status();
+    let bytes = response.body_bytes().await?;
+    if !status.is_success() {
+        Err(serde_json::from_slice(&bytes)
+            .map(|mut e: ErrorResponse| {
+                e.error.http_status = status.into();
+                StripeError::from(e.error)
+            })
+            .unwrap_or_else(StripeError::from))
+    } else {
+        Ok(bytes)
+    }
 }
 
 /// Formats a plugin's 'App Info' into a string that can be added to the end of an User-Agent string.
