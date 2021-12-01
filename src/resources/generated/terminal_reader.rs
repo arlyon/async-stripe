@@ -19,28 +19,22 @@ pub struct TerminalReader {
     pub deleted: bool,
 
     /// The current software version of the reader.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub device_sw_version: Option<String>,
+    pub device_sw_version: Box<Option<String>>,
 
-    /// Type of reader, one of `bbpos_chipper2x` or `verifone_P400`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub device_type: Option<TerminalReaderDeviceType>,
+    /// Type of reader, one of `bbpos_chipper2x`, `bbpos_wisepos_e`, or `verifone_P400`.
+    pub device_type: Box<Option<TerminalReaderDeviceType>>,
 
     /// The local IP address of the reader.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<String>,
+    pub ip_address: Box<Option<String>>,
 
     /// Custom label given to the reader for easier identification.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub label: Option<String>,
+    pub label: Box<Option<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<bool>,
+    pub livemode: Box<Option<bool>>,
 
     /// The location identifier of the reader.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub location: Option<Expandable<TerminalLocation>>,
+    pub location: Box<Option<Expandable<TerminalLocation>>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -49,12 +43,10 @@ pub struct TerminalReader {
     pub metadata: Metadata,
 
     /// Serial number of the reader.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub serial_number: Option<String>,
+    pub serial_number: Box<Option<String>>,
 
     /// The networking status of the reader.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub status: Box<Option<String>>,
 }
 
 impl Object for TerminalReader {
@@ -72,6 +64,7 @@ impl Object for TerminalReader {
 #[serde(rename_all = "snake_case")]
 pub enum TerminalReaderDeviceType {
     BbposChipper2x,
+    BbposWiseposE,
     #[serde(rename = "verifone_P400")]
     VerifoneP400,
 }
@@ -80,6 +73,7 @@ impl TerminalReaderDeviceType {
     pub fn as_str(self) -> &'static str {
         match self {
             TerminalReaderDeviceType::BbposChipper2x => "bbpos_chipper2x",
+            TerminalReaderDeviceType::BbposWiseposE => "bbpos_wisepos_e",
             TerminalReaderDeviceType::VerifoneP400 => "verifone_P400",
         }
     }

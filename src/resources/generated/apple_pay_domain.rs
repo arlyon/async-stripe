@@ -23,12 +23,10 @@ pub struct ApplePayDomain {
     #[serde(default)]
     pub deleted: bool,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain_name: Option<String>,
+    pub domain_name: Box<Option<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<bool>,
+    pub livemode: Box<Option<bool>>,
 }
 
 impl Object for ApplePayDomain {

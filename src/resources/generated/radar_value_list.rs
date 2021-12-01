@@ -15,8 +15,7 @@ pub struct RadarValueList {
     pub id: RadarValueListId,
 
     /// The name of the value list for use in rules.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub alias: Option<String>,
+    pub alias: Box<Option<String>>,
 
     /// Time at which the object was created.
     ///
@@ -25,8 +24,7 @@ pub struct RadarValueList {
     pub created: Option<Timestamp>,
 
     /// The name or email address of the user who created this value list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created_by: Option<String>,
+    pub created_by: Box<Option<String>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -34,17 +32,15 @@ pub struct RadarValueList {
 
     /// The type of items in the value list.
     ///
-    /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, or `case_sensitive_string`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub item_type: Option<RadarValueListItemType>,
+    /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
+    pub item_type: Box<Option<RadarValueListItemType>>,
 
     /// List of items contained within this value list.
     #[serde(default)]
     pub list_items: List<RadarValueListItem>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<bool>,
+    pub livemode: Box<Option<bool>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -53,8 +49,7 @@ pub struct RadarValueList {
     pub metadata: Metadata,
 
     /// The name of the value list.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: Box<Option<String>>,
 }
 
 impl Object for RadarValueList {
@@ -75,6 +70,7 @@ pub enum RadarValueListItemType {
     CardFingerprint,
     CaseSensitiveString,
     Country,
+    CustomerId,
     Email,
     IpAddress,
     String,
@@ -87,6 +83,7 @@ impl RadarValueListItemType {
             RadarValueListItemType::CardFingerprint => "card_fingerprint",
             RadarValueListItemType::CaseSensitiveString => "case_sensitive_string",
             RadarValueListItemType::Country => "country",
+            RadarValueListItemType::CustomerId => "customer_id",
             RadarValueListItemType::Email => "email",
             RadarValueListItemType::IpAddress => "ip_address",
             RadarValueListItemType::String => "string",

@@ -20,8 +20,7 @@ pub struct IdentityVerificationSession {
     /// Don’t store it, log it, embed it in a URL, or expose it to anyone other than the user.
     /// Make sure that you have TLS enabled on any page that includes the client secret.
     /// Refer to our docs on [passing the client secret to the frontend](https://stripe.com/docs/identity/verification-sessions#client-secret) to learn more.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub client_secret: Option<String>,
+    pub client_secret: Box<Option<String>>,
 
     /// Time at which the object was created.
     ///
@@ -29,14 +28,12 @@ pub struct IdentityVerificationSession {
     pub created: Timestamp,
 
     /// If present, this property tells you the last error encountered when processing the verification.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_error: Option<GelatoSessionLastError>,
+    pub last_error: Box<Option<GelatoSessionLastError>>,
 
     /// ID of the most recent VerificationReport.
     ///
     /// [Learn more about accessing detailed verification results.](https://stripe.com/docs/identity/verification-sessions#results).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_verification_report: Option<Expandable<IdentityVerificationReport>>,
+    pub last_verification_report: Box<Option<Expandable<IdentityVerificationReport>>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -51,8 +48,7 @@ pub struct IdentityVerificationSession {
     /// Redaction status of this VerificationSession.
     ///
     /// If the VerificationSession is not redacted, this field will be null.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub redaction: Option<VerificationSessionRedaction>,
+    pub redaction: Box<Option<VerificationSessionRedaction>>,
 
     /// Status of this VerificationSession.
     ///
@@ -68,12 +64,10 @@ pub struct IdentityVerificationSession {
     /// This URL expires after 48 hours and can only be used once.
     /// Don’t store it, log it, send it in emails or expose it to anyone other than the user.
     /// Refer to our docs on [verifying identity documents](https://stripe.com/docs/identity/verify-identity-documents?platform=web&type=redirect) to learn how to redirect users to Stripe.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<String>,
+    pub url: Box<Option<String>>,
 
     /// The user’s verified data.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified_outputs: Option<GelatoVerifiedOutputs>,
+    pub verified_outputs: Box<Option<GelatoVerifiedOutputs>>,
 }
 
 impl Object for IdentityVerificationSession {
@@ -89,21 +83,17 @@ impl Object for IdentityVerificationSession {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSessionLastError {
     /// A short machine-readable string giving the reason for the verification or user-session failure.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub code: Option<GelatoSessionLastErrorCode>,
+    pub code: Box<Option<GelatoSessionLastErrorCode>>,
 
     /// A message that explains the reason for verification or user-session failure.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub reason: Option<String>,
+    pub reason: Box<Option<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoVerificationSessionOptions {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<GelatoSessionDocumentOptions>,
+    pub document: Box<Option<GelatoSessionDocumentOptions>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id_number: Option<GelatoSessionIdNumberOptions>,
+    pub id_number: Box<Option<GelatoSessionIdNumberOptions>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -111,22 +101,18 @@ pub struct GelatoSessionDocumentOptions {
     /// Array of strings of allowed identity document types.
     ///
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_types: Option<Vec<GelatoSessionDocumentOptionsAllowedTypes>>,
+    pub allowed_types: Box<Option<Vec<GelatoSessionDocumentOptionsAllowedTypes>>>,
 
     /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_id_number: Option<bool>,
+    pub require_id_number: Box<Option<bool>>,
 
     /// Disable image uploads, identity document images have to be captured using the device’s camera.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_live_capture: Option<bool>,
+    pub require_live_capture: Box<Option<bool>>,
 
     /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
     ///
     /// [Learn more](https://stripe.com/docs/identity/selfie).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_matching_selfie: Option<bool>,
+    pub require_matching_selfie: Box<Option<bool>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -135,43 +121,34 @@ pub struct GelatoSessionIdNumberOptions {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoVerifiedOutputs {
     /// The user's verified address.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<Address>,
+    pub address: Box<Option<Address>>,
 
     /// The user’s verified date of birth.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<GelatoDataVerifiedOutputsDate>,
+    pub dob: Box<Option<GelatoDataVerifiedOutputsDate>>,
 
     /// The user's verified first name.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub first_name: Option<String>,
+    pub first_name: Box<Option<String>>,
 
     /// The user's verified id number.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id_number: Option<String>,
+    pub id_number: Box<Option<String>>,
 
     /// The user's verified id number type.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id_number_type: Option<GelatoVerifiedOutputsIdNumberType>,
+    pub id_number_type: Box<Option<GelatoVerifiedOutputsIdNumberType>>,
 
     /// The user's verified last name.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_name: Option<String>,
+    pub last_name: Box<Option<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDataVerifiedOutputsDate {
     /// Numerical day between 1 and 31.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub day: Option<i64>,
+    pub day: Box<Option<i64>>,
 
     /// Numerical month between 1 and 12.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub month: Option<i64>,
+    pub month: Box<Option<i64>>,
 
     /// The four-digit year.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub year: Option<i64>,
+    pub year: Box<Option<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

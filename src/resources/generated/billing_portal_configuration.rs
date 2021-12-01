@@ -17,8 +17,7 @@ pub struct BillingPortalConfiguration {
     pub active: bool,
 
     /// ID of the Connect Application that created the configuration.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<String>,
+    pub application: Box<Option<String>>,
 
     pub business_profile: PortalBusinessProfile,
 
@@ -30,8 +29,7 @@ pub struct BillingPortalConfiguration {
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
     ///
     /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_return_url: Option<String>,
+    pub default_return_url: Box<Option<String>>,
 
     pub features: PortalFeatures,
 
@@ -62,8 +60,7 @@ impl Object for BillingPortalConfiguration {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalBusinessProfile {
     /// The messaging shown to customers in the portal.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub headline: Option<String>,
+    pub headline: Box<Option<String>>,
 
     /// A link to the business’s publicly available privacy policy.
     pub privacy_policy_url: String,
@@ -112,6 +109,8 @@ pub struct PortalPaymentMethodUpdate {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionCancel {
+    pub cancellation_reason: PortalSubscriptionCancellationReason,
+
     /// Whether the feature is enabled.
     pub enabled: bool,
 
@@ -122,6 +121,15 @@ pub struct PortalSubscriptionCancel {
     ///
     /// Possible values are `none` and `create_prorations`.
     pub proration_behavior: PortalSubscriptionCancelProrationBehavior,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PortalSubscriptionCancellationReason {
+    /// Whether the feature is enabled.
+    pub enabled: bool,
+
+    /// Which cancellation reasons will be given as options to the customer.
+    pub options: Vec<PortalSubscriptionCancellationReasonOptions>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -141,8 +149,7 @@ pub struct PortalSubscriptionUpdate {
     pub enabled: bool,
 
     /// The list of products that support subscription updates.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub products: Option<Vec<PortalSubscriptionUpdateProduct>>,
+    pub products: Box<Option<Vec<PortalSubscriptionUpdateProduct>>>,
 
     /// Determines how to handle prorations resulting from subscription updates.
     ///
@@ -249,6 +256,47 @@ impl AsRef<str> for PortalSubscriptionCancelProrationBehavior {
 }
 
 impl std::fmt::Display for PortalSubscriptionCancelProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PortalSubscriptionCancellationReason`'s `options` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PortalSubscriptionCancellationReasonOptions {
+    CustomerService,
+    LowQuality,
+    MissingFeatures,
+    Other,
+    SwitchedService,
+    TooComplex,
+    TooExpensive,
+    Unused,
+}
+
+impl PortalSubscriptionCancellationReasonOptions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PortalSubscriptionCancellationReasonOptions::CustomerService => "customer_service",
+            PortalSubscriptionCancellationReasonOptions::LowQuality => "low_quality",
+            PortalSubscriptionCancellationReasonOptions::MissingFeatures => "missing_features",
+            PortalSubscriptionCancellationReasonOptions::Other => "other",
+            PortalSubscriptionCancellationReasonOptions::SwitchedService => "switched_service",
+            PortalSubscriptionCancellationReasonOptions::TooComplex => "too_complex",
+            PortalSubscriptionCancellationReasonOptions::TooExpensive => "too_expensive",
+            PortalSubscriptionCancellationReasonOptions::Unused => "unused",
+        }
+    }
+}
+
+impl AsRef<str> for PortalSubscriptionCancellationReasonOptions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PortalSubscriptionCancellationReasonOptions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

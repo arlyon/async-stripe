@@ -20,8 +20,7 @@ pub struct ReserveTransaction {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
+    pub description: Box<Option<String>>,
 }
 
 impl Object for ReserveTransaction {

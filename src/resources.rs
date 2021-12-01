@@ -86,14 +86,17 @@ pub use {
         token_ext::*,
     },
     generated::core::{
+        address::*,
         balance::*,
         balance_transaction::*,
+        billing_details::*,
         charge::*,
         customer::*,
         dispute::*,
         file::*,
         file_link::*,
         mandate::*,
+        package_dimensions::*,
         payment_intent::*,
         payout::*,
         platform_tax_fee::*,
@@ -102,9 +105,11 @@ pub use {
         reserve_transaction::*,
         setup_attempt::*,
         setup_intent::*,
+        shipping::*,
         tax_code::*,
         tax_deducted_at_source::*,
         token::*,
+        api_errors::*,
     },
 
     payment::{
@@ -118,7 +123,9 @@ pub use {
         card::*,
         bank_account::*,
         payment_method::*,
-        source::*
+        source::*,
+        payment_method_options_boleto::*,
+        payment_method_options_oxxo::*,
     },
 };
 
@@ -150,6 +157,9 @@ pub use {
         coupon::*,
         discount::*,
         invoice::*,
+        invoice_payment_method_options_acss_debit::*,
+        invoice_payment_method_options_bancontact::*,
+        invoice_payment_method_options_card::*,
         invoiceitem::*,
         line_item::*,
         plan::*,
@@ -157,6 +167,7 @@ pub use {
         price::*,
         promotion_code::*,
         quote::*,
+        quotes_resource_total_details::*,
         subscription_item::*,
         subscription_item::PlanInterval as SubscriptionItemInterval,
         subscription_item::SubscriptionItemPriceDataRecurring as SubscriptionItemPriceDataRecurring,
@@ -168,8 +179,11 @@ pub use {
         subscription::SubscriptionItemPriceDataRecurring as SubscriptionPriceDataRecurring,
         subscription::SubscriptionItemPriceData as SubscriptionPriceData,
         subscription_schedule::*,
+        subscription_billing_thresholds::*,
+        subscription_item_billing_thresholds::*,
         tax_id::*,
         tax_rate::*,
+        usage_record_summary::*,
     },
 };
 

@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{ProductId, TaxCodeId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::PackageDimensions;
+use crate::resources::{PackageDimensions, TaxCode};
 
 /// The resource representing a Stripe "Product".
 ///
@@ -18,8 +18,7 @@ pub struct Product {
     pub id: ProductId,
 
     /// Whether the product is currently available for purchase.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub active: Option<bool>,
+    pub active: Box<Option<bool>>,
 
     /// Time at which the object was created.
     ///
@@ -34,16 +33,13 @@ pub struct Product {
     /// The product's description, meant to be displayable to the customer.
     ///
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
+    pub description: Box<Option<String>>,
 
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub images: Option<Vec<String>>,
+    pub images: Box<Option<Vec<String>>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<bool>,
+    pub livemode: Box<Option<bool>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -54,38 +50,34 @@ pub struct Product {
     /// The product's name, meant to be displayable to the customer.
     ///
     /// Whenever this product is sold via a subscription, name will show up on associated invoice line item descriptions.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: Box<Option<String>>,
 
     /// The dimensions of this product for shipping purposes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub package_dimensions: Option<PackageDimensions>,
+    pub package_dimensions: Box<Option<PackageDimensions>>,
 
     /// Whether this product is shipped (i.e., physical goods).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shippable: Option<bool>,
+    pub shippable: Box<Option<bool>>,
 
     /// Extra information about a product which will appear on your customer's credit card statement.
     ///
     /// In the case that multiple products are billed at once, the first statement descriptor will be used.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<String>,
+    pub statement_descriptor: Box<Option<String>>,
+
+    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    pub tax_code: Box<Option<Expandable<TaxCode>>>,
 
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
     /// When set, this will be included in associated invoice line item descriptions.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_label: Option<String>,
+    pub unit_label: Box<Option<String>>,
 
     /// Time at which the object was last updated.
     ///
     /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub updated: Option<Timestamp>,
+    pub updated: Box<Option<Timestamp>>,
 
     /// A URL of a publicly-accessible webpage for this product.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<String>,
+    pub url: Box<Option<String>>,
 }
 
 impl Product {
@@ -161,7 +153,7 @@ pub struct CreateProduct<'a> {
 
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub images: Option<Vec<String>>,
+    pub images: Box<Option<Vec<String>>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -251,7 +243,7 @@ pub struct ListProducts<'a> {
 
     /// Only return products with the given IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ids: Option<Vec<String>>,
+    pub ids: Box<Option<Vec<String>>>,
 
     /// A limit on the number of objects to be returned.
     ///
@@ -310,7 +302,7 @@ pub struct UpdateProduct<'a> {
 
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub images: Option<Vec<String>>,
+    pub images: Box<Option<Vec<String>>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -345,7 +337,7 @@ pub struct UpdateProduct<'a> {
 
     /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<String>,
+    pub tax_code: Box<Option<String>>,
 
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///

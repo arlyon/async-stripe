@@ -6,7 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::BankAccountId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Account, AccountHolderType, BankAccountStatus, Currency, Customer};
+use crate::resources::{Account, BankAccountStatus, Currency, Customer};
 
 /// The resource representing a Stripe "BankAccount".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -15,50 +15,41 @@ pub struct BankAccount {
     pub id: BankAccountId,
 
     /// The ID of the account that the bank account is associated with.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<Expandable<Account>>,
+    pub account: Box<Option<Expandable<Account>>>,
 
     /// The name of the person or business that owns the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_name: Option<String>,
+    pub account_holder_name: Box<Option<String>>,
 
     /// The type of entity that holds the account.
     ///
     /// This can be either `individual` or `company`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<AccountHolderType>,
+    pub account_holder_type: Box<Option<String>>,
 
     /// The bank account type.
     ///
     /// This can only be `checking` or `savings` in most countries.
     /// In Japan, this can only be `futsu` or `toza`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_type: Option<String>,
+    pub account_type: Box<Option<String>>,
 
     /// A set of available payout methods for this bank account.
     ///
     /// Only values from this set should be passed as the `method` when creating a payout.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub available_payout_methods: Option<Vec<BankAccountAvailablePayoutMethods>>,
+    pub available_payout_methods: Box<Option<Vec<BankAccountAvailablePayoutMethods>>>,
 
     /// Name of the bank associated with the routing number (e.g., `WELLS FARGO`).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_name: Option<String>,
+    pub bank_name: Box<Option<String>>,
 
     /// Two-letter ISO code representing the country the bank account is located in.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
+    pub country: Box<Option<String>>,
 
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/payouts) paid out to the bank account.
     pub currency: Currency,
 
     /// The ID of the customer that the bank account is associated with.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Expandable<Customer>>,
+    pub customer: Box<Option<Expandable<Customer>>>,
 
     /// Whether this bank account is the default external account for its currency.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_for_currency: Option<bool>,
+    pub default_for_currency: Box<Option<bool>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -67,12 +58,10 @@ pub struct BankAccount {
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fingerprint: Option<String>,
+    pub fingerprint: Box<Option<String>>,
 
     /// The last four digits of the bank account number.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last4: Option<String>,
+    pub last4: Box<Option<String>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -81,8 +70,7 @@ pub struct BankAccount {
     pub metadata: Metadata,
 
     /// The routing transit number for the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub routing_number: Option<String>,
+    pub routing_number: Box<Option<String>>,
 
     /// For bank accounts, possible values are `new`, `validated`, `verified`, `verification_failed`, or `errored`.
     ///

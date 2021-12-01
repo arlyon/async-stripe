@@ -7,9 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
 use crate::params::{Expand, Metadata, Object, Timestamp};
-use crate::resources::{
-    Address, BankAccount, BusinessType, Card, CompanyParams, Dob, PersonParams, TokenType,
-};
+use crate::resources::{Address, BankAccount, Card, CompanyParams, PersonParams, TokenType};
 
 /// The resource representing a Stripe "Token".
 ///
@@ -19,15 +17,12 @@ pub struct Token {
     /// Unique identifier for the object.
     pub id: TokenId,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account: Option<BankAccount>,
+    pub bank_account: Box<Option<BankAccount>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<Card>,
+    pub card: Box<Option<Card>>,
 
     /// IP address of the client that generated the token.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub client_ip: Option<String>,
+    pub client_ip: Box<Option<String>>,
 
     /// Time at which the object was created.
     ///
@@ -75,7 +70,7 @@ impl Object for Token {
 pub struct CreateToken<'a> {
     /// Information for the account this token will represent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<CreateTokenAccount>,
+    pub account: Box<Option<CreateTokenAccount>>,
 
     /// The customer (owned by the application's account) for which to create a token.
     ///
@@ -86,7 +81,7 @@ pub struct CreateToken<'a> {
 
     /// The updated CVC value this token will represent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cvc_update: Option<CreateTokenCvcUpdate>,
+    pub cvc_update: Box<Option<CreateTokenCvcUpdate>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -94,11 +89,11 @@ pub struct CreateToken<'a> {
 
     /// Information for the person this token will represent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub person: Option<CreateTokenPerson>,
+    pub person: Box<Option<CreateTokenPerson>>,
 
     /// The PII this token will represent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pii: Option<CreateTokenPii>,
+    pub pii: Box<Option<CreateTokenPii>>,
 }
 
 impl<'a> CreateToken<'a> {
@@ -116,8 +111,7 @@ impl<'a> CreateToken<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenAccount {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub business_type: Option<BusinessType>,
+    pub business_type: Box<Option<CreateTokenAccountBusinessType>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<CompanyParams>,
@@ -125,8 +119,7 @@ pub struct CreateTokenAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<PersonParams>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tos_shown_and_accepted: Option<bool>,
+    pub tos_shown_and_accepted: Box<Option<bool>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -145,135 +138,144 @@ pub struct CreateTokenPerson {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_kanji: Option<Address>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<Dob>,
+    pub dob: Box<Option<CreateTokenPersonDob>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub documents: Option<CreateTokenPersonDocuments>,
+    pub documents: Box<Option<CreateTokenPersonDocuments>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
+    pub email: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub first_name: Option<String>,
+    pub first_name: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub first_name_kana: Option<String>,
+    pub first_name_kana: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub first_name_kanji: Option<String>,
+    pub first_name_kanji: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gender: Option<String>,
+    pub full_name_aliases: Box<Option<Vec<String>>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id_number: Option<String>,
+    pub gender: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_name: Option<String>,
+    pub id_number: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_name_kana: Option<String>,
+    pub last_name: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_name_kanji: Option<String>,
+    pub last_name_kana: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub maiden_name: Option<String>,
+    pub last_name_kanji: Box<Option<String>>,
+
+    pub maiden_name: Box<Option<String>>,
 
     #[serde(default)]
     pub metadata: Metadata,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nationality: Option<String>,
+    pub nationality: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<String>,
+    pub phone: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub political_exposure: Option<String>,
+    pub political_exposure: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub relationship: Option<CreateTokenPersonRelationship>,
+    pub relationship: Box<Option<CreateTokenPersonRelationship>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ssn_last_4: Option<String>,
+    pub ssn_last_4: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<PersonVerificationParams>,
+    pub verification: Box<Option<PersonVerificationParams>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenPii {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id_number: Option<String>,
+    pub id_number: Box<Option<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateTokenPersonDob {
+    pub day: i64,
+
+    pub month: i64,
+
+    pub year: i64,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenPersonDocuments {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_authorization: Option<CreateTokenPersonDocumentsCompanyAuthorization>,
+    pub company_authorization: Box<Option<CreateTokenPersonDocumentsCompanyAuthorization>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub passport: Option<CreateTokenPersonDocumentsPassport>,
+    pub passport: Box<Option<CreateTokenPersonDocumentsPassport>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub visa: Option<CreateTokenPersonDocumentsVisa>,
+    pub visa: Box<Option<CreateTokenPersonDocumentsVisa>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenPersonRelationship {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub director: Option<bool>,
+    pub director: Box<Option<bool>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub executive: Option<bool>,
+    pub executive: Box<Option<bool>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<bool>,
+    pub owner: Box<Option<bool>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub percent_ownership: Option<f64>,
+    pub percent_ownership: Box<Option<f64>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub representative: Option<bool>,
+    pub representative: Box<Option<bool>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub title: Option<String>,
+    pub title: Box<Option<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PersonVerificationParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_document: Option<VerificationDocumentParams>,
+    pub additional_document: Box<Option<VerificationDocumentParams>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<VerificationDocumentParams>,
+    pub document: Box<Option<VerificationDocumentParams>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenPersonDocumentsCompanyAuthorization {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
+    pub files: Box<Option<Vec<String>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenPersonDocumentsPassport {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
+    pub files: Box<Option<Vec<String>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenPersonDocumentsVisa {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
+    pub files: Box<Option<Vec<String>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct VerificationDocumentParams {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<String>,
+    pub back: Box<Option<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<String>,
+    pub front: Box<Option<String>>,
+}
+
+/// An enum representing the possible values of an `CreateTokenAccount`'s `business_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateTokenAccountBusinessType {
+    Company,
+    GovernmentEntity,
+    Individual,
+    NonProfit,
+}
+
+impl CreateTokenAccountBusinessType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateTokenAccountBusinessType::Company => "company",
+            CreateTokenAccountBusinessType::GovernmentEntity => "government_entity",
+            CreateTokenAccountBusinessType::Individual => "individual",
+            CreateTokenAccountBusinessType::NonProfit => "non_profit",
+        }
+    }
+}
+
+impl AsRef<str> for CreateTokenAccountBusinessType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateTokenAccountBusinessType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }

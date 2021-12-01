@@ -22,16 +22,14 @@ pub struct Mandate {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub multi_use: Option<MandateMultiUse>,
+    pub multi_use: Box<Option<MandateMultiUse>>,
 
     /// ID of the payment method associated with this mandate.
     pub payment_method: Expandable<PaymentMethod>,
 
     pub payment_method_details: MandatePaymentMethodDetails,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub single_use: Option<MandateSingleUse>,
+    pub single_use: Box<Option<MandateSingleUse>>,
 
     /// The status of the mandate, which indicates whether it can be used to initiate a payment.
     pub status: MandateStatus,
@@ -61,14 +59,11 @@ impl Object for Mandate {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerAcceptance {
     /// The time at which the customer accepted the Mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub accepted_at: Option<Timestamp>,
+    pub accepted_at: Box<Option<Timestamp>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub offline: Option<OfflineAcceptance>,
+    pub offline: Box<Option<OfflineAcceptance>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub online: Option<OnlineAcceptance>,
+    pub online: Box<Option<OnlineAcceptance>>,
 
     /// The type of customer acceptance information included with the Mandate.
     ///
@@ -82,20 +77,15 @@ pub struct MandateMultiUse {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandatePaymentMethodDetails {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<MandateAcssDebit>,
+    pub acss_debit: Box<Option<MandateAcssDebit>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<MandateAuBecsDebit>,
+    pub au_becs_debit: Box<Option<MandateAuBecsDebit>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<MandateBacsDebit>,
+    pub bacs_debit: Box<Option<MandateBacsDebit>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<CardMandatePaymentMethodDetails>,
+    pub card: Box<Option<CardMandatePaymentMethodDetails>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<MandateSepaDebit>,
+    pub sepa_debit: Box<Option<MandateSepaDebit>>,
 
     /// The type of the payment method associated with this mandate.
     ///
@@ -110,11 +100,13 @@ pub struct CardMandatePaymentMethodDetails {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandateAcssDebit {
+    /// List of Stripe products where this mandate can be selected automatically.
+    pub default_for: Box<Option<Vec<MandateAcssDebitDefaultFor>>>,
+
     /// Description of the interval.
     ///
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_description: Option<String>,
+    pub interval_description: Box<Option<String>>,
 
     /// Payment schedule for the mandate.
     pub payment_schedule: MandateAcssDebitPaymentSchedule,
@@ -171,12 +163,10 @@ pub struct OfflineAcceptance {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OnlineAcceptance {
     /// The IP address from which the Mandate was accepted by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<String>,
+    pub ip_address: Box<Option<String>>,
 
     /// The user agent of the browser from which the Mandate was accepted by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_agent: Option<String>,
+    pub user_agent: Box<Option<String>>,
 }
 
 /// An enum representing the possible values of an `CustomerAcceptance`'s `type` field.
@@ -203,6 +193,35 @@ impl AsRef<str> for CustomerAcceptanceType {
 }
 
 impl std::fmt::Display for CustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `MandateAcssDebit`'s `default_for` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum MandateAcssDebitDefaultFor {
+    Invoice,
+    Subscription,
+}
+
+impl MandateAcssDebitDefaultFor {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            MandateAcssDebitDefaultFor::Invoice => "invoice",
+            MandateAcssDebitDefaultFor::Subscription => "subscription",
+        }
+    }
+}
+
+impl AsRef<str> for MandateAcssDebitDefaultFor {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for MandateAcssDebitDefaultFor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

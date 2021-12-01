@@ -200,19 +200,10 @@ pub fn field_mappings() -> FieldMap {
     [
         // Config for object types
         (("account", "type"), ("AccountType", "Option<AccountType>")),
-        (("account", "business_type"), ("BusinessType", "Option<BusinessType>")),
         (("balance_transaction", "status"), ("BalanceTransactionStatus", "BalanceTransactionStatus")),
-        (
-            ("bank_account", "account_holder_type"),
-            ("AccountHolderType", "Option<AccountHolderType>"),
-        ),
         (("bank_account", "status"), ("BankAccountStatus", "Option<BankAccountStatus>")),
         (("fee", "type"), ("FeeType", "FeeType")),
         (("charge", "source"), ("PaymentSource", "Option<PaymentSource>")),
-        (
-            ("charge_fraud_details", "stripe_report"),
-            ("FraudDetailsReport", "Option<FraudDetailsReport>"),
-        ),
         (("customer", "default_source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
         (("customer", "sources"), ("PaymentSource", "List<PaymentSource>")),
         (("invoice", "billing"), ("", "Option<CollectionMethod>")),
@@ -262,20 +253,12 @@ pub fn field_mappings() -> FieldMap {
             ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
         ),
         (
-            ("issuing_card_authorization_controls", "spending_limits"),
-            ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
-        ),
-        (
             ("issuing_cardholder_authorization_controls", "allowed_categories"),
             ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
         ),
         (
             ("issuing_cardholder_authorization_controls", "blocked_categories"),
             ("MerchantCategory", "Option<Vec<MerchantCategory>>"),
-        ),
-        (
-            ("issuing_cardholder_authorization_controls", "spending_limits"),
-            ("SpendingLimit", "Option<Vec<SpendingLimit>>"),
         ),
         (
             ("issuing_card_pin", "status"),
@@ -303,7 +286,6 @@ pub fn field_mappings() -> FieldMap {
         ),
         (("file", "purpose"), ("", "FilePurpose")),
         (("order", "status"), ("", "OrderStatus")),
-        (("person", "dob"), ("Dob", "Option<Dob>")),
         (("recipient", "type"), ("", "Option<RecipientType>")),
         (("review", "reason"), ("ReviewReason", "ReviewReason")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
@@ -356,7 +338,6 @@ pub fn field_mappings() -> FieldMap {
         ),
         (("token", "type"), ("TokenType", "TokenType")),
         (("transfer", "source_type"), ("", "Option<TransferSourceType>")),
-        (("transfer_schedule", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
         (("webhook_endpoint", "api_version"), ("ApiVersion", "Option<ApiVersion>")),
         (("webhook_endpoint", "enabled_events"), ("", "Option<Vec<EventFilter>>")),
         (("webhook_endpoint", "status"), ("WebhookEndpointStatus", "Option<WebhookEndpointStatus>")),
@@ -364,8 +345,6 @@ pub fn field_mappings() -> FieldMap {
         // Config for `account` params
         (("create_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
         (("update_account", "business_profile"), ("BusinessProfile", "Option<BusinessProfile>")),
-        (("create_account", "business_type"), ("BusinessType", "Option<BusinessType>")),
-        (("update_account", "business_type"), ("BusinessType", "Option<BusinessType>")),
         (("company_params", "address"), ("Address", "Option<Address>")),
         (("company_params", "address_kana"), ("Address", "Option<Address>")),
         (("company_params", "address_kanji"), ("Address", "Option<Address>")),
@@ -373,7 +352,6 @@ pub fn field_mappings() -> FieldMap {
         (("person_params", "address"), ("Address", "Option<Address>")),
         (("person_params", "address_kana"), ("Address", "Option<Address>")),
         (("person_params", "address_kanji"), ("Address", "Option<Address>")),
-        (("person_params", "dob"), ("Dob", "Option<Dob>")),
         (("person_params", "verification"), ("PersonVerificationParams", "Option<PersonVerificationParams>")),
         (("company_verification_params", "document"), ("VerificationDocumentParams", "Option<VerificationDocumentParams>")),
         // (("person_verification_params", "document"), ("VerificationDocumentParams", "Option<VerificationDocumentParams>")),
@@ -383,7 +361,6 @@ pub fn field_mappings() -> FieldMap {
         (("create_charge", "shipping"), ("Shipping", "Option<Shipping>")),
         (("create_charge", "source"), ("ChargeSourceParams", "Option<ChargeSourceParams>")),
         (("update_charge", "shipping"), ("Shipping", "Option<Shipping>")),
-        (("fraud_details_params", "user_report"), ("FraudDetailsReport", "FraudDetailsReport")),
 
         // Config for `customer` params
         (("create_customer", "address"), ("Address", "Option<Address>")),
@@ -396,20 +373,13 @@ pub fn field_mappings() -> FieldMap {
         (("update_customer", "default_card"), ("CardId", "Option<CardId>")),
         (("create_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
         (("update_customer", "default_source"), ("PaymentSourceId", "Option<PaymentSourceId>")),
-        (("create_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-        (("update_customer", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("create_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams>")),
         (("update_customer", "source"), ("PaymentSourceParams", "Option<PaymentSourceParams>")),
         (("update_customer", "trial_end"), ("Scheduled", "Option<Scheduled>")),
-        (
-            ("customer_invoice_settings", "custom_fields"),
-            ("CustomField", "Option<Vec<CustomField>>"),
-        ),
 
         // Config for `invoice` params
         (("list_invoices", "billing"), ("", "Option<CollectionMethod>")),
         (("create_invoice", "billing"), ("", "Option<CollectionMethod>")),
-        (("create_invoice", "custom_fields"), ("CustomField", "Option<Vec<CustomField>>")),
 
         // Config for `invoiceitem` params
         (("create_invoice_item", "period"), ("Period", "Option<Period>")),
@@ -417,18 +387,14 @@ pub fn field_mappings() -> FieldMap {
 
         // Config for `order` params
         (("list_orders", "status"), ("OrderStatusFilter", "Option<OrderStatusFilter>")),
-        (("create_order", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
-        (("update_order", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
 
         // Config for `payment_intent` params
         (("payment_intent", "source"), ("PaymentSource", "Option<Expandable<PaymentSource>>")),
         (("payment_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
-        (("create_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (
             ("create_payment_intent", "off_session"),
             ("PaymentIntentOffSession", "Option<PaymentIntentOffSession>"),
         ),
-        (("update_payment_intent", "shipping"), ("ShippingParams", "Option<ShippingParams>")),
         (("create_setup_intent", "usage"), ("", "Option<SetupIntentUsage>")),
         (("setup_intent_next_action", "use_stripe_sdk"), ("", "Option<serde_json::Value>")),
 
@@ -566,20 +532,17 @@ pub fn field_mappings() -> FieldMap {
         (("create_plan_tiers", "up_to"), ("UpTo", "Option<UpTo>")),
         (("create_price_tiers", "up_to"), ("UpTo", "Option<UpTo>")),
         (("update_file_link", "expires_at"), ("Scheduled", "Option<Scheduled>")),
-        (("create_token_account", "business_type"), ("BusinessType", "Option<BusinessType>")),
         (("create_token_account", "company"), ("CompanyParams", "Option<CompanyParams>")),
         (("create_token_account", "individual"), ("PersonParams", "Option<PersonParams>")),
 
         (("create_token_person", "address"), ("Address", "Option<Address>")),
         (("create_token_person", "address_kana"), ("Address", "Option<Address>")),
         (("create_token_person", "address_kanji"), ("Address", "Option<Address>")),
-        (("create_token_person", "dob"), ("Dob", "Option<Dob>")),
         (
             ("create_payment_method", "billing_details"),
             ("BillingDetails", "Option<BillingDetails>"),
         ),
         (("transfer_schedule_params", "delay_days"), ("DelayDays", "Option<DelayDays>")),
-        (("transfer_schedule_params", "weekly_anchor"), ("Weekday", "Option<Weekday>")),
         (("create_webhook_endpoint", "api_version"), ("ApiVersion", "Option<ApiVersion>")),
     ]
     .iter()
