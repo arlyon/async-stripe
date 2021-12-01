@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{ShippingRateId, TaxCodeId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Currency, TaxCode};
-use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "ShippingRate".
 ///
@@ -64,7 +65,6 @@ pub struct ShippingRate {
 }
 
 impl ShippingRate {
-
     /// Returns a list of your shipping rates.
     pub fn list(client: &Client, params: ListShippingRates<'_>) -> Response<List<ShippingRate>> {
         client.get_query("/shipping_rates", &params)
@@ -76,12 +76,20 @@ impl ShippingRate {
     }
 
     /// Returns the shipping rate object with the given ID.
-    pub fn retrieve(client: &Client, id: &ShippingRateId, expand: &[&str]) -> Response<ShippingRate> {
+    pub fn retrieve(
+        client: &Client,
+        id: &ShippingRateId,
+        expand: &[&str],
+    ) -> Response<ShippingRate> {
         client.get_query(&format!("/shipping_rates/{}", id), &Expand { expand })
     }
 
     /// Updates an existing shipping rate object.
-    pub fn update(client: &Client, id: &ShippingRateId, params: UpdateShippingRate<'_>) -> Response<ShippingRate> {
+    pub fn update(
+        client: &Client,
+        id: &ShippingRateId,
+        params: UpdateShippingRate<'_>,
+    ) -> Response<ShippingRate> {
         client.post_form(&format!("/shipping_rates/{}", id), &params)
     }
 }
@@ -98,7 +106,6 @@ impl Object for ShippingRate {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimate {
-
     /// The upper bound of the estimated range.
     ///
     /// If empty, represents no upper bound i.e., infinite.
@@ -112,7 +119,6 @@ pub struct ShippingRateDeliveryEstimate {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimateBound {
-
     /// A unit of time.
     pub unit: ShippingRateDeliveryEstimateBoundUnit,
 
@@ -122,7 +128,6 @@ pub struct ShippingRateDeliveryEstimateBound {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingRateFixedAmount {
-
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
@@ -135,7 +140,6 @@ pub struct ShippingRateFixedAmount {
 /// The parameters for `ShippingRate::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateShippingRate<'a> {
-
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
@@ -203,7 +207,6 @@ impl<'a> CreateShippingRate<'a> {
 /// The parameters for `ShippingRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListShippingRates<'a> {
-
     /// Only return shipping rates that are active or inactive.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -260,7 +263,6 @@ impl<'a> ListShippingRates<'a> {
 /// The parameters for `ShippingRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateShippingRate<'a> {
-
     /// Whether the shipping rate can be used for new purchases.
     ///
     /// Defaults to `true`.
@@ -292,7 +294,6 @@ impl<'a> UpdateShippingRate<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
-
     pub maximum: Box<Option<CreateShippingRateDeliveryEstimateMaximum>>,
 
     pub minimum: Box<Option<CreateShippingRateDeliveryEstimateMinimum>>,
@@ -300,7 +301,6 @@ pub struct CreateShippingRateDeliveryEstimate {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateFixedAmount {
-
     pub amount: i64,
 
     pub currency: Currency,
@@ -308,7 +308,6 @@ pub struct CreateShippingRateFixedAmount {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMaximum {
-
     pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
 
     pub value: i64,
@@ -316,7 +315,6 @@ pub struct CreateShippingRateDeliveryEstimateMaximum {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMinimum {
-
     pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,
 
     pub value: i64,
