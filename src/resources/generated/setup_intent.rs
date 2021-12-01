@@ -146,7 +146,7 @@ impl Object for SetupIntent {
 pub struct SetupIntentNextAction {
     pub redirect_to_url: Box<Option<SetupIntentNextActionRedirectToUrl>>,
 
-    /// Type of the next action to perform, one of `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, or `oxxo_display_details`.
+    /// Type of the next action to perform, one of `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, `oxxo_display_details`, or `verify_with_microdeposits`.
     #[serde(rename = "type")]
     pub type_: String,
 

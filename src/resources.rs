@@ -106,6 +106,7 @@ pub use {
         setup_attempt::*,
         setup_intent::*,
         shipping::*,
+        shipping_rate::*,
         tax_code::*,
         tax_deducted_at_source::*,
         token::*,

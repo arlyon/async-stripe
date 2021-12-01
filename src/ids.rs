@@ -530,6 +530,7 @@ def_id!(ScheduledQueryRunId, "sqr_");
 def_id!(SetupAttemptId, "setatt_");
 def_id!(SetupIntentId, "seti_");
 def_id!(SkuId, "sku_");
+def_id!(ShippingRateId, "shr_");
 def_id!(SourceId, "src_");
 def_id!(SubscriptionId, "sub_");
 def_id!(SubscriptionItemId, "si_");

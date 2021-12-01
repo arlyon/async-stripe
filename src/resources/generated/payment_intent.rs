@@ -43,6 +43,9 @@ pub struct PaymentIntent {
     /// For more information, see the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts).
     pub application_fee_amount: Box<Option<i64>>,
 
+    /// Settings to configure compatible payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
+    pub automatic_payment_methods: Box<Option<PaymentFlowsAutomaticPaymentMethodsPaymentIntent>>,
+
     /// Populated when `status` is `canceled`, this is the time at which the PaymentIntent was canceled.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -229,6 +232,12 @@ impl Object for PaymentIntent {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
+    /// Automatically calculates compatible payment methods.
+    pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextAction {
     pub alipay_handle_redirect: Box<Option<PaymentIntentNextActionAlipayHandleRedirect>>,
 
@@ -238,7 +247,7 @@ pub struct PaymentIntentNextAction {
 
     pub redirect_to_url: Box<Option<PaymentIntentNextActionRedirectToUrl>>,
 
-    /// Type of the next action to perform, one of `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, or `oxxo_display_details`.
+    /// Type of the next action to perform, one of `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, `oxxo_display_details`, or `verify_with_microdeposits`.
     #[serde(rename = "type")]
     pub type_: String,
 
@@ -376,6 +385,8 @@ pub struct PaymentIntentPaymentMethodOptions {
 
     pub ideal: Box<Option<PaymentMethodOptionsIdeal>>,
 
+    pub interac_present: Box<Option<PaymentMethodOptionsInteracPresent>>,
+
     pub klarna: Box<Option<PaymentMethodOptionsKlarna>>,
 
     pub oxxo: Box<Option<PaymentMethodOptionsOxxo>>,
@@ -485,6 +496,9 @@ pub struct PaymentMethodOptionsCardPresent {}
 pub struct PaymentMethodOptionsIdeal {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsInteracPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsKlarna {
     /// Preferred locale of the Klarna checkout page that the customer is redirected to.
     pub preferred_locale: Box<Option<String>>,
@@ -541,6 +555,10 @@ pub struct CreatePaymentIntent<'a> {
     /// For more information, see the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
+
+    /// When enabled, this PaymentIntent will accept payment methods that you have enabled in the Dashboard and are compatible with this PaymentIntent's other parameters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub automatic_payment_methods: Box<Option<CreatePaymentIntentAutomaticPaymentMethods>>,
 
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -703,6 +721,7 @@ impl<'a> CreatePaymentIntent<'a> {
         CreatePaymentIntent {
             amount,
             application_fee_amount: Default::default(),
+            automatic_payment_methods: Default::default(),
             capture_method: Default::default(),
             confirm: Default::default(),
             confirmation_method: Default::default(),
@@ -925,6 +944,11 @@ impl<'a> UpdatePaymentIntent<'a> {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentAutomaticPaymentMethods {
+    pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentMandateData {
     pub customer_acceptance: CreatePaymentIntentMandateDataCustomerAcceptance,
 }
@@ -995,6 +1019,8 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     pub card_present: Box<Option<CreatePaymentIntentPaymentMethodOptionsCardPresent>>,
 
     pub ideal: Box<Option<CreatePaymentIntentPaymentMethodOptionsIdeal>>,
+
+    pub interac_present: Box<Option<CreatePaymentIntentPaymentMethodOptionsInteracPresent>>,
 
     pub klarna: Box<Option<CreatePaymentIntentPaymentMethodOptionsKlarna>>,
 
@@ -1095,6 +1121,8 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     pub card_present: Box<Option<UpdatePaymentIntentPaymentMethodOptionsCardPresent>>,
 
     pub ideal: Box<Option<UpdatePaymentIntentPaymentMethodOptionsIdeal>>,
+
+    pub interac_present: Box<Option<UpdatePaymentIntentPaymentMethodOptionsInteracPresent>>,
 
     pub klarna: Box<Option<UpdatePaymentIntentPaymentMethodOptionsKlarna>>,
 
@@ -1282,6 +1310,9 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsIdeal {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsInteracPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsKlarna {
@@ -1475,6 +1506,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsIdeal {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsInteracPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsKlarna {
@@ -1790,6 +1824,7 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataEpsBank {
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentIntentPaymentMethodDataFpxBank {
     AffinBank,
+    Agrobank,
     AllianceBank,
     Ambank,
     BankIslam,
@@ -1815,6 +1850,7 @@ impl CreatePaymentIntentPaymentMethodDataFpxBank {
     pub fn as_str(self) -> &'static str {
         match self {
             CreatePaymentIntentPaymentMethodDataFpxBank::AffinBank => "affin_bank",
+            CreatePaymentIntentPaymentMethodDataFpxBank::Agrobank => "agrobank",
             CreatePaymentIntentPaymentMethodDataFpxBank::AllianceBank => "alliance_bank",
             CreatePaymentIntentPaymentMethodDataFpxBank::Ambank => "ambank",
             CreatePaymentIntentPaymentMethodDataFpxBank::BankIslam => "bank_islam",
@@ -3111,6 +3147,7 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataEpsBank {
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentIntentPaymentMethodDataFpxBank {
     AffinBank,
+    Agrobank,
     AllianceBank,
     Ambank,
     BankIslam,
@@ -3136,6 +3173,7 @@ impl UpdatePaymentIntentPaymentMethodDataFpxBank {
     pub fn as_str(self) -> &'static str {
         match self {
             UpdatePaymentIntentPaymentMethodDataFpxBank::AffinBank => "affin_bank",
+            UpdatePaymentIntentPaymentMethodDataFpxBank::Agrobank => "agrobank",
             UpdatePaymentIntentPaymentMethodDataFpxBank::AllianceBank => "alliance_bank",
             UpdatePaymentIntentPaymentMethodDataFpxBank::Ambank => "ambank",
             UpdatePaymentIntentPaymentMethodDataFpxBank::BankIslam => "bank_islam",
