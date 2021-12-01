@@ -42,7 +42,7 @@ jobs:
             Here are the missing exports:
 
             ```
-            ${{ steps.validate.outputs.stdout }}
+            ${{ steps.verify.outputs.stdout }}
             ```
           branch: openapi
           branch-suffix: timestamp
