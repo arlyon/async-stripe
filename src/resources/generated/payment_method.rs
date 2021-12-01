@@ -399,7 +399,7 @@ pub struct PaymentMethodEps {
 pub struct PaymentMethodFpx {
     /// The customer's bank, if provided.
     ///
-    /// Can be one of `affin_bank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, or `pb_enterprise`.
+    /// Can be one of `affin_bank`, `agrobank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, or `pb_enterprise`.
     pub bank: PaymentMethodFpxBank,
 }
 
@@ -912,6 +912,7 @@ impl std::fmt::Display for CreatePaymentMethodEpsBank {
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentMethodFpxBank {
     AffinBank,
+    Agrobank,
     AllianceBank,
     Ambank,
     BankIslam,
@@ -937,6 +938,7 @@ impl CreatePaymentMethodFpxBank {
     pub fn as_str(self) -> &'static str {
         match self {
             CreatePaymentMethodFpxBank::AffinBank => "affin_bank",
+            CreatePaymentMethodFpxBank::Agrobank => "agrobank",
             CreatePaymentMethodFpxBank::AllianceBank => "alliance_bank",
             CreatePaymentMethodFpxBank::Ambank => "ambank",
             CreatePaymentMethodFpxBank::BankIslam => "bank_islam",
@@ -1237,6 +1239,7 @@ impl std::fmt::Display for PaymentMethodEpsBank {
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodFpxBank {
     AffinBank,
+    Agrobank,
     AllianceBank,
     Ambank,
     BankIslam,
@@ -1262,6 +1265,7 @@ impl PaymentMethodFpxBank {
     pub fn as_str(self) -> &'static str {
         match self {
             PaymentMethodFpxBank::AffinBank => "affin_bank",
+            PaymentMethodFpxBank::Agrobank => "agrobank",
             PaymentMethodFpxBank::AllianceBank => "alliance_bank",
             PaymentMethodFpxBank::Ambank => "ambank",
             PaymentMethodFpxBank::BankIslam => "bank_islam",

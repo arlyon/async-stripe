@@ -9,9 +9,9 @@ use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId}
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     CollectionMethod, Currency, Customer, Discount, Invoice, InvoicePaymentMethodOptionsAcssDebit,
-    InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsCard, PaymentMethod,
-    PaymentSource, Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
-    SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
+    InvoicePaymentMethodOptionsBancontact, PaymentMethod, PaymentSource, Scheduled, SetupIntent,
+    SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds,
+    SubscriptionSchedule, SubscriptionTransferData, TaxRate,
 };
 
 /// The resource representing a Stripe "Subscription".
@@ -282,7 +282,17 @@ pub struct SubscriptionsResourcePaymentMethodOptions {
     pub bancontact: Box<Option<InvoicePaymentMethodOptionsBancontact>>,
 
     /// This sub-hash contains details about the Card payment method options to pass to invoices created by the subscription.
-    pub card: Box<Option<InvoicePaymentMethodOptionsCard>>,
+    pub card: Box<Option<SubscriptionPaymentMethodOptionsCard>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SubscriptionPaymentMethodOptionsCard {
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    ///
+    /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
+    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    pub request_three_d_secure:
+        Box<Option<SubscriptionPaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -303,6 +313,7 @@ pub struct SubscriptionsResourcePendingUpdate {
     ///
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
+    /// See [Using trial periods on subscriptions](docs/billing/subscriptions/trials) to learn more.
     pub trial_from_plan: Box<Option<bool>>,
 }
 
@@ -472,6 +483,7 @@ pub struct CreateSubscription<'a> {
     /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
     /// The special value `now` can be provided to end the customer's trial immediately.
     /// Can be at most two years from `billing_cycle_anchor`.
+    /// See [Using trial periods on subscriptions](docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Scheduled>,
 
@@ -479,12 +491,14 @@ pub struct CreateSubscription<'a> {
     ///
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
+    /// See [Using trial periods on subscriptions](docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_from_plan: Option<bool>,
 
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     ///
     /// This will always overwrite any trials that might apply via a subscribed plan.
+    /// See [Using trial periods on subscriptions](docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 }
@@ -779,6 +793,7 @@ pub struct UpdateSubscription<'a> {
     ///
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
+    /// See [Using trial periods on subscriptions](docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_from_plan: Option<bool>,
 }
@@ -1386,6 +1401,35 @@ impl AsRef<str> for SubscriptionPaymentBehavior {
 }
 
 impl std::fmt::Display for SubscriptionPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `SubscriptionPaymentMethodOptionsCard`'s `request_three_d_secure` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
+    Any,
+    Automatic,
+}
+
+impl SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SubscriptionPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
+            SubscriptionPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

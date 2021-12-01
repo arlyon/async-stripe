@@ -9,7 +9,7 @@ use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId}
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
     CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentMethodOptionsBoleto,
-    PaymentMethodOptionsOxxo, SetupIntent, Shipping, Subscription, TaxRate,
+    PaymentMethodOptionsOxxo, SetupIntent, Shipping, ShippingRate, Subscription, TaxRate,
 };
 
 /// The resource representing a Stripe "Session".
@@ -129,6 +129,15 @@ pub struct CheckoutSession {
 
     /// When set, provides configuration for Checkout to collect a shipping address from a customer.
     pub shipping_address_collection: Box<Option<ShippingAddressCollection>>,
+
+    /// The shipping rate options applied to this Session.
+    pub shipping_options: Vec<PaymentPagesCheckoutSessionShippingOption>,
+
+    /// The ID of the ShippingRate for Checkout Sessions in `payment` mode.
+    pub shipping_rate: Box<Option<Expandable<ShippingRate>>>,
+
+    /// The status of the Checkout Session, one of `open`, `complete`, or `expired`.
+    pub status: Box<Option<CheckoutSessionStatus>>,
 
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button.
@@ -296,6 +305,15 @@ pub struct PaymentPagesCheckoutSessionPhoneNumberCollection {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionShippingOption {
+    /// A non-negative integer in cents representing how much to charge.
+    pub shipping_amount: i64,
+
+    /// The shipping rate.
+    pub shipping_rate: Expandable<ShippingRate>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
     /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, or `unknown`.
     #[serde(rename = "type")]
@@ -395,7 +413,7 @@ pub struct CreateCheckoutSession<'a> {
     ///
     /// In `payment` mode, the customer’s most recent card payment method will be used to prefill the email, name, card details, and billing address on the Checkout page.
     /// In `subscription` mode, the customer’s [default payment method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) will be used if it’s a card, and otherwise the most recent card will be used.
-    /// A valid billing address is required for Checkout to prefill the customer's card details.  If the customer changes their email on the Checkout page, the Customer object will be updated with the new email.  If blank for Checkout Sessions in `payment` or `subscription` mode, Checkout will create a new Customer object based on information provided during the payment flow.  You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
+    /// A valid billing address is required for Checkout to prefill the customer's card details.  If the Customer already has a valid [email](https://stripe.com/docs/api/customers/object#customer_object-email) set, the email will be prefilled and not editable in Checkout. If the Customer does not have a valid `email`, Checkout will set the email entered during the session on the Customer.  If blank for Checkout Sessions in `payment` or `subscription` mode, Checkout will create a new Customer object based on information provided during the payment flow.  You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
 
@@ -495,11 +513,9 @@ pub struct CreateCheckoutSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Box<Option<CreateCheckoutSessionShippingAddressCollection>>,
 
-    /// The shipping rate to apply to this Session.
-    ///
-    /// Currently, only up to one may be specified.
+    /// The shipping rate options to apply to this Session.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_rates: Box<Option<Vec<String>>>,
+    pub shipping_options: Box<Option<Vec<CreateCheckoutSessionShippingOptions>>>,
 
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button.
@@ -549,7 +565,7 @@ impl<'a> CreateCheckoutSession<'a> {
             phone_number_collection: Default::default(),
             setup_intent_data: Default::default(),
             shipping_address_collection: Default::default(),
-            shipping_rates: Default::default(),
+            shipping_options: Default::default(),
             submit_type: Default::default(),
             subscription_data: Default::default(),
             success_url,
@@ -642,18 +658,9 @@ pub struct CreateCheckoutSessionDiscounts {
 pub struct CreateCheckoutSessionLineItems {
     pub adjustable_quantity: Box<Option<CreateCheckoutSessionLineItemsAdjustableQuantity>>,
 
-    pub amount: Box<Option<i64>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
-
     pub description: Box<Option<String>>,
 
     pub dynamic_tax_rates: Box<Option<Vec<String>>>,
-
-    pub images: Box<Option<Vec<String>>>,
-
-    pub name: Box<Option<String>>,
 
     pub price: Box<Option<String>>,
 
@@ -721,6 +728,13 @@ pub struct CreateCheckoutSessionSetupIntentData {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingAddressCollection {
     pub allowed_countries: Vec<CreateCheckoutSessionShippingAddressCollectionAllowedCountries>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionShippingOptions {
+    pub shipping_rate: Box<Option<String>>,
+
+    pub shipping_rate_data: Box<Option<CreateCheckoutSessionShippingOptionsShippingRateData>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -829,6 +843,26 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
+    pub delivery_estimate:
+        Box<Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate>>,
+
+    pub display_name: String,
+
+    pub fixed_amount: Box<Option<CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount>>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    pub tax_behavior: Box<Option<CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior>>,
+
+    pub tax_code: Box<Option<String>>,
+
+    #[serde(rename = "type")]
+    pub type_: Box<Option<CreateCheckoutSessionShippingOptionsShippingRateDataType>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataItems {
     pub plan: String,
 
@@ -897,6 +931,36 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     pub transaction_type: Box<
         Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
     >,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
+    pub maximum:
+        Box<Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum>>,
+
+    pub minimum:
+        Box<Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
+    pub amount: i64,
+
+    pub currency: Currency,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
+    pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit,
+
+    pub value: i64,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
+    pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit,
+
+    pub value: i64,
 }
 
 /// An enum representing the possible values of an `CheckoutAcssDebitMandateOptions`'s `default_for` field.
@@ -1220,6 +1284,37 @@ impl AsRef<str> for CheckoutSessionPaymentStatus {
 }
 
 impl std::fmt::Display for CheckoutSessionPaymentStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutSession`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutSessionStatus {
+    Complete,
+    Expired,
+    Open,
+}
+
+impl CheckoutSessionStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutSessionStatus::Complete => "complete",
+            CheckoutSessionStatus::Expired => "expired",
+            CheckoutSessionStatus::Open => "open",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutSessionStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutSessionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -2453,6 +2548,148 @@ impl AsRef<str> for CreateCheckoutSessionShippingAddressCollectionAllowedCountri
 }
 
 impl std::fmt::Display for CreateCheckoutSessionShippingAddressCollectionAllowedCountries {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum`'s `unit` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
+    BusinessDay,
+    Day,
+    Hour,
+    Month,
+    Week,
+}
+
+impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit::BusinessDay => "business_day",
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit::Day => "day",
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit::Hour => "hour",
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit::Month => "month",
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit::Week => "week",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum`'s `unit` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
+    BusinessDay,
+    Day,
+    Hour,
+    Month,
+    Week,
+}
+
+impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit::BusinessDay => "business_day",
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit::Day => "day",
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit::Hour => "hour",
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit::Month => "month",
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit::Week => "week",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionShippingOptionsShippingRateData`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior::Exclusive => {
+                "exclusive"
+            }
+            CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior::Inclusive => {
+                "inclusive"
+            }
+            CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior::Unspecified => {
+                "unspecified"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionShippingOptionsShippingRateData`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionShippingOptionsShippingRateDataType {
+    FixedAmount,
+}
+
+impl CreateCheckoutSessionShippingOptionsShippingRateDataType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionShippingOptionsShippingRateDataType::FixedAmount => "fixed_amount",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionShippingOptionsShippingRateDataType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
