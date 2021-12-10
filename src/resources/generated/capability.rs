@@ -102,7 +102,7 @@ pub struct AccountCapabilityRequirements {
     /// If the capability is disabled, this string describes why.
     ///
     /// Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.  `rejected.unsupported_business` means that the account's business is not supported by the capability.
-    /// For example, payment methods may restrict the businesses they support in their terms of service:  - [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses)  If you believe that the rejection is in error, please contact support@stripe.com for assistance.
+    /// For example, payment methods may restrict the businesses they support in their terms of service:  - [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses)  If you believe that the rejection is in error, please contact support at https://support.stripe.com/contact/ for assistance.
     pub disabled_reason: Box<Option<String>>,
 
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.

@@ -33,7 +33,7 @@ pub struct TaxId {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: Box<Option<bool>>,
 
-    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `es_cif`, `eu_vat`, `gb_vat`, `hk_br`, `id_npwp`, `il_vat`, `in_gst`, `jp_cn`, `jp_rn`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `th_vat`, `tw_vat`, `us_ein`, or `za_vat`.
+    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `es_cif`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `id_npwp`, `il_vat`, `in_gst`, `jp_cn`, `jp_rn`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `th_vat`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
     ///
     /// Note that some legacy tax IDs have type `unknown`.
     #[serde(rename = "type")]
@@ -88,6 +88,7 @@ pub enum TaxIdType {
     EsCif,
     EuVat,
     GbVat,
+    GeVat,
     HkBr,
     IdNpwp,
     IlVat,
@@ -109,6 +110,7 @@ pub enum TaxIdType {
     SgUen,
     ThVat,
     TwVat,
+    UaVat,
     Unknown,
     UsEin,
     ZaVat,
@@ -133,6 +135,7 @@ impl TaxIdType {
             TaxIdType::EsCif => "es_cif",
             TaxIdType::EuVat => "eu_vat",
             TaxIdType::GbVat => "gb_vat",
+            TaxIdType::GeVat => "ge_vat",
             TaxIdType::HkBr => "hk_br",
             TaxIdType::IdNpwp => "id_npwp",
             TaxIdType::IlVat => "il_vat",
@@ -154,6 +157,7 @@ impl TaxIdType {
             TaxIdType::SgUen => "sg_uen",
             TaxIdType::ThVat => "th_vat",
             TaxIdType::TwVat => "tw_vat",
+            TaxIdType::UaVat => "ua_vat",
             TaxIdType::Unknown => "unknown",
             TaxIdType::UsEin => "us_ein",
             TaxIdType::ZaVat => "za_vat",

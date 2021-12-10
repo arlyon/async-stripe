@@ -315,7 +315,7 @@ pub struct PaymentPagesCheckoutSessionShippingOption {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
 
@@ -2835,6 +2835,7 @@ pub enum PaymentPagesCheckoutSessionTaxIdType {
     EsCif,
     EuVat,
     GbVat,
+    GeVat,
     HkBr,
     IdNpwp,
     IlVat,
@@ -2856,6 +2857,7 @@ pub enum PaymentPagesCheckoutSessionTaxIdType {
     SgUen,
     ThVat,
     TwVat,
+    UaVat,
     Unknown,
     UsEin,
     ZaVat,
@@ -2880,6 +2882,7 @@ impl PaymentPagesCheckoutSessionTaxIdType {
             PaymentPagesCheckoutSessionTaxIdType::EsCif => "es_cif",
             PaymentPagesCheckoutSessionTaxIdType::EuVat => "eu_vat",
             PaymentPagesCheckoutSessionTaxIdType::GbVat => "gb_vat",
+            PaymentPagesCheckoutSessionTaxIdType::GeVat => "ge_vat",
             PaymentPagesCheckoutSessionTaxIdType::HkBr => "hk_br",
             PaymentPagesCheckoutSessionTaxIdType::IdNpwp => "id_npwp",
             PaymentPagesCheckoutSessionTaxIdType::IlVat => "il_vat",
@@ -2901,6 +2904,7 @@ impl PaymentPagesCheckoutSessionTaxIdType {
             PaymentPagesCheckoutSessionTaxIdType::SgUen => "sg_uen",
             PaymentPagesCheckoutSessionTaxIdType::ThVat => "th_vat",
             PaymentPagesCheckoutSessionTaxIdType::TwVat => "tw_vat",
+            PaymentPagesCheckoutSessionTaxIdType::UaVat => "ua_vat",
             PaymentPagesCheckoutSessionTaxIdType::Unknown => "unknown",
             PaymentPagesCheckoutSessionTaxIdType::UsEin => "us_ein",
             PaymentPagesCheckoutSessionTaxIdType::ZaVat => "za_vat",

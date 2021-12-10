@@ -786,6 +786,7 @@ pub enum TaxIdType {
     EsCif,
     EuVat,
     GbVat,
+    GeVat,
     HkBr,
     IdNpwp,
     IlVat,
@@ -807,6 +808,7 @@ pub enum TaxIdType {
     SgUen,
     ThVat,
     TwVat,
+    UaVat,
     UsEin,
     ZaVat,
 }
@@ -830,6 +832,7 @@ impl TaxIdType {
             TaxIdType::EsCif => "es_cif",
             TaxIdType::EuVat => "eu_vat",
             TaxIdType::GbVat => "gb_vat",
+            TaxIdType::GeVat => "ge_vat",
             TaxIdType::HkBr => "hk_br",
             TaxIdType::IdNpwp => "id_npwp",
             TaxIdType::IlVat => "il_vat",
@@ -851,6 +854,7 @@ impl TaxIdType {
             TaxIdType::SgUen => "sg_uen",
             TaxIdType::ThVat => "th_vat",
             TaxIdType::TwVat => "tw_vat",
+            TaxIdType::UaVat => "ua_vat",
             TaxIdType::UsEin => "us_ein",
             TaxIdType::ZaVat => "za_vat",
         }
