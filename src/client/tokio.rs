@@ -111,7 +111,7 @@ impl Client {
     }
 
     /// Make a `GET` http request with just a path
-    pub fn get<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
+    pub fn get<T: DeserializeOwned + Send + Sync + 'static>(&self, path: &str) -> Response<T> {
         let url = self.url(path);
         let mut req = Request::builder()
             .method("GET")
