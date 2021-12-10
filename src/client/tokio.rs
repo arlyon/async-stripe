@@ -265,7 +265,7 @@ impl Client {
     }
 }
 
-fn send<T: DeserializeOwned + Send + 'static>(
+fn send<T: DeserializeOwned + Send + Sync + 'static>(
     client: &HttpClient,
     request: hyper::Request<Body>,
 ) -> Response<T> {

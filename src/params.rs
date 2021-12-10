@@ -172,7 +172,7 @@ impl<T: Clone> Clone for List<T> {
     }
 }
 
-impl<T: DeserializeOwned + Send + 'static> List<T> {
+impl<T: DeserializeOwned + Send + Sync + 'static> List<T> {
     /// Prefer `List::next` when possible
     pub fn get_next(client: &Client, url: &str, last_id: &str) -> Response<List<T>> {
         if url.starts_with("/v1/") {
@@ -190,7 +190,7 @@ impl<T: DeserializeOwned + Send + 'static> List<T> {
     }
 }
 
-impl<T: Paginate + DeserializeOwned + Send + 'static> List<T> {
+impl<T: Paginate + DeserializeOwned + Send + Sync + 'static> List<T> {
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
     /// Stripe's default page size.
     ///
