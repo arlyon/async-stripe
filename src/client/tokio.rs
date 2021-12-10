@@ -43,13 +43,13 @@ pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Sen
 
 #[allow(dead_code)]
 #[inline(always)]
-pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
+pub(crate) fn ok<T: Send + Sync + 'static>(ok: T) -> Response<T> {
     Box::pin(future::ready(Ok(ok)))
 }
 
 #[allow(dead_code)]
 #[inline(always)]
-pub(crate) fn err<T: Send + 'static>(err: StripeError) -> Response<T> {
+pub(crate) fn err<T: Send + Sync + 'static>(err: StripeError) -> Response<T> {
     Box::pin(future::ready(Err(err)))
 }
 
@@ -123,7 +123,7 @@ impl Client {
     }
 
     /// Make a `GET` http request with url query parameters
-    pub fn get_query<T: DeserializeOwned + Send + 'static, P: serde::Serialize>(
+    pub fn get_query<T: DeserializeOwned + Send + Sync + 'static, P: serde::Serialize>(
         &self,
         path: &str,
         params: P,
@@ -142,7 +142,7 @@ impl Client {
     }
 
     /// Make a `DELETE` http request with just a path
-    pub fn delete<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
+    pub fn delete<T: DeserializeOwned + Send + Sync + 'static>(&self, path: &str) -> Response<T> {
         let url = self.url(path);
         let mut req = Request::builder()
             .method("DELETE")
@@ -154,7 +154,7 @@ impl Client {
     }
 
     /// Make a `DELETE` http request with url query parameters
-    pub fn delete_query<T: DeserializeOwned + Send + 'static, P: serde::Serialize>(
+    pub fn delete_query<T: DeserializeOwned + Send + Sync + 'static, P: serde::Serialize>(
         &self,
         path: &str,
         params: P,
@@ -173,7 +173,7 @@ impl Client {
     }
 
     /// Make a `POST` http request with just a path
-    pub fn post<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
+    pub fn post<T: DeserializeOwned + Send + Sync + 'static>(&self, path: &str) -> Response<T> {
         let url = self.url(path);
         let mut req = Request::builder()
             .method("POST")
@@ -185,7 +185,7 @@ impl Client {
     }
 
     /// Make a `POST` http request with urlencoded body
-    pub fn post_form<T: DeserializeOwned + Send + 'static, F: serde::Serialize>(
+    pub fn post_form<T: DeserializeOwned + Send + Sync + 'static, F: serde::Serialize>(
         &self,
         path: &str,
         form: F,
