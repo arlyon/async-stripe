@@ -39,7 +39,7 @@ compile_error!("You must enable only one TLS implementation");
 
 type HttpClient = hyper::Client<connector::HttpsConnector<HttpConnector>, Body>;
 
-pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
+pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send + Sync>>;
 
 #[allow(dead_code)]
 #[inline(always)]
