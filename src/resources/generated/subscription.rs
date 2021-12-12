@@ -313,7 +313,7 @@ pub struct SubscriptionsResourcePendingUpdate {
     ///
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
-    /// See [Using trial periods on subscriptions](docs/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     pub trial_from_plan: Box<Option<bool>>,
 }
 
@@ -483,7 +483,7 @@ pub struct CreateSubscription<'a> {
     /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
     /// The special value `now` can be provided to end the customer's trial immediately.
     /// Can be at most two years from `billing_cycle_anchor`.
-    /// See [Using trial periods on subscriptions](docs/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Scheduled>,
 
@@ -491,14 +491,14 @@ pub struct CreateSubscription<'a> {
     ///
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
-    /// See [Using trial periods on subscriptions](docs/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_from_plan: Option<bool>,
 
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     ///
     /// This will always overwrite any trials that might apply via a subscribed plan.
-    /// See [Using trial periods on subscriptions](docs/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 }
@@ -793,7 +793,7 @@ pub struct UpdateSubscription<'a> {
     ///
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
-    /// See [Using trial periods on subscriptions](docs/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_from_plan: Option<bool>,
 }

@@ -383,6 +383,8 @@ pub struct PaymentIntentPaymentMethodOptions {
 
     pub card_present: Box<Option<PaymentMethodOptionsCardPresent>>,
 
+    pub giropay: Box<Option<PaymentMethodOptionsGiropay>>,
+
     pub ideal: Box<Option<PaymentMethodOptionsIdeal>>,
 
     pub interac_present: Box<Option<PaymentMethodOptionsInteracPresent>>,
@@ -491,6 +493,9 @@ pub struct PaymentMethodOptionsCardInstallments {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsCardPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsGiropay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsIdeal {}
@@ -1018,6 +1023,8 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
 
     pub card_present: Box<Option<CreatePaymentIntentPaymentMethodOptionsCardPresent>>,
 
+    pub giropay: Box<Option<CreatePaymentIntentPaymentMethodOptionsGiropay>>,
+
     pub ideal: Box<Option<CreatePaymentIntentPaymentMethodOptionsIdeal>>,
 
     pub interac_present: Box<Option<CreatePaymentIntentPaymentMethodOptionsInteracPresent>>,
@@ -1119,6 +1126,8 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     pub card: Box<Option<UpdatePaymentIntentPaymentMethodOptionsCard>>,
 
     pub card_present: Box<Option<UpdatePaymentIntentPaymentMethodOptionsCardPresent>>,
+
+    pub giropay: Box<Option<UpdatePaymentIntentPaymentMethodOptionsGiropay>>,
 
     pub ideal: Box<Option<UpdatePaymentIntentPaymentMethodOptionsIdeal>>,
 
@@ -1307,6 +1316,9 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsGiropay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsIdeal {}
@@ -1503,6 +1515,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsGiropay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsIdeal {}
@@ -2414,6 +2429,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnFi,
     #[serde(rename = "en-GB")]
     EnGb,
+    #[serde(rename = "en-IE")]
+    EnIe,
     #[serde(rename = "en-IT")]
     EnIt,
     #[serde(rename = "en-NL")]
@@ -2457,6 +2474,7 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnFi => "en-FI",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnGb => "en-GB",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnIe => "en-IE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnIt => "en-IT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNo => "en-NO",
@@ -3737,6 +3755,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnFi,
     #[serde(rename = "en-GB")]
     EnGb,
+    #[serde(rename = "en-IE")]
+    EnIe,
     #[serde(rename = "en-IT")]
     EnIt,
     #[serde(rename = "en-NL")]
@@ -3780,6 +3800,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnFi => "en-FI",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnGb => "en-GB",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnIe => "en-IE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnIt => "en-IT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNo => "en-NO",
