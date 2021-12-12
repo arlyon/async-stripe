@@ -1,12 +1,14 @@
-use serde_derive::{Serialize};
+use serde_derive::Serialize;
 
 use crate::config::{Client, Response};
+use crate::params::Expand;
 use crate::resources::LoginLink;
 use crate::AccountId;
-use crate::params::Expand;
 
 pub trait CreateLoginLinkExt {
-    fn create(client: &Client, id: &AccountId, redirect_url: &str) -> Response<Self> where Self: Sized;
+    fn create(client: &Client, id: &AccountId, redirect_url: &str) -> Response<Self>
+    where
+        Self: Sized;
 }
 
 #[derive(Clone, Debug, Serialize)]
