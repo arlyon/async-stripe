@@ -99,6 +99,7 @@ pub use {
         charge::*,
         customer::*,
         dispute::*,
+        ephemeral_key::*,
         file::*,
         file_link::*,
         mandate::*,

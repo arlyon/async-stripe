@@ -19,6 +19,7 @@ pub mod core {
     pub mod charge;
     pub mod customer;
     pub mod dispute;
+    pub mod ephemeral_key;
     pub mod file;
     pub mod file_link;
     pub mod mandate;
