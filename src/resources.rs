@@ -112,6 +112,7 @@ pub use {
         setup_attempt::*,
         setup_intent::*,
         shipping::*,
+        shipping_rate::*,
         tax_code::*,
         tax_deducted_at_source::*,
         token::*,
@@ -177,11 +178,13 @@ pub use {
         subscription_item::*,
         subscription_item::PlanInterval as SubscriptionItemInterval,
         subscription_item::SubscriptionItemPriceDataRecurring as SubscriptionItemPriceDataRecurring,
+        subscription_item::SubscriptionItemPriceData as SubscriptionItemPriceData,
         // need to import this afterwards so that the SubscriptionItemPriceDataRecurring
         // isn't silently ignored
         subscription::*,
         subscription::PlanInterval as SubscriptionInterval,
         subscription::SubscriptionItemPriceDataRecurring as SubscriptionPriceDataRecurring,
+        subscription::SubscriptionItemPriceData as SubscriptionPriceData,
         subscription_schedule::*,
         subscription_billing_thresholds::*,
         subscription_item_billing_thresholds::*,
