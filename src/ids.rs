@@ -477,7 +477,7 @@ def_id!(CouponId: String); // N.B. A coupon id can be user-provided so can be an
 def_id!(CustomerId, "cus_");
 def_id!(DiscountId, "di_");
 def_id!(DisputeId, "dp_");
-def_id!(EphemeralKeyId, "eph_"); //TODO: Figure out what prefix this id has
+def_id!(EphemeralKeyId, "ephkey_");
 def_id!(EventId, "evt_");
 def_id!(FileId, "file_");
 def_id!(FileLinkId, "link_");
