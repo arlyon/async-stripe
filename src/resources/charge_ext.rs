@@ -1,7 +1,7 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::{BankAccountId, CardId, ChargeId, SourceId, TokenId};
+use crate::ids::{AccountId, BankAccountId, CardId, ChargeId, SourceId, TokenId};
 use crate::params::Object;
 use crate::resources::{Charge, Rule};
 
@@ -15,6 +15,7 @@ pub enum ChargeSourceParams {
     Source(SourceId),
     Card(CardId),
     BankAccount(BankAccountId),
+    Account(AccountId),
 }
 
 /// The set of parameters that can be used when capturing a charge object.
