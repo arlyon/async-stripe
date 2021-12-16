@@ -142,15 +142,10 @@ fn main() -> Result<()> {
     let url_finder = UrlFinder::new()?;
 
     // Generate resources
-    //println!("Meta objects: {:#?}", meta.objects);
     let mut shared_objects = BTreeSet::new();
     for object in &meta.objects {
         if object.starts_with("deleted_") {
             continue;
-        }
-
-        if object == &"payment_intent" {
-            println!("\n\n\n\nPayment Intent\n\n\n\n");
         }
 
         // Generate the types for the object
@@ -1027,7 +1022,9 @@ fn gen_unions(out: &mut String, state: &mut Generated, meta: &Metadata) {
             let object_name = meta.spec["components"]["schemas"][&variant_schema]["properties"]
                 ["object"]["enum"][0]
                 .as_str()
-                .unwrap();
+                .unwrap_or_else(|| {
+                    meta.spec["components"]["schemas"][&variant_schema]["title"].as_str().unwrap()
+                });
             let variant_name = meta.schema_to_rust_type(object_name);
             let type_name = meta.schema_to_rust_type(&variant_schema);
             if variant_name.to_snake_case() != object_name {
@@ -1445,8 +1442,12 @@ fn gen_field_rust_type(
                     state.use_params.insert("Timestamp");
                     "RangeQuery<Timestamp>".into()
                 } else {
-                    let union_schema = meta.schema_field(object, field_name);
+                    println!("object: {}, field_name: {}", object, field_name);
+                    let mut union_addition = field_name.to_owned();
+                    union_addition.push_str("_union");
+                    let union_schema = meta.schema_field(object, &union_addition);
                     let union_name = meta.schema_to_rust_type(&union_schema);
+                    println!("union_schema: {}, union_name: {}", union_schema, union_name);
                     let union_ = InferredUnion {
                         field: field_name.into(),
                         schema_variants: any_of

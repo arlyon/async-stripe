@@ -219,7 +219,6 @@ pub struct AccountRequirementsError {
 pub struct PersonRelationship {
     /// Whether the person is a director of the account's legal entity.
     ///
-    /// Currently only required for accounts in the EU.
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
     pub director: Box<Option<bool>>,
 

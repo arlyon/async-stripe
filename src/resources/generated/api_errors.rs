@@ -43,7 +43,7 @@ pub struct ApiErrors {
     pub setup_intent: Box<Option<SetupIntent>>,
 
     /// The source object for errors returned on a request involving a source.
-    pub source: Box<Option<ApiErrorsSource>>,
+    pub source: Box<Option<ApiErrorsSourceUnion>>,
 
     /// The type of error returned.
     ///
@@ -54,7 +54,7 @@ pub struct ApiErrors {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
-pub enum ApiErrorsSource {
+pub enum ApiErrorsSourceUnion {
     BankAccount(BankAccount),
     Card(Card),
     Source(Source),

@@ -33,7 +33,7 @@ pub fn object_mappings() -> ObjectMap {
         ("account_card_payments_settings", "card_payments_settings"),
         ("account_dashboard_settings", "dashboard_settings"),
         ("account_decline_charge_on", "decline_charge_on"),
-        ("account_external_account", "external_account"),
+        ("account_external_account_union", "external_account"),
         ("account_payments_settings", "payments_settings"),
         ("account_payout_settings", "payout_settings"),
         ("account_tos_acceptance", "tos_acceptance"),

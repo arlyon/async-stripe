@@ -65,6 +65,8 @@ impl PromotionCode {
     }
 
     /// Retrieves the promotion code with the given ID.
+    ///
+    /// In order to retrieve a promotion code by the customer-facing `code` use [list](https://stripe.com/docs/api/promotion_codes/list) with the desired `code`.
     pub fn retrieve(
         client: &Client,
         id: &PromotionCodeId,

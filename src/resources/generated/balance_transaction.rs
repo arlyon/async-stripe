@@ -65,7 +65,7 @@ pub struct BalanceTransaction {
     pub reporting_category: String,
 
     /// The Stripe object to which this transaction is related.
-    pub source: Box<Option<Expandable<BalanceTransactionSource>>>,
+    pub source: Box<Option<Expandable<BalanceTransactionSourceUnion>>>,
 
     /// If the transaction's net funds are available in the Stripe balance yet.
     ///
@@ -207,7 +207,7 @@ impl<'a> ListBalanceTransactions<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
-pub enum BalanceTransactionSource {
+pub enum BalanceTransactionSourceUnion {
     ApplicationFee(ApplicationFee),
     Charge(Charge),
     ConnectCollectionTransfer(ConnectCollectionTransfer),

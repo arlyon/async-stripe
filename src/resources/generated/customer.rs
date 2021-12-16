@@ -135,9 +135,7 @@ impl Customer {
         client.post_form("/customers", &params)
     }
 
-    /// Retrieves the details of an existing customer.
-    ///
-    /// You need only supply the unique customer identifier that was returned upon customer creation.
+    /// Retrieves a Customer object.
     pub fn retrieve(client: &Client, id: &CustomerId, expand: &[&str]) -> Response<Customer> {
         client.get_query(&format!("/customers/{}", id), &Expand { expand })
     }

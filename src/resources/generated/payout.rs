@@ -47,7 +47,7 @@ pub struct Payout {
     pub description: Box<Option<String>>,
 
     /// ID of the bank account or card the payout was sent to.
-    pub destination: Box<Option<Expandable<PayoutDestination>>>,
+    pub destination: Box<Option<Expandable<PayoutDestinationUnion>>>,
 
     /// If the payout failed or was canceled, this will be the ID of the balance transaction that reversed the initial balance transaction, and puts the funds from the failed payout back in your balance.
     pub failure_balance_transaction: Box<Option<Expandable<BalanceTransaction>>>,
@@ -288,7 +288,7 @@ impl<'a> UpdatePayout<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
-pub enum PayoutDestination {
+pub enum PayoutDestinationUnion {
     BankAccount(BankAccount),
     Card(Card),
 }
