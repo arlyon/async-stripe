@@ -11,11 +11,11 @@ fn is_charge_retrievable() {
             Ok(ok) => ok,
         };
         assert_eq!(charge.id, "ch_123");
-        if let Some(cus) = *charge.customer {
-            assert!(!cus.is_object());
+        if let Some(cus) = charge.customer {
+            assert!(!(*cus).is_object());
         }
-        if let Some(inv) = *charge.invoice {
-            assert!(!inv.is_object());
+        if let Some(inv) = charge.invoice {
+            assert!(!(*inv).is_object());
         }
     });
 }
@@ -46,11 +46,11 @@ fn is_charge_expandable() {
             Ok(ok) => ok,
         };
         assert_eq!(charge.id, "ch_123");
-        if let Some(cus) = *charge.customer {
-            assert!(cus.is_object());
+        if let Some(cus) = charge.customer {
+            assert!((*cus).is_object());
         }
-        if let Some(inv) = *charge.invoice {
-            assert!(inv.is_object());
+        if let Some(inv) = charge.invoice {
+            assert!((*inv).is_object());
         }
     });
 }
