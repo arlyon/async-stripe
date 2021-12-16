@@ -18,7 +18,8 @@ pub struct SubscriptionItem {
     pub id: SubscriptionItemId,
 
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
-    pub billing_thresholds: Box<Option<SubscriptionItemBillingThresholds>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<Box<SubscriptionItemBillingThresholds>>,
 
     /// Time at which the object was created.
     ///
@@ -36,18 +37,22 @@ pub struct SubscriptionItem {
     #[serde(default)]
     pub metadata: Metadata,
 
-    pub price: Box<Option<Price>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Box<Price>>,
 
     /// The [quantity](https://stripe.com/docs/subscriptions/quantities) of the plan to which the customer should be subscribed.
-    pub quantity: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
 
     /// The `subscription` this `subscription_item` belongs to.
-    pub subscription: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<Box<String>>,
 
     /// The tax rates which apply to this `subscription_item`.
     ///
     /// When set, the `default_tax_rates` on the subscription do not apply to this `subscription_item`.
-    pub tax_rates: Box<Option<Vec<TaxRate>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Box<Vec<TaxRate>>>,
 }
 
 impl SubscriptionItem {
@@ -150,7 +155,7 @@ pub struct CreateSubscriptionItem<'a> {
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Box<Option<SubscriptionItemPriceData>>,
+    pub price_data: Option<Box<SubscriptionItemPriceData>>,
 
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     ///
@@ -178,7 +183,7 @@ pub struct CreateSubscriptionItem<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Box<Option<Vec<String>>>,
+    pub tax_rates: Option<Box<Vec<String>>>,
 }
 
 impl<'a> CreateSubscriptionItem<'a> {
@@ -290,7 +295,7 @@ pub struct UpdateSubscriptionItem<'a> {
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Box<Option<SubscriptionItemPriceData>>,
+    pub price_data: Option<Box<SubscriptionItemPriceData>>,
 
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     ///
@@ -315,7 +320,7 @@ pub struct UpdateSubscriptionItem<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Box<Option<Vec<String>>>,
+    pub tax_rates: Option<Box<Vec<String>>>,
 }
 
 impl<'a> UpdateSubscriptionItem<'a> {
@@ -344,18 +349,22 @@ pub struct SubscriptionItemPriceData {
 
     pub recurring: SubscriptionItemPriceDataRecurring,
 
-    pub tax_behavior: Box<Option<SubscriptionItemPriceDataTaxBehavior>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<Box<SubscriptionItemPriceDataTaxBehavior>>,
 
-    pub unit_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<Box<i64>>,
 
-    pub unit_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceDataRecurring {
     pub interval: PlanInterval,
 
-    pub interval_count: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<Box<u64>>,
 }
 
 /// An enum representing the possible values of an `SubscriptionItemPriceDataRecurring`'s `interval` field.

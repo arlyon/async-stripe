@@ -19,23 +19,27 @@ pub struct IdentityVerificationReport {
     /// Measured in seconds since the Unix epoch.
     pub created: Timestamp,
 
-    pub document: Box<Option<GelatoDocumentReport>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<Box<GelatoDocumentReport>>,
 
-    pub id_number: Box<Option<GelatoIdNumberReport>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number: Option<Box<GelatoIdNumberReport>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
     pub options: GelatoVerificationReportOptions,
 
-    pub selfie: Box<Option<GelatoSelfieReport>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selfie: Option<Box<GelatoSelfieReport>>,
 
     /// Type of report.
     #[serde(rename = "type")]
     pub type_: IdentityVerificationReportType,
 
     /// ID of the VerificationSession that created this report.
-    pub verification_session: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_session: Option<Box<String>>,
 }
 
 impl Object for IdentityVerificationReport {
@@ -51,113 +55,141 @@ impl Object for IdentityVerificationReport {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDocumentReport {
     /// Address as it appears in the document.
-    pub address: Box<Option<Address>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<Box<Address>>,
 
     /// Date of birth as it appears in the document.
-    pub dob: Box<Option<GelatoDataDocumentReportDateOfBirth>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<Box<GelatoDataDocumentReportDateOfBirth>>,
 
     /// Details on the verification error.
     ///
     /// Present when status is `unverified`.
-    pub error: Box<Option<GelatoDocumentReportError>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<Box<GelatoDocumentReportError>>,
 
     /// Expiration date of the document.
-    pub expiration_date: Box<Option<GelatoDataDocumentReportExpirationDate>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expiration_date: Option<Box<GelatoDataDocumentReportExpirationDate>>,
 
     /// Array of [File](https://stripe.com/docs/api/files) ids containing images for this document.
-    pub files: Box<Option<Vec<String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Box<Vec<String>>>,
 
     /// First name as it appears in the document.
-    pub first_name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name: Option<Box<String>>,
 
     /// Issued date of the document.
-    pub issued_date: Box<Option<GelatoDataDocumentReportIssuedDate>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issued_date: Option<Box<GelatoDataDocumentReportIssuedDate>>,
 
     /// Issuing country of the document.
-    pub issuing_country: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuing_country: Option<Box<String>>,
 
     /// Last name as it appears in the document.
-    pub last_name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name: Option<Box<String>>,
 
     /// Document ID number.
-    pub number: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number: Option<Box<String>>,
 
     /// Status of this `document` check.
     pub status: GelatoDocumentReportStatus,
 
     /// Type of the document.
     #[serde(rename = "type")]
-    pub type_: Box<Option<GelatoDocumentReportType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<Box<GelatoDocumentReportType>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDataDocumentReportDateOfBirth {
     /// Numerical day between 1 and 31.
-    pub day: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub day: Option<Box<i64>>,
 
     /// Numerical month between 1 and 12.
-    pub month: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub month: Option<Box<i64>>,
 
     /// The four-digit year.
-    pub year: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub year: Option<Box<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDataDocumentReportExpirationDate {
     /// Numerical day between 1 and 31.
-    pub day: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub day: Option<Box<i64>>,
 
     /// Numerical month between 1 and 12.
-    pub month: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub month: Option<Box<i64>>,
 
     /// The four-digit year.
-    pub year: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub year: Option<Box<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDataDocumentReportIssuedDate {
     /// Numerical day between 1 and 31.
-    pub day: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub day: Option<Box<i64>>,
 
     /// Numerical month between 1 and 12.
-    pub month: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub month: Option<Box<i64>>,
 
     /// The four-digit year.
-    pub year: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub year: Option<Box<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDocumentReportError {
     /// A short machine-readable string giving the reason for the verification failure.
-    pub code: Box<Option<GelatoDocumentReportErrorCode>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<Box<GelatoDocumentReportErrorCode>>,
 
     /// A human-readable message giving the reason for the failure.
     ///
     /// These messages can be shown to your users.
-    pub reason: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoIdNumberReport {
     /// Date of birth.
-    pub dob: Box<Option<GelatoDataIdNumberReportDate>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<Box<GelatoDataIdNumberReportDate>>,
 
     /// Details on the verification error.
     ///
     /// Present when status is `unverified`.
-    pub error: Box<Option<GelatoIdNumberReportError>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<Box<GelatoIdNumberReportError>>,
 
     /// First name.
-    pub first_name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub first_name: Option<Box<String>>,
 
     /// ID number.
-    pub id_number: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number: Option<Box<String>>,
 
     /// Type of ID number.
-    pub id_number_type: Box<Option<GelatoIdNumberReportIdNumberType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number_type: Option<Box<GelatoIdNumberReportIdNumberType>>,
 
     /// Last name.
-    pub last_name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last_name: Option<Box<String>>,
 
     /// Status of this `id_number` check.
     pub status: GelatoIdNumberReportStatus,
@@ -166,38 +198,46 @@ pub struct GelatoIdNumberReport {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDataIdNumberReportDate {
     /// Numerical day between 1 and 31.
-    pub day: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub day: Option<Box<i64>>,
 
     /// Numerical month between 1 and 12.
-    pub month: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub month: Option<Box<i64>>,
 
     /// The four-digit year.
-    pub year: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub year: Option<Box<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoIdNumberReportError {
     /// A short machine-readable string giving the reason for the verification failure.
-    pub code: Box<Option<GelatoIdNumberReportErrorCode>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<Box<GelatoIdNumberReportErrorCode>>,
 
     /// A human-readable message giving the reason for the failure.
     ///
     /// These messages can be shown to your users.
-    pub reason: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSelfieReport {
     /// ID of the [File](https://stripe.com/docs/api/files) holding the image of the identity document used in this check.
-    pub document: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<Box<String>>,
 
     /// Details on the verification error.
     ///
     /// Present when status is `unverified`.
-    pub error: Box<Option<GelatoSelfieReportError>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<Box<GelatoSelfieReportError>>,
 
     /// ID of the [File](https://stripe.com/docs/api/files) holding the image of the selfie used in this check.
-    pub selfie: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selfie: Option<Box<String>>,
 
     /// Status of this `selfie` check.
     pub status: GelatoSelfieReportStatus,
@@ -206,19 +246,23 @@ pub struct GelatoSelfieReport {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSelfieReportError {
     /// A short machine-readable string giving the reason for the verification failure.
-    pub code: Box<Option<GelatoSelfieReportErrorCode>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<Box<GelatoSelfieReportErrorCode>>,
 
     /// A human-readable message giving the reason for the failure.
     ///
     /// These messages can be shown to your users.
-    pub reason: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoVerificationReportOptions {
-    pub document: Box<Option<GelatoReportDocumentOptions>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<Box<GelatoReportDocumentOptions>>,
 
-    pub id_number: Box<Option<GelatoReportIdNumberOptions>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number: Option<Box<GelatoReportIdNumberOptions>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -226,18 +270,22 @@ pub struct GelatoReportDocumentOptions {
     /// Array of strings of allowed identity document types.
     ///
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-    pub allowed_types: Box<Option<Vec<GelatoReportDocumentOptionsAllowedTypes>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_types: Option<Box<Vec<GelatoReportDocumentOptionsAllowedTypes>>>,
 
     /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
-    pub require_id_number: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_id_number: Option<Box<bool>>,
 
     /// Disable image uploads, identity document images have to be captured using the device’s camera.
-    pub require_live_capture: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_live_capture: Option<Box<bool>>,
 
     /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
     ///
     /// [Learn more](https://stripe.com/docs/identity/selfie).
-    pub require_matching_selfie: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_matching_selfie: Option<Box<bool>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

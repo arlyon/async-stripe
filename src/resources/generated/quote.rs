@@ -29,13 +29,15 @@ pub struct Quote {
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     ///
     /// Only applicable if there are no line items with recurring prices on the quote.
-    pub application_fee_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee_amount: Option<Box<i64>>,
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
     /// Only applicable if there are line items with recurring prices on the quote.
-    pub application_fee_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee_percent: Option<Box<f64>>,
 
     pub automatic_tax: QuotesResourceAutomaticTax,
 
@@ -63,13 +65,16 @@ pub struct Quote {
     ///
     /// A customer is required before finalizing the quote.
     /// Once specified, it cannot be changed.
-    pub customer: Box<Option<Expandable<Customer>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<Box<Expandable<Customer>>>,
 
     /// The tax rates applied to this quote.
-    pub default_tax_rates: Box<Option<Vec<Expandable<TaxRate>>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_tax_rates: Option<Box<Vec<Expandable<TaxRate>>>>,
 
     /// A description that will be displayed on the quote PDF.
-    pub description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
 
     /// The discounts applied to this quote.
     pub discounts: Vec<Expandable<Discount>>,
@@ -80,21 +85,26 @@ pub struct Quote {
     pub expires_at: Timestamp,
 
     /// A footer that will be displayed on the quote PDF.
-    pub footer: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub footer: Option<Box<String>>,
 
     /// Details of the quote that was cloned.
     ///
     /// See the [cloning documentation](https://stripe.com/docs/quotes/clone) for more details.
-    pub from_quote: Box<Option<QuotesResourceFromQuote>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from_quote: Option<Box<QuotesResourceFromQuote>>,
 
     /// A header that will be displayed on the quote PDF.
-    pub header: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub header: Option<Box<String>>,
 
     /// The invoice that was created from this quote.
-    pub invoice: Box<Option<Expandable<Invoice>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice: Option<Box<Expandable<Invoice>>>,
 
     /// All invoices will be billed using the specified settings.
-    pub invoice_settings: Box<Option<InvoiceSettingQuoteSetting>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<Box<InvoiceSettingQuoteSetting>>,
 
     /// A list of items the customer is being quoted for.
     #[serde(default)]
@@ -111,12 +121,14 @@ pub struct Quote {
     /// A unique number that identifies this particular quote.
     ///
     /// This number is assigned once the quote is [finalized](https://stripe.com/docs/quotes/overview#finalize).
-    pub number: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number: Option<Box<String>>,
 
     /// The account on behalf of which to charge.
     ///
     /// See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.
-    pub on_behalf_of: Box<Option<Expandable<Account>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<Box<Expandable<Account>>>,
 
     /// The status of the quote.
     pub status: QuoteStatus,
@@ -124,17 +136,20 @@ pub struct Quote {
     pub status_transitions: QuotesResourceStatusTransitions,
 
     /// The subscription that was created or updated from this quote.
-    pub subscription: Box<Option<Expandable<Subscription>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<Box<Expandable<Subscription>>>,
 
     pub subscription_data: QuotesResourceSubscriptionData,
 
     /// The subscription schedule that was created or updated from this quote.
-    pub subscription_schedule: Box<Option<Expandable<SubscriptionSchedule>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_schedule: Option<Box<Expandable<SubscriptionSchedule>>>,
 
     pub total_details: QuotesResourceTotalDetails,
 
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the invoices.
-    pub transfer_data: Box<Option<QuotesResourceTransferData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_data: Option<Box<QuotesResourceTransferData>>,
 }
 
 impl Quote {
@@ -164,7 +179,8 @@ pub struct InvoiceSettingQuoteSetting {
     /// Number of days within which a customer must pay invoices generated by this quote.
     ///
     /// This value will be `null` for quotes where `collection_method=charge_automatically`.
-    pub days_until_due: Box<Option<u32>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub days_until_due: Option<Box<u32>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -173,7 +189,8 @@ pub struct QuotesResourceAutomaticTax {
     pub enabled: bool,
 
     /// The status of the most recent automated tax calculation for this quote.
-    pub status: Box<Option<QuotesResourceAutomaticTaxStatus>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<Box<QuotesResourceAutomaticTaxStatus>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -182,7 +199,8 @@ pub struct QuotesResourceComputed {
     ///
     /// Takes into account the line items with recurring prices and discounts with `duration=forever` coupons only.
     /// Defaults to `null` if no inputted line items with recurring prices.
-    pub recurring: Box<Option<QuotesResourceRecurring>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recurring: Option<Box<QuotesResourceRecurring>>,
 
     pub upfront: QuotesResourceUpfront,
 }
@@ -222,17 +240,20 @@ pub struct QuotesResourceStatusTransitions {
     /// The time that the quote was accepted.
     ///
     /// Measured in seconds since Unix epoch.
-    pub accepted_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub accepted_at: Option<Box<Timestamp>>,
 
     /// The time that the quote was canceled.
     ///
     /// Measured in seconds since Unix epoch.
-    pub canceled_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled_at: Option<Box<Timestamp>>,
 
     /// The time that the quote was finalized.
     ///
     /// Measured in seconds since Unix epoch.
-    pub finalized_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub finalized_at: Option<Box<Timestamp>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -241,10 +262,12 @@ pub struct QuotesResourceSubscriptionData {
     ///
     /// This date is ignored if it is in the past when the quote is accepted.
     /// Measured in seconds since the Unix epoch.
-    pub effective_date: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_date: Option<Box<Timestamp>>,
 
     /// Integer representing the number of trial period days before the customer is charged for the first time.
-    pub trial_period_days: Box<Option<u32>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_period_days: Option<Box<u32>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -252,13 +275,15 @@ pub struct QuotesResourceTransferData {
     /// The amount in %s that will be transferred to the destination account when the invoice is paid.
     ///
     /// By default, the entire amount is transferred to the destination.
-    pub amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<Box<i64>>,
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
     /// By default, the entire amount will be transferred to the destination.
-    pub amount_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_percent: Option<Box<f64>>,
 
     /// The account where funds from the payment will be transferred to upon payment success.
     pub destination: Expandable<Account>,

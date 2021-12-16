@@ -17,7 +17,8 @@ pub struct BillingPortalConfiguration {
     pub active: bool,
 
     /// ID of the Connect Application that created the configuration.
-    pub application: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application: Option<Box<String>>,
 
     pub business_profile: PortalBusinessProfile,
 
@@ -29,7 +30,8 @@ pub struct BillingPortalConfiguration {
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
     ///
     /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
-    pub default_return_url: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_return_url: Option<Box<String>>,
 
     pub features: PortalFeatures,
 
@@ -66,7 +68,8 @@ impl Object for BillingPortalConfiguration {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalBusinessProfile {
     /// The messaging shown to customers in the portal.
-    pub headline: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub headline: Option<Box<String>>,
 
     /// A link to the business’s publicly available privacy policy.
     pub privacy_policy_url: String,
@@ -155,7 +158,8 @@ pub struct PortalSubscriptionUpdate {
     pub enabled: bool,
 
     /// The list of products that support subscription updates.
-    pub products: Box<Option<Vec<PortalSubscriptionUpdateProduct>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub products: Option<Box<Vec<PortalSubscriptionUpdateProduct>>>,
 
     /// Determines how to handle prorations resulting from subscription updates.
     ///

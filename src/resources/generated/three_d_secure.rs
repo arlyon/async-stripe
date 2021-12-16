@@ -38,7 +38,8 @@ pub struct ThreeDSecure {
     /// If present, this is the URL that you should send the cardholder to for authentication.
     ///
     /// If you are going to use Stripe.js to display the authentication page in an iframe, you should use the value "_callback".
-    pub redirect_url: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redirect_url: Option<Box<String>>,
 
     /// Possible values are `redirect_pending`, `succeeded`, or `failed`.
     ///

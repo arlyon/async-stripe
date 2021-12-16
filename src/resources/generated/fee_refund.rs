@@ -20,7 +20,8 @@ pub struct ApplicationFeeRefund {
     pub amount: i64,
 
     /// Balance transaction that describes the impact on your account balance.
-    pub balance_transaction: Box<Option<Expandable<BalanceTransaction>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
 
     /// Time at which the object was created.
     ///

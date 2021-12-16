@@ -37,10 +37,12 @@ pub struct OrderReturn {
     pub livemode: bool,
 
     /// The order that this return includes items from.
-    pub order: Box<Option<Expandable<Order>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub order: Option<Box<Expandable<Order>>>,
 
     /// The ID of the refund issued for this return.
-    pub refund: Box<Option<Expandable<Refund>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund: Option<Box<Expandable<Refund>>>,
 }
 
 impl OrderReturn {

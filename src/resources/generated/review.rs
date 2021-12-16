@@ -18,15 +18,18 @@ pub struct Review {
     pub id: ReviewId,
 
     /// The ZIP or postal code of the card used, if applicable.
-    pub billing_zip: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_zip: Option<Box<String>>,
 
     /// The charge associated with this review.
-    pub charge: Box<Option<Expandable<Charge>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub charge: Option<Box<Expandable<Charge>>>,
 
     /// The reason the review was closed, or null if it has not yet been closed.
     ///
     /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, or `redacted`.
-    pub closed_reason: Box<Option<ReviewClosedReason>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub closed_reason: Option<Box<ReviewClosedReason>>,
 
     /// Time at which the object was created.
     ///
@@ -34,12 +37,14 @@ pub struct Review {
     pub created: Timestamp,
 
     /// The IP address where the payment originated.
-    pub ip_address: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<Box<String>>,
 
     /// Information related to the location of the payment.
     ///
     /// Note that this information is an approximation and attempts to locate the nearest population center - it should not be used to determine a specific address.
-    pub ip_address_location: Box<Option<RadarReviewResourceLocation>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address_location: Option<Box<RadarReviewResourceLocation>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -53,7 +58,8 @@ pub struct Review {
     pub opened_reason: ReviewOpenedReason,
 
     /// The PaymentIntent ID associated with this review, if one exists.
-    pub payment_intent: Box<Option<Expandable<PaymentIntent>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent: Option<Box<Expandable<PaymentIntent>>>,
 
     /// The reason the review is currently open or closed.
     ///
@@ -61,7 +67,8 @@ pub struct Review {
     pub reason: ReviewReason,
 
     /// Information related to the browsing session of the user who initiated the payment.
-    pub session: Box<Option<RadarReviewResourceSession>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<Box<RadarReviewResourceSession>>,
 }
 
 impl Review {
@@ -91,34 +98,43 @@ impl Object for Review {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RadarReviewResourceLocation {
     /// The city where the payment originated.
-    pub city: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<Box<String>>,
 
     /// Two-letter ISO code representing the country where the payment originated.
-    pub country: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<Box<String>>,
 
     /// The geographic latitude where the payment originated.
-    pub latitude: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub latitude: Option<Box<f64>>,
 
     /// The geographic longitude where the payment originated.
-    pub longitude: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub longitude: Option<Box<f64>>,
 
     /// The state/county/province/region where the payment originated.
-    pub region: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub region: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RadarReviewResourceSession {
     /// The browser used in this browser session (e.g., `Chrome`).
-    pub browser: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub browser: Option<Box<String>>,
 
     /// Information about the device used for the browser session (e.g., `Samsung SM-G930T`).
-    pub device: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub device: Option<Box<String>>,
 
     /// The platform for the browser session (e.g., `Macintosh`).
-    pub platform: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub platform: Option<Box<String>>,
 
     /// The version for the browser session (e.g., `61.0.3163.100`).
-    pub version: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub version: Option<Box<String>>,
 }
 
 /// The parameters for `Review::list`.

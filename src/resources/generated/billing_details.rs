@@ -10,14 +10,18 @@ use crate::resources::Address;
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BillingDetails {
     /// Billing address.
-    pub address: Box<Option<Address>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<Box<Address>>,
 
     /// Email address.
-    pub email: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<Box<String>>,
 
     /// Full name.
-    pub name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<Box<String>>,
 
     /// Billing phone number (including extension).
-    pub phone: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<Box<String>>,
 }

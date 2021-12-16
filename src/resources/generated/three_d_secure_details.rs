@@ -9,17 +9,21 @@ use serde_derive::{Deserialize, Serialize};
 pub struct ThreeDSecureDetails {
     /// For authenticated transactions: how the customer was authenticated by
     /// the issuing bank.
-    pub authentication_flow: Box<Option<ThreeDSecureDetailsAuthenticationFlow>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub authentication_flow: Option<Box<ThreeDSecureDetailsAuthenticationFlow>>,
 
     /// Indicates the outcome of 3D Secure authentication.
-    pub result: Box<Option<ThreeDSecureDetailsResult>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub result: Option<Box<ThreeDSecureDetailsResult>>,
 
     /// Additional information about why 3D Secure succeeded or failed based
     /// on the `result`.
-    pub result_reason: Box<Option<ThreeDSecureDetailsResultReason>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub result_reason: Option<Box<ThreeDSecureDetailsResultReason>>,
 
     /// The version of 3D Secure that was used.
-    pub version: Box<Option<ThreeDSecureDetailsVersion>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub version: Option<Box<ThreeDSecureDetailsVersion>>,
 }
 
 /// An enum representing the possible values of an `ThreeDSecureDetails`'s `authentication_flow` field.

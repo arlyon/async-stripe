@@ -26,7 +26,8 @@ pub struct ReportingReportType {
     /// List of column names that are included by default when this Report Type gets run.
     ///
     /// (If the Report Type doesn't support the `columns` parameter, this will be null.).
-    pub default_columns: Box<Option<Vec<String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_columns: Option<Box<Vec<String>>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,

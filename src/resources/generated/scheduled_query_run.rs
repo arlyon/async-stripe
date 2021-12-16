@@ -22,10 +22,12 @@ pub struct ScheduledQueryRun {
     /// When the query was run, Sigma contained a snapshot of your Stripe data at this time.
     pub data_load_time: Timestamp,
 
-    pub error: Box<Option<SigmaScheduledQueryRunError>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<Box<SigmaScheduledQueryRunError>>,
 
     /// The file object representing the results of the query.
-    pub file: Box<Option<File>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub file: Option<Box<File>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,

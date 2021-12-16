@@ -22,12 +22,14 @@ pub struct Discount {
     /// The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode.
     ///
     /// Will not be present for subscription mode.
-    pub checkout_session: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub checkout_session: Option<Box<String>>,
 
     pub coupon: Coupon,
 
     /// The ID of the customer associated with this discount.
-    pub customer: Box<Option<Expandable<Customer>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<Box<Expandable<Customer>>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -36,22 +38,27 @@ pub struct Discount {
     /// If the coupon has a duration of `repeating`, the date that this discount will end.
     ///
     /// If the coupon has a duration of `once` or `forever`, this attribute will be null.
-    pub end: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end: Option<Box<Timestamp>>,
 
     /// The invoice that the discount's coupon was applied to, if it was applied directly to a particular invoice.
-    pub invoice: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice: Option<Box<String>>,
 
     /// The invoice item `id` (or invoice line item `id` for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
-    pub invoice_item: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_item: Option<Box<String>>,
 
     /// The promotion code applied to create this discount.
-    pub promotion_code: Box<Option<Expandable<PromotionCode>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<Box<Expandable<PromotionCode>>>,
 
     /// Date that the coupon was applied.
     pub start: Timestamp,
 
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
-    pub subscription: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<Box<String>>,
 }
 
 impl Object for Discount {

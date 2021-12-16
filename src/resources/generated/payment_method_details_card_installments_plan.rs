@@ -8,11 +8,13 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardInstallmentsPlan {
     /// For `fixed_count` installment plans, this is the number of installment payments your customer will make to their credit card.
-    pub count: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub count: Option<Box<u64>>,
 
     /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
     /// One of `month`.
-    pub interval: Box<Option<PaymentMethodDetailsCardInstallmentsPlanInterval>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval: Option<Box<PaymentMethodDetailsCardInstallmentsPlanInterval>>,
 
     /// Type of installment plan, one of `fixed_count`.
     #[serde(rename = "type")]

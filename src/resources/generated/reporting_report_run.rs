@@ -21,7 +21,8 @@ pub struct ReportingReportRun {
 
     /// If something should go wrong during the run, a message about the failure (populated when
     ///  `status=failed`).
-    pub error: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<Box<String>>,
 
     /// `true` if the report is run on live mode data and `false` if it is run on test mode data.
     pub livemode: bool,
@@ -33,7 +34,8 @@ pub struct ReportingReportRun {
 
     /// The file object representing the result of the report run (populated when
     ///  `status=succeeded`).
-    pub result: Box<Option<File>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub result: Option<Box<File>>,
 
     /// Status of this report run.
     ///
@@ -44,7 +46,8 @@ pub struct ReportingReportRun {
     ///  `status=succeeded`).
     ///
     /// Measured in seconds since the Unix epoch.
-    pub succeeded_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub succeeded_at: Option<Box<Timestamp>>,
 }
 
 impl Object for ReportingReportRun {
@@ -60,31 +63,38 @@ impl Object for ReportingReportRun {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FinancialReportingFinanceReportRunRunParameters {
     /// The set of output columns requested for inclusion in the report run.
-    pub columns: Box<Option<Vec<String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub columns: Option<Box<Vec<String>>>,
 
     /// Connected account ID by which to filter the report run.
-    pub connected_account: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub connected_account: Option<Box<String>>,
 
     /// Currency of objects to be included in the report run.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
     /// Ending timestamp of data to be included in the report run (exclusive).
-    pub interval_end: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_end: Option<Box<Timestamp>>,
 
     /// Starting timestamp of data to be included in the report run.
-    pub interval_start: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_start: Option<Box<Timestamp>>,
 
     /// Payout ID by which to filter the report run.
-    pub payout: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payout: Option<Box<String>>,
 
     /// Category of balance transactions to be included in the report run.
-    pub reporting_category: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reporting_category: Option<Box<String>>,
 
     /// Defaults to `Etc/UTC`.
     ///
     /// The output timezone for all timestamps in the report.
     /// A list of possible time zone values is maintained at the [IANA Time Zone Database](http://www.iana.org/time-zones).
     /// Has no effect on `interval_start` or `interval_end`.
-    pub timezone: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timezone: Option<Box<String>>,
 }

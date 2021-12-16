@@ -30,14 +30,17 @@ pub struct ShippingRate {
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
-    pub delivery_estimate: Box<Option<ShippingRateDeliveryEstimate>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delivery_estimate: Option<Box<ShippingRateDeliveryEstimate>>,
 
     /// The name of the shipping rate, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
-    pub display_name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_name: Option<Box<String>>,
 
-    pub fixed_amount: Box<Option<ShippingRateFixedAmount>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fixed_amount: Option<Box<ShippingRateFixedAmount>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -50,12 +53,14 @@ pub struct ShippingRate {
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
-    pub tax_behavior: Box<Option<ShippingRateTaxBehavior>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<Box<ShippingRateTaxBehavior>>,
 
     /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
     ///
     /// The Shipping tax code is `txcd_92010001`.
-    pub tax_code: Box<Option<Expandable<TaxCode>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<Box<Expandable<TaxCode>>>,
 
     /// The type of calculation to use on the shipping rate.
     ///
@@ -109,12 +114,14 @@ pub struct ShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range.
     ///
     /// If empty, represents no upper bound i.e., infinite.
-    pub maximum: Box<Option<ShippingRateDeliveryEstimateBound>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<Box<ShippingRateDeliveryEstimateBound>>,
 
     /// The lower bound of the estimated range.
     ///
     /// If empty, represents no lower bound.
-    pub minimum: Box<Option<ShippingRateDeliveryEstimateBound>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<Box<ShippingRateDeliveryEstimateBound>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -144,7 +151,7 @@ pub struct CreateShippingRate<'a> {
     ///
     /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub delivery_estimate: Box<Option<CreateShippingRateDeliveryEstimate>>,
+    pub delivery_estimate: Option<Box<CreateShippingRateDeliveryEstimate>>,
 
     /// The name of the shipping rate, meant to be displayable to the customer.
     ///
@@ -159,7 +166,7 @@ pub struct CreateShippingRate<'a> {
     ///
     /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Box<Option<CreateShippingRateFixedAmount>>,
+    pub fixed_amount: Option<Box<CreateShippingRateFixedAmount>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -294,9 +301,11 @@ impl<'a> UpdateShippingRate<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
-    pub maximum: Box<Option<CreateShippingRateDeliveryEstimateMaximum>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<Box<CreateShippingRateDeliveryEstimateMaximum>>,
 
-    pub minimum: Box<Option<CreateShippingRateDeliveryEstimateMinimum>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<Box<CreateShippingRateDeliveryEstimateMinimum>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

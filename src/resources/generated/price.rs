@@ -20,14 +20,16 @@ pub struct Price {
     pub id: PriceId,
 
     /// Whether the price can be used for new purchases.
-    pub active: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active: Option<Box<bool>>,
 
     /// Describes how to compute the price per period.
     ///
     /// Either `per_unit` or `tiered`.
     /// `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`).
     /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-    pub billing_scheme: Box<Option<PriceBillingScheme>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_scheme: Option<Box<PriceBillingScheme>>,
 
     /// Time at which the object was created.
     ///
@@ -46,12 +48,14 @@ pub struct Price {
     pub deleted: bool,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<Box<bool>>,
 
     /// A lookup key used to retrieve prices dynamically from a static string.
     ///
     /// This may be up to 200 characters.
-    pub lookup_key: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lookup_key: Option<Box<String>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -60,50 +64,60 @@ pub struct Price {
     pub metadata: Metadata,
 
     /// A brief description of the price, hidden from customers.
-    pub nickname: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nickname: Option<Box<String>>,
 
     /// The ID of the product this price is associated with.
-    pub product: Box<Option<Expandable<Product>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product: Option<Box<Expandable<Product>>>,
 
     /// The recurring components of a price such as `interval` and `usage_type`.
-    pub recurring: Box<Option<Recurring>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recurring: Option<Box<Recurring>>,
 
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    pub tax_behavior: Box<Option<PriceTaxBehavior>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<Box<PriceTaxBehavior>>,
 
     /// Each element represents a pricing tier.
     ///
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
-    pub tiers: Box<Option<Vec<PriceTier>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tiers: Option<Box<Vec<PriceTier>>>,
 
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
     /// In `graduated` tiering, pricing can change as the quantity grows.
-    pub tiers_mode: Box<Option<PriceTiersMode>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tiers_mode: Option<Box<PriceTiersMode>>,
 
     /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     ///
     /// Cannot be combined with `tiers`.
-    pub transform_quantity: Box<Option<TransformQuantity>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transform_quantity: Option<Box<TransformQuantity>>,
 
     /// One of `one_time` or `recurring` depending on whether the price is for a one-time purchase or a recurring (subscription) purchase.
     #[serde(rename = "type")]
-    pub type_: Box<Option<PriceType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<Box<PriceType>>,
 
     /// The unit amount in %s to be charged, represented as a whole integer if possible.
     ///
     /// Only set if `billing_scheme=per_unit`.
-    pub unit_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<Box<i64>>,
 
     /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
     ///
     /// Only set if `billing_scheme=per_unit`.
-    pub unit_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<Box<String>>,
 }
 
 impl Price {
@@ -145,19 +159,24 @@ impl Object for Price {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PriceTier {
     /// Price for the entire tier.
-    pub flat_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount: Option<Box<i64>>,
 
     /// Same as `flat_amount`, but contains a decimal value with at most 12 decimal places.
-    pub flat_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount_decimal: Option<Box<String>>,
 
     /// Per unit price for units relevant to the tier.
-    pub unit_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<Box<i64>>,
 
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
-    pub unit_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<Box<String>>,
 
     /// Up to and including to this quantity will be contained in the tier.
-    pub up_to: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub up_to: Option<Box<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -166,7 +185,8 @@ pub struct Recurring {
     ///
     /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
     /// Defaults to `sum`.
-    pub aggregate_usage: Box<Option<RecurringAggregateUsage>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub aggregate_usage: Option<Box<RecurringAggregateUsage>>,
 
     /// The frequency at which a subscription is billed.
     ///
@@ -246,11 +266,11 @@ pub struct CreatePrice<'a> {
 
     /// These fields can be used to create a new product that this price will belong to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_data: Box<Option<CreatePriceProductData>>,
+    pub product_data: Option<Box<CreatePriceProductData>>,
 
     /// The recurring components of a price such as `interval` and `usage_type`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub recurring: Box<Option<CreatePriceRecurring>>,
+    pub recurring: Option<Box<CreatePriceRecurring>>,
 
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     ///
@@ -264,7 +284,7 @@ pub struct CreatePrice<'a> {
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers: Box<Option<Vec<CreatePriceTiers>>>,
+    pub tiers: Option<Box<Vec<CreatePriceTiers>>>,
 
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
@@ -280,7 +300,7 @@ pub struct CreatePrice<'a> {
     ///
     /// Cannot be combined with `tiers`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transform_quantity: Box<Option<CreatePriceTransformQuantity>>,
+    pub transform_quantity: Option<Box<CreatePriceTransformQuantity>>,
 
     /// A positive integer in %s (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -353,7 +373,7 @@ pub struct ListPrices<'a> {
 
     /// Only return the price with these lookup_keys, if any exist.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub lookup_keys: Box<Option<Vec<String>>>,
+    pub lookup_keys: Option<Box<Vec<String>>>,
 
     /// Only return prices for the given product.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -361,7 +381,7 @@ pub struct ListPrices<'a> {
 
     /// Only return prices with these recurring fields.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub recurring: Box<Option<ListPricesRecurring>>,
+    pub recurring: Option<Box<ListPricesRecurring>>,
 
     /// A cursor for use in pagination.
     ///
@@ -453,42 +473,54 @@ impl<'a> UpdatePrice<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceProductData {
-    pub active: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active: Option<Box<bool>>,
 
-    pub id: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<Box<String>>,
 
     #[serde(default)]
     pub metadata: Metadata,
 
     pub name: String,
 
-    pub statement_descriptor: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<Box<String>>,
 
-    pub tax_code: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<Box<String>>,
 
-    pub unit_label: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_label: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceRecurring {
-    pub aggregate_usage: Box<Option<CreatePriceRecurringAggregateUsage>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub aggregate_usage: Option<Box<CreatePriceRecurringAggregateUsage>>,
 
     pub interval: CreatePriceRecurringInterval,
 
-    pub interval_count: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<Box<u64>>,
 
-    pub usage_type: Box<Option<CreatePriceRecurringUsageType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub usage_type: Option<Box<CreatePriceRecurringUsageType>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceTiers {
-    pub flat_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount: Option<Box<i64>>,
 
-    pub flat_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount_decimal: Option<Box<String>>,
 
-    pub unit_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<Box<i64>>,
 
-    pub unit_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<Box<String>>,
 
     pub up_to: Option<UpTo>,
 }
@@ -502,9 +534,11 @@ pub struct CreatePriceTransformQuantity {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ListPricesRecurring {
-    pub interval: Box<Option<ListPricesRecurringInterval>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval: Option<Box<ListPricesRecurringInterval>>,
 
-    pub usage_type: Box<Option<ListPricesRecurringUsageType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub usage_type: Option<Box<ListPricesRecurringUsageType>>,
 }
 
 /// An enum representing the possible values of an `CreatePriceRecurring`'s `aggregate_usage` field.

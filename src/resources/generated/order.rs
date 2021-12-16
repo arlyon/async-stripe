@@ -21,21 +21,25 @@ pub struct Order {
     pub amount: i64,
 
     /// The total amount that was returned to the customer.
-    pub amount_returned: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_returned: Option<Box<i64>>,
 
     /// ID of the Connect Application that created the order.
-    pub application: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application: Option<Box<String>>,
 
     /// A fee in cents that will be applied to the order and transferred to the application owner’s Stripe account.
     ///
     /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
     /// For more information, see the application fees documentation.
-    pub application_fee: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee: Option<Box<i64>>,
 
     /// The ID of the payment used to pay for the order.
     ///
     /// Present if the order status is `paid`, `fulfilled`, or `refunded`.
-    pub charge: Box<Option<Expandable<Charge>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub charge: Option<Box<Expandable<Charge>>>,
 
     /// Time at which the object was created.
     ///
@@ -48,13 +52,16 @@ pub struct Order {
     pub currency: Currency,
 
     /// The customer used for the order.
-    pub customer: Box<Option<Expandable<Customer>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<Box<Expandable<Customer>>>,
 
     /// The email address of the customer placing the order.
-    pub email: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<Box<String>>,
 
     /// External coupon code to load for this order.
-    pub external_coupon_code: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_coupon_code: Option<Box<String>>,
 
     /// List of items constituting the order.
     ///
@@ -78,17 +85,20 @@ pub struct Order {
     ///
     /// If present, it is equal to one of the `id`s of shipping methods in the `shipping_methods` array.
     /// At order creation time, if there are multiple shipping methods, Stripe will automatically selected the first method.
-    pub selected_shipping_method: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selected_shipping_method: Option<Box<String>>,
 
     /// The shipping address for the order.
     ///
     /// Present if the order is for goods to be shipped.
-    pub shipping: Box<Option<Shipping>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<Box<Shipping>>,
 
     /// A list of supported shipping methods for this order.
     ///
     /// The desired shipping method can be specified either by updating the order, or when paying it.
-    pub shipping_methods: Box<Option<Vec<ShippingMethod>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_methods: Option<Box<Vec<ShippingMethod>>>,
 
     /// Current order status.
     ///
@@ -97,15 +107,18 @@ pub struct Order {
     pub status: OrderStatus,
 
     /// The timestamps at which the order status was updated.
-    pub status_transitions: Box<Option<StatusTransitions>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status_transitions: Option<Box<StatusTransitions>>,
 
     /// Time at which the object was last updated.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub updated: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub updated: Option<Box<Timestamp>>,
 
     /// The user's order ID if it is different from the Stripe order ID.
-    pub upstream_id: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upstream_id: Option<Box<String>>,
 }
 
 impl Order {
@@ -159,7 +172,8 @@ pub struct ShippingMethod {
     /// The estimated delivery date for the given shipping method.
     ///
     /// Can be either a specific date or a range.
-    pub delivery_estimate: Box<Option<DeliveryEstimate>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delivery_estimate: Option<Box<DeliveryEstimate>>,
 
     /// An arbitrary string attached to the object.
     ///
@@ -173,13 +187,16 @@ pub struct ShippingMethod {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DeliveryEstimate {
     /// If `type` is `"exact"`, `date` will be the expected delivery date in the format YYYY-MM-DD.
-    pub date: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Box<String>>,
 
     /// If `type` is `"range"`, `earliest` will be be the earliest delivery date in the format YYYY-MM-DD.
-    pub earliest: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub earliest: Option<Box<String>>,
 
     /// If `type` is `"range"`, `latest` will be the latest delivery date in the format YYYY-MM-DD.
-    pub latest: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub latest: Option<Box<String>>,
 
     /// The type of estimate.
     ///
@@ -191,16 +208,20 @@ pub struct DeliveryEstimate {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StatusTransitions {
     /// The time that the order was canceled.
-    pub canceled: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled: Option<Box<Timestamp>>,
 
     /// The time that the order was fulfilled.
-    pub fulfiled: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fulfiled: Option<Box<Timestamp>>,
 
     /// The time that the order was paid.
-    pub paid: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid: Option<Box<Timestamp>>,
 
     /// The time that the order was returned.
-    pub returned: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub returned: Option<Box<Timestamp>>,
 }
 
 /// The parameters for `Order::create`.
@@ -238,7 +259,7 @@ pub struct CreateOrder<'a> {
     ///
     /// An order can have up to 25 items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub items: Box<Option<Vec<OrderItemParams>>>,
+    pub items: Option<Box<Vec<OrderItemParams>>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -252,7 +273,7 @@ pub struct CreateOrder<'a> {
     ///
     /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Box<Option<CreateOrderShipping>>,
+    pub shipping: Option<Box<CreateOrderShipping>>,
 }
 
 impl<'a> CreateOrder<'a> {
@@ -294,7 +315,7 @@ pub struct ListOrders<'a> {
 
     /// Only return orders with the given IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ids: Box<Option<Vec<String>>>,
+    pub ids: Option<Box<Vec<String>>>,
 
     /// A limit on the number of objects to be returned.
     ///
@@ -317,11 +338,11 @@ pub struct ListOrders<'a> {
 
     /// Filter orders based on when they were paid, fulfilled, canceled, or returned.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status_transitions: Box<Option<ListOrdersStatusTransitions>>,
+    pub status_transitions: Option<Box<ListOrdersStatusTransitions>>,
 
     /// Only return orders with the given upstream order IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub upstream_ids: Box<Option<Vec<String>>>,
+    pub upstream_ids: Option<Box<Vec<String>>>,
 }
 
 impl<'a> ListOrders<'a> {
@@ -372,7 +393,7 @@ pub struct UpdateOrder<'a> {
 
     /// Tracking information once the order has been fulfilled.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Box<Option<UpdateOrderShipping>>,
+    pub shipping: Option<Box<UpdateOrderShipping>>,
 
     /// Current order status.
     ///
@@ -401,35 +422,45 @@ pub struct CreateOrderShipping {
 
     pub name: String,
 
-    pub phone: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ListOrdersStatusTransitions {
-    pub canceled: Box<Option<RangeQuery<Timestamp>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled: Option<Box<RangeQuery<Timestamp>>>,
 
-    pub fulfilled: Box<Option<RangeQuery<Timestamp>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fulfilled: Option<Box<RangeQuery<Timestamp>>>,
 
-    pub paid: Box<Option<RangeQuery<Timestamp>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid: Option<Box<RangeQuery<Timestamp>>>,
 
-    pub returned: Box<Option<RangeQuery<Timestamp>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub returned: Option<Box<RangeQuery<Timestamp>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderItemParams {
-    pub amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<Box<i64>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
-    pub description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
 
-    pub parent: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parent: Option<Box<String>>,
 
-    pub quantity: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
 
     #[serde(rename = "type")]
-    pub type_: Box<Option<OrderItemParamsType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<Box<OrderItemParamsType>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -441,17 +472,23 @@ pub struct UpdateOrderShipping {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateOrderShippingAddress {
-    pub city: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<Box<String>>,
 
-    pub country: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<Box<String>>,
 
-    pub line1: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<Box<String>>,
 
-    pub line2: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<Box<String>>,
 
-    pub postal_code: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<Box<String>>,
 
-    pub state: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<Box<String>>,
 }
 
 /// An enum representing the possible values of an `OrderItemParams`'s `type` field.

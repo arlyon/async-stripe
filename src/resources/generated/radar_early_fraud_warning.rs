@@ -36,7 +36,8 @@ pub struct RadarEarlyFraudWarning {
     pub livemode: bool,
 
     /// ID of the Payment Intent this early fraud warning is for, optionally expanded.
-    pub payment_intent: Box<Option<Expandable<PaymentIntent>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent: Option<Box<Expandable<PaymentIntent>>>,
 }
 
 impl Object for RadarEarlyFraudWarning {

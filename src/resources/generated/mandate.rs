@@ -22,14 +22,16 @@ pub struct Mandate {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    pub multi_use: Box<Option<MandateMultiUse>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub multi_use: Option<Box<MandateMultiUse>>,
 
     /// ID of the payment method associated with this mandate.
     pub payment_method: Expandable<PaymentMethod>,
 
     pub payment_method_details: MandatePaymentMethodDetails,
 
-    pub single_use: Box<Option<MandateSingleUse>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub single_use: Option<Box<MandateSingleUse>>,
 
     /// The status of the mandate, which indicates whether it can be used to initiate a payment.
     pub status: MandateStatus,
@@ -59,11 +61,14 @@ impl Object for Mandate {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerAcceptance {
     /// The time at which the customer accepted the Mandate.
-    pub accepted_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub accepted_at: Option<Box<Timestamp>>,
 
-    pub offline: Box<Option<OfflineAcceptance>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub offline: Option<Box<OfflineAcceptance>>,
 
-    pub online: Box<Option<OnlineAcceptance>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub online: Option<Box<OnlineAcceptance>>,
 
     /// The type of customer acceptance information included with the Mandate.
     ///
@@ -77,15 +82,20 @@ pub struct MandateMultiUse {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandatePaymentMethodDetails {
-    pub acss_debit: Box<Option<MandateAcssDebit>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<Box<MandateAcssDebit>>,
 
-    pub au_becs_debit: Box<Option<MandateAuBecsDebit>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_becs_debit: Option<Box<MandateAuBecsDebit>>,
 
-    pub bacs_debit: Box<Option<MandateBacsDebit>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit: Option<Box<MandateBacsDebit>>,
 
-    pub card: Box<Option<CardMandatePaymentMethodDetails>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<Box<CardMandatePaymentMethodDetails>>,
 
-    pub sepa_debit: Box<Option<MandateSepaDebit>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit: Option<Box<MandateSepaDebit>>,
 
     /// The type of the payment method associated with this mandate.
     ///
@@ -101,12 +111,14 @@ pub struct CardMandatePaymentMethodDetails {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandateAcssDebit {
     /// List of Stripe products where this mandate can be selected automatically.
-    pub default_for: Box<Option<Vec<MandateAcssDebitDefaultFor>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_for: Option<Box<Vec<MandateAcssDebitDefaultFor>>>,
 
     /// Description of the interval.
     ///
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
-    pub interval_description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_description: Option<Box<String>>,
 
     /// Payment schedule for the mandate.
     pub payment_schedule: MandateAcssDebitPaymentSchedule,
@@ -163,10 +175,12 @@ pub struct OfflineAcceptance {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OnlineAcceptance {
     /// The IP address from which the Mandate was accepted by the customer.
-    pub ip_address: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<Box<String>>,
 
     /// The user agent of the browser from which the Mandate was accepted by the customer.
-    pub user_agent: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<Box<String>>,
 }
 
 /// An enum representing the possible values of an `CustomerAcceptance`'s `type` field.

@@ -35,16 +35,19 @@ pub struct PromotionCode {
     pub created: Timestamp,
 
     /// The customer that this promotion code can be used by.
-    pub customer: Box<Option<Expandable<Customer>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<Box<Expandable<Customer>>>,
 
     /// Date at which the promotion code can no longer be redeemed.
-    pub expires_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<Box<Timestamp>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
     /// Maximum number of times this promotion code can be redeemed.
-    pub max_redemptions: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_redemptions: Option<Box<i64>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -103,7 +106,8 @@ pub struct PromotionCodesResourceRestrictions {
     pub first_time_transaction: bool,
 
     /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
-    pub minimum_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_amount: Option<Box<i64>>,
 
     /// Three-letter [ISO code](https://stripe.com/docs/currencies) for minimum_amount.
     #[serde(skip_serializing_if = "Option::is_none")]

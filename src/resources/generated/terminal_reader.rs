@@ -19,22 +19,28 @@ pub struct TerminalReader {
     pub deleted: bool,
 
     /// The current software version of the reader.
-    pub device_sw_version: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub device_sw_version: Option<Box<String>>,
 
     /// Type of reader, one of `bbpos_chipper2x`, `bbpos_wisepos_e`, or `verifone_P400`.
-    pub device_type: Box<Option<TerminalReaderDeviceType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub device_type: Option<Box<TerminalReaderDeviceType>>,
 
     /// The local IP address of the reader.
-    pub ip_address: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip_address: Option<Box<String>>,
 
     /// Custom label given to the reader for easier identification.
-    pub label: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub label: Option<Box<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<Box<bool>>,
 
     /// The location identifier of the reader.
-    pub location: Box<Option<Expandable<TerminalLocation>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub location: Option<Box<Expandable<TerminalLocation>>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -43,10 +49,12 @@ pub struct TerminalReader {
     pub metadata: Metadata,
 
     /// Serial number of the reader.
-    pub serial_number: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub serial_number: Option<Box<String>>,
 
     /// The networking status of the reader.
-    pub status: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<Box<String>>,
 }
 
 impl Object for TerminalReader {

@@ -1486,7 +1486,7 @@ fn gen_field_rust_type(
         }
     };
     if !required || field["nullable"].as_bool() == Some(true) {
-        format!("Box<Option<{}>>", ty)
+        format!("Option<Box<{}>>", ty)
     } else {
         ty
     }

@@ -8,5 +8,6 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemBillingThresholds {
     /// Usage threshold that triggers the subscription to create an invoice.
-    pub usage_gte: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub usage_gte: Option<Box<i64>>,
 }

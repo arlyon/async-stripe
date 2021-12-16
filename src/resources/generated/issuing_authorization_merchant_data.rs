@@ -16,20 +16,25 @@ pub struct MerchantData {
     pub category_code: String,
 
     /// City where the seller is located.
-    pub city: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<Box<String>>,
 
     /// Country where the seller is located.
-    pub country: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<Box<String>>,
 
     /// Name of the seller.
-    pub name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<Box<String>>,
 
     /// Identifier assigned to the seller by the card brand.
     pub network_id: String,
 
     /// Postal code where the seller is located.
-    pub postal_code: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<Box<String>>,
 
     /// State where the seller is located.
-    pub state: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<Box<String>>,
 }

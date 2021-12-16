@@ -26,7 +26,8 @@ pub struct FileLink {
     pub expired: bool,
 
     /// Time at which the link expires.
-    pub expires_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<Box<Timestamp>>,
 
     /// The file object this link points to.
     pub file: Expandable<File>,
@@ -40,7 +41,8 @@ pub struct FileLink {
     pub metadata: Metadata,
 
     /// The publicly accessible URL to download the file.
-    pub url: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<Box<String>>,
 }
 
 impl FileLink {

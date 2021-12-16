@@ -8,20 +8,26 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Address {
     /// City, district, suburb, town, or village.
-    pub city: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<Box<String>>,
 
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    pub country: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<Box<String>>,
 
     /// Address line 1 (e.g., street, PO Box, or company name).
-    pub line1: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<Box<String>>,
 
     /// Address line 2 (e.g., apartment, suite, unit, or building).
-    pub line2: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<Box<String>>,
 
     /// ZIP or postal code.
-    pub postal_code: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<Box<String>>,
 
     /// State, county, province, or region.
-    pub state: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<Box<String>>,
 }

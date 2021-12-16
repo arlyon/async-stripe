@@ -20,30 +20,35 @@ pub struct Plan {
     pub id: PlanId,
 
     /// Whether the plan can be used for new purchases.
-    pub active: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active: Option<Box<bool>>,
 
     /// Specifies a usage aggregation strategy for plans of `usage_type=metered`.
     ///
     /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
     /// Defaults to `sum`.
-    pub aggregate_usage: Box<Option<PlanAggregateUsage>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub aggregate_usage: Option<Box<PlanAggregateUsage>>,
 
     /// The unit amount in %s to be charged, represented as a whole integer if possible.
     ///
     /// Only set if `billing_scheme=per_unit`.
-    pub amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<Box<i64>>,
 
     /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
     ///
     /// Only set if `billing_scheme=per_unit`.
-    pub amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_decimal: Option<Box<String>>,
 
     /// Describes how to compute the price per period.
     ///
     /// Either `per_unit` or `tiered`.
     /// `per_unit` indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`).
     /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
-    pub billing_scheme: Box<Option<PlanBillingScheme>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_scheme: Option<Box<PlanBillingScheme>>,
 
     /// Time at which the object was created.
     ///
@@ -64,15 +69,18 @@ pub struct Plan {
     /// The frequency at which a subscription is billed.
     ///
     /// One of `day`, `week`, `month` or `year`.
-    pub interval: Box<Option<PlanInterval>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval: Option<Box<PlanInterval>>,
 
     /// The number of intervals (specified in the `interval` attribute) between subscription billings.
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
-    pub interval_count: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<Box<u64>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<Box<bool>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -81,30 +89,36 @@ pub struct Plan {
     pub metadata: Metadata,
 
     /// A brief description of the plan, hidden from customers.
-    pub nickname: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nickname: Option<Box<String>>,
 
     /// The product whose pricing this plan determines.
-    pub product: Box<Option<Expandable<Product>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product: Option<Box<Expandable<Product>>>,
 
     /// Each element represents a pricing tier.
     ///
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
-    pub tiers: Box<Option<Vec<PlanTier>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tiers: Option<Box<Vec<PlanTier>>>,
 
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
     /// In `graduated` tiering, pricing can change as the quantity grows.
-    pub tiers_mode: Box<Option<PlanTiersMode>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tiers_mode: Option<Box<PlanTiersMode>>,
 
     /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     ///
     /// Cannot be combined with `tiers`.
-    pub transform_usage: Box<Option<TransformUsage>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transform_usage: Option<Box<TransformUsage>>,
 
     /// Default number of trial days when subscribing a customer to this plan using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
-    pub trial_period_days: Box<Option<u32>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_period_days: Option<Box<u32>>,
 
     /// Configures how the quantity per period should be determined.
     ///
@@ -112,7 +126,8 @@ pub struct Plan {
     /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
     /// `metered` aggregates the total usage based on usage records.
     /// Defaults to `licensed`.
-    pub usage_type: Box<Option<PlanUsageType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub usage_type: Option<Box<PlanUsageType>>,
 }
 
 impl Plan {
@@ -155,19 +170,24 @@ impl Object for Plan {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PlanTier {
     /// Price for the entire tier.
-    pub flat_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount: Option<Box<i64>>,
 
     /// Same as `flat_amount`, but contains a decimal value with at most 12 decimal places.
-    pub flat_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount_decimal: Option<Box<String>>,
 
     /// Per unit price for units relevant to the tier.
-    pub unit_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<Box<i64>>,
 
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
-    pub unit_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<Box<String>>,
 
     /// Up to and including to this quantity will be contained in the tier.
-    pub up_to: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub up_to: Option<Box<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
