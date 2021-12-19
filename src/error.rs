@@ -25,6 +25,7 @@ pub enum StripeError {
 #[cfg(feature = "hyper")]
 impl From<hyper::Error> for StripeError {
     fn from(_err: hyper::Error) -> StripeError {
+        println!("HYPER ERROR: {:?}", _err);
         StripeError::ClientError
     }
 }
