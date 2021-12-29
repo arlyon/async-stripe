@@ -1216,12 +1216,12 @@ fn gen_objects(out: &mut String, state: &mut Generated) {
         }
 
         let schema = value_obj.schema.clone();
+        out.push_str("\n");
         print_doc_from_schema(out, &schema, 0);
 
         if let Some(type_) = schema["type"].as_str() {
             match type_ {
                 "object" => {
-                    out.push_str("\n");
                     out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
                     out.push_str(&format!("pub struct {} {{\n", key_str));
                     if let Some(prop_map) = schema["properties"].as_object() {
@@ -1264,7 +1264,6 @@ fn gen_objects(out: &mut String, state: &mut Generated) {
                 other => assert!(false, "Expected an object here got: {}", other),
             }
         } else if let Some(array) = schema["anyOf"].as_array() {
-            out.push_str("\n");
             out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
             out.push_str(&format!("pub enum {} {{\n", key_str));
 
