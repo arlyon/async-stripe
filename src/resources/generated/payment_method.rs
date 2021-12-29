@@ -612,6 +612,14 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<Box<CreatePaymentMethodBoleto>>,
 
+    /// If this is a `card` PaymentMethod, this hash contains the user's card details.
+    ///
+    /// For backwards compatibility, you can alternatively provide a Stripe token (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with format `card: {token: "tok_visa"}`.
+    /// When providing a card number, you must meet the requirements for [PCI compliance](https://stripe.com/docs/security#validating-pci-compliance).
+    /// We strongly recommend using Stripe.js instead of interacting with this API directly.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<CreatePaymentMethodCardInfo>,
+
     /// The `Customer` to whom the original PaymentMethod is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
@@ -700,6 +708,7 @@ impl<'a> CreatePaymentMethod<'a> {
             bancontact: Default::default(),
             billing_details: Default::default(),
             boleto: Default::default(),
+            card: Default::default(),
             customer: Default::default(),
             eps: Default::default(),
             expand: Default::default(),
@@ -777,6 +786,10 @@ pub struct UpdatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetails>,
 
+    /// If this is a `card` PaymentMethod, this hash contains the user's card details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<UpdatePaymentMethodCardInfo>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -794,6 +807,7 @@ impl<'a> UpdatePaymentMethod<'a> {
     pub fn new() -> Self {
         UpdatePaymentMethod {
             billing_details: Default::default(),
+            card: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
         }
@@ -1742,4 +1756,38 @@ impl std::fmt::Display for WalletDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
+}
+/// If this is a `card` PaymentMethod, this hash contains the user's card details.
+///
+/// For backwards compatibility, you can alternatively provide a Stripe token (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with format `card: {token: "tok_visa"}`.
+/// When providing a card number, you must meet the requirements for [PCI compliance](https://stripe.com/docs/security#validating-pci-compliance).
+/// We strongly recommend using Stripe.js instead of interacting with this API directly.
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub enum CreatePaymentMethodCardInfo {
+    CardDetailsParams(CardDetailsParams),
+    TokenParams(TokenParams),
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CardDetailsParams {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc: Option<String>,
+    pub exp_month: i32,
+    pub exp_year: i32,
+    pub number: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct TokenParams {
+    pub token: String,
+}
+/// If this is a `card` PaymentMethod, this hash contains the user's card details.
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodCardInfo {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exp_month: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exp_year: Option<i32>,
 }

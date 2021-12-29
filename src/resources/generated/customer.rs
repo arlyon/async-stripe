@@ -434,6 +434,10 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<i64>,
 
+    /// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<UpdateCustomerCardInfo>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
 
@@ -551,6 +555,7 @@ impl<'a> UpdateCustomer<'a> {
         UpdateCustomer {
             address: Default::default(),
             balance: Default::default(),
+            card: Default::default(),
             coupon: Default::default(),
             default_alipay_account: Default::default(),
             default_bank_account: Default::default(),
@@ -910,4 +915,38 @@ impl std::fmt::Display for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
+}
+/// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub enum UpdateCustomerCardInfo {
+    CustomerPaymentSourceCard(CustomerPaymentSourceCard),
+    Alternate1(String),
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CustomerPaymentSourceCard {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_city: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_country: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_line1: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_line2: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_state: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_zip: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc: Option<String>,
+    pub exp_month: i32,
+    pub exp_year: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    pub number: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub object: Option<String>,
 }

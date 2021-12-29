@@ -1201,6 +1201,10 @@ pub struct CreateCharge<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture: Option<bool>,
 
+    /// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<CreateChargeCardInfo>,
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1292,6 +1296,7 @@ impl<'a> CreateCharge<'a> {
             application_fee: Default::default(),
             application_fee_amount: Default::default(),
             capture: Default::default(),
+            card: Default::default(),
             currency: Default::default(),
             customer: Default::default(),
             description: Default::default(),
@@ -2036,4 +2041,38 @@ impl std::fmt::Display for PaymentMethodDetailsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
+}
+/// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub enum CreateChargeCardInfo {
+    CustomerPaymentSourceCard(CustomerPaymentSourceCard),
+    Alternate1(String),
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CustomerPaymentSourceCard {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_city: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_country: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_line1: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_line2: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_state: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_zip: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc: Option<String>,
+    pub exp_month: i32,
+    pub exp_year: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    pub number: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub object: Option<String>,
 }
