@@ -1764,6 +1764,7 @@ impl std::fmt::Display for WalletDetailsType {
 /// When providing a card number, you must meet the requirements for [PCI compliance](https://stripe.com/docs/security#validating-pci-compliance).
 /// We strongly recommend using Stripe.js instead of interacting with this API directly.
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum CreatePaymentMethodCardInfo {
     CardDetailsParams(CardDetailsParams),
     TokenParams(TokenParams),

@@ -919,6 +919,7 @@ impl std::fmt::Display for TaxIdType {
 
 /// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum UpdateCustomerCardInfo {
     CustomerPaymentSourceCard(CustomerPaymentSourceCard),
     Alternate1(String),

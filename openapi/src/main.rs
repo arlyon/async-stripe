@@ -1265,6 +1265,7 @@ fn gen_objects(out: &mut String, state: &mut Generated) {
             }
         } else if let Some(array) = schema["anyOf"].as_array() {
             out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+            out.push_str("#[serde(rename_all = \"snake_case\")]\n");
             out.push_str(&format!("pub enum {} {{\n", key_str));
 
             let mut index = 0;
