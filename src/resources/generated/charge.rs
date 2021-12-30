@@ -2076,6 +2076,7 @@ impl std::fmt::Display for PaymentMethodDetailsSofortPreferredLanguage {
 
 /// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum CreateChargeCardInfo {
     CustomerPaymentSourceCard(CustomerPaymentSourceCard),
     Alternate1(String),
