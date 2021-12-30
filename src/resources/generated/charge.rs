@@ -1202,8 +1202,13 @@ pub struct CreateCharge<'a> {
     pub capture: Option<bool>,
 
     /// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
+    #[serde(rename = "card")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<CreateChargeCardInfo>,
+    pub card0: Option<CustomerPaymentSourceCard>,
+
+    #[serde(rename = "card")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card1: Option<String>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -1296,7 +1301,8 @@ impl<'a> CreateCharge<'a> {
             application_fee: Default::default(),
             application_fee_amount: Default::default(),
             capture: Default::default(),
-            card: Default::default(),
+            card0: Default::default(),
+            card1: Default::default(),
             currency: Default::default(),
             customer: Default::default(),
             description: Default::default(),
@@ -2041,14 +2047,6 @@ impl std::fmt::Display for PaymentMethodDetailsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
-}
-
-/// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum CreateChargeCardInfo {
-    CustomerPaymentSourceCard(CustomerPaymentSourceCard),
-    Alternate1(String),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
