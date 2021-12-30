@@ -6,6 +6,11 @@ use crate::SetupIntentId;
 
 #[derive(Clone, Debug, Serialize)]
 pub struct ConfirmSetupIntent {
+
+    /// The client secret if on the client side
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub client_secret: Option<String>,
+
     /// Specifies which payment method
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<String>,
