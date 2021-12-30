@@ -36,6 +36,13 @@ pub trait SetupIntentExt {
     ) -> Response<Self>
     where
         Self: Sized;
+
+    fn retreive_ext(
+        client: &Client,
+        setup_intent_secret: &String
+    ) -> Response<Self>
+        where 
+            Self: Sized;
 }
 
 impl SetupIntentExt for SetupIntent {
@@ -53,6 +60,13 @@ impl SetupIntentExt for SetupIntent {
         _params: CancelSetupIntent,
     ) -> Response<SetupIntent> {
         unimplemented!()
+    }
+
+    fn retreive_ext(
+        client: &Client,
+        setup_intent_secret: &String
+    ) -> Response<SetupIntent> {
+        client.get(&format!("/setup_intents/{}", setup_intent_secret))
     }
 }
 
