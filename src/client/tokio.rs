@@ -272,6 +272,7 @@ fn send<T: DeserializeOwned + Send + 'static>(
     let client = client.clone(); // N.B. Client is send sync;  cloned clients share the same pool.
     Box::pin(async move {
         let bytes = send_inner(&client, request).await?;
+        println!("{:#?}", bytes);
         serde_json::from_slice(&bytes).map_err(StripeError::from)
     })
 }
