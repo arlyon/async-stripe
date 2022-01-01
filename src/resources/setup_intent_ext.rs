@@ -65,7 +65,8 @@ impl SetupIntentExt for SetupIntent {
     }
 
     fn retrieve_ext(client: &Client, setup_intent_secret: &String) -> Response<SetupIntent> {
-        client.get(&format!("/setup_intents/{}", setup_intent_secret))
+        unimplemented!()
+        //client.get(&format!("/setup_intents/{}", setup_intent_secret))
     }
 }
 
