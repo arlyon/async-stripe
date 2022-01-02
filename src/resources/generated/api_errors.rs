@@ -64,7 +64,7 @@ pub struct ApiErrors {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum ApiErrorsSourceUnion {
     BankAccount(BankAccount),
     Card(Card),
