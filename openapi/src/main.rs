@@ -1109,7 +1109,7 @@ fn gen_unions(out: &mut String, state: &mut Generated, meta: &Metadata) {
 
         out.push('\n');
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
-        out.push_str("#[serde(tag = \"object\", rename_all = \"snake_case\")]\n");
+        out.push_str("#[serde(untagged, rename_all = \"snake_case\")]\n");
         out.push_str("pub enum ");
         out.push_str(&union_name.to_camel_case());
         out.push_str(" {\n");
