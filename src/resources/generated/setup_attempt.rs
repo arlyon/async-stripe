@@ -91,6 +91,9 @@ pub struct SetupAttemptPaymentMethodDetails {
     pub bancontact: Option<Box<SetupAttemptPaymentMethodDetailsBancontact>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<Box<SetupAttemptPaymentMethodDetailsBoleto>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<Box<SetupAttemptPaymentMethodDetailsCard>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -161,6 +164,9 @@ pub struct SetupAttemptPaymentMethodDetailsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_name: Option<Box<String>>,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsBoleto {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsCard {
