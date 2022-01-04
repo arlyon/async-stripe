@@ -14,12 +14,14 @@ pub struct SourceTransaction {
     /// Unique identifier for the object.
     pub id: ChargeId,
 
-    pub ach_credit_transfer: Box<Option<SourceTransactionAchCreditTransferData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ach_credit_transfer: Option<Box<SourceTransactionAchCreditTransferData>>,
 
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the amount your customer has pushed to the receiver.
     pub amount: i64,
 
-    pub chf_credit_transfer: Box<Option<SourceTransactionChfCreditTransferData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chf_credit_transfer: Option<Box<SourceTransactionChfCreditTransferData>>,
 
     /// Time at which the object was created.
     ///
@@ -31,14 +33,17 @@ pub struct SourceTransaction {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
-    pub gbp_credit_transfer: Box<Option<SourceTransactionGbpCreditTransferData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gbp_credit_transfer: Option<Box<SourceTransactionGbpCreditTransferData>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
-    pub paper_check: Box<Option<SourceTransactionPaperCheckData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paper_check: Option<Box<SourceTransactionPaperCheckData>>,
 
-    pub sepa_credit_transfer: Box<Option<SourceTransactionSepaCreditTransferData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_credit_transfer: Option<Box<SourceTransactionSepaCreditTransferData>>,
 
     /// The ID of the source this transaction is attached to.
     pub source: String,
@@ -64,61 +69,77 @@ impl Object for SourceTransaction {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionAchCreditTransferData {
     /// Customer data associated with the transfer.
-    pub customer_data: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_data: Option<Box<String>>,
 
     /// Bank account fingerprint associated with the transfer.
-    pub fingerprint: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<Box<String>>,
 
     /// Last 4 digits of the account number associated with the transfer.
-    pub last4: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last4: Option<Box<String>>,
 
     /// Routing number associated with the transfer.
-    pub routing_number: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub routing_number: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionChfCreditTransferData {
     /// Reference associated with the transfer.
-    pub reference: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<Box<String>>,
 
     /// Sender's country address.
-    pub sender_address_country: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_address_country: Option<Box<String>>,
 
     /// Sender's line 1 address.
-    pub sender_address_line1: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_address_line1: Option<Box<String>>,
 
     /// Sender's bank account IBAN.
-    pub sender_iban: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_iban: Option<Box<String>>,
 
     /// Sender's name.
-    pub sender_name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_name: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionGbpCreditTransferData {
     /// Bank account fingerprint associated with the Stripe owned bank account receiving the transfer.
-    pub fingerprint: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<Box<String>>,
 
     /// The credit transfer rails the sender used to push this transfer.
     ///
     /// The possible rails are: Faster Payments, BACS, CHAPS, and wire transfers.
     /// Currently only Faster Payments is supported.
-    pub funding_method: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding_method: Option<Box<String>>,
 
     /// Last 4 digits of sender account number associated with the transfer.
-    pub last4: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last4: Option<Box<String>>,
 
     /// Sender entered arbitrary information about the transfer.
-    pub reference: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<Box<String>>,
 
     /// Sender account number associated with the transfer.
-    pub sender_account_number: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_account_number: Option<Box<String>>,
 
     /// Sender name associated with the transfer.
-    pub sender_name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_name: Option<Box<String>>,
 
     /// Sender sort code associated with the transfer.
-    pub sender_sort_code: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_sort_code: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -126,22 +147,27 @@ pub struct SourceTransactionPaperCheckData {
     /// Time at which the deposited funds will be available for use.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub available_at: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub available_at: Option<Box<String>>,
 
     /// Comma-separated list of invoice IDs associated with the paper check.
-    pub invoices: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoices: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionSepaCreditTransferData {
     /// Reference associated with the transfer.
-    pub reference: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<Box<String>>,
 
     /// Sender's bank account IBAN.
-    pub sender_iban: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_iban: Option<Box<String>>,
 
     /// Sender's name.
-    pub sender_name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sender_name: Option<Box<String>>,
 }
 
 /// An enum representing the possible values of an `SourceTransaction`'s `type` field.

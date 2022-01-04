@@ -18,7 +18,8 @@ pub struct CreditNoteLineItem {
     pub amount: i64,
 
     /// Description of the item being credited.
-    pub description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
 
     /// The integer amount in %s representing the discount being credited for this line item.
     pub discount_amount: i64,
@@ -27,13 +28,15 @@ pub struct CreditNoteLineItem {
     pub discount_amounts: Vec<DiscountsResourceDiscountAmount>,
 
     /// ID of the invoice line item being credited.
-    pub invoice_line_item: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_line_item: Option<Box<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
     /// The number of units of product being credited.
-    pub quantity: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
 
     /// The amount of tax calculated per tax rate for this line item.
     pub tax_amounts: Vec<CreditNoteTaxAmount>,
@@ -48,10 +51,12 @@ pub struct CreditNoteLineItem {
     pub type_: CreditNoteLineItemType,
 
     /// The cost of each unit of product being credited.
-    pub unit_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<Box<i64>>,
 
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
-    pub unit_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<Box<String>>,
 }
 
 impl Object for CreditNoteLineItem {

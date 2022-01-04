@@ -20,12 +20,15 @@ pub struct Balance {
     /// Funds held due to negative balances on connected Custom accounts.
     ///
     /// The connect reserve balance for each currency and payment type can be found in the `source_types` property.
-    pub connect_reserved: Box<Option<Vec<BalanceAmount>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub connect_reserved: Option<Box<Vec<BalanceAmount>>>,
 
     /// Funds that can be paid out using Instant Payouts.
-    pub instant_available: Box<Option<Vec<BalanceAmount>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instant_available: Option<Box<Vec<BalanceAmount>>>,
 
-    pub issuing: Box<Option<BalanceDetail>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuing: Option<Box<BalanceDetail>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -63,19 +66,23 @@ pub struct BalanceAmount {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
-    pub source_types: Box<Option<BalanceAmountBySourceType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_types: Option<Box<BalanceAmountBySourceType>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceAmountBySourceType {
     /// Amount for bank account.
-    pub bank_account: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_account: Option<Box<i64>>,
 
     /// Amount for card.
-    pub card: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<Box<i64>>,
 
     /// Amount for FPX.
-    pub fpx: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx: Option<Box<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

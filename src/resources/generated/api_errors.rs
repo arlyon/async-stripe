@@ -10,40 +10,51 @@ use crate::resources::{BankAccount, Card, PaymentIntent, PaymentMethod, SetupInt
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ApiErrors {
     /// For card errors, the ID of the failed charge.
-    pub charge: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub charge: Option<Box<String>>,
 
     /// For some errors that could be handled programmatically, a short string indicating the [error code](https://stripe.com/docs/error-codes) reported.
-    pub code: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<Box<String>>,
 
     /// For card errors resulting from a card issuer decline, a short string indicating the [card issuer's reason for the decline](https://stripe.com/docs/declines#issuer-declines) if they provide one.
-    pub decline_code: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub decline_code: Option<Box<String>>,
 
     /// A URL to more information about the [error code](https://stripe.com/docs/error-codes) reported.
-    pub doc_url: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub doc_url: Option<Box<String>>,
 
     /// A human-readable message providing more details about the error.
     ///
     /// For card errors, these messages can be shown to your users.
-    pub message: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message: Option<Box<String>>,
 
     /// If the error is parameter-specific, the parameter related to the error.
     ///
     /// For example, you can use this to display a message near the correct form field.
-    pub param: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub param: Option<Box<String>>,
 
-    pub payment_intent: Box<Option<PaymentIntent>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent: Option<Box<PaymentIntent>>,
 
-    pub payment_method: Box<Option<PaymentMethod>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method: Option<Box<PaymentMethod>>,
 
     /// If the error is specific to the type of payment method, the payment method type that had a problem.
     ///
     /// This field is only populated for invoice-related errors.
-    pub payment_method_type: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_type: Option<Box<String>>,
 
-    pub setup_intent: Box<Option<SetupIntent>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_intent: Option<Box<SetupIntent>>,
 
     /// The source object for errors returned on a request involving a source.
-    pub source: Box<Option<ApiErrorsSource>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<Box<ApiErrorsSourceUnion>>,
 
     /// The type of error returned.
     ///
@@ -54,7 +65,7 @@ pub struct ApiErrors {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
-pub enum ApiErrorsSource {
+pub enum ApiErrorsSourceUnion {
     BankAccount(BankAccount),
     Card(Card),
     Source(Source),

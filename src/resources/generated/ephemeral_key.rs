@@ -30,7 +30,8 @@ pub struct EphemeralKey {
     /// The key's secret.
     ///
     /// You can use this value to make authorized requests to the Stripe API.
-    pub secret: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub secret: Option<Box<String>>,
 }
 
 impl EphemeralKey {

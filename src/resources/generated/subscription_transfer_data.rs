@@ -14,7 +14,8 @@ pub struct SubscriptionTransferData {
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
     /// By default, the entire amount is transferred to the destination.
-    pub amount_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_percent: Option<Box<f64>>,
 
     /// The account where funds from the payment will be transferred to upon payment success.
     pub destination: Expandable<Account>,

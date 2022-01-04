@@ -21,7 +21,8 @@ pub struct IssuingCard {
     pub brand: CardBrand,
 
     /// The reason why the card was canceled.
-    pub cancellation_reason: Box<Option<IssuingCardCancellationReason>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancellation_reason: Option<Box<IssuingCardCancellationReason>>,
 
     pub cardholder: IssuingCardholder,
 
@@ -39,7 +40,8 @@ pub struct IssuingCard {
     ///
     /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
     /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
-    pub cvc: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc: Option<Box<String>>,
 
     /// The expiration month of the card.
     pub exp_month: i64,
@@ -62,19 +64,24 @@ pub struct IssuingCard {
     ///
     /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
     /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
-    pub number: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number: Option<Box<String>>,
 
     /// The latest card that replaces this card, if any.
-    pub replaced_by: Box<Option<Expandable<IssuingCard>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub replaced_by: Option<Box<Expandable<IssuingCard>>>,
 
     /// The card this card replaces, if any.
-    pub replacement_for: Box<Option<Expandable<IssuingCard>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub replacement_for: Option<Box<Expandable<IssuingCard>>>,
 
     /// The reason why the previous card needed to be replaced.
-    pub replacement_reason: Box<Option<IssuingCardReplacementReason>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub replacement_reason: Option<Box<IssuingCardReplacementReason>>,
 
     /// Where and how the card will be shipped.
-    pub shipping: Box<Option<IssuingCardShipping>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<Box<IssuingCardShipping>>,
 
     pub spending_controls: IssuingCardAuthorizationControls,
 
@@ -86,7 +93,8 @@ pub struct IssuingCard {
     pub type_: IssuingCardType,
 
     /// Information relating to digital wallets (like Apple Pay and Google Pay).
-    pub wallets: Box<Option<IssuingCardWallets>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wallets: Option<Box<IssuingCardWallets>>,
 }
 
 impl Object for IssuingCard {
@@ -116,7 +124,8 @@ pub struct IssuingCardAuthorizationControls {
     pub blocked_categories: Option<Vec<MerchantCategory>>,
 
     /// Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).
-    pub spending_limits: Box<Option<Vec<IssuingCardSpendingLimit>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub spending_limits: Option<Box<Vec<IssuingCardSpendingLimit>>>,
 
     /// Currency of the amounts within `spending_limits`.
     ///
@@ -130,10 +139,12 @@ pub struct IssuingCardShipping {
     pub address: Address,
 
     /// The delivery company that shipped a card.
-    pub carrier: Box<Option<IssuingCardShippingCarrier>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier: Option<Box<IssuingCardShippingCarrier>>,
 
     /// A unix timestamp representing a best estimate of when the card will be delivered.
-    pub eta: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eta: Option<Box<Timestamp>>,
 
     /// Recipient name.
     pub name: String,
@@ -146,10 +157,12 @@ pub struct IssuingCardShipping {
     pub status: Option<IssuingCardShippingStatus>,
 
     /// A tracking number for a card shipment.
-    pub tracking_number: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking_number: Option<Box<String>>,
 
     /// A link to the shipping carrier's site where you can view detailed information about a card shipment.
-    pub tracking_url: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking_url: Option<Box<String>>,
 
     /// Packaging options.
     #[serde(rename = "type")]
@@ -164,7 +177,8 @@ pub struct IssuingCardSpendingLimit {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
     ///
     /// Omitting this field will apply the limit to all categories.
-    pub categories: Box<Option<Vec<IssuingCardSpendingLimitCategories>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub categories: Option<Box<Vec<IssuingCardSpendingLimitCategories>>>,
 
     /// Interval (or event) to which the amount applies.
     pub interval: IssuingCardSpendingLimitInterval,
@@ -177,7 +191,8 @@ pub struct IssuingCardWallets {
     pub google_pay: IssuingCardGooglePay,
 
     /// Unique identifier for a card used with digital wallets.
-    pub primary_account_identifier: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub primary_account_identifier: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -186,7 +201,8 @@ pub struct IssuingCardApplePay {
     pub eligible: bool,
 
     /// Reason the card is ineligible for Apple Pay.
-    pub ineligible_reason: Box<Option<IssuingCardApplePayIneligibleReason>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ineligible_reason: Option<Box<IssuingCardApplePayIneligibleReason>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -195,7 +211,8 @@ pub struct IssuingCardGooglePay {
     pub eligible: bool,
 
     /// Reason the card is ineligible for Google Pay.
-    pub ineligible_reason: Box<Option<IssuingCardGooglePayIneligibleReason>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ineligible_reason: Option<Box<IssuingCardGooglePayIneligibleReason>>,
 }
 
 /// An enum representing the possible values of an `IssuingCardApplePay`'s `ineligible_reason` field.

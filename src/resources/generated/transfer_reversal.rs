@@ -20,7 +20,8 @@ pub struct TransferReversal {
     pub amount: i64,
 
     /// Balance transaction that describes the impact on your account balance.
-    pub balance_transaction: Box<Option<Expandable<BalanceTransaction>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
 
     /// Time at which the object was created.
     ///
@@ -33,7 +34,8 @@ pub struct TransferReversal {
     pub currency: Currency,
 
     /// Linked payment refund for the transfer reversal.
-    pub destination_payment_refund: Box<Option<Expandable<Refund>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination_payment_refund: Option<Box<Expandable<Refund>>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -42,7 +44,8 @@ pub struct TransferReversal {
     pub metadata: Metadata,
 
     /// ID of the refund responsible for the transfer reversal.
-    pub source_refund: Box<Option<Expandable<Refund>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source_refund: Option<Box<Expandable<Refund>>>,
 
     /// ID of the transfer that was reversed.
     pub transfer: Expandable<Transfer>,

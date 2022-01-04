@@ -15,7 +15,8 @@ pub struct RadarValueList {
     pub id: RadarValueListId,
 
     /// The name of the value list for use in rules.
-    pub alias: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alias: Option<Box<String>>,
 
     /// Time at which the object was created.
     ///
@@ -24,7 +25,8 @@ pub struct RadarValueList {
     pub created: Option<Timestamp>,
 
     /// The name or email address of the user who created this value list.
-    pub created_by: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created_by: Option<Box<String>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -33,14 +35,16 @@ pub struct RadarValueList {
     /// The type of items in the value list.
     ///
     /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, or `customer_id`.
-    pub item_type: Box<Option<RadarValueListItemType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub item_type: Option<Box<RadarValueListItemType>>,
 
     /// List of items contained within this value list.
     #[serde(default)]
     pub list_items: List<RadarValueListItem>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<Box<bool>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -49,7 +53,8 @@ pub struct RadarValueList {
     pub metadata: Metadata,
 
     /// The name of the value list.
-    pub name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<Box<String>>,
 }
 
 impl Object for RadarValueList {

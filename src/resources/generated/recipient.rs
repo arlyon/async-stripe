@@ -16,7 +16,8 @@ pub struct Recipient {
     pub id: RecipientId,
 
     /// Hash describing the current account on the recipient, if there is one.
-    pub active_account: Box<Option<BankAccount>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active_account: Option<Box<BankAccount>>,
 
     #[serde(default)]
     pub cards: List<Card>,
@@ -28,7 +29,8 @@ pub struct Recipient {
     pub created: Option<Timestamp>,
 
     /// The default card to use for creating transfers to this recipient.
-    pub default_card: Box<Option<Expandable<Card>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_card: Option<Box<Expandable<Card>>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -37,12 +39,15 @@ pub struct Recipient {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    pub description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
 
-    pub email: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<Box<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<Box<bool>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -53,12 +58,15 @@ pub struct Recipient {
     /// The ID of the [Custom account](https://stripe.com/docs/connect/custom-accounts) this recipient was migrated to.
     ///
     /// If set, the recipient can no longer be updated, nor can transfers be made to it: use the Custom account instead.
-    pub migrated_to: Box<Option<Expandable<Account>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub migrated_to: Option<Box<Expandable<Account>>>,
 
     /// Full, legal name of the recipient.
-    pub name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<Box<String>>,
 
-    pub rolled_back_from: Box<Option<Expandable<Account>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rolled_back_from: Option<Box<Expandable<Account>>>,
 
     /// Type of the recipient, one of `individual` or `corporation`.
     #[serde(rename = "type")]

@@ -19,6 +19,7 @@ pub mod core {
     pub mod charge;
     pub mod customer;
     pub mod dispute;
+    pub mod ephemeral_key;
     pub mod file;
     pub mod file_link;
     pub mod mandate;
@@ -91,6 +92,7 @@ pub mod connect {
     pub mod application_fee;
     pub mod connect_collection_transfer;
     pub mod fee_refund;
+    pub mod login_link;
     pub mod person;
     pub mod recipient;
     pub mod topup;

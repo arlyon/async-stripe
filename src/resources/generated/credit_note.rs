@@ -37,7 +37,8 @@ pub struct CreditNote {
     pub customer: Expandable<Customer>,
 
     /// Customer balance transaction related to this credit note.
-    pub customer_balance_transaction: Box<Option<Expandable<CustomerBalanceTransaction>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance_transaction: Option<Box<Expandable<CustomerBalanceTransaction>>>,
 
     /// The integer amount in %s representing the total amount of discount that was credited.
     pub discount_amount: i64,
@@ -55,7 +56,8 @@ pub struct CreditNote {
     pub livemode: bool,
 
     /// Customer-facing text that appears on the credit note PDF.
-    pub memo: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub memo: Option<Box<String>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -67,16 +69,19 @@ pub struct CreditNote {
     pub number: String,
 
     /// Amount that was credited outside of Stripe.
-    pub out_of_band_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub out_of_band_amount: Option<Box<i64>>,
 
     /// The link to download the PDF of the credit note.
     pub pdf: String,
 
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
-    pub reason: Box<Option<CreditNoteReason>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<Box<CreditNoteReason>>,
 
     /// Refund related to this credit note.
-    pub refund: Box<Option<Expandable<Refund>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund: Option<Box<Expandable<Refund>>>,
 
     /// Status of this credit note, one of `issued` or `void`.
     ///
@@ -100,7 +105,8 @@ pub struct CreditNote {
     pub type_: CreditNoteType,
 
     /// The time that the credit note was voided.
-    pub voided_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub voided_at: Option<Box<Timestamp>>,
 }
 
 impl CreditNote {
@@ -185,7 +191,7 @@ pub struct CreateCreditNote<'a> {
 
     /// Line items that make up the credit note.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub lines: Box<Option<Vec<CreateCreditNoteLines>>>,
+    pub lines: Option<Box<Vec<CreateCreditNoteLines>>>,
 
     /// The credit note's memo appears on the credit note PDF.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -317,22 +323,29 @@ impl<'a> UpdateCreditNote<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCreditNoteLines {
-    pub amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<Box<i64>>,
 
-    pub description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
 
-    pub invoice_line_item: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_line_item: Option<Box<String>>,
 
-    pub quantity: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
 
-    pub tax_rates: Box<Option<Vec<String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Box<Vec<String>>>,
 
     #[serde(rename = "type")]
     pub type_: CreateCreditNoteLinesType,
 
-    pub unit_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<Box<i64>>,
 
-    pub unit_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<Box<String>>,
 }
 
 /// An enum representing the possible values of an `CreateCreditNoteLines`'s `type` field.

@@ -23,7 +23,8 @@ pub struct Topup {
     /// ID of the balance transaction that describes the impact of this top-up on your account balance.
     ///
     /// May not be specified depending on status of top-up.
-    pub balance_transaction: Box<Option<Expandable<BalanceTransaction>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
 
     /// Time at which the object was created.
     ///
@@ -38,19 +39,23 @@ pub struct Topup {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    pub description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
 
     /// Date the funds are expected to arrive in your Stripe account for payouts.
     ///
     /// This factors in delays like weekends or bank holidays.
     /// May not be specified depending on status of top-up.
-    pub expected_availability_date: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expected_availability_date: Option<Box<Timestamp>>,
 
     /// Error code explaining reason for top-up failure if available (see [the errors section](https://stripe.com/docs/api#errors) for a list of codes).
-    pub failure_code: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failure_code: Option<Box<String>>,
 
     /// Message to user further explaining reason for top-up failure if available.
-    pub failure_message: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failure_message: Option<Box<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -66,13 +71,15 @@ pub struct Topup {
     ///
     /// This will appear on your source's bank statement.
     /// It must contain at least one letter.
-    pub statement_descriptor: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<Box<String>>,
 
     /// The status of the top-up is either `canceled`, `failed`, `pending`, `reversed`, or `succeeded`.
     pub status: TopupStatus,
 
     /// A string that identifies this top-up as part of a group.
-    pub transfer_group: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_group: Option<Box<String>>,
 }
 
 impl Topup {

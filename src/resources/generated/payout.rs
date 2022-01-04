@@ -29,7 +29,8 @@ pub struct Payout {
     pub automatic: bool,
 
     /// ID of the balance transaction that describes the impact of this payout on your account balance.
-    pub balance_transaction: Box<Option<Expandable<BalanceTransaction>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
 
     /// Time at which the object was created.
     ///
@@ -44,21 +45,26 @@ pub struct Payout {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    pub description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
 
     /// ID of the bank account or card the payout was sent to.
-    pub destination: Box<Option<Expandable<PayoutDestination>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination: Option<Box<Expandable<PayoutDestinationUnion>>>,
 
     /// If the payout failed or was canceled, this will be the ID of the balance transaction that reversed the initial balance transaction, and puts the funds from the failed payout back in your balance.
-    pub failure_balance_transaction: Box<Option<Expandable<BalanceTransaction>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failure_balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
 
     /// Error code explaining reason for payout failure if available.
     ///
     /// See [Types of payout failures](https://stripe.com/docs/api#payout_failures) for a list of failure codes.
-    pub failure_code: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failure_code: Option<Box<String>>,
 
     /// Message to user further explaining reason for payout failure if available.
-    pub failure_message: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failure_message: Option<Box<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -76,10 +82,12 @@ pub struct Payout {
     pub method: String,
 
     /// If the payout reverses another, this is the ID of the original payout.
-    pub original_payout: Box<Option<Expandable<Payout>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub original_payout: Option<Box<Expandable<Payout>>>,
 
     /// If the payout was reversed, this is the ID of the payout that reverses this payout.
-    pub reversed_by: Box<Option<Expandable<Payout>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reversed_by: Option<Box<Expandable<Payout>>>,
 
     /// The source balance this payout came from.
     ///
@@ -87,7 +95,8 @@ pub struct Payout {
     pub source_type: String,
 
     /// Extra information about a payout to be displayed on the user's bank statement.
-    pub statement_descriptor: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor: Option<Box<String>>,
 
     /// Current status of the payout: `paid`, `pending`, `in_transit`, `canceled` or `failed`.
     ///
@@ -288,7 +297,7 @@ impl<'a> UpdatePayout<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
-pub enum PayoutDestination {
+pub enum PayoutDestinationUnion {
     BankAccount(BankAccount),
     Card(Card),
 }

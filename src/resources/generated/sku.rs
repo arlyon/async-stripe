@@ -18,7 +18,8 @@ pub struct Sku {
     pub id: SkuId,
 
     /// Whether the SKU is available for purchase.
-    pub active: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active: Option<Box<bool>>,
 
     /// A dictionary of attributes and values for the attributes defined by the product.
     ///
@@ -43,12 +44,15 @@ pub struct Sku {
     pub deleted: bool,
 
     /// The URL of an image for this SKU, meant to be displayable to the customer.
-    pub image: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub image: Option<Box<String>>,
 
-    pub inventory: Box<Option<SkuInventory>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inventory: Option<Box<SkuInventory>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<Box<bool>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -57,20 +61,24 @@ pub struct Sku {
     pub metadata: Metadata,
 
     /// The dimensions of this SKU for shipping purposes.
-    pub package_dimensions: Box<Option<PackageDimensions>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub package_dimensions: Option<Box<PackageDimensions>>,
 
     /// The cost of the item as a positive integer in the smallest currency unit (that is, 100 cents to charge $1.00, or 100 to charge ¥100, Japanese Yen being a zero-decimal currency).
-    pub price: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Box<i64>>,
 
     /// The ID of the product this SKU is associated with.
     ///
     /// The product must be currently active.
-    pub product: Box<Option<Expandable<Product>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product: Option<Box<Expandable<Product>>>,
 
     /// Time at which the object was last updated.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub updated: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub updated: Option<Box<Timestamp>>,
 }
 
 impl Sku {
@@ -124,7 +132,8 @@ pub struct SkuInventory {
     /// The count of inventory available.
     ///
     /// Will be present if and only if `type` is `finite`.
-    pub quantity: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
 
     /// Inventory type.
     ///
@@ -136,7 +145,8 @@ pub struct SkuInventory {
     ///
     /// Possible values are `in_stock`, `limited`, and `out_of_stock`.
     /// Will be present if and only if `type` is `bucket`.
-    pub value: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub value: Option<Box<String>>,
 }
 
 /// The parameters for `Sku::create`.
@@ -249,7 +259,7 @@ pub struct ListSkus<'a> {
 
     /// Only return SKUs with the given IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ids: Box<Option<Vec<String>>>,
+    pub ids: Option<Box<Vec<String>>>,
 
     /// Only return SKUs that are either in stock or out of stock (e.g., pass `false` to list all SKUs that are out of stock).
     ///

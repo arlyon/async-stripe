@@ -41,7 +41,8 @@ pub struct BalanceTransaction {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    pub description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
 
     /// The exchange rate used, if applicable, for this transaction.
     ///
@@ -50,7 +51,8 @@ pub struct BalanceTransaction {
     /// Then the PaymentIntent's `amount` would be `1000` and `currency` would be `eur`.
     /// Suppose this was converted into 12.34 USD in your Stripe account.
     /// Then the BalanceTransaction's `amount` would be `1234`, `currency` would be `usd`, and `exchange_rate` would be `1.234`.
-    pub exchange_rate: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exchange_rate: Option<Box<f64>>,
 
     /// Fees (in %s) paid for this transaction.
     pub fee: i64,
@@ -65,7 +67,8 @@ pub struct BalanceTransaction {
     pub reporting_category: String,
 
     /// The Stripe object to which this transaction is related.
-    pub source: Box<Option<Expandable<BalanceTransactionSource>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<Box<Expandable<BalanceTransactionSourceUnion>>>,
 
     /// If the transaction's net funds are available in the Stripe balance yet.
     ///
@@ -119,7 +122,8 @@ pub struct Fee {
     pub amount: i64,
 
     /// ID of the Connect application that earned the fee.
-    pub application: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application: Option<Box<String>>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -129,7 +133,8 @@ pub struct Fee {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    pub description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
 
     /// Type of the fee, one of: `application_fee`, `stripe_fee` or `tax`.
     #[serde(rename = "type")]
@@ -207,7 +212,7 @@ impl<'a> ListBalanceTransactions<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
-pub enum BalanceTransactionSource {
+pub enum BalanceTransactionSourceUnion {
     ApplicationFee(ApplicationFee),
     Charge(Charge),
     ConnectCollectionTransfer(ConnectCollectionTransfer),

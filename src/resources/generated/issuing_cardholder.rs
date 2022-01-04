@@ -17,7 +17,8 @@ pub struct IssuingCardholder {
     pub billing: IssuingCardholderAddress,
 
     /// Additional information about a `company` cardholder.
-    pub company: Box<Option<IssuingCardholderCompany>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company: Option<Box<IssuingCardholderCompany>>,
 
     /// Time at which the object was created.
     ///
@@ -25,10 +26,12 @@ pub struct IssuingCardholder {
     pub created: Timestamp,
 
     /// The cardholder's email address.
-    pub email: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<Box<String>>,
 
     /// Additional information about an `individual` cardholder.
-    pub individual: Box<Option<IssuingCardholderIndividual>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub individual: Option<Box<IssuingCardholderIndividual>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -47,14 +50,16 @@ pub struct IssuingCardholder {
     ///
     /// This is required for all cardholders who will be creating EU cards.
     /// See the [3D Secure documentation](https://stripe.com/docs/issuing/3d-secure#when-is-3d-secure-applied) for more details.
-    pub phone_number: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone_number: Option<Box<String>>,
 
     pub requirements: IssuingCardholderRequirements,
 
     /// Rules that control spending across this cardholder's cards.
     ///
     /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
-    pub spending_controls: Box<Option<IssuingCardholderAuthorizationControls>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub spending_controls: Option<Box<IssuingCardholderAuthorizationControls>>,
 
     /// Specifies whether to permit authorizations on this cardholder's cards.
     pub status: IssuingCardholderStatus,
@@ -96,7 +101,8 @@ pub struct IssuingCardholderAuthorizationControls {
     pub blocked_categories: Option<Vec<MerchantCategory>>,
 
     /// Limit spending with amount-based rules that apply across this cardholder's cards.
-    pub spending_limits: Box<Option<Vec<IssuingCardholderSpendingLimit>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub spending_limits: Option<Box<Vec<IssuingCardholderSpendingLimit>>>,
 
     /// Currency of the amounts within `spending_limits`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -112,7 +118,8 @@ pub struct IssuingCardholderCompany {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividual {
     /// The date of birth of this cardholder.
-    pub dob: Box<Option<IssuingCardholderIndividualDob>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<Box<IssuingCardholderIndividualDob>>,
 
     /// The first name of this cardholder.
     pub first_name: String,
@@ -121,28 +128,34 @@ pub struct IssuingCardholderIndividual {
     pub last_name: String,
 
     /// Government-issued ID document for this cardholder.
-    pub verification: Box<Option<IssuingCardholderVerification>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification: Option<Box<IssuingCardholderVerification>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividualDob {
     /// The day of birth, between 1 and 31.
-    pub day: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub day: Option<Box<i64>>,
 
     /// The month of birth, between 1 and 12.
-    pub month: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub month: Option<Box<i64>>,
 
     /// The four-digit year of birth.
-    pub year: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub year: Option<Box<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderRequirements {
     /// If `disabled_reason` is present, all cards will decline authorizations with `cardholder_verification_required` reason.
-    pub disabled_reason: Box<Option<IssuingCardholderRequirementsDisabledReason>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disabled_reason: Option<Box<IssuingCardholderRequirementsDisabledReason>>,
 
     /// Array of fields that need to be collected in order to verify and re-enable the cardholder.
-    pub past_due: Box<Option<Vec<IssuingCardholderRequirementsPastDue>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub past_due: Option<Box<Vec<IssuingCardholderRequirementsPastDue>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -153,7 +166,8 @@ pub struct IssuingCardholderSpendingLimit {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
     ///
     /// Omitting this field will apply the limit to all categories.
-    pub categories: Box<Option<Vec<IssuingCardholderSpendingLimitCategories>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub categories: Option<Box<Vec<IssuingCardholderSpendingLimitCategories>>>,
 
     /// Interval (or event) to which the amount applies.
     pub interval: IssuingCardholderSpendingLimitInterval,
@@ -162,16 +176,19 @@ pub struct IssuingCardholderSpendingLimit {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderVerification {
     /// An identifying document, either a passport or local ID card.
-    pub document: Box<Option<IssuingCardholderIdDocument>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub document: Option<Box<IssuingCardholderIdDocument>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderIdDocument {
     /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    pub back: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub back: Option<Box<Expandable<File>>>,
 
     /// The front of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    pub front: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub front: Option<Box<Expandable<File>>>,
 }
 
 /// An enum representing the possible values of an `IssuingCardholderRequirements`'s `disabled_reason` field.

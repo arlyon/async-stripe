@@ -22,7 +22,8 @@ pub struct WebhookEndpoint {
     pub api_version: Option<ApiVersion>,
 
     /// The ID of the associated Connect application.
-    pub application: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application: Option<Box<String>>,
 
     /// Time at which the object was created.
     ///
@@ -35,7 +36,8 @@ pub struct WebhookEndpoint {
     pub deleted: bool,
 
     /// An optional description of what the webhook is used for.
-    pub description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
 
     /// The list of events to enable for this endpoint.
     ///
@@ -44,7 +46,8 @@ pub struct WebhookEndpoint {
     pub enabled_events: Option<Vec<EventFilter>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<Box<bool>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -55,7 +58,8 @@ pub struct WebhookEndpoint {
     /// The endpoint's secret, used to generate [webhook signatures](https://stripe.com/docs/webhooks/signatures).
     ///
     /// Only returned at creation.
-    pub secret: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub secret: Option<Box<String>>,
 
     /// The status of the webhook.
     ///
@@ -64,7 +68,8 @@ pub struct WebhookEndpoint {
     pub status: Option<WebhookEndpointStatus>,
 
     /// The URL of the webhook endpoint.
-    pub url: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<Box<String>>,
 }
 
 impl WebhookEndpoint {
@@ -227,7 +232,7 @@ pub struct UpdateWebhookEndpoint<'a> {
     ///
     /// You may specify `['*']` to enable all events, except those that require explicit selection.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub enabled_events: Box<Option<Vec<EventFilter>>>,
+    pub enabled_events: Option<Box<Vec<EventFilter>>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]

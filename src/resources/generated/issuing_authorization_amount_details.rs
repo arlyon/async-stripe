@@ -8,5 +8,6 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationAmountDetails {
     /// The fee charged by the ATM for the cash withdrawal.
-    pub atm_fee: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub atm_fee: Option<Box<i64>>,
 }

@@ -24,12 +24,14 @@ pub struct SubscriptionSchedule {
     /// Time at which the subscription schedule was canceled.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub canceled_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled_at: Option<Box<Timestamp>>,
 
     /// Time at which the subscription schedule was completed.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub completed_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub completed_at: Option<Box<Timestamp>>,
 
     /// Time at which the object was created.
     ///
@@ -37,7 +39,8 @@ pub struct SubscriptionSchedule {
     pub created: Timestamp,
 
     /// Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`.
-    pub current_phase: Box<Option<SubscriptionScheduleCurrentPhase>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub current_phase: Option<Box<SubscriptionScheduleCurrentPhase>>,
 
     /// ID of the customer who owns the subscription schedule.
     pub customer: Expandable<Customer>,
@@ -64,10 +67,12 @@ pub struct SubscriptionSchedule {
     /// Time at which the subscription schedule was released.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub released_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub released_at: Option<Box<Timestamp>>,
 
     /// ID of the subscription once managed by the subscription schedule (if it is released).
-    pub released_subscription: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub released_subscription: Option<Box<String>>,
 
     /// The present status of the subscription schedule.
     ///
@@ -76,7 +81,8 @@ pub struct SubscriptionSchedule {
     pub status: SubscriptionScheduleStatus,
 
     /// ID of the subscription managed by the subscription schedule.
-    pub subscription: Box<Option<Expandable<Subscription>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<Box<Expandable<Subscription>>>,
 }
 
 impl SubscriptionSchedule {
@@ -146,19 +152,23 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account during this phase of the schedule.
-    pub application_fee_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee_percent: Option<Box<f64>>,
 
-    pub automatic_tax: Box<Option<SchedulesPhaseAutomaticTax>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub automatic_tax: Option<Box<SchedulesPhaseAutomaticTax>>,
 
     /// Possible values are `phase_start` or `automatic`.
     ///
     /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
     /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-    pub billing_cycle_anchor: Box<Option<SubscriptionSchedulePhaseConfigurationBillingCycleAnchor>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor: Option<Box<SubscriptionSchedulePhaseConfigurationBillingCycleAnchor>>,
 
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    pub billing_thresholds: Box<Option<SubscriptionBillingThresholds>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<Box<SubscriptionBillingThresholds>>,
 
     /// Either `charge_automatically`, or `send_invoice`.
     ///
@@ -168,22 +178,26 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     pub collection_method: Option<CollectionMethod>,
 
     /// ID of the coupon to use during this phase of the subscription schedule.
-    pub coupon: Box<Option<Expandable<Coupon>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<Box<Expandable<Coupon>>>,
 
     /// ID of the default payment method for the subscription schedule.
     ///
     /// It must belong to the customer associated with the subscription schedule.
     /// If not set, invoices will use the default payment method in the customer's invoice settings.
-    pub default_payment_method: Box<Option<Expandable<PaymentMethod>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_payment_method: Option<Box<Expandable<PaymentMethod>>>,
 
     /// The default tax rates to apply to the subscription during this phase of the subscription schedule.
-    pub default_tax_rates: Box<Option<Vec<TaxRate>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_tax_rates: Option<Box<Vec<TaxRate>>>,
 
     /// The end of this phase of the subscription schedule.
     pub end_date: Timestamp,
 
     /// The invoice settings applicable during this phase.
-    pub invoice_settings: Box<Option<SubscriptionScheduleInvoiceSettings>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<Box<SubscriptionScheduleInvoiceSettings>>,
 
     /// Subscription items to configure the subscription to during this phase of the subscription schedule.
     pub items: Vec<SubscriptionScheduleConfigurationItem>,
@@ -197,10 +211,12 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     pub start_date: Timestamp,
 
     /// The account (if any) the associated subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
-    pub transfer_data: Box<Option<SubscriptionTransferData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_data: Option<Box<SubscriptionTransferData>>,
 
     /// When the trial ends within the phase.
-    pub trial_end: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_end: Option<Box<Timestamp>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -215,29 +231,34 @@ pub struct SubscriptionScheduleAddInvoiceItem {
     pub price: Expandable<Price>,
 
     /// The quantity of the invoice item.
-    pub quantity: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
 
     /// The tax rates which apply to the item.
     ///
     /// When set, the `default_tax_rates` do not apply to this item.
-    pub tax_rates: Box<Option<Vec<TaxRate>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Box<Vec<TaxRate>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleConfigurationItem {
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
-    pub billing_thresholds: Box<Option<SubscriptionItemBillingThresholds>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<Box<SubscriptionItemBillingThresholds>>,
 
     /// ID of the price to which the customer should be subscribed.
     pub price: Expandable<Price>,
 
     /// Quantity of the plan to which the customer should be subscribed.
-    pub quantity: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
 
     /// The tax rates which apply to this `phase_item`.
     ///
     /// When set, the `default_tax_rates` on the phase do not apply to this `phase_item`.
-    pub tax_rates: Box<Option<Vec<TaxRate>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Box<Vec<TaxRate>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -245,9 +266,11 @@ pub struct SubscriptionScheduleDefaultSettings {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account during this phase of the schedule.
-    pub application_fee_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee_percent: Option<Box<f64>>,
 
-    pub automatic_tax: Box<Option<SubscriptionSchedulesResourceDefaultSettingsAutomaticTax>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub automatic_tax: Option<Box<SubscriptionSchedulesResourceDefaultSettingsAutomaticTax>>,
 
     /// Possible values are `phase_start` or `automatic`.
     ///
@@ -257,24 +280,29 @@ pub struct SubscriptionScheduleDefaultSettings {
     pub billing_cycle_anchor: SubscriptionScheduleDefaultSettingsBillingCycleAnchor,
 
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    pub billing_thresholds: Box<Option<SubscriptionBillingThresholds>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<Box<SubscriptionBillingThresholds>>,
 
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
     /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
-    pub collection_method: Box<Option<SubscriptionScheduleDefaultSettingsCollectionMethod>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub collection_method: Option<Box<SubscriptionScheduleDefaultSettingsCollectionMethod>>,
 
     /// ID of the default payment method for the subscription schedule.
     ///
     /// If not set, invoices will use the default payment method in the customer's invoice settings.
-    pub default_payment_method: Box<Option<Expandable<PaymentMethod>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_payment_method: Option<Box<Expandable<PaymentMethod>>>,
 
     /// The subscription schedule's default invoice settings.
-    pub invoice_settings: Box<Option<SubscriptionScheduleInvoiceSettings>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<Box<SubscriptionScheduleInvoiceSettings>>,
 
     /// The account (if any) the associated subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
-    pub transfer_data: Box<Option<SubscriptionTransferData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_data: Option<Box<SubscriptionTransferData>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -292,7 +320,7 @@ pub struct CreateSubscriptionSchedule<'a> {
 
     /// Object representing the subscription schedule's default settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_settings: Box<Option<SubscriptionScheduleDefaultSettingsParams>>,
+    pub default_settings: Option<Box<SubscriptionScheduleDefaultSettingsParams>>,
 
     /// Configures how the subscription schedule behaves when it ends.
     ///
@@ -326,7 +354,7 @@ pub struct CreateSubscriptionSchedule<'a> {
     /// Each phase can be customized to have different durations, plans, and coupons.
     /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phases: Box<Option<Vec<CreateSubscriptionSchedulePhases>>>,
+    pub phases: Option<Box<Vec<CreateSubscriptionSchedulePhases>>>,
 
     /// When the subscription schedule starts.
     ///
@@ -425,7 +453,7 @@ impl<'a> ListSubscriptionSchedules<'a> {
 pub struct UpdateSubscriptionSchedule<'a> {
     /// Object representing the subscription schedule's default settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_settings: Box<Option<SubscriptionScheduleDefaultSettingsParams>>,
+    pub default_settings: Option<Box<SubscriptionScheduleDefaultSettingsParams>>,
 
     /// Configures how the subscription schedule behaves when it ends.
     ///
@@ -452,7 +480,7 @@ pub struct UpdateSubscriptionSchedule<'a> {
     /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
     /// Note that past phases can be omitted.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phases: Box<Option<Vec<UpdateSubscriptionSchedulePhases>>>,
+    pub phases: Option<Box<Vec<UpdateSubscriptionSchedulePhases>>>,
 
     /// If the update changes the current phase, indicates if the changes should be prorated.
     ///
@@ -476,13 +504,17 @@ impl<'a> UpdateSubscriptionSchedule<'a> {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhases {
-    pub add_invoice_items: Box<Option<Vec<AddInvoiceItems>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub add_invoice_items: Option<Box<Vec<AddInvoiceItems>>>,
 
-    pub application_fee_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee_percent: Option<Box<f64>>,
 
-    pub automatic_tax: Box<Option<CreateSubscriptionSchedulePhasesAutomaticTax>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub automatic_tax: Option<Box<CreateSubscriptionSchedulePhasesAutomaticTax>>,
 
-    pub billing_cycle_anchor: Box<Option<CreateSubscriptionSchedulePhasesBillingCycleAnchor>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor: Option<Box<CreateSubscriptionSchedulePhasesBillingCycleAnchor>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<SubscriptionBillingThresholds>,
@@ -490,26 +522,34 @@ pub struct CreateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<CollectionMethod>,
 
-    pub coupon: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<Box<String>>,
 
-    pub default_payment_method: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_payment_method: Option<Box<String>>,
 
-    pub default_tax_rates: Box<Option<Vec<String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_tax_rates: Option<Box<Vec<String>>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<Scheduled>,
 
-    pub invoice_settings: Box<Option<SubscriptionScheduleInvoiceSettings>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<Box<SubscriptionScheduleInvoiceSettings>>,
 
     pub items: Vec<CreateSubscriptionSchedulePhasesItems>,
 
-    pub iterations: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iterations: Option<Box<i64>>,
 
-    pub proration_behavior: Box<Option<SubscriptionProrationBehavior>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_behavior: Option<Box<SubscriptionProrationBehavior>>,
 
-    pub transfer_data: Box<Option<CreateSubscriptionSchedulePhasesTransferData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_data: Option<Box<CreateSubscriptionSchedulePhasesTransferData>>,
 
-    pub trial: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial: Option<Box<bool>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Scheduled>,
@@ -517,35 +557,45 @@ pub struct CreateSubscriptionSchedulePhases {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParams {
-    pub application_fee_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee_percent: Option<Box<f64>>,
 
-    pub automatic_tax: Box<Option<SubscriptionScheduleDefaultSettingsParamsAutomaticTax>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub automatic_tax: Option<Box<SubscriptionScheduleDefaultSettingsParamsAutomaticTax>>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor:
-        Box<Option<SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor>>,
+        Option<Box<SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor>>,
 
-    pub billing_thresholds: Box<Option<SubscriptionScheduleBillingThresholds>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<Box<SubscriptionScheduleBillingThresholds>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<CollectionMethod>,
 
-    pub default_payment_method: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_payment_method: Option<Box<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<SubscriptionScheduleInvoiceSettings>,
 
-    pub transfer_data: Box<Option<SubscriptionScheduleDefaultSettingsParamsTransferData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_data: Option<Box<SubscriptionScheduleDefaultSettingsParamsTransferData>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhases {
-    pub add_invoice_items: Box<Option<Vec<AddInvoiceItems>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub add_invoice_items: Option<Box<Vec<AddInvoiceItems>>>,
 
-    pub application_fee_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee_percent: Option<Box<f64>>,
 
-    pub automatic_tax: Box<Option<UpdateSubscriptionSchedulePhasesAutomaticTax>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub automatic_tax: Option<Box<UpdateSubscriptionSchedulePhasesAutomaticTax>>,
 
-    pub billing_cycle_anchor: Box<Option<UpdateSubscriptionSchedulePhasesBillingCycleAnchor>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor: Option<Box<UpdateSubscriptionSchedulePhasesBillingCycleAnchor>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<SubscriptionBillingThresholds>,
@@ -553,29 +603,37 @@ pub struct UpdateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<CollectionMethod>,
 
-    pub coupon: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<Box<String>>,
 
-    pub default_payment_method: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_payment_method: Option<Box<String>>,
 
-    pub default_tax_rates: Box<Option<Vec<String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_tax_rates: Option<Box<Vec<String>>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<Scheduled>,
 
-    pub invoice_settings: Box<Option<SubscriptionScheduleInvoiceSettings>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_settings: Option<Box<SubscriptionScheduleInvoiceSettings>>,
 
     pub items: Vec<UpdateSubscriptionSchedulePhasesItems>,
 
-    pub iterations: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iterations: Option<Box<i64>>,
 
-    pub proration_behavior: Box<Option<SubscriptionProrationBehavior>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_behavior: Option<Box<SubscriptionProrationBehavior>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start_date: Option<Scheduled>,
 
-    pub transfer_data: Box<Option<UpdateSubscriptionSchedulePhasesTransferData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_data: Option<Box<UpdateSubscriptionSchedulePhasesTransferData>>,
 
-    pub trial: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial: Option<Box<bool>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Scheduled>,
@@ -583,13 +641,17 @@ pub struct UpdateSubscriptionSchedulePhases {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
-    pub price: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Box<String>>,
 
-    pub price_data: Box<Option<InvoiceItemPriceData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price_data: Option<Box<InvoiceItemPriceData>>,
 
-    pub quantity: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
 
-    pub tax_rates: Box<Option<Vec<String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Box<Vec<String>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -599,29 +661,37 @@ pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItems {
-    pub billing_thresholds: Box<Option<CreateSubscriptionSchedulePhasesItemsBillingThresholds>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<Box<CreateSubscriptionSchedulePhasesItemsBillingThresholds>>,
 
-    pub price: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Box<String>>,
 
-    pub price_data: Box<Option<CreateSubscriptionSchedulePhasesItemsPriceData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price_data: Option<Box<CreateSubscriptionSchedulePhasesItemsPriceData>>,
 
-    pub quantity: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
 
-    pub tax_rates: Box<Option<Vec<String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Box<Vec<String>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesTransferData {
-    pub amount_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_percent: Option<Box<f64>>,
 
     pub destination: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleBillingThresholds {
-    pub amount_gte: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_gte: Option<Box<i64>>,
 
-    pub reset_billing_cycle_anchor: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reset_billing_cycle_anchor: Option<Box<bool>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -631,14 +701,16 @@ pub struct SubscriptionScheduleDefaultSettingsParamsAutomaticTax {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
-    pub amount_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_percent: Option<Box<f64>>,
 
     pub destination: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleInvoiceSettings {
-    pub days_until_due: Box<Option<u32>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub days_until_due: Option<Box<u32>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -648,20 +720,26 @@ pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItems {
-    pub billing_thresholds: Box<Option<UpdateSubscriptionSchedulePhasesItemsBillingThresholds>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<Box<UpdateSubscriptionSchedulePhasesItemsBillingThresholds>>,
 
-    pub price: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Box<String>>,
 
-    pub price_data: Box<Option<UpdateSubscriptionSchedulePhasesItemsPriceData>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price_data: Option<Box<UpdateSubscriptionSchedulePhasesItemsPriceData>>,
 
-    pub quantity: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
 
-    pub tax_rates: Box<Option<Vec<String>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Box<Vec<String>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesTransferData {
-    pub amount_percent: Box<Option<f64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_percent: Option<Box<f64>>,
 
     pub destination: String,
 }
@@ -679,11 +757,14 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
 
     pub recurring: CreateSubscriptionSchedulePhasesItemsPriceDataRecurring,
 
-    pub tax_behavior: Box<Option<CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<Box<CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior>>,
 
-    pub unit_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<Box<i64>>,
 
-    pub unit_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -692,11 +773,14 @@ pub struct InvoiceItemPriceData {
 
     pub product: String,
 
-    pub tax_behavior: Box<Option<InvoiceItemPriceDataTaxBehavior>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<Box<InvoiceItemPriceDataTaxBehavior>>,
 
-    pub unit_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<Box<i64>>,
 
-    pub unit_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -712,25 +796,30 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
 
     pub recurring: UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring,
 
-    pub tax_behavior: Box<Option<UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<Box<UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior>>,
 
-    pub unit_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<Box<i64>>,
 
-    pub unit_amount_decimal: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     pub interval: CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
 
-    pub interval_count: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<Box<u64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     pub interval: UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
 
-    pub interval_count: Box<Option<u64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<Box<u64>>,
 }
 
 /// An enum representing the possible values of an `CreateSubscriptionSchedulePhases`'s `billing_cycle_anchor` field.

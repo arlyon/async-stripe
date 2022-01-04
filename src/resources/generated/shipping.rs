@@ -9,19 +9,24 @@ use crate::resources::Address;
 /// The resource representing a Stripe "Shipping".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Shipping {
-    pub address: Box<Option<Address>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<Box<Address>>,
 
     /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
-    pub carrier: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub carrier: Option<Box<String>>,
 
     /// Recipient name.
-    pub name: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<Box<String>>,
 
     /// Recipient phone (including extension).
-    pub phone: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<Box<String>>,
 
     /// The tracking number for a physical product, obtained from the delivery service.
     ///
     /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
-    pub tracking_number: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking_number: Option<Box<String>>,
 }

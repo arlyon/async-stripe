@@ -21,17 +21,20 @@ pub struct AlipayAccount {
     pub created: Option<Timestamp>,
 
     /// The ID of the customer associated with this Alipay Account.
-    pub customer: Box<Option<Expandable<Customer>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<Box<Expandable<Customer>>>,
 
     // Always true for a deleted object
     #[serde(default)]
     pub deleted: bool,
 
     /// Uniquely identifies the account and will be the same across all Alipay account objects that are linked to the same Alipay account.
-    pub fingerprint: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<Box<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<Box<bool>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -40,7 +43,8 @@ pub struct AlipayAccount {
     pub metadata: Metadata,
 
     /// If the Alipay account object is not reusable, the exact amount that you can create a charge for.
-    pub payment_amount: Box<Option<i64>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_amount: Option<Box<i64>>,
 
     /// If the Alipay account object is not reusable, the exact currency that you can create a charge for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -49,13 +53,16 @@ pub struct AlipayAccount {
     /// True if you can create multiple payments using this account.
     ///
     /// If the account is reusable, then you can freely choose the amount of each payment.
-    pub reusable: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reusable: Option<Box<bool>>,
 
     /// Whether this Alipay account object has ever been used for a payment.
-    pub used: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub used: Option<Box<bool>>,
 
     /// The username for the Alipay account.
-    pub username: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub username: Option<Box<String>>,
 }
 
 impl Object for AlipayAccount {

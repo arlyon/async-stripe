@@ -22,7 +22,8 @@ pub struct IssuingDispute {
     pub amount: i64,
 
     /// List of balance transactions associated with the dispute.
-    pub balance_transactions: Box<Option<Vec<BalanceTransaction>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance_transactions: Option<Box<Vec<BalanceTransaction>>>,
 
     /// Time at which the object was created.
     ///
@@ -61,161 +62,206 @@ impl Object for IssuingDispute {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeEvidence {
-    pub canceled: Box<Option<IssuingDisputeCanceledEvidence>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled: Option<Box<IssuingDisputeCanceledEvidence>>,
 
-    pub duplicate: Box<Option<IssuingDisputeDuplicateEvidence>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duplicate: Option<Box<IssuingDisputeDuplicateEvidence>>,
 
-    pub fraudulent: Box<Option<IssuingDisputeFraudulentEvidence>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fraudulent: Option<Box<IssuingDisputeFraudulentEvidence>>,
 
-    pub merchandise_not_as_described: Box<Option<IssuingDisputeMerchandiseNotAsDescribedEvidence>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub merchandise_not_as_described: Option<Box<IssuingDisputeMerchandiseNotAsDescribedEvidence>>,
 
-    pub not_received: Box<Option<IssuingDisputeNotReceivedEvidence>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub not_received: Option<Box<IssuingDisputeNotReceivedEvidence>>,
 
-    pub other: Box<Option<IssuingDisputeOtherEvidence>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub other: Option<Box<IssuingDisputeOtherEvidence>>,
 
     /// The reason for filing the dispute.
     ///
     /// Its value will match the field containing the evidence.
     pub reason: IssuingDisputeEvidenceReason,
 
-    pub service_not_as_described: Box<Option<IssuingDisputeServiceNotAsDescribedEvidence>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_not_as_described: Option<Box<IssuingDisputeServiceNotAsDescribedEvidence>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeCanceledEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    pub additional_documentation: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<Box<Expandable<File>>>,
 
     /// Date when order was canceled.
-    pub canceled_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled_at: Option<Box<Timestamp>>,
 
     /// Whether the cardholder was provided with a cancellation policy.
-    pub cancellation_policy_provided: Box<Option<bool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancellation_policy_provided: Option<Box<bool>>,
 
     /// Reason for canceling the order.
-    pub cancellation_reason: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancellation_reason: Option<Box<String>>,
 
     /// Date when the cardholder expected to receive the product.
-    pub expected_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expected_at: Option<Box<Timestamp>>,
 
     /// Explanation of why the cardholder is disputing this transaction.
-    pub explanation: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<Box<String>>,
 
     /// Description of the merchandise or service that was purchased.
-    pub product_description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_description: Option<Box<String>>,
 
     /// Whether the product was a merchandise or service.
-    pub product_type: Box<Option<IssuingDisputeCanceledEvidenceProductType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_type: Option<Box<IssuingDisputeCanceledEvidenceProductType>>,
 
     /// Result of cardholder's attempt to return the product.
-    pub return_status: Box<Option<IssuingDisputeCanceledEvidenceReturnStatus>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_status: Option<Box<IssuingDisputeCanceledEvidenceReturnStatus>>,
 
     /// Date when the product was returned or attempted to be returned.
-    pub returned_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub returned_at: Option<Box<Timestamp>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeDuplicateEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    pub additional_documentation: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<Box<Expandable<File>>>,
 
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Copy of the card statement showing that the product had already been paid for.
-    pub card_statement: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_statement: Option<Box<Expandable<File>>>,
 
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Copy of the receipt showing that the product had been paid for in cash.
-    pub cash_receipt: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cash_receipt: Option<Box<Expandable<File>>>,
 
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Image of the front and back of the check that was used to pay for the product.
-    pub check_image: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub check_image: Option<Box<Expandable<File>>>,
 
     /// Explanation of why the cardholder is disputing this transaction.
-    pub explanation: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<Box<String>>,
 
     /// Transaction (e.g., ipi_...) that the disputed transaction is a duplicate of.
     ///
     /// Of the two or more transactions that are copies of each other, this is original undisputed one.
-    pub original_transaction: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub original_transaction: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeFraudulentEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    pub additional_documentation: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<Box<Expandable<File>>>,
 
     /// Explanation of why the cardholder is disputing this transaction.
-    pub explanation: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    pub additional_documentation: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<Box<Expandable<File>>>,
 
     /// Explanation of why the cardholder is disputing this transaction.
-    pub explanation: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<Box<String>>,
 
     /// Date when the product was received.
-    pub received_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub received_at: Option<Box<Timestamp>>,
 
     /// Description of the cardholder's attempt to return the product.
-    pub return_description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_description: Option<Box<String>>,
 
     /// Result of cardholder's attempt to return the product.
-    pub return_status: Box<Option<IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_status: Option<Box<IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus>>,
 
     /// Date when the product was returned or attempted to be returned.
-    pub returned_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub returned_at: Option<Box<Timestamp>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeNotReceivedEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    pub additional_documentation: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<Box<Expandable<File>>>,
 
     /// Date when the cardholder expected to receive the product.
-    pub expected_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expected_at: Option<Box<Timestamp>>,
 
     /// Explanation of why the cardholder is disputing this transaction.
-    pub explanation: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<Box<String>>,
 
     /// Description of the merchandise or service that was purchased.
-    pub product_description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_description: Option<Box<String>>,
 
     /// Whether the product was a merchandise or service.
-    pub product_type: Box<Option<IssuingDisputeNotReceivedEvidenceProductType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_type: Option<Box<IssuingDisputeNotReceivedEvidenceProductType>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeOtherEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    pub additional_documentation: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<Box<Expandable<File>>>,
 
     /// Explanation of why the cardholder is disputing this transaction.
-    pub explanation: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<Box<String>>,
 
     /// Description of the merchandise or service that was purchased.
-    pub product_description: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_description: Option<Box<String>>,
 
     /// Whether the product was a merchandise or service.
-    pub product_type: Box<Option<IssuingDisputeOtherEvidenceProductType>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_type: Option<Box<IssuingDisputeOtherEvidenceProductType>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeServiceNotAsDescribedEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
-    pub additional_documentation: Box<Option<Expandable<File>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_documentation: Option<Box<Expandable<File>>>,
 
     /// Date when order was canceled.
-    pub canceled_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled_at: Option<Box<Timestamp>>,
 
     /// Reason for canceling the order.
-    pub cancellation_reason: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancellation_reason: Option<Box<String>>,
 
     /// Explanation of why the cardholder is disputing this transaction.
-    pub explanation: Box<Option<String>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation: Option<Box<String>>,
 
     /// Date when the product was received.
-    pub received_at: Box<Option<Timestamp>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub received_at: Option<Box<Timestamp>>,
 }
 
 /// An enum representing the possible values of an `IssuingDisputeCanceledEvidence`'s `product_type` field.
