@@ -238,7 +238,7 @@ pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
 		("reserve_transaction", "core"),
 		("token", "core"),
 		// Payment Methods
-        ("alipay_account", "payment-methods"),
+                ("alipay_account", "payment-methods"),
 		("bank_account", "payment-methods"),
 		("payment_method", "payment-methods"),
 		("source", "payment-methods"),
