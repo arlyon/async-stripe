@@ -73,6 +73,10 @@ pub struct CheckoutSession {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Box<Expandable<Customer>>>,
 
+    /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_creation: Option<Box<CheckoutSessionCustomerCreation>>,
+
     /// The customer details including the customer's tax exempt status and the customer's tax IDs.
     ///
     /// Only present on Sessions in `payment` or `subscription` mode.
@@ -462,9 +466,20 @@ pub struct CreateCheckoutSession<'a> {
     ///
     /// In `payment` mode, the customer’s most recent card payment method will be used to prefill the email, name, card details, and billing address on the Checkout page.
     /// In `subscription` mode, the customer’s [default payment method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) will be used if it’s a card, and otherwise the most recent card will be used.
-    /// A valid billing address is required for Checkout to prefill the customer's card details.  If the Customer already has a valid [email](https://stripe.com/docs/api/customers/object#customer_object-email) set, the email will be prefilled and not editable in Checkout. If the Customer does not have a valid `email`, Checkout will set the email entered during the session on the Customer.  If blank for Checkout Sessions in `payment` or `subscription` mode, Checkout will create a new Customer object based on information provided during the payment flow.  You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
+    /// A valid billing address, billing name and billing email are required on the payment method for Checkout to prefill the customer's card details.  If the Customer already has a valid [email](https://stripe.com/docs/api/customers/object#customer_object-email) set, the email will be prefilled and not editable in Checkout. If the Customer does not have a valid `email`, Checkout will set the email entered during the session on the Customer.  If blank for Checkout Sessions in `payment` or `subscription` mode, Checkout will create a new Customer object based on information provided during the payment flow.  You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
+
+    /// Configure whether a Checkout Session creates a [Customer](https://stripe.com/docs/api/customers) during Session confirmation.
+    ///
+    /// When a Customer is not created, you can still retrieve email, address, and other customer data entered in Checkout
+    /// with [customer_details](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-customer_details).
+    ///
+    /// Sessions that do not create Customers will instead create [Guest Customers](https://support.stripe.com/questions/guest-customer-faq) in the Dashboard.
+    ///
+    /// Can only be set in `payment` and `setup` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_creation: Option<CheckoutSessionCustomerCreation>,
 
     /// If provided, this value will be used when the Customer object is created.
     /// If not provided, customers will be asked to enter their email address.
@@ -599,6 +614,7 @@ impl<'a> CreateCheckoutSession<'a> {
             client_reference_id: Default::default(),
             consent_collection: Default::default(),
             customer: Default::default(),
+            customer_creation: Default::default(),
             customer_email: Default::default(),
             customer_update: Default::default(),
             discounts: Default::default(),
@@ -1239,6 +1255,35 @@ impl AsRef<str> for CheckoutSessionBillingAddressCollection {
 }
 
 impl std::fmt::Display for CheckoutSessionBillingAddressCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutSession`'s `customer_creation` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutSessionCustomerCreation {
+    Always,
+    IfRequired,
+}
+
+impl CheckoutSessionCustomerCreation {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutSessionCustomerCreation::Always => "always",
+            CheckoutSessionCustomerCreation::IfRequired => "if_required",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutSessionCustomerCreation {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutSessionCustomerCreation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

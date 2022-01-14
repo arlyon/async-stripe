@@ -288,6 +288,10 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paid: Option<Box<bool>>,
 
+    /// Returns true if the invoice was manually marked paid, returns false if the invoice hasn't been paid yet or was paid on Stripe.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_out_of_band: Option<Box<bool>>,
+
     /// The PaymentIntent associated with this invoice.
     ///
     /// The PaymentIntent is generated when the invoice is finalized, and can then be used to pay the invoice.

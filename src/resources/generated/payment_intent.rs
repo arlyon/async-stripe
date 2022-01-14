@@ -443,7 +443,13 @@ pub struct PaymentIntentPaymentMethodOptions {
     pub card_present: Option<Box<PaymentIntentPaymentMethodOptionsCardPresentUnion>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx: Option<Box<PaymentIntentPaymentMethodOptionsFpxUnion>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub giropay: Option<Box<PaymentIntentPaymentMethodOptionsGiropayUnion>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay: Option<Box<PaymentIntentPaymentMethodOptionsGrabpayUnion>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<Box<PaymentIntentPaymentMethodOptionsIdealUnion>>,
@@ -612,7 +618,13 @@ pub struct PaymentMethodOptionsCardInstallments {
 pub struct PaymentMethodOptionsCardPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsFpx {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsGiropay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsGrabpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsIdeal {}
@@ -1176,7 +1188,13 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     pub card_present: Option<Box<CreatePaymentIntentPaymentMethodOptionsCardPresent>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx: Option<Box<CreatePaymentIntentPaymentMethodOptionsFpx>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub giropay: Option<Box<CreatePaymentIntentPaymentMethodOptionsGiropay>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay: Option<Box<CreatePaymentIntentPaymentMethodOptionsGrabpay>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<Box<CreatePaymentIntentPaymentMethodOptionsIdeal>>,
@@ -1323,7 +1341,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     pub card_present: Option<Box<UpdatePaymentIntentPaymentMethodOptionsCardPresent>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx: Option<Box<UpdatePaymentIntentPaymentMethodOptionsFpx>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub giropay: Option<Box<UpdatePaymentIntentPaymentMethodOptionsGiropay>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay: Option<Box<UpdatePaymentIntentPaymentMethodOptionsGrabpay>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<Box<UpdatePaymentIntentPaymentMethodOptionsIdeal>>,
@@ -1555,7 +1579,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
 pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsFpx {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsGiropay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsGrabpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsIdeal {}
@@ -1792,7 +1822,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsFpx {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsGiropay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsGrabpay {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsIdeal {}
@@ -2091,8 +2127,28 @@ pub enum PaymentIntentPaymentMethodOptionsCardUnion {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsFpxUnion {
+    PaymentMethodOptionsFpx(PaymentMethodOptionsFpx),
+    #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
+    PaymentIntentTypeSpecificPaymentMethodOptionsClient(
+        PaymentIntentTypeSpecificPaymentMethodOptionsClient,
+    ),
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(tag = "object", rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsGiropayUnion {
     PaymentMethodOptionsGiropay(PaymentMethodOptionsGiropay),
+    #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
+    PaymentIntentTypeSpecificPaymentMethodOptionsClient(
+        PaymentIntentTypeSpecificPaymentMethodOptionsClient,
+    ),
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(tag = "object", rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsGrabpayUnion {
+    PaymentMethodOptionsGrabpay(PaymentMethodOptionsGrabpay),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
     PaymentIntentTypeSpecificPaymentMethodOptionsClient(
         PaymentIntentTypeSpecificPaymentMethodOptionsClient,
