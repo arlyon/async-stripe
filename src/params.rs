@@ -97,7 +97,7 @@ impl<T: Object> Expandable<T> {
     pub fn as_object(&self) -> Option<&T> {
         match self {
             Expandable::Id(_) => None,
-            Expandable::Object(obj) => Some(&obj),
+            Expandable::Object(obj) => Some(obj),
         }
     }
 
@@ -201,7 +201,7 @@ impl<T: Paginate + DeserializeOwned + Send + 'static> List<T> {
         let mut next = self;
         loop {
             if next.has_more {
-                let resp = next.next(&client)?;
+                let resp = next.next(client)?;
                 data.extend(next.data);
                 next = resp;
             } else {

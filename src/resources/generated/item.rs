@@ -33,19 +33,19 @@ pub struct CheckoutSessionItem {
 
     /// The discounts applied to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<LineItemsDiscountAmount>>,
+    pub discounts: Option<Box<Vec<LineItemsDiscountAmount>>>,
 
     /// The price used to generate the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<Price>,
+    pub price: Option<Box<Price>>,
 
     /// The quantity of products being purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
+    pub quantity: Option<Box<u64>>,
 
     /// The taxes applied to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub taxes: Option<Vec<LineItemsTaxAmount>>,
+    pub taxes: Option<Box<Vec<LineItemsTaxAmount>>>,
 }
 
 impl Object for CheckoutSessionItem {

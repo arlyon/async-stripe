@@ -20,33 +20,33 @@ pub struct PaymentMethod {
     pub id: PaymentMethodId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<PaymentMethodAcssDebit>,
+    pub acss_debit: Option<Box<PaymentMethodAcssDebit>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay: Option<PaymentMethodAfterpayClearpay>,
+    pub afterpay_clearpay: Option<Box<PaymentMethodAfterpayClearpay>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<PaymentFlowsPrivatePaymentMethodsAlipay>,
+    pub alipay: Option<Box<PaymentFlowsPrivatePaymentMethodsAlipay>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<PaymentMethodAuBecsDebit>,
+    pub au_becs_debit: Option<Box<PaymentMethodAuBecsDebit>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<PaymentMethodBacsDebit>,
+    pub bacs_debit: Option<Box<PaymentMethodBacsDebit>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<PaymentMethodBancontact>,
+    pub bancontact: Option<Box<PaymentMethodBancontact>>,
 
     pub billing_details: BillingDetails,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto: Option<PaymentMethodBoleto>,
+    pub boleto: Option<Box<PaymentMethodBoleto>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<CardDetails>,
+    pub card: Option<Box<CardDetails>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_present: Option<CardPresent>,
+    pub card_present: Option<Box<CardPresent>>,
 
     /// Time at which the object was created.
     ///
@@ -57,25 +57,28 @@ pub struct PaymentMethod {
     ///
     /// This will not be set when the PaymentMethod has not been saved to a Customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Expandable<Customer>>,
+    pub customer: Option<Box<Expandable<Customer>>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub eps: Option<PaymentMethodEps>,
+    pub eps: Option<Box<PaymentMethodEps>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx: Option<PaymentMethodFpx>,
+    pub fpx: Option<Box<PaymentMethodFpx>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<PaymentMethodGiropay>,
+    pub giropay: Option<Box<PaymentMethodGiropay>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay: Option<PaymentMethodGrabpay>,
+    pub grabpay: Option<Box<PaymentMethodGrabpay>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ideal: Option<PaymentMethodIdeal>,
+    pub ideal: Option<Box<PaymentMethodIdeal>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<PaymentMethodInteracPresent>,
+    pub interac_present: Option<Box<PaymentMethodInteracPresent>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<Box<PaymentMethodKlarna>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -87,16 +90,16 @@ pub struct PaymentMethod {
     pub metadata: Metadata,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<PaymentMethodOxxo>,
+    pub oxxo: Option<Box<PaymentMethodOxxo>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub p24: Option<PaymentMethodP24>,
+    pub p24: Option<Box<PaymentMethodP24>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<PaymentMethodSepaDebit>,
+    pub sepa_debit: Option<Box<PaymentMethodSepaDebit>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sofort: Option<PaymentMethodSofort>,
+    pub sofort: Option<Box<PaymentMethodSofort>>,
 
     /// The type of the PaymentMethod.
     ///
@@ -106,11 +109,13 @@ pub struct PaymentMethod {
     pub type_: PaymentMethodType,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay: Option<PaymentMethodWechatPay>,
+    pub wechat_pay: Option<Box<PaymentMethodWechatPay>>,
 }
 
 impl PaymentMethod {
-    /// Returns a list of PaymentMethods for a given Customer.
+    /// Returns a list of PaymentMethods.
+    ///
+    /// For listing a customer’s payment methods, you should use [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list).
     pub fn list(client: &Client, params: ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
         client.get_query("/payment_methods", &params)
     }
@@ -160,25 +165,25 @@ pub struct PaymentFlowsPrivatePaymentMethodsAlipay {}
 pub struct PaymentMethodAcssDebit {
     /// Name of the bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_name: Option<String>,
+    pub bank_name: Option<Box<String>>,
 
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fingerprint: Option<String>,
+    pub fingerprint: Option<Box<String>>,
 
     /// Institution number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub institution_number: Option<String>,
+    pub institution_number: Option<Box<String>>,
 
     /// Last four digits of the bank account number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last4: Option<String>,
+    pub last4: Option<Box<String>>,
 
     /// Transit number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transit_number: Option<String>,
+    pub transit_number: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -188,17 +193,17 @@ pub struct PaymentMethodAfterpayClearpay {}
 pub struct PaymentMethodAuBecsDebit {
     /// Six-digit number identifying bank and branch associated with this bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bsb_number: Option<String>,
+    pub bsb_number: Option<Box<String>>,
 
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fingerprint: Option<String>,
+    pub fingerprint: Option<Box<String>>,
 
     /// Last four digits of the bank account number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last4: Option<String>,
+    pub last4: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -207,17 +212,17 @@ pub struct PaymentMethodBacsDebit {
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fingerprint: Option<String>,
+    pub fingerprint: Option<Box<String>>,
 
     /// Last four digits of the bank account number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last4: Option<String>,
+    pub last4: Option<Box<String>>,
 
     /// Sort code of the bank account.
     ///
     /// (e.g., `10-20-30`).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort_code: Option<String>,
+    pub sort_code: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -238,13 +243,13 @@ pub struct CardDetails {
 
     /// Checks on Card address and CVC if provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub checks: Option<PaymentMethodCardChecks>,
+    pub checks: Option<Box<PaymentMethodCardChecks>>,
 
     /// Two-letter ISO code representing the country of the card.
     ///
     /// You could use this attribute to get a sense of the international breakdown of cards you've collected.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
+    pub country: Option<Box<String>>,
 
     /// Two-digit number representing the card's expiration month.
     pub exp_month: i64,
@@ -257,7 +262,7 @@ pub struct CardDetails {
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
     /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fingerprint: Option<String>,
+    pub fingerprint: Option<Box<String>>,
 
     /// Card funding type.
     ///
@@ -266,22 +271,22 @@ pub struct CardDetails {
 
     /// Details of the original PaymentMethod that created this object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub generated_from: Option<PaymentMethodCardGeneratedCard>,
+    pub generated_from: Option<Box<PaymentMethodCardGeneratedCard>>,
 
     /// The last four digits of the card.
     pub last4: String,
 
     /// Contains information about card networks that can be used to process the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub networks: Option<Networks>,
+    pub networks: Option<Box<Networks>>,
 
     /// Contains details on how this Card maybe be used for 3D Secure authentication.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub three_d_secure_usage: Option<ThreeDSecureUsage>,
+    pub three_d_secure_usage: Option<Box<ThreeDSecureUsage>>,
 
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wallet: Option<WalletDetails>,
+    pub wallet: Option<Box<WalletDetails>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -291,43 +296,43 @@ pub struct Networks {
 
     /// The preferred network for the card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred: Option<String>,
+    pub preferred: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodCardChecks {
     /// If a address line1 was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_line1_check: Option<String>,
+    pub address_line1_check: Option<Box<String>>,
 
     /// If a address postal code was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_postal_code_check: Option<String>,
+    pub address_postal_code_check: Option<Box<String>>,
 
     /// If a CVC was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cvc_check: Option<String>,
+    pub cvc_check: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodCardGeneratedCard {
     /// The charge that created this object.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub charge: Option<String>,
+    pub charge: Option<Box<String>>,
 
     /// Transaction-specific details of the payment method used in the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_details: Option<CardGeneratedFromPaymentMethodDetails>,
+    pub payment_method_details: Option<Box<CardGeneratedFromPaymentMethodDetails>>,
 
     /// The ID of the SetupAttempt that generated this PaymentMethod, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_attempt: Option<Expandable<SetupAttempt>>,
+    pub setup_attempt: Option<Box<Expandable<SetupAttempt>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CardGeneratedFromPaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_present: Option<PaymentMethodDetailsCardPresent>,
+    pub card_present: Option<Box<PaymentMethodDetailsCardPresent>>,
 
     /// The type of payment method transaction-specific details from the transaction that generated this `card` payment method.
     ///
@@ -342,23 +347,23 @@ pub struct CardPresent {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct WalletDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amex_express_checkout: Option<WalletAmexExpressCheckout>,
+    pub amex_express_checkout: Option<Box<WalletAmexExpressCheckout>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub apple_pay: Option<WalletApplePay>,
+    pub apple_pay: Option<Box<WalletApplePay>>,
 
     /// (For tokenized numbers only.) The last four digits of the device account number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dynamic_last4: Option<String>,
+    pub dynamic_last4: Option<Box<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub google_pay: Option<WalletGooglePay>,
+    pub google_pay: Option<Box<WalletGooglePay>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub masterpass: Option<WalletMasterpass>,
+    pub masterpass: Option<Box<WalletMasterpass>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub samsung_pay: Option<WalletSamsungPay>,
+    pub samsung_pay: Option<Box<WalletSamsungPay>>,
 
     /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, or `visa_checkout`.
     ///
@@ -368,7 +373,7 @@ pub struct WalletDetails {
     pub type_: WalletDetailsType,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub visa_checkout: Option<WalletVisaCheckout>,
+    pub visa_checkout: Option<Box<WalletVisaCheckout>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -387,28 +392,28 @@ pub struct WalletMasterpass {
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_address: Option<Address>,
+    pub billing_address: Option<Box<Address>>,
 
     /// Owner's verified email.
     ///
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
+    pub email: Option<Box<String>>,
 
     /// Owner's verified full name.
     ///
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: Option<Box<String>>,
 
     /// Owner's verified shipping address.
     ///
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_address: Option<Address>,
+    pub shipping_address: Option<Box<Address>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -421,28 +426,28 @@ pub struct WalletVisaCheckout {
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_address: Option<Address>,
+    pub billing_address: Option<Box<Address>>,
 
     /// Owner's verified email.
     ///
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<String>,
+    pub email: Option<Box<String>>,
 
     /// Owner's verified full name.
     ///
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: Option<Box<String>>,
 
     /// Owner's verified shipping address.
     ///
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_address: Option<Address>,
+    pub shipping_address: Option<Box<Address>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -451,14 +456,14 @@ pub struct PaymentMethodEps {
     ///
     /// Should be one of `arzte_und_apotheker_bank`, `austrian_anadi_bank_ag`, `bank_austria`, `bankhaus_carl_spangler`, `bankhaus_schelhammer_und_schattera_ag`, `bawag_psk_ag`, `bks_bank_ag`, `brull_kallmus_bank_ag`, `btv_vier_lander_bank`, `capital_bank_grawe_gruppe_ag`, `dolomitenbank`, `easybank_ag`, `erste_bank_und_sparkassen`, `hypo_alpeadriabank_international_ag`, `hypo_noe_lb_fur_niederosterreich_u_wien`, `hypo_oberosterreich_salzburg_steiermark`, `hypo_tirol_bank_ag`, `hypo_vorarlberg_bank_ag`, `hypo_bank_burgenland_aktiengesellschaft`, `marchfelder_bank`, `oberbank_ag`, `raiffeisen_bankengruppe_osterreich`, `schoellerbank_ag`, `sparda_bank_wien`, `volksbank_gruppe`, `volkskreditbank_ag`, or `vr_bank_braunau`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank: Option<PaymentMethodEpsBank>,
+    pub bank: Option<Box<PaymentMethodEpsBank>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodFpx {
     /// The customer's bank, if provided.
     ///
-    /// Can be one of `affin_bank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, or `pb_enterprise`.
+    /// Can be one of `affin_bank`, `agrobank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, or `pb_enterprise`.
     pub bank: PaymentMethodFpxBank,
 }
 
@@ -474,15 +479,37 @@ pub struct PaymentMethodIdeal {
     ///
     /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank: Option<PaymentMethodIdealBank>,
+    pub bank: Option<Box<PaymentMethodIdealBank>>,
 
     /// The Bank Identifier Code of the customer's bank, if the bank was provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bic: Option<PaymentMethodIdealBic>,
+    pub bic: Option<Box<PaymentMethodIdealBic>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodInteracPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodKlarna {
+    /// The customer's date of birth, if provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<Box<PaymentFlowsPrivatePaymentMethodsKlarnaDob>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentFlowsPrivatePaymentMethodsKlarnaDob {
+    /// The day of birth, between 1 and 31.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub day: Option<Box<i64>>,
+
+    /// The month of birth, between 1 and 12.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub month: Option<Box<i64>>,
+
+    /// The four-digit year of birth.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub year: Option<Box<i64>>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOxxo {}
@@ -491,43 +518,43 @@ pub struct PaymentMethodOxxo {}
 pub struct PaymentMethodP24 {
     /// The customer's bank, if provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank: Option<PaymentMethodP24Bank>,
+    pub bank: Option<Box<PaymentMethodP24Bank>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodSepaDebit {
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_code: Option<String>,
+    pub bank_code: Option<Box<String>>,
 
     /// Branch code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub branch_code: Option<String>,
+    pub branch_code: Option<Box<String>>,
 
     /// Two-letter ISO code representing the country the bank account is located in.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
+    pub country: Option<Box<String>>,
 
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fingerprint: Option<String>,
+    pub fingerprint: Option<Box<String>>,
 
     /// Information about the object that generated this PaymentMethod.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub generated_from: Option<SepaDebitGeneratedFrom>,
+    pub generated_from: Option<Box<SepaDebitGeneratedFrom>>,
 
     /// Last four characters of the IBAN.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last4: Option<String>,
+    pub last4: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
+    pub country: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -537,11 +564,11 @@ pub struct PaymentMethodWechatPay {}
 pub struct SepaDebitGeneratedFrom {
     /// The ID of the Charge that generated this PaymentMethod, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub charge: Option<Expandable<Charge>>,
+    pub charge: Option<Box<Expandable<Charge>>>,
 
     /// The ID of the SetupAttempt that generated this PaymentMethod, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_attempt: Option<Expandable<SetupAttempt>>,
+    pub setup_attempt: Option<Box<Expandable<SetupAttempt>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -555,27 +582,27 @@ pub struct ThreeDSecureUsage {
 pub struct CreatePaymentMethod<'a> {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<CreatePaymentMethodAcssDebit>,
+    pub acss_debit: Option<Box<CreatePaymentMethodAcssDebit>>,
 
     /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay: Option<CreatePaymentMethodAfterpayClearpay>,
+    pub afterpay_clearpay: Option<Box<CreatePaymentMethodAfterpayClearpay>>,
 
     /// If this is an `Alipay` PaymentMethod, this hash contains details about the Alipay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alipay: Option<CreatePaymentMethodAlipay>,
+    pub alipay: Option<Box<CreatePaymentMethodAlipay>>,
 
     /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<CreatePaymentMethodAuBecsDebit>,
+    pub au_becs_debit: Option<Box<CreatePaymentMethodAuBecsDebit>>,
 
     /// If this is a `bacs_debit` PaymentMethod, this hash contains details about the Bacs Direct Debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<CreatePaymentMethodBacsDebit>,
+    pub bacs_debit: Option<Box<CreatePaymentMethodBacsDebit>>,
 
     /// If this is a `bancontact` PaymentMethod, this hash contains details about the Bancontact payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<CreatePaymentMethodBancontact>,
+    pub bancontact: Option<Box<CreatePaymentMethodBancontact>>,
 
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -583,7 +610,7 @@ pub struct CreatePaymentMethod<'a> {
 
     /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto: Option<CreatePaymentMethodBoleto>,
+    pub boleto: Option<Box<CreatePaymentMethodBoleto>>,
 
     /// The `Customer` to whom the original PaymentMethod is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -591,7 +618,7 @@ pub struct CreatePaymentMethod<'a> {
 
     /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub eps: Option<CreatePaymentMethodEps>,
+    pub eps: Option<Box<CreatePaymentMethodEps>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -599,23 +626,27 @@ pub struct CreatePaymentMethod<'a> {
 
     /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx: Option<CreatePaymentMethodFpx>,
+    pub fpx: Option<Box<CreatePaymentMethodFpx>>,
 
     /// If this is a `giropay` PaymentMethod, this hash contains details about the Giropay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay: Option<CreatePaymentMethodGiropay>,
+    pub giropay: Option<Box<CreatePaymentMethodGiropay>>,
 
     /// If this is a `grabpay` PaymentMethod, this hash contains details about the GrabPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay: Option<CreatePaymentMethodGrabpay>,
+    pub grabpay: Option<Box<CreatePaymentMethodGrabpay>>,
 
     /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ideal: Option<CreatePaymentMethodIdeal>,
+    pub ideal: Option<Box<CreatePaymentMethodIdeal>>,
 
     /// If this is an `interac_present` PaymentMethod, this hash contains details about the Interac Present payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interac_present: Option<CreatePaymentMethodInteracPresent>,
+    pub interac_present: Option<Box<CreatePaymentMethodInteracPresent>>,
+
+    /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<Box<CreatePaymentMethodKlarna>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -627,11 +658,11 @@ pub struct CreatePaymentMethod<'a> {
 
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<CreatePaymentMethodOxxo>,
+    pub oxxo: Option<Box<CreatePaymentMethodOxxo>>,
 
     /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub p24: Option<CreatePaymentMethodP24>,
+    pub p24: Option<Box<CreatePaymentMethodP24>>,
 
     /// The PaymentMethod to share.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -639,11 +670,11 @@ pub struct CreatePaymentMethod<'a> {
 
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<CreatePaymentMethodSepaDebit>,
+    pub sepa_debit: Option<Box<CreatePaymentMethodSepaDebit>>,
 
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sofort: Option<CreatePaymentMethodSofort>,
+    pub sofort: Option<Box<CreatePaymentMethodSofort>>,
 
     /// The type of the PaymentMethod.
     ///
@@ -655,7 +686,7 @@ pub struct CreatePaymentMethod<'a> {
 
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wechat_pay: Option<CreatePaymentMethodWechatPay>,
+    pub wechat_pay: Option<Box<CreatePaymentMethodWechatPay>>,
 }
 
 impl<'a> CreatePaymentMethod<'a> {
@@ -677,6 +708,7 @@ impl<'a> CreatePaymentMethod<'a> {
             grabpay: Default::default(),
             ideal: Default::default(),
             interac_present: Default::default(),
+            klarna: Default::default(),
             metadata: Default::default(),
             oxxo: Default::default(),
             p24: Default::default(),
@@ -693,7 +725,8 @@ impl<'a> CreatePaymentMethod<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPaymentMethods<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
-    pub customer: CustomerId,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<CustomerId>,
 
     /// A cursor for use in pagination.
     ///
@@ -725,9 +758,9 @@ pub struct ListPaymentMethods<'a> {
 }
 
 impl<'a> ListPaymentMethods<'a> {
-    pub fn new(customer: CustomerId, type_: PaymentMethodTypeFilter) -> Self {
+    pub fn new(type_: PaymentMethodTypeFilter) -> Self {
         ListPaymentMethods {
-            customer,
+            customer: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
@@ -792,10 +825,10 @@ pub struct CreatePaymentMethodAuBecsDebit {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodBacsDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_number: Option<String>,
+    pub account_number: Option<Box<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort_code: Option<String>,
+    pub sort_code: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -809,7 +842,7 @@ pub struct CreatePaymentMethodBoleto {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodEps {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank: Option<CreatePaymentMethodEpsBank>,
+    pub bank: Option<Box<CreatePaymentMethodEpsBank>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -826,11 +859,17 @@ pub struct CreatePaymentMethodGrabpay {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodIdeal {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank: Option<CreatePaymentMethodIdealBank>,
+    pub bank: Option<Box<CreatePaymentMethodIdealBank>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodInteracPresent {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentMethodKlarna {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<Box<CreatePaymentMethodKlarnaDob>>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodOxxo {}
@@ -838,7 +877,7 @@ pub struct CreatePaymentMethodOxxo {}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodP24 {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank: Option<CreatePaymentMethodP24Bank>,
+    pub bank: Option<Box<CreatePaymentMethodP24Bank>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -853,6 +892,15 @@ pub struct CreatePaymentMethodSofort {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodWechatPay {}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreatePaymentMethodKlarnaDob {
+    pub day: i64,
+
+    pub month: i64,
+
+    pub year: i64,
+}
 
 /// An enum representing the possible values of an `CreatePaymentMethodEps`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -950,6 +998,7 @@ impl std::fmt::Display for CreatePaymentMethodEpsBank {
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentMethodFpxBank {
     AffinBank,
+    Agrobank,
     AllianceBank,
     Ambank,
     BankIslam,
@@ -975,6 +1024,7 @@ impl CreatePaymentMethodFpxBank {
     pub fn as_str(self) -> &'static str {
         match self {
             CreatePaymentMethodFpxBank::AffinBank => "affin_bank",
+            CreatePaymentMethodFpxBank::Agrobank => "agrobank",
             CreatePaymentMethodFpxBank::AllianceBank => "alliance_bank",
             CreatePaymentMethodFpxBank::Ambank => "ambank",
             CreatePaymentMethodFpxBank::BankIslam => "bank_islam",
@@ -1275,6 +1325,7 @@ impl std::fmt::Display for PaymentMethodEpsBank {
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodFpxBank {
     AffinBank,
+    Agrobank,
     AllianceBank,
     Ambank,
     BankIslam,
@@ -1300,6 +1351,7 @@ impl PaymentMethodFpxBank {
     pub fn as_str(self) -> &'static str {
         match self {
             PaymentMethodFpxBank::AffinBank => "affin_bank",
+            PaymentMethodFpxBank::Agrobank => "agrobank",
             PaymentMethodFpxBank::AllianceBank => "alliance_bank",
             PaymentMethodFpxBank::Ambank => "ambank",
             PaymentMethodFpxBank::BankIslam => "bank_islam",
@@ -1544,6 +1596,7 @@ pub enum PaymentMethodType {
     Grabpay,
     Ideal,
     InteracPresent,
+    Klarna,
     Oxxo,
     P24,
     SepaDebit,
@@ -1569,6 +1622,7 @@ impl PaymentMethodType {
             PaymentMethodType::Grabpay => "grabpay",
             PaymentMethodType::Ideal => "ideal",
             PaymentMethodType::InteracPresent => "interac_present",
+            PaymentMethodType::Klarna => "klarna",
             PaymentMethodType::Oxxo => "oxxo",
             PaymentMethodType::P24 => "p24",
             PaymentMethodType::SepaDebit => "sepa_debit",
@@ -1607,6 +1661,7 @@ pub enum PaymentMethodTypeFilter {
     Giropay,
     Grabpay,
     Ideal,
+    Klarna,
     Oxxo,
     P24,
     SepaDebit,
@@ -1630,6 +1685,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Giropay => "giropay",
             PaymentMethodTypeFilter::Grabpay => "grabpay",
             PaymentMethodTypeFilter::Ideal => "ideal",
+            PaymentMethodTypeFilter::Klarna => "klarna",
             PaymentMethodTypeFilter::Oxxo => "oxxo",
             PaymentMethodTypeFilter::P24 => "p24",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",

@@ -21,14 +21,14 @@ pub struct Balance {
     ///
     /// The connect reserve balance for each currency and payment type can be found in the `source_types` property.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub connect_reserved: Option<Vec<BalanceAmount>>,
+    pub connect_reserved: Option<Box<Vec<BalanceAmount>>>,
 
     /// Funds that can be paid out using Instant Payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub instant_available: Option<Vec<BalanceAmount>>,
+    pub instant_available: Option<Box<Vec<BalanceAmount>>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuing: Option<BalanceDetail>,
+    pub issuing: Option<Box<BalanceDetail>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -67,22 +67,22 @@ pub struct BalanceAmount {
     pub currency: Currency,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_types: Option<BalanceAmountBySourceType>,
+    pub source_types: Option<Box<BalanceAmountBySourceType>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceAmountBySourceType {
     /// Amount for bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account: Option<i64>,
+    pub bank_account: Option<Box<i64>>,
 
     /// Amount for card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<i64>,
+    pub card: Option<Box<i64>>,
 
     /// Amount for FPX.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx: Option<i64>,
+    pub fpx: Option<Box<i64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -94,9 +94,6 @@ pub struct BalanceDetail {
 /// The parameters for `Balance::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListBalances<'a> {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub available_on: Option<RangeQuery<Timestamp>>,
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -150,7 +147,6 @@ pub struct ListBalances<'a> {
 impl<'a> ListBalances<'a> {
     pub fn new() -> Self {
         ListBalances {
-            available_on: Default::default(),
             created: Default::default(),
             currency: Default::default(),
             ending_before: Default::default(),

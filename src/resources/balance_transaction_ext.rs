@@ -2,13 +2,13 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::BalanceTransactionSourceId;
 use crate::params::Object;
-use crate::resources::BalanceTransactionSource;
+use crate::resources::BalanceTransactionSourceUnion;
 
-impl Object for BalanceTransactionSource {
+impl Object for BalanceTransactionSourceUnion {
     type Id = BalanceTransactionSourceId;
     fn id(&self) -> Self::Id {
-        use BalanceTransactionSource as Source;
         use BalanceTransactionSourceId as Id;
+        use BalanceTransactionSourceUnion as Source;
 
         match self {
             Source::ApplicationFee(x) => Id::ApplicationFee(x.id()),
@@ -30,7 +30,7 @@ impl Object for BalanceTransactionSource {
         }
     }
     fn object(&self) -> &'static str {
-        use BalanceTransactionSource as Source;
+        use BalanceTransactionSourceUnion as Source;
 
         match self {
             Source::ApplicationFee(x) => x.object(),

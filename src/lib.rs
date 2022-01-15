@@ -15,7 +15,7 @@
 //!
 //! To get started, we need to create a client:
 //!
-//! ```rust
+//! ```
 //! let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
 //! ```
 //!
@@ -27,11 +27,11 @@
 //! so you may frequently need to refer to the [official API docs](https://stripe.com/docs/api)
 //! to determine which fields are required for either request.
 //!
-//! ```rust,no_run
+//! ```
 //! /* Creating a Stripe Charge */
 //! # #[cfg(feature = "blocking")]
 //! # {
-//! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
+//! # let client = stripe::Client::from_url("http://localhost:12111", "sk_test_123");
 //! let token = "tok_ID_FROM_CHECKOUT".parse().unwrap();
 //! let mut params = stripe::CreateCharge::new();
 //! // NOTE: Stripe represents currency in the lowest denominations (e.g. cents)
@@ -45,11 +45,11 @@
 //! # }
 //! ```
 //!
-//! ```rust,no_run
+//! ```
 //! /* Listing Stripe Charges */
 //! # #[cfg(feature = "blocking")]
 //! # {
-//! # let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
+//! # let client = stripe::Client::from_url("http://localhost:12111", "sk_test_123");
 //! let params = stripe::ListCharges::new();
 //! let charges = stripe::Charge::list(&client, params).unwrap();
 //! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }

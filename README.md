@@ -24,7 +24,7 @@ If you don't see the specific version you are on, prefer the next available vers
 
 ```toml
 [dependencies]
-async-stripe = { version = "0.13.0-rc3", features = ["runtime-async-std-surf"] }
+async-stripe = { version = "0.13", features = ["runtime-async-std-surf"] }
 ```
 
 ### Feature Flags
@@ -101,6 +101,10 @@ let params = stripe::CustomerListParams::default();
 let customers = stripe::Customer::list(&client, params).unwrap();
 println!("{:?}", customers); // =>  List { data: [Customer { .. }] }
 ```
+
+## MSRV
+
+We currently have `1.49.0` pinned in CI, so any version of rustc newer than that should work. If this is not the case, please open an issue.
 
 ## Contributing
 

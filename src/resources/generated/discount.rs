@@ -23,13 +23,13 @@ pub struct Discount {
     ///
     /// Will not be present for subscription mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub checkout_session: Option<String>,
+    pub checkout_session: Option<Box<String>>,
 
     pub coupon: Coupon,
 
     /// The ID of the customer associated with this discount.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Expandable<Customer>>,
+    pub customer: Option<Box<Expandable<Customer>>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -39,26 +39,26 @@ pub struct Discount {
     ///
     /// If the coupon has a duration of `once` or `forever`, this attribute will be null.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub end: Option<Timestamp>,
+    pub end: Option<Box<Timestamp>>,
 
     /// The invoice that the discount's coupon was applied to, if it was applied directly to a particular invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice: Option<String>,
+    pub invoice: Option<Box<String>>,
 
     /// The invoice item `id` (or invoice line item `id` for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_item: Option<String>,
+    pub invoice_item: Option<Box<String>>,
 
     /// The promotion code applied to create this discount.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotion_code: Option<Expandable<PromotionCode>>,
+    pub promotion_code: Option<Box<Expandable<PromotionCode>>>,
 
     /// Date that the coupon was applied.
     pub start: Timestamp,
 
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<String>,
+    pub subscription: Option<Box<String>>,
 }
 
 impl Object for Discount {

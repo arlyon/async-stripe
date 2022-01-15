@@ -477,6 +477,7 @@ def_id!(CouponId: String); // N.B. A coupon id can be user-provided so can be an
 def_id!(CustomerId, "cus_");
 def_id!(DiscountId, "di_");
 def_id!(DisputeId, "dp_");
+def_id!(EphemeralKeyId, "ephkey_");
 def_id!(EventId, "evt_");
 def_id!(FileId, "file_");
 def_id!(FileLinkId, "link_");
@@ -530,6 +531,7 @@ def_id!(ScheduledQueryRunId, "sqr_");
 def_id!(SetupAttemptId, "setatt_");
 def_id!(SetupIntentId, "seti_");
 def_id!(SkuId, "sku_");
+def_id!(ShippingRateId, "shr_");
 def_id!(SourceId, "src_");
 def_id!(SubscriptionId, "sub_");
 def_id!(SubscriptionItemId, "si_");
@@ -547,6 +549,7 @@ def_id!(
 def_id!(TopupId, "tu_");
 def_id!(TransferId, "tr_");
 def_id!(TransferReversalId, "trr_");
+def_id!(UsageRecordSummaryId, "urs_");
 def_id!(WebhookEndpointId, "we_");
 
 impl InvoiceId {

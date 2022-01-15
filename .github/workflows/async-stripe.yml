@@ -81,7 +81,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: "1.49.0"
           override: true
       - uses: actions/cache@v2
         with:
@@ -90,8 +90,17 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-test-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions-rs/cargo@v1
+      - name: Run cargo-tarpaulin
+        uses: actions-rs/tarpaulin@v0.1
         with:
-          command: test
-          args: >
-            --features runtime-${{ matrix.runtime }}
+          version: '0.19.0'
+          args: '--features runtime-${{ matrix.runtime }}'
+      - name: Upload to codecov.io
+        uses: codecov/codecov-action@v1.0.2
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage-report
+          path: cobertura.xml

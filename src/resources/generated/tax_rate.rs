@@ -23,7 +23,7 @@ pub struct TaxRate {
 
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<String>,
+    pub country: Option<Box<String>>,
 
     /// Time at which the object was created.
     ///
@@ -34,7 +34,7 @@ pub struct TaxRate {
     ///
     /// It will not be visible to your customers.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
+    pub description: Option<Box<String>>,
 
     /// The display name of the tax rates as it will appear to your customer on their receipt email, PDF, and the hosted invoice page.
     pub display_name: String,
@@ -47,7 +47,7 @@ pub struct TaxRate {
     /// You can use this label field for tax reporting purposes.
     /// It also appears on your customer’s invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub jurisdiction: Option<String>,
+    pub jurisdiction: Option<Box<String>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -65,11 +65,11 @@ pub struct TaxRate {
     ///
     /// For example, "NY" for New York, United States.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<String>,
+    pub state: Option<Box<String>>,
 
     /// The high-level tax type, such as `vat` or `sales_tax`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_type: Option<TaxRateTaxType>,
+    pub tax_type: Option<Box<TaxRateTaxType>>,
 }
 
 impl TaxRate {
@@ -311,8 +311,10 @@ impl<'a> UpdateTaxRate<'a> {
 pub enum TaxRateTaxType {
     Gst,
     Hst,
+    Jct,
     Pst,
     Qst,
+    Rst,
     SalesTax,
     Vat,
 }
@@ -322,8 +324,10 @@ impl TaxRateTaxType {
         match self {
             TaxRateTaxType::Gst => "gst",
             TaxRateTaxType::Hst => "hst",
+            TaxRateTaxType::Jct => "jct",
             TaxRateTaxType::Pst => "pst",
             TaxRateTaxType::Qst => "qst",
+            TaxRateTaxType::Rst => "rst",
             TaxRateTaxType::SalesTax => "sales_tax",
             TaxRateTaxType::Vat => "vat",
         }

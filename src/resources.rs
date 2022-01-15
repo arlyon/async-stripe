@@ -43,6 +43,12 @@ mod billing {
 }
 
 #[path = "resources"]
+#[cfg(feature = "connect")]
+mod connect {
+    pub mod login_links_ext;
+}
+
+#[path = "resources"]
 #[cfg(feature = "fraud")]
 mod fraud {
     pub mod review_ext;
@@ -86,14 +92,18 @@ pub use {
         token_ext::*,
     },
     generated::core::{
+        address::*,
         balance::*,
         balance_transaction::*,
+        billing_details::*,
         charge::*,
         customer::*,
         dispute::*,
+        ephemeral_key::*,
         file::*,
         file_link::*,
         mandate::*,
+        package_dimensions::*,
         payment_intent::*,
         payout::*,
         platform_tax_fee::*,
@@ -102,8 +112,12 @@ pub use {
         reserve_transaction::*,
         setup_attempt::*,
         setup_intent::*,
+        shipping::*,
+        shipping_rate::*,
+        tax_code::*,
         tax_deducted_at_source::*,
         token::*,
+        api_errors::*,
     },
 
     payment::{
@@ -117,7 +131,9 @@ pub use {
         card::*,
         bank_account::*,
         payment_method::*,
-        source::*
+        source::*,
+        payment_method_options_boleto::*,
+        payment_method_options_oxxo::*,
     },
 };
 
@@ -149,29 +165,42 @@ pub use {
         coupon::*,
         discount::*,
         invoice::*,
+        invoice_payment_method_options_acss_debit::*,
+        invoice_payment_method_options_bancontact::*,
+        invoice_payment_method_options_card::*,
         invoiceitem::*,
         line_item::*,
         plan::*,
         plan::PlanInterval,
         price::*,
         promotion_code::*,
+        quote::*,
+        quotes_resource_total_details::*,
         subscription_item::*,
         subscription_item::PlanInterval as SubscriptionItemInterval,
         subscription_item::SubscriptionItemPriceDataRecurring as SubscriptionItemPriceDataRecurring,
+        subscription_item::SubscriptionItemPriceData as SubscriptionItemPriceData,
         // need to import this afterwards so that the SubscriptionItemPriceDataRecurring
         // isn't silently ignored
         subscription::*,
         subscription::PlanInterval as SubscriptionInterval,
         subscription::SubscriptionItemPriceDataRecurring as SubscriptionPriceDataRecurring,
+        subscription::SubscriptionItemPriceData as SubscriptionPriceData,
         subscription_schedule::*,
+        subscription_billing_thresholds::*,
+        subscription_item_billing_thresholds::*,
         tax_id::*,
         tax_rate::*,
+        usage_record_summary::*,
     },
 };
 
 #[rustfmt::skip]
 #[cfg(feature = "connect")]
 pub use {
+    connect::{
+        login_links_ext::*,
+    },
     generated::connect::{
         account_link::*,
         account::*,
@@ -179,6 +208,7 @@ pub use {
         application_fee::*,
         connect_collection_transfer::*,
         fee_refund::*,
+        login_link::*,
         person::*,
         recipient::*,
         topup::*,

@@ -142,6 +142,7 @@ fn main() -> Result<()> {
     let url_finder = UrlFinder::new()?;
 
     // Generate resources
+    let mut shared_objects = BTreeSet::new();
     for object in &meta.objects {
         if object.starts_with("deleted_") {
             continue;
@@ -150,10 +151,27 @@ fn main() -> Result<()> {
         // Generate the types for the object
         fs::write(
             &format!("{}/{}.rs", &out_path, object.replace('.', "_").to_snake_case()),
-            gen_impl_object(&meta, object, &url_finder).as_bytes(),
+            gen_impl_object(&meta, object, &url_finder, &mut shared_objects).as_bytes(),
         )
         .unwrap();
     }
+
+    println!("Shared objects: {:#?}", shared_objects);
+
+    let mut extra_objects = BTreeSet::new();
+    for object in &shared_objects {
+        if object.starts_with("deleted_") {
+            continue;
+        }
+        // Generate the types for the object
+        fs::write(
+            &format!("{}/{}.rs", &out_path, object.replace('.', "_").to_snake_case()),
+            gen_extra_object(&meta, object, &url_finder, &mut extra_objects).as_bytes(),
+        )
+        .unwrap();
+    }
+
+    println!("BTreeSet: {:#?}", extra_objects);
 
     Ok(())
 }
@@ -324,9 +342,14 @@ struct InferredParams {
     parameters: Json,
 }
 
-fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> String {
-    let mut out = String::new();
-    let mut state = Generated::default();
+fn gen_struct(
+    out: &mut String,
+    state: &mut Generated,
+    meta: &Metadata,
+    object: &str,
+    shared_objects: &mut BTreeSet<String>,
+    url_finder: &UrlFinder,
+) {
     let id_type = meta.schema_to_id_type(object);
     let struct_name = meta.schema_to_rust_type(object);
     let schema = &meta.spec["components"]["schemas"][object];
@@ -334,11 +357,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
     let deleted_schema = &meta.spec["components"]["schemas"][format!("deleted_{}", object)];
     let fields = match schema["properties"].as_object() {
         Some(some) => some,
-        None => return String::new(),
-    };
-    let object_literal = match fields["object"]["enum"][0].as_str() {
-        Some(some) => some,
-        None => return String::new(),
+        None => return (),
     };
 
     println!("struct {} {{...}}", struct_name);
@@ -360,7 +379,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
     if let Some((id_type, _)) = &id_type {
         state.use_ids.insert(id_type.clone());
         if let Some(doc) = schema["properties"]["id"]["description"].as_str() {
-            print_doc_comment(&mut out, doc, 1);
+            print_doc_comment(out, doc, 1);
         }
         if id_type == "InvoiceId" {
             out.push_str("    #[serde(default = \"InvoiceId::none\")]");
@@ -398,45 +417,87 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
         };
         out.push('\n');
         out.push_str(&gen_field(
-            &mut state,
+            state,
             meta,
             object,
             &key,
             &field,
             required && !force_optional,
             false,
+            shared_objects,
         ));
     }
     out.push_str("}\n");
+}
 
-    // Generate request methods
-    if let Some(impls) =
-        gen_impl_requests(&mut state, meta, object, id_type.as_ref().map(|(x, _)| x.as_str()))
-    {
-        out.push('\n');
-        out.push_str(&impls);
+fn gen_prelude(state: &Generated, meta: &Metadata, object: &str) -> String {
+    let mut prelude = String::new();
+    prelude.push_str("// ======================================\n");
+    prelude.push_str("// This file was automatically generated.\n");
+    prelude.push_str("// ======================================\n\n");
+    if !state.use_config.is_empty() {
+        prelude.push_str("use crate::config::{");
+        for (n, type_) in state.use_config.iter().enumerate() {
+            if n > 0 {
+                prelude.push_str(", ");
+            }
+            prelude.push_str(&type_);
+        }
+        prelude.push_str("};\n");
     }
-
-    // Generate an `impl Object` block
-    state.use_params.insert("Object");
-    out.push('\n');
-    out.push_str("impl Object for ");
-    out.push_str(&struct_name);
-    out.push_str(" {\n");
-    out.push_str("    type Id = ");
-    if let Some((id_type, _)) = &id_type {
-        out.push_str(&id_type);
-        out.push_str(";\n");
-        out.push_str("    fn id(&self) -> Self::Id {\n        self.id.clone()\n    }\n");
-    } else {
-        out.push_str("();\n");
-        out.push_str("    fn id(&self) -> Self::Id {}\n");
+    if !state.use_ids.is_empty() {
+        prelude.push_str("use crate::ids::{");
+        for (n, type_) in state.use_ids.iter().enumerate() {
+            if n > 0 {
+                prelude.push_str(", ");
+            }
+            prelude.push_str(&type_);
+        }
+        prelude.push_str("};\n");
     }
-    out.push_str("    fn object(&self) -> &'static str {\n        \"");
-    out.push_str(object_literal);
-    out.push_str("\"\n    }\n");
-    out.push_str("}\n");
+    if !state.use_params.is_empty() {
+        prelude.push_str("use crate::params::{");
+        for (n, type_) in state.use_params.iter().enumerate() {
+            if n > 0 {
+                prelude.push_str(", ");
+            }
+            prelude.push_str(&type_);
+        }
+        prelude.push_str("};\n");
+    }
+    if !state.use_resources.is_empty() {
+        prelude.push_str("use crate::resources::{");
+        for (n, type_) in state
+            .use_resources
+            .iter()
+            .filter(|&x| {
+                state.generated_schemas.keys().all(|sch| x != &meta.schema_to_rust_type(sch))
+                    && !state.inferred_parameters.contains_key(x)
+                    && !state.inferred_structs.contains_key(x)
+                    && !state.inferred_unions.contains_key(x)
+                    && !state.inferred_enums.contains_key(x)
+                    && x != &meta.schema_to_rust_type(object)
+            })
+            .enumerate()
+        {
+            if n > 0 {
+                prelude.push_str(", ");
+            }
+            prelude.push_str(&type_);
+        }
+        prelude.push_str("};\n");
+    }
+    prelude.push_str("use serde_derive::{Deserialize, Serialize};\n");
+    prelude.push('\n');
+    prelude
+}
 
+fn gen_generated_schemas(
+    out: &mut String,
+    state: &mut Generated,
+    meta: &Metadata,
+    shared_objects: &mut BTreeSet<String>,
+) {
     while let Some(schema_name) =
         state.generated_schemas.iter().find_map(|(k, &v)| if !v { Some(k) } else { None }).cloned()
     {
@@ -456,13 +517,33 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                 .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
                 .unwrap_or(false);
             out.push('\n');
-            out.push_str(&gen_field(&mut state, meta, &schema_name, &key, &field, required, false));
+            out.push_str(&gen_field(
+                state,
+                meta,
+                &schema_name,
+                &key,
+                &field,
+                required,
+                false,
+                shared_objects,
+            ));
         }
         out.push_str("}\n");
 
         // Set the schema to generated
         *state.generated_schemas.entry(schema_name).or_default() = true;
     }
+}
+
+fn gen_inferred_params(
+    out: &mut String,
+    state: &mut Generated,
+    meta: &Metadata,
+    object: &str,
+    shared_objects: &mut BTreeSet<String>,
+) {
+    let id_type = meta.schema_to_id_type(object);
+    let struct_name = meta.schema_to_rust_type(object);
 
     for (_, params) in state.inferred_parameters.clone() {
         let params_schema = params.rust_type.to_snake_case();
@@ -514,7 +595,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                 "bank_account" | "card" | "destination" | "usage" => continue,
 
                 "product" => {
-                    print_doc(&mut out);
+                    print_doc(out);
                     initializers.push((
                         "product".into(),
                         "IdOrCreate<'a, CreateProduct<'a>>".into(),
@@ -532,7 +613,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                     }
                 }
                 "metadata" => {
-                    print_doc(&mut out);
+                    print_doc(out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
                     state.use_params.insert("Metadata");
                     if required {
@@ -543,14 +624,14 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                     }
                 }
                 "expand" => {
-                    print_doc(&mut out);
+                    print_doc(out);
                     initializers.push(("expand".into(), "&'a [&'a str]".into(), false));
                     state.use_params.insert("Expand");
                     out.push_str("    #[serde(skip_serializing_if = \"Expand::is_empty\")]\n");
                     out.push_str("    pub expand: &'a [&'a str],\n");
                 }
                 "limit" => {
-                    print_doc(&mut out);
+                    print_doc(out);
                     initializers.push(("limit".into(), "u64".into(), false));
                     if required {
                         out.push_str("    pub limit: u64,\n");
@@ -560,7 +641,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                     }
                 }
                 "ending_before" => {
-                    print_doc(&mut out);
+                    print_doc(out);
                     let cursor_type =
                         id_type.as_ref().map(|(x, _)| x.as_str()).unwrap_or("&'a str");
                     initializers.push(("ending_before".into(), cursor_type.into(), false));
@@ -574,7 +655,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                     }
                 }
                 "starting_after" => {
-                    print_doc(&mut out);
+                    print_doc(out);
                     let cursor_type =
                         id_type.as_ref().map(|(x, _)| x.as_str()).unwrap_or("&'a str");
                     initializers.push(("starting_after".into(), cursor_type.into(), false));
@@ -591,7 +672,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                     if let Some((use_path, rust_type)) =
                         meta.field_to_rust_type(params_schema.as_str(), param_name)
                     {
-                        print_doc(&mut out);
+                        print_doc(out);
                         initializers.push((param_rename.into(), rust_type.to_string(), required));
                         match use_path {
                             "" | "String" => (),
@@ -620,7 +701,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                         && param_name != "tax_id"
                     {
                         let (id_type, _) = meta.schema_to_id_type(param_name).unwrap();
-                        print_doc(&mut out);
+                        print_doc(out);
                         initializers.push((param_name.into(), id_type.clone(), required));
                         state.use_ids.insert(id_type.clone());
                         if required {
@@ -640,7 +721,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                             out.push_str(">,\n");
                         }
                     } else if param["schema"]["type"].as_str() == Some("boolean") {
-                        print_doc(&mut out);
+                        print_doc(out);
                         initializers.push((param_rename.into(), "bool".into(), false));
                         if required {
                             out.push_str("    pub ");
@@ -656,12 +737,12 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                         }
                     } else if param["schema"]["type"].as_str() == Some("integer") {
                         let rust_type = infer_integer_type(
-                            &mut state,
+                            state,
                             &param_name,
                             param["schema"]["format"].as_str(),
                         );
 
-                        print_doc(&mut out);
+                        print_doc(out);
                         initializers.push((param_rename.into(), rust_type.clone(), required));
                         if required {
                             out.push_str("    pub ");
@@ -680,7 +761,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                             out.push_str(">,\n");
                         }
                     } else if param["schema"]["type"].as_str() == Some("number") {
-                        print_doc(&mut out);
+                        print_doc(out);
                         initializers.push((param_rename.into(), "f64".into(), required));
                         if required {
                             out.push_str("    pub ");
@@ -697,7 +778,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                     } else if param["schema"]["anyOf"][0]["title"].as_str()
                         == Some("range_query_specs")
                     {
-                        print_doc(&mut out);
+                        print_doc(out);
                         initializers.push((
                             param_rename.into(),
                             "RangeQuery<Timestamp>".into(),
@@ -742,7 +823,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                             enum_name
                         };
 
-                        print_doc(&mut out);
+                        print_doc(out);
                         initializers.push((param_rename.into(), enum_name.clone(), required));
                         if required {
                             out.push_str("    pub ");
@@ -763,7 +844,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                     } else if (param_name == "currency" || param_name.ends_with("_currency"))
                         && param["schema"]["type"].as_str() == Some("string")
                     {
-                        print_doc(&mut out);
+                        print_doc(out);
                         initializers.push((param_rename.into(), "Currency".into(), required));
                         state.use_resources.insert("Currency".into());
                         if required {
@@ -779,7 +860,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                             out.push_str(": Option<Currency>,\n");
                         }
                     } else if param["schema"]["type"].as_str() == Some("string") {
-                        print_doc(&mut out);
+                        print_doc(out);
                         initializers.push((param_rename.into(), "&'a str".into(), required));
                         if required {
                             out.push_str("    pub ");
@@ -799,17 +880,18 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                         || param["schema"]["anyOf"].is_array()
                     {
                         let rust_type = gen_field_rust_type(
-                            &mut state,
+                            state,
                             meta,
                             &params.rust_type.to_snake_case(),
                             &param_rename,
                             &param["schema"],
                             required,
                             false,
+                            shared_objects,
                         );
                         initializers.push((param_rename.into(), rust_type.clone(), required));
 
-                        print_doc(&mut out);
+                        print_doc(out);
                         if !required {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
@@ -866,7 +948,14 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
         out.push_str("    }\n");
         out.push_str("}\n");
     }
+}
 
+fn gen_emitted_structs(
+    out: &mut String,
+    state: &mut Generated,
+    meta: &Metadata,
+    shared_objects: &mut BTreeSet<String>,
+) {
     let mut emitted_structs = BTreeSet::new();
     while state
         .inferred_structs
@@ -904,19 +993,22 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
                     .unwrap_or(false);
                 out.push('\n');
                 out.push_str(&gen_field(
-                    &mut state,
+                    state,
                     meta,
                     &struct_name.to_snake_case(),
                     &key,
                     &field,
                     required,
                     false,
+                    shared_objects,
                 ));
             }
             out.push_str("}\n");
         }
     }
+}
 
+fn gen_unions(out: &mut String, state: &mut Generated, meta: &Metadata) {
     for (union_name, union_) in state.inferred_unions.clone() {
         println!("union {} {{ ... }}", union_name);
 
@@ -930,7 +1022,9 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
             let object_name = meta.spec["components"]["schemas"][&variant_schema]["properties"]
                 ["object"]["enum"][0]
                 .as_str()
-                .unwrap();
+                .unwrap_or_else(|| {
+                    meta.spec["components"]["schemas"][&variant_schema]["title"].as_str().unwrap()
+                });
             let variant_name = meta.schema_to_rust_type(object_name);
             let type_name = meta.schema_to_rust_type(&variant_schema);
             if variant_name.to_snake_case() != object_name {
@@ -946,7 +1040,22 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
         }
         out.push_str("}\n");
     }
+}
 
+fn gen_variant_name(wire_name: &str, meta: &Metadata) -> String {
+    match wire_name {
+        "*" => "All".to_string(),
+        n => {
+            if n.chars().next().unwrap().is_digit(10) {
+                format!("V{}", n.to_string().replace('-', "_").replace('.', "_"))
+            } else {
+                meta.schema_to_rust_type(wire_name)
+            }
+        }
+    }
+}
+
+fn gen_enums(out: &mut String, state: &mut Generated, meta: &Metadata) {
     for (enum_name, enum_) in state.inferred_enums.clone() {
         println!("enum {} {{ ... }}", enum_name);
 
@@ -964,16 +1073,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
             if wire_name.trim().is_empty() {
                 continue;
             }
-            let variant_name = match wire_name.as_str() {
-                "*" => "All".to_string(),
-                n => {
-                    if n.chars().next().unwrap().is_digit(10) {
-                        format!("V{}", n.to_string().replace('-', "_"))
-                    } else {
-                        meta.schema_to_rust_type(wire_name)
-                    }
-                }
-            };
+            let variant_name = gen_variant_name(&wire_name.as_str(), meta);
             if variant_name.trim().is_empty() {
                 panic!("unhandled enum variant: {:?}", wire_name)
             }
@@ -997,16 +1097,7 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
             if wire_name.trim().is_empty() {
                 continue;
             }
-            let variant_name = match wire_name.as_str() {
-                "*" => "All".to_string(),
-                n => {
-                    if n.chars().next().unwrap().is_digit(10) {
-                        format!("V{}", n.to_string().replace('-', "_"))
-                    } else {
-                        meta.schema_to_rust_type(wire_name)
-                    }
-                }
-            };
+            let variant_name = gen_variant_name(&wire_name.as_str(), meta);
             out.push_str("            ");
             out.push_str(&enum_name);
             out.push_str("::");
@@ -1035,64 +1126,97 @@ fn gen_impl_object(meta: &Metadata, object: &str, url_finder: &UrlFinder) -> Str
         out.push_str("    }\n");
         out.push_str("}\n");
     }
+}
 
-    let mut prelude = String::new();
-    prelude.push_str("// ======================================\n");
-    prelude.push_str("// This file was automatically generated.\n");
-    prelude.push_str("// ======================================\n\n");
-    if !state.use_config.is_empty() {
-        prelude.push_str("use crate::config::{");
-        for (n, type_) in state.use_config.iter().enumerate() {
-            if n > 0 {
-                prelude.push_str(", ");
-            }
-            prelude.push_str(&type_);
-        }
-        prelude.push_str("};\n");
+fn gen_extra_object(
+    meta: &Metadata,
+    object: &str,
+    url_finder: &UrlFinder,
+    shared_objects: &mut BTreeSet<String>,
+) -> String {
+    let mut out = String::new();
+    let mut state = Generated::default();
+
+    gen_struct(&mut out, &mut state, meta, object, shared_objects, url_finder);
+
+    gen_generated_schemas(&mut out, &mut state, meta, shared_objects);
+
+    gen_inferred_params(&mut out, &mut state, meta, object, shared_objects);
+
+    gen_emitted_structs(&mut out, &mut state, meta, shared_objects);
+
+    gen_unions(&mut out, &mut state, meta);
+
+    gen_enums(&mut out, &mut state, meta);
+
+    let prelude = gen_prelude(&state, meta, object);
+
+    // Done
+    prelude + &out
+}
+
+fn gen_impl_object(
+    meta: &Metadata,
+    object: &str,
+    url_finder: &UrlFinder,
+    shared_objects: &mut BTreeSet<String>,
+) -> String {
+    let mut out = String::new();
+    let mut state = Generated::default();
+    let id_type = meta.schema_to_id_type(object);
+    let struct_name = meta.schema_to_rust_type(object);
+    let schema = &meta.spec["components"]["schemas"][object];
+    let fields = match schema["properties"].as_object() {
+        Some(some) => some,
+        None => return String::new(),
+    };
+
+    let object_literal = match fields["object"]["enum"][0].as_str() {
+        Some(some) => some,
+        None => return String::new(),
+    };
+
+    gen_struct(&mut out, &mut state, meta, object, shared_objects, url_finder);
+
+    // Generate request methods
+    if let Some(impls) =
+        gen_impl_requests(&mut state, meta, object, id_type.as_ref().map(|(x, _)| x.as_str()))
+    {
+        out.push('\n');
+        out.push_str(&impls);
     }
-    if !state.use_ids.is_empty() {
-        prelude.push_str("use crate::ids::{");
-        for (n, type_) in state.use_ids.iter().enumerate() {
-            if n > 0 {
-                prelude.push_str(", ");
-            }
-            prelude.push_str(&type_);
-        }
-        prelude.push_str("};\n");
+
+    // Generate an `impl Object` block
+    state.use_params.insert("Object");
+    out.push('\n');
+    out.push_str("impl Object for ");
+    out.push_str(&struct_name);
+    out.push_str(" {\n");
+    out.push_str("    type Id = ");
+    if let Some((id_type, _)) = &id_type {
+        out.push_str(&id_type);
+        out.push_str(";\n");
+        out.push_str("    fn id(&self) -> Self::Id {\n        self.id.clone()\n    }\n");
+    } else {
+        out.push_str("();\n");
+        out.push_str("    fn id(&self) -> Self::Id {}\n");
     }
-    if !state.use_params.is_empty() {
-        prelude.push_str("use crate::params::{");
-        for (n, type_) in state.use_params.iter().enumerate() {
-            if n > 0 {
-                prelude.push_str(", ");
-            }
-            prelude.push_str(&type_);
-        }
-        prelude.push_str("};\n");
-    }
-    if !state.use_resources.is_empty() {
-        prelude.push_str("use crate::resources::{");
-        for (n, type_) in state
-            .use_resources
-            .iter()
-            .filter(|&x| {
-                state.generated_schemas.keys().all(|sch| x != &meta.schema_to_rust_type(sch))
-                    && !state.inferred_parameters.contains_key(x)
-                    && !state.inferred_structs.contains_key(x)
-                    && !state.inferred_unions.contains_key(x)
-                    && !state.inferred_enums.contains_key(x)
-            })
-            .enumerate()
-        {
-            if n > 0 {
-                prelude.push_str(", ");
-            }
-            prelude.push_str(&type_);
-        }
-        prelude.push_str("};\n");
-    }
-    prelude.push_str("use serde_derive::{Deserialize, Serialize};\n");
-    prelude.push('\n');
+    out.push_str("    fn object(&self) -> &'static str {\n        \"");
+    out.push_str(object_literal);
+    out.push_str("\"\n    }\n");
+    out.push_str("}\n");
+
+    gen_generated_schemas(&mut out, &mut state, meta, shared_objects);
+
+    gen_inferred_params(&mut out, &mut state, meta, object, shared_objects);
+
+    gen_emitted_structs(&mut out, &mut state, meta, shared_objects);
+
+    gen_unions(&mut out, &mut state, meta);
+
+    gen_enums(&mut out, &mut state, meta);
+
+    let prelude = gen_prelude(&state, meta, object);
 
     // Done
     prelude + &out
@@ -1106,6 +1230,7 @@ fn gen_field(
     field: &Json,
     required: bool,
     default: bool,
+    shared_objects: &mut BTreeSet<String>,
 ) -> String {
     let mut out = String::new();
     if let Some(doc) = field["description"].as_str() {
@@ -1120,8 +1245,16 @@ fn gen_field(
         out.push_str(field_name);
         out.push_str("\")]\n");
     }
-    let rust_type =
-        gen_field_rust_type(state, meta, object, &field_name, &field, required, default);
+    let rust_type = gen_field_rust_type(
+        state,
+        meta,
+        object,
+        &field_name,
+        &field,
+        required,
+        default,
+        shared_objects,
+    );
     if !required {
         if rust_type == "bool" || rust_type == "Metadata" || rust_type.starts_with("List<") {
             out.push_str("    #[serde(default)]\n");
@@ -1145,6 +1278,7 @@ fn gen_field_rust_type(
     field: &Json,
     required: bool,
     default: bool,
+    shared_objects: &mut BTreeSet<String>,
 ) -> String {
     if let Some((use_path, rust_type)) = meta.field_to_rust_type(object, field_name) {
         match use_path {
@@ -1208,8 +1342,16 @@ fn gen_field_rust_type(
         }
         Some("array") => {
             let element = &field["items"];
-            let element_type =
-                gen_field_rust_type(state, meta, object, field_name, element, true, false);
+            let element_type = gen_field_rust_type(
+                state,
+                meta,
+                object,
+                field_name,
+                element,
+                true,
+                false,
+                shared_objects,
+            );
             format!("Vec<{}>", element_type)
         }
         Some("object") => {
@@ -1231,6 +1373,7 @@ fn gen_field_rust_type(
                     element,
                     true,
                     false,
+                    shared_objects,
                 );
 
                 // N.B. return immediately; we use `Default` for list rather than `Option`
@@ -1248,11 +1391,13 @@ fn gen_field_rust_type(
                 let schema_name = path.trim_start_matches("#/components/schemas/");
                 let type_name = meta.schema_to_rust_type(schema_name);
                 if schema_name != object {
-                    if meta.objects.contains(schema_name)
-                        || meta.dependents.get(schema_name).map(|x| x.len()).unwrap_or(0) > 1
-                    {
+                    if meta.objects.contains(schema_name) {
                         state.use_resources.insert(type_name.clone());
+                    } else if meta.dependents.get(schema_name).map(|x| x.len()).unwrap_or(0) > 1 {
+                        state.use_resources.insert(type_name.clone());
+                        shared_objects.insert(schema_name.to_string());
                     } else if !state.generated_schemas.contains_key(schema_name) {
+                        //println!("generated_schemas: {}", schema_name.to_string());
                         state.generated_schemas.insert(schema_name.into(), false);
                     }
                 }
@@ -1263,7 +1408,16 @@ fn gen_field_rust_type(
                 if any_of.len() == 1
                     || (any_of.len() == 2 && any_of[1]["enum"][0].as_str() == Some(""))
                 {
-                    gen_field_rust_type(state, meta, object, field_name, &any_of[0], true, false)
+                    gen_field_rust_type(
+                        state,
+                        meta,
+                        object,
+                        field_name,
+                        &any_of[0],
+                        true,
+                        false,
+                        shared_objects,
+                    )
                 } else if field["x-expansionResources"].is_object() {
                     let ty_ = gen_field_rust_type(
                         state,
@@ -1279,6 +1433,7 @@ fn gen_field_rust_type(
                         }),
                         true,
                         false,
+                        shared_objects,
                     );
                     state.use_params.insert("Expandable");
                     format!("Expandable<{}>", ty_)
@@ -1287,8 +1442,12 @@ fn gen_field_rust_type(
                     state.use_params.insert("Timestamp");
                     "RangeQuery<Timestamp>".into()
                 } else {
-                    let union_schema = meta.schema_field(object, field_name);
+                    println!("object: {}, field_name: {}", object, field_name);
+                    let mut union_addition = field_name.to_owned();
+                    union_addition.push_str("_union");
+                    let union_schema = meta.schema_field(object, &union_addition);
                     let union_name = meta.schema_to_rust_type(&union_schema);
+                    println!("union_schema: {}, union_name: {}", union_schema, union_name);
                     let union_ = InferredUnion {
                         field: field_name.into(),
                         schema_variants: any_of
@@ -1297,7 +1456,7 @@ fn gen_field_rust_type(
                                 let schema_name = x["$ref"]
                                     .as_str()
                                     .expect(&format!(
-                                        "invalid union for `{}.{}`:  {:?}",
+                                        "invalid union for `{}.{}`:  {:#?}",
                                         object, field_name, field
                                     ))
                                     .trim_start_matches("#/components/schemas/");
@@ -1327,7 +1486,7 @@ fn gen_field_rust_type(
         }
     };
     if !required || field["nullable"].as_bool() == Some(true) {
-        format!("Option<{}>", ty)
+        format!("Option<Box<{}>>", ty)
     } else {
         ty
     }

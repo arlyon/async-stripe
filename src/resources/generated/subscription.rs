@@ -8,9 +8,10 @@ use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    CollectionMethod, Currency, Customer, Discount, Invoice, PaymentMethod, PaymentSource,
-    Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
-    SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
+    CollectionMethod, Currency, Customer, Discount, Invoice, InvoicePaymentMethodOptionsAcssDebit,
+    InvoicePaymentMethodOptionsBancontact, PaymentMethod, PaymentSource, Scheduled, SetupIntent,
+    SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds,
+    SubscriptionSchedule, SubscriptionTransferData, TaxRate,
 };
 
 /// The resource representing a Stripe "Subscription".
@@ -25,7 +26,7 @@ pub struct Subscription {
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_percent: Option<f64>,
+    pub application_fee_percent: Option<Box<f64>>,
 
     pub automatic_tax: SubscriptionAutomaticTax,
 
@@ -34,11 +35,11 @@ pub struct Subscription {
 
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<SubscriptionBillingThresholds>,
+    pub billing_thresholds: Option<Box<SubscriptionBillingThresholds>>,
 
     /// A date in the future at which the subscription will automatically get canceled.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancel_at: Option<Timestamp>,
+    pub cancel_at: Option<Box<Timestamp>>,
 
     /// If the subscription has been canceled with the `at_period_end` flag set to `true`, `cancel_at_period_end` on the subscription will be true.
     ///
@@ -49,7 +50,7 @@ pub struct Subscription {
     ///
     /// If the subscription was canceled with `cancel_at_period_end`, `canceled_at` will reflect the time of the most recent update request, not the end of the subscription period when the subscription is automatically moved to a canceled state.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<Timestamp>,
+    pub canceled_at: Option<Box<Timestamp>>,
 
     /// Either `charge_automatically`, or `send_invoice`.
     ///
@@ -77,7 +78,7 @@ pub struct Subscription {
     ///
     /// This value will be `null` for subscriptions where `collection_method=charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub days_until_due: Option<u32>,
+    pub days_until_due: Option<Box<u32>>,
 
     /// ID of the default payment method for the subscription.
     ///
@@ -85,7 +86,7 @@ pub struct Subscription {
     /// This takes precedence over `default_source`.
     /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<Expandable<PaymentMethod>>,
+    pub default_payment_method: Option<Box<Expandable<PaymentMethod>>>,
 
     /// ID of the default payment source for the subscription.
     ///
@@ -99,24 +100,24 @@ pub struct Subscription {
     ///
     /// Invoices created will have their `default_tax_rates` populated from the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<Vec<TaxRate>>,
+    pub default_tax_rates: Option<Box<Vec<TaxRate>>>,
 
     /// Describes the current discount applied to this subscription, if there is one.
     ///
     /// When billing, a discount applied to a subscription overrides a discount applied on a customer-wide basis.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<Discount>,
+    pub discount: Option<Box<Discount>>,
 
     /// If the subscription has ended, the date the subscription ended.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ended_at: Option<Timestamp>,
+    pub ended_at: Option<Box<Timestamp>>,
 
     /// List of subscription items, each with an attached price.
     pub items: List<SubscriptionItem>,
 
     /// The most recent invoice this subscription has generated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub latest_invoice: Option<Expandable<Invoice>>,
+    pub latest_invoice: Option<Box<Expandable<Invoice>>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -128,35 +129,35 @@ pub struct Subscription {
 
     /// Specifies the approximate timestamp on which any pending invoice items will be billed according to the schedule provided at `pending_invoice_item_interval`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub next_pending_invoice_item_invoice: Option<Timestamp>,
+    pub next_pending_invoice_item_invoice: Option<Box<Timestamp>>,
 
     /// If specified, payment collection for this subscription will be paused.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pause_collection: Option<SubscriptionsResourcePauseCollection>,
+    pub pause_collection: Option<Box<SubscriptionsResourcePauseCollection>>,
 
     /// Payment settings passed on to invoices created by the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_settings: Option<SubscriptionsResourcePaymentSettings>,
+    pub payment_settings: Option<Box<SubscriptionsResourcePaymentSettings>>,
 
     /// Specifies an interval for how often to bill for any pending invoice items.
     ///
     /// It is analogous to calling [Create an invoice](https://stripe.com/docs/api#create_invoice) for the given subscription at the specified interval.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pending_invoice_item_interval: Option<SubscriptionPendingInvoiceItemInterval>,
+    pub pending_invoice_item_interval: Option<Box<SubscriptionPendingInvoiceItemInterval>>,
 
     /// You can use this [SetupIntent](https://stripe.com/docs/api/setup_intents) to collect user authentication when creating a subscription without immediate payment or updating a subscription's payment method, allowing you to optimize for off-session payments.
     ///
     /// Learn more in the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication#scenario-2).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pending_setup_intent: Option<Expandable<SetupIntent>>,
+    pub pending_setup_intent: Option<Box<Expandable<SetupIntent>>>,
 
     /// If specified, [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates) that will be applied to the subscription once the `latest_invoice` has been paid.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pending_update: Option<SubscriptionsResourcePendingUpdate>,
+    pub pending_update: Option<Box<SubscriptionsResourcePendingUpdate>>,
 
     /// The schedule attached to the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub schedule: Option<Expandable<SubscriptionSchedule>>,
+    pub schedule: Option<Box<Expandable<SubscriptionSchedule>>>,
 
     /// Date when the subscription was first created.
     ///
@@ -179,15 +180,15 @@ pub struct Subscription {
 
     /// The account (if any) the subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<SubscriptionTransferData>,
+    pub transfer_data: Option<Box<SubscriptionTransferData>>,
 
     /// If the subscription has a trial, the end of that trial.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_end: Option<Timestamp>,
+    pub trial_end: Option<Box<Timestamp>>,
 
     /// If the subscription has a trial, the beginning of that trial.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_start: Option<Timestamp>,
+    pub trial_start: Option<Box<Timestamp>>,
 }
 
 impl Subscription {
@@ -278,48 +279,94 @@ pub struct SubscriptionsResourcePauseCollection {
 
     /// The time after which the subscription will resume collecting payments.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub resumes_at: Option<Timestamp>,
+    pub resumes_at: Option<Box<Timestamp>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePaymentSettings {
     /// Payment-method-specific configuration to provide to invoices created by the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_options: Option<SubscriptionsResourcePaymentMethodOptions>,
+    pub payment_method_options: Option<Box<SubscriptionsResourcePaymentMethodOptions>>,
 
     /// The list of payment method types to provide to every invoice created by the subscription.
     ///
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<Vec<SubscriptionsResourcePaymentSettingsPaymentMethodTypes>>,
+    pub payment_method_types:
+        Option<Box<Vec<SubscriptionsResourcePaymentSettingsPaymentMethodTypes>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionsResourcePaymentMethodOptions {}
+pub struct SubscriptionsResourcePaymentMethodOptions {
+    /// This sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to invoices created by the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<Box<InvoicePaymentMethodOptionsAcssDebit>>,
+
+    /// This sub-hash contains details about the Bancontact payment method options to pass to invoices created by the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact: Option<Box<InvoicePaymentMethodOptionsBancontact>>,
+
+    /// This sub-hash contains details about the Card payment method options to pass to invoices created by the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<Box<SubscriptionPaymentMethodOptionsCard>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SubscriptionPaymentMethodOptionsCard {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<Box<InvoiceMandateOptionsCard>>,
+
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    ///
+    /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
+    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_three_d_secure:
+        Option<Box<SubscriptionPaymentMethodOptionsCardRequestThreeDSecure>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct InvoiceMandateOptionsCard {
+    /// Amount to be charged for future payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<Box<i64>>,
+
+    /// One of `fixed` or `maximum`.
+    ///
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<Box<InvoiceMandateOptionsCardAmountType>>,
+
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePendingUpdate {
     /// If the update is applied, determines the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_cycle_anchor: Option<Timestamp>,
+    pub billing_cycle_anchor: Option<Box<Timestamp>>,
 
     /// The point after which the changes reflected by this update will be discarded and no longer applied.
     pub expires_at: Timestamp,
 
     /// List of subscription items, each with an attached plan, that will be set if the update is applied.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_items: Option<Vec<SubscriptionItem>>,
+    pub subscription_items: Option<Box<Vec<SubscriptionItem>>>,
 
     /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time, if the update is applied.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_end: Option<Timestamp>,
+    pub trial_end: Option<Box<Timestamp>>,
 
     /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
     ///
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
+    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_from_plan: Option<bool>,
+    pub trial_from_plan: Option<Box<bool>>,
 }
 
 /// The parameters for `Subscription::create`.
@@ -329,7 +376,7 @@ pub struct CreateSubscription<'a> {
     ///
     /// You may pass up to 20 items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub add_invoice_items: Option<Vec<AddInvoiceItems>>,
+    pub add_invoice_items: Option<Box<Vec<AddInvoiceItems>>>,
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
@@ -341,7 +388,7 @@ pub struct CreateSubscription<'a> {
 
     /// Automatic tax settings for this subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<CreateSubscriptionAutomaticTax>,
+    pub automatic_tax: Option<Box<CreateSubscriptionAutomaticTax>>,
 
     /// For new subscriptions, a past timestamp to backdate the subscription's start date to.
     ///
@@ -416,7 +463,7 @@ pub struct CreateSubscription<'a> {
     ///
     /// Invoices created will have their `default_tax_rates` populated from the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<Vec<String>>,
+    pub default_tax_rates: Option<Box<Vec<String>>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -424,7 +471,7 @@ pub struct CreateSubscription<'a> {
 
     /// A list of up to 20 subscription items, each with an attached price.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<CreateSubscriptionItems>>,
+    pub items: Option<Box<Vec<CreateSubscriptionItems>>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -456,13 +503,13 @@ pub struct CreateSubscription<'a> {
 
     /// Payment settings to pass to invoices created by the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_settings: Option<CreateSubscriptionPaymentSettings>,
+    pub payment_settings: Option<Box<CreateSubscriptionPaymentSettings>>,
 
     /// Specifies an interval for how often to bill for any pending invoice items.
     ///
     /// It is analogous to calling [Create an invoice](https://stripe.com/docs/api#create_invoice) for the given subscription at the specified interval.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pending_invoice_item_interval: Option<CreateSubscriptionPendingInvoiceItemInterval>,
+    pub pending_invoice_item_interval: Option<Box<CreateSubscriptionPendingInvoiceItemInterval>>,
 
     /// The API ID of a promotion code to apply to this subscription.
     ///
@@ -480,7 +527,7 @@ pub struct CreateSubscription<'a> {
 
     /// If specified, the funds from the subscription's invoices will be transferred to the destination and the ID of the resulting transfers will be found on the resulting charges.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<CreateSubscriptionTransferData>,
+    pub transfer_data: Option<Box<CreateSubscriptionTransferData>>,
 
     /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
     ///
@@ -488,6 +535,7 @@ pub struct CreateSubscription<'a> {
     /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
     /// The special value `now` can be provided to end the customer's trial immediately.
     /// Can be at most two years from `billing_cycle_anchor`.
+    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Scheduled>,
 
@@ -495,12 +543,14 @@ pub struct CreateSubscription<'a> {
     ///
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
+    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_from_plan: Option<bool>,
 
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     ///
     /// This will always overwrite any trials that might apply via a subscribed plan.
+    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 }
@@ -625,7 +675,7 @@ pub struct UpdateSubscription<'a> {
     ///
     /// You may pass up to 20 items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub add_invoice_items: Option<Vec<AddInvoiceItems>>,
+    pub add_invoice_items: Option<Box<Vec<AddInvoiceItems>>>,
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
@@ -637,7 +687,7 @@ pub struct UpdateSubscription<'a> {
 
     /// Automatic tax settings for this subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<UpdateSubscriptionAutomaticTax>,
+    pub automatic_tax: Option<Box<UpdateSubscriptionAutomaticTax>>,
 
     /// Either `now` or `unchanged`.
     ///
@@ -657,7 +707,7 @@ pub struct UpdateSubscription<'a> {
     /// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
     /// If set during a future period, this will always cause a proration for that period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cancel_at: Option<Timestamp>,
+    pub cancel_at: Option<Box<Timestamp>>,
 
     /// Boolean indicating whether this subscription should cancel at the end of the current period.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -704,7 +754,7 @@ pub struct UpdateSubscription<'a> {
     /// Invoices created will have their `default_tax_rates` populated from the subscription.
     /// Pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<Vec<String>>,
+    pub default_tax_rates: Option<Box<Vec<String>>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -712,7 +762,7 @@ pub struct UpdateSubscription<'a> {
 
     /// A list of up to 20 subscription items, each with an attached price.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<UpdateSubscriptionItems>>,
+    pub items: Option<Box<Vec<UpdateSubscriptionItems>>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -728,7 +778,7 @@ pub struct UpdateSubscription<'a> {
 
     /// If specified, payment collection for this subscription will be paused.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pause_collection: Option<UpdateSubscriptionPauseCollection>,
+    pub pause_collection: Option<Box<UpdateSubscriptionPauseCollection>>,
 
     /// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
     ///
@@ -747,13 +797,13 @@ pub struct UpdateSubscription<'a> {
 
     /// Payment settings to pass to invoices created by the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_settings: Option<UpdateSubscriptionPaymentSettings>,
+    pub payment_settings: Option<Box<UpdateSubscriptionPaymentSettings>>,
 
     /// Specifies an interval for how often to bill for any pending invoice items.
     ///
     /// It is analogous to calling [Create an invoice](https://stripe.com/docs/api#create_invoice) for the given subscription at the specified interval.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pending_invoice_item_interval: Option<UpdateSubscriptionPendingInvoiceItemInterval>,
+    pub pending_invoice_item_interval: Option<Box<UpdateSubscriptionPendingInvoiceItemInterval>>,
 
     /// The promotion code to apply to this subscription.
     ///
@@ -780,7 +830,7 @@ pub struct UpdateSubscription<'a> {
     ///
     /// This will be unset if you POST an empty value.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<UpdateSubscriptionTransferData>,
+    pub transfer_data: Option<Box<UpdateSubscriptionTransferData>>,
 
     /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
     ///
@@ -795,6 +845,7 @@ pub struct UpdateSubscription<'a> {
     ///
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
+    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_from_plan: Option<bool>,
 }
@@ -836,16 +887,16 @@ impl<'a> UpdateSubscription<'a> {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<String>,
+    pub price: Option<Box<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<InvoiceItemPriceData>,
+    pub price_data: Option<Box<InvoiceItemPriceData>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
+    pub quantity: Option<Box<u64>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Vec<String>>,
+    pub tax_rates: Option<Box<Vec<String>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -856,31 +907,31 @@ pub struct CreateSubscriptionAutomaticTax {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionItems {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<CreateSubscriptionItemsBillingThresholds>,
+    pub billing_thresholds: Option<Box<CreateSubscriptionItemsBillingThresholds>>,
 
     #[serde(default)]
     pub metadata: Metadata,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<String>,
+    pub price: Option<Box<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<SubscriptionItemPriceData>,
+    pub price_data: Option<Box<SubscriptionItemPriceData>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
+    pub quantity: Option<Box<u64>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Vec<String>>,
+    pub tax_rates: Option<Box<Vec<String>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_options: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptions>,
+    pub payment_method_options: Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptions>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<Vec<CreateSubscriptionPaymentSettingsPaymentMethodTypes>>,
+    pub payment_method_types: Option<Box<Vec<CreateSubscriptionPaymentSettingsPaymentMethodTypes>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -888,13 +939,13 @@ pub struct CreateSubscriptionPendingInvoiceItemInterval {
     pub interval: PlanInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<u64>,
+    pub interval_count: Option<Box<u64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_percent: Option<f64>,
+    pub amount_percent: Option<Box<f64>>,
 
     pub destination: String,
 }
@@ -910,28 +961,28 @@ pub struct UpdateSubscriptionItems {
     pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub clear_usage: Option<bool>,
+    pub clear_usage: Option<Box<bool>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted: Option<bool>,
+    pub deleted: Option<Box<bool>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
+    pub id: Option<Box<String>>,
 
     #[serde(default)]
     pub metadata: Metadata,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<String>,
+    pub price: Option<Box<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<SubscriptionItemPriceData>,
+    pub price_data: Option<Box<SubscriptionItemPriceData>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
+    pub quantity: Option<Box<u64>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Vec<String>>,
+    pub tax_rates: Option<Box<Vec<String>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -939,16 +990,16 @@ pub struct UpdateSubscriptionPauseCollection {
     pub behavior: UpdateSubscriptionPauseCollectionBehavior,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub resumes_at: Option<Timestamp>,
+    pub resumes_at: Option<Box<Timestamp>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_options: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptions>,
+    pub payment_method_options: Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptions>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodTypes>>,
+    pub payment_method_types: Option<Box<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodTypes>>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -956,13 +1007,13 @@ pub struct UpdateSubscriptionPendingInvoiceItemInterval {
     pub interval: PlanInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<u64>,
+    pub interval_count: Option<Box<u64>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_percent: Option<f64>,
+    pub amount_percent: Option<Box<f64>>,
 
     pub destination: String,
 }
@@ -975,10 +1026,13 @@ pub struct CreateSubscriptionItemsBillingThresholds {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>,
+    pub acss_debit: Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard>,
+    pub bancontact: Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -988,13 +1042,13 @@ pub struct InvoiceItemPriceData {
     pub product: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<InvoiceItemPriceDataTaxBehavior>,
+    pub tax_behavior: Option<Box<InvoiceItemPriceDataTaxBehavior>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
+    pub unit_amount: Option<Box<i64>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
+    pub unit_amount_decimal: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1006,36 +1060,56 @@ pub struct SubscriptionItemPriceData {
     pub recurring: SubscriptionItemPriceDataRecurring,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<SubscriptionItemPriceDataTaxBehavior>,
+    pub tax_behavior: Option<Box<SubscriptionItemPriceDataTaxBehavior>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<i64>,
+    pub unit_amount: Option<Box<i64>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<String>,
+    pub unit_amount_decimal: Option<Box<String>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>,
+    pub acss_debit: Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard>,
+    pub bancontact: Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options:
+        Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<
+        Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>,
+    >,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language:
-        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
+    pub preferred_language: Option<
+        Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
+    >,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options:
+        Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
-        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
+        Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1043,21 +1117,149 @@ pub struct SubscriptionItemPriceDataRecurring {
     pub interval: PlanInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<u64>,
+    pub interval_count: Option<Box<u64>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options:
+        Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<
+        Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>,
+    >,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language:
-        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
+    pub preferred_language: Option<
+        Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
+    >,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options:
+        Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
-        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
+        Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_type: Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<Box<i64>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<
+        Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType>,
+    >,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_type: Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<Box<i64>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<
+        Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType>,
+    >,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<Box<String>>,
+}
+
+/// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    Business,
+    Personal,
+}
+
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
 }
 
 /// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact`'s `preferred_language` field.
@@ -1091,6 +1293,39 @@ impl AsRef<str>
 
 impl std::fmt::Display
     for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions`'s `amount_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+}
+
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Fixed => "fixed",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Maximum => "maximum",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
@@ -1134,6 +1369,7 @@ impl std::fmt::Display
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
+    AcssDebit,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
@@ -1154,6 +1390,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
                 "ach_credit_transfer"
             }
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::AchDebit => "ach_debit",
+            CreateSubscriptionPaymentSettingsPaymentMethodTypes::AcssDebit => "acss_debit",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::BacsDebit => "bacs_debit",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
@@ -1207,6 +1444,35 @@ impl AsRef<str> for InvoiceItemPriceDataTaxBehavior {
 }
 
 impl std::fmt::Display for InvoiceItemPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `InvoiceMandateOptionsCard`'s `amount_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoiceMandateOptionsCardAmountType {
+    Fixed,
+    Maximum,
+}
+
+impl InvoiceMandateOptionsCardAmountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoiceMandateOptionsCardAmountType::Fixed => "fixed",
+            InvoiceMandateOptionsCardAmountType::Maximum => "maximum",
+        }
+    }
+}
+
+impl AsRef<str> for InvoiceMandateOptionsCardAmountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoiceMandateOptionsCardAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -1333,6 +1599,35 @@ impl AsRef<str> for SubscriptionPaymentBehavior {
 }
 
 impl std::fmt::Display for SubscriptionPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `SubscriptionPaymentMethodOptionsCard`'s `request_three_d_secure` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
+    Any,
+    Automatic,
+}
+
+impl SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SubscriptionPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
+            SubscriptionPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionPaymentMethodOptionsCardRequestThreeDSecure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -1488,6 +1783,7 @@ impl std::fmt::Display for SubscriptionsResourcePauseCollectionBehavior {
 pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
+    AcssDebit,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
@@ -1508,6 +1804,7 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
                 "ach_credit_transfer"
             }
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::AchDebit => "ach_debit",
+            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::AcssDebit => "acss_debit",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::BacsDebit => "bacs_debit",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
@@ -1566,6 +1863,75 @@ impl std::fmt::Display for UpdateSubscriptionPauseCollectionBehavior {
     }
 }
 
+/// An enum representing the possible values of an `UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    Business,
+    Personal,
+}
+
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
 /// An enum representing the possible values of an `UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact`'s `preferred_language` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1597,6 +1963,39 @@ impl AsRef<str>
 
 impl std::fmt::Display
     for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions`'s `amount_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+}
+
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Fixed => "fixed",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Maximum => "maximum",
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
@@ -1640,6 +2039,7 @@ impl std::fmt::Display
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     AchCreditTransfer,
     AchDebit,
+    AcssDebit,
     AuBecsDebit,
     BacsDebit,
     Bancontact,
@@ -1660,6 +2060,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
                 "ach_credit_transfer"
             }
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::AchDebit => "ach_debit",
+            UpdateSubscriptionPaymentSettingsPaymentMethodTypes::AcssDebit => "acss_debit",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::BacsDebit => "bacs_debit",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
