@@ -53,6 +53,7 @@ fraud = []
 issuing = []
 orders = []
 sigma = []
+test-clock = []
 webhook-endpoints = []
 
 # deserialize events from webhooks

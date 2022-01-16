@@ -34,6 +34,9 @@ mod payment {
 #[cfg(feature = "events")]
 mod webhook_events;
 
+#[cfg(feature = "test-clock")]
+mod test_clock;
+
 #[path = "resources"]
 #[cfg(feature = "billing")]
 mod billing {
@@ -223,6 +226,10 @@ pub use {
     fraud::review_ext::*,
     generated::fraud::review::*
 };
+
+#[rustfmt::skip]
+#[cfg(feature = "test-clock")]
+pub use test_clock::*;
 
 #[rustfmt::skip]
 #[cfg(feature = "issuing")]

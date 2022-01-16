@@ -1,9 +1,11 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
+use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId, TestClockId};
 use crate::params::Deleted;
-use crate::resources::{BankAccount, Customer, PaymentSource, PaymentSourceParams, Source};
+use crate::resources::{
+    BankAccount, CreateCustomer, Customer, PaymentSource, PaymentSourceParams, Source,
+};
 
 impl Customer {
     /// Attaches a source to a customer, does not change default Source for the Customer
@@ -56,6 +58,17 @@ impl Customer {
             params,
         )
     }
+
+    pub fn create_with_test_clock(
+        client: &Client,
+        params: &CreateCustomer<'_>,
+        test_clock: &TestClockId,
+    ) -> Response<Customer> {
+        client.post_form(
+            "/customers",
+            &CreateCustomerWithTestClock { create_customer: params.clone(), test_clock },
+        )
+    }
 }
 
 /// The set of parameters that can be used when verifying a Bank Account.
@@ -81,4 +94,11 @@ pub enum DetachedSource {
     BankAccount(Deleted<BankAccountId>),
     Card(Deleted<CardId>),
     Source(Source),
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct CreateCustomerWithTestClock<'a> {
+    #[serde(flatten)]
+    create_customer: CreateCustomer<'a>,
+    test_clock: &'a TestClockId,
 }
