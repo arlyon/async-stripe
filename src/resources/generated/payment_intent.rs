@@ -2199,6 +2199,16 @@ pub enum PaymentIntentPaymentMethodOptionsFpxUnion {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsFpxUnion {
+    PaymentMethodOptionsFpx(PaymentMethodOptionsFpx),
+    #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
+    PaymentIntentTypeSpecificPaymentMethodOptionsClient(
+        PaymentIntentTypeSpecificPaymentMethodOptionsClient,
+    ),
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsGiropayUnion {
     PaymentMethodOptionsGiropay(PaymentMethodOptionsGiropay),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2209,6 +2219,16 @@ pub enum PaymentIntentPaymentMethodOptionsGiropayUnion {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "object", rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsGrabpayUnion {
+    PaymentMethodOptionsGrabpay(PaymentMethodOptionsGrabpay),
+    #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
+    PaymentIntentTypeSpecificPaymentMethodOptionsClient(
+        PaymentIntentTypeSpecificPaymentMethodOptionsClient,
+    ),
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsGrabpayUnion {
     PaymentMethodOptionsGrabpay(PaymentMethodOptionsGrabpay),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
