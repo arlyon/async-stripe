@@ -77,7 +77,16 @@ impl ShippingRate {
 
     /// Creates a new shipping rate object.
     pub fn create(client: &Client, params: CreateShippingRate<'_>) -> Response<ShippingRate> {
-        client.post_form("/shipping_rates", &params)
+        client.post_form("/shipping_rates", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateShippingRate<'_>,
+        idempotency_key: &str,
+    ) -> Response<ShippingRate> {
+        client.post_form("/shipping_rates", &params, Some(idempotency_key))
     }
 
     /// Returns the shipping rate object with the given ID.
@@ -95,7 +104,17 @@ impl ShippingRate {
         id: &ShippingRateId,
         params: UpdateShippingRate<'_>,
     ) -> Response<ShippingRate> {
-        client.post_form(&format!("/shipping_rates/{}", id), &params)
+        client.post_form(&format!("/shipping_rates/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &ShippingRateId,
+        params: UpdateShippingRate<'_>,
+        idempotency_key: &str,
+    ) -> Response<ShippingRate> {
+        client.post_form(&format!("/shipping_rates/{}", id), &params, Some(idempotency_key))
     }
 }
 

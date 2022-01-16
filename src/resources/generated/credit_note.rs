@@ -122,7 +122,16 @@ impl CreditNote {
     /// Instead, it can result in any combination of the following:  <ul> <li>Refund: create a new refund (using `refund_amount`) or link an existing refund (using `refund`).</li> <li>Customer balance credit: credit the customer’s balance (using `credit_amount`) which will be automatically applied to their next invoice when it’s finalized.</li> <li>Outside of Stripe credit: record the amount that is or will be credited outside of Stripe (using `out_of_band_amount`).</li> </ul>  For post-payment credit notes the sum of the refund, credit and outside of Stripe amounts must equal the credit note total.  You may issue multiple credit notes for an invoice.
     /// Each credit note will increment the invoice’s `pre_payment_credit_notes_amount` or `post_payment_credit_notes_amount` depending on its `status` at the time of credit note creation.
     pub fn create(client: &Client, params: CreateCreditNote<'_>) -> Response<CreditNote> {
-        client.post_form("/credit_notes", &params)
+        client.post_form("/credit_notes", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateCreditNote<'_>,
+        idempotency_key: &str,
+    ) -> Response<CreditNote> {
+        client.post_form("/credit_notes", &params, Some(idempotency_key))
     }
 
     /// Retrieves the credit note object with the given identifier.
@@ -136,7 +145,17 @@ impl CreditNote {
         id: &CreditNoteId,
         params: UpdateCreditNote<'_>,
     ) -> Response<CreditNote> {
-        client.post_form(&format!("/credit_notes/{}", id), &params)
+        client.post_form(&format!("/credit_notes/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &CreditNoteId,
+        params: UpdateCreditNote<'_>,
+        idempotency_key: &str,
+    ) -> Response<CreditNote> {
+        client.post_form(&format!("/credit_notes/{}", id), &params, Some(idempotency_key))
     }
 }
 

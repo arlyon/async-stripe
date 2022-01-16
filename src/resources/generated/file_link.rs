@@ -53,7 +53,16 @@ impl FileLink {
 
     /// Creates a new file link object.
     pub fn create(client: &Client, params: CreateFileLink<'_>) -> Response<FileLink> {
-        client.post_form("/file_links", &params)
+        client.post_form("/file_links", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateFileLink<'_>,
+        idempotency_key: &str,
+    ) -> Response<FileLink> {
+        client.post_form("/file_links", &params, Some(idempotency_key))
     }
 
     /// Retrieves the file link with the given ID.
@@ -69,7 +78,17 @@ impl FileLink {
         id: &FileLinkId,
         params: UpdateFileLink<'_>,
     ) -> Response<FileLink> {
-        client.post_form(&format!("/file_links/{}", id), &params)
+        client.post_form(&format!("/file_links/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &FileLinkId,
+        params: UpdateFileLink<'_>,
+        idempotency_key: &str,
+    ) -> Response<FileLink> {
+        client.post_form(&format!("/file_links/{}", id), &params, Some(idempotency_key))
     }
 }
 

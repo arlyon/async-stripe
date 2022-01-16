@@ -99,7 +99,17 @@ impl Topup {
     ///
     /// Other top-up details are not editable by design.
     pub fn update(client: &Client, id: &TopupId, params: UpdateTopup<'_>) -> Response<Topup> {
-        client.post_form(&format!("/topups/{}", id), &params)
+        client.post_form(&format!("/topups/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &TopupId,
+        params: UpdateTopup<'_>,
+        idempotency_key: &str,
+    ) -> Response<Topup> {
+        client.post_form(&format!("/topups/{}", id), &params, Some(idempotency_key))
     }
 }
 

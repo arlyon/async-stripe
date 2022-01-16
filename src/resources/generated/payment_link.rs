@@ -92,7 +92,16 @@ impl PaymentLink {
 
     /// Creates a payment link.
     pub fn create(client: &Client, params: CreatePaymentLink<'_>) -> Response<PaymentLink> {
-        client.post_form("/payment_links", &params)
+        client.post_form("/payment_links", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreatePaymentLink<'_>,
+        idempotency_key: &str,
+    ) -> Response<PaymentLink> {
+        client.post_form("/payment_links", &params, Some(idempotency_key))
     }
 
     /// Retrieve a payment link.
@@ -106,7 +115,17 @@ impl PaymentLink {
         id: &PaymentLinkId,
         params: UpdatePaymentLink<'_>,
     ) -> Response<PaymentLink> {
-        client.post_form(&format!("/payment_links/{}", id), &params)
+        client.post_form(&format!("/payment_links/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &PaymentLinkId,
+        params: UpdatePaymentLink<'_>,
+        idempotency_key: &str,
+    ) -> Response<PaymentLink> {
+        client.post_form(&format!("/payment_links/{}", id), &params, Some(idempotency_key))
     }
 }
 

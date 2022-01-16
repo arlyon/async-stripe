@@ -101,7 +101,16 @@ impl SubscriptionSchedule {
         client: &Client,
         params: CreateSubscriptionSchedule<'_>,
     ) -> Response<SubscriptionSchedule> {
-        client.post_form("/subscription_schedules", &params)
+        client.post_form("/subscription_schedules", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateSubscriptionSchedule<'_>,
+        idempotency_key: &str,
+    ) -> Response<SubscriptionSchedule> {
+        client.post_form("/subscription_schedules", &params, Some(idempotency_key))
     }
 
     /// Retrieves the details of an existing subscription schedule.
@@ -121,7 +130,17 @@ impl SubscriptionSchedule {
         id: &SubscriptionScheduleId,
         params: UpdateSubscriptionSchedule<'_>,
     ) -> Response<SubscriptionSchedule> {
-        client.post_form(&format!("/subscription_schedules/{}", id), &params)
+        client.post_form(&format!("/subscription_schedules/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &SubscriptionScheduleId,
+        params: UpdateSubscriptionSchedule<'_>,
+        idempotency_key: &str,
+    ) -> Response<SubscriptionSchedule> {
+        client.post_form(&format!("/subscription_schedules/{}", id), &params, Some(idempotency_key))
     }
 }
 

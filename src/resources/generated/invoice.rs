@@ -407,7 +407,16 @@ impl Invoice {
     /// The draft invoice created pulls in all pending invoice items on that customer, including prorations.
     /// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
     pub fn create(client: &Client, params: CreateInvoice<'_>) -> Response<Invoice> {
-        client.post_form("/invoices", &params)
+        client.post_form("/invoices", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateInvoice<'_>,
+        idempotency_key: &str,
+    ) -> Response<Invoice> {
+        client.post_form("/invoices", &params, Some(idempotency_key))
     }
 
     /// Retrieves the invoice with the given ID.

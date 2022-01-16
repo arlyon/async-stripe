@@ -86,7 +86,17 @@ impl PromotionCode {
         id: &PromotionCodeId,
         params: UpdatePromotionCode<'_>,
     ) -> Response<PromotionCode> {
-        client.post_form(&format!("/promotion_codes/{}", id), &params)
+        client.post_form(&format!("/promotion_codes/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &PromotionCodeId,
+        params: UpdatePromotionCode<'_>,
+        idempotency_key: &str,
+    ) -> Response<PromotionCode> {
+        client.post_form(&format!("/promotion_codes/{}", id), &params, Some(idempotency_key))
     }
 }
 

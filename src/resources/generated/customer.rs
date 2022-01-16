@@ -148,7 +148,16 @@ impl Customer {
 
     /// Creates a new customer object.
     pub fn create(client: &Client, params: CreateCustomer<'_>) -> Response<Customer> {
-        client.post_form("/customers", &params)
+        client.post_form("/customers", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateCustomer<'_>,
+        idempotency_key: &str,
+    ) -> Response<Customer> {
+        client.post_form("/customers", &params, Some(idempotency_key))
     }
 
     /// Retrieves a Customer object.
@@ -168,7 +177,17 @@ impl Customer {
         id: &CustomerId,
         params: UpdateCustomer<'_>,
     ) -> Response<Customer> {
-        client.post_form(&format!("/customers/{}", id), &params)
+        client.post_form(&format!("/customers/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &CustomerId,
+        params: UpdateCustomer<'_>,
+        idempotency_key: &str,
+    ) -> Response<Customer> {
+        client.post_form(&format!("/customers/{}", id), &params, Some(idempotency_key))
     }
 
     /// Permanently deletes a customer.

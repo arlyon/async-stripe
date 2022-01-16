@@ -28,7 +28,16 @@ pub struct AccountLink {
 impl AccountLink {
     /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
     pub fn create(client: &Client, params: CreateAccountLink<'_>) -> Response<AccountLink> {
-        client.post_form("/account_links", &params)
+        client.post_form("/account_links", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateAccountLink<'_>,
+        idempotency_key: &str,
+    ) -> Response<AccountLink> {
+        client.post_form("/account_links", &params, Some(idempotency_key))
     }
 }
 

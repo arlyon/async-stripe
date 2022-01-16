@@ -216,7 +216,16 @@ impl PaymentIntent {
     /// You can read more about the different payment flows available via the Payment Intents API [here](https://stripe.com/docs/payments/payment-intents).  When `confirm=true` is used during creation, it is equivalent to creating and confirming the PaymentIntent in the same call.
     /// You may use any parameters available in the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) when `confirm=true` is supplied.
     pub fn create(client: &Client, params: CreatePaymentIntent<'_>) -> Response<PaymentIntent> {
-        client.post_form("/payment_intents", &params)
+        client.post_form("/payment_intents", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreatePaymentIntent<'_>,
+        idempotency_key: &str,
+    ) -> Response<PaymentIntent> {
+        client.post_form("/payment_intents", &params, Some(idempotency_key))
     }
 
     /// Retrieves the details of a PaymentIntent that has previously been created.
@@ -244,7 +253,17 @@ impl PaymentIntent {
         id: &PaymentIntentId,
         params: UpdatePaymentIntent<'_>,
     ) -> Response<PaymentIntent> {
-        client.post_form(&format!("/payment_intents/{}", id), &params)
+        client.post_form(&format!("/payment_intents/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &PaymentIntentId,
+        params: UpdatePaymentIntent<'_>,
+        idempotency_key: &str,
+    ) -> Response<PaymentIntent> {
+        client.post_form(&format!("/payment_intents/{}", id), &params, Some(idempotency_key))
     }
 }
 

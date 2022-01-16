@@ -43,7 +43,9 @@ full = [
   "orders",
   "sigma",
   "webhook-endpoints",
+  "idempotency",
 ]
+idempotency = []
 
 # stripe feature groups
 checkout = ["billing"]

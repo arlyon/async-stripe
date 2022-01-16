@@ -33,6 +33,17 @@ pub trait SetupIntentExt {
     where
         Self: Sized;
 
+    #[cfg(features = "idempotency")]
+    fn confirm_with_idempotency(
+        client: &Client,
+        setup_id: &SetupIntentId,
+        params: ConfirmSetupIntent,
+        idem_key: &str,
+    ) -> Response<Self>
+    where
+        Self: Sized;
+
+
     fn cancel(
         client: &Client,
         setup_id: &SetupIntentId,
@@ -52,8 +63,19 @@ impl SetupIntentExt for SetupIntent {
         setup_id: &SetupIntentId,
         params: ConfirmSetupIntent,
     ) -> Response<SetupIntent> {
-        client.post_form(&format!("/setup_intents/{}/confirm", setup_id), &params)
+        client.post_form(&format!("/setup_intents/{}/confirm", setup_id), &params, None)
     }
+
+    #[cfg(features = "idempotency")]
+    fn confirm_with_idempotency(
+        client: &Client,
+        setup_id: &SetupIntentId,
+        params: ConfirmSetupIntent,
+        idem_key: &str,
+    ) -> Response<SetupIntent> {
+        client.post_form(&format!("/setup_intents/{}/confirm", setup_id), &params, Some(idem_key))
+    }
+
 
     fn cancel(
         _client: &Client,

@@ -49,7 +49,16 @@ impl Token {
     ///
     /// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
     pub fn create(client: &Client, params: CreateToken<'_>) -> Response<Token> {
-        client.post_form("/tokens", &params)
+        client.post_form("/tokens", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateToken<'_>,
+        idempotency_key: &str,
+    ) -> Response<Token> {
+        client.post_form("/tokens", &params, Some(idempotency_key))
     }
 
     /// Retrieves the token with the given ID.

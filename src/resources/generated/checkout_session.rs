@@ -207,7 +207,16 @@ impl CheckoutSession {
 
     /// Creates a Session object.
     pub fn create(client: &Client, params: CreateCheckoutSession<'_>) -> Response<CheckoutSession> {
-        client.post_form("/checkout/sessions", &params)
+        client.post_form("/checkout/sessions", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateCheckoutSession<'_>,
+        idempotency_key: &str,
+    ) -> Response<CheckoutSession> {
+        client.post_form("/checkout/sessions", &params, Some(idempotency_key))
     }
 }
 

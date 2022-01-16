@@ -13,13 +13,14 @@ impl Customer {
         client: &Client,
         customer_id: &CustomerId,
         source: PaymentSourceParams,
+        idem_key: Option<&str>,
     ) -> Response<PaymentSource> {
         #[derive(Serialize)]
         struct AttachSource {
             source: PaymentSourceParams,
         }
         let params = AttachSource { source };
-        client.post_form(&format!("/customers/{}/sources", customer_id), params)
+        client.post_form(&format!("/customers/{}/sources", customer_id), params, idem_key)
     }
 
     /// Detaches a source from a customer
@@ -50,10 +51,12 @@ impl Customer {
         customer_id: &CustomerId,
         bank_account_id: &BankAccountId,
         params: VerifyBankAccount<'_>,
+        idem_key: Option<&str>,
     ) -> Response<BankAccount> {
         client.post_form(
             &format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id),
             params,
+            idem_key,
         )
     }
 }

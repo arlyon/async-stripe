@@ -85,7 +85,16 @@ impl Recipient {
     /// Creates a new `Recipient` object and verifies the recipient’s identity.
     /// Also verifies the recipient’s bank account information or debit card, if either is provided.
     pub fn create(client: &Client, params: CreateRecipient<'_>) -> Response<Recipient> {
-        client.post_form("/recipients", &params)
+        client.post_form("/recipients", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateRecipient<'_>,
+        idempotency_key: &str,
+    ) -> Response<Recipient> {
+        client.post_form("/recipients", &params, Some(idempotency_key))
     }
 
     /// Retrieves the details of an existing recipient.
@@ -105,7 +114,17 @@ impl Recipient {
         id: &RecipientId,
         params: UpdateRecipient<'_>,
     ) -> Response<Recipient> {
-        client.post_form(&format!("/recipients/{}", id), &params)
+        client.post_form(&format!("/recipients/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &RecipientId,
+        params: UpdateRecipient<'_>,
+        idempotency_key: &str,
+    ) -> Response<Recipient> {
+        client.post_form(&format!("/recipients/{}", id), &params, Some(idempotency_key))
     }
 
     /// Permanently deletes a recipient.

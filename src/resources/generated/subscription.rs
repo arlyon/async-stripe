@@ -203,7 +203,16 @@ impl Subscription {
     ///
     /// Each customer can have up to 500 active or scheduled subscriptions.
     pub fn create(client: &Client, params: CreateSubscription<'_>) -> Response<Subscription> {
-        client.post_form("/subscriptions", &params)
+        client.post_form("/subscriptions", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateSubscription<'_>,
+        idempotency_key: &str,
+    ) -> Response<Subscription> {
+        client.post_form("/subscriptions", &params, Some(idempotency_key))
     }
 
     /// Retrieves the subscription with the given ID.
@@ -224,7 +233,17 @@ impl Subscription {
         id: &SubscriptionId,
         params: UpdateSubscription<'_>,
     ) -> Response<Subscription> {
-        client.post_form(&format!("/subscriptions/{}", id), &params)
+        client.post_form(&format!("/subscriptions/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &SubscriptionId,
+        params: UpdateSubscription<'_>,
+        idempotency_key: &str,
+    ) -> Response<Subscription> {
+        client.post_form(&format!("/subscriptions/{}", id), &params, Some(idempotency_key))
     }
 
     /// Cancels a customer’s subscription immediately.

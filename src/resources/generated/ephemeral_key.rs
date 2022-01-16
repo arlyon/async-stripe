@@ -37,7 +37,16 @@ pub struct EphemeralKey {
 impl EphemeralKey {
     /// Creates a short-lived API key for a given resource.
     pub fn create(client: &Client, params: CreateEphemeralKey<'_>) -> Response<EphemeralKey> {
-        client.post_form("/ephemeral_keys", &params)
+        client.post_form("/ephemeral_keys", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateEphemeralKey<'_>,
+        idempotency_key: &str,
+    ) -> Response<EphemeralKey> {
+        client.post_form("/ephemeral_keys", &params, Some(idempotency_key))
     }
 
     /// Invalidates a short-lived API key for a given resource.

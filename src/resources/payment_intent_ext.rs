@@ -15,8 +15,13 @@ impl PaymentIntent {
         client: &Client,
         payment_intent_id: &str,
         params: PaymentIntentConfirmParams<'_>,
+        idem_key: Option<&str>,
     ) -> Response<PaymentIntent> {
-        client.post_form(&format!("/payment_intents/{}/confirm", payment_intent_id), params)
+        client.post_form(
+            &format!("/payment_intents/{}/confirm", payment_intent_id),
+            params,
+            idem_key,
+        )
     }
 
     /// Capture the funds of an existing uncaptured PaymentIntent where required_action="requires_capture".
@@ -26,8 +31,13 @@ impl PaymentIntent {
         client: &Client,
         payment_intent_id: &str,
         params: CapturePaymentIntent,
+        idem_key: Option<&str>,
     ) -> Response<PaymentIntent> {
-        client.post_form(&format!("/payment_intents/{}/capture", payment_intent_id), params)
+        client.post_form(
+            &format!("/payment_intents/{}/capture", payment_intent_id),
+            params,
+            idem_key,
+        )
     }
 
     /// A PaymentIntent object can be canceled when it is in one of these statuses: requires_source, requires_capture, requires_confirmation, requires_source_action.
@@ -37,8 +47,13 @@ impl PaymentIntent {
         client: &Client,
         payment_intent_id: &str,
         params: CancelPaymentIntent,
+        idem_key: Option<&str>,
     ) -> Response<PaymentIntent> {
-        client.post_form(&format!("/payment_intents/{}/cancel", payment_intent_id), params)
+        client.post_form(
+            &format!("/payment_intents/{}/cancel", payment_intent_id),
+            params,
+            idem_key,
+        )
     }
 }
 /// The resource representing a Stripe PaymentError object.

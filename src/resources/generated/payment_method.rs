@@ -124,7 +124,16 @@ impl PaymentMethod {
     ///
     /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.  Instead of creating a PaymentMethod directly, we recommend using the [PaymentIntents](https://stripe.com/docs/payments/accept-a-payment) API to accept a payment immediately or the [SetupIntent](https://stripe.com/docs/payments/save-and-reuse) API to collect payment method details ahead of a future payment.
     pub fn create(client: &Client, params: CreatePaymentMethod<'_>) -> Response<PaymentMethod> {
-        client.post_form("/payment_methods", &params)
+        client.post_form("/payment_methods", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreatePaymentMethod<'_>,
+        idempotency_key: &str,
+    ) -> Response<PaymentMethod> {
+        client.post_form("/payment_methods", &params, Some(idempotency_key))
     }
 
     /// Retrieves a PaymentMethod object.
@@ -144,7 +153,17 @@ impl PaymentMethod {
         id: &PaymentMethodId,
         params: UpdatePaymentMethod<'_>,
     ) -> Response<PaymentMethod> {
-        client.post_form(&format!("/payment_methods/{}", id), &params)
+        client.post_form(&format!("/payment_methods/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &PaymentMethodId,
+        params: UpdatePaymentMethod<'_>,
+        idempotency_key: &str,
+    ) -> Response<PaymentMethod> {
+        client.post_form(&format!("/payment_methods/{}", id), &params, Some(idempotency_key))
     }
 }
 

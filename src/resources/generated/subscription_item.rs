@@ -71,7 +71,16 @@ impl SubscriptionItem {
         client: &Client,
         params: CreateSubscriptionItem<'_>,
     ) -> Response<SubscriptionItem> {
-        client.post_form("/subscription_items", &params)
+        client.post_form("/subscription_items", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateSubscriptionItem<'_>,
+        idempotency_key: &str,
+    ) -> Response<SubscriptionItem> {
+        client.post_form("/subscription_items", &params, Some(idempotency_key))
     }
 
     /// Retrieves the subscription item with the given ID.
@@ -89,7 +98,17 @@ impl SubscriptionItem {
         id: &SubscriptionItemId,
         params: UpdateSubscriptionItem<'_>,
     ) -> Response<SubscriptionItem> {
-        client.post_form(&format!("/subscription_items/{}", id), &params)
+        client.post_form(&format!("/subscription_items/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &SubscriptionItemId,
+        params: UpdateSubscriptionItem<'_>,
+        idempotency_key: &str,
+    ) -> Response<SubscriptionItem> {
+        client.post_form(&format!("/subscription_items/{}", id), &params, Some(idempotency_key))
     }
 
     /// Deletes an item from the subscription.

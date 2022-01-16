@@ -130,7 +130,16 @@ impl Price {
     ///
     /// The price can be recurring or one-time.
     pub fn create(client: &Client, params: CreatePrice<'_>) -> Response<Price> {
-        client.post_form("/prices", &params)
+        client.post_form("/prices", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreatePrice<'_>,
+        idempotency_key: &str,
+    ) -> Response<Price> {
+        client.post_form("/prices", &params, Some(idempotency_key))
     }
 
     /// Retrieves the price with the given ID.
@@ -142,7 +151,17 @@ impl Price {
     ///
     /// Any parameters not provided are left unchanged.
     pub fn update(client: &Client, id: &PriceId, params: UpdatePrice<'_>) -> Response<Price> {
-        client.post_form(&format!("/prices/{}", id), &params)
+        client.post_form(&format!("/prices/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &PriceId,
+        params: UpdatePrice<'_>,
+        idempotency_key: &str,
+    ) -> Response<Price> {
+        client.post_form(&format!("/prices/{}", id), &params, Some(idempotency_key))
     }
 }
 

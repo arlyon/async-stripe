@@ -7,8 +7,8 @@ impl Payout {
     /// Cancels the payout.
     ///
     /// For more details see <https://stripe.com/docs/api/payouts/cancel>.
-    pub fn cancel(client: &Client, id: &PayoutId) -> Response<Payout> {
-        client.post(&format!("/payouts/{}/cancel", id))
+    pub fn cancel(client: &Client, id: &PayoutId, idem_key: Option<&str>) -> Response<Payout> {
+        client.post(&format!("/payouts/{}/cancel", id), idem_key)
     }
 }
 

@@ -56,7 +56,16 @@ impl BillingPortalSession {
         client: &Client,
         params: CreateBillingPortalSession<'_>,
     ) -> Response<BillingPortalSession> {
-        client.post_form("/billing_portal/sessions", &params)
+        client.post_form("/billing_portal/sessions", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateBillingPortalSession<'_>,
+        idempotency_key: &str,
+    ) -> Response<BillingPortalSession> {
+        client.post_form("/billing_portal/sessions", &params, Some(idempotency_key))
     }
 }
 

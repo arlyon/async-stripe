@@ -170,7 +170,16 @@ impl Source {
 
     /// Creates a new source object.
     pub fn create(client: &Client, params: CreateSource<'_>) -> Response<Source> {
-        client.post_form("/sources", &params)
+        client.post_form("/sources", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateSource<'_>,
+        idempotency_key: &str,
+    ) -> Response<Source> {
+        client.post_form("/sources", &params, Some(idempotency_key))
     }
 
     /// Retrieves an existing source object.
@@ -186,7 +195,17 @@ impl Source {
     /// It is also possible to update type specific information for selected payment methods.
     /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
     pub fn update(client: &Client, id: &SourceId, params: UpdateSource<'_>) -> Response<Source> {
-        client.post_form(&format!("/sources/{}", id), &params)
+        client.post_form(&format!("/sources/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &SourceId,
+        params: UpdateSource<'_>,
+        idempotency_key: &str,
+    ) -> Response<Source> {
+        client.post_form(&format!("/sources/{}", id), &params, Some(idempotency_key))
     }
 }
 

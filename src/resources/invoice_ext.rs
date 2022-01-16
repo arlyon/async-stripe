@@ -19,8 +19,12 @@ impl Invoice {
     /// Pays an invoice.
     ///
     /// For more details see <https://stripe.com/docs/api#pay_invoice.>.
-    pub fn pay(client: &Client, invoice_id: &InvoiceId) -> Response<Invoice> {
-        client.post(&format!("/invoices/{}/pay", invoice_id))
+    pub fn pay(
+        client: &Client,
+        invoice_id: &InvoiceId,
+        idem_key: Option<&str>,
+    ) -> Response<Invoice> {
+        client.post(&format!("/invoices/{}/pay", invoice_id), idem_key)
     }
 }
 

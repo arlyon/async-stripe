@@ -146,7 +146,17 @@ impl Plan {
     /// Any parameters not provided are left unchanged.
     /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
     pub fn update(client: &Client, id: &PlanId, params: UpdatePlan<'_>) -> Response<Plan> {
-        client.post_form(&format!("/plans/{}", id), &params)
+        client.post_form(&format!("/plans/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &PlanId,
+        params: UpdatePlan<'_>,
+        idempotency_key: &str,
+    ) -> Response<Plan> {
+        client.post_form(&format!("/plans/{}", id), &params, Some(idempotency_key))
     }
 
     /// Deleting plans means new subscribers can’t be added.

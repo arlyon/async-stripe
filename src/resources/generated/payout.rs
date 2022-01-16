@@ -123,7 +123,16 @@ impl Payout {
     /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the payout amount, or you’ll receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though everything else will occur as if in live mode.  If you are creating a manual payout on a Stripe account that uses multiple payment source types, you’ll need to specify the source type balance that the payout should draw from.
     /// The [balance object](https://stripe.com/docs/api#balance_object) details available and pending amounts by source type.
     pub fn create(client: &Client, params: CreatePayout<'_>) -> Response<Payout> {
-        client.post_form("/payouts", &params)
+        client.post_form("/payouts", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreatePayout<'_>,
+        idempotency_key: &str,
+    ) -> Response<Payout> {
+        client.post_form("/payouts", &params, Some(idempotency_key))
     }
 
     /// Retrieves the details of an existing payout.
@@ -138,7 +147,17 @@ impl Payout {
     /// Any parameters not provided will be left unchanged.
     /// This request accepts only the metadata as arguments.
     pub fn update(client: &Client, id: &PayoutId, params: UpdatePayout<'_>) -> Response<Payout> {
-        client.post_form(&format!("/payouts/{}", id), &params)
+        client.post_form(&format!("/payouts/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &PayoutId,
+        params: UpdatePayout<'_>,
+        idempotency_key: &str,
+    ) -> Response<Payout> {
+        client.post_form(&format!("/payouts/{}", id), &params, Some(idempotency_key))
     }
 }
 

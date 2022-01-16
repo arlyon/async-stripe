@@ -1931,8 +1931,20 @@ fn gen_impl_requests(
                 out.push_str("> {\n");
                 out.push_str("        client.post_form(\"/");
                 out.push_str(&segments.join("/"));
-                out.push_str("\", &params)\n");
+                out.push_str("\", &params, None)\n");
+                out.push_str("    }\n\n");
+
+                out.push_str("    #[cfg(feature = \"idempotency\")]\n");
+                out.push_str("    pub fn create_with_idempotency(client: &Client, params: ");
+                out.push_str(&params_name);
+                out.push_str("<'_>, idempotency_key: &str) -> Response<");
+                out.push_str(&return_type);
+                out.push_str("> {\n");
+                out.push_str("        client.post_form(\"/");
+                out.push_str(&segments.join("/"));
+                out.push_str("\", &params, Some(idempotency_key))\n");
                 out.push_str("    }");
+
                 methods.insert(MethodTypes::Create, out);
             } else if !methods.contains_key(&MethodTypes::Update)
                 && parameter_count == 1
@@ -1987,8 +1999,22 @@ fn gen_impl_requests(
                     out.push_str("> {\n");
                     out.push_str("        client.post_form(");
                     out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
-                    out.push_str(", &params)\n");
+                    out.push_str(", &params, None)\n");
+                    out.push_str("    }\n\n");
+
+                    out.push_str("    #[cfg(feature = \"idempotency\")]\n");
+                    out.push_str("    pub fn update_with_idempotency(client: &Client, id: &");
+                    out.push_str(&id_type);
+                    out.push_str(", params: ");
+                    out.push_str(&params_name);
+                    out.push_str("<'_>, idempotency_key: &str) -> Response<");
+                    out.push_str(&return_type);
+                    out.push_str("> {\n");
+                    out.push_str("        client.post_form(");
+                    out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
+                    out.push_str(", &params, Some(idempotency_key))\n");
                     out.push_str("    }");
+
                     methods.insert(MethodTypes::Update, out);
                 }
             }

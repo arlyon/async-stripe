@@ -82,7 +82,16 @@ impl TaxRate {
 
     /// Creates a new tax rate.
     pub fn create(client: &Client, params: CreateTaxRate<'_>) -> Response<TaxRate> {
-        client.post_form("/tax_rates", &params)
+        client.post_form("/tax_rates", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateTaxRate<'_>,
+        idempotency_key: &str,
+    ) -> Response<TaxRate> {
+        client.post_form("/tax_rates", &params, Some(idempotency_key))
     }
 
     /// Retrieves a tax rate with the given ID.
@@ -92,7 +101,17 @@ impl TaxRate {
 
     /// Updates an existing tax rate.
     pub fn update(client: &Client, id: &TaxRateId, params: UpdateTaxRate<'_>) -> Response<TaxRate> {
-        client.post_form(&format!("/tax_rates/{}", id), &params)
+        client.post_form(&format!("/tax_rates/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &TaxRateId,
+        params: UpdateTaxRate<'_>,
+        idempotency_key: &str,
+    ) -> Response<TaxRate> {
+        client.post_form(&format!("/tax_rates/{}", id), &params, Some(idempotency_key))
     }
 }
 

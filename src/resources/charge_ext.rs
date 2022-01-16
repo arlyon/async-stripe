@@ -41,8 +41,9 @@ impl Charge {
         client: &Client,
         charge_id: &ChargeId,
         params: CaptureCharge<'_>,
+        idem_key: Option<&str>,
     ) -> Response<Charge> {
-        client.post_form(&format!("/charges/{}/capture", charge_id), params)
+        client.post_form(&format!("/charges/{}/capture", charge_id), params, idem_key)
     }
 }
 

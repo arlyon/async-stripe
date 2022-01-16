@@ -102,7 +102,16 @@ impl Product {
 
     /// Creates a new product object.
     pub fn create(client: &Client, params: CreateProduct<'_>) -> Response<Product> {
-        client.post_form("/products", &params)
+        client.post_form("/products", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateProduct<'_>,
+        idempotency_key: &str,
+    ) -> Response<Product> {
+        client.post_form("/products", &params, Some(idempotency_key))
     }
 
     /// Retrieves the details of an existing product.
@@ -116,7 +125,17 @@ impl Product {
     ///
     /// Any parameters not provided will be left unchanged.
     pub fn update(client: &Client, id: &ProductId, params: UpdateProduct<'_>) -> Response<Product> {
-        client.post_form(&format!("/products/{}", id), &params)
+        client.post_form(&format!("/products/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &ProductId,
+        params: UpdateProduct<'_>,
+        idempotency_key: &str,
+    ) -> Response<Product> {
+        client.post_form(&format!("/products/{}", id), &params, Some(idempotency_key))
     }
 
     /// Delete a product.

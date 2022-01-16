@@ -231,7 +231,16 @@ impl Charge {
     /// If your API key is in test mode, the supplied payment source (e.g., card) won’t actually be charged, although everything else will occur as if in live mode.
     /// (Stripe assumes that the charge would have completed successfully).
     pub fn create(client: &Client, params: CreateCharge<'_>) -> Response<Charge> {
-        client.post_form("/charges", &params)
+        client.post_form("/charges", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateCharge<'_>,
+        idempotency_key: &str,
+    ) -> Response<Charge> {
+        client.post_form("/charges", &params, Some(idempotency_key))
     }
 
     /// Retrieves the details of a charge that has previously been created.
@@ -246,7 +255,17 @@ impl Charge {
     ///
     /// Any parameters not provided will be left unchanged.
     pub fn update(client: &Client, id: &ChargeId, params: UpdateCharge<'_>) -> Response<Charge> {
-        client.post_form(&format!("/charges/{}", id), &params)
+        client.post_form(&format!("/charges/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &ChargeId,
+        params: UpdateCharge<'_>,
+        idempotency_key: &str,
+    ) -> Response<Charge> {
+        client.post_form(&format!("/charges/{}", id), &params, Some(idempotency_key))
     }
 }
 
@@ -2118,13 +2137,6 @@ pub struct CustomerPaymentSourceCard {
     pub number: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub object: Option<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
-pub enum DestinationUnion {
-    DestinationSpecs(DestinationSpecs),
-    Alternate1(String),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

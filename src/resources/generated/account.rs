@@ -122,7 +122,16 @@ impl Account {
     /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
     /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
     pub fn create(client: &Client, params: CreateAccount<'_>) -> Response<Account> {
-        client.post_form("/accounts", &params)
+        client.post_form("/accounts", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateAccount<'_>,
+        idempotency_key: &str,
+    ) -> Response<Account> {
+        client.post_form("/accounts", &params, Some(idempotency_key))
     }
 
     /// Retrieves the details of an account.
@@ -137,7 +146,17 @@ impl Account {
     /// (These are marked **Custom Only** below.) Parameters marked **Custom and Express** are not supported for Standard accounts.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
     /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
     pub fn update(client: &Client, id: &AccountId, params: UpdateAccount<'_>) -> Response<Account> {
-        client.post_form(&format!("/accounts/{}", id), &params)
+        client.post_form(&format!("/accounts/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &AccountId,
+        params: UpdateAccount<'_>,
+        idempotency_key: &str,
+    ) -> Response<Account> {
+        client.post_form(&format!("/accounts/{}", id), &params, Some(idempotency_key))
     }
 
     /// With [Connect](https://stripe.com/docs/connect), you can delete accounts you manage.

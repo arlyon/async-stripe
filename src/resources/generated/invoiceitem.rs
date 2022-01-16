@@ -130,7 +130,16 @@ impl InvoiceItem {
     ///
     /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
     pub fn create(client: &Client, params: CreateInvoiceItem<'_>) -> Response<InvoiceItem> {
-        client.post_form("/invoiceitems", &params)
+        client.post_form("/invoiceitems", &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn create_with_idempotency(
+        client: &Client,
+        params: CreateInvoiceItem<'_>,
+        idempotency_key: &str,
+    ) -> Response<InvoiceItem> {
+        client.post_form("/invoiceitems", &params, Some(idempotency_key))
     }
 
     /// Retrieves the invoice item with the given ID.
@@ -146,7 +155,17 @@ impl InvoiceItem {
         id: &InvoiceItemId,
         params: UpdateInvoiceItem<'_>,
     ) -> Response<InvoiceItem> {
-        client.post_form(&format!("/invoiceitems/{}", id), &params)
+        client.post_form(&format!("/invoiceitems/{}", id), &params, None)
+    }
+
+    #[cfg(feature = "idempotency")]
+    pub fn update_with_idempotency(
+        client: &Client,
+        id: &InvoiceItemId,
+        params: UpdateInvoiceItem<'_>,
+        idempotency_key: &str,
+    ) -> Response<InvoiceItem> {
+        client.post_form(&format!("/invoiceitems/{}", id), &params, Some(idempotency_key))
     }
 
     /// Deletes an invoice item, removing it from an invoice.
