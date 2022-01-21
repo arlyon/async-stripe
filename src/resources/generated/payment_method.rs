@@ -725,6 +725,8 @@ impl<'a> CreatePaymentMethod<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPaymentMethods<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
+    ///
+    /// If not provided, the response list will be empty.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
 
