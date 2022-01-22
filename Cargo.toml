@@ -77,6 +77,7 @@ runtime-async-std-surf = ["async-std", "surf", "async"]
 
 [dependencies]
 async-std = { version = "1.9", optional = true }
+bumpalo = {version = "=3.8.0", optional = true } # to avoid msrv bump
 chrono = { version = "0.4", features = ["serde"], optional = true }
 thiserror = "1.0.24"
 hyper = { version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true }
