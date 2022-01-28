@@ -144,6 +144,7 @@ impl Account {
     ///
     /// Accounts created using test-mode keys can be deleted at any time.
     ///
+    /// Standard accounts created using live-mode keys cannot be deleted.
     /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
     pub fn delete(client: &Client, id: &AccountId) -> Response<Deleted<AccountId>> {
         client.delete(&format!("/accounts/{}", id))
