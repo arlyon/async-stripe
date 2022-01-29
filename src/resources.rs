@@ -149,6 +149,7 @@ pub use {
 pub use {
     generated::checkout::{
         checkout_session::*,
+        payment_link::*,
         item::*
     },
 };

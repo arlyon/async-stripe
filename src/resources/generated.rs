@@ -55,6 +55,7 @@ pub mod payment {
 pub mod checkout {
     pub mod checkout_session;
     pub mod item;
+    pub mod payment_link;
 }
 
 #[path = "generated"]
