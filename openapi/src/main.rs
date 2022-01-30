@@ -676,8 +676,19 @@ fn gen_inferred_params(
             let required = param["required"].as_bool() == Some(true);
             match param_name {
                 // TODO: Handle these unusual params
-                "bank_account" | "destination" | "usage" => continue,
-                //"destination" => {
+                "bank_account" | "usage" => continue,
+                "destination" => {
+                    print_doc(out);
+                    gen_multitype_params(
+                        &params.rust_type,
+                        param_name,
+                        param,
+                        &mut initializers,
+                        required,
+                        state,
+                        out,
+                    );
+                }
                 "card" => {
                     print_doc(out);
                     gen_multitype_params(

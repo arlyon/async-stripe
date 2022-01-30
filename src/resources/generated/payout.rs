@@ -169,6 +169,12 @@ pub struct CreatePayout<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
 
+    /// The ID of a bank account or a card to send the payout to.
+    ///
+    /// If no destination is supplied, the default external account for the specified currency will be used.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination: Option<String>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -212,6 +218,7 @@ impl<'a> CreatePayout<'a> {
             amount,
             currency,
             description: Default::default(),
+            destination: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
             method: Default::default(),
@@ -229,6 +236,10 @@ pub struct ListPayouts<'a> {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
+
+    /// The ID of an external account - only return payouts sent to this external account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination: Option<String>,
 
     /// A cursor for use in pagination.
     ///
@@ -264,6 +275,7 @@ impl<'a> ListPayouts<'a> {
         ListPayouts {
             arrival_date: Default::default(),
             created: Default::default(),
+            destination: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
