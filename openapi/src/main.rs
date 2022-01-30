@@ -119,7 +119,7 @@ fn main() -> Result<()> {
                 meta.schema_to_id_type(schema).unwrap_or_else(|| ("()".into(), CopyOrClone::Copy));
             let struct_type = meta.schema_to_rust_type(schema);
             out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
-            out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+            out.push_str("#[derive(Clone, Debug, Default, Deserialize, Serialize)]\n");
             out.push_str(&format!("pub struct {} {{\n", struct_type));
             out.push_str(&format!("\tpub id: {},\n", id_type));
             out.push_str("}\n\n");
@@ -380,7 +380,7 @@ fn gen_struct(
         out.push_str(&doc_url);
         out.push_str(">\n");
     }
-    out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+    out.push_str("#[derive(Clone, Debug, Default, Deserialize, Serialize)]\n");
     out.push_str("pub struct ");
     out.push_str(&struct_name);
     out.push_str(" {\n");
@@ -511,7 +511,7 @@ fn gen_generated_schemas(
     {
         let struct_name = meta.schema_to_rust_type(&schema_name);
         out.push('\n');
-        out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+        out.push_str("#[derive(Clone, Debug, Default, Deserialize, Serialize)]\n");
         out.push_str("pub struct ");
         out.push_str(&struct_name);
         out.push_str(" {\n");
@@ -1084,7 +1084,7 @@ fn gen_emitted_structs(
                 }
             };
             out.push('\n');
-            out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+            out.push_str("#[derive(Clone, Debug, Default, Deserialize, Serialize)]\n");
             out.push_str("pub struct ");
             out.push_str(&struct_name.to_camel_case());
             out.push_str(" {\n");
