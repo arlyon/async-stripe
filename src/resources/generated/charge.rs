@@ -1227,6 +1227,14 @@ pub struct CreateCharge<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
 
+    #[serde(rename = "destination")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination0: Option<DestinationSpecs>,
+
+    #[serde(rename = "destination")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination1: Option<String>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -1306,6 +1314,8 @@ impl<'a> CreateCharge<'a> {
             currency: Default::default(),
             customer: Default::default(),
             description: Default::default(),
+            destination0: Default::default(),
+            destination1: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
             on_behalf_of: Default::default(),
@@ -2105,4 +2115,11 @@ pub struct CustomerPaymentSourceCard {
     pub number: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub object: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DestinationSpecs {
+    pub account: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i32>,
 }
