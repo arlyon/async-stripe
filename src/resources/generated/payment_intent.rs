@@ -2128,7 +2128,7 @@ pub enum PaymentIntentPaymentMethodOptionsAuBecsDebitUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsBacsDebitUnion {
     PaymentMethodOptionsBacsDebit(PaymentMethodOptionsBacsDebit),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2178,19 +2178,9 @@ pub enum PaymentIntentPaymentMethodOptionsCardUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsEpsUnion {
     PaymentIntentPaymentMethodOptionsEps(PaymentIntentPaymentMethodOptionsEps),
-    #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
-    PaymentIntentTypeSpecificPaymentMethodOptionsClient(
-        PaymentIntentTypeSpecificPaymentMethodOptionsClient,
-    ),
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
-pub enum PaymentIntentPaymentMethodOptionsFpxUnion {
-    PaymentMethodOptionsFpx(PaymentMethodOptionsFpx),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
     PaymentIntentTypeSpecificPaymentMethodOptionsClient(
         PaymentIntentTypeSpecificPaymentMethodOptionsClient,
@@ -2211,16 +2201,6 @@ pub enum PaymentIntentPaymentMethodOptionsFpxUnion {
 #[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsGiropayUnion {
     PaymentMethodOptionsGiropay(PaymentMethodOptionsGiropay),
-    #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
-    PaymentIntentTypeSpecificPaymentMethodOptionsClient(
-        PaymentIntentTypeSpecificPaymentMethodOptionsClient,
-    ),
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
-pub enum PaymentIntentPaymentMethodOptionsGrabpayUnion {
-    PaymentMethodOptionsGrabpay(PaymentMethodOptionsGrabpay),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
     PaymentIntentTypeSpecificPaymentMethodOptionsClient(
         PaymentIntentTypeSpecificPaymentMethodOptionsClient,
