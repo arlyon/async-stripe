@@ -8,8 +8,9 @@ use crate::config::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentMethodOptionsBoleto,
-    PaymentMethodOptionsOxxo, SetupIntent, Shipping, ShippingRate, Subscription, TaxRate,
+    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentLink,
+    PaymentMethodOptionsBoleto, PaymentMethodOptionsOxxo, SetupIntent, Shipping, ShippingRate,
+    Subscription, TaxRate,
 };
 
 /// The resource representing a Stripe "Session".
@@ -73,6 +74,10 @@ pub struct CheckoutSession {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Box<Expandable<Customer>>>,
 
+    /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_creation: Option<Box<CheckoutSessionCustomerCreation>>,
+
     /// The customer details including the customer's tax exempt status and the customer's tax IDs.
     ///
     /// Only present on Sessions in `payment` or `subscription` mode.
@@ -117,6 +122,10 @@ pub struct CheckoutSession {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<Box<Expandable<PaymentIntent>>>,
 
+    /// The ID of the Payment Link that created this Session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_link: Option<Box<Expandable<PaymentLink>>>,
+
     /// Payment-method-specific configuration for the PaymentIntent or SetupIntent of this CheckoutSession.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<Box<CheckoutSessionPaymentMethodOptions>>,
@@ -147,7 +156,8 @@ pub struct CheckoutSession {
 
     /// When set, provides configuration for Checkout to collect a shipping address from a customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_address_collection: Option<Box<ShippingAddressCollection>>,
+    pub shipping_address_collection:
+        Option<Box<PaymentPagesCheckoutSessionShippingAddressCollection>>,
 
     /// The shipping rate options applied to this Session.
     pub shipping_options: Vec<PaymentPagesCheckoutSessionShippingOption>,
@@ -351,6 +361,16 @@ pub struct PaymentPagesCheckoutSessionPhoneNumberCollection {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionShippingAddressCollection {
+    /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
+    /// shipping locations.
+    ///
+    /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
+    pub allowed_countries:
+        Vec<PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionShippingOption {
     /// A non-negative integer in cents representing how much to charge.
     pub shipping_amount: i64,
@@ -361,7 +381,7 @@ pub struct PaymentPagesCheckoutSessionShippingOption {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
 
@@ -417,15 +437,6 @@ pub struct LineItemsTaxAmount {
     pub rate: TaxRate,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct ShippingAddressCollection {
-    /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
-    /// shipping locations.
-    ///
-    /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
-    pub allowed_countries: Vec<ShippingAddressCollectionAllowedCountries>,
-}
-
 /// The parameters for `CheckoutSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateCheckoutSession<'a> {
@@ -462,9 +473,20 @@ pub struct CreateCheckoutSession<'a> {
     ///
     /// In `payment` mode, the customer’s most recent card payment method will be used to prefill the email, name, card details, and billing address on the Checkout page.
     /// In `subscription` mode, the customer’s [default payment method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) will be used if it’s a card, and otherwise the most recent card will be used.
-    /// A valid billing address is required for Checkout to prefill the customer's card details.  If the Customer already has a valid [email](https://stripe.com/docs/api/customers/object#customer_object-email) set, the email will be prefilled and not editable in Checkout. If the Customer does not have a valid `email`, Checkout will set the email entered during the session on the Customer.  If blank for Checkout Sessions in `payment` or `subscription` mode, Checkout will create a new Customer object based on information provided during the payment flow.  You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
+    /// A valid billing address, billing name and billing email are required on the payment method for Checkout to prefill the customer's card details.  If the Customer already has a valid [email](https://stripe.com/docs/api/customers/object#customer_object-email) set, the email will be prefilled and not editable in Checkout. If the Customer does not have a valid `email`, Checkout will set the email entered during the session on the Customer.  If blank for Checkout Sessions in `payment` or `subscription` mode, Checkout will create a new Customer object based on information provided during the payment flow.  You can set [`payment_intent_data.setup_future_usage`](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_intent_data-setup_future_usage) to have Checkout automatically attach the payment method to the Customer you pass in for future reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
+
+    /// Configure whether a Checkout Session creates a [Customer](https://stripe.com/docs/api/customers) during Session confirmation.
+    ///
+    /// When a Customer is not created, you can still retrieve email, address, and other customer data entered in Checkout
+    /// with [customer_details](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-customer_details).
+    ///
+    /// Sessions that do not create Customers will instead create [Guest Customers](https://support.stripe.com/questions/guest-customer-faq) in the Dashboard.
+    ///
+    /// Can only be set in `payment` and `setup` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_creation: Option<CheckoutSessionCustomerCreation>,
 
     /// If provided, this value will be used when the Customer object is created.
     /// If not provided, customers will be asked to enter their email address.
@@ -599,6 +621,7 @@ impl<'a> CreateCheckoutSession<'a> {
             client_reference_id: Default::default(),
             consent_collection: Default::default(),
             customer: Default::default(),
+            customer_creation: Default::default(),
             customer_email: Default::default(),
             customer_update: Default::default(),
             discounts: Default::default(),
@@ -1239,6 +1262,35 @@ impl AsRef<str> for CheckoutSessionBillingAddressCollection {
 }
 
 impl std::fmt::Display for CheckoutSessionBillingAddressCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutSession`'s `customer_creation` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutSessionCustomerCreation {
+    Always,
+    IfRequired,
+}
+
+impl CheckoutSessionCustomerCreation {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutSessionCustomerCreation::Always => "always",
+            CheckoutSessionCustomerCreation::IfRequired => "if_required",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutSessionCustomerCreation {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutSessionCustomerCreation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
@@ -2945,119 +2997,10 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
     }
 }
 
-/// An enum representing the possible values of an `PaymentPagesCheckoutSessionTaxId`'s `type` field.
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionShippingAddressCollection`'s `allowed_countries` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
-pub enum PaymentPagesCheckoutSessionTaxIdType {
-    AeTrn,
-    AuAbn,
-    AuArn,
-    BrCnpj,
-    BrCpf,
-    CaBn,
-    CaGstHst,
-    CaPstBc,
-    CaPstMb,
-    CaPstSk,
-    CaQst,
-    ChVat,
-    ClTin,
-    EsCif,
-    EuVat,
-    GbVat,
-    GeVat,
-    HkBr,
-    IdNpwp,
-    IlVat,
-    InGst,
-    JpCn,
-    JpRn,
-    KrBrn,
-    LiUid,
-    MxRfc,
-    MyFrp,
-    MyItn,
-    MySst,
-    NoVat,
-    NzGst,
-    RuInn,
-    RuKpp,
-    SaVat,
-    SgGst,
-    SgUen,
-    ThVat,
-    TwVat,
-    UaVat,
-    Unknown,
-    UsEin,
-    ZaVat,
-}
-
-impl PaymentPagesCheckoutSessionTaxIdType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            PaymentPagesCheckoutSessionTaxIdType::AeTrn => "ae_trn",
-            PaymentPagesCheckoutSessionTaxIdType::AuAbn => "au_abn",
-            PaymentPagesCheckoutSessionTaxIdType::AuArn => "au_arn",
-            PaymentPagesCheckoutSessionTaxIdType::BrCnpj => "br_cnpj",
-            PaymentPagesCheckoutSessionTaxIdType::BrCpf => "br_cpf",
-            PaymentPagesCheckoutSessionTaxIdType::CaBn => "ca_bn",
-            PaymentPagesCheckoutSessionTaxIdType::CaGstHst => "ca_gst_hst",
-            PaymentPagesCheckoutSessionTaxIdType::CaPstBc => "ca_pst_bc",
-            PaymentPagesCheckoutSessionTaxIdType::CaPstMb => "ca_pst_mb",
-            PaymentPagesCheckoutSessionTaxIdType::CaPstSk => "ca_pst_sk",
-            PaymentPagesCheckoutSessionTaxIdType::CaQst => "ca_qst",
-            PaymentPagesCheckoutSessionTaxIdType::ChVat => "ch_vat",
-            PaymentPagesCheckoutSessionTaxIdType::ClTin => "cl_tin",
-            PaymentPagesCheckoutSessionTaxIdType::EsCif => "es_cif",
-            PaymentPagesCheckoutSessionTaxIdType::EuVat => "eu_vat",
-            PaymentPagesCheckoutSessionTaxIdType::GbVat => "gb_vat",
-            PaymentPagesCheckoutSessionTaxIdType::GeVat => "ge_vat",
-            PaymentPagesCheckoutSessionTaxIdType::HkBr => "hk_br",
-            PaymentPagesCheckoutSessionTaxIdType::IdNpwp => "id_npwp",
-            PaymentPagesCheckoutSessionTaxIdType::IlVat => "il_vat",
-            PaymentPagesCheckoutSessionTaxIdType::InGst => "in_gst",
-            PaymentPagesCheckoutSessionTaxIdType::JpCn => "jp_cn",
-            PaymentPagesCheckoutSessionTaxIdType::JpRn => "jp_rn",
-            PaymentPagesCheckoutSessionTaxIdType::KrBrn => "kr_brn",
-            PaymentPagesCheckoutSessionTaxIdType::LiUid => "li_uid",
-            PaymentPagesCheckoutSessionTaxIdType::MxRfc => "mx_rfc",
-            PaymentPagesCheckoutSessionTaxIdType::MyFrp => "my_frp",
-            PaymentPagesCheckoutSessionTaxIdType::MyItn => "my_itn",
-            PaymentPagesCheckoutSessionTaxIdType::MySst => "my_sst",
-            PaymentPagesCheckoutSessionTaxIdType::NoVat => "no_vat",
-            PaymentPagesCheckoutSessionTaxIdType::NzGst => "nz_gst",
-            PaymentPagesCheckoutSessionTaxIdType::RuInn => "ru_inn",
-            PaymentPagesCheckoutSessionTaxIdType::RuKpp => "ru_kpp",
-            PaymentPagesCheckoutSessionTaxIdType::SaVat => "sa_vat",
-            PaymentPagesCheckoutSessionTaxIdType::SgGst => "sg_gst",
-            PaymentPagesCheckoutSessionTaxIdType::SgUen => "sg_uen",
-            PaymentPagesCheckoutSessionTaxIdType::ThVat => "th_vat",
-            PaymentPagesCheckoutSessionTaxIdType::TwVat => "tw_vat",
-            PaymentPagesCheckoutSessionTaxIdType::UaVat => "ua_vat",
-            PaymentPagesCheckoutSessionTaxIdType::Unknown => "unknown",
-            PaymentPagesCheckoutSessionTaxIdType::UsEin => "us_ein",
-            PaymentPagesCheckoutSessionTaxIdType::ZaVat => "za_vat",
-        }
-    }
-}
-
-impl AsRef<str> for PaymentPagesCheckoutSessionTaxIdType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PaymentPagesCheckoutSessionTaxIdType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `ShippingAddressCollection`'s `allowed_countries` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum ShippingAddressCollectionAllowedCountries {
+pub enum PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
     #[serde(rename = "AC")]
     Ac,
     #[serde(rename = "AD")]
@@ -3534,257 +3477,368 @@ pub enum ShippingAddressCollectionAllowedCountries {
     Zz,
 }
 
-impl ShippingAddressCollectionAllowedCountries {
+impl PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
     pub fn as_str(self) -> &'static str {
         match self {
-            ShippingAddressCollectionAllowedCountries::Ac => "AC",
-            ShippingAddressCollectionAllowedCountries::Ad => "AD",
-            ShippingAddressCollectionAllowedCountries::Ae => "AE",
-            ShippingAddressCollectionAllowedCountries::Af => "AF",
-            ShippingAddressCollectionAllowedCountries::Ag => "AG",
-            ShippingAddressCollectionAllowedCountries::Ai => "AI",
-            ShippingAddressCollectionAllowedCountries::Al => "AL",
-            ShippingAddressCollectionAllowedCountries::Am => "AM",
-            ShippingAddressCollectionAllowedCountries::Ao => "AO",
-            ShippingAddressCollectionAllowedCountries::Aq => "AQ",
-            ShippingAddressCollectionAllowedCountries::Ar => "AR",
-            ShippingAddressCollectionAllowedCountries::At => "AT",
-            ShippingAddressCollectionAllowedCountries::Au => "AU",
-            ShippingAddressCollectionAllowedCountries::Aw => "AW",
-            ShippingAddressCollectionAllowedCountries::Ax => "AX",
-            ShippingAddressCollectionAllowedCountries::Az => "AZ",
-            ShippingAddressCollectionAllowedCountries::Ba => "BA",
-            ShippingAddressCollectionAllowedCountries::Bb => "BB",
-            ShippingAddressCollectionAllowedCountries::Bd => "BD",
-            ShippingAddressCollectionAllowedCountries::Be => "BE",
-            ShippingAddressCollectionAllowedCountries::Bf => "BF",
-            ShippingAddressCollectionAllowedCountries::Bg => "BG",
-            ShippingAddressCollectionAllowedCountries::Bh => "BH",
-            ShippingAddressCollectionAllowedCountries::Bi => "BI",
-            ShippingAddressCollectionAllowedCountries::Bj => "BJ",
-            ShippingAddressCollectionAllowedCountries::Bl => "BL",
-            ShippingAddressCollectionAllowedCountries::Bm => "BM",
-            ShippingAddressCollectionAllowedCountries::Bn => "BN",
-            ShippingAddressCollectionAllowedCountries::Bo => "BO",
-            ShippingAddressCollectionAllowedCountries::Bq => "BQ",
-            ShippingAddressCollectionAllowedCountries::Br => "BR",
-            ShippingAddressCollectionAllowedCountries::Bs => "BS",
-            ShippingAddressCollectionAllowedCountries::Bt => "BT",
-            ShippingAddressCollectionAllowedCountries::Bv => "BV",
-            ShippingAddressCollectionAllowedCountries::Bw => "BW",
-            ShippingAddressCollectionAllowedCountries::By => "BY",
-            ShippingAddressCollectionAllowedCountries::Bz => "BZ",
-            ShippingAddressCollectionAllowedCountries::Ca => "CA",
-            ShippingAddressCollectionAllowedCountries::Cd => "CD",
-            ShippingAddressCollectionAllowedCountries::Cf => "CF",
-            ShippingAddressCollectionAllowedCountries::Cg => "CG",
-            ShippingAddressCollectionAllowedCountries::Ch => "CH",
-            ShippingAddressCollectionAllowedCountries::Ci => "CI",
-            ShippingAddressCollectionAllowedCountries::Ck => "CK",
-            ShippingAddressCollectionAllowedCountries::Cl => "CL",
-            ShippingAddressCollectionAllowedCountries::Cm => "CM",
-            ShippingAddressCollectionAllowedCountries::Cn => "CN",
-            ShippingAddressCollectionAllowedCountries::Co => "CO",
-            ShippingAddressCollectionAllowedCountries::Cr => "CR",
-            ShippingAddressCollectionAllowedCountries::Cv => "CV",
-            ShippingAddressCollectionAllowedCountries::Cw => "CW",
-            ShippingAddressCollectionAllowedCountries::Cy => "CY",
-            ShippingAddressCollectionAllowedCountries::Cz => "CZ",
-            ShippingAddressCollectionAllowedCountries::De => "DE",
-            ShippingAddressCollectionAllowedCountries::Dj => "DJ",
-            ShippingAddressCollectionAllowedCountries::Dk => "DK",
-            ShippingAddressCollectionAllowedCountries::Dm => "DM",
-            ShippingAddressCollectionAllowedCountries::Do => "DO",
-            ShippingAddressCollectionAllowedCountries::Dz => "DZ",
-            ShippingAddressCollectionAllowedCountries::Ec => "EC",
-            ShippingAddressCollectionAllowedCountries::Ee => "EE",
-            ShippingAddressCollectionAllowedCountries::Eg => "EG",
-            ShippingAddressCollectionAllowedCountries::Eh => "EH",
-            ShippingAddressCollectionAllowedCountries::Er => "ER",
-            ShippingAddressCollectionAllowedCountries::Es => "ES",
-            ShippingAddressCollectionAllowedCountries::Et => "ET",
-            ShippingAddressCollectionAllowedCountries::Fi => "FI",
-            ShippingAddressCollectionAllowedCountries::Fj => "FJ",
-            ShippingAddressCollectionAllowedCountries::Fk => "FK",
-            ShippingAddressCollectionAllowedCountries::Fo => "FO",
-            ShippingAddressCollectionAllowedCountries::Fr => "FR",
-            ShippingAddressCollectionAllowedCountries::Ga => "GA",
-            ShippingAddressCollectionAllowedCountries::Gb => "GB",
-            ShippingAddressCollectionAllowedCountries::Gd => "GD",
-            ShippingAddressCollectionAllowedCountries::Ge => "GE",
-            ShippingAddressCollectionAllowedCountries::Gf => "GF",
-            ShippingAddressCollectionAllowedCountries::Gg => "GG",
-            ShippingAddressCollectionAllowedCountries::Gh => "GH",
-            ShippingAddressCollectionAllowedCountries::Gi => "GI",
-            ShippingAddressCollectionAllowedCountries::Gl => "GL",
-            ShippingAddressCollectionAllowedCountries::Gm => "GM",
-            ShippingAddressCollectionAllowedCountries::Gn => "GN",
-            ShippingAddressCollectionAllowedCountries::Gp => "GP",
-            ShippingAddressCollectionAllowedCountries::Gq => "GQ",
-            ShippingAddressCollectionAllowedCountries::Gr => "GR",
-            ShippingAddressCollectionAllowedCountries::Gs => "GS",
-            ShippingAddressCollectionAllowedCountries::Gt => "GT",
-            ShippingAddressCollectionAllowedCountries::Gu => "GU",
-            ShippingAddressCollectionAllowedCountries::Gw => "GW",
-            ShippingAddressCollectionAllowedCountries::Gy => "GY",
-            ShippingAddressCollectionAllowedCountries::Hk => "HK",
-            ShippingAddressCollectionAllowedCountries::Hn => "HN",
-            ShippingAddressCollectionAllowedCountries::Hr => "HR",
-            ShippingAddressCollectionAllowedCountries::Ht => "HT",
-            ShippingAddressCollectionAllowedCountries::Hu => "HU",
-            ShippingAddressCollectionAllowedCountries::Id => "ID",
-            ShippingAddressCollectionAllowedCountries::Ie => "IE",
-            ShippingAddressCollectionAllowedCountries::Il => "IL",
-            ShippingAddressCollectionAllowedCountries::Im => "IM",
-            ShippingAddressCollectionAllowedCountries::In => "IN",
-            ShippingAddressCollectionAllowedCountries::Io => "IO",
-            ShippingAddressCollectionAllowedCountries::Iq => "IQ",
-            ShippingAddressCollectionAllowedCountries::Is => "IS",
-            ShippingAddressCollectionAllowedCountries::It => "IT",
-            ShippingAddressCollectionAllowedCountries::Je => "JE",
-            ShippingAddressCollectionAllowedCountries::Jm => "JM",
-            ShippingAddressCollectionAllowedCountries::Jo => "JO",
-            ShippingAddressCollectionAllowedCountries::Jp => "JP",
-            ShippingAddressCollectionAllowedCountries::Ke => "KE",
-            ShippingAddressCollectionAllowedCountries::Kg => "KG",
-            ShippingAddressCollectionAllowedCountries::Kh => "KH",
-            ShippingAddressCollectionAllowedCountries::Ki => "KI",
-            ShippingAddressCollectionAllowedCountries::Km => "KM",
-            ShippingAddressCollectionAllowedCountries::Kn => "KN",
-            ShippingAddressCollectionAllowedCountries::Kr => "KR",
-            ShippingAddressCollectionAllowedCountries::Kw => "KW",
-            ShippingAddressCollectionAllowedCountries::Ky => "KY",
-            ShippingAddressCollectionAllowedCountries::Kz => "KZ",
-            ShippingAddressCollectionAllowedCountries::La => "LA",
-            ShippingAddressCollectionAllowedCountries::Lb => "LB",
-            ShippingAddressCollectionAllowedCountries::Lc => "LC",
-            ShippingAddressCollectionAllowedCountries::Li => "LI",
-            ShippingAddressCollectionAllowedCountries::Lk => "LK",
-            ShippingAddressCollectionAllowedCountries::Lr => "LR",
-            ShippingAddressCollectionAllowedCountries::Ls => "LS",
-            ShippingAddressCollectionAllowedCountries::Lt => "LT",
-            ShippingAddressCollectionAllowedCountries::Lu => "LU",
-            ShippingAddressCollectionAllowedCountries::Lv => "LV",
-            ShippingAddressCollectionAllowedCountries::Ly => "LY",
-            ShippingAddressCollectionAllowedCountries::Ma => "MA",
-            ShippingAddressCollectionAllowedCountries::Mc => "MC",
-            ShippingAddressCollectionAllowedCountries::Md => "MD",
-            ShippingAddressCollectionAllowedCountries::Me => "ME",
-            ShippingAddressCollectionAllowedCountries::Mf => "MF",
-            ShippingAddressCollectionAllowedCountries::Mg => "MG",
-            ShippingAddressCollectionAllowedCountries::Mk => "MK",
-            ShippingAddressCollectionAllowedCountries::Ml => "ML",
-            ShippingAddressCollectionAllowedCountries::Mm => "MM",
-            ShippingAddressCollectionAllowedCountries::Mn => "MN",
-            ShippingAddressCollectionAllowedCountries::Mo => "MO",
-            ShippingAddressCollectionAllowedCountries::Mq => "MQ",
-            ShippingAddressCollectionAllowedCountries::Mr => "MR",
-            ShippingAddressCollectionAllowedCountries::Ms => "MS",
-            ShippingAddressCollectionAllowedCountries::Mt => "MT",
-            ShippingAddressCollectionAllowedCountries::Mu => "MU",
-            ShippingAddressCollectionAllowedCountries::Mv => "MV",
-            ShippingAddressCollectionAllowedCountries::Mw => "MW",
-            ShippingAddressCollectionAllowedCountries::Mx => "MX",
-            ShippingAddressCollectionAllowedCountries::My => "MY",
-            ShippingAddressCollectionAllowedCountries::Mz => "MZ",
-            ShippingAddressCollectionAllowedCountries::Na => "NA",
-            ShippingAddressCollectionAllowedCountries::Nc => "NC",
-            ShippingAddressCollectionAllowedCountries::Ne => "NE",
-            ShippingAddressCollectionAllowedCountries::Ng => "NG",
-            ShippingAddressCollectionAllowedCountries::Ni => "NI",
-            ShippingAddressCollectionAllowedCountries::Nl => "NL",
-            ShippingAddressCollectionAllowedCountries::No => "NO",
-            ShippingAddressCollectionAllowedCountries::Np => "NP",
-            ShippingAddressCollectionAllowedCountries::Nr => "NR",
-            ShippingAddressCollectionAllowedCountries::Nu => "NU",
-            ShippingAddressCollectionAllowedCountries::Nz => "NZ",
-            ShippingAddressCollectionAllowedCountries::Om => "OM",
-            ShippingAddressCollectionAllowedCountries::Pa => "PA",
-            ShippingAddressCollectionAllowedCountries::Pe => "PE",
-            ShippingAddressCollectionAllowedCountries::Pf => "PF",
-            ShippingAddressCollectionAllowedCountries::Pg => "PG",
-            ShippingAddressCollectionAllowedCountries::Ph => "PH",
-            ShippingAddressCollectionAllowedCountries::Pk => "PK",
-            ShippingAddressCollectionAllowedCountries::Pl => "PL",
-            ShippingAddressCollectionAllowedCountries::Pm => "PM",
-            ShippingAddressCollectionAllowedCountries::Pn => "PN",
-            ShippingAddressCollectionAllowedCountries::Pr => "PR",
-            ShippingAddressCollectionAllowedCountries::Ps => "PS",
-            ShippingAddressCollectionAllowedCountries::Pt => "PT",
-            ShippingAddressCollectionAllowedCountries::Py => "PY",
-            ShippingAddressCollectionAllowedCountries::Qa => "QA",
-            ShippingAddressCollectionAllowedCountries::Re => "RE",
-            ShippingAddressCollectionAllowedCountries::Ro => "RO",
-            ShippingAddressCollectionAllowedCountries::Rs => "RS",
-            ShippingAddressCollectionAllowedCountries::Ru => "RU",
-            ShippingAddressCollectionAllowedCountries::Rw => "RW",
-            ShippingAddressCollectionAllowedCountries::Sa => "SA",
-            ShippingAddressCollectionAllowedCountries::Sb => "SB",
-            ShippingAddressCollectionAllowedCountries::Sc => "SC",
-            ShippingAddressCollectionAllowedCountries::Se => "SE",
-            ShippingAddressCollectionAllowedCountries::Sg => "SG",
-            ShippingAddressCollectionAllowedCountries::Sh => "SH",
-            ShippingAddressCollectionAllowedCountries::Si => "SI",
-            ShippingAddressCollectionAllowedCountries::Sj => "SJ",
-            ShippingAddressCollectionAllowedCountries::Sk => "SK",
-            ShippingAddressCollectionAllowedCountries::Sl => "SL",
-            ShippingAddressCollectionAllowedCountries::Sm => "SM",
-            ShippingAddressCollectionAllowedCountries::Sn => "SN",
-            ShippingAddressCollectionAllowedCountries::So => "SO",
-            ShippingAddressCollectionAllowedCountries::Sr => "SR",
-            ShippingAddressCollectionAllowedCountries::Ss => "SS",
-            ShippingAddressCollectionAllowedCountries::St => "ST",
-            ShippingAddressCollectionAllowedCountries::Sv => "SV",
-            ShippingAddressCollectionAllowedCountries::Sx => "SX",
-            ShippingAddressCollectionAllowedCountries::Sz => "SZ",
-            ShippingAddressCollectionAllowedCountries::Ta => "TA",
-            ShippingAddressCollectionAllowedCountries::Tc => "TC",
-            ShippingAddressCollectionAllowedCountries::Td => "TD",
-            ShippingAddressCollectionAllowedCountries::Tf => "TF",
-            ShippingAddressCollectionAllowedCountries::Tg => "TG",
-            ShippingAddressCollectionAllowedCountries::Th => "TH",
-            ShippingAddressCollectionAllowedCountries::Tj => "TJ",
-            ShippingAddressCollectionAllowedCountries::Tk => "TK",
-            ShippingAddressCollectionAllowedCountries::Tl => "TL",
-            ShippingAddressCollectionAllowedCountries::Tm => "TM",
-            ShippingAddressCollectionAllowedCountries::Tn => "TN",
-            ShippingAddressCollectionAllowedCountries::To => "TO",
-            ShippingAddressCollectionAllowedCountries::Tr => "TR",
-            ShippingAddressCollectionAllowedCountries::Tt => "TT",
-            ShippingAddressCollectionAllowedCountries::Tv => "TV",
-            ShippingAddressCollectionAllowedCountries::Tw => "TW",
-            ShippingAddressCollectionAllowedCountries::Tz => "TZ",
-            ShippingAddressCollectionAllowedCountries::Ua => "UA",
-            ShippingAddressCollectionAllowedCountries::Ug => "UG",
-            ShippingAddressCollectionAllowedCountries::Us => "US",
-            ShippingAddressCollectionAllowedCountries::Uy => "UY",
-            ShippingAddressCollectionAllowedCountries::Uz => "UZ",
-            ShippingAddressCollectionAllowedCountries::Va => "VA",
-            ShippingAddressCollectionAllowedCountries::Vc => "VC",
-            ShippingAddressCollectionAllowedCountries::Ve => "VE",
-            ShippingAddressCollectionAllowedCountries::Vg => "VG",
-            ShippingAddressCollectionAllowedCountries::Vn => "VN",
-            ShippingAddressCollectionAllowedCountries::Vu => "VU",
-            ShippingAddressCollectionAllowedCountries::Wf => "WF",
-            ShippingAddressCollectionAllowedCountries::Ws => "WS",
-            ShippingAddressCollectionAllowedCountries::Xk => "XK",
-            ShippingAddressCollectionAllowedCountries::Ye => "YE",
-            ShippingAddressCollectionAllowedCountries::Yt => "YT",
-            ShippingAddressCollectionAllowedCountries::Za => "ZA",
-            ShippingAddressCollectionAllowedCountries::Zm => "ZM",
-            ShippingAddressCollectionAllowedCountries::Zw => "ZW",
-            ShippingAddressCollectionAllowedCountries::Zz => "ZZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ac => "AC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ad => "AD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ae => "AE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Af => "AF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ag => "AG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ai => "AI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Al => "AL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Am => "AM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ao => "AO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Aq => "AQ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ar => "AR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::At => "AT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Au => "AU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Aw => "AW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ax => "AX",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Az => "AZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ba => "BA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bb => "BB",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bd => "BD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Be => "BE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bf => "BF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bg => "BG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bh => "BH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bi => "BI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bj => "BJ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bl => "BL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bm => "BM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bn => "BN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bo => "BO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bq => "BQ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Br => "BR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bs => "BS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bt => "BT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bv => "BV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bw => "BW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::By => "BY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bz => "BZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ca => "CA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cd => "CD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cf => "CF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cg => "CG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ch => "CH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ci => "CI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ck => "CK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cl => "CL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cm => "CM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cn => "CN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Co => "CO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cr => "CR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cv => "CV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cw => "CW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cy => "CY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cz => "CZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::De => "DE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Dj => "DJ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Dk => "DK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Dm => "DM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Do => "DO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Dz => "DZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ec => "EC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ee => "EE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Eg => "EG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Eh => "EH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Er => "ER",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Es => "ES",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Et => "ET",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Fi => "FI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Fj => "FJ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Fk => "FK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Fo => "FO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Fr => "FR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ga => "GA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gb => "GB",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gd => "GD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ge => "GE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gf => "GF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gg => "GG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gh => "GH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gi => "GI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gl => "GL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gm => "GM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gn => "GN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gp => "GP",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gq => "GQ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gr => "GR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gs => "GS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gt => "GT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gu => "GU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gw => "GW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gy => "GY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Hk => "HK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Hn => "HN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Hr => "HR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ht => "HT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Hu => "HU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Id => "ID",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ie => "IE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Il => "IL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Im => "IM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::In => "IN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Io => "IO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Iq => "IQ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Is => "IS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::It => "IT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Je => "JE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Jm => "JM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Jo => "JO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Jp => "JP",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ke => "KE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kg => "KG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kh => "KH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ki => "KI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Km => "KM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kn => "KN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kr => "KR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kw => "KW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ky => "KY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kz => "KZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::La => "LA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lb => "LB",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lc => "LC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Li => "LI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lk => "LK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lr => "LR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ls => "LS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lt => "LT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lu => "LU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lv => "LV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ly => "LY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ma => "MA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mc => "MC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Md => "MD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Me => "ME",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mf => "MF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mg => "MG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mk => "MK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ml => "ML",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mm => "MM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mn => "MN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mo => "MO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mq => "MQ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mr => "MR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ms => "MS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mt => "MT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mu => "MU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mv => "MV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mw => "MW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mx => "MX",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::My => "MY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mz => "MZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Na => "NA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Nc => "NC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ne => "NE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ng => "NG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ni => "NI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Nl => "NL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::No => "NO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Np => "NP",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Nr => "NR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Nu => "NU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Nz => "NZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Om => "OM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pa => "PA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pe => "PE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pf => "PF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pg => "PG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ph => "PH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pk => "PK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pl => "PL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pm => "PM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pn => "PN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pr => "PR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ps => "PS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pt => "PT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Py => "PY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Qa => "QA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Re => "RE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ro => "RO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Rs => "RS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ru => "RU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Rw => "RW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sa => "SA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sb => "SB",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sc => "SC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Se => "SE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sg => "SG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sh => "SH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Si => "SI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sj => "SJ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sk => "SK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sl => "SL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sm => "SM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sn => "SN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::So => "SO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sr => "SR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ss => "SS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::St => "ST",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sv => "SV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sx => "SX",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sz => "SZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ta => "TA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tc => "TC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Td => "TD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tf => "TF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tg => "TG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Th => "TH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tj => "TJ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tk => "TK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tl => "TL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tm => "TM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tn => "TN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::To => "TO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tr => "TR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tt => "TT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tv => "TV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tw => "TW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tz => "TZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ua => "UA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ug => "UG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Us => "US",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Uy => "UY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Uz => "UZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Va => "VA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Vc => "VC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ve => "VE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Vg => "VG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Vn => "VN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Vu => "VU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Wf => "WF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ws => "WS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Xk => "XK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ye => "YE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Yt => "YT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Za => "ZA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Zm => "ZM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Zw => "ZW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Zz => "ZZ",
         }
     }
 }
 
-impl AsRef<str> for ShippingAddressCollectionAllowedCountries {
+impl AsRef<str> for PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display for ShippingAddressCollectionAllowedCountries {
+impl std::fmt::Display for PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionTaxId`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionTaxIdType {
+    AeTrn,
+    AuAbn,
+    AuArn,
+    BrCnpj,
+    BrCpf,
+    CaBn,
+    CaGstHst,
+    CaPstBc,
+    CaPstMb,
+    CaPstSk,
+    CaQst,
+    ChVat,
+    ClTin,
+    EsCif,
+    EuVat,
+    GbVat,
+    GeVat,
+    HkBr,
+    IdNpwp,
+    IlVat,
+    InGst,
+    IsVat,
+    JpCn,
+    JpRn,
+    KrBrn,
+    LiUid,
+    MxRfc,
+    MyFrp,
+    MyItn,
+    MySst,
+    NoVat,
+    NzGst,
+    RuInn,
+    RuKpp,
+    SaVat,
+    SgGst,
+    SgUen,
+    ThVat,
+    TwVat,
+    UaVat,
+    Unknown,
+    UsEin,
+    ZaVat,
+}
+
+impl PaymentPagesCheckoutSessionTaxIdType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionTaxIdType::AeTrn => "ae_trn",
+            PaymentPagesCheckoutSessionTaxIdType::AuAbn => "au_abn",
+            PaymentPagesCheckoutSessionTaxIdType::AuArn => "au_arn",
+            PaymentPagesCheckoutSessionTaxIdType::BrCnpj => "br_cnpj",
+            PaymentPagesCheckoutSessionTaxIdType::BrCpf => "br_cpf",
+            PaymentPagesCheckoutSessionTaxIdType::CaBn => "ca_bn",
+            PaymentPagesCheckoutSessionTaxIdType::CaGstHst => "ca_gst_hst",
+            PaymentPagesCheckoutSessionTaxIdType::CaPstBc => "ca_pst_bc",
+            PaymentPagesCheckoutSessionTaxIdType::CaPstMb => "ca_pst_mb",
+            PaymentPagesCheckoutSessionTaxIdType::CaPstSk => "ca_pst_sk",
+            PaymentPagesCheckoutSessionTaxIdType::CaQst => "ca_qst",
+            PaymentPagesCheckoutSessionTaxIdType::ChVat => "ch_vat",
+            PaymentPagesCheckoutSessionTaxIdType::ClTin => "cl_tin",
+            PaymentPagesCheckoutSessionTaxIdType::EsCif => "es_cif",
+            PaymentPagesCheckoutSessionTaxIdType::EuVat => "eu_vat",
+            PaymentPagesCheckoutSessionTaxIdType::GbVat => "gb_vat",
+            PaymentPagesCheckoutSessionTaxIdType::GeVat => "ge_vat",
+            PaymentPagesCheckoutSessionTaxIdType::HkBr => "hk_br",
+            PaymentPagesCheckoutSessionTaxIdType::IdNpwp => "id_npwp",
+            PaymentPagesCheckoutSessionTaxIdType::IlVat => "il_vat",
+            PaymentPagesCheckoutSessionTaxIdType::InGst => "in_gst",
+            PaymentPagesCheckoutSessionTaxIdType::IsVat => "is_vat",
+            PaymentPagesCheckoutSessionTaxIdType::JpCn => "jp_cn",
+            PaymentPagesCheckoutSessionTaxIdType::JpRn => "jp_rn",
+            PaymentPagesCheckoutSessionTaxIdType::KrBrn => "kr_brn",
+            PaymentPagesCheckoutSessionTaxIdType::LiUid => "li_uid",
+            PaymentPagesCheckoutSessionTaxIdType::MxRfc => "mx_rfc",
+            PaymentPagesCheckoutSessionTaxIdType::MyFrp => "my_frp",
+            PaymentPagesCheckoutSessionTaxIdType::MyItn => "my_itn",
+            PaymentPagesCheckoutSessionTaxIdType::MySst => "my_sst",
+            PaymentPagesCheckoutSessionTaxIdType::NoVat => "no_vat",
+            PaymentPagesCheckoutSessionTaxIdType::NzGst => "nz_gst",
+            PaymentPagesCheckoutSessionTaxIdType::RuInn => "ru_inn",
+            PaymentPagesCheckoutSessionTaxIdType::RuKpp => "ru_kpp",
+            PaymentPagesCheckoutSessionTaxIdType::SaVat => "sa_vat",
+            PaymentPagesCheckoutSessionTaxIdType::SgGst => "sg_gst",
+            PaymentPagesCheckoutSessionTaxIdType::SgUen => "sg_uen",
+            PaymentPagesCheckoutSessionTaxIdType::ThVat => "th_vat",
+            PaymentPagesCheckoutSessionTaxIdType::TwVat => "tw_vat",
+            PaymentPagesCheckoutSessionTaxIdType::UaVat => "ua_vat",
+            PaymentPagesCheckoutSessionTaxIdType::Unknown => "unknown",
+            PaymentPagesCheckoutSessionTaxIdType::UsEin => "us_ein",
+            PaymentPagesCheckoutSessionTaxIdType::ZaVat => "za_vat",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionTaxIdType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionTaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

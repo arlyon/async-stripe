@@ -480,6 +480,10 @@ pub enum EventFilter {
     PaymentIntentRequiresAction,
     #[serde(rename = "payment_intent.succeeded")]
     PaymentIntentSucceeded,
+    #[serde(rename = "payment_link.created")]
+    PaymentLinkCreated,
+    #[serde(rename = "payment_link.updated")]
+    PaymentLinkUpdated,
     #[serde(rename = "payment_method.attached")]
     PaymentMethodAttached,
     #[serde(rename = "payment_method.automatically_updated")]
@@ -761,6 +765,8 @@ impl EventFilter {
             EventFilter::PaymentIntentProcessing => "payment_intent.processing",
             EventFilter::PaymentIntentRequiresAction => "payment_intent.requires_action",
             EventFilter::PaymentIntentSucceeded => "payment_intent.succeeded",
+            EventFilter::PaymentLinkCreated => "payment_link.created",
+            EventFilter::PaymentLinkUpdated => "payment_link.updated",
             EventFilter::PaymentMethodAttached => "payment_method.attached",
             EventFilter::PaymentMethodAutomaticallyUpdated => {
                 "payment_method.automatically_updated"
