@@ -552,6 +552,73 @@ fn write_out_field(out: &mut String, var_name: &String, var_type: &String, requi
     }
 }
 
+fn gen_multitype_params(
+    parent_struct_rust_type: &str,
+    param_name: &str,
+    param: &Json,
+    initializers: &mut Vec<(String, String, bool)>,
+    required: bool,
+    state: &mut Generated,
+    out: &mut String,
+) {
+    let member_schema = param["schema"].clone();
+    match gen_member_variable_string(&member_schema) {
+        Ok(type_) => {
+            initializers.push((param_name.into(), type_.clone(), required));
+            write_out_field(out, &param_name.into(), &type_, required);
+        }
+        Err(TypeError::NoType) => {
+            //Weird case, found with anyOf so only case we are handling
+            //at the current moment
+            if let Some(inner_vec) = member_schema["anyOf"].as_array() {
+                for (index, val) in inner_vec.iter().enumerate() {
+                    let new_member_name = format!("{}{}", param_name, index);
+                    let new_member_type: String;
+                    if let Ok(normal_type) = gen_member_variable_string(val) {
+                        new_member_type = normal_type;
+                    } else {
+                        if let Some(title) = val["title"].as_str() {
+                            new_member_type = title.to_camel_case();
+                        } else {
+                            new_member_type = new_member_name.to_camel_case();
+                        }
+                        let inferred_object = InferredObject {
+                            rust_type: new_member_type.clone(),
+                            schema: val.clone(),
+                        };
+                        state.generated_objects.insert(new_member_type.clone(), inferred_object);
+                    }
+                    initializers.push((new_member_name.clone(), new_member_type.clone(), required));
+                    out.push_str(&format!("    #[serde(rename = \"{}\")]\n", param_name));
+                    write_out_field(out, &new_member_name, &new_member_type, required);
+                    out.push_str("\n");
+                }
+            } else {
+                assert!(false, "Strange case, haven't handled this yet: {:#?}", member_schema);
+            }
+        }
+        Err(TypeError::IsObject) => {
+            let new_type_name: String;
+            if let Some(title) = member_schema["title"].as_str() {
+                new_type_name = title.to_string().to_camel_case();
+            } else {
+                new_type_name =
+                    format!("{}{}Info", parent_struct_rust_type, param_name.to_camel_case());
+            }
+            let inferred_object = InferredObject {
+                rust_type: new_type_name.clone(),
+                schema: param["schema"].clone(),
+            };
+            state.generated_objects.insert(new_type_name.clone(), inferred_object);
+            initializers.push((param_name.into(), new_type_name.clone(), required));
+            write_out_field(out, &param_name.into(), &new_type_name, required);
+        }
+        _ => {
+            assert!(false, "Don't recognize this: {:#?}", member_schema);
+        }
+    }
+}
+
 fn gen_inferred_params(
     out: &mut String,
     state: &mut Generated,
@@ -610,83 +677,18 @@ fn gen_inferred_params(
             match param_name {
                 // TODO: Handle these unusual params
                 "bank_account" | "destination" | "usage" => continue,
-
+                //"destination" => {
                 "card" => {
                     print_doc(out);
-
-                    let member_schema = param["schema"].clone();
-                    match gen_member_variable_string(&member_schema) {
-                        Ok(type_) => {
-                            initializers.push(("card".into(), type_.clone(), required));
-                            write_out_field(out, &"card".into(), &type_, required);
-                        }
-                        Err(TypeError::NoType) => {
-                            //Weird case, found with anyOf so only case we are handling
-                            //at the current moment
-                            if let Some(inner_vec) = member_schema["anyOf"].as_array() {
-                                for (index, val) in inner_vec.iter().enumerate() {
-                                    let new_member_name = format!("card{}", index);
-                                    let new_member_type: String;
-                                    if let Ok(normal_type) = gen_member_variable_string(val) {
-                                        new_member_type = normal_type;
-                                    } else {
-                                        if let Some(title) = val["title"].as_str() {
-                                            new_member_type = title.to_camel_case();
-                                        } else {
-                                            new_member_type = new_member_name.to_camel_case();
-                                        }
-                                        let inferred_object = InferredObject {
-                                            rust_type: new_member_type.clone(),
-                                            schema: val.clone(),
-                                        };
-                                        state
-                                            .generated_objects
-                                            .insert(new_member_type.clone(), inferred_object);
-                                    }
-                                    initializers.push((
-                                        new_member_name.clone(),
-                                        new_member_type.clone(),
-                                        required,
-                                    ));
-                                    out.push_str(&format!(
-                                        "    #[serde(rename = \"{}\")]\n",
-                                        param_name
-                                    ));
-                                    write_out_field(
-                                        out,
-                                        &new_member_name,
-                                        &new_member_type,
-                                        required,
-                                    );
-                                    out.push_str("\n");
-                                }
-                            } else {
-                                assert!(
-                                    false,
-                                    "Strange case, haven't handled this yet: {:#?}",
-                                    member_schema
-                                );
-                            }
-                        }
-                        Err(TypeError::IsObject) => {
-                            let new_type_name: String;
-                            if let Some(title) = member_schema["title"].as_str() {
-                                new_type_name = title.to_string().to_camel_case();
-                            } else {
-                                new_type_name = format!("{}CardInfo", params.rust_type);
-                            }
-                            let inferred_object = InferredObject {
-                                rust_type: new_type_name.clone(),
-                                schema: param["schema"].clone(),
-                            };
-                            state.generated_objects.insert(new_type_name.clone(), inferred_object);
-                            initializers.push(("card".into(), new_type_name.clone(), required));
-                            write_out_field(out, &"card".into(), &new_type_name, required);
-                        }
-                        _ => {
-                            assert!(false, "Don't recognize this: {:#?}", member_schema);
-                        }
-                    }
+                    gen_multitype_params(
+                        &params.rust_type,
+                        param_name,
+                        param,
+                        &mut initializers,
+                        required,
+                        state,
+                        out,
+                    );
                 }
 
                 "product" => {
