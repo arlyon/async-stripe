@@ -10,7 +10,7 @@ use crate::params::{Expand, Expandable, Object, Timestamp};
 use crate::resources::BillingPortalConfiguration;
 
 /// The resource representing a Stripe "PortalSession".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BillingPortalSession {
     /// Unique identifier for the object.
     pub id: BillingPortalSessionId,
@@ -246,5 +246,10 @@ impl AsRef<str> for BillingPortalSessionLocale {
 impl std::fmt::Display for BillingPortalSessionLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for BillingPortalSessionLocale {
+    fn default() -> Self {
+        Self::Auto
     }
 }

@@ -5,7 +5,7 @@
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "payment_method_details_card_installments_plan".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardInstallmentsPlan {
     /// For `fixed_count` installment plans, this is the number of installment payments your customer will make to their credit card.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -47,6 +47,11 @@ impl std::fmt::Display for PaymentMethodDetailsCardInstallmentsPlanInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PaymentMethodDetailsCardInstallmentsPlanInterval {
+    fn default() -> Self {
+        Self::Month
+    }
+}
 
 /// An enum representing the possible values of an `PaymentMethodDetailsCardInstallmentsPlan`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -72,5 +77,10 @@ impl AsRef<str> for PaymentMethodDetailsCardInstallmentsPlanType {
 impl std::fmt::Display for PaymentMethodDetailsCardInstallmentsPlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodDetailsCardInstallmentsPlanType {
+    fn default() -> Self {
+        Self::FixedCount
     }
 }

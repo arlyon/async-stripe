@@ -8,7 +8,7 @@ use crate::params::Object;
 use crate::resources::Currency;
 
 /// The resource representing a Stripe "ReserveTransaction".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ReserveTransaction {
     pub amount: i64,
 

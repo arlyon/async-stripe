@@ -12,7 +12,7 @@ use crate::resources::{BalanceTransaction, Charge, Currency, PaymentIntent, Tran
 /// The resource representing a Stripe "Refund".
 ///
 /// For more details see <https://stripe.com/docs/api/refunds/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Refund {
     /// Unique identifier for the object.
     pub id: RefundId,
@@ -288,6 +288,11 @@ impl std::fmt::Display for RefundReason {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for RefundReason {
+    fn default() -> Self {
+        Self::Duplicate
+    }
+}
 
 /// An enum representing the possible values of an `CreateRefund`'s `reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -317,5 +322,10 @@ impl AsRef<str> for RefundReasonFilter {
 impl std::fmt::Display for RefundReasonFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for RefundReasonFilter {
+    fn default() -> Self {
+        Self::Duplicate
     }
 }

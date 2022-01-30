@@ -14,7 +14,7 @@ use crate::resources::{
 /// The resource representing a Stripe "PaymentMethod".
 ///
 /// For more details see <https://stripe.com/docs/api/payment_methods/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethod {
     /// Unique identifier for the object.
     pub id: PaymentMethodId,
@@ -79,6 +79,9 @@ pub struct PaymentMethod {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<Box<PaymentMethodKlarna>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub konbini: Option<Box<PaymentMethodKonbini>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -158,10 +161,10 @@ impl Object for PaymentMethod {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentFlowsPrivatePaymentMethodsAlipay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodAcssDebit {
     /// Name of the bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -186,10 +189,10 @@ pub struct PaymentMethodAcssDebit {
     pub transit_number: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodAfterpayClearpay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodAuBecsDebit {
     /// Six-digit number identifying bank and branch associated with this bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -206,7 +209,7 @@ pub struct PaymentMethodAuBecsDebit {
     pub last4: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodBacsDebit {
     /// Uniquely identifies this particular bank account.
     ///
@@ -225,16 +228,16 @@ pub struct PaymentMethodBacsDebit {
     pub sort_code: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodBancontact {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodBoleto {
     /// Uniquely identifies the customer tax id (CNPJ or CPF).
     pub tax_id: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CardDetails {
     /// Card brand.
     ///
@@ -289,7 +292,7 @@ pub struct CardDetails {
     pub wallet: Option<Box<WalletDetails>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Networks {
     /// All available networks for the card.
     pub available: Vec<String>,
@@ -299,7 +302,7 @@ pub struct Networks {
     pub preferred: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodCardChecks {
     /// If a address line1 was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -314,7 +317,7 @@ pub struct PaymentMethodCardChecks {
     pub cvc_check: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodCardGeneratedCard {
     /// The charge that created this object.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -329,7 +332,7 @@ pub struct PaymentMethodCardGeneratedCard {
     pub setup_attempt: Option<Box<Expandable<SetupAttempt>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CardGeneratedFromPaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_present: Option<Box<PaymentMethodDetailsCardPresent>>,
@@ -341,10 +344,10 @@ pub struct CardGeneratedFromPaymentMethodDetails {
     pub type_: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CardPresent {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WalletDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amex_express_checkout: Option<Box<WalletAmexExpressCheckout>>,
@@ -376,16 +379,16 @@ pub struct WalletDetails {
     pub visa_checkout: Option<Box<WalletVisaCheckout>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WalletAmexExpressCheckout {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WalletApplePay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WalletGooglePay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WalletMasterpass {
     /// Owner's verified billing address.
     ///
@@ -416,10 +419,10 @@ pub struct WalletMasterpass {
     pub shipping_address: Option<Box<Address>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WalletSamsungPay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WalletVisaCheckout {
     /// Owner's verified billing address.
     ///
@@ -450,7 +453,7 @@ pub struct WalletVisaCheckout {
     pub shipping_address: Option<Box<Address>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodEps {
     /// The customer's bank.
     ///
@@ -459,7 +462,7 @@ pub struct PaymentMethodEps {
     pub bank: Option<Box<PaymentMethodEpsBank>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodFpx {
     /// The customer's bank, if provided.
     ///
@@ -467,13 +470,13 @@ pub struct PaymentMethodFpx {
     pub bank: PaymentMethodFpxBank,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodGiropay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodGrabpay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodIdeal {
     /// The customer's bank, if provided.
     ///
@@ -486,17 +489,17 @@ pub struct PaymentMethodIdeal {
     pub bic: Option<Box<PaymentMethodIdealBic>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodInteracPresent {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodKlarna {
     /// The customer's date of birth, if provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<Box<PaymentFlowsPrivatePaymentMethodsKlarnaDob>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentFlowsPrivatePaymentMethodsKlarnaDob {
     /// The day of birth, between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -511,17 +514,20 @@ pub struct PaymentFlowsPrivatePaymentMethodsKlarnaDob {
     pub year: Option<Box<i64>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodKonbini {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOxxo {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodP24 {
     /// The customer's bank, if provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<Box<PaymentMethodP24Bank>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodSepaDebit {
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -550,17 +556,17 @@ pub struct PaymentMethodSepaDebit {
     pub last4: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodWechatPay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SepaDebitGeneratedFrom {
     /// The ID of the Charge that generated this PaymentMethod, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -571,7 +577,7 @@ pub struct SepaDebitGeneratedFrom {
     pub setup_attempt: Option<Box<Expandable<SetupAttempt>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ThreeDSecureUsage {
     /// Whether 3D Secure is supported on this card.
     pub supported: bool,
@@ -656,6 +662,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<Box<CreatePaymentMethodKlarna>>,
 
+    /// If this is a `konbini` PaymentMethod, this hash contains details about the Konbini payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub konbini: Option<Box<CreatePaymentMethodKonbini>>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -718,6 +728,7 @@ impl<'a> CreatePaymentMethod<'a> {
             ideal: Default::default(),
             interac_present: Default::default(),
             klarna: Default::default(),
+            konbini: Default::default(),
             metadata: Default::default(),
             oxxo: Default::default(),
             p24: Default::default(),
@@ -816,7 +827,7 @@ impl<'a> UpdatePaymentMethod<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodAcssDebit {
     pub account_number: String,
 
@@ -825,20 +836,20 @@ pub struct CreatePaymentMethodAcssDebit {
     pub transit_number: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodAfterpayClearpay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodAlipay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodAuBecsDebit {
     pub account_number: String,
 
     pub bsb_number: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodBacsDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<Box<String>>,
@@ -847,69 +858,72 @@ pub struct CreatePaymentMethodBacsDebit {
     pub sort_code: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodBancontact {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodBoleto {
     pub tax_id: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodEps {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<Box<CreatePaymentMethodEpsBank>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodFpx {
     pub bank: CreatePaymentMethodFpxBank,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodGiropay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodGrabpay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodIdeal {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<Box<CreatePaymentMethodIdealBank>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodInteracPresent {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodKlarna {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<Box<CreatePaymentMethodKlarnaDob>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodKonbini {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodOxxo {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodP24 {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<Box<CreatePaymentMethodP24Bank>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodSepaDebit {
     pub iban: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodSofort {
     pub country: CreatePaymentMethodSofortCountry,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodWechatPay {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodKlarnaDob {
     pub day: i64,
 
@@ -1008,6 +1022,11 @@ impl std::fmt::Display for CreatePaymentMethodEpsBank {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreatePaymentMethodEpsBank {
+    fn default() -> Self {
+        Self::ArzteUndApothekerBank
+    }
+}
 
 /// An enum representing the possible values of an `CreatePaymentMethodFpx`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1075,6 +1094,11 @@ impl std::fmt::Display for CreatePaymentMethodFpxBank {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreatePaymentMethodFpxBank {
+    fn default() -> Self {
+        Self::AffinBank
+    }
+}
 
 /// An enum representing the possible values of an `CreatePaymentMethodIdeal`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1124,6 +1148,11 @@ impl AsRef<str> for CreatePaymentMethodIdealBank {
 impl std::fmt::Display for CreatePaymentMethodIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentMethodIdealBank {
+    fn default() -> Self {
+        Self::AbnAmro
     }
 }
 
@@ -1201,6 +1230,11 @@ impl std::fmt::Display for CreatePaymentMethodP24Bank {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreatePaymentMethodP24Bank {
+    fn default() -> Self {
+        Self::AliorBank
+    }
+}
 
 /// An enum representing the possible values of an `CreatePaymentMethodSofort`'s `country` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1242,6 +1276,11 @@ impl AsRef<str> for CreatePaymentMethodSofortCountry {
 impl std::fmt::Display for CreatePaymentMethodSofortCountry {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentMethodSofortCountry {
+    fn default() -> Self {
+        Self::At
     }
 }
 
@@ -1335,6 +1374,11 @@ impl std::fmt::Display for PaymentMethodEpsBank {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PaymentMethodEpsBank {
+    fn default() -> Self {
+        Self::ArzteUndApothekerBank
+    }
+}
 
 /// An enum representing the possible values of an `PaymentMethodFpx`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1402,6 +1446,11 @@ impl std::fmt::Display for PaymentMethodFpxBank {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PaymentMethodFpxBank {
+    fn default() -> Self {
+        Self::AffinBank
+    }
+}
 
 /// An enum representing the possible values of an `PaymentMethodIdeal`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1451,6 +1500,11 @@ impl AsRef<str> for PaymentMethodIdealBank {
 impl std::fmt::Display for PaymentMethodIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodIdealBank {
+    fn default() -> Self {
+        Self::AbnAmro
     }
 }
 
@@ -1515,6 +1569,11 @@ impl AsRef<str> for PaymentMethodIdealBic {
 impl std::fmt::Display for PaymentMethodIdealBic {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodIdealBic {
+    fn default() -> Self {
+        Self::Abnanl2a
     }
 }
 
@@ -1592,6 +1651,11 @@ impl std::fmt::Display for PaymentMethodP24Bank {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PaymentMethodP24Bank {
+    fn default() -> Self {
+        Self::AliorBank
+    }
+}
 
 /// An enum representing the possible values of an `PaymentMethod`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1613,6 +1677,7 @@ pub enum PaymentMethodType {
     Ideal,
     InteracPresent,
     Klarna,
+    Konbini,
     Oxxo,
     P24,
     SepaDebit,
@@ -1639,6 +1704,7 @@ impl PaymentMethodType {
             PaymentMethodType::Ideal => "ideal",
             PaymentMethodType::InteracPresent => "interac_present",
             PaymentMethodType::Klarna => "klarna",
+            PaymentMethodType::Konbini => "konbini",
             PaymentMethodType::Oxxo => "oxxo",
             PaymentMethodType::P24 => "p24",
             PaymentMethodType::SepaDebit => "sepa_debit",
@@ -1657,6 +1723,11 @@ impl AsRef<str> for PaymentMethodType {
 impl std::fmt::Display for PaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodType {
+    fn default() -> Self {
+        Self::AcssDebit
     }
 }
 
@@ -1678,6 +1749,7 @@ pub enum PaymentMethodTypeFilter {
     Grabpay,
     Ideal,
     Klarna,
+    Konbini,
     Oxxo,
     P24,
     SepaDebit,
@@ -1702,6 +1774,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Grabpay => "grabpay",
             PaymentMethodTypeFilter::Ideal => "ideal",
             PaymentMethodTypeFilter::Klarna => "klarna",
+            PaymentMethodTypeFilter::Konbini => "konbini",
             PaymentMethodTypeFilter::Oxxo => "oxxo",
             PaymentMethodTypeFilter::P24 => "p24",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",
@@ -1720,6 +1793,11 @@ impl AsRef<str> for PaymentMethodTypeFilter {
 impl std::fmt::Display for PaymentMethodTypeFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodTypeFilter {
+    fn default() -> Self {
+        Self::AcssDebit
     }
 }
 
@@ -1757,6 +1835,11 @@ impl AsRef<str> for WalletDetailsType {
 impl std::fmt::Display for WalletDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for WalletDetailsType {
+    fn default() -> Self {
+        Self::AmexExpressCheckout
     }
 }
 

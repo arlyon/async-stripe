@@ -13,7 +13,7 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "IssuingAuthorization".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorization {
     /// Unique identifier for the object.
     pub id: IssuingAuthorizationId,
@@ -112,7 +112,7 @@ impl Object for IssuingAuthorization {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationPendingRequest {
     /// The additional amount Stripe will hold if the authorization is approved, in the card's [currency](https://stripe.com/docs/api#issuing_authorization_object-pending-request-currency) and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
@@ -140,7 +140,7 @@ pub struct IssuingAuthorizationPendingRequest {
     pub merchant_currency: Currency,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationRequest {
     /// The `pending_request.amount` at the time of the request, presented in your card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
@@ -179,7 +179,7 @@ pub struct IssuingAuthorizationRequest {
     pub reason: IssuingAuthorizationReason,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationVerificationData {
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
     pub address_line1_check: IssuingAuthorizationCheck,
@@ -222,5 +222,10 @@ impl AsRef<str> for IssuingAuthorizationStatus {
 impl std::fmt::Display for IssuingAuthorizationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingAuthorizationStatus {
+    fn default() -> Self {
+        Self::Closed
     }
 }

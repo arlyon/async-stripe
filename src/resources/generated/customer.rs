@@ -18,7 +18,7 @@ use crate::resources::{
 /// The resource representing a Stripe "Customer".
 ///
 /// For more details see <https://stripe.com/docs/api/customers/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Customer {
     /// Unique identifier for the object.
     pub id: CustomerId,
@@ -190,7 +190,7 @@ impl Object for Customer {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerTax {
     /// Surfaces if automatic tax computation is possible given the current customer location information.
     pub automatic_tax: CustomerTaxAutomaticTax,
@@ -204,7 +204,7 @@ pub struct CustomerTax {
     pub location: Option<Box<CustomerTaxLocation>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerTaxLocation {
     /// The customer's country as identified by Stripe Tax.
     pub country: String,
@@ -217,7 +217,7 @@ pub struct CustomerTaxLocation {
     pub state: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomerSetting {
     /// Default custom fields to be displayed on invoices for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -232,7 +232,7 @@ pub struct InvoiceSettingCustomerSetting {
     pub footer: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomField {
     /// The name of the custom field.
     pub name: String,
@@ -581,7 +581,7 @@ impl<'a> UpdateCustomer<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerShipping {
     pub address: CreateCustomerShippingAddress,
 
@@ -591,13 +591,13 @@ pub struct CreateCustomerShipping {
     pub phone: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<Box<Vec<CustomerInvoiceSettingsCustomFields>>>,
@@ -609,7 +609,7 @@ pub struct CustomerInvoiceSettings {
     pub footer: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIdData {
     #[serde(rename = "type")]
     pub type_: TaxIdType,
@@ -617,7 +617,7 @@ pub struct TaxIdData {
     pub value: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerShipping {
     pub address: UpdateCustomerShippingAddress,
 
@@ -627,13 +627,13 @@ pub struct UpdateCustomerShipping {
     pub phone: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<Box<String>>,
@@ -654,14 +654,14 @@ pub struct CreateCustomerShippingAddress {
     pub state: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettingsCustomFields {
     pub name: String,
 
     pub value: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<Box<String>>,
@@ -714,6 +714,11 @@ impl std::fmt::Display for CustomerTaxAutomaticTax {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CustomerTaxAutomaticTax {
+    fn default() -> Self {
+        Self::Failed
+    }
+}
 
 /// An enum representing the possible values of an `Customer`'s `tax_exempt` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -743,6 +748,11 @@ impl AsRef<str> for CustomerTaxExempt {
 impl std::fmt::Display for CustomerTaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CustomerTaxExempt {
+    fn default() -> Self {
+        Self::Exempt
     }
 }
 
@@ -776,6 +786,11 @@ impl std::fmt::Display for CustomerTaxExemptFilter {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CustomerTaxExemptFilter {
+    fn default() -> Self {
+        Self::Exempt
+    }
+}
 
 /// An enum representing the possible values of an `CustomerTaxLocation`'s `source` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -807,6 +822,11 @@ impl AsRef<str> for CustomerTaxLocationSource {
 impl std::fmt::Display for CustomerTaxLocationSource {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CustomerTaxLocationSource {
+    fn default() -> Self {
+        Self::BillingAddress
     }
 }
 
@@ -916,6 +936,11 @@ impl AsRef<str> for TaxIdType {
 impl std::fmt::Display for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TaxIdType {
+    fn default() -> Self {
+        Self::AeTrn
     }
 }
 

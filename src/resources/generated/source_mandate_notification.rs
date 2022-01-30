@@ -9,7 +9,7 @@ use crate::params::{Object, Timestamp};
 use crate::resources::Source;
 
 /// The resource representing a Stripe "SourceMandateNotification".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceMandateNotification {
     /// Unique identifier for the object.
     pub id: SourceMandateNotificationId,
@@ -67,21 +67,21 @@ impl Object for SourceMandateNotification {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceMandateNotificationAcssDebitData {
     /// The statement descriptor associate with the debit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceMandateNotificationBacsDebitData {
     /// Last 4 digits of the account number associated with the debit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceMandateNotificationSepaDebitData {
     /// SEPA creditor ID.
     #[serde(skip_serializing_if = "Option::is_none")]

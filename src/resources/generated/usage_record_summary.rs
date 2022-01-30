@@ -8,7 +8,7 @@ use crate::ids::UsageRecordSummaryId;
 use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "UsageRecordSummary".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UsageRecordSummary {
     /// Unique identifier for the object.
     pub id: UsageRecordSummaryId,
@@ -39,7 +39,7 @@ impl Object for UsageRecordSummary {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Period {
     /// The end date of this usage period.
     ///

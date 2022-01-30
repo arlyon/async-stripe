@@ -11,7 +11,7 @@ use crate::params::{Expand, Object, Timestamp};
 /// The resource representing a Stripe "AccountLink".
 ///
 /// For more details see <https://stripe.com/docs/api/account_links/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountLink {
     /// Time at which the object was created.
     ///
@@ -116,6 +116,11 @@ impl std::fmt::Display for AccountLinkCollect {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for AccountLinkCollect {
+    fn default() -> Self {
+        Self::CurrentlyDue
+    }
+}
 
 /// An enum representing the possible values of an `CreateAccountLink`'s `type_` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -143,5 +148,10 @@ impl AsRef<str> for AccountLinkType {
 impl std::fmt::Display for AccountLinkType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountLinkType {
+    fn default() -> Self {
+        Self::AccountOnboarding
     }
 }

@@ -12,7 +12,7 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "IssuingCard".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCard {
     /// Unique identifier for the object.
     pub id: IssuingCardId,
@@ -107,7 +107,7 @@ impl Object for IssuingCard {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardAuthorizationControls {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     ///
@@ -134,7 +134,7 @@ pub struct IssuingCardAuthorizationControls {
     pub spending_limits_currency: Option<Currency>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardShipping {
     pub address: Address,
 
@@ -169,7 +169,7 @@ pub struct IssuingCardShipping {
     pub type_: IssuingCardShippingType,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardSpendingLimit {
     /// Maximum amount allowed to spend per interval.
     pub amount: i64,
@@ -184,7 +184,7 @@ pub struct IssuingCardSpendingLimit {
     pub interval: IssuingCardSpendingLimitInterval,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardWallets {
     pub apple_pay: IssuingCardApplePay,
 
@@ -195,7 +195,7 @@ pub struct IssuingCardWallets {
     pub primary_account_identifier: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardApplePay {
     /// Apple Pay Eligibility.
     pub eligible: bool,
@@ -205,7 +205,7 @@ pub struct IssuingCardApplePay {
     pub ineligible_reason: Option<Box<IssuingCardApplePayIneligibleReason>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardGooglePay {
     /// Google Pay Eligibility.
     pub eligible: bool,
@@ -247,6 +247,11 @@ impl std::fmt::Display for IssuingCardApplePayIneligibleReason {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingCardApplePayIneligibleReason {
+    fn default() -> Self {
+        Self::MissingAgreement
+    }
+}
 
 /// An enum representing the possible values of an `IssuingCard`'s `cancellation_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -274,6 +279,11 @@ impl AsRef<str> for IssuingCardCancellationReason {
 impl std::fmt::Display for IssuingCardCancellationReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingCardCancellationReason {
+    fn default() -> Self {
+        Self::Lost
     }
 }
 
@@ -309,6 +319,11 @@ impl std::fmt::Display for IssuingCardGooglePayIneligibleReason {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingCardGooglePayIneligibleReason {
+    fn default() -> Self {
+        Self::MissingAgreement
+    }
+}
 
 /// An enum representing the possible values of an `IssuingCard`'s `replacement_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -340,6 +355,11 @@ impl AsRef<str> for IssuingCardReplacementReason {
 impl std::fmt::Display for IssuingCardReplacementReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingCardReplacementReason {
+    fn default() -> Self {
+        Self::Damaged
     }
 }
 
@@ -375,6 +395,11 @@ impl std::fmt::Display for IssuingCardShippingCarrier {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingCardShippingCarrier {
+    fn default() -> Self {
+        Self::Dhl
+    }
+}
 
 /// An enum representing the possible values of an `IssuingCardShipping`'s `service` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -404,6 +429,11 @@ impl AsRef<str> for IssuingCardShippingService {
 impl std::fmt::Display for IssuingCardShippingService {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingCardShippingService {
+    fn default() -> Self {
+        Self::Express
     }
 }
 
@@ -1009,6 +1039,11 @@ impl std::fmt::Display for IssuingCardSpendingLimitCategories {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingCardSpendingLimitCategories {
+    fn default() -> Self {
+        Self::AcRefrigerationRepair
+    }
+}
 
 /// An enum representing the possible values of an `IssuingCardSpendingLimit`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1046,6 +1081,11 @@ impl std::fmt::Display for IssuingCardSpendingLimitInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingCardSpendingLimitInterval {
+    fn default() -> Self {
+        Self::AllTime
+    }
+}
 
 /// An enum representing the possible values of an `IssuingCard`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1075,5 +1115,10 @@ impl AsRef<str> for IssuingCardStatus {
 impl std::fmt::Display for IssuingCardStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingCardStatus {
+    fn default() -> Self {
+        Self::Active
     }
 }

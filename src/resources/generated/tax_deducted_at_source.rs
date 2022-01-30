@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "TaxDeductedAtSource".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxDeductedAtSource {
     /// The end of the invoicing period.
     ///

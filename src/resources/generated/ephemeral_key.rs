@@ -9,7 +9,7 @@ use crate::ids::{CustomerId, EphemeralKeyId, IssuingCardId};
 use crate::params::{Deleted, Expand, Object, Timestamp};
 
 /// The resource representing a Stripe "EphemeralKey".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct EphemeralKey {
     /// Unique identifier for the object.
     pub id: EphemeralKeyId,

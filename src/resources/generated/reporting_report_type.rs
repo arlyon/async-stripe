@@ -8,7 +8,7 @@ use crate::ids::ReportingReportTypeId;
 use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "reporting_report_type".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ReportingReportType {
     /// The [ID of the Report Type](https://stripe.com/docs/reporting/statements/api#available-report-types), such as `balance.summary.1`.
     pub id: ReportingReportTypeId,

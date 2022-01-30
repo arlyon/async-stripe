@@ -11,7 +11,7 @@ use crate::resources::{ApplicationFee, BalanceTransaction, Currency};
 /// The resource representing a Stripe "FeeRefund".
 ///
 /// For more details see <https://stripe.com/docs/api/fee_refunds/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ApplicationFeeRefund {
     /// Unique identifier for the object.
     pub id: ApplicationFeeRefundId,

@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::resources::Address;
 
 /// The resource representing a Stripe "billing_details".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BillingDetails {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]

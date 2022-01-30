@@ -12,7 +12,7 @@ use crate::resources::{ApiVersion, WebhookEndpointStatus};
 /// The resource representing a Stripe "NotificationWebhookEndpoint".
 ///
 /// For more details see <https://stripe.com/docs/api/webhook_endpoints/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WebhookEndpoint {
     /// Unique identifier for the object.
     pub id: WebhookEndpointId,
@@ -854,5 +854,10 @@ impl AsRef<str> for EventFilter {
 impl std::fmt::Display for EventFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for EventFilter {
+    fn default() -> Self {
+        Self::All
     }
 }

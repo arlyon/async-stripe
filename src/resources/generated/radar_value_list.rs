@@ -9,7 +9,7 @@ use crate::params::{List, Metadata, Object, Timestamp};
 use crate::resources::RadarValueListItem;
 
 /// The resource representing a Stripe "RadarListList".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RadarValueList {
     /// Unique identifier for the object.
     pub id: RadarValueListId,
@@ -105,5 +105,10 @@ impl AsRef<str> for RadarValueListItemType {
 impl std::fmt::Display for RadarValueListItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for RadarValueListItemType {
+    fn default() -> Self {
+        Self::CardBin
     }
 }

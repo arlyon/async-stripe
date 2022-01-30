@@ -9,7 +9,7 @@ use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, IdentityVerificationReport};
 
 /// The resource representing a Stripe "GelatoVerificationSession".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IdentityVerificationSession {
     /// Unique identifier for the object.
     pub id: IdentityVerificationSessionId,
@@ -86,7 +86,7 @@ impl Object for IdentityVerificationSession {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSessionLastError {
     /// A short machine-readable string giving the reason for the verification or user-session failure.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -97,7 +97,7 @@ pub struct GelatoSessionLastError {
     pub reason: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoVerificationSessionOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<Box<GelatoSessionDocumentOptions>>,
@@ -106,7 +106,7 @@ pub struct GelatoVerificationSessionOptions {
     pub id_number: Option<Box<GelatoSessionIdNumberOptions>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSessionDocumentOptions {
     /// Array of strings of allowed identity document types.
     ///
@@ -129,10 +129,10 @@ pub struct GelatoSessionDocumentOptions {
     pub require_matching_selfie: Option<Box<bool>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSessionIdNumberOptions {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoVerifiedOutputs {
     /// The user's verified address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -159,7 +159,7 @@ pub struct GelatoVerifiedOutputs {
     pub last_name: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoDataVerifiedOutputsDate {
     /// Numerical day between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -174,7 +174,7 @@ pub struct GelatoDataVerifiedOutputsDate {
     pub year: Option<Box<i64>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct VerificationSessionRedaction {
     /// Indicates whether this object and its related objects have been redacted or not.
     pub status: VerificationSessionRedactionStatus,
@@ -208,6 +208,11 @@ impl AsRef<str> for GelatoSessionDocumentOptionsAllowedTypes {
 impl std::fmt::Display for GelatoSessionDocumentOptionsAllowedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for GelatoSessionDocumentOptionsAllowedTypes {
+    fn default() -> Self {
+        Self::DrivingLicense
     }
 }
 
@@ -269,6 +274,11 @@ impl std::fmt::Display for GelatoSessionLastErrorCode {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for GelatoSessionLastErrorCode {
+    fn default() -> Self {
+        Self::Abandoned
+    }
+}
 
 /// An enum representing the possible values of an `GelatoVerifiedOutputs`'s `id_number_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -298,6 +308,11 @@ impl AsRef<str> for GelatoVerifiedOutputsIdNumberType {
 impl std::fmt::Display for GelatoVerifiedOutputsIdNumberType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for GelatoVerifiedOutputsIdNumberType {
+    fn default() -> Self {
+        Self::BrCpf
     }
 }
 
@@ -333,6 +348,11 @@ impl std::fmt::Display for IdentityVerificationSessionStatus {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IdentityVerificationSessionStatus {
+    fn default() -> Self {
+        Self::Canceled
+    }
+}
 
 /// An enum representing the possible values of an `IdentityVerificationSession`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -362,6 +382,11 @@ impl std::fmt::Display for IdentityVerificationSessionType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IdentityVerificationSessionType {
+    fn default() -> Self {
+        Self::Document
+    }
+}
 
 /// An enum representing the possible values of an `VerificationSessionRedaction`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -389,5 +414,10 @@ impl AsRef<str> for VerificationSessionRedactionStatus {
 impl std::fmt::Display for VerificationSessionRedactionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for VerificationSessionRedactionStatus {
+    fn default() -> Self {
+        Self::Processing
     }
 }

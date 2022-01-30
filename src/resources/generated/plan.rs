@@ -14,7 +14,7 @@ use crate::resources::{CreateProduct, Currency, Product};
 /// The resource representing a Stripe "Plan".
 ///
 /// For more details see <https://stripe.com/docs/api/plans/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Plan {
     /// Unique identifier for the object.
     pub id: PlanId,
@@ -167,7 +167,7 @@ impl Object for Plan {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PlanTier {
     /// Price for the entire tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -190,7 +190,7 @@ pub struct PlanTier {
     pub up_to: Option<Box<i64>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransformUsage {
     /// Divide usage by this number.
     pub divide_by: i64,
@@ -334,6 +334,11 @@ impl std::fmt::Display for PlanAggregateUsage {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PlanAggregateUsage {
+    fn default() -> Self {
+        Self::LastDuringPeriod
+    }
+}
 
 /// An enum representing the possible values of an `Plan`'s `billing_scheme` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -361,6 +366,11 @@ impl AsRef<str> for PlanBillingScheme {
 impl std::fmt::Display for PlanBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PlanBillingScheme {
+    fn default() -> Self {
+        Self::PerUnit
     }
 }
 
@@ -396,6 +406,11 @@ impl std::fmt::Display for PlanInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PlanInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `Plan`'s `tiers_mode` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -423,6 +438,11 @@ impl AsRef<str> for PlanTiersMode {
 impl std::fmt::Display for PlanTiersMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PlanTiersMode {
+    fn default() -> Self {
+        Self::Graduated
     }
 }
 
@@ -454,6 +474,11 @@ impl std::fmt::Display for PlanUsageType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PlanUsageType {
+    fn default() -> Self {
+        Self::Licensed
+    }
+}
 
 /// An enum representing the possible values of an `TransformUsage`'s `round` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -481,5 +506,10 @@ impl AsRef<str> for TransformUsageRound {
 impl std::fmt::Display for TransformUsageRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TransformUsageRound {
+    fn default() -> Self {
+        Self::Down
     }
 }

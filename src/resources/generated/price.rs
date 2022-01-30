@@ -14,7 +14,7 @@ use crate::resources::{CreateProduct, Currency, Product, UpTo};
 /// The resource representing a Stripe "Price".
 ///
 /// For more details see <https://stripe.com/docs/api/prices/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Price {
     /// Unique identifier for the object.
     pub id: PriceId,
@@ -156,7 +156,7 @@ impl Object for Price {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PriceTier {
     /// Price for the entire tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -179,7 +179,7 @@ pub struct PriceTier {
     pub up_to: Option<Box<i64>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Recurring {
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
     ///
@@ -207,7 +207,7 @@ pub struct Recurring {
     pub usage_type: RecurringUsageType,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransformQuantity {
     /// Divide usage by this number.
     pub divide_by: i64,
@@ -471,7 +471,7 @@ impl<'a> UpdatePrice<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceProductData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<Box<bool>>,
@@ -494,7 +494,7 @@ pub struct CreatePriceProductData {
     pub unit_label: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceRecurring {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_usage: Option<Box<CreatePriceRecurringAggregateUsage>>,
@@ -508,7 +508,7 @@ pub struct CreatePriceRecurring {
     pub usage_type: Option<Box<CreatePriceRecurringUsageType>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceTiers {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<Box<i64>>,
@@ -525,14 +525,14 @@ pub struct CreatePriceTiers {
     pub up_to: Option<UpTo>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceTransformQuantity {
     pub divide_by: i64,
 
     pub round: CreatePriceTransformQuantityRound,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ListPricesRecurring {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval: Option<Box<ListPricesRecurringInterval>>,
@@ -573,6 +573,11 @@ impl std::fmt::Display for CreatePriceRecurringAggregateUsage {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreatePriceRecurringAggregateUsage {
+    fn default() -> Self {
+        Self::LastDuringPeriod
+    }
+}
 
 /// An enum representing the possible values of an `CreatePriceRecurring`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -606,6 +611,11 @@ impl std::fmt::Display for CreatePriceRecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreatePriceRecurringInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `CreatePriceRecurring`'s `usage_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -635,6 +645,11 @@ impl std::fmt::Display for CreatePriceRecurringUsageType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreatePriceRecurringUsageType {
+    fn default() -> Self {
+        Self::Licensed
+    }
+}
 
 /// An enum representing the possible values of an `CreatePriceTransformQuantity`'s `round` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -662,6 +677,11 @@ impl AsRef<str> for CreatePriceTransformQuantityRound {
 impl std::fmt::Display for CreatePriceTransformQuantityRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePriceTransformQuantityRound {
+    fn default() -> Self {
+        Self::Down
     }
 }
 
@@ -697,6 +717,11 @@ impl std::fmt::Display for ListPricesRecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for ListPricesRecurringInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `ListPricesRecurring`'s `usage_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -726,6 +751,11 @@ impl std::fmt::Display for ListPricesRecurringUsageType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for ListPricesRecurringUsageType {
+    fn default() -> Self {
+        Self::Licensed
+    }
+}
 
 /// An enum representing the possible values of an `Price`'s `billing_scheme` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -753,6 +783,11 @@ impl AsRef<str> for PriceBillingScheme {
 impl std::fmt::Display for PriceBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PriceBillingScheme {
+    fn default() -> Self {
+        Self::PerUnit
     }
 }
 
@@ -786,6 +821,11 @@ impl std::fmt::Display for PriceTaxBehavior {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PriceTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
+    }
+}
 
 /// An enum representing the possible values of an `Price`'s `tiers_mode` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -815,6 +855,11 @@ impl std::fmt::Display for PriceTiersMode {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PriceTiersMode {
+    fn default() -> Self {
+        Self::Graduated
+    }
+}
 
 /// An enum representing the possible values of an `Price`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -842,6 +887,11 @@ impl AsRef<str> for PriceType {
 impl std::fmt::Display for PriceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PriceType {
+    fn default() -> Self {
+        Self::OneTime
     }
 }
 
@@ -877,6 +927,11 @@ impl std::fmt::Display for RecurringAggregateUsage {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for RecurringAggregateUsage {
+    fn default() -> Self {
+        Self::LastDuringPeriod
+    }
+}
 
 /// An enum representing the possible values of an `Recurring`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -910,6 +965,11 @@ impl std::fmt::Display for RecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for RecurringInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `Recurring`'s `usage_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -939,6 +999,11 @@ impl std::fmt::Display for RecurringUsageType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for RecurringUsageType {
+    fn default() -> Self {
+        Self::Licensed
+    }
+}
 
 /// An enum representing the possible values of an `TransformQuantity`'s `round` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -966,5 +1031,10 @@ impl AsRef<str> for TransformQuantityRound {
 impl std::fmt::Display for TransformQuantityRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TransformQuantityRound {
+    fn default() -> Self {
+        Self::Down
     }
 }

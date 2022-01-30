@@ -11,7 +11,7 @@ use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
 /// The resource representing a Stripe "TaxRate".
 ///
 /// For more details see <https://stripe.com/docs/api/tax_rates/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxRate {
     /// Unique identifier for the object.
     pub id: TaxRateId,
@@ -343,5 +343,10 @@ impl AsRef<str> for TaxRateTaxType {
 impl std::fmt::Display for TaxRateTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TaxRateTaxType {
+    fn default() -> Self {
+        Self::Gst
     }
 }
