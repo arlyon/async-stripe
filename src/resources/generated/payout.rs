@@ -328,6 +328,7 @@ impl std::fmt::Display for PayoutType {
     }
 }
 
+//automatically added back in service of CreatePayout with hash-1573184263682151363
 impl<'a> CreatePayout<'a> {
     pub fn new(amount: i64, currency: Currency) -> Self {
         CreatePayout {
@@ -343,6 +344,7 @@ impl<'a> CreatePayout<'a> {
     }
 }
 
+//automatically added back in service of ListPayouts with hash6738560087728829207
 impl<'a> ListPayouts<'a> {
     pub fn new() -> Self {
         ListPayouts {
@@ -357,6 +359,7 @@ impl<'a> ListPayouts<'a> {
     }
 }
 
+//automatically added back in service of Payout with hash-3978123762156027741
 impl Object for Payout {
     type Id = PayoutId;
     fn id(&self) -> Self::Id {
@@ -367,6 +370,7 @@ impl Object for Payout {
     }
 }
 
+//automatically added back in service of Payout with hash8564909606894776109
 impl Payout {
     /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
     ///

@@ -288,6 +288,7 @@ impl std::fmt::Display for TaxRateTaxType {
     }
 }
 
+//automatically added back in service of ListTaxRates with hash-6914115661566096600
 impl<'a> ListTaxRates<'a> {
     pub fn new() -> Self {
         ListTaxRates {
@@ -302,6 +303,7 @@ impl<'a> ListTaxRates<'a> {
     }
 }
 
+//automatically added back in service of CreateTaxRate with hash-7187631991720346399
 impl<'a> CreateTaxRate<'a> {
     pub fn new(display_name: &'a str, percentage: f64) -> Self {
         CreateTaxRate {
@@ -320,6 +322,7 @@ impl<'a> CreateTaxRate<'a> {
     }
 }
 
+//automatically added back in service of TaxRate with hash-6492601265248383061
 impl TaxRate {
     /// Returns a list of your tax rates.
     ///
@@ -344,6 +347,7 @@ impl TaxRate {
     }
 }
 
+//automatically added back in service of TaxRate with hash5859477794856546109
 impl Object for TaxRate {
     type Id = TaxRateId;
     fn id(&self) -> Self::Id {

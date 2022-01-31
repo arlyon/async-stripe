@@ -1136,6 +1136,7 @@ impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsCardRequestThree
     }
 }
 
+//automatically added back in service of CreateSetupIntent with hash-7509215523626545540
 impl<'a> CreateSetupIntent<'a> {
     pub fn new() -> Self {
         CreateSetupIntent {
@@ -1155,6 +1156,7 @@ impl<'a> CreateSetupIntent<'a> {
     }
 }
 
+//automatically added back in service of SetupIntent with hash2612784168772775033
 impl Object for SetupIntent {
     type Id = SetupIntentId;
     fn id(&self) -> Self::Id {
@@ -1165,6 +1167,7 @@ impl Object for SetupIntent {
     }
 }
 
+//automatically added back in service of SetupIntent with hash2843032243415731790
 impl SetupIntent {
     /// Returns a list of SetupIntents.
     pub fn list(client: &Client, params: ListSetupIntents<'_>) -> Response<List<SetupIntent>> {
@@ -1198,6 +1201,7 @@ impl SetupIntent {
     }
 }
 
+//automatically added back in service of ListSetupIntents with hash-3252606502611796233
 impl<'a> ListSetupIntents<'a> {
     pub fn new() -> Self {
         ListSetupIntents {
@@ -1212,6 +1216,7 @@ impl<'a> ListSetupIntents<'a> {
     }
 }
 
+//automatically added back in service of UpdateSetupIntent with hash-7564044353856259758
 impl<'a> UpdateSetupIntent<'a> {
     pub fn new() -> Self {
         UpdateSetupIntent {

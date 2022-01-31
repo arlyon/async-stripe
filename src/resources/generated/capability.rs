@@ -1,3 +1,4 @@
+use crate::resources::{AccountRequirementsError, AccountRequirementsAlternative, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -126,10 +127,8 @@ pub struct AccountCapabilityRequirements {
     pub pending_verification: Vec<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 /// An enum representing the possible values of an `AccountRequirementsError`'s `code` field.
@@ -282,6 +281,7 @@ impl std::fmt::Display for CapabilityStatus {
     }
 }
 
+//automatically added back in service of Capability with hash7770197585324368899
 impl Object for Capability {
     type Id = CapabilityId;
     fn id(&self) -> Self::Id {

@@ -1,3 +1,4 @@
+use crate::resources::{InvoiceItemPriceData, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -899,7 +900,6 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     pub card: Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1939,6 +1939,7 @@ impl std::fmt::Display for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     }
 }
 
+//automatically added back in service of UpdateSubscription with hash3463687738660956392
 impl<'a> UpdateSubscription<'a> {
     pub fn new() -> Self {
         UpdateSubscription {
@@ -1973,6 +1974,7 @@ impl<'a> UpdateSubscription<'a> {
     }
 }
 
+//automatically added back in service of CreateSubscription with hash-406403584504985029
 impl<'a> CreateSubscription<'a> {
     pub fn new(customer: CustomerId) -> Self {
         CreateSubscription {
@@ -2008,6 +2010,7 @@ impl<'a> CreateSubscription<'a> {
     }
 }
 
+//automatically added back in service of ListSubscriptions with hash6047047728441954113
 impl<'a> ListSubscriptions<'a> {
     pub fn new() -> Self {
         ListSubscriptions {
@@ -2026,6 +2029,7 @@ impl<'a> ListSubscriptions<'a> {
     }
 }
 
+//automatically added back in service of Subscription with hash3752503506519761346
 impl Subscription {
     /// By default, returns a list of subscriptions that have not been canceled.
     ///
@@ -2075,6 +2079,7 @@ impl Subscription {
     }
 }
 
+//automatically added back in service of Subscription with hash6349076382051314398
 impl Object for Subscription {
     type Id = SubscriptionId;
     fn id(&self) -> Self::Id {

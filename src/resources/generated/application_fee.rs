@@ -116,6 +116,7 @@ impl<'a> ListApplicationFees<'a> {
     }
 }
 
+//automatically added back in service of ApplicationFee with hash6140153625445951217
 impl ApplicationFee {
     /// Returns a list of application fees you’ve previously collected.
     ///
@@ -139,6 +140,7 @@ impl ApplicationFee {
     }
 }
 
+//automatically added back in service of ApplicationFee with hash727360216826743751
 impl Object for ApplicationFee {
     type Id = ApplicationFeeId;
     fn id(&self) -> Self::Id {

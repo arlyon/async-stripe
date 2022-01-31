@@ -1070,6 +1070,7 @@ impl std::fmt::Display for IssuingCardStatus {
     }
 }
 
+//automatically added back in service of IssuingCard with hash4501721549196130287
 impl Object for IssuingCard {
     type Id = IssuingCardId;
     fn id(&self) -> Self::Id {

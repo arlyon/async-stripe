@@ -239,6 +239,7 @@ impl std::fmt::Display for TransferSourceType {
     }
 }
 
+//automatically added back in service of ListTransfers with hash-4190118409139816616
 impl<'a> ListTransfers<'a> {
     pub fn new() -> Self {
         ListTransfers {
@@ -252,6 +253,7 @@ impl<'a> ListTransfers<'a> {
     }
 }
 
+//automatically added back in service of CreateTransfer with hash6234710848437019007
 impl<'a> CreateTransfer<'a> {
     pub fn new(currency: Currency) -> Self {
         CreateTransfer {
@@ -267,6 +269,7 @@ impl<'a> CreateTransfer<'a> {
     }
 }
 
+//automatically added back in service of Transfer with hash1573017057952128344
 impl Transfer {
     /// Returns a list of existing transfers sent to connected accounts.
     ///
@@ -301,6 +304,7 @@ impl Transfer {
     }
 }
 
+//automatically added back in service of Transfer with hash1469934724607901288
 impl Object for Transfer {
     type Id = TransferId;
     fn id(&self) -> Self::Id {

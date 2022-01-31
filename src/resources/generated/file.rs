@@ -161,6 +161,7 @@ impl std::fmt::Display for FilePurpose {
     }
 }
 
+//automatically added back in service of File with hash7432241759813252425
 impl Object for File {
     type Id = FileId;
     fn id(&self) -> Self::Id {
@@ -171,6 +172,7 @@ impl Object for File {
     }
 }
 
+//automatically added back in service of File with hash-5589240101613797878
 impl File {
     /// Returns a list of the files that your account has access to.
     ///

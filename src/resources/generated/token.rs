@@ -289,6 +289,7 @@ impl std::fmt::Display for CreateTokenAccountBusinessType {
     }
 }
 
+//automatically added back in service of Token with hash9108358352469523915
 impl Object for Token {
     type Id = TokenId;
     fn id(&self) -> Self::Id {
@@ -299,6 +300,7 @@ impl Object for Token {
     }
 }
 
+//automatically added back in service of Token with hash-6475098656176660956
 impl Token {
     /// Creates a single-use token that represents a bank account’s details.
     /// This token can be used with any API method in place of a bank account dictionary.
@@ -314,6 +316,7 @@ impl Token {
     }
 }
 
+//automatically added back in service of CreateToken with hash-7709081031056960565
 impl<'a> CreateToken<'a> {
     pub fn new() -> Self {
         CreateToken {

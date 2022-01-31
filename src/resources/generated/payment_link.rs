@@ -2865,6 +2865,7 @@ impl std::fmt::Display for UpdatePaymentLinkShippingAddressCollectionAllowedCoun
     }
 }
 
+//automatically added back in service of ListPaymentLinks with hash49685204264081770
 impl<'a> ListPaymentLinks<'a> {
     pub fn new() -> Self {
         ListPaymentLinks {
@@ -2877,6 +2878,7 @@ impl<'a> ListPaymentLinks<'a> {
     }
 }
 
+//automatically added back in service of UpdatePaymentLink with hash-5869788619189055379
 impl<'a> UpdatePaymentLink<'a> {
     pub fn new() -> Self {
         UpdatePaymentLink {
@@ -2894,6 +2896,7 @@ impl<'a> UpdatePaymentLink<'a> {
     }
 }
 
+//automatically added back in service of CreatePaymentLink with hash-4754334452929055701
 impl<'a> CreatePaymentLink<'a> {
     pub fn new() -> Self {
         CreatePaymentLink {
@@ -2916,6 +2919,7 @@ impl<'a> CreatePaymentLink<'a> {
     }
 }
 
+//automatically added back in service of PaymentLink with hash3477893861966303720
 impl Object for PaymentLink {
     type Id = PaymentLinkId;
     fn id(&self) -> Self::Id {
@@ -2926,6 +2930,7 @@ impl Object for PaymentLink {
     }
 }
 
+//automatically added back in service of PaymentLink with hash-6576730111448222994
 impl PaymentLink {
     /// Returns a list of your payment links.
     pub fn list(client: &Client, params: ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {

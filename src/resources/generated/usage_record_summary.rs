@@ -46,6 +46,7 @@ pub struct Period {
     pub start: Option<Box<Timestamp>>,
 }
 
+//automatically added back in service of UsageRecordSummary with hash-1473602252696967843
 impl Object for UsageRecordSummary {
     type Id = UsageRecordSummaryId;
     fn id(&self) -> Self::Id {

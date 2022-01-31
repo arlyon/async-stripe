@@ -1,3 +1,4 @@
+use crate::resources::{SubscriptionItemPriceDataRecurring, SubscriptionItemPriceData, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -245,10 +246,8 @@ pub struct UpdateSubscriptionItem<'a> {
 
 
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 /// An enum representing the possible values of an `SubscriptionItemPriceDataRecurring`'s `interval` field.
@@ -379,6 +378,7 @@ impl std::fmt::Display for SubscriptionProrationBehavior {
     }
 }
 
+//automatically added back in service of UpdateSubscriptionItem with hash8548688430132456701
 impl<'a> UpdateSubscriptionItem<'a> {
     pub fn new() -> Self {
         UpdateSubscriptionItem {
@@ -397,6 +397,7 @@ impl<'a> UpdateSubscriptionItem<'a> {
     }
 }
 
+//automatically added back in service of ListSubscriptionItems with hash427381695944824741
 impl<'a> ListSubscriptionItems<'a> {
     pub fn new(subscription: SubscriptionId) -> Self {
         ListSubscriptionItems {
@@ -409,6 +410,7 @@ impl<'a> ListSubscriptionItems<'a> {
     }
 }
 
+//automatically added back in service of CreateSubscriptionItem with hash6370300438004668447
 impl<'a> CreateSubscriptionItem<'a> {
     pub fn new(subscription: SubscriptionId) -> Self {
         CreateSubscriptionItem {
@@ -427,6 +429,7 @@ impl<'a> CreateSubscriptionItem<'a> {
     }
 }
 
+//automatically added back in service of SubscriptionItem with hash3790658307592474265
 impl SubscriptionItem {
     /// Returns a list of your subscription items for a given subscription.
     pub fn list(
@@ -475,6 +478,7 @@ impl SubscriptionItem {
     }
 }
 
+//automatically added back in service of SubscriptionItem with hash6670535476668204121
 impl Object for SubscriptionItem {
     type Id = SubscriptionItemId;
     fn id(&self) -> Self::Id {

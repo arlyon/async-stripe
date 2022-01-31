@@ -64,6 +64,7 @@ impl<'a> CreateEphemeralKey<'a> {
     }
 }
 
+//automatically added back in service of EphemeralKey with hash5674968609221935427
 impl Object for EphemeralKey {
     type Id = EphemeralKeyId;
     fn id(&self) -> Self::Id {
@@ -74,6 +75,7 @@ impl Object for EphemeralKey {
     }
 }
 
+//automatically added back in service of EphemeralKey with hash-3840831942127778539
 impl EphemeralKey {
     /// Creates a short-lived API key for a given resource.
     pub fn create(client: &Client, params: CreateEphemeralKey<'_>) -> Response<EphemeralKey> {

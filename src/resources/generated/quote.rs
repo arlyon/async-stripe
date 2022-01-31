@@ -463,6 +463,7 @@ impl std::fmt::Display for QuotesResourceRecurringInterval {
     }
 }
 
+//automatically added back in service of Quote with hash-1181984064814864844
 impl Object for Quote {
     type Id = QuoteId;
     fn id(&self) -> Self::Id {
@@ -473,6 +474,7 @@ impl Object for Quote {
     }
 }
 
+//automatically added back in service of Quote with hash3562944810908861263
 impl Quote {
     /// Returns a list of your quotes.
     pub fn list(client: &Client, params: ListQuotes<'_>) -> Response<List<Quote>> {

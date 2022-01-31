@@ -384,6 +384,7 @@ impl std::fmt::Display for VerificationSessionRedactionStatus {
     }
 }
 
+//automatically added back in service of IdentityVerificationSession with hash8044313806421076226
 impl Object for IdentityVerificationSession {
     type Id = IdentityVerificationSessionId;
     fn id(&self) -> Self::Id {

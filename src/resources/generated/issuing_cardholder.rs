@@ -963,6 +963,7 @@ impl std::fmt::Display for IssuingCardholderType {
     }
 }
 
+//automatically added back in service of IssuingCardholder with hash3919303576008855339
 impl Object for IssuingCardholder {
     type Id = IssuingCardholderId;
     fn id(&self) -> Self::Id {

@@ -1,3 +1,4 @@
+use crate::resources::{TaxAmount, DiscountsResourceDiscountAmount, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -408,7 +409,6 @@ pub struct AutomaticTax {
     pub status: Option<Box<AutomaticTaxStatus>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -420,7 +420,6 @@ pub struct InvoiceSettingCustomField {
     pub value: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1384,6 +1383,7 @@ impl std::fmt::Display for TaxIdType {
     }
 }
 
+//automatically added back in service of ListInvoices with hash453859597195470014
 impl<'a> ListInvoices<'a> {
     pub fn new() -> Self {
         ListInvoices {
@@ -1401,6 +1401,7 @@ impl<'a> ListInvoices<'a> {
     }
 }
 
+//automatically added back in service of CreateInvoice with hash1393663907565974549
 impl<'a> CreateInvoice<'a> {
     pub fn new(customer: CustomerId) -> Self {
         CreateInvoice {
@@ -1430,6 +1431,7 @@ impl<'a> CreateInvoice<'a> {
     }
 }
 
+//automatically added back in service of Invoice with hash-7861122259584202893
 impl Invoice {
     /// You can list all invoices, or list the invoices for a specific customer.
     ///
@@ -1460,6 +1462,7 @@ impl Invoice {
     }
 }
 
+//automatically added back in service of Invoice with hash-1480097582396266853
 impl Object for Invoice {
     type Id = InvoiceId;
     fn id(&self) -> Self::Id {

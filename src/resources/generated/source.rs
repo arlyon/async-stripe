@@ -1528,6 +1528,7 @@ impl std::fmt::Display for UpdateSourceSourceOrderItemsType {
     }
 }
 
+//automatically added back in service of UpdateSource with hash990772089895531437
 impl<'a> UpdateSource<'a> {
     pub fn new() -> Self {
         UpdateSource {
@@ -1541,6 +1542,7 @@ impl<'a> UpdateSource<'a> {
     }
 }
 
+//automatically added back in service of CreateSource with hash-1044894577135937210
 impl<'a> CreateSource<'a> {
     pub fn new() -> Self {
         CreateSource {
@@ -1563,6 +1565,7 @@ impl<'a> CreateSource<'a> {
     }
 }
 
+//automatically added back in service of Source with hash-6934742145524542372
 impl Object for Source {
     type Id = SourceId;
     fn id(&self) -> Self::Id {
@@ -1573,6 +1576,7 @@ impl Object for Source {
     }
 }
 
+//automatically added back in service of Source with hash-1810856875031285932
 impl Source {
     /// List source transactions for a given source.
     pub fn list(client: &Client, params: ListSources<'_>) -> Response<List<Source>> {
@@ -1601,6 +1605,7 @@ impl Source {
     }
 }
 
+//automatically added back in service of ListSources with hash203013446964310674
 impl<'a> ListSources<'a> {
     pub fn new() -> Self {
         ListSources {

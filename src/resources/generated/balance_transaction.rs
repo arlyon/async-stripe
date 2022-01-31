@@ -295,6 +295,7 @@ impl std::fmt::Display for BalanceTransactionType {
     }
 }
 
+//automatically added back in service of BalanceTransaction with hash-8042574980008551559
 impl Object for BalanceTransaction {
     type Id = BalanceTransactionId;
     fn id(&self) -> Self::Id {
@@ -305,6 +306,7 @@ impl Object for BalanceTransaction {
     }
 }
 
+//automatically added back in service of BalanceTransaction with hash-5052364558299030925
 impl BalanceTransaction {
     /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
     ///

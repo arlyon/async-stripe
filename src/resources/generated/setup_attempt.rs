@@ -475,6 +475,7 @@ impl std::fmt::Display for SetupAttemptPaymentMethodDetailsSofortPreferredLangua
     }
 }
 
+//automatically added back in service of SetupAttempt with hash7638470566791935257
 impl SetupAttempt {
     /// Returns a list of SetupAttempts associated with a provided SetupIntent.
     pub fn list(client: &Client, params: ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
@@ -482,6 +483,7 @@ impl SetupAttempt {
     }
 }
 
+//automatically added back in service of SetupAttempt with hash2185871494218779887
 impl Object for SetupAttempt {
     type Id = SetupAttemptId;
     fn id(&self) -> Self::Id {

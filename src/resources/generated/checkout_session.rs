@@ -3778,6 +3778,7 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionTaxIdType {
     }
 }
 
+//automatically added back in service of CheckoutSession with hash-2063762736368013191
 impl Object for CheckoutSession {
     type Id = CheckoutSessionId;
     fn id(&self) -> Self::Id {
@@ -3788,6 +3789,7 @@ impl Object for CheckoutSession {
     }
 }
 
+//automatically added back in service of CheckoutSession with hash-6638799040889401169
 impl CheckoutSession {
     /// Returns a list of Checkout Sessions.
     pub fn list(
@@ -3803,6 +3805,7 @@ impl CheckoutSession {
     }
 }
 
+//automatically added back in service of ListCheckoutSessions with hash7735600488563492858
 impl<'a> ListCheckoutSessions<'a> {
     pub fn new() -> Self {
         ListCheckoutSessions {
@@ -3816,6 +3819,7 @@ impl<'a> ListCheckoutSessions<'a> {
     }
 }
 
+//automatically added back in service of CreateCheckoutSession with hash3949997308854274271
 impl<'a> CreateCheckoutSession<'a> {
     pub fn new(cancel_url: &'a str, success_url: &'a str) -> Self {
         CreateCheckoutSession {

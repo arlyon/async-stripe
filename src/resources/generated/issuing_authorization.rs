@@ -217,6 +217,7 @@ impl std::fmt::Display for IssuingAuthorizationStatus {
     }
 }
 
+//automatically added back in service of IssuingAuthorization with hash-5141201543021633229
 impl Object for IssuingAuthorization {
     type Id = IssuingAuthorizationId;
     fn id(&self) -> Self::Id {

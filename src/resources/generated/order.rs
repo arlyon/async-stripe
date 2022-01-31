@@ -486,6 +486,7 @@ impl std::fmt::Display for OrderStatus {
     }
 }
 
+//automatically added back in service of UpdateOrder with hash-5552476356820170002
 impl<'a> UpdateOrder<'a> {
     pub fn new() -> Self {
         UpdateOrder {
@@ -499,6 +500,7 @@ impl<'a> UpdateOrder<'a> {
     }
 }
 
+//automatically added back in service of Order with hash6236284908660826475
 impl Order {
     /// Returns a list of your orders.
     ///
@@ -527,6 +529,7 @@ impl Order {
     }
 }
 
+//automatically added back in service of Order with hash-7707031304986798316
 impl Object for Order {
     type Id = OrderId;
     fn id(&self) -> Self::Id {
@@ -537,6 +540,7 @@ impl Object for Order {
     }
 }
 
+//automatically added back in service of ListOrders with hash-2376975422990177095
 impl<'a> ListOrders<'a> {
     pub fn new() -> Self {
         ListOrders {
@@ -554,6 +558,7 @@ impl<'a> ListOrders<'a> {
     }
 }
 
+//automatically added back in service of CreateOrder with hash-1337988501525183626
 impl<'a> CreateOrder<'a> {
     pub fn new(currency: Currency) -> Self {
         CreateOrder {

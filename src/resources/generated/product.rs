@@ -308,6 +308,7 @@ impl<'a> UpdateProduct<'a> {
     }
 }
 
+//automatically added back in service of Product with hash2754917396562206091
 impl Product {
     /// Returns a list of your products.
     ///
@@ -344,6 +345,7 @@ impl Product {
     }
 }
 
+//automatically added back in service of Product with hash-711423552975651489
 impl Object for Product {
     type Id = ProductId;
     fn id(&self) -> Self::Id {
@@ -354,6 +356,7 @@ impl Object for Product {
     }
 }
 
+//automatically added back in service of CreateProduct with hash-3622921094322200951
 impl<'a> CreateProduct<'a> {
     pub fn new(name: &'a str) -> Self {
         CreateProduct {
@@ -374,6 +377,7 @@ impl<'a> CreateProduct<'a> {
     }
 }
 
+//automatically added back in service of ListProducts with hash920721201489631679
 impl<'a> ListProducts<'a> {
     pub fn new() -> Self {
         ListProducts {

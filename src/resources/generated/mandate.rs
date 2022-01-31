@@ -381,6 +381,7 @@ impl std::fmt::Display for MandateType {
     }
 }
 
+//automatically added back in service of Mandate with hash-6536031987885030606
 impl Object for Mandate {
     type Id = MandateId;
     fn id(&self) -> Self::Id {
@@ -391,6 +392,7 @@ impl Object for Mandate {
     }
 }
 
+//automatically added back in service of Mandate with hash7027347160630395029
 impl Mandate {
     /// Retrieves a Mandate object.
     pub fn retrieve(client: &Client, id: &MandateId, expand: &[&str]) -> Response<Mandate> {

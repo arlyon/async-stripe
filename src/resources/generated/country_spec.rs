@@ -101,6 +101,7 @@ impl<'a> ListCountrySpecs<'a> {
     }
 }
 
+//automatically added back in service of CountrySpec with hash1211382528522869033
 impl Object for CountrySpec {
     type Id = CountrySpecId;
     fn id(&self) -> Self::Id {
@@ -111,6 +112,7 @@ impl Object for CountrySpec {
     }
 }
 
+//automatically added back in service of CountrySpec with hash-1163452440684776962
 impl CountrySpec {
     /// Lists all Country Spec objects available in the API.
     pub fn list(client: &Client, params: ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {

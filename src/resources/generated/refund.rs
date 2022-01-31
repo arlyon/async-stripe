@@ -229,6 +229,7 @@ impl std::fmt::Display for RefundReason {
     }
 }
 
+//automatically added back in service of CreateRefund with hash2250122037972587183
 impl<'a> CreateRefund<'a> {
     pub fn new() -> Self {
         CreateRefund {
@@ -244,6 +245,7 @@ impl<'a> CreateRefund<'a> {
     }
 }
 
+//automatically added back in service of Refund with hash-8173776971715317963
 impl Refund {
     /// Returns a list of all refunds you’ve previously created.
     ///
@@ -271,6 +273,7 @@ impl Refund {
     }
 }
 
+//automatically added back in service of Refund with hash2594001076817569631
 impl Object for Refund {
     type Id = RefundId;
     fn id(&self) -> Self::Id {
@@ -281,6 +284,7 @@ impl Object for Refund {
     }
 }
 
+//automatically added back in service of ListRefunds with hash1285352333081130670
 impl<'a> ListRefunds<'a> {
     pub fn new() -> Self {
         ListRefunds {

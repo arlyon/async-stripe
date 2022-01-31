@@ -1655,6 +1655,7 @@ impl std::fmt::Display for WalletDetailsType {
     }
 }
 
+//automatically added back in service of CreatePaymentMethod with hash-9185355834837696803
 impl<'a> CreatePaymentMethod<'a> {
     pub fn new() -> Self {
         CreatePaymentMethod {
@@ -1687,6 +1688,7 @@ impl<'a> CreatePaymentMethod<'a> {
     }
 }
 
+//automatically added back in service of ListPaymentMethods with hash-6120004710657123887
 impl<'a> ListPaymentMethods<'a> {
     pub fn new(type_: PaymentMethodTypeFilter) -> Self {
         ListPaymentMethods {
@@ -1700,6 +1702,7 @@ impl<'a> ListPaymentMethods<'a> {
     }
 }
 
+//automatically added back in service of UpdatePaymentMethod with hash-7492826812432584265
 impl<'a> UpdatePaymentMethod<'a> {
     pub fn new() -> Self {
         UpdatePaymentMethod {
@@ -1710,6 +1713,7 @@ impl<'a> UpdatePaymentMethod<'a> {
     }
 }
 
+//automatically added back in service of PaymentMethod with hash1146975989530125355
 impl PaymentMethod {
     /// Returns a list of PaymentMethods.
     ///
@@ -1746,6 +1750,7 @@ impl PaymentMethod {
     }
 }
 
+//automatically added back in service of PaymentMethod with hash6405658487538037
 impl Object for PaymentMethod {
     type Id = PaymentMethodId;
     fn id(&self) -> Self::Id {

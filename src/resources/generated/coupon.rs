@@ -263,6 +263,7 @@ impl std::fmt::Display for CouponDuration {
     }
 }
 
+//automatically added back in service of UpdateCoupon with hash8616485804043887311
 impl<'a> UpdateCoupon<'a> {
     pub fn new() -> Self {
         UpdateCoupon {
@@ -273,6 +274,7 @@ impl<'a> UpdateCoupon<'a> {
     }
 }
 
+//automatically added back in service of CreateCoupon with hash191720770017175288
 impl<'a> CreateCoupon<'a> {
     pub fn new() -> Self {
         CreateCoupon {
@@ -292,6 +294,7 @@ impl<'a> CreateCoupon<'a> {
     }
 }
 
+//automatically added back in service of ListCoupons with hash1987245680888046085
 impl<'a> ListCoupons<'a> {
     pub fn new() -> Self {
         ListCoupons {
@@ -304,6 +307,7 @@ impl<'a> ListCoupons<'a> {
     }
 }
 
+//automatically added back in service of Coupon with hash8592416896964471419
 impl Object for Coupon {
     type Id = CouponId;
     fn id(&self) -> Self::Id {
@@ -314,6 +318,7 @@ impl Object for Coupon {
     }
 }
 
+//automatically added back in service of Coupon with hash414331931315565595
 impl Coupon {
     /// Returns a list of your coupons.
     pub fn list(client: &Client, params: ListCoupons<'_>) -> Response<List<Coupon>> {

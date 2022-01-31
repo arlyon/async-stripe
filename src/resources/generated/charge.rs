@@ -1983,6 +1983,7 @@ impl std::fmt::Display for PaymentMethodDetailsSofortPreferredLanguage {
     }
 }
 
+//automatically added back in service of ListCharges with hash5258658677103117487
 impl<'a> ListCharges<'a> {
     pub fn new() -> Self {
         ListCharges {
@@ -1998,6 +1999,7 @@ impl<'a> ListCharges<'a> {
     }
 }
 
+//automatically added back in service of CreateCharge with hash93780095678332819
 impl<'a> CreateCharge<'a> {
     pub fn new() -> Self {
         CreateCharge {
@@ -2022,6 +2024,7 @@ impl<'a> CreateCharge<'a> {
     }
 }
 
+//automatically added back in service of Charge with hash-3790820699952775495
 impl Charge {
     /// Returns a list of charges you’ve previously created.
     ///
@@ -2054,6 +2057,7 @@ impl Charge {
     }
 }
 
+//automatically added back in service of Charge with hash4884020548677163153
 impl Object for Charge {
     type Id = ChargeId;
     fn id(&self) -> Self::Id {
@@ -2064,6 +2068,7 @@ impl Object for Charge {
     }
 }
 
+//automatically added back in service of UpdateCharge with hash4044652456747114158
 impl<'a> UpdateCharge<'a> {
     pub fn new() -> Self {
         UpdateCharge {

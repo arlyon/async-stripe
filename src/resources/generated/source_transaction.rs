@@ -219,6 +219,7 @@ impl std::fmt::Display for SourceTransactionType {
     }
 }
 
+//automatically added back in service of SourceTransaction with hash5291179622063954757
 impl Object for SourceTransaction {
     type Id = ChargeId;
     fn id(&self) -> Self::Id {

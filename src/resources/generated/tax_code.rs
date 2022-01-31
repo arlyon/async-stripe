@@ -66,6 +66,7 @@ impl<'a> ListTaxCodes<'a> {
     }
 }
 
+//automatically added back in service of TaxCode with hash445504549070456972
 impl Object for TaxCode {
     type Id = TaxCodeId;
     fn id(&self) -> Self::Id {
@@ -76,6 +77,7 @@ impl Object for TaxCode {
     }
 }
 
+//automatically added back in service of TaxCode with hash2363185547525466981
 impl TaxCode {
     /// A list of [all tax codes available](https://stripe.com/docs/tax/tax-codes) to add to Products in order to allow specific tax calculations.
     pub fn list(client: &Client, params: ListTaxCodes<'_>) -> Response<List<TaxCode>> {

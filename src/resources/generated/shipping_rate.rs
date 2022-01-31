@@ -423,6 +423,7 @@ impl std::fmt::Display for ShippingRateType {
     }
 }
 
+//automatically added back in service of ShippingRate with hash-4880346982358571119
 impl ShippingRate {
     /// Returns a list of your shipping rates.
     pub fn list(client: &Client, params: ListShippingRates<'_>) -> Response<List<ShippingRate>> {
@@ -453,6 +454,7 @@ impl ShippingRate {
     }
 }
 
+//automatically added back in service of ShippingRate with hash-6780965776208871927
 impl Object for ShippingRate {
     type Id = ShippingRateId;
     fn id(&self) -> Self::Id {
@@ -463,6 +465,7 @@ impl Object for ShippingRate {
     }
 }
 
+//automatically added back in service of ListShippingRates with hash-6470642647643369830
 impl<'a> ListShippingRates<'a> {
     pub fn new() -> Self {
         ListShippingRates {
@@ -477,6 +480,7 @@ impl<'a> ListShippingRates<'a> {
     }
 }
 
+//automatically added back in service of CreateShippingRate with hash2129064391035003235
 impl<'a> CreateShippingRate<'a> {
     pub fn new(display_name: &'a str) -> Self {
         CreateShippingRate {
@@ -492,6 +496,7 @@ impl<'a> CreateShippingRate<'a> {
     }
 }
 
+//automatically added back in service of UpdateShippingRate with hash8863980788723415576
 impl<'a> UpdateShippingRate<'a> {
     pub fn new() -> Self {
         UpdateShippingRate {

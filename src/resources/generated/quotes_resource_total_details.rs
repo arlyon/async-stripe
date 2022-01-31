@@ -1,3 +1,4 @@
+use crate::resources::{LineItemsTaxAmount, LineItemsDiscountAmount, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -32,8 +33,6 @@ pub struct QuotesResourceTotalDetailsResourceBreakdown {
     pub taxes: Vec<LineItemsTaxAmount>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 

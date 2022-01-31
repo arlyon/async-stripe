@@ -1,3 +1,4 @@
+use crate::resources::{AccountRequirementsError, AccountRequirementsAlternative, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -348,10 +349,8 @@ pub struct AccountRequirements {
     pub pending_verification: Option<Box<Vec<String>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -2719,6 +2718,7 @@ impl std::fmt::Display for TransferScheduleParamsWeeklyAnchor {
     }
 }
 
+//automatically added back in service of CreateAccount with hash-3811867492549884539
 impl<'a> CreateAccount<'a> {
     pub fn new() -> Self {
         CreateAccount {
@@ -2742,6 +2742,7 @@ impl<'a> CreateAccount<'a> {
     }
 }
 
+//automatically added back in service of UpdateAccount with hash-1081931769655045970
 impl<'a> UpdateAccount<'a> {
     pub fn new() -> Self {
         UpdateAccount {
@@ -2763,6 +2764,7 @@ impl<'a> UpdateAccount<'a> {
     }
 }
 
+//automatically added back in service of Account with hash2972867375275022447
 impl Object for Account {
     type Id = AccountId;
     fn id(&self) -> Self::Id {
@@ -2773,6 +2775,7 @@ impl Object for Account {
     }
 }
 
+//automatically added back in service of Account with hash-6901179554990850401
 impl Account {
     /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
     ///
@@ -2813,6 +2816,7 @@ impl Account {
     }
 }
 
+//automatically added back in service of ListAccounts with hash7289062467319738547
 impl<'a> ListAccounts<'a> {
     pub fn new() -> Self {
         ListAccounts {

@@ -149,6 +149,7 @@ impl<'a> UpdateFileLink<'a> {
     }
 }
 
+//automatically added back in service of FileLink with hash7634509955512356458
 impl FileLink {
     /// Returns a list of file links.
     pub fn list(client: &Client, params: ListFileLinks<'_>) -> Response<List<FileLink>> {
@@ -177,6 +178,7 @@ impl FileLink {
     }
 }
 
+//automatically added back in service of FileLink with hash9019535771774462643
 impl Object for FileLink {
     type Id = FileLinkId;
     fn id(&self) -> Self::Id {
@@ -187,6 +189,7 @@ impl Object for FileLink {
     }
 }
 
+//automatically added back in service of ListFileLinks with hash-8549440265594601
 impl<'a> ListFileLinks<'a> {
     pub fn new() -> Self {
         ListFileLinks {
@@ -201,6 +204,7 @@ impl<'a> ListFileLinks<'a> {
     }
 }
 
+//automatically added back in service of CreateFileLink with hash1700588861826240622
 impl<'a> CreateFileLink<'a> {
     pub fn new(file: FileId) -> Self {
         CreateFileLink {

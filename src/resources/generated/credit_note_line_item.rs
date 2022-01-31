@@ -1,3 +1,4 @@
+use crate::resources::{DiscountsResourceDiscountAmount, CreditNoteTaxAmount, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -61,10 +62,8 @@ pub struct CreditNoteLineItem {
 
 
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 /// An enum representing the possible values of an `CreditNoteLineItem`'s `type` field.
@@ -96,6 +95,7 @@ impl std::fmt::Display for CreditNoteLineItemType {
     }
 }
 
+//automatically added back in service of CreditNoteLineItem with hash8512686113266804665
 impl Object for CreditNoteLineItem {
     type Id = CreditNoteLineItemId;
     fn id(&self) -> Self::Id {

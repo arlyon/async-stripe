@@ -9,7 +9,6 @@ pub struct Account {
     pub id: AccountId,
 }
 
-#[cfg(not(feature = "connect"))]
 
 
 #[cfg(not(feature = "connect"))]
@@ -18,7 +17,6 @@ pub struct Application {
     pub id: (),
 }
 
-#[cfg(not(feature = "connect"))]
 
 
 #[cfg(not(feature = "connect"))]
@@ -27,7 +25,6 @@ pub struct ApplicationFee {
     pub id: ApplicationFeeId,
 }
 
-#[cfg(not(feature = "connect"))]
 
 
 #[cfg(not(feature = "checkout"))]
@@ -36,7 +33,6 @@ pub struct CheckoutSession {
     pub id: CheckoutSessionId,
 }
 
-#[cfg(not(feature = "checkout"))]
 
 
 #[cfg(not(feature = "connect"))]
@@ -45,7 +41,6 @@ pub struct ConnectCollectionTransfer {
     pub id: (),
 }
 
-#[cfg(not(feature = "connect"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -54,7 +49,6 @@ pub struct Coupon {
     pub id: CouponId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -63,7 +57,6 @@ pub struct Discount {
     pub id: DiscountId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "connect"))]
@@ -72,7 +65,6 @@ pub struct ApplicationFeeRefund {
     pub id: ApplicationFeeRefundId,
 }
 
-#[cfg(not(feature = "connect"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -81,7 +73,6 @@ pub struct Invoice {
     pub id: InvoiceId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -90,7 +81,6 @@ pub struct InvoiceItem {
     pub id: InvoiceItemId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "issuing"))]
@@ -99,7 +89,6 @@ pub struct IssuingAuthorization {
     pub id: IssuingAuthorizationId,
 }
 
-#[cfg(not(feature = "issuing"))]
 
 
 #[cfg(not(feature = "issuing"))]
@@ -108,7 +97,6 @@ pub struct IssuingCard {
     pub id: IssuingCardId,
 }
 
-#[cfg(not(feature = "issuing"))]
 
 
 #[cfg(not(feature = "issuing"))]
@@ -117,7 +105,6 @@ pub struct IssuingCardholder {
     pub id: IssuingCardholderId,
 }
 
-#[cfg(not(feature = "issuing"))]
 
 
 #[cfg(not(feature = "issuing"))]
@@ -126,7 +113,6 @@ pub struct IssuingDispute {
     pub id: IssuingDisputeId,
 }
 
-#[cfg(not(feature = "issuing"))]
 
 
 #[cfg(not(feature = "issuing"))]
@@ -135,7 +121,6 @@ pub struct IssuingTransaction {
     pub id: IssuingTransactionId,
 }
 
-#[cfg(not(feature = "issuing"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -144,7 +129,6 @@ pub struct InvoiceLineItem {
     pub id: InvoiceLineItemId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "orders"))]
@@ -153,7 +137,6 @@ pub struct Order {
     pub id: OrderId,
 }
 
-#[cfg(not(feature = "orders"))]
 
 
 #[cfg(not(feature = "orders"))]
@@ -162,7 +145,6 @@ pub struct OrderItem {
     pub id: (),
 }
 
-#[cfg(not(feature = "orders"))]
 
 
 #[cfg(not(feature = "orders"))]
@@ -171,7 +153,6 @@ pub struct OrderReturn {
     pub id: OrderReturnId,
 }
 
-#[cfg(not(feature = "orders"))]
 
 
 #[cfg(not(feature = "connect"))]
@@ -180,7 +161,6 @@ pub struct Person {
     pub id: PersonId,
 }
 
-#[cfg(not(feature = "connect"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -189,7 +169,6 @@ pub struct Plan {
     pub id: PlanId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "connect"))]
@@ -198,7 +177,6 @@ pub struct Recipient {
     pub id: RecipientId,
 }
 
-#[cfg(not(feature = "connect"))]
 
 
 #[cfg(not(feature = "fraud"))]
@@ -207,7 +185,6 @@ pub struct Review {
     pub id: ReviewId,
 }
 
-#[cfg(not(feature = "fraud"))]
 
 
 #[cfg(not(feature = "sigma"))]
@@ -216,7 +193,6 @@ pub struct ScheduledQueryRun {
     pub id: ScheduledQueryRunId,
 }
 
-#[cfg(not(feature = "sigma"))]
 
 
 #[cfg(not(feature = "orders"))]
@@ -225,7 +201,6 @@ pub struct Sku {
     pub id: SkuId,
 }
 
-#[cfg(not(feature = "orders"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -234,7 +209,6 @@ pub struct Subscription {
     pub id: SubscriptionId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -243,7 +217,6 @@ pub struct SubscriptionItem {
     pub id: SubscriptionItemId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -252,7 +225,6 @@ pub struct SubscriptionSchedule {
     pub id: SubscriptionScheduleId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -261,7 +233,6 @@ pub struct SubscriptionScheduleRevision {
     pub id: (),
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -270,7 +241,6 @@ pub struct TaxId {
     pub id: TaxIdId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "billing"))]
@@ -279,7 +249,6 @@ pub struct TaxRate {
     pub id: TaxRateId,
 }
 
-#[cfg(not(feature = "billing"))]
 
 
 #[cfg(not(feature = "connect"))]
@@ -288,7 +257,6 @@ pub struct Topup {
     pub id: TopupId,
 }
 
-#[cfg(not(feature = "connect"))]
 
 
 #[cfg(not(feature = "connect"))]
@@ -297,7 +265,6 @@ pub struct Transfer {
     pub id: TransferId,
 }
 
-#[cfg(not(feature = "connect"))]
 
 
 #[cfg(not(feature = "connect"))]
@@ -306,7 +273,6 @@ pub struct TransferReversal {
     pub id: TransferReversalId,
 }
 
-#[cfg(not(feature = "connect"))]
 
 
 #[cfg(not(feature = "webhook-endpoints"))]
@@ -326,6 +292,8 @@ impl Object for WebhookEndpoint {
     }
 }
 
+//automatically added back in service of TransferReversal with hash5771848075456844946
+#[cfg(not(feature = "connect"))]
 impl Object for TransferReversal {
     type Id = TransferReversalId;
     fn id(&self) -> Self::Id {
@@ -336,6 +304,8 @@ impl Object for TransferReversal {
     }
 }
 
+//automatically added back in service of OrderItem with hash3704032167982539101
+#[cfg(not(feature = "orders"))]
 impl Object for OrderItem {
     type Id = ();
     fn id(&self) -> Self::Id {
@@ -346,6 +316,8 @@ impl Object for OrderItem {
     }
 }
 
+//automatically added back in service of CheckoutSession with hash-8809814167742878604
+#[cfg(not(feature = "checkout"))]
 impl Object for CheckoutSession {
     type Id = CheckoutSessionId;
     fn id(&self) -> Self::Id {
@@ -356,6 +328,8 @@ impl Object for CheckoutSession {
     }
 }
 
+//automatically added back in service of Application with hash-6459248839763565641
+#[cfg(not(feature = "connect"))]
 impl Object for Application {
     type Id = ();
     fn id(&self) -> Self::Id {
@@ -366,6 +340,8 @@ impl Object for Application {
     }
 }
 
+//automatically added back in service of Account with hash2972867375275022447
+#[cfg(not(feature = "connect"))]
 impl Object for Account {
     type Id = AccountId;
     fn id(&self) -> Self::Id {
@@ -376,6 +352,8 @@ impl Object for Account {
     }
 }
 
+//automatically added back in service of ConnectCollectionTransfer with hash-5340590057807454939
+#[cfg(not(feature = "connect"))]
 impl Object for ConnectCollectionTransfer {
     type Id = ();
     fn id(&self) -> Self::Id {
@@ -386,6 +364,8 @@ impl Object for ConnectCollectionTransfer {
     }
 }
 
+//automatically added back in service of Subscription with hash6349076382051314398
+#[cfg(not(feature = "billing"))]
 impl Object for Subscription {
     type Id = SubscriptionId;
     fn id(&self) -> Self::Id {
@@ -396,6 +376,8 @@ impl Object for Subscription {
     }
 }
 
+//automatically added back in service of Coupon with hash8592416896964471419
+#[cfg(not(feature = "billing"))]
 impl Object for Coupon {
     type Id = CouponId;
     fn id(&self) -> Self::Id {
@@ -406,6 +388,8 @@ impl Object for Coupon {
     }
 }
 
+//automatically added back in service of ApplicationFee with hash727360216826743751
+#[cfg(not(feature = "connect"))]
 impl Object for ApplicationFee {
     type Id = ApplicationFeeId;
     fn id(&self) -> Self::Id {
@@ -416,6 +400,8 @@ impl Object for ApplicationFee {
     }
 }
 
+//automatically added back in service of InvoiceLineItem with hash2307922612136106088
+#[cfg(not(feature = "billing"))]
 impl Object for InvoiceLineItem {
     type Id = InvoiceLineItemId;
     fn id(&self) -> Self::Id {
@@ -426,6 +412,8 @@ impl Object for InvoiceLineItem {
     }
 }
 
+//automatically added back in service of SubscriptionSchedule with hash-8605940895179834805
+#[cfg(not(feature = "billing"))]
 impl Object for SubscriptionSchedule {
     type Id = SubscriptionScheduleId;
     fn id(&self) -> Self::Id {
@@ -436,6 +424,8 @@ impl Object for SubscriptionSchedule {
     }
 }
 
+//automatically added back in service of IssuingCard with hash4501721549196130287
+#[cfg(not(feature = "issuing"))]
 impl Object for IssuingCard {
     type Id = IssuingCardId;
     fn id(&self) -> Self::Id {
@@ -446,6 +436,8 @@ impl Object for IssuingCard {
     }
 }
 
+//automatically added back in service of SubscriptionItem with hash6670535476668204121
+#[cfg(not(feature = "billing"))]
 impl Object for SubscriptionItem {
     type Id = SubscriptionItemId;
     fn id(&self) -> Self::Id {
@@ -456,6 +448,8 @@ impl Object for SubscriptionItem {
     }
 }
 
+//automatically added back in service of SubscriptionScheduleRevision with hash675248495282515059
+#[cfg(not(feature = "billing"))]
 impl Object for SubscriptionScheduleRevision {
     type Id = ();
     fn id(&self) -> Self::Id {
@@ -466,6 +460,8 @@ impl Object for SubscriptionScheduleRevision {
     }
 }
 
+//automatically added back in service of Transfer with hash1469934724607901288
+#[cfg(not(feature = "connect"))]
 impl Object for Transfer {
     type Id = TransferId;
     fn id(&self) -> Self::Id {
@@ -476,6 +472,8 @@ impl Object for Transfer {
     }
 }
 
+//automatically added back in service of IssuingCardholder with hash3919303576008855339
+#[cfg(not(feature = "issuing"))]
 impl Object for IssuingCardholder {
     type Id = IssuingCardholderId;
     fn id(&self) -> Self::Id {
@@ -486,6 +484,8 @@ impl Object for IssuingCardholder {
     }
 }
 
+//automatically added back in service of TaxRate with hash5859477794856546109
+#[cfg(not(feature = "billing"))]
 impl Object for TaxRate {
     type Id = TaxRateId;
     fn id(&self) -> Self::Id {
@@ -496,6 +496,8 @@ impl Object for TaxRate {
     }
 }
 
+//automatically added back in service of Topup with hash-1055834901306071266
+#[cfg(not(feature = "connect"))]
 impl Object for Topup {
     type Id = TopupId;
     fn id(&self) -> Self::Id {
@@ -506,6 +508,8 @@ impl Object for Topup {
     }
 }
 
+//automatically added back in service of IssuingTransaction with hash2453258017434230428
+#[cfg(not(feature = "issuing"))]
 impl Object for IssuingTransaction {
     type Id = IssuingTransactionId;
     fn id(&self) -> Self::Id {
@@ -516,6 +520,8 @@ impl Object for IssuingTransaction {
     }
 }
 
+//automatically added back in service of ScheduledQueryRun with hash-768470941936991008
+#[cfg(not(feature = "sigma"))]
 impl Object for ScheduledQueryRun {
     type Id = ScheduledQueryRunId;
     fn id(&self) -> Self::Id {
@@ -526,6 +532,8 @@ impl Object for ScheduledQueryRun {
     }
 }
 
+//automatically added back in service of Invoice with hash-1480097582396266853
+#[cfg(not(feature = "billing"))]
 impl Object for Invoice {
     type Id = InvoiceId;
     fn id(&self) -> Self::Id {
@@ -536,6 +544,8 @@ impl Object for Invoice {
     }
 }
 
+//automatically added back in service of Recipient with hash-2353419236078842127
+#[cfg(not(feature = "connect"))]
 impl Object for Recipient {
     type Id = RecipientId;
     fn id(&self) -> Self::Id {
@@ -546,6 +556,8 @@ impl Object for Recipient {
     }
 }
 
+//automatically added back in service of InvoiceItem with hash7950177059610030066
+#[cfg(not(feature = "billing"))]
 impl Object for InvoiceItem {
     type Id = InvoiceItemId;
     fn id(&self) -> Self::Id {
@@ -556,6 +568,8 @@ impl Object for InvoiceItem {
     }
 }
 
+//automatically added back in service of Sku with hash-2970364133945343515
+#[cfg(not(feature = "orders"))]
 impl Object for Sku {
     type Id = SkuId;
     fn id(&self) -> Self::Id {
@@ -566,6 +580,8 @@ impl Object for Sku {
     }
 }
 
+//automatically added back in service of Discount with hash610163505819025392
+#[cfg(not(feature = "billing"))]
 impl Object for Discount {
     type Id = DiscountId;
     fn id(&self) -> Self::Id {
@@ -576,6 +592,8 @@ impl Object for Discount {
     }
 }
 
+//automatically added back in service of Review with hash2910031241930626001
+#[cfg(not(feature = "fraud"))]
 impl Object for Review {
     type Id = ReviewId;
     fn id(&self) -> Self::Id {
@@ -586,6 +604,8 @@ impl Object for Review {
     }
 }
 
+//automatically added back in service of Plan with hash1272108170975119476
+#[cfg(not(feature = "billing"))]
 impl Object for Plan {
     type Id = PlanId;
     fn id(&self) -> Self::Id {
@@ -596,6 +616,8 @@ impl Object for Plan {
     }
 }
 
+//automatically added back in service of TaxId with hash992046258278666322
+#[cfg(not(feature = "billing"))]
 impl Object for TaxId {
     type Id = TaxIdId;
     fn id(&self) -> Self::Id {
@@ -606,6 +628,8 @@ impl Object for TaxId {
     }
 }
 
+//automatically added back in service of Order with hash-7707031304986798316
+#[cfg(not(feature = "orders"))]
 impl Object for Order {
     type Id = OrderId;
     fn id(&self) -> Self::Id {
@@ -616,6 +640,8 @@ impl Object for Order {
     }
 }
 
+//automatically added back in service of OrderReturn with hash-3373669299755781116
+#[cfg(not(feature = "orders"))]
 impl Object for OrderReturn {
     type Id = OrderReturnId;
     fn id(&self) -> Self::Id {
@@ -626,6 +652,8 @@ impl Object for OrderReturn {
     }
 }
 
+//automatically added back in service of ApplicationFeeRefund with hash-5884094980258879102
+#[cfg(not(feature = "connect"))]
 impl Object for ApplicationFeeRefund {
     type Id = ApplicationFeeRefundId;
     fn id(&self) -> Self::Id {
@@ -636,6 +664,8 @@ impl Object for ApplicationFeeRefund {
     }
 }
 
+//automatically added back in service of IssuingAuthorization with hash-5141201543021633229
+#[cfg(not(feature = "issuing"))]
 impl Object for IssuingAuthorization {
     type Id = IssuingAuthorizationId;
     fn id(&self) -> Self::Id {
@@ -646,6 +676,8 @@ impl Object for IssuingAuthorization {
     }
 }
 
+//automatically added back in service of Person with hash3437362498376385340
+#[cfg(not(feature = "connect"))]
 impl Object for Person {
     type Id = PersonId;
     fn id(&self) -> Self::Id {
@@ -656,6 +688,8 @@ impl Object for Person {
     }
 }
 
+//automatically added back in service of IssuingDispute with hash5967689277921946028
+#[cfg(not(feature = "issuing"))]
 impl Object for IssuingDispute {
     type Id = IssuingDisputeId;
     fn id(&self) -> Self::Id {

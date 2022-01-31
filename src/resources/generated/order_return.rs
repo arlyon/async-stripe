@@ -98,6 +98,7 @@ impl<'a> ListOrderReturns<'a> {
     }
 }
 
+//automatically added back in service of OrderReturn with hash3696570308303053283
 impl OrderReturn {
     /// Returns a list of your order returns.
     ///
@@ -114,6 +115,7 @@ impl OrderReturn {
     }
 }
 
+//automatically added back in service of OrderReturn with hash-3373669299755781116
 impl Object for OrderReturn {
     type Id = OrderReturnId;
     fn id(&self) -> Self::Id {

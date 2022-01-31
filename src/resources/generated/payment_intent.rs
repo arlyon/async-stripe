@@ -1,3 +1,4 @@
+use crate::resources::{TransferData, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -628,7 +629,6 @@ pub struct PaymentMethodOptionsWechatPay {
     pub client: Option<Box<PaymentMethodOptionsWechatPayClient>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 /// The parameters for `PaymentIntent::create`.
@@ -4544,6 +4544,7 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsWechatPayClien
     }
 }
 
+//automatically added back in service of UpdatePaymentIntent with hash-2799028375146327101
 impl<'a> UpdatePaymentIntent<'a> {
     pub fn new() -> Self {
         UpdatePaymentIntent {
@@ -4569,6 +4570,7 @@ impl<'a> UpdatePaymentIntent<'a> {
     }
 }
 
+//automatically added back in service of ListPaymentIntents with hash258855227215588353
 impl<'a> ListPaymentIntents<'a> {
     pub fn new() -> Self {
         ListPaymentIntents {
@@ -4582,6 +4584,7 @@ impl<'a> ListPaymentIntents<'a> {
     }
 }
 
+//automatically added back in service of PaymentIntent with hash8076366564989710908
 impl Object for PaymentIntent {
     type Id = PaymentIntentId;
     fn id(&self) -> Self::Id {
@@ -4592,6 +4595,7 @@ impl Object for PaymentIntent {
     }
 }
 
+//automatically added back in service of PaymentIntent with hash833592348371495805
 impl PaymentIntent {
     /// Returns a list of PaymentIntents.
     pub fn list(client: &Client, params: ListPaymentIntents<'_>) -> Response<List<PaymentIntent>> {
@@ -4638,6 +4642,7 @@ impl PaymentIntent {
     }
 }
 
+//automatically added back in service of CreatePaymentIntent with hash1170915577849856445
 impl<'a> CreatePaymentIntent<'a> {
     pub fn new(amount: i64, currency: Currency) -> Self {
         CreatePaymentIntent {

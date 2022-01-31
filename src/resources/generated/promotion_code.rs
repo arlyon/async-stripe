@@ -163,6 +163,7 @@ impl<'a> UpdatePromotionCode<'a> {
     }
 }
 
+//automatically added back in service of PromotionCode with hash-812479903075292075
 impl PromotionCode {
     /// Returns a list of your promotion codes.
     pub fn list(client: &Client, params: ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
@@ -192,6 +193,7 @@ impl PromotionCode {
     }
 }
 
+//automatically added back in service of PromotionCode with hash1364410342897565166
 impl Object for PromotionCode {
     type Id = PromotionCodeId;
     fn id(&self) -> Self::Id {
@@ -202,6 +204,7 @@ impl Object for PromotionCode {
     }
 }
 
+//automatically added back in service of ListPromotionCodes with hash-2986936303336722138
 impl<'a> ListPromotionCodes<'a> {
     pub fn new() -> Self {
         ListPromotionCodes {

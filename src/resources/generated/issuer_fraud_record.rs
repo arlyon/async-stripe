@@ -91,6 +91,7 @@ impl<'a> ListIssuerFraudRecords<'a> {
     }
 }
 
+//automatically added back in service of IssuerFraudRecord with hash-5996173823989904020
 impl Object for IssuerFraudRecord {
     type Id = IssuerFraudRecordId;
     fn id(&self) -> Self::Id {
@@ -101,6 +102,7 @@ impl Object for IssuerFraudRecord {
     }
 }
 
+//automatically added back in service of IssuerFraudRecord with hash-2850313433496034458
 impl IssuerFraudRecord {
     /// Returns a list of issuer fraud records.
     pub fn list(

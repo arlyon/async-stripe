@@ -297,6 +297,7 @@ impl<'a> UpdateSku<'a> {
     }
 }
 
+//automatically added back in service of Sku with hash4763006567110595561
 impl Sku {
     /// Returns a list of your SKUs.
     ///
@@ -333,6 +334,7 @@ impl Sku {
     }
 }
 
+//automatically added back in service of Sku with hash-2970364133945343515
 impl Object for Sku {
     type Id = SkuId;
     fn id(&self) -> Self::Id {
@@ -343,6 +345,7 @@ impl Object for Sku {
     }
 }
 
+//automatically added back in service of CreateSku with hash7688483123037546267
 impl<'a> CreateSku<'a> {
     pub fn new(
         currency: Currency,
@@ -366,6 +369,7 @@ impl<'a> CreateSku<'a> {
     }
 }
 
+//automatically added back in service of ListSkus with hash3273122470441329672
 impl<'a> ListSkus<'a> {
     pub fn new() -> Self {
         ListSkus {

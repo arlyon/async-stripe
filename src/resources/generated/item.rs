@@ -1,3 +1,4 @@
+use crate::resources::{LineItemsTaxAmount, LineItemsDiscountAmount, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -50,12 +51,11 @@ pub struct CheckoutSessionItem {
 
 
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
+//automatically added back in service of CheckoutSessionItem with hash-7800975525549346558
 impl Object for CheckoutSessionItem {
     type Id = CheckoutSessionItemId;
     fn id(&self) -> Self::Id {

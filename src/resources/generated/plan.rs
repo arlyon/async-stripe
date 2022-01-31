@@ -439,6 +439,7 @@ impl std::fmt::Display for TransformUsageRound {
     }
 }
 
+//automatically added back in service of ListPlans with hash-8547766091516829825
 impl<'a> ListPlans<'a> {
     pub fn new() -> Self {
         ListPlans {
@@ -453,6 +454,7 @@ impl<'a> ListPlans<'a> {
     }
 }
 
+//automatically added back in service of Plan with hash-15758022125050792
 impl Plan {
     /// Returns a list of your plans.
     pub fn list(client: &Client, params: ListPlans<'_>) -> Response<List<Plan>> {
@@ -480,6 +482,7 @@ impl Plan {
     }
 }
 
+//automatically added back in service of Plan with hash1272108170975119476
 impl Object for Plan {
     type Id = PlanId;
     fn id(&self) -> Self::Id {

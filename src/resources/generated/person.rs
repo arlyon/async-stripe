@@ -451,6 +451,7 @@ impl std::fmt::Display for PersonPoliticalExposure {
     }
 }
 
+//automatically added back in service of Person with hash3437362498376385340
 impl Object for Person {
     type Id = PersonId;
     fn id(&self) -> Self::Id {

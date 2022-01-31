@@ -168,7 +168,7 @@ pub use {
         invoice::*,
         invoice_payment_method_options_acss_debit::*,
         invoice_payment_method_options_bancontact::*,
-        invoice_payment_method_options_card::*,
+        //invoice_payment_method_options_card::*,
         invoiceitem::*,
         line_item::*,
         plan::*,

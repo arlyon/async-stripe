@@ -53,6 +53,7 @@ pub struct SigmaScheduledQueryRunError {
     pub message: String,
 }
 
+//automatically added back in service of ScheduledQueryRun with hash-768470941936991008
 impl Object for ScheduledQueryRun {
     type Id = ScheduledQueryRunId;
     fn id(&self) -> Self::Id {

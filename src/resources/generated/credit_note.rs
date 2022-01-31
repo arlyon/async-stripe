@@ -396,6 +396,7 @@ impl std::fmt::Display for CreditNoteType {
     }
 }
 
+//automatically added back in service of CreditNote with hash8661481111310142908
 impl Object for CreditNote {
     type Id = CreditNoteId;
     fn id(&self) -> Self::Id {
@@ -406,6 +407,7 @@ impl Object for CreditNote {
     }
 }
 
+//automatically added back in service of CreditNote with hash5574780636889160172
 impl CreditNote {
     /// Returns a list of credit notes.
     pub fn list(client: &Client, params: ListCreditNotes<'_>) -> Response<List<CreditNote>> {
@@ -437,6 +439,7 @@ impl CreditNote {
     }
 }
 
+//automatically added back in service of UpdateCreditNote with hash-6827222864951338418
 impl<'a> UpdateCreditNote<'a> {
     pub fn new() -> Self {
         UpdateCreditNote {
@@ -447,6 +450,7 @@ impl<'a> UpdateCreditNote<'a> {
     }
 }
 
+//automatically added back in service of ListCreditNotes with hash-224019564851134574
 impl<'a> ListCreditNotes<'a> {
     pub fn new() -> Self {
         ListCreditNotes {
@@ -460,6 +464,7 @@ impl<'a> ListCreditNotes<'a> {
     }
 }
 
+//automatically added back in service of CreateCreditNote with hash-7995517879105991074
 impl<'a> CreateCreditNote<'a> {
     pub fn new(invoice: InvoiceId) -> Self {
         CreateCreditNote {

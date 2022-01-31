@@ -366,6 +366,7 @@ impl std::fmt::Display for PortalSubscriptionUpdateProrationBehavior {
     }
 }
 
+//automatically added back in service of BillingPortalConfiguration with hash-6602685136576475067
 impl Object for BillingPortalConfiguration {
     type Id = BillingPortalConfigurationId;
     fn id(&self) -> Self::Id {

@@ -424,6 +424,7 @@ impl std::fmt::Display for InvoiceItemPriceDataTaxBehavior {
     }
 }
 
+//automatically added back in service of UpdateInvoiceItem with hash-8466512287516174739
 impl<'a> UpdateInvoiceItem<'a> {
     pub fn new() -> Self {
         UpdateInvoiceItem {
@@ -444,6 +445,7 @@ impl<'a> UpdateInvoiceItem<'a> {
     }
 }
 
+//automatically added back in service of InvoiceItem with hash7950177059610030066
 impl Object for InvoiceItem {
     type Id = InvoiceItemId;
     fn id(&self) -> Self::Id {
@@ -454,6 +456,7 @@ impl Object for InvoiceItem {
     }
 }
 
+//automatically added back in service of InvoiceItem with hash5837898571213207047
 impl InvoiceItem {
     /// Returns a list of your invoice items.
     ///
@@ -493,6 +496,7 @@ impl InvoiceItem {
     }
 }
 
+//automatically added back in service of CreateInvoiceItem with hash-7273036025356157135
 impl<'a> CreateInvoiceItem<'a> {
     pub fn new(customer: CustomerId) -> Self {
         CreateInvoiceItem {
@@ -517,6 +521,7 @@ impl<'a> CreateInvoiceItem<'a> {
     }
 }
 
+//automatically added back in service of ListInvoiceItems with hash-4087165658960175923
 impl<'a> ListInvoiceItems<'a> {
     pub fn new() -> Self {
         ListInvoiceItems {

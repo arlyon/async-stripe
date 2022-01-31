@@ -224,6 +224,7 @@ impl std::fmt::Display for ReviewOpenedReason {
     }
 }
 
+//automatically added back in service of Review with hash2910031241930626001
 impl Object for Review {
     type Id = ReviewId;
     fn id(&self) -> Self::Id {
@@ -234,6 +235,7 @@ impl Object for Review {
     }
 }
 
+//automatically added back in service of Review with hash8097246103026098126
 impl Review {
     /// Returns a list of `Review` objects that have `open` set to `true`.
     ///

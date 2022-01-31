@@ -1,3 +1,4 @@
+use crate::resources::{InvoiceSettingCustomField, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -184,7 +185,6 @@ pub struct InvoiceSettingCustomerSetting {
     pub footer: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 /// The parameters for `Customer::create`.
@@ -796,6 +796,7 @@ impl std::fmt::Display for TaxIdType {
     }
 }
 
+//automatically added back in service of CreateCustomer with hash2216899000869908635
 impl<'a> CreateCustomer<'a> {
     pub fn new() -> Self {
         CreateCustomer {
@@ -823,6 +824,7 @@ impl<'a> CreateCustomer<'a> {
     }
 }
 
+//automatically added back in service of ListCustomers with hash8260311421914000074
 impl<'a> ListCustomers<'a> {
     pub fn new() -> Self {
         ListCustomers {
@@ -836,6 +838,7 @@ impl<'a> ListCustomers<'a> {
     }
 }
 
+//automatically added back in service of UpdateCustomer with hash-7713761293574287342
 impl<'a> UpdateCustomer<'a> {
     pub fn new() -> Self {
         UpdateCustomer {
@@ -866,6 +869,7 @@ impl<'a> UpdateCustomer<'a> {
     }
 }
 
+//automatically added back in service of Customer with hash-1841310924771182504
 impl Customer {
     /// Returns a list of your customers.
     ///
@@ -908,6 +912,7 @@ impl Customer {
     }
 }
 
+//automatically added back in service of Customer with hash-6890770186154663517
 impl Object for Customer {
     type Id = CustomerId;
     fn id(&self) -> Self::Id {

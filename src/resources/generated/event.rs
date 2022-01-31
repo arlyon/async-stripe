@@ -135,6 +135,7 @@ impl<'a> ListEvents<'a> {
     }
 }
 
+//automatically added back in service of Event with hash5796066547405634179
 impl Event {
     /// List events, going back up to 30 days.
     ///
@@ -151,6 +152,7 @@ impl Event {
     }
 }
 
+//automatically added back in service of Event with hash-2407717745563735060
 impl Object for Event {
     type Id = EventId;
     fn id(&self) -> Self::Id {

@@ -88,6 +88,7 @@ pub struct SourceMandateNotificationSepaDebitData {
     pub mandate_reference: Option<Box<String>>,
 }
 
+//automatically added back in service of SourceMandateNotification with hash1328300387557951638
 impl Object for SourceMandateNotification {
     type Id = SourceMandateNotificationId;
     fn id(&self) -> Self::Id {

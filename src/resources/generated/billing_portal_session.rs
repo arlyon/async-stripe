@@ -233,6 +233,7 @@ impl std::fmt::Display for BillingPortalSessionLocale {
     }
 }
 
+//automatically added back in service of BillingPortalSession with hash4572080641545088697
 impl BillingPortalSession {
     /// Creates a session of the customer portal.
     pub fn create(
@@ -243,6 +244,7 @@ impl BillingPortalSession {
     }
 }
 
+//automatically added back in service of BillingPortalSession with hash4519393852987815889
 impl Object for BillingPortalSession {
     type Id = BillingPortalSessionId;
     fn id(&self) -> Self::Id {

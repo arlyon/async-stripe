@@ -253,6 +253,7 @@ impl std::fmt::Display for RecipientType {
     }
 }
 
+//automatically added back in service of Recipient with hash-2353419236078842127
 impl Object for Recipient {
     type Id = RecipientId;
     fn id(&self) -> Self::Id {
@@ -263,6 +264,7 @@ impl Object for Recipient {
     }
 }
 
+//automatically added back in service of Recipient with hash-2019511360650703802
 impl Recipient {
     /// Returns a list of your recipients.
     ///
@@ -305,6 +307,7 @@ impl Recipient {
     }
 }
 
+//automatically added back in service of ListRecipients with hash3345823840780291775
 impl<'a> ListRecipients<'a> {
     pub fn new() -> Self {
         ListRecipients {
@@ -319,6 +322,7 @@ impl<'a> ListRecipients<'a> {
     }
 }
 
+//automatically added back in service of CreateRecipient with hash-7677209468805475583
 impl<'a> CreateRecipient<'a> {
     pub fn new(name: &'a str, type_: RecipientType) -> Self {
         CreateRecipient {

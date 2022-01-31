@@ -63,6 +63,7 @@ impl<'a> ListExchangeRates<'a> {
     }
 }
 
+//automatically added back in service of ExchangeRate with hash-6965219324705362532
 impl Object for ExchangeRate {
     type Id = ExchangeRateId;
     fn id(&self) -> Self::Id {
@@ -73,6 +74,7 @@ impl Object for ExchangeRate {
     }
 }
 
+//automatically added back in service of ExchangeRate with hash-4691794435717610588
 impl ExchangeRate {
     /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
     ///

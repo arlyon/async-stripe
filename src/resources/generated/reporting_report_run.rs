@@ -91,6 +91,7 @@ pub struct FinancialReportingFinanceReportRunRunParameters {
     pub timezone: Option<Box<String>>,
 }
 
+//automatically added back in service of ReportingReportRun with hash8849923378255029571
 impl Object for ReportingReportRun {
     type Id = ReportingReportRunId;
     fn id(&self) -> Self::Id {

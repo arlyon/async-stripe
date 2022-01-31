@@ -320,6 +320,7 @@ impl std::fmt::Display for DisputeStatus {
     }
 }
 
+//automatically added back in service of Dispute with hash5798063553143893065
 impl Dispute {
     /// Returns a list of your disputes.
     pub fn list(client: &Client, params: ListDisputes<'_>) -> Response<List<Dispute>> {
@@ -332,6 +333,7 @@ impl Dispute {
     }
 }
 
+//automatically added back in service of Dispute with hash2994297120450655962
 impl Object for Dispute {
     type Id = DisputeId;
     fn id(&self) -> Self::Id {

@@ -232,6 +232,7 @@ impl std::fmt::Display for TopupStatusFilter {
     }
 }
 
+//automatically added back in service of ListTopups with hash-2255876390313892147
 impl<'a> ListTopups<'a> {
     pub fn new() -> Self {
         ListTopups {
@@ -246,6 +247,7 @@ impl<'a> ListTopups<'a> {
     }
 }
 
+//automatically added back in service of Topup with hash-4267435505429544645
 impl Topup {
     /// Returns a list of top-ups.
     pub fn list(client: &Client, params: ListTopups<'_>) -> Response<List<Topup>> {
@@ -267,6 +269,7 @@ impl Topup {
     }
 }
 
+//automatically added back in service of Topup with hash-1055834901306071266
 impl Object for Topup {
     type Id = TopupId;
     fn id(&self) -> Self::Id {

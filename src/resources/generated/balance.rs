@@ -147,6 +147,7 @@ impl<'a> ListBalances<'a> {
     }
 }
 
+//automatically added back in service of Balance with hash-4264152956785923654
 impl Balance {
     /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
     ///
@@ -156,6 +157,7 @@ impl Balance {
     }
 }
 
+//automatically added back in service of Balance with hash-4826721640922559621
 impl Object for Balance {
     type Id = ();
     fn id(&self) -> Self::Id {}

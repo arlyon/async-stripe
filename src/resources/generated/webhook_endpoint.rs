@@ -786,6 +786,7 @@ impl std::fmt::Display for EventFilter {
     }
 }
 
+//automatically added back in service of CreateWebhookEndpoint with hash8082516801620069850
 impl<'a> CreateWebhookEndpoint<'a> {
     pub fn new(enabled_events: Vec<EventFilter>, url: &'a str) -> Self {
         CreateWebhookEndpoint {
@@ -800,6 +801,7 @@ impl<'a> CreateWebhookEndpoint<'a> {
     }
 }
 
+//automatically added back in service of WebhookEndpoint with hash-5274357473399814216
 impl Object for WebhookEndpoint {
     type Id = WebhookEndpointId;
     fn id(&self) -> Self::Id {
@@ -810,6 +812,7 @@ impl Object for WebhookEndpoint {
     }
 }
 
+//automatically added back in service of WebhookEndpoint with hash1815992211640876098
 impl WebhookEndpoint {
     /// Returns a list of your webhook endpoints.
     pub fn list(
@@ -854,6 +857,7 @@ impl WebhookEndpoint {
     }
 }
 
+//automatically added back in service of ListWebhookEndpoints with hash1745722768132667490
 impl<'a> ListWebhookEndpoints<'a> {
     pub fn new() -> Self {
         ListWebhookEndpoints {

@@ -1,3 +1,4 @@
+use crate::resources::{InvoiceItemPriceData, SubscriptionScheduleInvoiceSettings, AddInvoiceItems, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -554,7 +555,6 @@ pub struct UpdateSubscriptionSchedulePhases {
     pub trial_end: Option<Scheduled>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -610,7 +610,6 @@ pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
     pub destination: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -667,7 +666,6 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1145,6 +1143,7 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBeha
     }
 }
 
+//automatically added back in service of SubscriptionSchedule with hash-8605940895179834805
 impl Object for SubscriptionSchedule {
     type Id = SubscriptionScheduleId;
     fn id(&self) -> Self::Id {
@@ -1155,6 +1154,7 @@ impl Object for SubscriptionSchedule {
     }
 }
 
+//automatically added back in service of SubscriptionSchedule with hash5664086474422650771
 impl SubscriptionSchedule {
     /// Retrieves the list of your subscription schedules.
     pub fn list(
@@ -1195,6 +1195,7 @@ impl SubscriptionSchedule {
     }
 }
 
+//automatically added back in service of CreateSubscriptionSchedule with hash-44286139511874607
 impl<'a> CreateSubscriptionSchedule<'a> {
     pub fn new() -> Self {
         CreateSubscriptionSchedule {
@@ -1210,6 +1211,7 @@ impl<'a> CreateSubscriptionSchedule<'a> {
     }
 }
 
+//automatically added back in service of ListSubscriptionSchedules with hash8130888420165609550
 impl<'a> ListSubscriptionSchedules<'a> {
     pub fn new() -> Self {
         ListSubscriptionSchedules {
@@ -1227,6 +1229,7 @@ impl<'a> ListSubscriptionSchedules<'a> {
     }
 }
 
+//automatically added back in service of UpdateSubscriptionSchedule with hash6231078576361915594
 impl<'a> UpdateSubscriptionSchedule<'a> {
     pub fn new() -> Self {
         UpdateSubscriptionSchedule {

@@ -256,6 +256,7 @@ impl std::fmt::Display for IssuingTransactionWallet {
     }
 }
 
+//automatically added back in service of IssuingTransaction with hash2453258017434230428
 impl Object for IssuingTransaction {
     type Id = IssuingTransactionId;
     fn id(&self) -> Self::Id {

@@ -1,3 +1,4 @@
+use crate::resources::{DiscountsResourceDiscountAmount, };
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -95,7 +96,6 @@ pub struct InvoiceLineItem {
 
 
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
 
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -140,6 +140,7 @@ impl std::fmt::Display for InvoiceLineItemType {
     }
 }
 
+//automatically added back in service of InvoiceLineItem with hash2307922612136106088
 impl Object for InvoiceLineItem {
     type Id = InvoiceLineItemId;
     fn id(&self) -> Self::Id {

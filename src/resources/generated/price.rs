@@ -887,6 +887,7 @@ impl std::fmt::Display for TransformQuantityRound {
     }
 }
 
+//automatically added back in service of Price with hash-7758827137345157121
 impl Object for Price {
     type Id = PriceId;
     fn id(&self) -> Self::Id {
@@ -897,6 +898,7 @@ impl Object for Price {
     }
 }
 
+//automatically added back in service of Price with hash-5109749639056774953
 impl Price {
     /// Returns a list of your prices.
     pub fn list(client: &Client, params: ListPrices<'_>) -> Response<List<Price>> {
@@ -923,6 +925,7 @@ impl Price {
     }
 }
 
+//automatically added back in service of ListPrices with hash2804052150451721366
 impl<'a> ListPrices<'a> {
     pub fn new() -> Self {
         ListPrices {
@@ -941,6 +944,7 @@ impl<'a> ListPrices<'a> {
     }
 }
 
+//automatically added back in service of CreatePrice with hash-6208507361928840505
 impl<'a> CreatePrice<'a> {
     pub fn new(currency: Currency) -> Self {
         CreatePrice {
@@ -965,6 +969,7 @@ impl<'a> CreatePrice<'a> {
     }
 }
 
+//automatically added back in service of UpdatePrice with hash-900594503753623857
 impl<'a> UpdatePrice<'a> {
     pub fn new() -> Self {
         UpdatePrice {

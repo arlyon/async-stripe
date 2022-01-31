@@ -444,6 +444,7 @@ impl std::fmt::Display for IssuingDisputeOtherEvidenceProductType {
     }
 }
 
+//automatically added back in service of IssuingDispute with hash5967689277921946028
 impl Object for IssuingDispute {
     type Id = IssuingDisputeId;
     fn id(&self) -> Self::Id {
