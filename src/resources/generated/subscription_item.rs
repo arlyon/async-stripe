@@ -1,4 +1,4 @@
-// ======================================
+
 // This file was automatically generated.
 // ======================================
 
@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
-use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};
+use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate, SubscriptionPaymentBehavior, SubscriptionProrationBehavior, PlanInterval};
 
 /// The resource representing a Stripe "SubscriptionItem".
 ///
@@ -367,39 +367,6 @@ pub struct SubscriptionItemPriceDataRecurring {
     pub interval_count: Option<Box<u64>>,
 }
 
-/// An enum representing the possible values of an `SubscriptionItemPriceDataRecurring`'s `interval` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum PlanInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-}
-
-impl PlanInterval {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            PlanInterval::Day => "day",
-            PlanInterval::Month => "month",
-            PlanInterval::Week => "week",
-            PlanInterval::Year => "year",
-        }
-    }
-}
-
-impl AsRef<str> for PlanInterval {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PlanInterval {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
 /// An enum representing the possible values of an `SubscriptionItemPriceData`'s `tax_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -426,70 +393,6 @@ impl AsRef<str> for SubscriptionItemPriceDataTaxBehavior {
 }
 
 impl std::fmt::Display for SubscriptionItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `CreateSubscriptionItem`'s `payment_behavior` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionPaymentBehavior {
-    AllowIncomplete,
-    DefaultIncomplete,
-    ErrorIfIncomplete,
-    PendingIfIncomplete,
-}
-
-impl SubscriptionPaymentBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionPaymentBehavior::AllowIncomplete => "allow_incomplete",
-            SubscriptionPaymentBehavior::DefaultIncomplete => "default_incomplete",
-            SubscriptionPaymentBehavior::ErrorIfIncomplete => "error_if_incomplete",
-            SubscriptionPaymentBehavior::PendingIfIncomplete => "pending_if_incomplete",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionPaymentBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionPaymentBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `CreateSubscriptionItem`'s `proration_behavior` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-}
-
-impl SubscriptionProrationBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionProrationBehavior::AlwaysInvoice => "always_invoice",
-            SubscriptionProrationBehavior::CreateProrations => "create_prorations",
-            SubscriptionProrationBehavior::None => "none",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionProrationBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
