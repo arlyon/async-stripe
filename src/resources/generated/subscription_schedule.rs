@@ -1,13 +1,14 @@
-use crate::resources::{InvoiceItemPriceData, SubscriptionScheduleInvoiceSettings, AddInvoiceItems, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, SubscriptionScheduleId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::resources::{
+    AddInvoiceItems, InvoiceItemPriceData, SubscriptionScheduleInvoiceSettings,
+};
 use crate::resources::{
     CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled, Subscription,
     SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData,
@@ -85,10 +86,6 @@ pub struct SubscriptionSchedule {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<Box<Expandable<Subscription>>>,
 }
-
-
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleCurrentPhase {
@@ -319,8 +316,6 @@ pub struct CreateSubscriptionSchedule<'a> {
     pub start_date: Option<Scheduled>,
 }
 
-
-
 /// The parameters for `SubscriptionSchedule::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptionSchedules<'a> {
@@ -373,8 +368,6 @@ pub struct ListSubscriptionSchedules<'a> {
     pub starting_after: Option<SubscriptionScheduleId>,
 }
 
-
-
 /// The parameters for `SubscriptionSchedule::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionSchedule<'a> {
@@ -415,8 +408,6 @@ pub struct UpdateSubscriptionSchedule<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhases {
@@ -555,8 +546,6 @@ pub struct UpdateSubscriptionSchedulePhases {
     pub trial_end: Option<Scheduled>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
     pub enabled: bool,
@@ -609,8 +598,6 @@ pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
 
     pub destination: String,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
@@ -665,8 +652,6 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<Box<String>>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsBillingThresholds {
@@ -1154,7 +1139,7 @@ impl Object for SubscriptionSchedule {
     }
 }
 
-//automatically added back in service of SubscriptionSchedule with hash5664086474422650771
+//automatically added back in service of SubscriptionSchedule with hash-8262815934185951579
 impl SubscriptionSchedule {
     /// Retrieves the list of your subscription schedules.
     pub fn list(

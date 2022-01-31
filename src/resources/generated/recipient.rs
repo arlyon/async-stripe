@@ -74,10 +74,6 @@ pub struct Recipient {
     pub type_: Option<RecipientType>,
 }
 
-
-
-
-
 /// The parameters for `Recipient::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateRecipient<'a> {
@@ -122,8 +118,6 @@ pub struct CreateRecipient<'a> {
     pub type_: RecipientType,
 }
 
-
-
 /// The parameters for `Recipient::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListRecipients<'a> {
@@ -162,8 +156,6 @@ pub struct ListRecipients<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verified: Option<bool>,
 }
-
-
 
 /// The parameters for `Recipient::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -253,18 +245,7 @@ impl std::fmt::Display for RecipientType {
     }
 }
 
-//automatically added back in service of Recipient with hash-2353419236078842127
-impl Object for Recipient {
-    type Id = RecipientId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "recipient"
-    }
-}
-
-//automatically added back in service of Recipient with hash-2019511360650703802
+//automatically added back in service of Recipient with hash-3860732951025120279
 impl Recipient {
     /// Returns a list of your recipients.
     ///
@@ -304,6 +285,17 @@ impl Recipient {
     /// It cannot be undone.
     pub fn delete(client: &Client, id: &RecipientId) -> Response<Deleted<RecipientId>> {
         client.delete(&format!("/recipients/{}", id))
+    }
+}
+
+//automatically added back in service of Recipient with hash-2353419236078842127
+impl Object for Recipient {
+    type Id = RecipientId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "recipient"
     }
 }
 

@@ -23,10 +23,6 @@ pub struct TaxCode {
     pub name: String,
 }
 
-
-
-
-
 /// The parameters for `TaxCode::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxCodes<'a> {

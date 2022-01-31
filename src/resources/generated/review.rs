@@ -71,10 +71,6 @@ pub struct Review {
     pub session: Option<Box<RadarReviewResourceSession>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RadarReviewResourceLocation {
     /// The city where the payment originated.

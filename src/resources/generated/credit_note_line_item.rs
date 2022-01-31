@@ -1,12 +1,11 @@
-use crate::resources::{DiscountsResourceDiscountAmount, CreditNoteTaxAmount, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::ids::CreditNoteLineItemId;
 use crate::params::{Expandable, Object};
+use crate::resources::{CreditNoteTaxAmount, DiscountsResourceDiscountAmount};
 use crate::resources::{Discount, TaxRate};
 
 /// The resource representing a Stripe "CreditNoteLineItem".
@@ -59,12 +58,6 @@ pub struct CreditNoteLineItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<Box<String>>,
 }
-
-
-
-
-
-
 
 /// An enum representing the possible values of an `CreditNoteLineItem`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]

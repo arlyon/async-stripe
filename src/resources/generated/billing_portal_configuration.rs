@@ -55,8 +55,6 @@ pub struct BillingPortalConfiguration {
     pub updated: Timestamp,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalBusinessProfile {
     /// The messaging shown to customers in the portal.

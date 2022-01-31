@@ -90,8 +90,6 @@ pub struct IssuingTransaction {
     pub wallet: Option<Box<IssuingTransactionWallet>>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionAmountDetails {
     /// The fee charged by the ATM for the cash withdrawal.

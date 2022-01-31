@@ -92,10 +92,6 @@ pub struct Product {
     pub url: Option<Box<String>>,
 }
 
-
-
-
-
 /// The parameters for `Product::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateProduct<'a> {
@@ -169,8 +165,6 @@ pub struct CreateProduct<'a> {
     pub url: Option<&'a str>,
 }
 
-
-
 /// The parameters for `Product::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListProducts<'a> {
@@ -218,8 +212,6 @@ pub struct ListProducts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<&'a str>,
 }
-
-
 
 /// The parameters for `Product::update`.
 #[derive(Clone, Debug, Serialize, Default)]

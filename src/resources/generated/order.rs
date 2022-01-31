@@ -121,10 +121,6 @@ pub struct Order {
     pub upstream_id: Option<Box<String>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingMethod {
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the line item.
@@ -242,8 +238,6 @@ pub struct CreateOrder<'a> {
     pub shipping: Option<Box<CreateOrderShipping>>,
 }
 
-
-
 /// The parameters for `Order::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListOrders<'a> {
@@ -298,8 +292,6 @@ pub struct ListOrders<'a> {
     pub upstream_ids: Option<Box<Vec<String>>>,
 }
 
-
-
 /// The parameters for `Order::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateOrder<'a> {
@@ -340,8 +332,6 @@ pub struct UpdateOrder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<OrderStatus>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateOrderShipping {

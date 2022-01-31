@@ -50,8 +50,6 @@ pub struct ReportingReportRun {
     pub succeeded_at: Option<Box<Timestamp>>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FinancialReportingFinanceReportRunRunParameters {
     /// The set of output columns requested for inclusion in the report run.

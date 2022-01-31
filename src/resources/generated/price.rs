@@ -120,10 +120,6 @@ pub struct Price {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PriceTier {
     /// Price for the entire tier.
@@ -281,8 +277,6 @@ pub struct CreatePrice<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 
-
-
 /// The parameters for `Price::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPrices<'a> {
@@ -342,8 +336,6 @@ pub struct ListPrices<'a> {
     pub type_: Option<PriceType>,
 }
 
-
-
 /// The parameters for `Price::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePrice<'a> {
@@ -386,8 +378,6 @@ pub struct UpdatePrice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_lookup_key: Option<bool>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceProductData {

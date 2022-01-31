@@ -61,10 +61,6 @@ pub struct PromotionCode {
     pub times_redeemed: i64,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PromotionCodesResourceRestrictions {
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
@@ -129,8 +125,6 @@ pub struct ListPromotionCodes<'a> {
     pub starting_after: Option<PromotionCodeId>,
 }
 
-
-
 /// The parameters for `PromotionCode::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePromotionCode<'a> {
@@ -163,7 +157,7 @@ impl<'a> UpdatePromotionCode<'a> {
     }
 }
 
-//automatically added back in service of PromotionCode with hash-812479903075292075
+//automatically added back in service of PromotionCode with hash-3696780080453033563
 impl PromotionCode {
     /// Returns a list of your promotion codes.
     pub fn list(client: &Client, params: ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {

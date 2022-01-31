@@ -118,10 +118,6 @@ pub struct InvoiceItem {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-
-
-
-
 /// The parameters for `InvoiceItem::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateInvoiceItem<'a> {
@@ -222,8 +218,6 @@ pub struct CreateInvoiceItem<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 
-
-
 /// The parameters for `InvoiceItem::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoiceItems<'a> {
@@ -274,8 +268,6 @@ pub struct ListInvoiceItems<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<InvoiceItemId>,
 }
-
-
 
 /// The parameters for `InvoiceItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -356,8 +348,6 @@ pub struct UpdateInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<&'a str>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceItemDiscounts {
@@ -445,18 +435,7 @@ impl<'a> UpdateInvoiceItem<'a> {
     }
 }
 
-//automatically added back in service of InvoiceItem with hash7950177059610030066
-impl Object for InvoiceItem {
-    type Id = InvoiceItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "invoiceitem"
-    }
-}
-
-//automatically added back in service of InvoiceItem with hash5837898571213207047
+//automatically added back in service of InvoiceItem with hash3610782074148669050
 impl InvoiceItem {
     /// Returns a list of your invoice items.
     ///
@@ -493,6 +472,17 @@ impl InvoiceItem {
     /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
     pub fn delete(client: &Client, id: &InvoiceItemId) -> Response<Deleted<InvoiceItemId>> {
         client.delete(&format!("/invoiceitems/{}", id))
+    }
+}
+
+//automatically added back in service of InvoiceItem with hash7950177059610030066
+impl Object for InvoiceItem {
+    type Id = InvoiceItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "invoiceitem"
     }
 }
 

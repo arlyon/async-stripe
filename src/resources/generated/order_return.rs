@@ -45,10 +45,6 @@ pub struct OrderReturn {
     pub refund: Option<Box<Expandable<Refund>>>,
 }
 
-
-
-
-
 /// The parameters for `OrderReturn::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListOrderReturns<'a> {

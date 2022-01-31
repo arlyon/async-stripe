@@ -95,10 +95,6 @@ pub struct Refund {
     pub transfer_reversal: Option<Box<Expandable<TransferReversal>>>,
 }
 
-
-
-
-
 /// The parameters for `Refund::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateRefund<'a> {
@@ -132,8 +128,6 @@ pub struct CreateRefund<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reverse_transfer: Option<bool>,
 }
-
-
 
 /// The parameters for `Refund::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -173,8 +167,6 @@ pub struct ListRefunds<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<RefundId>,
 }
-
-
 
 /// The parameters for `Refund::update`.
 #[derive(Clone, Debug, Serialize, Default)]

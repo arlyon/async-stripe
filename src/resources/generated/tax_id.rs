@@ -52,8 +52,6 @@ pub struct TaxId {
     pub verification: Option<Box<TaxIdVerification>>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxIdVerification {
     /// Verification status, one of `pending`, `verified`, `unverified`, or `unavailable`.

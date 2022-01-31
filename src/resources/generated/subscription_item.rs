@@ -1,14 +1,13 @@
-use crate::resources::{SubscriptionItemPriceDataRecurring, SubscriptionItemPriceData, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};
+use crate::resources::{SubscriptionItemPriceData, SubscriptionItemPriceDataRecurring};
 
 /// The resource representing a Stripe "SubscriptionItem".
 ///
@@ -55,10 +54,6 @@ pub struct SubscriptionItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Box<Vec<TaxRate>>>,
 }
-
-
-
-
 
 /// The parameters for `SubscriptionItem::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -133,8 +128,6 @@ pub struct CreateSubscriptionItem<'a> {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
-
-
 /// The parameters for `SubscriptionItem::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListSubscriptionItems<'a> {
@@ -165,8 +158,6 @@ pub struct ListSubscriptionItems<'a> {
     /// The ID of the subscription whose items will be retrieved.
     pub subscription: SubscriptionId,
 }
-
-
 
 /// The parameters for `SubscriptionItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -243,12 +234,6 @@ pub struct UpdateSubscriptionItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Box<Vec<String>>>,
 }
-
-
-
-
-
-
 
 /// An enum representing the possible values of an `SubscriptionItemPriceDataRecurring`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -429,7 +414,18 @@ impl<'a> CreateSubscriptionItem<'a> {
     }
 }
 
-//automatically added back in service of SubscriptionItem with hash3790658307592474265
+//automatically added back in service of SubscriptionItem with hash6670535476668204121
+impl Object for SubscriptionItem {
+    type Id = SubscriptionItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "subscription_item"
+    }
+}
+
+//automatically added back in service of SubscriptionItem with hash7470898605362399639
 impl SubscriptionItem {
     /// Returns a list of your subscription items for a given subscription.
     pub fn list(
@@ -475,16 +471,5 @@ impl SubscriptionItem {
         id: &SubscriptionItemId,
     ) -> Response<Deleted<SubscriptionItemId>> {
         client.delete(&format!("/subscription_items/{}", id))
-    }
-}
-
-//automatically added back in service of SubscriptionItem with hash6670535476668204121
-impl Object for SubscriptionItem {
-    type Id = SubscriptionItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "subscription_item"
     }
 }

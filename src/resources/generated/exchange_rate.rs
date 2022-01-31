@@ -20,10 +20,6 @@ pub struct ExchangeRate {
     pub rates: ExchangeRateRates,
 }
 
-
-
-
-
 /// The parameters for `ExchangeRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListExchangeRates<'a> {
@@ -63,18 +59,7 @@ impl<'a> ListExchangeRates<'a> {
     }
 }
 
-//automatically added back in service of ExchangeRate with hash-6965219324705362532
-impl Object for ExchangeRate {
-    type Id = ExchangeRateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "exchange_rate"
-    }
-}
-
-//automatically added back in service of ExchangeRate with hash-4691794435717610588
+//automatically added back in service of ExchangeRate with hash4615835553361771593
 impl ExchangeRate {
     /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
     ///
@@ -90,5 +75,16 @@ impl ExchangeRate {
         expand: &[&str],
     ) -> Response<ExchangeRate> {
         client.get_query(&format!("/exchange_rates/{}", id), &Expand { expand })
+    }
+}
+
+//automatically added back in service of ExchangeRate with hash-6965219324705362532
+impl Object for ExchangeRate {
+    type Id = ExchangeRateId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "exchange_rate"
     }
 }

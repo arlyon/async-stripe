@@ -97,8 +97,6 @@ pub struct IssuingCard {
     pub wallets: Option<Box<IssuingCardWallets>>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardAuthorizationControls {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.

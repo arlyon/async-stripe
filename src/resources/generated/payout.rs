@@ -110,10 +110,6 @@ pub struct Payout {
     pub type_: PayoutType,
 }
 
-
-
-
-
 /// The parameters for `Payout::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePayout<'a> {
@@ -168,8 +164,6 @@ pub struct CreatePayout<'a> {
     pub statement_descriptor: Option<&'a str>,
 }
 
-
-
 /// The parameters for `Payout::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPayouts<'a> {
@@ -207,8 +201,6 @@ pub struct ListPayouts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<&'a str>,
 }
-
-
 
 /// The parameters for `Payout::update`.
 #[derive(Clone, Debug, Serialize, Default)]

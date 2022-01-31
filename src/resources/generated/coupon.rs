@@ -87,10 +87,6 @@ pub struct Coupon {
     pub valid: Option<Box<bool>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CouponAppliesTo {
     /// A list of product IDs this coupon applies to.
@@ -164,8 +160,6 @@ pub struct CreateCoupon<'a> {
     pub redeem_by: Option<Timestamp>,
 }
 
-
-
 /// The parameters for `Coupon::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCoupons<'a> {
@@ -200,8 +194,6 @@ pub struct ListCoupons<'a> {
     pub starting_after: Option<CouponId>,
 }
 
-
-
 /// The parameters for `Coupon::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCoupon<'a> {
@@ -223,8 +215,6 @@ pub struct UpdateCoupon<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<&'a str>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCouponAppliesTo {

@@ -162,10 +162,6 @@ pub struct Source {
     pub wechat: Option<Box<SourceTypeWechat>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceCodeVerificationFlow {
     /// The number of attempts remaining to authenticate the source object with a verification code.
@@ -935,8 +931,6 @@ pub struct CreateSource<'a> {
     pub type_: Option<&'a str>,
 }
 
-
-
 /// The parameters for `Source::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListSources<'a> {
@@ -964,8 +958,6 @@ pub struct ListSources<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<SourceId>,
 }
-
-
 
 /// The parameters for `Source::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -1000,8 +992,6 @@ pub struct UpdateSource<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_order: Option<Box<UpdateSourceSourceOrder>>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSourceReceiver {

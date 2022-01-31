@@ -1,13 +1,12 @@
-use crate::resources::{InvoiceItemPriceData, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::resources::InvoiceItemPriceData;
 use crate::resources::{
     CollectionMethod, Currency, Customer, Discount, Invoice, InvoicePaymentMethodOptionsAcssDebit,
     InvoicePaymentMethodOptionsBancontact, PaymentMethod, PaymentSource, Scheduled, SetupIntent,
@@ -191,10 +190,6 @@ pub struct Subscription {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_start: Option<Box<Timestamp>>,
 }
-
-
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionAutomaticTax {
@@ -501,8 +496,6 @@ pub struct CreateSubscription<'a> {
     pub trial_period_days: Option<u32>,
 }
 
-
-
 /// The parameters for `Subscription::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptions<'a> {
@@ -562,8 +555,6 @@ pub struct ListSubscriptions<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<SubscriptionStatusFilter>,
 }
-
-
 
 /// The parameters for `Subscription::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -747,8 +738,6 @@ pub struct UpdateSubscription<'a> {
     pub trial_from_plan: Option<bool>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -899,8 +888,6 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard>>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceData {
@@ -2029,7 +2016,7 @@ impl<'a> ListSubscriptions<'a> {
     }
 }
 
-//automatically added back in service of Subscription with hash3752503506519761346
+//automatically added back in service of Subscription with hash-1426855596312744388
 impl Subscription {
     /// By default, returns a list of subscriptions that have not been canceled.
     ///

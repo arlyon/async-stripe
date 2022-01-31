@@ -42,8 +42,6 @@ pub struct IdentityVerificationReport {
     pub verification_session: Option<Box<String>>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDocumentReport {
     /// Address as it appears in the document.

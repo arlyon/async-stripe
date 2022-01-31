@@ -1,13 +1,12 @@
-use crate::resources::{AccountRequirementsError, AccountRequirementsAlternative, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::ids::CapabilityId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::Account;
+use crate::resources::{AccountRequirementsAlternative, AccountRequirementsError};
 
 /// The resource representing a Stripe "AccountCapability".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -38,8 +37,6 @@ pub struct Capability {
     /// Can be `active`, `inactive`, `pending`, or `unrequested`.
     pub status: CapabilityStatus,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilityFutureRequirements {
@@ -126,10 +123,6 @@ pub struct AccountCapabilityRequirements {
     /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
     pub pending_verification: Vec<String>,
 }
-
-
-
-
 
 /// An enum representing the possible values of an `AccountRequirementsError`'s `code` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]

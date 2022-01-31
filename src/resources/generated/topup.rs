@@ -82,10 +82,6 @@ pub struct Topup {
     pub transfer_group: Option<Box<String>>,
 }
 
-
-
-
-
 /// The parameters for `Topup::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTopups<'a> {
@@ -129,8 +125,6 @@ pub struct ListTopups<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<TopupStatusFilter>,
 }
-
-
 
 /// The parameters for `Topup::update`.
 #[derive(Clone, Debug, Serialize, Default)]

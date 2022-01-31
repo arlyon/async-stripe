@@ -109,10 +109,6 @@ pub struct CreditNote {
     pub voided_at: Option<Box<Timestamp>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreditNoteTaxAmount {
     /// The amount, in %s, of the tax.
@@ -187,8 +183,6 @@ pub struct CreateCreditNote<'a> {
     pub refund_amount: Option<i64>,
 }
 
-
-
 /// The parameters for `CreditNote::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCreditNotes<'a> {
@@ -225,8 +219,6 @@ pub struct ListCreditNotes<'a> {
     pub starting_after: Option<CreditNoteId>,
 }
 
-
-
 /// The parameters for `CreditNote::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCreditNote<'a> {
@@ -246,8 +238,6 @@ pub struct UpdateCreditNote<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCreditNoteLines {
@@ -407,7 +397,7 @@ impl Object for CreditNote {
     }
 }
 
-//automatically added back in service of CreditNote with hash5574780636889160172
+//automatically added back in service of CreditNote with hash8433732005184596589
 impl CreditNote {
     /// Returns a list of credit notes.
     pub fn list(client: &Client, params: ListCreditNotes<'_>) -> Response<List<CreditNote>> {

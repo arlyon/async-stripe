@@ -218,10 +218,6 @@ pub struct Charge {
     pub transfer_group: Option<Box<String>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetails {
     /// Assessments from Stripe.
@@ -1247,8 +1243,6 @@ pub struct CreateCharge<'a> {
     pub transfer_group: Option<&'a str>,
 }
 
-
-
 /// The parameters for `Charge::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCharges<'a> {
@@ -1291,8 +1285,6 @@ pub struct ListCharges<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
-
-
 
 /// The parameters for `Charge::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -1349,8 +1341,6 @@ pub struct UpdateCharge<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetailsParams {

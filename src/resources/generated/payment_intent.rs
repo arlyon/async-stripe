@@ -1,13 +1,12 @@
-use crate::resources::{TransferData, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::resources::TransferData;
 use crate::resources::{
     Account, ApiErrors, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession,
     PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsBoleto,
@@ -203,10 +202,6 @@ pub struct PaymentIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<Box<String>>,
 }
-
-
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
@@ -629,8 +624,6 @@ pub struct PaymentMethodOptionsWechatPay {
     pub client: Option<Box<PaymentMethodOptionsWechatPayClient>>,
 }
 
-
-
 /// The parameters for `PaymentIntent::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePaymentIntent<'a> {
@@ -808,8 +801,6 @@ pub struct CreatePaymentIntent<'a> {
     pub use_stripe_sdk: Option<bool>,
 }
 
-
-
 /// The parameters for `PaymentIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPaymentIntents<'a> {
@@ -847,8 +838,6 @@ pub struct ListPaymentIntents<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<PaymentIntentId>,
 }
-
-
 
 /// The parameters for `PaymentIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -964,8 +953,6 @@ pub struct UpdatePaymentIntent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentAutomaticPaymentMethods {
@@ -4584,18 +4571,7 @@ impl<'a> ListPaymentIntents<'a> {
     }
 }
 
-//automatically added back in service of PaymentIntent with hash8076366564989710908
-impl Object for PaymentIntent {
-    type Id = PaymentIntentId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "payment_intent"
-    }
-}
-
-//automatically added back in service of PaymentIntent with hash833592348371495805
+//automatically added back in service of PaymentIntent with hash-4712894670497804015
 impl PaymentIntent {
     /// Returns a list of PaymentIntents.
     pub fn list(client: &Client, params: ListPaymentIntents<'_>) -> Response<List<PaymentIntent>> {
@@ -4639,6 +4615,17 @@ impl PaymentIntent {
         params: UpdatePaymentIntent<'_>,
     ) -> Response<PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}", id), &params)
+    }
+}
+
+//automatically added back in service of PaymentIntent with hash8076366564989710908
+impl Object for PaymentIntent {
+    type Id = PaymentIntentId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "payment_intent"
     }
 }
 

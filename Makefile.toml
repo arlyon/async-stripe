@@ -29,6 +29,10 @@ args = [
 ]
 dependencies = ["openapi-delete"]
 
+[tasks.openapi-clean-dups]
+command = "python"
+args = ["combine.py"]
+
 [tasks.openapi-generate]
 cwd = "openapi"
 command = "cargo"
@@ -54,7 +58,7 @@ install_crate = "rustfmt"
 args = ["fmt", "--", "--check", "@@split(RUST_FILES,;)"]
 
 [tasks.openapi-install]
-dependencies = ["openapi-copy", "fmt"]
+dependencies = ["openapi-copy", "openapi-clean-dups", "fmt"]
 
 [config]
 default_to_workspace = false

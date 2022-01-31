@@ -43,10 +43,6 @@ pub struct Token {
     pub used: bool,
 }
 
-
-
-
-
 /// The parameters for `Token::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateToken<'a> {
@@ -77,8 +73,6 @@ pub struct CreateToken<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pii: Option<Box<CreateTokenPii>>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenAccount {

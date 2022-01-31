@@ -72,10 +72,6 @@ pub struct TaxRate {
     pub tax_type: Option<Box<TaxRateTaxType>>,
 }
 
-
-
-
-
 /// The parameters for `TaxRate::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTaxRate<'a> {
@@ -134,8 +130,6 @@ pub struct CreateTaxRate<'a> {
     pub tax_type: Option<TaxRateTaxType>,
 }
 
-
-
 /// The parameters for `TaxRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxRates<'a> {
@@ -175,8 +169,6 @@ pub struct ListTaxRates<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<TaxRateId>,
 }
-
-
 
 /// The parameters for `TaxRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]

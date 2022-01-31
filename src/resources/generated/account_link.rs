@@ -25,10 +25,6 @@ pub struct AccountLink {
     pub url: String,
 }
 
-
-
-
-
 /// The parameters for `AccountLink::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateAccountLink<'a> {

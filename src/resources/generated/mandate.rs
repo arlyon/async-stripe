@@ -41,10 +41,6 @@ pub struct Mandate {
     pub type_: MandateType,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerAcceptance {
     /// The time at which the customer accepted the Mandate.

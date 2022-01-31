@@ -197,10 +197,6 @@ pub struct CheckoutSession {
     pub url: Option<Box<String>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -589,8 +585,6 @@ pub struct CreateCheckoutSession<'a> {
     pub tax_id_collection: Option<Box<CreateCheckoutSessionTaxIdCollection>>,
 }
 
-
-
 /// The parameters for `CheckoutSession::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCheckoutSessions<'a> {
@@ -626,8 +620,6 @@ pub struct ListCheckoutSessions<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<SubscriptionId>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAfterExpiration {
@@ -3778,18 +3770,21 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionTaxIdType {
     }
 }
 
-//automatically added back in service of CheckoutSession with hash-2063762736368013191
-impl Object for CheckoutSession {
-    type Id = CheckoutSessionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "checkout.session"
+//automatically added back in service of ListCheckoutSessions with hash7735600488563492858
+impl<'a> ListCheckoutSessions<'a> {
+    pub fn new() -> Self {
+        ListCheckoutSessions {
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            payment_intent: Default::default(),
+            starting_after: Default::default(),
+            subscription: Default::default(),
+        }
     }
 }
 
-//automatically added back in service of CheckoutSession with hash-6638799040889401169
+//automatically added back in service of CheckoutSession with hash618968847832598553
 impl CheckoutSession {
     /// Returns a list of Checkout Sessions.
     pub fn list(
@@ -3805,17 +3800,14 @@ impl CheckoutSession {
     }
 }
 
-//automatically added back in service of ListCheckoutSessions with hash7735600488563492858
-impl<'a> ListCheckoutSessions<'a> {
-    pub fn new() -> Self {
-        ListCheckoutSessions {
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            payment_intent: Default::default(),
-            starting_after: Default::default(),
-            subscription: Default::default(),
-        }
+//automatically added back in service of CheckoutSession with hash-2063762736368013191
+impl Object for CheckoutSession {
+    type Id = CheckoutSessionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "checkout.session"
     }
 }
 

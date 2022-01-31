@@ -81,10 +81,6 @@ pub struct Sku {
     pub updated: Option<Box<Timestamp>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SkuInventory {
     /// The count of inventory available.
@@ -167,8 +163,6 @@ pub struct CreateSku<'a> {
     pub product: IdOrCreate<'a, CreateProduct<'a>>,
 }
 
-
-
 /// The parameters for `Sku::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSkus<'a> {
@@ -223,8 +217,6 @@ pub struct ListSkus<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<SkuId>,
 }
-
-
 
 /// The parameters for `Sku::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -345,7 +337,7 @@ impl Object for Sku {
     }
 }
 
-//automatically added back in service of CreateSku with hash7688483123037546267
+//automatically added back in service of CreateSku with hash3921259969257068177
 impl<'a> CreateSku<'a> {
     pub fn new(
         currency: Currency,

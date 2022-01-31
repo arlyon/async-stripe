@@ -1,13 +1,12 @@
-use crate::resources::{AccountRequirementsError, AccountRequirementsAlternative, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::resources::{AccountRequirementsAlternative, AccountRequirementsError};
 use crate::resources::{
     Address, BankAccount, Card, Currency, DelayDays, File, Person, PersonVerificationParams,
     VerificationDocumentParams,
@@ -111,10 +110,6 @@ pub struct Account {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<AccountType>,
 }
-
-
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BusinessProfile {
@@ -348,10 +343,6 @@ pub struct AccountRequirements {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_verification: Option<Box<Vec<String>>>,
 }
-
-
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountSettings {
@@ -780,8 +771,6 @@ pub struct CreateAccount<'a> {
     pub type_: Option<AccountType>,
 }
 
-
-
 /// The parameters for `Account::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListAccounts<'a> {
@@ -812,8 +801,6 @@ pub struct ListAccounts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<AccountId>,
 }
-
-
 
 /// The parameters for `Account::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -895,8 +882,6 @@ pub struct UpdateAccount<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_acceptance: Option<Box<AcceptTos>>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AcceptTos {

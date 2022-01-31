@@ -69,10 +69,6 @@ pub struct ShippingRate {
     pub type_: ShippingRateType,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range.
@@ -160,8 +156,6 @@ pub struct CreateShippingRate<'a> {
     pub type_: Option<ShippingRateType>,
 }
 
-
-
 /// The parameters for `ShippingRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListShippingRates<'a> {
@@ -204,8 +198,6 @@ pub struct ListShippingRates<'a> {
     pub starting_after: Option<ShippingRateId>,
 }
 
-
-
 /// The parameters for `ShippingRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateShippingRate<'a> {
@@ -227,8 +219,6 @@ pub struct UpdateShippingRate<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
@@ -423,7 +413,7 @@ impl std::fmt::Display for ShippingRateType {
     }
 }
 
-//automatically added back in service of ShippingRate with hash-4880346982358571119
+//automatically added back in service of ShippingRate with hash7157132574015334361
 impl ShippingRate {
     /// Returns a list of your shipping rates.
     pub fn list(client: &Client, params: ListShippingRates<'_>) -> Response<List<ShippingRate>> {

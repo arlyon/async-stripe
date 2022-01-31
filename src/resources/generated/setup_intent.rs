@@ -112,10 +112,6 @@ pub struct SetupIntent {
     pub usage: String,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentNextAction {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -304,8 +300,6 @@ pub struct CreateSetupIntent<'a> {
     pub single_use: Option<Box<CreateSetupIntentSingleUse>>,
 }
 
-
-
 /// The parameters for `SetupIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSetupIntents<'a> {
@@ -347,8 +341,6 @@ pub struct ListSetupIntents<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<SetupIntentId>,
 }
-
-
 
 /// The parameters for `SetupIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -394,8 +386,6 @@ pub struct UpdateSetupIntent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Box<Vec<String>>>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateData {
@@ -1167,7 +1157,7 @@ impl Object for SetupIntent {
     }
 }
 
-//automatically added back in service of SetupIntent with hash2843032243415731790
+//automatically added back in service of SetupIntent with hash-1408353295733216677
 impl SetupIntent {
     /// Returns a list of SetupIntents.
     pub fn list(client: &Client, params: ListSetupIntents<'_>) -> Response<List<SetupIntent>> {

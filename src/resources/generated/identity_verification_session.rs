@@ -76,8 +76,6 @@ pub struct IdentityVerificationSession {
     pub verified_outputs: Option<Box<GelatoVerifiedOutputs>>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSessionLastError {
     /// A short machine-readable string giving the reason for the verification or user-session failure.

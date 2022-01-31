@@ -45,8 +45,6 @@ pub struct ScheduledQueryRun {
     pub title: String,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SigmaScheduledQueryRunError {
     /// Information about the run failure.

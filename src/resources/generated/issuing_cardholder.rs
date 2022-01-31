@@ -69,8 +69,6 @@ pub struct IssuingCardholder {
     pub type_: IssuingCardholderType,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderAddress {
     pub address: Address,

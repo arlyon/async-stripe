@@ -72,10 +72,6 @@ pub struct WebhookEndpoint {
     pub url: Option<Box<String>>,
 }
 
-
-
-
-
 /// The parameters for `WebhookEndpoint::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateWebhookEndpoint<'a> {
@@ -114,8 +110,6 @@ pub struct CreateWebhookEndpoint<'a> {
     pub url: &'a str,
 }
 
-
-
 /// The parameters for `WebhookEndpoint::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListWebhookEndpoints<'a> {
@@ -143,8 +137,6 @@ pub struct ListWebhookEndpoints<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<WebhookEndpointId>,
 }
-
-
 
 /// The parameters for `WebhookEndpoint::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -801,18 +793,7 @@ impl<'a> CreateWebhookEndpoint<'a> {
     }
 }
 
-//automatically added back in service of WebhookEndpoint with hash-5274357473399814216
-impl Object for WebhookEndpoint {
-    type Id = WebhookEndpointId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "webhook_endpoint"
-    }
-}
-
-//automatically added back in service of WebhookEndpoint with hash1815992211640876098
+//automatically added back in service of WebhookEndpoint with hash-8638974670521242560
 impl WebhookEndpoint {
     /// Returns a list of your webhook endpoints.
     pub fn list(
@@ -854,6 +835,17 @@ impl WebhookEndpoint {
     /// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
     pub fn delete(client: &Client, id: &WebhookEndpointId) -> Response<Deleted<WebhookEndpointId>> {
         client.delete(&format!("/webhook_endpoints/{}", id))
+    }
+}
+
+//automatically added back in service of WebhookEndpoint with hash-5274357473399814216
+impl Object for WebhookEndpoint {
+    type Id = WebhookEndpointId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "webhook_endpoint"
     }
 }
 

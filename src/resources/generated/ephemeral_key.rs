@@ -34,10 +34,6 @@ pub struct EphemeralKey {
     pub secret: Option<Box<String>>,
 }
 
-
-
-
-
 /// The parameters for `EphemeralKey::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateEphemeralKey<'a> {

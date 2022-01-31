@@ -29,8 +29,6 @@ pub struct UsageRecordSummary {
     pub total_usage: i64,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Period {
     /// The end date of this usage period.

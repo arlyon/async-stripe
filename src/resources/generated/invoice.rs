@@ -1,10 +1,8 @@
-use crate::resources::{TaxAmount, DiscountsResourceDiscountAmount, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
@@ -13,6 +11,7 @@ use crate::resources::{
     InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact, PaymentIntent,
     PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
 };
+use crate::resources::{DiscountsResourceDiscountAmount, TaxAmount};
 
 /// The resource representing a Stripe "Invoice".
 ///
@@ -395,10 +394,6 @@ pub struct Invoice {
     pub webhooks_delivered_at: Option<Box<Timestamp>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
@@ -409,8 +404,6 @@ pub struct AutomaticTax {
     pub status: Option<Box<AutomaticTaxStatus>>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomField {
     /// The name of the custom field.
@@ -419,8 +412,6 @@ pub struct InvoiceSettingCustomField {
     /// The value of the custom field.
     pub value: String,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceThresholdReason {
@@ -654,8 +645,6 @@ pub struct CreateInvoice<'a> {
     pub transfer_data: Option<Box<CreateInvoiceTransferData>>,
 }
 
-
-
 /// The parameters for `Invoice::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoices<'a> {
@@ -709,8 +698,6 @@ pub struct ListInvoices<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<SubscriptionId>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceAutomaticTax {

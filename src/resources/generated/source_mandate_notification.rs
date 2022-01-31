@@ -57,8 +57,6 @@ pub struct SourceMandateNotification {
     pub type_: String,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateNotificationAcssDebitData {
     /// The statement descriptor associate with the debit.

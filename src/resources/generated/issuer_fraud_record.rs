@@ -43,10 +43,6 @@ pub struct IssuerFraudRecord {
     pub post_date: Timestamp,
 }
 
-
-
-
-
 /// The parameters for `IssuerFraudRecord::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListIssuerFraudRecords<'a> {
@@ -91,18 +87,7 @@ impl<'a> ListIssuerFraudRecords<'a> {
     }
 }
 
-//automatically added back in service of IssuerFraudRecord with hash-5996173823989904020
-impl Object for IssuerFraudRecord {
-    type Id = IssuerFraudRecordId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuer_fraud_record"
-    }
-}
-
-//automatically added back in service of IssuerFraudRecord with hash-2850313433496034458
+//automatically added back in service of IssuerFraudRecord with hash-5878184564617875815
 impl IssuerFraudRecord {
     /// Returns a list of issuer fraud records.
     pub fn list(
@@ -121,5 +106,16 @@ impl IssuerFraudRecord {
         expand: &[&str],
     ) -> Response<IssuerFraudRecord> {
         client.get_query(&format!("/issuer_fraud_records/{}", id), &Expand { expand })
+    }
+}
+
+//automatically added back in service of IssuerFraudRecord with hash-5996173823989904020
+impl Object for IssuerFraudRecord {
+    type Id = IssuerFraudRecordId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuer_fraud_record"
     }
 }

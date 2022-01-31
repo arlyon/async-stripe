@@ -84,10 +84,6 @@ pub struct PaymentLink {
     pub url: String,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourceAfterCompletion {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -237,8 +233,6 @@ pub struct CreatePaymentLink<'a> {
     pub transfer_data: Option<Box<CreatePaymentLinkTransferData>>,
 }
 
-
-
 /// The parameters for `PaymentLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPaymentLinks<'a> {
@@ -270,8 +264,6 @@ pub struct ListPaymentLinks<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<PaymentLinkId>,
 }
-
-
 
 /// The parameters for `PaymentLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -329,8 +321,6 @@ pub struct UpdatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<Box<UpdatePaymentLinkShippingAddressCollection>>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletion {
@@ -2930,7 +2920,7 @@ impl Object for PaymentLink {
     }
 }
 
-//automatically added back in service of PaymentLink with hash-6576730111448222994
+//automatically added back in service of PaymentLink with hash4196631132834950345
 impl PaymentLink {
     /// Returns a list of your payment links.
     pub fn list(client: &Client, params: ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {

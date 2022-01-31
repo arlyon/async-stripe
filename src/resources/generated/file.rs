@@ -54,10 +54,6 @@ pub struct File {
     pub url: Option<Box<String>>,
 }
 
-
-
-
-
 /// The parameters for `File::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFiles<'a> {

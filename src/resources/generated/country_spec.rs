@@ -42,10 +42,6 @@ pub struct CountrySpec {
     pub verification_fields: CountrySpecVerificationFields,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFields {
     pub company: CountrySpecVerificationFieldDetails,

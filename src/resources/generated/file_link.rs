@@ -45,10 +45,6 @@ pub struct FileLink {
     pub url: Option<Box<String>>,
 }
 
-
-
-
-
 /// The parameters for `FileLink::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateFileLink<'a> {
@@ -73,8 +69,6 @@ pub struct CreateFileLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 }
-
-
 
 /// The parameters for `FileLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -117,8 +111,6 @@ pub struct ListFileLinks<'a> {
     pub starting_after: Option<FileLinkId>,
 }
 
-
-
 /// The parameters for `FileLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateFileLink<'a> {
@@ -149,7 +141,7 @@ impl<'a> UpdateFileLink<'a> {
     }
 }
 
-//automatically added back in service of FileLink with hash7634509955512356458
+//automatically added back in service of FileLink with hash-7310617586032894135
 impl FileLink {
     /// Returns a list of file links.
     pub fn list(client: &Client, params: ListFileLinks<'_>) -> Response<List<FileLink>> {

@@ -84,10 +84,6 @@ pub struct Transfer {
     pub transfer_group: Option<Box<String>>,
 }
 
-
-
-
-
 /// The parameters for `Transfer::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTransfer<'a> {
@@ -137,8 +133,6 @@ pub struct CreateTransfer<'a> {
     pub transfer_group: Option<&'a str>,
 }
 
-
-
 /// The parameters for `Transfer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTransfers<'a> {
@@ -173,8 +167,6 @@ pub struct ListTransfers<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
-
-
 
 /// The parameters for `Transfer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -269,7 +261,18 @@ impl<'a> CreateTransfer<'a> {
     }
 }
 
-//automatically added back in service of Transfer with hash1573017057952128344
+//automatically added back in service of Transfer with hash1469934724607901288
+impl Object for Transfer {
+    type Id = TransferId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "transfer"
+    }
+}
+
+//automatically added back in service of Transfer with hash8146778775157952691
 impl Transfer {
     /// Returns a list of existing transfers sent to connected accounts.
     ///
@@ -301,16 +304,5 @@ impl Transfer {
         params: UpdateTransfer<'_>,
     ) -> Response<Transfer> {
         client.post_form(&format!("/transfers/{}", id), &params)
-    }
-}
-
-//automatically added back in service of Transfer with hash1469934724607901288
-impl Object for Transfer {
-    type Id = TransferId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "transfer"
     }
 }

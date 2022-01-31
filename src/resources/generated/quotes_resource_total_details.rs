@@ -1,11 +1,10 @@
-use crate::resources::{LineItemsTaxAmount, LineItemsDiscountAmount, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::resources::{Discount, TaxRate};
+use crate::resources::{LineItemsDiscountAmount, LineItemsTaxAmount};
 
 /// The resource representing a Stripe "QuotesResourceTotalDetails".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -32,7 +31,3 @@ pub struct QuotesResourceTotalDetailsResourceBreakdown {
     /// The aggregated line item tax amounts by rate.
     pub taxes: Vec<LineItemsTaxAmount>,
 }
-
-
-
-

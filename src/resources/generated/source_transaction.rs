@@ -56,8 +56,6 @@ pub struct SourceTransaction {
     pub type_: SourceTransactionType,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionAchCreditTransferData {
     /// Customer data associated with the transfer.

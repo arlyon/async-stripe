@@ -49,10 +49,6 @@ pub struct Event {
     pub type_: String,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NotificationEventRequest {
     /// ID of the API request that caused the event.

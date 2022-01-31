@@ -123,8 +123,6 @@ pub struct Person {
     pub verification: Option<Box<PersonVerification>>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LegalEntityDob {
     /// The day of birth, between 1 and 31.

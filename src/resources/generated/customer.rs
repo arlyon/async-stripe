@@ -1,16 +1,15 @@
-use crate::resources::{InvoiceSettingCustomField, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::{
     AlipayAccountId, BankAccountId, CardId, CouponId, CustomerId, PaymentMethodId, PaymentSourceId,
     PromotionCodeId,
 };
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::resources::InvoiceSettingCustomField;
 use crate::resources::{
     Address, Currency, Discount, PaymentMethod, PaymentSource, PaymentSourceParams, Scheduled,
     Shipping, Subscription, TaxId,
@@ -139,10 +138,6 @@ pub struct Customer {
     pub tax_ids: List<TaxId>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerTax {
     /// Surfaces if automatic tax computation is possible given the current customer location information.
@@ -184,8 +179,6 @@ pub struct InvoiceSettingCustomerSetting {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<Box<String>>,
 }
-
-
 
 /// The parameters for `Customer::create`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -290,8 +283,6 @@ pub struct CreateCustomer<'a> {
     pub tax_id_data: Option<Box<Vec<TaxIdData>>>,
 }
 
-
-
 /// The parameters for `Customer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCustomers<'a> {
@@ -328,8 +319,6 @@ pub struct ListCustomers<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<CustomerId>,
 }
-
-
 
 /// The parameters for `Customer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -455,8 +444,6 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Scheduled>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCustomerShipping {
@@ -796,34 +783,6 @@ impl std::fmt::Display for TaxIdType {
     }
 }
 
-//automatically added back in service of CreateCustomer with hash2216899000869908635
-impl<'a> CreateCustomer<'a> {
-    pub fn new() -> Self {
-        CreateCustomer {
-            address: Default::default(),
-            balance: Default::default(),
-            coupon: Default::default(),
-            description: Default::default(),
-            email: Default::default(),
-            expand: Default::default(),
-            invoice_prefix: Default::default(),
-            invoice_settings: Default::default(),
-            metadata: Default::default(),
-            name: Default::default(),
-            next_invoice_sequence: Default::default(),
-            payment_method: Default::default(),
-            phone: Default::default(),
-            preferred_locales: Default::default(),
-            promotion_code: Default::default(),
-            shipping: Default::default(),
-            source: Default::default(),
-            tax: Default::default(),
-            tax_exempt: Default::default(),
-            tax_id_data: Default::default(),
-        }
-    }
-}
-
 //automatically added back in service of ListCustomers with hash8260311421914000074
 impl<'a> ListCustomers<'a> {
     pub fn new() -> Self {
@@ -869,7 +828,46 @@ impl<'a> UpdateCustomer<'a> {
     }
 }
 
-//automatically added back in service of Customer with hash-1841310924771182504
+//automatically added back in service of CreateCustomer with hash2216899000869908635
+impl<'a> CreateCustomer<'a> {
+    pub fn new() -> Self {
+        CreateCustomer {
+            address: Default::default(),
+            balance: Default::default(),
+            coupon: Default::default(),
+            description: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            invoice_prefix: Default::default(),
+            invoice_settings: Default::default(),
+            metadata: Default::default(),
+            name: Default::default(),
+            next_invoice_sequence: Default::default(),
+            payment_method: Default::default(),
+            phone: Default::default(),
+            preferred_locales: Default::default(),
+            promotion_code: Default::default(),
+            shipping: Default::default(),
+            source: Default::default(),
+            tax: Default::default(),
+            tax_exempt: Default::default(),
+            tax_id_data: Default::default(),
+        }
+    }
+}
+
+//automatically added back in service of Customer with hash-6890770186154663517
+impl Object for Customer {
+    type Id = CustomerId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "customer"
+    }
+}
+
+//automatically added back in service of Customer with hash7226466852421032247
 impl Customer {
     /// Returns a list of your customers.
     ///
@@ -909,16 +907,5 @@ impl Customer {
     /// Also immediately cancels any active subscriptions on the customer.
     pub fn delete(client: &Client, id: &CustomerId) -> Response<Deleted<CustomerId>> {
         client.delete(&format!("/customers/{}", id))
-    }
-}
-
-//automatically added back in service of Customer with hash-6890770186154663517
-impl Object for Customer {
-    type Id = CustomerId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "customer"
     }
 }

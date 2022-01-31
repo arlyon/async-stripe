@@ -112,10 +112,6 @@ pub struct PaymentMethod {
     pub wechat_pay: Option<Box<PaymentMethodWechatPay>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentFlowsPrivatePaymentMethodsAlipay {}
 
@@ -647,8 +643,6 @@ pub struct CreatePaymentMethod<'a> {
     pub wechat_pay: Option<Box<CreatePaymentMethodWechatPay>>,
 }
 
-
-
 /// The parameters for `PaymentMethod::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPaymentMethods<'a> {
@@ -687,8 +681,6 @@ pub struct ListPaymentMethods<'a> {
     pub type_: PaymentMethodTypeFilter,
 }
 
-
-
 /// The parameters for `PaymentMethod::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentMethod<'a> {
@@ -708,8 +700,6 @@ pub struct UpdatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 }
-
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodAcssDebit {
@@ -1713,7 +1703,7 @@ impl<'a> UpdatePaymentMethod<'a> {
     }
 }
 
-//automatically added back in service of PaymentMethod with hash1146975989530125355
+//automatically added back in service of PaymentMethod with hash6895700544325082243
 impl PaymentMethod {
     /// Returns a list of PaymentMethods.
     ///

@@ -64,10 +64,6 @@ pub struct ApplicationFee {
     pub refunds: List<ApplicationFeeRefund>,
 }
 
-
-
-
-
 /// The parameters for `ApplicationFee::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListApplicationFees<'a> {
@@ -116,7 +112,7 @@ impl<'a> ListApplicationFees<'a> {
     }
 }
 
-//automatically added back in service of ApplicationFee with hash6140153625445951217
+//automatically added back in service of ApplicationFee with hash7758595835525162394
 impl ApplicationFee {
     /// Returns a list of application fees you’ve previously collected.
     ///

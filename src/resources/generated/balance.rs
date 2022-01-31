@@ -39,10 +39,6 @@ pub struct Balance {
     pub pending: Vec<BalanceAmount>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceAmount {
     /// Balance amount.

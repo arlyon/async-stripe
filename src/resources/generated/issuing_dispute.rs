@@ -50,8 +50,6 @@ pub struct IssuingDispute {
     pub transaction: Expandable<IssuingTransaction>,
 }
 
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeEvidence {
     #[serde(skip_serializing_if = "Option::is_none")]

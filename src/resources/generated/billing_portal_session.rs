@@ -50,10 +50,6 @@ pub struct BillingPortalSession {
     pub url: String,
 }
 
-
-
-
-
 /// The parameters for `BillingPortalSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateBillingPortalSession<'a> {
@@ -233,17 +229,6 @@ impl std::fmt::Display for BillingPortalSessionLocale {
     }
 }
 
-//automatically added back in service of BillingPortalSession with hash4572080641545088697
-impl BillingPortalSession {
-    /// Creates a session of the customer portal.
-    pub fn create(
-        client: &Client,
-        params: CreateBillingPortalSession<'_>,
-    ) -> Response<BillingPortalSession> {
-        client.post_form("/billing_portal/sessions", &params)
-    }
-}
-
 //automatically added back in service of BillingPortalSession with hash4519393852987815889
 impl Object for BillingPortalSession {
     type Id = BillingPortalSessionId;
@@ -252,5 +237,16 @@ impl Object for BillingPortalSession {
     }
     fn object(&self) -> &'static str {
         "billing_portal.session"
+    }
+}
+
+//automatically added back in service of BillingPortalSession with hash8325353705066617351
+impl BillingPortalSession {
+    /// Creates a session of the customer portal.
+    pub fn create(
+        client: &Client,
+        params: CreateBillingPortalSession<'_>,
+    ) -> Response<BillingPortalSession> {
+        client.post_form("/billing_portal/sessions", &params)
     }
 }

@@ -130,10 +130,6 @@ pub struct Plan {
     pub usage_type: Option<Box<PlanUsageType>>,
 }
 
-
-
-
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PlanTier {
     /// Price for the entire tier.
@@ -207,8 +203,6 @@ pub struct ListPlans<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<PlanId>,
 }
-
-
 
 /// The parameters for `Plan::update`.
 #[derive(Clone, Debug, Serialize, Default)]

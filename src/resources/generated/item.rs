@@ -1,13 +1,12 @@
-use crate::resources::{LineItemsTaxAmount, LineItemsDiscountAmount, };
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::ids::CheckoutSessionItemId;
 use crate::params::Object;
 use crate::resources::{Currency, Discount, Price, TaxRate};
+use crate::resources::{LineItemsDiscountAmount, LineItemsTaxAmount};
 
 /// The resource representing a Stripe "LineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -48,12 +47,6 @@ pub struct CheckoutSessionItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub taxes: Option<Box<Vec<LineItemsTaxAmount>>>,
 }
-
-
-
-
-
-
 
 //automatically added back in service of CheckoutSessionItem with hash-7800975525549346558
 impl Object for CheckoutSessionItem {
