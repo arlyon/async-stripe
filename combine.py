@@ -117,6 +117,8 @@ def parse_content(content):
                 break
             prev_macro = content.find("#", prev_line[0], prev_line[1]);
             if prev_macro == -1:
+                prev_macro = content.find("///", prev_line[0], prev_line[1]);
+            if prev_macro == -1:
                 break
 
             print("macro "+str(block_start)+" "+str(prev_line[0])+" "+str(prev_line[1]))
