@@ -106,16 +106,36 @@ def parse_content(content):
         while inside_open_braces < block_end and inside_open_braces != -1:
             block_end = content.find("}", block_end ) +1
             inside_open_braces = content.find("{", inside_open_braces +1);
+
+        # adjust the upper bound of the effective block by searching backwards for macros
+        # TODO: loop through this with bounds
+        print("macros")
+        macro_start = block_start
+        while True:
+            prev_line = [content.rfind("\n", 0, macro_start-1), macro_start-1]
+            if prev_line[0] == -1 or prev_line[1] == -1:
+                break
+            prev_macro = content.find("#", prev_line[0], prev_line[1]);
+            if prev_macro == -1:
+                break
+
+            print("macro "+str(block_start)+" "+str(prev_line[0])+" "+str(prev_line[1]))
+            print("prev macro line "+content[prev_line[0]: prev_line[1]])
+            if prev_macro!=-1:
+                macro_start=prev_macro
+                print("found macro "+content[prev_macro: content.find('\n', prev_macro)])
+
         
         if kind == "struct" or kind == "enum":
-            structs.append({"block_start":block_start,"block_end":block_end, "file":filename})
+            structs.append({"macro_start": macro_start, "block_start":block_start,"block_end":block_end, "file":filename})
         if kind == "impl":
-            impls.append({"block_start":block_start,"block_end":block_end, "file":filename})
+            impls.append({"macro_start": macro_start, "block_start":block_start,"block_end":block_end, "file":filename})
 
     # insert structs and enums into dict. If the insertion tells us about a conflict, add the struct/enum to imports and be prepared to remove all impls that pertain to this struct/enum
     for struct in structs:
+        with_macros = content[struct["macro_start"]: struct["block_end"]]
         struct_text = content[struct["block_start"]: struct["block_end"]]
-        identifier = trim(struct_text)
+        identifier = trim(with_macros)
 
         # get the name so we know which impls to look for
         name = get_struct_name(struct_text)
@@ -124,7 +144,7 @@ def parse_content(content):
             continue;
 
         if structs_unique.get(identifier) == None:
-            structs_unique[identifier] = { "duplicates": [], "related_impls": {}, "text": struct_text}
+            structs_unique[identifier] = { "duplicates": [], "related_impls": {}, "text": with_macros}
             print("found first "+name)
         else:
             removals.append(struct)
@@ -137,10 +157,11 @@ def parse_content(content):
 
         # for impl's, find out if they pertain to any of the structs or enums we just inserted. If they do, insert them with their associated struct/enum. 
         for impl in impls:
+            impl_text_with_macros = content[impl["macro_start"]: impl["block_end"]]
             impl_text = content[impl["block_start"]: impl["block_end"]]
             if is_related(impl_text, name):
                 # we are definitely removing this impl! That's why we don't have to keep track of duplicates, it doesn't matter if we're the first or the second or the last
-                structs_unique[identifier]["related_impls"][trim(impl_text)] = {"location":impl, "file": filename, "text":impl_text}
+                structs_unique[identifier]["related_impls"][trim(impl_text_with_macros)] = {"location":impl, "file": filename, "text":impl_text_with_macros}
 
                 # remove the impl from the current file, regardless
                 removals.append(impl)
@@ -149,7 +170,7 @@ def parse_content(content):
     removed_offset = 0;
     removals.sort(reverse=True, key=removal_sort)
     for removal in removals:
-        content = content[:removal["block_start"]] + content[removal["block_end"]:]
+        content = content[:removal["macro_start"]] + content[removal["block_end"]:]
 
     f = open("src/resources/generated/"+filename, "w")
     f.write(content);
