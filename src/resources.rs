@@ -164,10 +164,14 @@ pub use {
     },
     generated::billing::{
         coupon::*,
+        credit_note::*,
+        credit_note_line_item::*,
+        customer_balance_transaction::*,
         discount::*,
         invoice::*,
         invoice_payment_method_options_acss_debit::*,
         invoice_payment_method_options_bancontact::*,
+        invoice_setting_subscription_schedule_setting::*,
         //invoice_payment_method_options_card::*,
         invoiceitem::*,
         line_item::*,
@@ -179,8 +183,11 @@ pub use {
         quotes_resource_total_details::*,
         subscription_item::*,
         subscription_item::PlanInterval as SubscriptionItemInterval,
-        subscription_item::SubscriptionItemPriceDataRecurring as SubscriptionItemPriceDataRecurring,
-        subscription_item::SubscriptionItemPriceData as SubscriptionItemPriceData,
+
+        // with duplicates removed, conflicts between subscription and subscription item shouldn't
+        // happen
+        //subscription_item::SubscriptionItemPriceDataRecurring as SubscriptionItemPriceDataRecurring,
+        //subscription_item::SubscriptionItemPriceData as SubscriptionItemPriceData,
         // need to import this afterwards so that the SubscriptionItemPriceDataRecurring
         // isn't silently ignored
         subscription::*,

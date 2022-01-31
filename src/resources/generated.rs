@@ -62,10 +62,14 @@ pub mod checkout {
 #[cfg(feature = "billing")]
 pub mod billing {
     pub mod coupon;
+    pub mod credit_note;
+    pub mod credit_note_line_item;
+    pub mod customer_balance_transaction;
     pub mod discount;
     pub mod invoice;
     pub mod invoice_payment_method_options_acss_debit;
     pub mod invoice_payment_method_options_bancontact;
+    pub mod invoice_setting_subscription_schedule_setting;
     //pub mod invoice_payment_method_options_card;
     pub mod invoiceitem;
     pub mod line_item;
