@@ -41,22 +41,9 @@ pub struct Mandate {
     pub type_: MandateType,
 }
 
-impl Mandate {
-    /// Retrieves a Mandate object.
-    pub fn retrieve(client: &Client, id: &MandateId, expand: &[&str]) -> Response<Mandate> {
-        client.get_query(&format!("/mandates/{}", id), &Expand { expand })
-    }
-}
 
-impl Object for Mandate {
-    type Id = MandateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "mandate"
-    }
-}
+
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerAcceptance {
@@ -391,5 +378,22 @@ impl AsRef<str> for MandateType {
 impl std::fmt::Display for MandateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for Mandate {
+    type Id = MandateId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "mandate"
+    }
+}
+
+impl Mandate {
+    /// Retrieves a Mandate object.
+    pub fn retrieve(client: &Client, id: &MandateId, expand: &[&str]) -> Response<Mandate> {
+        client.get_query(&format!("/mandates/{}", id), &Expand { expand })
     }
 }

@@ -102,15 +102,7 @@ pub struct IssuingAuthorization {
     pub wallet: Option<Box<String>>,
 }
 
-impl Object for IssuingAuthorization {
-    type Id = IssuingAuthorizationId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.authorization"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationPendingRequest {
@@ -222,5 +214,15 @@ impl AsRef<str> for IssuingAuthorizationStatus {
 impl std::fmt::Display for IssuingAuthorizationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for IssuingAuthorization {
+    type Id = IssuingAuthorizationId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.authorization"
     }
 }

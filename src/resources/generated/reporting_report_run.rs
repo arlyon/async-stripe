@@ -50,15 +50,7 @@ pub struct ReportingReportRun {
     pub succeeded_at: Option<Box<Timestamp>>,
 }
 
-impl Object for ReportingReportRun {
-    type Id = ReportingReportRunId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "reporting.report_run"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FinancialReportingFinanceReportRunRunParameters {
@@ -97,4 +89,14 @@ pub struct FinancialReportingFinanceReportRunRunParameters {
     /// Has no effect on `interval_start` or `interval_end`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timezone: Option<Box<String>>,
+}
+
+impl Object for ReportingReportRun {
+    type Id = ReportingReportRunId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "reporting.report_run"
+    }
 }

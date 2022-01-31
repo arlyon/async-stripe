@@ -10,15 +10,7 @@ pub struct Account {
 }
 
 #[cfg(not(feature = "connect"))]
-impl Object for Account {
-    type Id = AccountId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "account"
-    }
-}
+
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -27,15 +19,7 @@ pub struct Application {
 }
 
 #[cfg(not(feature = "connect"))]
-impl Object for Application {
-    type Id = ();
-    fn id(&self) -> Self::Id {
-        self.id
-    }
-    fn object(&self) -> &'static str {
-        "application"
-    }
-}
+
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -44,15 +28,7 @@ pub struct ApplicationFee {
 }
 
 #[cfg(not(feature = "connect"))]
-impl Object for ApplicationFee {
-    type Id = ApplicationFeeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "application_fee"
-    }
-}
+
 
 #[cfg(not(feature = "checkout"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -61,15 +37,7 @@ pub struct CheckoutSession {
 }
 
 #[cfg(not(feature = "checkout"))]
-impl Object for CheckoutSession {
-    type Id = CheckoutSessionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "checkout_session"
-    }
-}
+
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -78,15 +46,7 @@ pub struct ConnectCollectionTransfer {
 }
 
 #[cfg(not(feature = "connect"))]
-impl Object for ConnectCollectionTransfer {
-    type Id = ();
-    fn id(&self) -> Self::Id {
-        self.id
-    }
-    fn object(&self) -> &'static str {
-        "connect_collection_transfer"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -95,15 +55,7 @@ pub struct Coupon {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for Coupon {
-    type Id = CouponId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "coupon"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -112,15 +64,7 @@ pub struct Discount {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for Discount {
-    type Id = DiscountId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "discount"
-    }
-}
+
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -129,15 +73,7 @@ pub struct ApplicationFeeRefund {
 }
 
 #[cfg(not(feature = "connect"))]
-impl Object for ApplicationFeeRefund {
-    type Id = ApplicationFeeRefundId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "fee_refund"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -146,15 +82,7 @@ pub struct Invoice {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for Invoice {
-    type Id = InvoiceId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "invoice"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -163,15 +91,7 @@ pub struct InvoiceItem {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for InvoiceItem {
-    type Id = InvoiceItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "invoiceitem"
-    }
-}
+
 
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -180,15 +100,7 @@ pub struct IssuingAuthorization {
 }
 
 #[cfg(not(feature = "issuing"))]
-impl Object for IssuingAuthorization {
-    type Id = IssuingAuthorizationId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.authorization"
-    }
-}
+
 
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -197,15 +109,7 @@ pub struct IssuingCard {
 }
 
 #[cfg(not(feature = "issuing"))]
-impl Object for IssuingCard {
-    type Id = IssuingCardId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.card"
-    }
-}
+
 
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -214,15 +118,7 @@ pub struct IssuingCardholder {
 }
 
 #[cfg(not(feature = "issuing"))]
-impl Object for IssuingCardholder {
-    type Id = IssuingCardholderId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.cardholder"
-    }
-}
+
 
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -231,15 +127,7 @@ pub struct IssuingDispute {
 }
 
 #[cfg(not(feature = "issuing"))]
-impl Object for IssuingDispute {
-    type Id = IssuingDisputeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.dispute"
-    }
-}
+
 
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -248,15 +136,7 @@ pub struct IssuingTransaction {
 }
 
 #[cfg(not(feature = "issuing"))]
-impl Object for IssuingTransaction {
-    type Id = IssuingTransactionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.transaction"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -265,15 +145,7 @@ pub struct InvoiceLineItem {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for InvoiceLineItem {
-    type Id = InvoiceLineItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "line_item"
-    }
-}
+
 
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -282,15 +154,7 @@ pub struct Order {
 }
 
 #[cfg(not(feature = "orders"))]
-impl Object for Order {
-    type Id = OrderId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "order"
-    }
-}
+
 
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -299,15 +163,7 @@ pub struct OrderItem {
 }
 
 #[cfg(not(feature = "orders"))]
-impl Object for OrderItem {
-    type Id = ();
-    fn id(&self) -> Self::Id {
-        self.id
-    }
-    fn object(&self) -> &'static str {
-        "order_item"
-    }
-}
+
 
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -316,15 +172,7 @@ pub struct OrderReturn {
 }
 
 #[cfg(not(feature = "orders"))]
-impl Object for OrderReturn {
-    type Id = OrderReturnId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "order_return"
-    }
-}
+
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -333,15 +181,7 @@ pub struct Person {
 }
 
 #[cfg(not(feature = "connect"))]
-impl Object for Person {
-    type Id = PersonId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "person"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -350,15 +190,7 @@ pub struct Plan {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for Plan {
-    type Id = PlanId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "plan"
-    }
-}
+
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -367,15 +199,7 @@ pub struct Recipient {
 }
 
 #[cfg(not(feature = "connect"))]
-impl Object for Recipient {
-    type Id = RecipientId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "recipient"
-    }
-}
+
 
 #[cfg(not(feature = "fraud"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -384,15 +208,7 @@ pub struct Review {
 }
 
 #[cfg(not(feature = "fraud"))]
-impl Object for Review {
-    type Id = ReviewId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "review"
-    }
-}
+
 
 #[cfg(not(feature = "sigma"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -401,15 +217,7 @@ pub struct ScheduledQueryRun {
 }
 
 #[cfg(not(feature = "sigma"))]
-impl Object for ScheduledQueryRun {
-    type Id = ScheduledQueryRunId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "scheduled_query_run"
-    }
-}
+
 
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -418,15 +226,7 @@ pub struct Sku {
 }
 
 #[cfg(not(feature = "orders"))]
-impl Object for Sku {
-    type Id = SkuId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "sku"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -435,15 +235,7 @@ pub struct Subscription {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for Subscription {
-    type Id = SubscriptionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "subscription"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -452,15 +244,7 @@ pub struct SubscriptionItem {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for SubscriptionItem {
-    type Id = SubscriptionItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "subscription_item"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -469,15 +253,7 @@ pub struct SubscriptionSchedule {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for SubscriptionSchedule {
-    type Id = SubscriptionScheduleId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "subscription_schedule"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -486,15 +262,7 @@ pub struct SubscriptionScheduleRevision {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for SubscriptionScheduleRevision {
-    type Id = ();
-    fn id(&self) -> Self::Id {
-        self.id
-    }
-    fn object(&self) -> &'static str {
-        "subscription_schedule_revision"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -503,15 +271,7 @@ pub struct TaxId {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for TaxId {
-    type Id = TaxIdId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "tax_id"
-    }
-}
+
 
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -520,15 +280,7 @@ pub struct TaxRate {
 }
 
 #[cfg(not(feature = "billing"))]
-impl Object for TaxRate {
-    type Id = TaxRateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "tax_rate"
-    }
-}
+
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -537,15 +289,7 @@ pub struct Topup {
 }
 
 #[cfg(not(feature = "connect"))]
-impl Object for Topup {
-    type Id = TopupId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "topup"
-    }
-}
+
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -554,15 +298,7 @@ pub struct Transfer {
 }
 
 #[cfg(not(feature = "connect"))]
-impl Object for Transfer {
-    type Id = TransferId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "transfer"
-    }
-}
+
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -571,15 +307,7 @@ pub struct TransferReversal {
 }
 
 #[cfg(not(feature = "connect"))]
-impl Object for TransferReversal {
-    type Id = TransferReversalId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "transfer_reversal"
-    }
-}
+
 
 #[cfg(not(feature = "webhook-endpoints"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -595,5 +323,345 @@ impl Object for WebhookEndpoint {
     }
     fn object(&self) -> &'static str {
         "webhook_endpoint"
+    }
+}
+
+impl Object for TransferReversal {
+    type Id = TransferReversalId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "transfer_reversal"
+    }
+}
+
+impl Object for OrderItem {
+    type Id = ();
+    fn id(&self) -> Self::Id {
+        self.id
+    }
+    fn object(&self) -> &'static str {
+        "order_item"
+    }
+}
+
+impl Object for CheckoutSession {
+    type Id = CheckoutSessionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "checkout_session"
+    }
+}
+
+impl Object for Application {
+    type Id = ();
+    fn id(&self) -> Self::Id {
+        self.id
+    }
+    fn object(&self) -> &'static str {
+        "application"
+    }
+}
+
+impl Object for Account {
+    type Id = AccountId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "account"
+    }
+}
+
+impl Object for ConnectCollectionTransfer {
+    type Id = ();
+    fn id(&self) -> Self::Id {
+        self.id
+    }
+    fn object(&self) -> &'static str {
+        "connect_collection_transfer"
+    }
+}
+
+impl Object for Subscription {
+    type Id = SubscriptionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "subscription"
+    }
+}
+
+impl Object for Coupon {
+    type Id = CouponId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "coupon"
+    }
+}
+
+impl Object for ApplicationFee {
+    type Id = ApplicationFeeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "application_fee"
+    }
+}
+
+impl Object for InvoiceLineItem {
+    type Id = InvoiceLineItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "line_item"
+    }
+}
+
+impl Object for SubscriptionSchedule {
+    type Id = SubscriptionScheduleId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "subscription_schedule"
+    }
+}
+
+impl Object for IssuingCard {
+    type Id = IssuingCardId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.card"
+    }
+}
+
+impl Object for SubscriptionItem {
+    type Id = SubscriptionItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "subscription_item"
+    }
+}
+
+impl Object for SubscriptionScheduleRevision {
+    type Id = ();
+    fn id(&self) -> Self::Id {
+        self.id
+    }
+    fn object(&self) -> &'static str {
+        "subscription_schedule_revision"
+    }
+}
+
+impl Object for Transfer {
+    type Id = TransferId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "transfer"
+    }
+}
+
+impl Object for IssuingCardholder {
+    type Id = IssuingCardholderId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.cardholder"
+    }
+}
+
+impl Object for TaxRate {
+    type Id = TaxRateId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "tax_rate"
+    }
+}
+
+impl Object for Topup {
+    type Id = TopupId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "topup"
+    }
+}
+
+impl Object for IssuingTransaction {
+    type Id = IssuingTransactionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.transaction"
+    }
+}
+
+impl Object for ScheduledQueryRun {
+    type Id = ScheduledQueryRunId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "scheduled_query_run"
+    }
+}
+
+impl Object for Invoice {
+    type Id = InvoiceId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "invoice"
+    }
+}
+
+impl Object for Recipient {
+    type Id = RecipientId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "recipient"
+    }
+}
+
+impl Object for InvoiceItem {
+    type Id = InvoiceItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "invoiceitem"
+    }
+}
+
+impl Object for Sku {
+    type Id = SkuId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "sku"
+    }
+}
+
+impl Object for Discount {
+    type Id = DiscountId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "discount"
+    }
+}
+
+impl Object for Review {
+    type Id = ReviewId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "review"
+    }
+}
+
+impl Object for Plan {
+    type Id = PlanId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "plan"
+    }
+}
+
+impl Object for TaxId {
+    type Id = TaxIdId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "tax_id"
+    }
+}
+
+impl Object for Order {
+    type Id = OrderId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "order"
+    }
+}
+
+impl Object for OrderReturn {
+    type Id = OrderReturnId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "order_return"
+    }
+}
+
+impl Object for ApplicationFeeRefund {
+    type Id = ApplicationFeeRefundId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "fee_refund"
+    }
+}
+
+impl Object for IssuingAuthorization {
+    type Id = IssuingAuthorizationId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.authorization"
+    }
+}
+
+impl Object for Person {
+    type Id = PersonId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "person"
+    }
+}
+
+impl Object for IssuingDispute {
+    type Id = IssuingDisputeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.dispute"
     }
 }

@@ -50,15 +50,7 @@ pub struct IssuingDispute {
     pub transaction: Expandable<IssuingTransaction>,
 }
 
-impl Object for IssuingDispute {
-    type Id = IssuingDisputeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.dispute"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeEvidence {
@@ -449,5 +441,15 @@ impl AsRef<str> for IssuingDisputeOtherEvidenceProductType {
 impl std::fmt::Display for IssuingDisputeOtherEvidenceProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for IssuingDispute {
+    type Id = IssuingDisputeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.dispute"
     }
 }

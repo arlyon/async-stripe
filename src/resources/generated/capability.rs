@@ -38,15 +38,7 @@ pub struct Capability {
     pub status: CapabilityStatus,
 }
 
-impl Object for Capability {
-    type Id = CapabilityId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "capability"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilityFutureRequirements {
@@ -135,25 +127,10 @@ pub struct AccountCapabilityRequirements {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AccountRequirementsAlternative {
-    /// Fields that can be provided to satisfy all fields in `original_fields_due`.
-    pub alternative_fields_due: Vec<String>,
 
-    /// Fields that are due and can be satisfied by providing all fields in `alternative_fields_due`.
-    pub original_fields_due: Vec<String>,
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AccountRequirementsError {
-    /// The code for the type of error.
-    pub code: AccountRequirementsErrorCode,
 
-    /// An informative message that indicates the error type and provides additional details about the error.
-    pub reason: String,
-
-    /// The specific user onboarding requirement field (in the requirements hash) that needs to be resolved.
-    pub requirement: String,
-}
 
 /// An enum representing the possible values of an `AccountRequirementsError`'s `code` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -302,5 +279,15 @@ impl AsRef<str> for CapabilityStatus {
 impl std::fmt::Display for CapabilityStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for Capability {
+    type Id = CapabilityId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "capability"
     }
 }

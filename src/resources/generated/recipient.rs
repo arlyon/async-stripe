@@ -74,57 +74,9 @@ pub struct Recipient {
     pub type_: Option<RecipientType>,
 }
 
-impl Recipient {
-    /// Returns a list of your recipients.
-    ///
-    /// The recipients are returned sorted by creation date, with the most recently created recipients appearing first.
-    pub fn list(client: &Client, params: ListRecipients<'_>) -> Response<List<Recipient>> {
-        client.get_query("/recipients", &params)
-    }
 
-    /// Creates a new `Recipient` object and verifies the recipient’s identity.
-    /// Also verifies the recipient’s bank account information or debit card, if either is provided.
-    pub fn create(client: &Client, params: CreateRecipient<'_>) -> Response<Recipient> {
-        client.post_form("/recipients", &params)
-    }
 
-    /// Retrieves the details of an existing recipient.
-    ///
-    /// You need only supply the unique recipient identifier that was returned upon recipient creation.
-    pub fn retrieve(client: &Client, id: &RecipientId, expand: &[&str]) -> Response<Recipient> {
-        client.get_query(&format!("/recipients/{}", id), &Expand { expand })
-    }
 
-    /// Updates the specified recipient by setting the values of the parameters passed.
-    /// Any parameters not provided will be left unchanged.
-    ///
-    /// If you update the name or tax ID, the identity verification will automatically be rerun.
-    /// If you update the bank account, the bank account validation will automatically be rerun.
-    pub fn update(
-        client: &Client,
-        id: &RecipientId,
-        params: UpdateRecipient<'_>,
-    ) -> Response<Recipient> {
-        client.post_form(&format!("/recipients/{}", id), &params)
-    }
-
-    /// Permanently deletes a recipient.
-    ///
-    /// It cannot be undone.
-    pub fn delete(client: &Client, id: &RecipientId) -> Response<Deleted<RecipientId>> {
-        client.delete(&format!("/recipients/{}", id))
-    }
-}
-
-impl Object for Recipient {
-    type Id = RecipientId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "recipient"
-    }
-}
 
 /// The parameters for `Recipient::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -170,19 +122,7 @@ pub struct CreateRecipient<'a> {
     pub type_: RecipientType,
 }
 
-impl<'a> CreateRecipient<'a> {
-    pub fn new(name: &'a str, type_: RecipientType) -> Self {
-        CreateRecipient {
-            description: Default::default(),
-            email: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            name,
-            tax_id: Default::default(),
-            type_,
-        }
-    }
-}
+
 
 /// The parameters for `Recipient::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -223,19 +163,7 @@ pub struct ListRecipients<'a> {
     pub verified: Option<bool>,
 }
 
-impl<'a> ListRecipients<'a> {
-    pub fn new() -> Self {
-        ListRecipients {
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-            type_: Default::default(),
-            verified: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Recipient::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -322,5 +250,85 @@ impl AsRef<str> for RecipientType {
 impl std::fmt::Display for RecipientType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for Recipient {
+    type Id = RecipientId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "recipient"
+    }
+}
+
+impl Recipient {
+    /// Returns a list of your recipients.
+    ///
+    /// The recipients are returned sorted by creation date, with the most recently created recipients appearing first.
+    pub fn list(client: &Client, params: ListRecipients<'_>) -> Response<List<Recipient>> {
+        client.get_query("/recipients", &params)
+    }
+
+    /// Creates a new `Recipient` object and verifies the recipient’s identity.
+    /// Also verifies the recipient’s bank account information or debit card, if either is provided.
+    pub fn create(client: &Client, params: CreateRecipient<'_>) -> Response<Recipient> {
+        client.post_form("/recipients", &params)
+    }
+
+    /// Retrieves the details of an existing recipient.
+    ///
+    /// You need only supply the unique recipient identifier that was returned upon recipient creation.
+    pub fn retrieve(client: &Client, id: &RecipientId, expand: &[&str]) -> Response<Recipient> {
+        client.get_query(&format!("/recipients/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified recipient by setting the values of the parameters passed.
+    /// Any parameters not provided will be left unchanged.
+    ///
+    /// If you update the name or tax ID, the identity verification will automatically be rerun.
+    /// If you update the bank account, the bank account validation will automatically be rerun.
+    pub fn update(
+        client: &Client,
+        id: &RecipientId,
+        params: UpdateRecipient<'_>,
+    ) -> Response<Recipient> {
+        client.post_form(&format!("/recipients/{}", id), &params)
+    }
+
+    /// Permanently deletes a recipient.
+    ///
+    /// It cannot be undone.
+    pub fn delete(client: &Client, id: &RecipientId) -> Response<Deleted<RecipientId>> {
+        client.delete(&format!("/recipients/{}", id))
+    }
+}
+
+impl<'a> ListRecipients<'a> {
+    pub fn new() -> Self {
+        ListRecipients {
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+            type_: Default::default(),
+            verified: Default::default(),
+        }
+    }
+}
+
+impl<'a> CreateRecipient<'a> {
+    pub fn new(name: &'a str, type_: RecipientType) -> Self {
+        CreateRecipient {
+            description: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            name,
+            tax_id: Default::default(),
+            type_,
+        }
     }
 }

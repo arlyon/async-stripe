@@ -71,29 +71,9 @@ pub struct Review {
     pub session: Option<Box<RadarReviewResourceSession>>,
 }
 
-impl Review {
-    /// Returns a list of `Review` objects that have `open` set to `true`.
-    ///
-    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn list(client: &Client, params: ListReviews<'_>) -> Response<List<Review>> {
-        client.get_query("/reviews", &params)
-    }
 
-    /// Retrieves a `Review` object.
-    pub fn retrieve(client: &Client, id: &ReviewId, expand: &[&str]) -> Response<Review> {
-        client.get_query(&format!("/reviews/{}", id), &Expand { expand })
-    }
-}
 
-impl Object for Review {
-    type Id = ReviewId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "review"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RadarReviewResourceLocation {
@@ -241,5 +221,29 @@ impl AsRef<str> for ReviewOpenedReason {
 impl std::fmt::Display for ReviewOpenedReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for Review {
+    type Id = ReviewId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "review"
+    }
+}
+
+impl Review {
+    /// Returns a list of `Review` objects that have `open` set to `true`.
+    ///
+    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
+    pub fn list(client: &Client, params: ListReviews<'_>) -> Response<List<Review>> {
+        client.get_query("/reviews", &params)
+    }
+
+    /// Retrieves a `Review` object.
+    pub fn retrieve(client: &Client, id: &ReviewId, expand: &[&str]) -> Response<Review> {
+        client.get_query(&format!("/reviews/{}", id), &Expand { expand })
     }
 }

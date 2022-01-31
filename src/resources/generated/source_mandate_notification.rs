@@ -57,15 +57,7 @@ pub struct SourceMandateNotification {
     pub type_: String,
 }
 
-impl Object for SourceMandateNotification {
-    type Id = SourceMandateNotificationId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "source_mandate_notification"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateNotificationAcssDebitData {
@@ -94,4 +86,14 @@ pub struct SourceMandateNotificationSepaDebitData {
     /// Mandate reference associated with the debit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_reference: Option<Box<String>>,
+}
+
+impl Object for SourceMandateNotification {
+    type Id = SourceMandateNotificationId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "source_mandate_notification"
+    }
 }

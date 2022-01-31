@@ -97,15 +97,7 @@ pub struct IssuingCard {
     pub wallets: Option<Box<IssuingCardWallets>>,
 }
 
-impl Object for IssuingCard {
-    type Id = IssuingCardId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.card"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardAuthorizationControls {
@@ -1075,5 +1067,15 @@ impl AsRef<str> for IssuingCardStatus {
 impl std::fmt::Display for IssuingCardStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for IssuingCard {
+    type Id = IssuingCardId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.card"
     }
 }

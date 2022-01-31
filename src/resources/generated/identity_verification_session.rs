@@ -76,15 +76,7 @@ pub struct IdentityVerificationSession {
     pub verified_outputs: Option<Box<GelatoVerifiedOutputs>>,
 }
 
-impl Object for IdentityVerificationSession {
-    type Id = IdentityVerificationSessionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "identity.verification_session"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSessionLastError {
@@ -389,5 +381,15 @@ impl AsRef<str> for VerificationSessionRedactionStatus {
 impl std::fmt::Display for VerificationSessionRedactionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for IdentityVerificationSession {
+    type Id = IdentityVerificationSessionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "identity.verification_session"
     }
 }

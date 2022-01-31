@@ -152,27 +152,9 @@ pub struct Quote {
     pub transfer_data: Option<Box<QuotesResourceTransferData>>,
 }
 
-impl Quote {
-    /// Returns a list of your quotes.
-    pub fn list(client: &Client, params: ListQuotes<'_>) -> Response<List<Quote>> {
-        client.get_query("/quotes", &params)
-    }
 
-    /// Retrieves the quote with the given ID.
-    pub fn retrieve(client: &Client, id: &QuoteId, expand: &[&str]) -> Response<Quote> {
-        client.get_query(&format!("/quotes/{}", id), &Expand { expand })
-    }
-}
 
-impl Object for Quote {
-    type Id = QuoteId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "quote"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceSettingQuoteSetting {
@@ -478,5 +460,27 @@ impl AsRef<str> for QuotesResourceRecurringInterval {
 impl std::fmt::Display for QuotesResourceRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for Quote {
+    type Id = QuoteId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "quote"
+    }
+}
+
+impl Quote {
+    /// Returns a list of your quotes.
+    pub fn list(client: &Client, params: ListQuotes<'_>) -> Response<List<Quote>> {
+        client.get_query("/quotes", &params)
+    }
+
+    /// Retrieves the quote with the given ID.
+    pub fn retrieve(client: &Client, id: &QuoteId, expand: &[&str]) -> Response<Quote> {
+        client.get_query(&format!("/quotes/{}", id), &Expand { expand })
     }
 }

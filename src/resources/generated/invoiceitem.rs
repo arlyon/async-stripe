@@ -118,54 +118,9 @@ pub struct InvoiceItem {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-impl InvoiceItem {
-    /// Returns a list of your invoice items.
-    ///
-    /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
-    pub fn list(client: &Client, params: ListInvoiceItems<'_>) -> Response<List<InvoiceItem>> {
-        client.get_query("/invoiceitems", &params)
-    }
 
-    /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
-    ///
-    /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
-    pub fn create(client: &Client, params: CreateInvoiceItem<'_>) -> Response<InvoiceItem> {
-        client.post_form("/invoiceitems", &params)
-    }
 
-    /// Retrieves the invoice item with the given ID.
-    pub fn retrieve(client: &Client, id: &InvoiceItemId, expand: &[&str]) -> Response<InvoiceItem> {
-        client.get_query(&format!("/invoiceitems/{}", id), &Expand { expand })
-    }
 
-    /// Updates the amount or description of an invoice item on an upcoming invoice.
-    ///
-    /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
-    pub fn update(
-        client: &Client,
-        id: &InvoiceItemId,
-        params: UpdateInvoiceItem<'_>,
-    ) -> Response<InvoiceItem> {
-        client.post_form(&format!("/invoiceitems/{}", id), &params)
-    }
-
-    /// Deletes an invoice item, removing it from an invoice.
-    ///
-    /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
-    pub fn delete(client: &Client, id: &InvoiceItemId) -> Response<Deleted<InvoiceItemId>> {
-        client.delete(&format!("/invoiceitems/{}", id))
-    }
-}
-
-impl Object for InvoiceItem {
-    type Id = InvoiceItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "invoiceitem"
-    }
-}
 
 /// The parameters for `InvoiceItem::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -267,29 +222,7 @@ pub struct CreateInvoiceItem<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 
-impl<'a> CreateInvoiceItem<'a> {
-    pub fn new(customer: CustomerId) -> Self {
-        CreateInvoiceItem {
-            amount: Default::default(),
-            currency: Default::default(),
-            customer,
-            description: Default::default(),
-            discountable: Default::default(),
-            discounts: Default::default(),
-            expand: Default::default(),
-            invoice: Default::default(),
-            metadata: Default::default(),
-            period: Default::default(),
-            price: Default::default(),
-            price_data: Default::default(),
-            quantity: Default::default(),
-            subscription: Default::default(),
-            tax_rates: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `InvoiceItem::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -342,20 +275,7 @@ pub struct ListInvoiceItems<'a> {
     pub starting_after: Option<InvoiceItemId>,
 }
 
-impl<'a> ListInvoiceItems<'a> {
-    pub fn new() -> Self {
-        ListInvoiceItems {
-            created: Default::default(),
-            customer: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            invoice: Default::default(),
-            limit: Default::default(),
-            pending: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `InvoiceItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -437,25 +357,7 @@ pub struct UpdateInvoiceItem<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 
-impl<'a> UpdateInvoiceItem<'a> {
-    pub fn new() -> Self {
-        UpdateInvoiceItem {
-            amount: Default::default(),
-            description: Default::default(),
-            discountable: Default::default(),
-            discounts: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            period: Default::default(),
-            price: Default::default(),
-            price_data: Default::default(),
-            quantity: Default::default(),
-            tax_rates: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceItemDiscounts {
@@ -519,5 +421,113 @@ impl AsRef<str> for InvoiceItemPriceDataTaxBehavior {
 impl std::fmt::Display for InvoiceItemPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl<'a> UpdateInvoiceItem<'a> {
+    pub fn new() -> Self {
+        UpdateInvoiceItem {
+            amount: Default::default(),
+            description: Default::default(),
+            discountable: Default::default(),
+            discounts: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            period: Default::default(),
+            price: Default::default(),
+            price_data: Default::default(),
+            quantity: Default::default(),
+            tax_rates: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
+    }
+}
+
+impl Object for InvoiceItem {
+    type Id = InvoiceItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "invoiceitem"
+    }
+}
+
+impl InvoiceItem {
+    /// Returns a list of your invoice items.
+    ///
+    /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
+    pub fn list(client: &Client, params: ListInvoiceItems<'_>) -> Response<List<InvoiceItem>> {
+        client.get_query("/invoiceitems", &params)
+    }
+
+    /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
+    ///
+    /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
+    pub fn create(client: &Client, params: CreateInvoiceItem<'_>) -> Response<InvoiceItem> {
+        client.post_form("/invoiceitems", &params)
+    }
+
+    /// Retrieves the invoice item with the given ID.
+    pub fn retrieve(client: &Client, id: &InvoiceItemId, expand: &[&str]) -> Response<InvoiceItem> {
+        client.get_query(&format!("/invoiceitems/{}", id), &Expand { expand })
+    }
+
+    /// Updates the amount or description of an invoice item on an upcoming invoice.
+    ///
+    /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
+    pub fn update(
+        client: &Client,
+        id: &InvoiceItemId,
+        params: UpdateInvoiceItem<'_>,
+    ) -> Response<InvoiceItem> {
+        client.post_form(&format!("/invoiceitems/{}", id), &params)
+    }
+
+    /// Deletes an invoice item, removing it from an invoice.
+    ///
+    /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
+    pub fn delete(client: &Client, id: &InvoiceItemId) -> Response<Deleted<InvoiceItemId>> {
+        client.delete(&format!("/invoiceitems/{}", id))
+    }
+}
+
+impl<'a> CreateInvoiceItem<'a> {
+    pub fn new(customer: CustomerId) -> Self {
+        CreateInvoiceItem {
+            amount: Default::default(),
+            currency: Default::default(),
+            customer,
+            description: Default::default(),
+            discountable: Default::default(),
+            discounts: Default::default(),
+            expand: Default::default(),
+            invoice: Default::default(),
+            metadata: Default::default(),
+            period: Default::default(),
+            price: Default::default(),
+            price_data: Default::default(),
+            quantity: Default::default(),
+            subscription: Default::default(),
+            tax_rates: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
+    }
+}
+
+impl<'a> ListInvoiceItems<'a> {
+    pub fn new() -> Self {
+        ListInvoiceItems {
+            created: Default::default(),
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            invoice: Default::default(),
+            limit: Default::default(),
+            pending: Default::default(),
+            starting_after: Default::default(),
+        }
     }
 }

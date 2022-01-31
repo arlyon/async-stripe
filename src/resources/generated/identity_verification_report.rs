@@ -42,15 +42,7 @@ pub struct IdentityVerificationReport {
     pub verification_session: Option<Box<String>>,
 }
 
-impl Object for IdentityVerificationReport {
-    type Id = IdentityVerificationReportId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "identity.verification_report"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDocumentReport {
@@ -598,5 +590,15 @@ impl AsRef<str> for IdentityVerificationReportType {
 impl std::fmt::Display for IdentityVerificationReportType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for IdentityVerificationReport {
+    type Id = IdentityVerificationReportId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "identity.verification_report"
     }
 }

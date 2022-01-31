@@ -162,43 +162,9 @@ pub struct Source {
     pub wechat: Option<Box<SourceTypeWechat>>,
 }
 
-impl Source {
-    /// List source transactions for a given source.
-    pub fn list(client: &Client, params: ListSources<'_>) -> Response<List<Source>> {
-        client.get_query("/sources/{source}/source_transactions", &params)
-    }
 
-    /// Creates a new source object.
-    pub fn create(client: &Client, params: CreateSource<'_>) -> Response<Source> {
-        client.post_form("/sources", &params)
-    }
 
-    /// Retrieves an existing source object.
-    ///
-    /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
-    pub fn retrieve(client: &Client, id: &SourceId, expand: &[&str]) -> Response<Source> {
-        client.get_query(&format!("/sources/{}", id), &Expand { expand })
-    }
 
-    /// Updates the specified source by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided will be left unchanged.  This request accepts the `metadata` and `owner` as arguments.
-    /// It is also possible to update type specific information for selected payment methods.
-    /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
-    pub fn update(client: &Client, id: &SourceId, params: UpdateSource<'_>) -> Response<Source> {
-        client.post_form(&format!("/sources/{}", id), &params)
-    }
-}
-
-impl Object for Source {
-    type Id = SourceId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "source"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceCodeVerificationFlow {
@@ -969,27 +935,7 @@ pub struct CreateSource<'a> {
     pub type_: Option<&'a str>,
 }
 
-impl<'a> CreateSource<'a> {
-    pub fn new() -> Self {
-        CreateSource {
-            amount: Default::default(),
-            currency: Default::default(),
-            customer: Default::default(),
-            expand: Default::default(),
-            flow: Default::default(),
-            mandate: Default::default(),
-            metadata: Default::default(),
-            original_source: Default::default(),
-            owner: Default::default(),
-            receiver: Default::default(),
-            redirect: Default::default(),
-            source_order: Default::default(),
-            statement_descriptor: Default::default(),
-            token: Default::default(),
-            type_: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Source::list`.
 #[derive(Clone, Debug, Serialize)]
@@ -1019,16 +965,7 @@ pub struct ListSources<'a> {
     pub starting_after: Option<SourceId>,
 }
 
-impl<'a> ListSources<'a> {
-    pub fn new() -> Self {
-        ListSources {
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Source::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -1064,18 +1001,7 @@ pub struct UpdateSource<'a> {
     pub source_order: Option<Box<UpdateSourceSourceOrder>>,
 }
 
-impl<'a> UpdateSource<'a> {
-    pub fn new() -> Self {
-        UpdateSource {
-            amount: Default::default(),
-            expand: Default::default(),
-            mandate: Default::default(),
-            metadata: Default::default(),
-            owner: Default::default(),
-            source_order: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSourceReceiver {
@@ -1599,5 +1525,89 @@ impl AsRef<str> for UpdateSourceSourceOrderItemsType {
 impl std::fmt::Display for UpdateSourceSourceOrderItemsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl<'a> UpdateSource<'a> {
+    pub fn new() -> Self {
+        UpdateSource {
+            amount: Default::default(),
+            expand: Default::default(),
+            mandate: Default::default(),
+            metadata: Default::default(),
+            owner: Default::default(),
+            source_order: Default::default(),
+        }
+    }
+}
+
+impl<'a> CreateSource<'a> {
+    pub fn new() -> Self {
+        CreateSource {
+            amount: Default::default(),
+            currency: Default::default(),
+            customer: Default::default(),
+            expand: Default::default(),
+            flow: Default::default(),
+            mandate: Default::default(),
+            metadata: Default::default(),
+            original_source: Default::default(),
+            owner: Default::default(),
+            receiver: Default::default(),
+            redirect: Default::default(),
+            source_order: Default::default(),
+            statement_descriptor: Default::default(),
+            token: Default::default(),
+            type_: Default::default(),
+        }
+    }
+}
+
+impl Object for Source {
+    type Id = SourceId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "source"
+    }
+}
+
+impl Source {
+    /// List source transactions for a given source.
+    pub fn list(client: &Client, params: ListSources<'_>) -> Response<List<Source>> {
+        client.get_query("/sources/{source}/source_transactions", &params)
+    }
+
+    /// Creates a new source object.
+    pub fn create(client: &Client, params: CreateSource<'_>) -> Response<Source> {
+        client.post_form("/sources", &params)
+    }
+
+    /// Retrieves an existing source object.
+    ///
+    /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
+    pub fn retrieve(client: &Client, id: &SourceId, expand: &[&str]) -> Response<Source> {
+        client.get_query(&format!("/sources/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified source by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  This request accepts the `metadata` and `owner` as arguments.
+    /// It is also possible to update type specific information for selected payment methods.
+    /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
+    pub fn update(client: &Client, id: &SourceId, params: UpdateSource<'_>) -> Response<Source> {
+        client.post_form(&format!("/sources/{}", id), &params)
+    }
+}
+
+impl<'a> ListSources<'a> {
+    pub fn new() -> Self {
+        ListSources {
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
     }
 }

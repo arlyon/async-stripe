@@ -93,24 +93,10 @@ pub struct InvoiceLineItem {
     pub type_: InvoiceLineItemType,
 }
 
-impl Object for InvoiceLineItem {
-    type Id = InvoiceLineItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "line_item"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct DiscountsResourceDiscountAmount {
-    /// The amount, in %s, of the discount.
-    pub amount: i64,
 
-    /// The discount that was applied to get this discount amount.
-    pub discount: Expandable<Discount>,
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxAmount {
@@ -151,5 +137,15 @@ impl AsRef<str> for InvoiceLineItemType {
 impl std::fmt::Display for InvoiceLineItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for InvoiceLineItem {
+    type Id = InvoiceLineItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "line_item"
     }
 }

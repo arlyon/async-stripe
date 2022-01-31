@@ -29,15 +29,7 @@ pub struct UsageRecordSummary {
     pub total_usage: i64,
 }
 
-impl Object for UsageRecordSummary {
-    type Id = UsageRecordSummaryId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "usage_record_summary"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Period {
@@ -52,4 +44,14 @@ pub struct Period {
     /// All usage after this point in time is included.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start: Option<Box<Timestamp>>,
+}
+
+impl Object for UsageRecordSummary {
+    type Id = UsageRecordSummaryId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "usage_record_summary"
+    }
 }

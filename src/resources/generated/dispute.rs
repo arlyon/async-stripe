@@ -71,27 +71,9 @@ pub struct Dispute {
     pub status: DisputeStatus,
 }
 
-impl Dispute {
-    /// Returns a list of your disputes.
-    pub fn list(client: &Client, params: ListDisputes<'_>) -> Response<List<Dispute>> {
-        client.get_query("/disputes", &params)
-    }
 
-    /// Retrieves the dispute with the given ID.
-    pub fn retrieve(client: &Client, id: &DisputeId, expand: &[&str]) -> Response<Dispute> {
-        client.get_query(&format!("/disputes/{}", id), &Expand { expand })
-    }
-}
 
-impl Object for Dispute {
-    type Id = DisputeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "dispute"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DisputeEvidence {
@@ -335,5 +317,27 @@ impl AsRef<str> for DisputeStatus {
 impl std::fmt::Display for DisputeStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Dispute {
+    /// Returns a list of your disputes.
+    pub fn list(client: &Client, params: ListDisputes<'_>) -> Response<List<Dispute>> {
+        client.get_query("/disputes", &params)
+    }
+
+    /// Retrieves the dispute with the given ID.
+    pub fn retrieve(client: &Client, id: &DisputeId, expand: &[&str]) -> Response<Dispute> {
+        client.get_query(&format!("/disputes/{}", id), &Expand { expand })
+    }
+}
+
+impl Object for Dispute {
+    type Id = DisputeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "dispute"
     }
 }

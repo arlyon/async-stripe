@@ -85,55 +85,9 @@ pub struct SubscriptionSchedule {
     pub subscription: Option<Box<Expandable<Subscription>>>,
 }
 
-impl SubscriptionSchedule {
-    /// Retrieves the list of your subscription schedules.
-    pub fn list(
-        client: &Client,
-        params: ListSubscriptionSchedules<'_>,
-    ) -> Response<List<SubscriptionSchedule>> {
-        client.get_query("/subscription_schedules", &params)
-    }
 
-    /// Creates a new subscription schedule object.
-    ///
-    /// Each customer can have up to 500 active or scheduled subscriptions.
-    pub fn create(
-        client: &Client,
-        params: CreateSubscriptionSchedule<'_>,
-    ) -> Response<SubscriptionSchedule> {
-        client.post_form("/subscription_schedules", &params)
-    }
 
-    /// Retrieves the details of an existing subscription schedule.
-    ///
-    /// You only need to supply the unique subscription schedule identifier that was returned upon subscription schedule creation.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionScheduleId,
-        expand: &[&str],
-    ) -> Response<SubscriptionSchedule> {
-        client.get_query(&format!("/subscription_schedules/{}", id), &Expand { expand })
-    }
 
-    /// Updates an existing subscription schedule.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionScheduleId,
-        params: UpdateSubscriptionSchedule<'_>,
-    ) -> Response<SubscriptionSchedule> {
-        client.post_form(&format!("/subscription_schedules/{}", id), &params)
-    }
-}
-
-impl Object for SubscriptionSchedule {
-    type Id = SubscriptionScheduleId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "subscription_schedule"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleCurrentPhase {
@@ -364,20 +318,7 @@ pub struct CreateSubscriptionSchedule<'a> {
     pub start_date: Option<Scheduled>,
 }
 
-impl<'a> CreateSubscriptionSchedule<'a> {
-    pub fn new() -> Self {
-        CreateSubscriptionSchedule {
-            customer: Default::default(),
-            default_settings: Default::default(),
-            end_behavior: Default::default(),
-            expand: Default::default(),
-            from_subscription: Default::default(),
-            metadata: Default::default(),
-            phases: Default::default(),
-            start_date: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `SubscriptionSchedule::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -431,22 +372,7 @@ pub struct ListSubscriptionSchedules<'a> {
     pub starting_after: Option<SubscriptionScheduleId>,
 }
 
-impl<'a> ListSubscriptionSchedules<'a> {
-    pub fn new() -> Self {
-        ListSubscriptionSchedules {
-            canceled_at: Default::default(),
-            completed_at: Default::default(),
-            created: Default::default(),
-            customer: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            released_at: Default::default(),
-            scheduled: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `SubscriptionSchedule::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -489,18 +415,7 @@ pub struct UpdateSubscriptionSchedule<'a> {
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
 }
 
-impl<'a> UpdateSubscriptionSchedule<'a> {
-    pub fn new() -> Self {
-        UpdateSubscriptionSchedule {
-            default_settings: Default::default(),
-            end_behavior: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            phases: Default::default(),
-            proration_behavior: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhases {
@@ -640,19 +555,7 @@ pub struct UpdateSubscriptionSchedulePhases {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AddInvoiceItems {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<Box<String>>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<Box<InvoiceItemPriceData>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<String>>>,
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
@@ -708,10 +611,7 @@ pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionScheduleInvoiceSettings {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub days_until_due: Option<Box<u32>>,
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
@@ -768,20 +668,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct InvoiceItemPriceData {
-    pub currency: Currency,
 
-    pub product: String,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<Box<InvoiceItemPriceDataTaxBehavior>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<Box<i64>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<Box<String>>,
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsBillingThresholds {
@@ -1255,5 +1142,100 @@ impl AsRef<str> for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
 impl std::fmt::Display for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for SubscriptionSchedule {
+    type Id = SubscriptionScheduleId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "subscription_schedule"
+    }
+}
+
+impl SubscriptionSchedule {
+    /// Retrieves the list of your subscription schedules.
+    pub fn list(
+        client: &Client,
+        params: ListSubscriptionSchedules<'_>,
+    ) -> Response<List<SubscriptionSchedule>> {
+        client.get_query("/subscription_schedules", &params)
+    }
+
+    /// Creates a new subscription schedule object.
+    ///
+    /// Each customer can have up to 500 active or scheduled subscriptions.
+    pub fn create(
+        client: &Client,
+        params: CreateSubscriptionSchedule<'_>,
+    ) -> Response<SubscriptionSchedule> {
+        client.post_form("/subscription_schedules", &params)
+    }
+
+    /// Retrieves the details of an existing subscription schedule.
+    ///
+    /// You only need to supply the unique subscription schedule identifier that was returned upon subscription schedule creation.
+    pub fn retrieve(
+        client: &Client,
+        id: &SubscriptionScheduleId,
+        expand: &[&str],
+    ) -> Response<SubscriptionSchedule> {
+        client.get_query(&format!("/subscription_schedules/{}", id), &Expand { expand })
+    }
+
+    /// Updates an existing subscription schedule.
+    pub fn update(
+        client: &Client,
+        id: &SubscriptionScheduleId,
+        params: UpdateSubscriptionSchedule<'_>,
+    ) -> Response<SubscriptionSchedule> {
+        client.post_form(&format!("/subscription_schedules/{}", id), &params)
+    }
+}
+
+impl<'a> CreateSubscriptionSchedule<'a> {
+    pub fn new() -> Self {
+        CreateSubscriptionSchedule {
+            customer: Default::default(),
+            default_settings: Default::default(),
+            end_behavior: Default::default(),
+            expand: Default::default(),
+            from_subscription: Default::default(),
+            metadata: Default::default(),
+            phases: Default::default(),
+            start_date: Default::default(),
+        }
+    }
+}
+
+impl<'a> ListSubscriptionSchedules<'a> {
+    pub fn new() -> Self {
+        ListSubscriptionSchedules {
+            canceled_at: Default::default(),
+            completed_at: Default::default(),
+            created: Default::default(),
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            released_at: Default::default(),
+            scheduled: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
+}
+
+impl<'a> UpdateSubscriptionSchedule<'a> {
+    pub fn new() -> Self {
+        UpdateSubscriptionSchedule {
+            default_settings: Default::default(),
+            end_behavior: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            phases: Default::default(),
+            proration_behavior: Default::default(),
+        }
     }
 }

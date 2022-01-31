@@ -72,39 +72,9 @@ pub struct TaxRate {
     pub tax_type: Option<Box<TaxRateTaxType>>,
 }
 
-impl TaxRate {
-    /// Returns a list of your tax rates.
-    ///
-    /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
-    pub fn list(client: &Client, params: ListTaxRates<'_>) -> Response<List<TaxRate>> {
-        client.get_query("/tax_rates", &params)
-    }
 
-    /// Creates a new tax rate.
-    pub fn create(client: &Client, params: CreateTaxRate<'_>) -> Response<TaxRate> {
-        client.post_form("/tax_rates", &params)
-    }
 
-    /// Retrieves a tax rate with the given ID.
-    pub fn retrieve(client: &Client, id: &TaxRateId, expand: &[&str]) -> Response<TaxRate> {
-        client.get_query(&format!("/tax_rates/{}", id), &Expand { expand })
-    }
 
-    /// Updates an existing tax rate.
-    pub fn update(client: &Client, id: &TaxRateId, params: UpdateTaxRate<'_>) -> Response<TaxRate> {
-        client.post_form(&format!("/tax_rates/{}", id), &params)
-    }
-}
-
-impl Object for TaxRate {
-    type Id = TaxRateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "tax_rate"
-    }
-}
 
 /// The parameters for `TaxRate::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -164,23 +134,7 @@ pub struct CreateTaxRate<'a> {
     pub tax_type: Option<TaxRateTaxType>,
 }
 
-impl<'a> CreateTaxRate<'a> {
-    pub fn new(display_name: &'a str, percentage: f64) -> Self {
-        CreateTaxRate {
-            active: Default::default(),
-            country: Default::default(),
-            description: Default::default(),
-            display_name,
-            expand: Default::default(),
-            inclusive: Default::default(),
-            jurisdiction: Default::default(),
-            metadata: Default::default(),
-            percentage,
-            state: Default::default(),
-            tax_type: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `TaxRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -222,19 +176,7 @@ pub struct ListTaxRates<'a> {
     pub starting_after: Option<TaxRateId>,
 }
 
-impl<'a> ListTaxRates<'a> {
-    pub fn new() -> Self {
-        ListTaxRates {
-            active: Default::default(),
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            inclusive: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `TaxRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -343,5 +285,71 @@ impl AsRef<str> for TaxRateTaxType {
 impl std::fmt::Display for TaxRateTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl<'a> ListTaxRates<'a> {
+    pub fn new() -> Self {
+        ListTaxRates {
+            active: Default::default(),
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            inclusive: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
+}
+
+impl<'a> CreateTaxRate<'a> {
+    pub fn new(display_name: &'a str, percentage: f64) -> Self {
+        CreateTaxRate {
+            active: Default::default(),
+            country: Default::default(),
+            description: Default::default(),
+            display_name,
+            expand: Default::default(),
+            inclusive: Default::default(),
+            jurisdiction: Default::default(),
+            metadata: Default::default(),
+            percentage,
+            state: Default::default(),
+            tax_type: Default::default(),
+        }
+    }
+}
+
+impl TaxRate {
+    /// Returns a list of your tax rates.
+    ///
+    /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
+    pub fn list(client: &Client, params: ListTaxRates<'_>) -> Response<List<TaxRate>> {
+        client.get_query("/tax_rates", &params)
+    }
+
+    /// Creates a new tax rate.
+    pub fn create(client: &Client, params: CreateTaxRate<'_>) -> Response<TaxRate> {
+        client.post_form("/tax_rates", &params)
+    }
+
+    /// Retrieves a tax rate with the given ID.
+    pub fn retrieve(client: &Client, id: &TaxRateId, expand: &[&str]) -> Response<TaxRate> {
+        client.get_query(&format!("/tax_rates/{}", id), &Expand { expand })
+    }
+
+    /// Updates an existing tax rate.
+    pub fn update(client: &Client, id: &TaxRateId, params: UpdateTaxRate<'_>) -> Response<TaxRate> {
+        client.post_form(&format!("/tax_rates/{}", id), &params)
+    }
+}
+
+impl Object for TaxRate {
+    type Id = TaxRateId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "tax_rate"
     }
 }

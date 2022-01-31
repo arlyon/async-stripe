@@ -45,31 +45,9 @@ pub struct OrderReturn {
     pub refund: Option<Box<Expandable<Refund>>>,
 }
 
-impl OrderReturn {
-    /// Returns a list of your order returns.
-    ///
-    /// The returns are returned sorted by creation date, with the most recently created return appearing first.
-    pub fn list(client: &Client, params: ListOrderReturns<'_>) -> Response<List<OrderReturn>> {
-        client.get_query("/order_returns", &params)
-    }
 
-    /// Retrieves the details of an existing order return.
-    ///
-    /// Supply the unique order ID from either an order return creation request or the order return list, and Stripe will return the corresponding order information.
-    pub fn retrieve(client: &Client, id: &OrderReturnId, expand: &[&str]) -> Response<OrderReturn> {
-        client.get_query(&format!("/order_returns/{}", id), &Expand { expand })
-    }
-}
 
-impl Object for OrderReturn {
-    type Id = OrderReturnId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "order_return"
-    }
-}
+
 
 /// The parameters for `OrderReturn::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -117,5 +95,31 @@ impl<'a> ListOrderReturns<'a> {
             order: Default::default(),
             starting_after: Default::default(),
         }
+    }
+}
+
+impl OrderReturn {
+    /// Returns a list of your order returns.
+    ///
+    /// The returns are returned sorted by creation date, with the most recently created return appearing first.
+    pub fn list(client: &Client, params: ListOrderReturns<'_>) -> Response<List<OrderReturn>> {
+        client.get_query("/order_returns", &params)
+    }
+
+    /// Retrieves the details of an existing order return.
+    ///
+    /// Supply the unique order ID from either an order return creation request or the order return list, and Stripe will return the corresponding order information.
+    pub fn retrieve(client: &Client, id: &OrderReturnId, expand: &[&str]) -> Response<OrderReturn> {
+        client.get_query(&format!("/order_returns/{}", id), &Expand { expand })
+    }
+}
+
+impl Object for OrderReturn {
+    type Id = OrderReturnId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "order_return"
     }
 }

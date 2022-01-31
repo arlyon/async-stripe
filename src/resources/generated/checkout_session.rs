@@ -197,30 +197,9 @@ pub struct CheckoutSession {
     pub url: Option<Box<String>>,
 }
 
-impl CheckoutSession {
-    /// Returns a list of Checkout Sessions.
-    pub fn list(
-        client: &Client,
-        params: ListCheckoutSessions<'_>,
-    ) -> Response<List<CheckoutSession>> {
-        client.get_query("/checkout/sessions", &params)
-    }
 
-    /// Creates a Session object.
-    pub fn create(client: &Client, params: CreateCheckoutSession<'_>) -> Response<CheckoutSession> {
-        client.post_form("/checkout/sessions", &params)
-    }
-}
 
-impl Object for CheckoutSession {
-    type Id = CheckoutSessionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "checkout.session"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSessionPaymentMethodOptions {
@@ -610,41 +589,7 @@ pub struct CreateCheckoutSession<'a> {
     pub tax_id_collection: Option<Box<CreateCheckoutSessionTaxIdCollection>>,
 }
 
-impl<'a> CreateCheckoutSession<'a> {
-    pub fn new(cancel_url: &'a str, success_url: &'a str) -> Self {
-        CreateCheckoutSession {
-            after_expiration: Default::default(),
-            allow_promotion_codes: Default::default(),
-            automatic_tax: Default::default(),
-            billing_address_collection: Default::default(),
-            cancel_url,
-            client_reference_id: Default::default(),
-            consent_collection: Default::default(),
-            customer: Default::default(),
-            customer_creation: Default::default(),
-            customer_email: Default::default(),
-            customer_update: Default::default(),
-            discounts: Default::default(),
-            expand: Default::default(),
-            expires_at: Default::default(),
-            line_items: Default::default(),
-            locale: Default::default(),
-            metadata: Default::default(),
-            mode: Default::default(),
-            payment_intent_data: Default::default(),
-            payment_method_options: Default::default(),
-            payment_method_types: Default::default(),
-            phone_number_collection: Default::default(),
-            setup_intent_data: Default::default(),
-            shipping_address_collection: Default::default(),
-            shipping_options: Default::default(),
-            submit_type: Default::default(),
-            subscription_data: Default::default(),
-            success_url,
-            tax_id_collection: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `CheckoutSession::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -682,18 +627,7 @@ pub struct ListCheckoutSessions<'a> {
     pub subscription: Option<SubscriptionId>,
 }
 
-impl<'a> ListCheckoutSessions<'a> {
-    pub fn new() -> Self {
-        ListCheckoutSessions {
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            payment_intent: Default::default(),
-            starting_after: Default::default(),
-            subscription: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAfterExpiration {
@@ -3841,5 +3775,79 @@ impl AsRef<str> for PaymentPagesCheckoutSessionTaxIdType {
 impl std::fmt::Display for PaymentPagesCheckoutSessionTaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for CheckoutSession {
+    type Id = CheckoutSessionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "checkout.session"
+    }
+}
+
+impl CheckoutSession {
+    /// Returns a list of Checkout Sessions.
+    pub fn list(
+        client: &Client,
+        params: ListCheckoutSessions<'_>,
+    ) -> Response<List<CheckoutSession>> {
+        client.get_query("/checkout/sessions", &params)
+    }
+
+    /// Creates a Session object.
+    pub fn create(client: &Client, params: CreateCheckoutSession<'_>) -> Response<CheckoutSession> {
+        client.post_form("/checkout/sessions", &params)
+    }
+}
+
+impl<'a> ListCheckoutSessions<'a> {
+    pub fn new() -> Self {
+        ListCheckoutSessions {
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            payment_intent: Default::default(),
+            starting_after: Default::default(),
+            subscription: Default::default(),
+        }
+    }
+}
+
+impl<'a> CreateCheckoutSession<'a> {
+    pub fn new(cancel_url: &'a str, success_url: &'a str) -> Self {
+        CreateCheckoutSession {
+            after_expiration: Default::default(),
+            allow_promotion_codes: Default::default(),
+            automatic_tax: Default::default(),
+            billing_address_collection: Default::default(),
+            cancel_url,
+            client_reference_id: Default::default(),
+            consent_collection: Default::default(),
+            customer: Default::default(),
+            customer_creation: Default::default(),
+            customer_email: Default::default(),
+            customer_update: Default::default(),
+            discounts: Default::default(),
+            expand: Default::default(),
+            expires_at: Default::default(),
+            line_items: Default::default(),
+            locale: Default::default(),
+            metadata: Default::default(),
+            mode: Default::default(),
+            payment_intent_data: Default::default(),
+            payment_method_options: Default::default(),
+            payment_method_types: Default::default(),
+            phone_number_collection: Default::default(),
+            setup_intent_data: Default::default(),
+            shipping_address_collection: Default::default(),
+            shipping_options: Default::default(),
+            submit_type: Default::default(),
+            subscription_data: Default::default(),
+            success_url,
+            tax_id_collection: Default::default(),
+        }
     }
 }

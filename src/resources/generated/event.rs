@@ -49,31 +49,9 @@ pub struct Event {
     pub type_: String,
 }
 
-impl Event {
-    /// List events, going back up to 30 days.
-    ///
-    /// Each event data is rendered according to Stripe API version at its creation time, specified in [event object](https://stripe.com/docs/api/events/object) `api_version` attribute (not according to your current Stripe API version or `Stripe-Version` header).
-    pub fn list(client: &Client, params: ListEvents<'_>) -> Response<List<Event>> {
-        client.get_query("/events", &params)
-    }
 
-    /// Retrieves the details of an event.
-    ///
-    /// Supply the unique identifier of the event, which you might have received in a webhook.
-    pub fn retrieve(client: &Client, id: &EventId, expand: &[&str]) -> Response<Event> {
-        client.get_query(&format!("/events/{}", id), &Expand { expand })
-    }
-}
 
-impl Object for Event {
-    type Id = EventId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "event"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NotificationEventRequest {
@@ -154,5 +132,31 @@ impl<'a> ListEvents<'a> {
             type_: Default::default(),
             types: Default::default(),
         }
+    }
+}
+
+impl Event {
+    /// List events, going back up to 30 days.
+    ///
+    /// Each event data is rendered according to Stripe API version at its creation time, specified in [event object](https://stripe.com/docs/api/events/object) `api_version` attribute (not according to your current Stripe API version or `Stripe-Version` header).
+    pub fn list(client: &Client, params: ListEvents<'_>) -> Response<List<Event>> {
+        client.get_query("/events", &params)
+    }
+
+    /// Retrieves the details of an event.
+    ///
+    /// Supply the unique identifier of the event, which you might have received in a webhook.
+    pub fn retrieve(client: &Client, id: &EventId, expand: &[&str]) -> Response<Event> {
+        client.get_query(&format!("/events/{}", id), &Expand { expand })
+    }
+}
+
+impl Object for Event {
+    type Id = EventId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "event"
     }
 }

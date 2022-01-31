@@ -218,47 +218,9 @@ pub struct Charge {
     pub transfer_group: Option<Box<String>>,
 }
 
-impl Charge {
-    /// Returns a list of charges you’ve previously created.
-    ///
-    /// The charges are returned in sorted order, with the most recent charges appearing first.
-    pub fn list(client: &Client, params: ListCharges<'_>) -> Response<List<Charge>> {
-        client.get_query("/charges", &params)
-    }
 
-    /// To charge a credit card or other payment source, you create a `Charge` object.
-    ///
-    /// If your API key is in test mode, the supplied payment source (e.g., card) won’t actually be charged, although everything else will occur as if in live mode.
-    /// (Stripe assumes that the charge would have completed successfully).
-    pub fn create(client: &Client, params: CreateCharge<'_>) -> Response<Charge> {
-        client.post_form("/charges", &params)
-    }
 
-    /// Retrieves the details of a charge that has previously been created.
-    ///
-    /// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
-    /// The same information is returned when creating or refunding the charge.
-    pub fn retrieve(client: &Client, id: &ChargeId, expand: &[&str]) -> Response<Charge> {
-        client.get_query(&format!("/charges/{}", id), &Expand { expand })
-    }
 
-    /// Updates the specified charge by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided will be left unchanged.
-    pub fn update(client: &Client, id: &ChargeId, params: UpdateCharge<'_>) -> Response<Charge> {
-        client.post_form(&format!("/charges/{}", id), &params)
-    }
-}
-
-impl Object for Charge {
-    type Id = ChargeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "charge"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetails {
@@ -1285,29 +1247,7 @@ pub struct CreateCharge<'a> {
     pub transfer_group: Option<&'a str>,
 }
 
-impl<'a> CreateCharge<'a> {
-    pub fn new() -> Self {
-        CreateCharge {
-            amount: Default::default(),
-            application_fee: Default::default(),
-            application_fee_amount: Default::default(),
-            capture: Default::default(),
-            currency: Default::default(),
-            customer: Default::default(),
-            description: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            on_behalf_of: Default::default(),
-            receipt_email: Default::default(),
-            shipping: Default::default(),
-            source: Default::default(),
-            statement_descriptor: Default::default(),
-            statement_descriptor_suffix: Default::default(),
-            transfer_data: Default::default(),
-            transfer_group: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Charge::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -1352,20 +1292,7 @@ pub struct ListCharges<'a> {
     pub transfer_group: Option<&'a str>,
 }
 
-impl<'a> ListCharges<'a> {
-    pub fn new() -> Self {
-        ListCharges {
-            created: Default::default(),
-            customer: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            payment_intent: Default::default(),
-            starting_after: Default::default(),
-            transfer_group: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Charge::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -1423,20 +1350,7 @@ pub struct UpdateCharge<'a> {
     pub transfer_group: Option<&'a str>,
 }
 
-impl<'a> UpdateCharge<'a> {
-    pub fn new() -> Self {
-        UpdateCharge {
-            customer: Default::default(),
-            description: Default::default(),
-            expand: Default::default(),
-            fraud_details: Default::default(),
-            metadata: Default::default(),
-            receipt_email: Default::default(),
-            shipping: Default::default(),
-            transfer_group: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetailsParams {
@@ -2066,5 +1980,101 @@ impl AsRef<str> for PaymentMethodDetailsSofortPreferredLanguage {
 impl std::fmt::Display for PaymentMethodDetailsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl<'a> ListCharges<'a> {
+    pub fn new() -> Self {
+        ListCharges {
+            created: Default::default(),
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            payment_intent: Default::default(),
+            starting_after: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
+}
+
+impl<'a> CreateCharge<'a> {
+    pub fn new() -> Self {
+        CreateCharge {
+            amount: Default::default(),
+            application_fee: Default::default(),
+            application_fee_amount: Default::default(),
+            capture: Default::default(),
+            currency: Default::default(),
+            customer: Default::default(),
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            on_behalf_of: Default::default(),
+            receipt_email: Default::default(),
+            shipping: Default::default(),
+            source: Default::default(),
+            statement_descriptor: Default::default(),
+            statement_descriptor_suffix: Default::default(),
+            transfer_data: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
+}
+
+impl Charge {
+    /// Returns a list of charges you’ve previously created.
+    ///
+    /// The charges are returned in sorted order, with the most recent charges appearing first.
+    pub fn list(client: &Client, params: ListCharges<'_>) -> Response<List<Charge>> {
+        client.get_query("/charges", &params)
+    }
+
+    /// To charge a credit card or other payment source, you create a `Charge` object.
+    ///
+    /// If your API key is in test mode, the supplied payment source (e.g., card) won’t actually be charged, although everything else will occur as if in live mode.
+    /// (Stripe assumes that the charge would have completed successfully).
+    pub fn create(client: &Client, params: CreateCharge<'_>) -> Response<Charge> {
+        client.post_form("/charges", &params)
+    }
+
+    /// Retrieves the details of a charge that has previously been created.
+    ///
+    /// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
+    /// The same information is returned when creating or refunding the charge.
+    pub fn retrieve(client: &Client, id: &ChargeId, expand: &[&str]) -> Response<Charge> {
+        client.get_query(&format!("/charges/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified charge by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    pub fn update(client: &Client, id: &ChargeId, params: UpdateCharge<'_>) -> Response<Charge> {
+        client.post_form(&format!("/charges/{}", id), &params)
+    }
+}
+
+impl Object for Charge {
+    type Id = ChargeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "charge"
+    }
+}
+
+impl<'a> UpdateCharge<'a> {
+    pub fn new() -> Self {
+        UpdateCharge {
+            customer: Default::default(),
+            description: Default::default(),
+            expand: Default::default(),
+            fraud_details: Default::default(),
+            metadata: Default::default(),
+            receipt_email: Default::default(),
+            shipping: Default::default(),
+            transfer_group: Default::default(),
+        }
     }
 }

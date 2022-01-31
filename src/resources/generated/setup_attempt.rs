@@ -59,22 +59,9 @@ pub struct SetupAttempt {
     pub usage: String,
 }
 
-impl SetupAttempt {
-    /// Returns a list of SetupAttempts associated with a provided SetupIntent.
-    pub fn list(client: &Client, params: ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
-        client.get_query("/setup_attempts", &params)
-    }
-}
 
-impl Object for SetupAttempt {
-    type Id = SetupAttemptId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "setup_attempt"
-    }
-}
+
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetails {
@@ -485,5 +472,22 @@ impl AsRef<str> for SetupAttemptPaymentMethodDetailsSofortPreferredLanguage {
 impl std::fmt::Display for SetupAttemptPaymentMethodDetailsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl SetupAttempt {
+    /// Returns a list of SetupAttempts associated with a provided SetupIntent.
+    pub fn list(client: &Client, params: ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
+        client.get_query("/setup_attempts", &params)
+    }
+}
+
+impl Object for SetupAttempt {
+    type Id = SetupAttemptId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "setup_attempt"
     }
 }

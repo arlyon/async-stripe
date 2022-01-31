@@ -109,46 +109,9 @@ pub struct CreditNote {
     pub voided_at: Option<Box<Timestamp>>,
 }
 
-impl CreditNote {
-    /// Returns a list of credit notes.
-    pub fn list(client: &Client, params: ListCreditNotes<'_>) -> Response<List<CreditNote>> {
-        client.get_query("/credit_notes", &params)
-    }
 
-    /// Issue a credit note to adjust the amount of a finalized invoice.
-    ///
-    /// For a `status=open` invoice, a credit note reduces its `amount_due`.
-    /// For a `status=paid` invoice, a credit note does not affect its `amount_due`.
-    /// Instead, it can result in any combination of the following:  <ul> <li>Refund: create a new refund (using `refund_amount`) or link an existing refund (using `refund`).</li> <li>Customer balance credit: credit the customer’s balance (using `credit_amount`) which will be automatically applied to their next invoice when it’s finalized.</li> <li>Outside of Stripe credit: record the amount that is or will be credited outside of Stripe (using `out_of_band_amount`).</li> </ul>  For post-payment credit notes the sum of the refund, credit and outside of Stripe amounts must equal the credit note total.  You may issue multiple credit notes for an invoice.
-    /// Each credit note will increment the invoice’s `pre_payment_credit_notes_amount` or `post_payment_credit_notes_amount` depending on its `status` at the time of credit note creation.
-    pub fn create(client: &Client, params: CreateCreditNote<'_>) -> Response<CreditNote> {
-        client.post_form("/credit_notes", &params)
-    }
 
-    /// Retrieves the credit note object with the given identifier.
-    pub fn retrieve(client: &Client, id: &CreditNoteId, expand: &[&str]) -> Response<CreditNote> {
-        client.get_query(&format!("/credit_notes/{}", id), &Expand { expand })
-    }
 
-    /// Updates an existing credit note.
-    pub fn update(
-        client: &Client,
-        id: &CreditNoteId,
-        params: UpdateCreditNote<'_>,
-    ) -> Response<CreditNote> {
-        client.post_form(&format!("/credit_notes/{}", id), &params)
-    }
-}
-
-impl Object for CreditNote {
-    type Id = CreditNoteId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "credit_note"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreditNoteTaxAmount {
@@ -224,23 +187,7 @@ pub struct CreateCreditNote<'a> {
     pub refund_amount: Option<i64>,
 }
 
-impl<'a> CreateCreditNote<'a> {
-    pub fn new(invoice: InvoiceId) -> Self {
-        CreateCreditNote {
-            amount: Default::default(),
-            credit_amount: Default::default(),
-            expand: Default::default(),
-            invoice,
-            lines: Default::default(),
-            memo: Default::default(),
-            metadata: Default::default(),
-            out_of_band_amount: Default::default(),
-            reason: Default::default(),
-            refund: Default::default(),
-            refund_amount: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `CreditNote::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -278,18 +225,7 @@ pub struct ListCreditNotes<'a> {
     pub starting_after: Option<CreditNoteId>,
 }
 
-impl<'a> ListCreditNotes<'a> {
-    pub fn new() -> Self {
-        ListCreditNotes {
-            customer: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            invoice: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `CreditNote::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -311,15 +247,7 @@ pub struct UpdateCreditNote<'a> {
     pub metadata: Option<Metadata>,
 }
 
-impl<'a> UpdateCreditNote<'a> {
-    pub fn new() -> Self {
-        UpdateCreditNote {
-            expand: Default::default(),
-            memo: Default::default(),
-            metadata: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCreditNoteLines {
@@ -465,5 +393,87 @@ impl AsRef<str> for CreditNoteType {
 impl std::fmt::Display for CreditNoteType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for CreditNote {
+    type Id = CreditNoteId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "credit_note"
+    }
+}
+
+impl CreditNote {
+    /// Returns a list of credit notes.
+    pub fn list(client: &Client, params: ListCreditNotes<'_>) -> Response<List<CreditNote>> {
+        client.get_query("/credit_notes", &params)
+    }
+
+    /// Issue a credit note to adjust the amount of a finalized invoice.
+    ///
+    /// For a `status=open` invoice, a credit note reduces its `amount_due`.
+    /// For a `status=paid` invoice, a credit note does not affect its `amount_due`.
+    /// Instead, it can result in any combination of the following:  <ul> <li>Refund: create a new refund (using `refund_amount`) or link an existing refund (using `refund`).</li> <li>Customer balance credit: credit the customer’s balance (using `credit_amount`) which will be automatically applied to their next invoice when it’s finalized.</li> <li>Outside of Stripe credit: record the amount that is or will be credited outside of Stripe (using `out_of_band_amount`).</li> </ul>  For post-payment credit notes the sum of the refund, credit and outside of Stripe amounts must equal the credit note total.  You may issue multiple credit notes for an invoice.
+    /// Each credit note will increment the invoice’s `pre_payment_credit_notes_amount` or `post_payment_credit_notes_amount` depending on its `status` at the time of credit note creation.
+    pub fn create(client: &Client, params: CreateCreditNote<'_>) -> Response<CreditNote> {
+        client.post_form("/credit_notes", &params)
+    }
+
+    /// Retrieves the credit note object with the given identifier.
+    pub fn retrieve(client: &Client, id: &CreditNoteId, expand: &[&str]) -> Response<CreditNote> {
+        client.get_query(&format!("/credit_notes/{}", id), &Expand { expand })
+    }
+
+    /// Updates an existing credit note.
+    pub fn update(
+        client: &Client,
+        id: &CreditNoteId,
+        params: UpdateCreditNote<'_>,
+    ) -> Response<CreditNote> {
+        client.post_form(&format!("/credit_notes/{}", id), &params)
+    }
+}
+
+impl<'a> UpdateCreditNote<'a> {
+    pub fn new() -> Self {
+        UpdateCreditNote {
+            expand: Default::default(),
+            memo: Default::default(),
+            metadata: Default::default(),
+        }
+    }
+}
+
+impl<'a> ListCreditNotes<'a> {
+    pub fn new() -> Self {
+        ListCreditNotes {
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            invoice: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
+}
+
+impl<'a> CreateCreditNote<'a> {
+    pub fn new(invoice: InvoiceId) -> Self {
+        CreateCreditNote {
+            amount: Default::default(),
+            credit_amount: Default::default(),
+            expand: Default::default(),
+            invoice,
+            lines: Default::default(),
+            memo: Default::default(),
+            metadata: Default::default(),
+            out_of_band_amount: Default::default(),
+            reason: Default::default(),
+            refund: Default::default(),
+            refund_amount: Default::default(),
+        }
     }
 }

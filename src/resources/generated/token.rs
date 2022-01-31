@@ -43,30 +43,9 @@ pub struct Token {
     pub used: bool,
 }
 
-impl Token {
-    /// Creates a single-use token that represents a bank account’s details.
-    /// This token can be used with any API method in place of a bank account dictionary.
-    ///
-    /// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
-    pub fn create(client: &Client, params: CreateToken<'_>) -> Response<Token> {
-        client.post_form("/tokens", &params)
-    }
 
-    /// Retrieves the token with the given ID.
-    pub fn retrieve(client: &Client, id: &TokenId, expand: &[&str]) -> Response<Token> {
-        client.get_query(&format!("/tokens/{}", id), &Expand { expand })
-    }
-}
 
-impl Object for Token {
-    type Id = TokenId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "token"
-    }
-}
+
 
 /// The parameters for `Token::create`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -99,18 +78,7 @@ pub struct CreateToken<'a> {
     pub pii: Option<Box<CreateTokenPii>>,
 }
 
-impl<'a> CreateToken<'a> {
-    pub fn new() -> Self {
-        CreateToken {
-            account: Default::default(),
-            customer: Default::default(),
-            cvc_update: Default::default(),
-            expand: Default::default(),
-            person: Default::default(),
-            pii: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenAccount {
@@ -318,5 +286,43 @@ impl AsRef<str> for CreateTokenAccountBusinessType {
 impl std::fmt::Display for CreateTokenAccountBusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for Token {
+    type Id = TokenId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "token"
+    }
+}
+
+impl Token {
+    /// Creates a single-use token that represents a bank account’s details.
+    /// This token can be used with any API method in place of a bank account dictionary.
+    ///
+    /// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
+    pub fn create(client: &Client, params: CreateToken<'_>) -> Response<Token> {
+        client.post_form("/tokens", &params)
+    }
+
+    /// Retrieves the token with the given ID.
+    pub fn retrieve(client: &Client, id: &TokenId, expand: &[&str]) -> Response<Token> {
+        client.get_query(&format!("/tokens/{}", id), &Expand { expand })
+    }
+}
+
+impl<'a> CreateToken<'a> {
+    pub fn new() -> Self {
+        CreateToken {
+            account: Default::default(),
+            customer: Default::default(),
+            cvc_update: Default::default(),
+            expand: Default::default(),
+            person: Default::default(),
+            pii: Default::default(),
+        }
     }
 }

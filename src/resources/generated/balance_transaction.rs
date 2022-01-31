@@ -83,38 +83,9 @@ pub struct BalanceTransaction {
     pub type_: BalanceTransactionType,
 }
 
-impl BalanceTransaction {
-    /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
-    ///
-    /// The transactions are returned in sorted order, with the most recent transactions appearing first.  Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
-    pub fn list(
-        client: &Client,
-        params: ListBalanceTransactions<'_>,
-    ) -> Response<List<BalanceTransaction>> {
-        client.get_query("/balance_transactions", &params)
-    }
 
-    /// Retrieves the balance transaction with the given ID.
-    ///
-    /// Note that this endpoint previously used the path `/v1/balance/history/:id`.
-    pub fn retrieve(
-        client: &Client,
-        id: &BalanceTransactionId,
-        expand: &[&str],
-    ) -> Response<BalanceTransaction> {
-        client.get_query(&format!("/balance_transactions/{}", id), &Expand { expand })
-    }
-}
 
-impl Object for BalanceTransaction {
-    type Id = BalanceTransactionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "balance_transaction"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Fee {
@@ -321,5 +292,38 @@ impl AsRef<str> for BalanceTransactionType {
 impl std::fmt::Display for BalanceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for BalanceTransaction {
+    type Id = BalanceTransactionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "balance_transaction"
+    }
+}
+
+impl BalanceTransaction {
+    /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
+    ///
+    /// The transactions are returned in sorted order, with the most recent transactions appearing first.  Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
+    pub fn list(
+        client: &Client,
+        params: ListBalanceTransactions<'_>,
+    ) -> Response<List<BalanceTransaction>> {
+        client.get_query("/balance_transactions", &params)
+    }
+
+    /// Retrieves the balance transaction with the given ID.
+    ///
+    /// Note that this endpoint previously used the path `/v1/balance/history/:id`.
+    pub fn retrieve(
+        client: &Client,
+        id: &BalanceTransactionId,
+        expand: &[&str],
+    ) -> Response<BalanceTransaction> {
+        client.get_query(&format!("/balance_transactions/{}", id), &Expand { expand })
     }
 }

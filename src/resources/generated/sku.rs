@@ -81,51 +81,9 @@ pub struct Sku {
     pub updated: Option<Box<Timestamp>>,
 }
 
-impl Sku {
-    /// Returns a list of your SKUs.
-    ///
-    /// The SKUs are returned sorted by creation date, with the most recently created SKUs appearing first.
-    pub fn list(client: &Client, params: ListSkus<'_>) -> Response<List<Sku>> {
-        client.get_query("/skus", &params)
-    }
 
-    /// Creates a new SKU associated with a product.
-    pub fn create(client: &Client, params: CreateSku<'_>) -> Response<Sku> {
-        client.post_form("/skus", &params)
-    }
 
-    /// Retrieves the details of an existing SKU.
-    ///
-    /// Supply the unique SKU identifier from either a SKU creation request or from the product, and Stripe will return the corresponding SKU information.
-    pub fn retrieve(client: &Client, id: &SkuId, expand: &[&str]) -> Response<Sku> {
-        client.get_query(&format!("/skus/{}", id), &Expand { expand })
-    }
 
-    /// Updates the specific SKU by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided will be left unchanged.  Note that a SKU’s `attributes` are not editable.
-    /// Instead, you would need to deactivate the existing SKU and create a new one with the new attribute values.
-    pub fn update(client: &Client, id: &SkuId, params: UpdateSku<'_>) -> Response<Sku> {
-        client.post_form(&format!("/skus/{}", id), &params)
-    }
-
-    /// Delete a SKU.
-    ///
-    /// Deleting a SKU is only possible until it has been used in an order.
-    pub fn delete(client: &Client, id: &SkuId) -> Response<Deleted<SkuId>> {
-        client.delete(&format!("/skus/{}", id))
-    }
-}
-
-impl Object for Sku {
-    type Id = SkuId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "sku"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SkuInventory {
@@ -209,28 +167,7 @@ pub struct CreateSku<'a> {
     pub product: IdOrCreate<'a, CreateProduct<'a>>,
 }
 
-impl<'a> CreateSku<'a> {
-    pub fn new(
-        currency: Currency,
-        inventory: Option<SkuInventory>,
-        price: i64,
-        product: IdOrCreate<'a, CreateProduct<'a>>,
-    ) -> Self {
-        CreateSku {
-            active: Default::default(),
-            attributes: Default::default(),
-            currency,
-            expand: Default::default(),
-            id: Default::default(),
-            image: Default::default(),
-            inventory,
-            metadata: Default::default(),
-            package_dimensions: Default::default(),
-            price,
-            product,
-        }
-    }
-}
+
 
 /// The parameters for `Sku::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -287,21 +224,7 @@ pub struct ListSkus<'a> {
     pub starting_after: Option<SkuId>,
 }
 
-impl<'a> ListSkus<'a> {
-    pub fn new() -> Self {
-        ListSkus {
-            active: Default::default(),
-            attributes: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            ids: Default::default(),
-            in_stock: Default::default(),
-            limit: Default::default(),
-            product: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Sku::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -370,6 +293,91 @@ impl<'a> UpdateSku<'a> {
             package_dimensions: Default::default(),
             price: Default::default(),
             product: Default::default(),
+        }
+    }
+}
+
+impl Sku {
+    /// Returns a list of your SKUs.
+    ///
+    /// The SKUs are returned sorted by creation date, with the most recently created SKUs appearing first.
+    pub fn list(client: &Client, params: ListSkus<'_>) -> Response<List<Sku>> {
+        client.get_query("/skus", &params)
+    }
+
+    /// Creates a new SKU associated with a product.
+    pub fn create(client: &Client, params: CreateSku<'_>) -> Response<Sku> {
+        client.post_form("/skus", &params)
+    }
+
+    /// Retrieves the details of an existing SKU.
+    ///
+    /// Supply the unique SKU identifier from either a SKU creation request or from the product, and Stripe will return the corresponding SKU information.
+    pub fn retrieve(client: &Client, id: &SkuId, expand: &[&str]) -> Response<Sku> {
+        client.get_query(&format!("/skus/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specific SKU by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  Note that a SKU’s `attributes` are not editable.
+    /// Instead, you would need to deactivate the existing SKU and create a new one with the new attribute values.
+    pub fn update(client: &Client, id: &SkuId, params: UpdateSku<'_>) -> Response<Sku> {
+        client.post_form(&format!("/skus/{}", id), &params)
+    }
+
+    /// Delete a SKU.
+    ///
+    /// Deleting a SKU is only possible until it has been used in an order.
+    pub fn delete(client: &Client, id: &SkuId) -> Response<Deleted<SkuId>> {
+        client.delete(&format!("/skus/{}", id))
+    }
+}
+
+impl Object for Sku {
+    type Id = SkuId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "sku"
+    }
+}
+
+impl<'a> CreateSku<'a> {
+    pub fn new(
+        currency: Currency,
+        inventory: Option<SkuInventory>,
+        price: i64,
+        product: IdOrCreate<'a, CreateProduct<'a>>,
+    ) -> Self {
+        CreateSku {
+            active: Default::default(),
+            attributes: Default::default(),
+            currency,
+            expand: Default::default(),
+            id: Default::default(),
+            image: Default::default(),
+            inventory,
+            metadata: Default::default(),
+            package_dimensions: Default::default(),
+            price,
+            product,
+        }
+    }
+}
+
+impl<'a> ListSkus<'a> {
+    pub fn new() -> Self {
+        ListSkus {
+            active: Default::default(),
+            attributes: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            ids: Default::default(),
+            in_stock: Default::default(),
+            limit: Default::default(),
+            product: Default::default(),
+            starting_after: Default::default(),
         }
     }
 }

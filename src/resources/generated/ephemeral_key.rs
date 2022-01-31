@@ -34,27 +34,9 @@ pub struct EphemeralKey {
     pub secret: Option<Box<String>>,
 }
 
-impl EphemeralKey {
-    /// Creates a short-lived API key for a given resource.
-    pub fn create(client: &Client, params: CreateEphemeralKey<'_>) -> Response<EphemeralKey> {
-        client.post_form("/ephemeral_keys", &params)
-    }
 
-    /// Invalidates a short-lived API key for a given resource.
-    pub fn delete(client: &Client, id: &EphemeralKeyId) -> Response<Deleted<EphemeralKeyId>> {
-        client.delete(&format!("/ephemeral_keys/{}", id))
-    }
-}
 
-impl Object for EphemeralKey {
-    type Id = EphemeralKeyId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "ephemeral_key"
-    }
-}
+
 
 /// The parameters for `EphemeralKey::create`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -79,5 +61,27 @@ impl<'a> CreateEphemeralKey<'a> {
             expand: Default::default(),
             issuing_card: Default::default(),
         }
+    }
+}
+
+impl Object for EphemeralKey {
+    type Id = EphemeralKeyId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "ephemeral_key"
+    }
+}
+
+impl EphemeralKey {
+    /// Creates a short-lived API key for a given resource.
+    pub fn create(client: &Client, params: CreateEphemeralKey<'_>) -> Response<EphemeralKey> {
+        client.post_form("/ephemeral_keys", &params)
+    }
+
+    /// Invalidates a short-lived API key for a given resource.
+    pub fn delete(client: &Client, id: &EphemeralKeyId) -> Response<Deleted<EphemeralKeyId>> {
+        client.delete(&format!("/ephemeral_keys/{}", id))
     }
 }

@@ -120,41 +120,9 @@ pub struct Price {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-impl Price {
-    /// Returns a list of your prices.
-    pub fn list(client: &Client, params: ListPrices<'_>) -> Response<List<Price>> {
-        client.get_query("/prices", &params)
-    }
 
-    /// Creates a new price for an existing product.
-    ///
-    /// The price can be recurring or one-time.
-    pub fn create(client: &Client, params: CreatePrice<'_>) -> Response<Price> {
-        client.post_form("/prices", &params)
-    }
 
-    /// Retrieves the price with the given ID.
-    pub fn retrieve(client: &Client, id: &PriceId, expand: &[&str]) -> Response<Price> {
-        client.get_query(&format!("/prices/{}", id), &Expand { expand })
-    }
 
-    /// Updates the specified price by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided are left unchanged.
-    pub fn update(client: &Client, id: &PriceId, params: UpdatePrice<'_>) -> Response<Price> {
-        client.post_form(&format!("/prices/{}", id), &params)
-    }
-}
-
-impl Object for Price {
-    type Id = PriceId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "price"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PriceTier {
@@ -313,29 +281,7 @@ pub struct CreatePrice<'a> {
     pub unit_amount_decimal: Option<&'a str>,
 }
 
-impl<'a> CreatePrice<'a> {
-    pub fn new(currency: Currency) -> Self {
-        CreatePrice {
-            active: Default::default(),
-            billing_scheme: Default::default(),
-            currency,
-            expand: Default::default(),
-            lookup_key: Default::default(),
-            metadata: Default::default(),
-            nickname: Default::default(),
-            product: Default::default(),
-            product_data: Default::default(),
-            recurring: Default::default(),
-            tax_behavior: Default::default(),
-            tiers: Default::default(),
-            tiers_mode: Default::default(),
-            transfer_lookup_key: Default::default(),
-            transform_quantity: Default::default(),
-            unit_amount: Default::default(),
-            unit_amount_decimal: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Price::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -396,23 +342,7 @@ pub struct ListPrices<'a> {
     pub type_: Option<PriceType>,
 }
 
-impl<'a> ListPrices<'a> {
-    pub fn new() -> Self {
-        ListPrices {
-            active: Default::default(),
-            created: Default::default(),
-            currency: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            lookup_keys: Default::default(),
-            product: Default::default(),
-            recurring: Default::default(),
-            starting_after: Default::default(),
-            type_: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Price::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -457,19 +387,7 @@ pub struct UpdatePrice<'a> {
     pub transfer_lookup_key: Option<bool>,
 }
 
-impl<'a> UpdatePrice<'a> {
-    pub fn new() -> Self {
-        UpdatePrice {
-            active: Default::default(),
-            expand: Default::default(),
-            lookup_key: Default::default(),
-            metadata: Default::default(),
-            nickname: Default::default(),
-            tax_behavior: Default::default(),
-            transfer_lookup_key: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceProductData {
@@ -966,5 +884,97 @@ impl AsRef<str> for TransformQuantityRound {
 impl std::fmt::Display for TransformQuantityRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for Price {
+    type Id = PriceId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "price"
+    }
+}
+
+impl Price {
+    /// Returns a list of your prices.
+    pub fn list(client: &Client, params: ListPrices<'_>) -> Response<List<Price>> {
+        client.get_query("/prices", &params)
+    }
+
+    /// Creates a new price for an existing product.
+    ///
+    /// The price can be recurring or one-time.
+    pub fn create(client: &Client, params: CreatePrice<'_>) -> Response<Price> {
+        client.post_form("/prices", &params)
+    }
+
+    /// Retrieves the price with the given ID.
+    pub fn retrieve(client: &Client, id: &PriceId, expand: &[&str]) -> Response<Price> {
+        client.get_query(&format!("/prices/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified price by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided are left unchanged.
+    pub fn update(client: &Client, id: &PriceId, params: UpdatePrice<'_>) -> Response<Price> {
+        client.post_form(&format!("/prices/{}", id), &params)
+    }
+}
+
+impl<'a> ListPrices<'a> {
+    pub fn new() -> Self {
+        ListPrices {
+            active: Default::default(),
+            created: Default::default(),
+            currency: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            lookup_keys: Default::default(),
+            product: Default::default(),
+            recurring: Default::default(),
+            starting_after: Default::default(),
+            type_: Default::default(),
+        }
+    }
+}
+
+impl<'a> CreatePrice<'a> {
+    pub fn new(currency: Currency) -> Self {
+        CreatePrice {
+            active: Default::default(),
+            billing_scheme: Default::default(),
+            currency,
+            expand: Default::default(),
+            lookup_key: Default::default(),
+            metadata: Default::default(),
+            nickname: Default::default(),
+            product: Default::default(),
+            product_data: Default::default(),
+            recurring: Default::default(),
+            tax_behavior: Default::default(),
+            tiers: Default::default(),
+            tiers_mode: Default::default(),
+            transfer_lookup_key: Default::default(),
+            transform_quantity: Default::default(),
+            unit_amount: Default::default(),
+            unit_amount_decimal: Default::default(),
+        }
+    }
+}
+
+impl<'a> UpdatePrice<'a> {
+    pub fn new() -> Self {
+        UpdatePrice {
+            active: Default::default(),
+            expand: Default::default(),
+            lookup_key: Default::default(),
+            metadata: Default::default(),
+            nickname: Default::default(),
+            tax_behavior: Default::default(),
+            transfer_lookup_key: Default::default(),
+        }
     }
 }

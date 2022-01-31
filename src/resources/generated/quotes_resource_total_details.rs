@@ -33,17 +33,7 @@ pub struct QuotesResourceTotalDetailsResourceBreakdown {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct LineItemsDiscountAmount {
-    /// The amount discounted.
-    pub amount: i64,
 
-    pub discount: Discount,
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct LineItemsTaxAmount {
-    /// Amount of tax applied for this rate.
-    pub amount: i64,
 
-    pub rate: TaxRate,
-}

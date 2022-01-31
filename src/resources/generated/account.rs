@@ -111,55 +111,9 @@ pub struct Account {
     pub type_: Option<AccountType>,
 }
 
-impl Account {
-    /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
-    ///
-    /// If you’re not a platform, the list is empty.
-    pub fn list(client: &Client, params: ListAccounts<'_>) -> Response<List<Account>> {
-        client.get_query("/accounts", &params)
-    }
 
-    /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
-    /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
-    pub fn create(client: &Client, params: CreateAccount<'_>) -> Response<Account> {
-        client.post_form("/accounts", &params)
-    }
 
-    /// Retrieves the details of an account.
-    pub fn retrieve(client: &Client, id: &AccountId, expand: &[&str]) -> Response<Account> {
-        client.get_query(&format!("/accounts/{}", id), &Expand { expand })
-    }
 
-    /// Updates a [connected account](https://stripe.com/docs/connect/accounts) by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided are left unchanged.
-    /// Most parameters can be changed only for Custom accounts.
-    /// (These are marked **Custom Only** below.) Parameters marked **Custom and Express** are not supported for Standard accounts.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
-    /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
-    pub fn update(client: &Client, id: &AccountId, params: UpdateAccount<'_>) -> Response<Account> {
-        client.post_form(&format!("/accounts/{}", id), &params)
-    }
-
-    /// With [Connect](https://stripe.com/docs/connect), you can delete accounts you manage.
-    ///
-    /// Accounts created using test-mode keys can be deleted at any time.
-    ///
-    /// Standard accounts created using live-mode keys cannot be deleted.
-    /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
-    pub fn delete(client: &Client, id: &AccountId) -> Response<Deleted<AccountId>> {
-        client.delete(&format!("/accounts/{}", id))
-    }
-}
-
-impl Object for Account {
-    type Id = AccountId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "account"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BusinessProfile {
@@ -395,25 +349,10 @@ pub struct AccountRequirements {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AccountRequirementsAlternative {
-    /// Fields that can be provided to satisfy all fields in `original_fields_due`.
-    pub alternative_fields_due: Vec<String>,
 
-    /// Fields that are due and can be satisfied by providing all fields in `alternative_fields_due`.
-    pub original_fields_due: Vec<String>,
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AccountRequirementsError {
-    /// The code for the type of error.
-    pub code: AccountRequirementsErrorCode,
 
-    /// An informative message that indicates the error type and provides additional details about the error.
-    pub reason: String,
-
-    /// The specific user onboarding requirement field (in the requirements hash) that needs to be resolved.
-    pub requirement: String,
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountSettings {
@@ -842,28 +781,7 @@ pub struct CreateAccount<'a> {
     pub type_: Option<AccountType>,
 }
 
-impl<'a> CreateAccount<'a> {
-    pub fn new() -> Self {
-        CreateAccount {
-            account_token: Default::default(),
-            business_profile: Default::default(),
-            business_type: Default::default(),
-            capabilities: Default::default(),
-            company: Default::default(),
-            country: Default::default(),
-            default_currency: Default::default(),
-            documents: Default::default(),
-            email: Default::default(),
-            expand: Default::default(),
-            external_account: Default::default(),
-            individual: Default::default(),
-            metadata: Default::default(),
-            settings: Default::default(),
-            tos_acceptance: Default::default(),
-            type_: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Account::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -896,17 +814,7 @@ pub struct ListAccounts<'a> {
     pub starting_after: Option<AccountId>,
 }
 
-impl<'a> ListAccounts<'a> {
-    pub fn new() -> Self {
-        ListAccounts {
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Account::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -989,26 +897,7 @@ pub struct UpdateAccount<'a> {
     pub tos_acceptance: Option<Box<AcceptTos>>,
 }
 
-impl<'a> UpdateAccount<'a> {
-    pub fn new() -> Self {
-        UpdateAccount {
-            account_token: Default::default(),
-            business_profile: Default::default(),
-            business_type: Default::default(),
-            capabilities: Default::default(),
-            company: Default::default(),
-            default_currency: Default::default(),
-            documents: Default::default(),
-            email: Default::default(),
-            expand: Default::default(),
-            external_account: Default::default(),
-            individual: Default::default(),
-            metadata: Default::default(),
-            settings: Default::default(),
-            tos_acceptance: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AcceptTos {
@@ -2827,5 +2716,111 @@ impl AsRef<str> for TransferScheduleParamsWeeklyAnchor {
 impl std::fmt::Display for TransferScheduleParamsWeeklyAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl<'a> CreateAccount<'a> {
+    pub fn new() -> Self {
+        CreateAccount {
+            account_token: Default::default(),
+            business_profile: Default::default(),
+            business_type: Default::default(),
+            capabilities: Default::default(),
+            company: Default::default(),
+            country: Default::default(),
+            default_currency: Default::default(),
+            documents: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            external_account: Default::default(),
+            individual: Default::default(),
+            metadata: Default::default(),
+            settings: Default::default(),
+            tos_acceptance: Default::default(),
+            type_: Default::default(),
+        }
+    }
+}
+
+impl<'a> UpdateAccount<'a> {
+    pub fn new() -> Self {
+        UpdateAccount {
+            account_token: Default::default(),
+            business_profile: Default::default(),
+            business_type: Default::default(),
+            capabilities: Default::default(),
+            company: Default::default(),
+            default_currency: Default::default(),
+            documents: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            external_account: Default::default(),
+            individual: Default::default(),
+            metadata: Default::default(),
+            settings: Default::default(),
+            tos_acceptance: Default::default(),
+        }
+    }
+}
+
+impl Object for Account {
+    type Id = AccountId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "account"
+    }
+}
+
+impl Account {
+    /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
+    ///
+    /// If you’re not a platform, the list is empty.
+    pub fn list(client: &Client, params: ListAccounts<'_>) -> Response<List<Account>> {
+        client.get_query("/accounts", &params)
+    }
+
+    /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
+    /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
+    pub fn create(client: &Client, params: CreateAccount<'_>) -> Response<Account> {
+        client.post_form("/accounts", &params)
+    }
+
+    /// Retrieves the details of an account.
+    pub fn retrieve(client: &Client, id: &AccountId, expand: &[&str]) -> Response<Account> {
+        client.get_query(&format!("/accounts/{}", id), &Expand { expand })
+    }
+
+    /// Updates a [connected account](https://stripe.com/docs/connect/accounts) by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided are left unchanged.
+    /// Most parameters can be changed only for Custom accounts.
+    /// (These are marked **Custom Only** below.) Parameters marked **Custom and Express** are not supported for Standard accounts.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
+    /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
+    pub fn update(client: &Client, id: &AccountId, params: UpdateAccount<'_>) -> Response<Account> {
+        client.post_form(&format!("/accounts/{}", id), &params)
+    }
+
+    /// With [Connect](https://stripe.com/docs/connect), you can delete accounts you manage.
+    ///
+    /// Accounts created using test-mode keys can be deleted at any time.
+    ///
+    /// Standard accounts created using live-mode keys cannot be deleted.
+    /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
+    pub fn delete(client: &Client, id: &AccountId) -> Response<Deleted<AccountId>> {
+        client.delete(&format!("/accounts/{}", id))
+    }
+}
+
+impl<'a> ListAccounts<'a> {
+    pub fn new() -> Self {
+        ListAccounts {
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
     }
 }

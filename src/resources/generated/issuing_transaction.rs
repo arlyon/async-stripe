@@ -90,15 +90,7 @@ pub struct IssuingTransaction {
     pub wallet: Option<Box<IssuingTransactionWallet>>,
 }
 
-impl Object for IssuingTransaction {
-    type Id = IssuingTransactionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.transaction"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionAmountDetails {
@@ -261,5 +253,15 @@ impl AsRef<str> for IssuingTransactionWallet {
 impl std::fmt::Display for IssuingTransactionWallet {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for IssuingTransaction {
+    type Id = IssuingTransactionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.transaction"
     }
 }

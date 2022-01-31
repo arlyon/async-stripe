@@ -52,15 +52,7 @@ pub struct TaxId {
     pub verification: Option<Box<TaxIdVerification>>,
 }
 
-impl Object for TaxId {
-    type Id = TaxIdId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "tax_id"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxIdVerification {
@@ -217,5 +209,15 @@ impl AsRef<str> for TaxIdVerificationStatus {
 impl std::fmt::Display for TaxIdVerificationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for TaxId {
+    type Id = TaxIdId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "tax_id"
     }
 }

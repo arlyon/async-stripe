@@ -203,61 +203,9 @@ pub struct PaymentIntent {
     pub transfer_group: Option<Box<String>>,
 }
 
-impl PaymentIntent {
-    /// Returns a list of PaymentIntents.
-    pub fn list(client: &Client, params: ListPaymentIntents<'_>) -> Response<List<PaymentIntent>> {
-        client.get_query("/payment_intents", &params)
-    }
 
-    /// Creates a PaymentIntent object.
-    ///
-    /// After the PaymentIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/payment_intents/confirm)
-    /// to continue the payment.
-    ///
-    /// You can read more about the different payment flows available via the Payment Intents API [here](https://stripe.com/docs/payments/payment-intents).  When `confirm=true` is used during creation, it is equivalent to creating and confirming the PaymentIntent in the same call.
-    /// You may use any parameters available in the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) when `confirm=true` is supplied.
-    pub fn create(client: &Client, params: CreatePaymentIntent<'_>) -> Response<PaymentIntent> {
-        client.post_form("/payment_intents", &params)
-    }
 
-    /// Retrieves the details of a PaymentIntent that has previously been created.
-    ///
-    /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
-    /// When retrieved with a publishable key, only a subset of properties will be returned.
-    /// Please refer to the [payment intent](https://stripe.com/docs/api#payment_intent_object) object reference for more details.
-    pub fn retrieve(
-        client: &Client,
-        id: &PaymentIntentId,
-        expand: &[&str],
-    ) -> Response<PaymentIntent> {
-        client.get_query(&format!("/payment_intents/{}", id), &Expand { expand })
-    }
 
-    /// Updates properties on a PaymentIntent object without confirming.
-    ///
-    /// Depending on which properties you update, you may need to confirm the
-    /// PaymentIntent again.
-    ///
-    /// For example, updating the `payment_method` will always require you to confirm the PaymentIntent again.
-    /// If you prefer to update and confirm at the same time, we recommend updating properties via the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) instead.
-    pub fn update(
-        client: &Client,
-        id: &PaymentIntentId,
-        params: UpdatePaymentIntent<'_>,
-    ) -> Response<PaymentIntent> {
-        client.post_form(&format!("/payment_intents/{}", id), &params)
-    }
-}
-
-impl Object for PaymentIntent {
-    type Id = PaymentIntentId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "payment_intent"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
@@ -681,20 +629,7 @@ pub struct PaymentMethodOptionsWechatPay {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TransferData {
-    /// Amount intended to be collected by this PaymentIntent.
-    ///
-    /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
-    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
-    /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<Box<i64>>,
 
-    /// The account (if any) the payment will be attributed to for tax
-    /// reporting, and where funds from the payment will be transferred to upon
-    /// payment success.
-    pub destination: Expandable<Account>,
-}
 
 /// The parameters for `PaymentIntent::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -873,41 +808,7 @@ pub struct CreatePaymentIntent<'a> {
     pub use_stripe_sdk: Option<bool>,
 }
 
-impl<'a> CreatePaymentIntent<'a> {
-    pub fn new(amount: i64, currency: Currency) -> Self {
-        CreatePaymentIntent {
-            amount,
-            application_fee_amount: Default::default(),
-            automatic_payment_methods: Default::default(),
-            capture_method: Default::default(),
-            confirm: Default::default(),
-            confirmation_method: Default::default(),
-            currency,
-            customer: Default::default(),
-            description: Default::default(),
-            error_on_requires_action: Default::default(),
-            expand: Default::default(),
-            mandate: Default::default(),
-            mandate_data: Default::default(),
-            metadata: Default::default(),
-            off_session: Default::default(),
-            on_behalf_of: Default::default(),
-            payment_method: Default::default(),
-            payment_method_data: Default::default(),
-            payment_method_options: Default::default(),
-            payment_method_types: Default::default(),
-            receipt_email: Default::default(),
-            return_url: Default::default(),
-            setup_future_usage: Default::default(),
-            shipping: Default::default(),
-            statement_descriptor: Default::default(),
-            statement_descriptor_suffix: Default::default(),
-            transfer_data: Default::default(),
-            transfer_group: Default::default(),
-            use_stripe_sdk: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `PaymentIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -947,18 +848,7 @@ pub struct ListPaymentIntents<'a> {
     pub starting_after: Option<PaymentIntentId>,
 }
 
-impl<'a> ListPaymentIntents<'a> {
-    pub fn new() -> Self {
-        ListPaymentIntents {
-            created: Default::default(),
-            customer: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `PaymentIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -1075,30 +965,7 @@ pub struct UpdatePaymentIntent<'a> {
     pub transfer_group: Option<&'a str>,
 }
 
-impl<'a> UpdatePaymentIntent<'a> {
-    pub fn new() -> Self {
-        UpdatePaymentIntent {
-            amount: Default::default(),
-            application_fee_amount: Default::default(),
-            currency: Default::default(),
-            customer: Default::default(),
-            description: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            payment_method: Default::default(),
-            payment_method_data: Default::default(),
-            payment_method_options: Default::default(),
-            payment_method_types: Default::default(),
-            receipt_email: Default::default(),
-            setup_future_usage: Default::default(),
-            shipping: Default::default(),
-            statement_descriptor: Default::default(),
-            statement_descriptor_suffix: Default::default(),
-            transfer_data: Default::default(),
-            transfer_group: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentAutomaticPaymentMethods {
@@ -4674,5 +4541,135 @@ impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
 impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl<'a> UpdatePaymentIntent<'a> {
+    pub fn new() -> Self {
+        UpdatePaymentIntent {
+            amount: Default::default(),
+            application_fee_amount: Default::default(),
+            currency: Default::default(),
+            customer: Default::default(),
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            payment_method: Default::default(),
+            payment_method_data: Default::default(),
+            payment_method_options: Default::default(),
+            payment_method_types: Default::default(),
+            receipt_email: Default::default(),
+            setup_future_usage: Default::default(),
+            shipping: Default::default(),
+            statement_descriptor: Default::default(),
+            statement_descriptor_suffix: Default::default(),
+            transfer_data: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
+}
+
+impl<'a> ListPaymentIntents<'a> {
+    pub fn new() -> Self {
+        ListPaymentIntents {
+            created: Default::default(),
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
+}
+
+impl Object for PaymentIntent {
+    type Id = PaymentIntentId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "payment_intent"
+    }
+}
+
+impl PaymentIntent {
+    /// Returns a list of PaymentIntents.
+    pub fn list(client: &Client, params: ListPaymentIntents<'_>) -> Response<List<PaymentIntent>> {
+        client.get_query("/payment_intents", &params)
+    }
+
+    /// Creates a PaymentIntent object.
+    ///
+    /// After the PaymentIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/payment_intents/confirm)
+    /// to continue the payment.
+    ///
+    /// You can read more about the different payment flows available via the Payment Intents API [here](https://stripe.com/docs/payments/payment-intents).  When `confirm=true` is used during creation, it is equivalent to creating and confirming the PaymentIntent in the same call.
+    /// You may use any parameters available in the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) when `confirm=true` is supplied.
+    pub fn create(client: &Client, params: CreatePaymentIntent<'_>) -> Response<PaymentIntent> {
+        client.post_form("/payment_intents", &params)
+    }
+
+    /// Retrieves the details of a PaymentIntent that has previously been created.
+    ///
+    /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
+    /// When retrieved with a publishable key, only a subset of properties will be returned.
+    /// Please refer to the [payment intent](https://stripe.com/docs/api#payment_intent_object) object reference for more details.
+    pub fn retrieve(
+        client: &Client,
+        id: &PaymentIntentId,
+        expand: &[&str],
+    ) -> Response<PaymentIntent> {
+        client.get_query(&format!("/payment_intents/{}", id), &Expand { expand })
+    }
+
+    /// Updates properties on a PaymentIntent object without confirming.
+    ///
+    /// Depending on which properties you update, you may need to confirm the
+    /// PaymentIntent again.
+    ///
+    /// For example, updating the `payment_method` will always require you to confirm the PaymentIntent again.
+    /// If you prefer to update and confirm at the same time, we recommend updating properties via the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) instead.
+    pub fn update(
+        client: &Client,
+        id: &PaymentIntentId,
+        params: UpdatePaymentIntent<'_>,
+    ) -> Response<PaymentIntent> {
+        client.post_form(&format!("/payment_intents/{}", id), &params)
+    }
+}
+
+impl<'a> CreatePaymentIntent<'a> {
+    pub fn new(amount: i64, currency: Currency) -> Self {
+        CreatePaymentIntent {
+            amount,
+            application_fee_amount: Default::default(),
+            automatic_payment_methods: Default::default(),
+            capture_method: Default::default(),
+            confirm: Default::default(),
+            confirmation_method: Default::default(),
+            currency,
+            customer: Default::default(),
+            description: Default::default(),
+            error_on_requires_action: Default::default(),
+            expand: Default::default(),
+            mandate: Default::default(),
+            mandate_data: Default::default(),
+            metadata: Default::default(),
+            off_session: Default::default(),
+            on_behalf_of: Default::default(),
+            payment_method: Default::default(),
+            payment_method_data: Default::default(),
+            payment_method_options: Default::default(),
+            payment_method_types: Default::default(),
+            receipt_email: Default::default(),
+            return_url: Default::default(),
+            setup_future_usage: Default::default(),
+            shipping: Default::default(),
+            statement_descriptor: Default::default(),
+            statement_descriptor_suffix: Default::default(),
+            transfer_data: Default::default(),
+            transfer_group: Default::default(),
+            use_stripe_sdk: Default::default(),
+        }
     }
 }

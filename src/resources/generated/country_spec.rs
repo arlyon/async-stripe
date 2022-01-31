@@ -42,27 +42,9 @@ pub struct CountrySpec {
     pub verification_fields: CountrySpecVerificationFields,
 }
 
-impl CountrySpec {
-    /// Lists all Country Spec objects available in the API.
-    pub fn list(client: &Client, params: ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
-        client.get_query("/country_specs", &params)
-    }
 
-    /// Returns a Country Spec for a given Country code.
-    pub fn retrieve(client: &Client, id: &CountrySpecId, expand: &[&str]) -> Response<CountrySpec> {
-        client.get_query(&format!("/country_specs/{}", id), &Expand { expand })
-    }
-}
 
-impl Object for CountrySpec {
-    type Id = CountrySpecId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "country_spec"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFields {
@@ -116,5 +98,27 @@ impl<'a> ListCountrySpecs<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
         }
+    }
+}
+
+impl Object for CountrySpec {
+    type Id = CountrySpecId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "country_spec"
+    }
+}
+
+impl CountrySpec {
+    /// Lists all Country Spec objects available in the API.
+    pub fn list(client: &Client, params: ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
+        client.get_query("/country_specs", &params)
+    }
+
+    /// Returns a Country Spec for a given Country code.
+    pub fn retrieve(client: &Client, id: &CountrySpecId, expand: &[&str]) -> Response<CountrySpec> {
+        client.get_query(&format!("/country_specs/{}", id), &Expand { expand })
     }
 }

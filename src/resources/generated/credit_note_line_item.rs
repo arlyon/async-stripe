@@ -59,36 +59,13 @@ pub struct CreditNoteLineItem {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-impl Object for CreditNoteLineItem {
-    type Id = CreditNoteLineItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "credit_note_line_item"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreditNoteTaxAmount {
-    /// The amount, in %s, of the tax.
-    pub amount: i64,
 
-    /// Whether this tax amount is inclusive or exclusive.
-    pub inclusive: bool,
-
-    /// The tax rate that was applied to get this tax amount.
-    pub tax_rate: Expandable<TaxRate>,
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct DiscountsResourceDiscountAmount {
-    /// The amount, in %s, of the discount.
-    pub amount: i64,
 
-    /// The discount that was applied to get this discount amount.
-    pub discount: Expandable<Discount>,
-}
 
 /// An enum representing the possible values of an `CreditNoteLineItem`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -116,5 +93,15 @@ impl AsRef<str> for CreditNoteLineItemType {
 impl std::fmt::Display for CreditNoteLineItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for CreditNoteLineItem {
+    type Id = CreditNoteLineItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "credit_note_line_item"
     }
 }

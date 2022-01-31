@@ -112,51 +112,9 @@ pub struct PaymentMethod {
     pub wechat_pay: Option<Box<PaymentMethodWechatPay>>,
 }
 
-impl PaymentMethod {
-    /// Returns a list of PaymentMethods.
-    ///
-    /// For listing a customer’s payment methods, you should use [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list).
-    pub fn list(client: &Client, params: ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
-        client.get_query("/payment_methods", &params)
-    }
 
-    /// Creates a PaymentMethod object.
-    ///
-    /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.  Instead of creating a PaymentMethod directly, we recommend using the [PaymentIntents](https://stripe.com/docs/payments/accept-a-payment) API to accept a payment immediately or the [SetupIntent](https://stripe.com/docs/payments/save-and-reuse) API to collect payment method details ahead of a future payment.
-    pub fn create(client: &Client, params: CreatePaymentMethod<'_>) -> Response<PaymentMethod> {
-        client.post_form("/payment_methods", &params)
-    }
 
-    /// Retrieves a PaymentMethod object.
-    pub fn retrieve(
-        client: &Client,
-        id: &PaymentMethodId,
-        expand: &[&str],
-    ) -> Response<PaymentMethod> {
-        client.get_query(&format!("/payment_methods/{}", id), &Expand { expand })
-    }
 
-    /// Updates a PaymentMethod object.
-    ///
-    /// A PaymentMethod must be attached a customer to be updated.
-    pub fn update(
-        client: &Client,
-        id: &PaymentMethodId,
-        params: UpdatePaymentMethod<'_>,
-    ) -> Response<PaymentMethod> {
-        client.post_form(&format!("/payment_methods/{}", id), &params)
-    }
-}
-
-impl Object for PaymentMethod {
-    type Id = PaymentMethodId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "payment_method"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentFlowsPrivatePaymentMethodsAlipay {}
@@ -689,37 +647,7 @@ pub struct CreatePaymentMethod<'a> {
     pub wechat_pay: Option<Box<CreatePaymentMethodWechatPay>>,
 }
 
-impl<'a> CreatePaymentMethod<'a> {
-    pub fn new() -> Self {
-        CreatePaymentMethod {
-            acss_debit: Default::default(),
-            afterpay_clearpay: Default::default(),
-            alipay: Default::default(),
-            au_becs_debit: Default::default(),
-            bacs_debit: Default::default(),
-            bancontact: Default::default(),
-            billing_details: Default::default(),
-            boleto: Default::default(),
-            customer: Default::default(),
-            eps: Default::default(),
-            expand: Default::default(),
-            fpx: Default::default(),
-            giropay: Default::default(),
-            grabpay: Default::default(),
-            ideal: Default::default(),
-            interac_present: Default::default(),
-            klarna: Default::default(),
-            metadata: Default::default(),
-            oxxo: Default::default(),
-            p24: Default::default(),
-            payment_method: Default::default(),
-            sepa_debit: Default::default(),
-            sofort: Default::default(),
-            type_: Default::default(),
-            wechat_pay: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `PaymentMethod::list`.
 #[derive(Clone, Debug, Serialize)]
@@ -759,18 +687,7 @@ pub struct ListPaymentMethods<'a> {
     pub type_: PaymentMethodTypeFilter,
 }
 
-impl<'a> ListPaymentMethods<'a> {
-    pub fn new(type_: PaymentMethodTypeFilter) -> Self {
-        ListPaymentMethods {
-            customer: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-            type_,
-        }
-    }
-}
+
 
 /// The parameters for `PaymentMethod::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -792,15 +709,7 @@ pub struct UpdatePaymentMethod<'a> {
     pub metadata: Option<Metadata>,
 }
 
-impl<'a> UpdatePaymentMethod<'a> {
-    pub fn new() -> Self {
-        UpdatePaymentMethod {
-            billing_details: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodAcssDebit {
@@ -1743,5 +1652,106 @@ impl AsRef<str> for WalletDetailsType {
 impl std::fmt::Display for WalletDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl<'a> CreatePaymentMethod<'a> {
+    pub fn new() -> Self {
+        CreatePaymentMethod {
+            acss_debit: Default::default(),
+            afterpay_clearpay: Default::default(),
+            alipay: Default::default(),
+            au_becs_debit: Default::default(),
+            bacs_debit: Default::default(),
+            bancontact: Default::default(),
+            billing_details: Default::default(),
+            boleto: Default::default(),
+            customer: Default::default(),
+            eps: Default::default(),
+            expand: Default::default(),
+            fpx: Default::default(),
+            giropay: Default::default(),
+            grabpay: Default::default(),
+            ideal: Default::default(),
+            interac_present: Default::default(),
+            klarna: Default::default(),
+            metadata: Default::default(),
+            oxxo: Default::default(),
+            p24: Default::default(),
+            payment_method: Default::default(),
+            sepa_debit: Default::default(),
+            sofort: Default::default(),
+            type_: Default::default(),
+            wechat_pay: Default::default(),
+        }
+    }
+}
+
+impl<'a> ListPaymentMethods<'a> {
+    pub fn new(type_: PaymentMethodTypeFilter) -> Self {
+        ListPaymentMethods {
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+            type_,
+        }
+    }
+}
+
+impl<'a> UpdatePaymentMethod<'a> {
+    pub fn new() -> Self {
+        UpdatePaymentMethod {
+            billing_details: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+        }
+    }
+}
+
+impl PaymentMethod {
+    /// Returns a list of PaymentMethods.
+    ///
+    /// For listing a customer’s payment methods, you should use [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list).
+    pub fn list(client: &Client, params: ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
+        client.get_query("/payment_methods", &params)
+    }
+
+    /// Creates a PaymentMethod object.
+    ///
+    /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.  Instead of creating a PaymentMethod directly, we recommend using the [PaymentIntents](https://stripe.com/docs/payments/accept-a-payment) API to accept a payment immediately or the [SetupIntent](https://stripe.com/docs/payments/save-and-reuse) API to collect payment method details ahead of a future payment.
+    pub fn create(client: &Client, params: CreatePaymentMethod<'_>) -> Response<PaymentMethod> {
+        client.post_form("/payment_methods", &params)
+    }
+
+    /// Retrieves a PaymentMethod object.
+    pub fn retrieve(
+        client: &Client,
+        id: &PaymentMethodId,
+        expand: &[&str],
+    ) -> Response<PaymentMethod> {
+        client.get_query(&format!("/payment_methods/{}", id), &Expand { expand })
+    }
+
+    /// Updates a PaymentMethod object.
+    ///
+    /// A PaymentMethod must be attached a customer to be updated.
+    pub fn update(
+        client: &Client,
+        id: &PaymentMethodId,
+        params: UpdatePaymentMethod<'_>,
+    ) -> Response<PaymentMethod> {
+        client.post_form(&format!("/payment_methods/{}", id), &params)
+    }
+}
+
+impl Object for PaymentMethod {
+    type Id = PaymentMethodId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "payment_method"
     }
 }

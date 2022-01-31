@@ -121,43 +121,9 @@ pub struct Order {
     pub upstream_id: Option<Box<String>>,
 }
 
-impl Order {
-    /// Returns a list of your orders.
-    ///
-    /// The orders are returned sorted by creation date, with the most recently created orders appearing first.
-    pub fn list(client: &Client, params: ListOrders<'_>) -> Response<List<Order>> {
-        client.get_query("/orders", &params)
-    }
 
-    /// Creates a new order object.
-    pub fn create(client: &Client, params: CreateOrder<'_>) -> Response<Order> {
-        client.post_form("/orders", &params)
-    }
 
-    /// Retrieves the details of an existing order.
-    ///
-    /// Supply the unique order ID from either an order creation request or the order list, and Stripe will return the corresponding order information.
-    pub fn retrieve(client: &Client, id: &OrderId, expand: &[&str]) -> Response<Order> {
-        client.get_query(&format!("/orders/{}", id), &Expand { expand })
-    }
 
-    /// Updates the specific order by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided will be left unchanged.
-    pub fn update(client: &Client, id: &OrderId, params: UpdateOrder<'_>) -> Response<Order> {
-        client.post_form(&format!("/orders/{}", id), &params)
-    }
-}
-
-impl Object for Order {
-    type Id = OrderId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "order"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingMethod {
@@ -276,20 +242,7 @@ pub struct CreateOrder<'a> {
     pub shipping: Option<Box<CreateOrderShipping>>,
 }
 
-impl<'a> CreateOrder<'a> {
-    pub fn new(currency: Currency) -> Self {
-        CreateOrder {
-            coupon: Default::default(),
-            currency,
-            customer: Default::default(),
-            email: Default::default(),
-            expand: Default::default(),
-            items: Default::default(),
-            metadata: Default::default(),
-            shipping: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Order::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -345,22 +298,7 @@ pub struct ListOrders<'a> {
     pub upstream_ids: Option<Box<Vec<String>>>,
 }
 
-impl<'a> ListOrders<'a> {
-    pub fn new() -> Self {
-        ListOrders {
-            created: Default::default(),
-            customer: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            ids: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-            status: Default::default(),
-            status_transitions: Default::default(),
-            upstream_ids: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Order::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -403,18 +341,7 @@ pub struct UpdateOrder<'a> {
     pub status: Option<OrderStatus>,
 }
 
-impl<'a> UpdateOrder<'a> {
-    pub fn new() -> Self {
-        UpdateOrder {
-            coupon: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            selected_shipping_method: Default::default(),
-            shipping: Default::default(),
-            status: Default::default(),
-        }
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateOrderShipping {
@@ -556,5 +483,88 @@ impl AsRef<str> for OrderStatus {
 impl std::fmt::Display for OrderStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl<'a> UpdateOrder<'a> {
+    pub fn new() -> Self {
+        UpdateOrder {
+            coupon: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            selected_shipping_method: Default::default(),
+            shipping: Default::default(),
+            status: Default::default(),
+        }
+    }
+}
+
+impl Order {
+    /// Returns a list of your orders.
+    ///
+    /// The orders are returned sorted by creation date, with the most recently created orders appearing first.
+    pub fn list(client: &Client, params: ListOrders<'_>) -> Response<List<Order>> {
+        client.get_query("/orders", &params)
+    }
+
+    /// Creates a new order object.
+    pub fn create(client: &Client, params: CreateOrder<'_>) -> Response<Order> {
+        client.post_form("/orders", &params)
+    }
+
+    /// Retrieves the details of an existing order.
+    ///
+    /// Supply the unique order ID from either an order creation request or the order list, and Stripe will return the corresponding order information.
+    pub fn retrieve(client: &Client, id: &OrderId, expand: &[&str]) -> Response<Order> {
+        client.get_query(&format!("/orders/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specific order by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    pub fn update(client: &Client, id: &OrderId, params: UpdateOrder<'_>) -> Response<Order> {
+        client.post_form(&format!("/orders/{}", id), &params)
+    }
+}
+
+impl Object for Order {
+    type Id = OrderId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "order"
+    }
+}
+
+impl<'a> ListOrders<'a> {
+    pub fn new() -> Self {
+        ListOrders {
+            created: Default::default(),
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            ids: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+            status: Default::default(),
+            status_transitions: Default::default(),
+            upstream_ids: Default::default(),
+        }
+    }
+}
+
+impl<'a> CreateOrder<'a> {
+    pub fn new(currency: Currency) -> Self {
+        CreateOrder {
+            coupon: Default::default(),
+            currency,
+            customer: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            items: Default::default(),
+            metadata: Default::default(),
+            shipping: Default::default(),
+        }
     }
 }

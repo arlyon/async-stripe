@@ -56,15 +56,7 @@ pub struct SourceTransaction {
     pub type_: SourceTransactionType,
 }
 
-impl Object for SourceTransaction {
-    type Id = ChargeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "source_transaction"
-    }
-}
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionAchCreditTransferData {
@@ -224,5 +216,15 @@ impl AsRef<str> for SourceTransactionType {
 impl std::fmt::Display for SourceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl Object for SourceTransaction {
+    type Id = ChargeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "source_transaction"
     }
 }

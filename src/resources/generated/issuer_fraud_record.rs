@@ -43,36 +43,9 @@ pub struct IssuerFraudRecord {
     pub post_date: Timestamp,
 }
 
-impl IssuerFraudRecord {
-    /// Returns a list of issuer fraud records.
-    pub fn list(
-        client: &Client,
-        params: ListIssuerFraudRecords<'_>,
-    ) -> Response<List<IssuerFraudRecord>> {
-        client.get_query("/issuer_fraud_records", &params)
-    }
 
-    /// Retrieves the details of an issuer fraud record that has previously been created.
-    ///
-    /// Please refer to the [issuer fraud record](https://stripe.com/docs/api#issuer_fraud_record_object) object reference for more details.
-    pub fn retrieve(
-        client: &Client,
-        id: &IssuerFraudRecordId,
-        expand: &[&str],
-    ) -> Response<IssuerFraudRecord> {
-        client.get_query(&format!("/issuer_fraud_records/{}", id), &Expand { expand })
-    }
-}
 
-impl Object for IssuerFraudRecord {
-    type Id = IssuerFraudRecordId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuer_fraud_record"
-    }
-}
+
 
 /// The parameters for `IssuerFraudRecord::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -115,5 +88,36 @@ impl<'a> ListIssuerFraudRecords<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
         }
+    }
+}
+
+impl Object for IssuerFraudRecord {
+    type Id = IssuerFraudRecordId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuer_fraud_record"
+    }
+}
+
+impl IssuerFraudRecord {
+    /// Returns a list of issuer fraud records.
+    pub fn list(
+        client: &Client,
+        params: ListIssuerFraudRecords<'_>,
+    ) -> Response<List<IssuerFraudRecord>> {
+        client.get_query("/issuer_fraud_records", &params)
+    }
+
+    /// Retrieves the details of an issuer fraud record that has previously been created.
+    ///
+    /// Please refer to the [issuer fraud record](https://stripe.com/docs/api#issuer_fraud_record_object) object reference for more details.
+    pub fn retrieve(
+        client: &Client,
+        id: &IssuerFraudRecordId,
+        expand: &[&str],
+    ) -> Response<IssuerFraudRecord> {
+        client.get_query(&format!("/issuer_fraud_records/{}", id), &Expand { expand })
     }
 }

@@ -130,42 +130,9 @@ pub struct Plan {
     pub usage_type: Option<Box<PlanUsageType>>,
 }
 
-impl Plan {
-    /// Returns a list of your plans.
-    pub fn list(client: &Client, params: ListPlans<'_>) -> Response<List<Plan>> {
-        client.get_query("/plans", &params)
-    }
 
-    /// Retrieves the plan with the given ID.
-    pub fn retrieve(client: &Client, id: &PlanId, expand: &[&str]) -> Response<Plan> {
-        client.get_query(&format!("/plans/{}", id), &Expand { expand })
-    }
 
-    /// Updates the specified plan by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided are left unchanged.
-    /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
-    pub fn update(client: &Client, id: &PlanId, params: UpdatePlan<'_>) -> Response<Plan> {
-        client.post_form(&format!("/plans/{}", id), &params)
-    }
 
-    /// Deleting plans means new subscribers can’t be added.
-    ///
-    /// Existing subscribers aren’t affected.
-    pub fn delete(client: &Client, id: &PlanId) -> Response<Deleted<PlanId>> {
-        client.delete(&format!("/plans/{}", id))
-    }
-}
-
-impl Object for Plan {
-    type Id = PlanId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "plan"
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PlanTier {
@@ -241,19 +208,7 @@ pub struct ListPlans<'a> {
     pub starting_after: Option<PlanId>,
 }
 
-impl<'a> ListPlans<'a> {
-    pub fn new() -> Self {
-        ListPlans {
-            active: Default::default(),
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            product: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
+
 
 /// The parameters for `Plan::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -481,5 +436,56 @@ impl AsRef<str> for TransformUsageRound {
 impl std::fmt::Display for TransformUsageRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl<'a> ListPlans<'a> {
+    pub fn new() -> Self {
+        ListPlans {
+            active: Default::default(),
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            product: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
+}
+
+impl Plan {
+    /// Returns a list of your plans.
+    pub fn list(client: &Client, params: ListPlans<'_>) -> Response<List<Plan>> {
+        client.get_query("/plans", &params)
+    }
+
+    /// Retrieves the plan with the given ID.
+    pub fn retrieve(client: &Client, id: &PlanId, expand: &[&str]) -> Response<Plan> {
+        client.get_query(&format!("/plans/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified plan by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided are left unchanged.
+    /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
+    pub fn update(client: &Client, id: &PlanId, params: UpdatePlan<'_>) -> Response<Plan> {
+        client.post_form(&format!("/plans/{}", id), &params)
+    }
+
+    /// Deleting plans means new subscribers can’t be added.
+    ///
+    /// Existing subscribers aren’t affected.
+    pub fn delete(client: &Client, id: &PlanId) -> Response<Deleted<PlanId>> {
+        client.delete(&format!("/plans/{}", id))
+    }
+}
+
+impl Object for Plan {
+    type Id = PlanId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "plan"
     }
 }
