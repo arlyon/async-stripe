@@ -252,6 +252,8 @@ struct Generated {
     inferred_parameters: BTreeMap<String, InferredParams>,
     /// The schemas that were / will be generated in this file.
     generated_schemas: BTreeMap<String, bool>,
+    /// New experimental struct that will eventually do most of the general work
+    generated_objects: BTreeMap<String, InferredObject>,
 }
 
 impl Generated {
@@ -340,6 +342,12 @@ struct InferredParams {
     method: String,
     rust_type: String,
     parameters: Json,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+struct InferredObject {
+    rust_type: String,
+    schema: Json,
 }
 
 fn gen_struct(
@@ -535,6 +543,15 @@ fn gen_generated_schemas(
     }
 }
 
+fn write_out_field(out: &mut String, var_name: &String, var_type: &String, required: bool) {
+    if required {
+        out.push_str(&format!("    pub {}: {},\n", var_name, var_type));
+    } else {
+        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
+        out.push_str(&format!("    pub {}: Option<{}>,\n", var_name, var_type));
+    }
+}
+
 fn gen_inferred_params(
     out: &mut String,
     state: &mut Generated,
@@ -592,7 +609,85 @@ fn gen_inferred_params(
             let required = param["required"].as_bool() == Some(true);
             match param_name {
                 // TODO: Handle these unusual params
-                "bank_account" | "card" | "destination" | "usage" => continue,
+                "bank_account" | "destination" | "usage" => continue,
+
+                "card" => {
+                    print_doc(out);
+
+                    let member_schema = param["schema"].clone();
+                    match gen_member_variable_string(&member_schema) {
+                        Ok(type_) => {
+                            initializers.push(("card".into(), type_.clone(), required));
+                            write_out_field(out, &"card".into(), &type_, required);
+                        }
+                        Err(TypeError::NoType) => {
+                            //Weird case, found with anyOf so only case we are handling
+                            //at the current moment
+                            if let Some(inner_vec) = member_schema["anyOf"].as_array() {
+                                for (index, val) in inner_vec.iter().enumerate() {
+                                    let new_member_name = format!("card{}", index);
+                                    let new_member_type: String;
+                                    if let Ok(normal_type) = gen_member_variable_string(val) {
+                                        new_member_type = normal_type;
+                                    } else {
+                                        if let Some(title) = val["title"].as_str() {
+                                            new_member_type = title.to_camel_case();
+                                        } else {
+                                            new_member_type = new_member_name.to_camel_case();
+                                        }
+                                        let inferred_object = InferredObject {
+                                            rust_type: new_member_type.clone(),
+                                            schema: val.clone(),
+                                        };
+                                        state
+                                            .generated_objects
+                                            .insert(new_member_type.clone(), inferred_object);
+                                    }
+                                    initializers.push((
+                                        new_member_name.clone(),
+                                        new_member_type.clone(),
+                                        required,
+                                    ));
+                                    out.push_str(&format!(
+                                        "    #[serde(rename = \"{}\")]\n",
+                                        param_name
+                                    ));
+                                    write_out_field(
+                                        out,
+                                        &new_member_name,
+                                        &new_member_type,
+                                        required,
+                                    );
+                                    out.push_str("\n");
+                                }
+                            } else {
+                                assert!(
+                                    false,
+                                    "Strange case, haven't handled this yet: {:#?}",
+                                    member_schema
+                                );
+                            }
+                        }
+                        Err(TypeError::IsObject) => {
+                            let new_type_name: String;
+                            if let Some(title) = member_schema["title"].as_str() {
+                                new_type_name = title.to_string().to_camel_case();
+                            } else {
+                                new_type_name = format!("{}CardInfo", params.rust_type);
+                            }
+                            let inferred_object = InferredObject {
+                                rust_type: new_type_name.clone(),
+                                schema: param["schema"].clone(),
+                            };
+                            state.generated_objects.insert(new_type_name.clone(), inferred_object);
+                            initializers.push(("card".into(), new_type_name.clone(), required));
+                            write_out_field(out, &"card".into(), &new_type_name, required);
+                        }
+                        _ => {
+                            assert!(false, "Don't recognize this: {:#?}", member_schema);
+                        }
+                    }
+                }
 
                 "product" => {
                     print_doc(out);
@@ -1014,7 +1109,7 @@ fn gen_unions(out: &mut String, state: &mut Generated, meta: &Metadata) {
 
         out.push('\n');
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
-        out.push_str("#[serde(tag = \"object\", rename_all = \"snake_case\")]\n");
+        out.push_str("#[serde(untagged, rename_all = \"snake_case\")]\n");
         out.push_str("pub enum ");
         out.push_str(&union_name.to_camel_case());
         out.push_str(" {\n");
@@ -1128,6 +1223,152 @@ fn gen_enums(out: &mut String, state: &mut Generated, meta: &Metadata) {
     }
 }
 
+#[derive(Clone, Debug, Copy)]
+enum TypeError {
+    IsObject,
+    NoType,
+    Unknown,
+}
+
+fn gen_member_variable_string(schema: &Json) -> Result<String, TypeError> {
+    if let Some(type_) = schema["type"].as_str() {
+        let member_type: Result<String, TypeError>;
+        match type_ {
+            "integer" => member_type = Ok("i32".into()),
+            "string" => member_type = Ok("String".into()),
+            "boolean" => member_type = Ok("bool".into()),
+            "array" => {
+                member_type =
+                    Ok(format!("Vec<{}>", gen_member_variable_string(&schema["items"]).unwrap()))
+            }
+            "object" => member_type = Err(TypeError::IsObject),
+            _ => {
+                assert!(false, "Do not handle type: {}", type_);
+                member_type = Err(TypeError::Unknown)
+            }
+        }
+        member_type
+    } else {
+        Err(TypeError::NoType)
+    }
+}
+
+fn print_doc_from_schema(out: &mut String, schema: &Json, print_level: u8) {
+    if let Some(description) = schema["description"].as_str() {
+        print_doc_comment(out, description, print_level);
+    }
+}
+
+fn gen_objects(out: &mut String, state: &mut Generated) {
+    let mut generated_objects = state.generated_objects.clone();
+    while generated_objects.len() != 0 {
+        let key_str: String;
+        let value_obj: InferredObject;
+        {
+            let (key, value) = generated_objects.iter().next().unwrap();
+            println!("object: {} -- {:#?}", key, value);
+            key_str = key.clone();
+            value_obj = value.clone();
+        }
+
+        //Okay, we need something more general for these common
+        //cases.  Hopefully, they aren't too common.  Right now, we
+        //don't have a clear way to handle 2nd level nested new types
+        if key_str == "Metadata" {
+            generated_objects.remove(&key_str);
+            continue;
+        }
+
+        let schema = value_obj.schema.clone();
+        out.push_str("\n");
+        print_doc_from_schema(out, &schema, 0);
+
+        if let Some(type_) = schema["type"].as_str() {
+            match type_ {
+                "object" => {
+                    out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+                    out.push_str(&format!("pub struct {} {{\n", key_str));
+                    if let Some(prop_map) = schema["properties"].as_object() {
+                        let empty_vec = vec![];
+                        let required = schema["required"].as_array().unwrap_or(&empty_vec);
+                        if !required.iter().all(|val| val.is_string()) {
+                            assert!(
+                                false,
+                                "Required vector is not a vector of strings: {:#?}",
+                                required
+                            );
+                        }
+                        for (member_name, member_schema) in prop_map.iter() {
+                            let mut is_required = false;
+                            if required.iter().any(|val| {
+                                let req_str = val.as_str().unwrap();
+                                req_str == *member_name
+                            }) {
+                                is_required = true;
+                            }
+                            print_doc_from_schema(out, member_schema, 1);
+                            match gen_member_variable_string(member_schema) {
+                                Ok(normal_var) => {
+                                    write_out_field(out, member_name, &normal_var, is_required)
+                                }
+                                Err(TypeError::IsObject) => {
+                                    let rust_type = member_name.to_camel_case();
+                                    write_out_field(out, member_name, &rust_type, is_required);
+                                    let new_params = InferredObject {
+                                        rust_type: rust_type.clone(),
+                                        schema: member_schema.clone(),
+                                    };
+                                    generated_objects.insert(rust_type, new_params);
+                                }
+                                _ => {
+                                    assert!(false, "Unhandled case, inspect: {:#?}", member_schema);
+                                }
+                            }
+                        }
+                        out.push_str("}\n");
+                    } else {
+                        assert!(false, "Object has no properties: {:#?}", schema);
+                    }
+                }
+                other => assert!(false, "Expected an object here got: {}", other),
+            }
+        } else {
+            assert!(false, "Schema does not have a type {:#?}", schema);
+        }
+        generated_objects.remove(&key_str);
+
+        /*if let Some(array) = schema["anyOf"].as_array() {
+            out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+            out.push_str("#[serde(rename_all = \"snake_case\")]\n");
+            out.push_str(&format!("pub enum {} {{\n", key_str));
+
+            let mut index = 0;
+            for value in array {
+                if let Some(title) = value["title"].as_str() {
+                    out.push_str(&format!("    pub {}(", title.to_camel_case()));
+                } else {
+                    out.push_str(&format!("    pub Alternate{}(", index));
+                }
+                index += 1;
+
+                if let Ok(obj_str) = gen_member_variable_string(&value) {
+                    out.push_str(&format!("{}),\n", obj_str));
+                } else {
+                    let object_name = value["title"].as_str().unwrap();
+                    let rust_obj_name = object_name.to_camel_case();
+
+                    out.push_str(&format!("{}),\n", rust_obj_name));
+                    let obj_desc =
+                        InferredObject { rust_type: rust_obj_name.clone(), schema: value.clone() };
+                    generated_objects.insert(object_name.to_camel_case(), obj_desc);
+                }
+                println!("value: {:#?}", value);
+            }
+            out.push_str("}\n");
+        }*/
+    }
+}
+
 fn gen_extra_object(
     meta: &Metadata,
     object: &str,
@@ -1148,6 +1389,8 @@ fn gen_extra_object(
     gen_unions(&mut out, &mut state, meta);
 
     gen_enums(&mut out, &mut state, meta);
+
+    gen_objects(&mut out, &mut state);
 
     let prelude = gen_prelude(&state, meta, object);
 
@@ -1215,6 +1458,8 @@ fn gen_impl_object(
     gen_unions(&mut out, &mut state, meta);
 
     gen_enums(&mut out, &mut state, meta);
+
+    gen_objects(&mut out, &mut state);
 
     let prelude = gen_prelude(&state, meta, object);
 
@@ -1397,7 +1642,6 @@ fn gen_field_rust_type(
                         state.use_resources.insert(type_name.clone());
                         shared_objects.insert(schema_name.to_string());
                     } else if !state.generated_schemas.contains_key(schema_name) {
-                        //println!("generated_schemas: {}", schema_name.to_string());
                         state.generated_schemas.insert(schema_name.into(), false);
                     }
                 }
@@ -1442,12 +1686,12 @@ fn gen_field_rust_type(
                     state.use_params.insert("Timestamp");
                     "RangeQuery<Timestamp>".into()
                 } else {
-                    println!("object: {}, field_name: {}", object, field_name);
+                    //println!("object: {}, field_name: {}", object, field_name);
                     let mut union_addition = field_name.to_owned();
                     union_addition.push_str("_union");
                     let union_schema = meta.schema_field(object, &union_addition);
                     let union_name = meta.schema_to_rust_type(&union_schema);
-                    println!("union_schema: {}, union_name: {}", union_schema, union_name);
+                    //println!("union_schema: {}, union_name: {}", union_schema, union_name);
                     let union_ = InferredUnion {
                         field: field_name.into(),
                         schema_variants: any_of
@@ -1516,6 +1760,8 @@ fn gen_impl_requests(
     for path in requests {
         let request = &meta.spec["paths"][path];
         let segments = path.trim_start_matches("/v1/").split('/').collect::<Vec<_>>();
+        //println!("segments: {:#?}", segments);
+        //println!("request: {:#?}", request);
 
         if let Some(get_request) = &request["get"].as_object() {
             let ok_schema =

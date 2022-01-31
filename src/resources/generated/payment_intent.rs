@@ -2088,7 +2088,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsAcssDebitUnion {
     PaymentIntentPaymentMethodOptionsAcssDebit(PaymentIntentPaymentMethodOptionsAcssDebit),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2098,7 +2098,7 @@ pub enum PaymentIntentPaymentMethodOptionsAcssDebitUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsAfterpayClearpayUnion {
     PaymentMethodOptionsAfterpayClearpay(PaymentMethodOptionsAfterpayClearpay),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2108,7 +2108,7 @@ pub enum PaymentIntentPaymentMethodOptionsAfterpayClearpayUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsAlipayUnion {
     PaymentMethodOptionsAlipay(PaymentMethodOptionsAlipay),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2118,7 +2118,7 @@ pub enum PaymentIntentPaymentMethodOptionsAlipayUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsAuBecsDebitUnion {
     PaymentIntentPaymentMethodOptionsAuBecsDebit(PaymentIntentPaymentMethodOptionsAuBecsDebit),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2128,7 +2128,7 @@ pub enum PaymentIntentPaymentMethodOptionsAuBecsDebitUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsBacsDebitUnion {
     PaymentMethodOptionsBacsDebit(PaymentMethodOptionsBacsDebit),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2138,7 +2138,7 @@ pub enum PaymentIntentPaymentMethodOptionsBacsDebitUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsBancontactUnion {
     PaymentMethodOptionsBancontact(PaymentMethodOptionsBancontact),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2148,7 +2148,7 @@ pub enum PaymentIntentPaymentMethodOptionsBancontactUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsBoletoUnion {
     PaymentMethodOptionsBoleto(PaymentMethodOptionsBoleto),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2158,7 +2158,7 @@ pub enum PaymentIntentPaymentMethodOptionsBoletoUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsCardPresentUnion {
     PaymentMethodOptionsCardPresent(PaymentMethodOptionsCardPresent),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2168,7 +2168,7 @@ pub enum PaymentIntentPaymentMethodOptionsCardPresentUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsCardUnion {
     PaymentIntentPaymentMethodOptionsCard(PaymentIntentPaymentMethodOptionsCard),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2178,7 +2178,7 @@ pub enum PaymentIntentPaymentMethodOptionsCardUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsEpsUnion {
     PaymentIntentPaymentMethodOptionsEps(PaymentIntentPaymentMethodOptionsEps),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2188,7 +2188,7 @@ pub enum PaymentIntentPaymentMethodOptionsEpsUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsFpxUnion {
     PaymentMethodOptionsFpx(PaymentMethodOptionsFpx),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2198,7 +2198,7 @@ pub enum PaymentIntentPaymentMethodOptionsFpxUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsGiropayUnion {
     PaymentMethodOptionsGiropay(PaymentMethodOptionsGiropay),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2208,7 +2208,7 @@ pub enum PaymentIntentPaymentMethodOptionsGiropayUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsGrabpayUnion {
     PaymentMethodOptionsGrabpay(PaymentMethodOptionsGrabpay),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2218,7 +2218,7 @@ pub enum PaymentIntentPaymentMethodOptionsGrabpayUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsIdealUnion {
     PaymentMethodOptionsIdeal(PaymentMethodOptionsIdeal),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2228,7 +2228,7 @@ pub enum PaymentIntentPaymentMethodOptionsIdealUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsInteracPresentUnion {
     PaymentMethodOptionsInteracPresent(PaymentMethodOptionsInteracPresent),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2238,7 +2238,7 @@ pub enum PaymentIntentPaymentMethodOptionsInteracPresentUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsKlarnaUnion {
     PaymentMethodOptionsKlarna(PaymentMethodOptionsKlarna),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2248,7 +2248,7 @@ pub enum PaymentIntentPaymentMethodOptionsKlarnaUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsOxxoUnion {
     PaymentMethodOptionsOxxo(PaymentMethodOptionsOxxo),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2258,7 +2258,7 @@ pub enum PaymentIntentPaymentMethodOptionsOxxoUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsP24Union {
     PaymentMethodOptionsP24(PaymentMethodOptionsP24),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2268,7 +2268,7 @@ pub enum PaymentIntentPaymentMethodOptionsP24Union {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsSepaDebitUnion {
     PaymentIntentPaymentMethodOptionsSepaDebit(PaymentIntentPaymentMethodOptionsSepaDebit),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2278,7 +2278,7 @@ pub enum PaymentIntentPaymentMethodOptionsSepaDebitUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsSofortUnion {
     PaymentMethodOptionsSofort(PaymentMethodOptionsSofort),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -2288,7 +2288,7 @@ pub enum PaymentIntentPaymentMethodOptionsSofortUnion {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsWechatPayUnion {
     PaymentMethodOptionsWechatPay(PaymentMethodOptionsWechatPay),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
