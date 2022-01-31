@@ -8,20 +8,17 @@ structs_unique = {}
 enums_unique = {}
 
 def get_struct_name(struct):
+    header = []
+    if struct.find("struct ") == -1:
+        header = struct[struct.find("enum ")+5:struct.find("{")].split(" ")
+    else:
         header = struct[struct.find("struct ")+7:struct.find("{")].split(" ")
-        #TODO use strip_angles
-        if header[0].find("<") != -1:
-            return header[0][:header[0].find("<")]
-        else:
-            return header[0]
 
-def get_enum_name(enum):
-        header = enum[enum.find("enum ")+5:enum.find("{")].split(" ")
-        #TODO use strip_angles
-        if header[0].find("<") != -1:
-            return header[0][:header[0].find("<")]
-        else:
-            return header[0]
+    #TODO use strip_angles
+    if header[0].find("<") != -1:
+        return header[0][:header[0].find("<")]
+    else:
+        return header[0]
 
 
 def strip_angles(str, i):
@@ -82,11 +79,11 @@ def parse_content(content):
 
     removals = []
     structs = []
-    enums = []
     impls = []
     while block_start != -1:
         #print(block_end)
 
+        #TODO: include derive macros on top
         # look for a struct
         block_start = content.find("pub struct ", block_end)
         kind = "struct"
@@ -110,10 +107,8 @@ def parse_content(content):
             block_end = content.find("}", block_end ) +1
             inside_open_braces = content.find("{", inside_open_braces +1);
         
-        if kind == "struct":
+        if kind == "struct" or kind == "enum":
             structs.append({"block_start":block_start,"block_end":block_end, "file":filename})
-        if kind == "enum":
-            enums.append({"block_start":block_start,"block_end":block_end, "file":filename})
         if kind == "impl":
             impls.append({"block_start":block_start,"block_end":block_end, "file":filename})
 
