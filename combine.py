@@ -17,7 +17,6 @@ def get_struct_header(struct):
 
 def get_struct_name(struct):
     header = get_struct_header(struct).split()
-    print(header)
     return strip_angles(header[0], 0)
 
 def strip_angles(str, i):
@@ -51,8 +50,6 @@ def is_related(impl, name):
         if header[i] == 'for':
             impl_struct = header[i+1]
 
-    if strip_angles(impl_struct, 0) == name: 
-        print("impl "+header[0]+" is related to "+name)
 
     return strip_angles(impl_struct, 0) == name
 
@@ -96,7 +93,6 @@ def parse_content(content):
     structs = []
     impls = []
     while block_start != -1:
-        #print(block_end)
 
         #TODO: include derive macros on top
         # look for a struct
@@ -116,7 +112,6 @@ def parse_content(content):
         block_end = find_block_end(content, block_start)
         # adjust the upper bound of the effective block by searching backwards for macros
         # TODO: loop through this with bounds
-        #print("macros")
         macro_start = block_start
         while True:
             prev_line = [content.rfind("\n", 0, macro_start-1), macro_start-1]
@@ -128,8 +123,6 @@ def parse_content(content):
             if prev_macro == -1:
                 break
 
-            print("macro "+str(block_start)+" "+str(prev_line[0])+" "+str(prev_line[1]))
-            print("prev macro line "+content[prev_line[0]: prev_line[1]])
             if prev_macro!=-1:
                 macro_start=prev_macro
 
@@ -142,7 +135,6 @@ def parse_content(content):
                 continue
             
             structs.append({"macro_start": macro_start, "block_start":block_start,"block_end":block_end, "kind": kind, "file": filename})
-            print("found data" + content[macro_start: block_end])
         if kind == "impl":
             impls.append({"macro_start": macro_start, "block_start":block_start,"block_end":block_end,  "kind": kind, "file": filename})
 
@@ -163,10 +155,8 @@ def parse_content(content):
 
         if structs_unique.get(identifier) == None:
             structs_unique[identifier] = { "duplicates": [], "related_impls": {}, "text": with_macros, "kind": struct["kind"], "name": get_struct_name(struct_text), "header": get_struct_header(struct_text) }
-            print("found first "+name)
         else:
             removals.append(struct)
-            print("found duplicate "+name)
 
         structs_unique[identifier]["duplicates"].append(struct)
 
@@ -187,20 +177,39 @@ def parse_content(content):
     # for each file, remove the removals and add the imports
     removed_offset = 0
     removals.sort(reverse=True, key=removal_sort)
-    imports = ""
+    imports = {}
     for removal in removals:
         if removal["kind"] == "struct" or removal["kind"] == "enum":
             # TODO: add imports
             name = get_struct_name(content[removal["block_start"]:removal["block_end"]])
-            imports += name+", "
+            imports[name] = True
             print("removing "+removal["kind"]+" "+name)
         else:
             print("removing "+content[removal["block_start"]:content.find("\n", removal["block_start"])])
         content = content[:removal["macro_start"]] + content[removal["block_end"]:]
 
     f = open("src/resources/generated/"+filename, "w")
-    if imports!= "":
-        f.write("use crate::resources::{"+imports+"};\n"+content)
+
+    import_start = 0;
+    import_end = 0;
+
+    import_prefix = "use crate::resources::{"
+    if content.find(import_prefix) != -1:
+        import_start = content.find(import_prefix)
+        import_end = find_block_end(content, content.find(import_prefix))
+        for imported in content[import_start + len(import_prefix): import_end-1].split(","):
+            print("found existing "+imported)
+            imports[imported] = True
+
+    import_str = import_prefix
+    for imported in imports:
+        import_str+=imported+", ";
+
+    if import_str != "":
+        print("imports "+import_str)
+        if import_end == 0:
+            import_end = -1
+        f.write(content[:import_start]+import_str+"};\n"+content[import_end+1:])
     else: 
         f.write(content)
 
@@ -213,10 +222,8 @@ def add_back_impls():
     # for every struct in structs_unique
     for struct in structs_unique:
         # get the first duplicate
-        print("adding back "+str(struct))
         filename = structs_unique[struct]["duplicates"][0]["file"]
         f = open("src/resources/generated/"+filename, "r")
-        print("reading file");
         content = f.read()
         oldlen = len(content)
         f.close()
@@ -227,20 +234,16 @@ def add_back_impls():
 
         impls_stringified = ""
 
-        print("finding block end");
         end = find_block_end(content, content.find(structs_unique[struct]["header"]))
         if end == -1:
             print("failed")
             exit(1)
 
-        print("collecting related impls");
         for impl in structs_unique[struct]["related_impls"]:
             struct_name = structs_unique[struct]["name"]
             impls_stringified += "\n//automatically added back in service of "+struct_name+" with hash"+str(impl)+"\n"+structs_unique[struct]["related_impls"][impl]["text"]+"\n"
 
-        print("impls"+impls_stringified);
         content = content[:end]+impls_stringified+content[end:]
-        print("end: "+str(end)+" writing "+str(len(content)-oldlen)+" new bytes to "+filename);
         f.write(content)
         f.close()
         del content

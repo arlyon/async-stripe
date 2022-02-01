@@ -1,13 +1,16 @@
-use serde_derive::{Deserialize, Serialize};
-
 // ======================================
 // This file was automatically generated.
 // ======================================
+
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
-use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};
-use crate::resources::{SubscriptionItemPriceData, SubscriptionItemPriceDataRecurring};
+use crate::resources::{
+    Currency, Price, SubscriptionItemBillingThresholds, SubscriptionItemPriceData,
+    SubscriptionItemPriceDataRecurring, TaxRate,
+};
 
 /// The resource representing a Stripe "SubscriptionItem".
 ///

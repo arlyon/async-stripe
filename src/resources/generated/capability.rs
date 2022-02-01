@@ -1,12 +1,12 @@
-use serde_derive::{Deserialize, Serialize};
-
 // ======================================
 // This file was automatically generated.
 // ======================================
+
+use serde_derive::{Deserialize, Serialize};
+
 use crate::ids::CapabilityId;
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::Account;
-use crate::resources::{AccountRequirementsAlternative, AccountRequirementsError};
+use crate::resources::{Account, AccountRequirementsAlternative, AccountRequirementsError};
 
 /// The resource representing a Stripe "AccountCapability".
 #[derive(Clone, Debug, Deserialize, Serialize)]

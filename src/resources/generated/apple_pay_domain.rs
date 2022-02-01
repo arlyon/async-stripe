@@ -1,9 +1,8 @@
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::ids::ApplePayDomainId;
 use crate::params::{Object, Timestamp};
 

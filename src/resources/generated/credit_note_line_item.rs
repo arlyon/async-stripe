@@ -1,12 +1,12 @@
-use serde_derive::{Deserialize, Serialize};
-
 // ======================================
 // This file was automatically generated.
 // ======================================
+
+use serde_derive::{Deserialize, Serialize};
+
 use crate::ids::CreditNoteLineItemId;
 use crate::params::{Expandable, Object};
-use crate::resources::{CreditNoteTaxAmount, DiscountsResourceDiscountAmount};
-use crate::resources::{Discount, TaxRate};
+use crate::resources::{CreditNoteTaxAmount, Discount, DiscountsResourceDiscountAmount, TaxRate};
 
 /// The resource representing a Stripe "CreditNoteLineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]

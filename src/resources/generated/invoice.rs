@@ -1,17 +1,18 @@
-use serde_derive::{Deserialize, Serialize};
-
 // ======================================
 // This file was automatically generated.
 // ======================================
+
+use serde_derive::{Deserialize, Serialize};
+
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Account, Address, ApiErrors, Charge, Currency, Customer, Discount, InvoiceLineItem,
-    InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact, PaymentIntent,
-    PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
+    Account, Address, ApiErrors, Charge, Currency, Customer, Discount,
+    DiscountsResourceDiscountAmount, InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit,
+    InvoicePaymentMethodOptionsBancontact, PaymentIntent, PaymentMethod, PaymentSource, Quote,
+    Shipping, Subscription, TaxAmount, TaxId, TaxRate,
 };
-use crate::resources::{DiscountsResourceDiscountAmount, TaxAmount};
 
 /// The resource representing a Stripe "Invoice".
 ///

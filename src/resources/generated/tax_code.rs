@@ -1,9 +1,8 @@
+use serde_derive::{Deserialize, Serialize};
+
 // ======================================
 // This file was automatically generated.
 // ======================================
-
-use serde_derive::{Deserialize, Serialize};
-
 use crate::config::{Client, Response};
 use crate::ids::TaxCodeId;
 use crate::params::{Expand, List, Object};
