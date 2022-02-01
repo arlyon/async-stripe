@@ -86,6 +86,53 @@ pub struct Coupon {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub valid: Option<Box<bool>>,
 }
+//automatically added back in service of Coupon with hash8592416896964471419
+impl Object for Coupon {
+    type Id = CouponId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "coupon"
+    }
+}
+
+//automatically added back in service of Coupon with hash414331931315565595
+impl Coupon {
+    /// Returns a list of your coupons.
+    pub fn list(client: &Client, params: ListCoupons<'_>) -> Response<List<Coupon>> {
+        client.get_query("/coupons", &params)
+    }
+
+    /// You can create coupons easily via the [coupon management](https://dashboard.stripe.com/coupons) page of the Stripe dashboard.
+    ///
+    /// Coupon creation is also accessible via the API if you need to create coupons on the fly.  A coupon has either a `percent_off` or an `amount_off` and `currency`.
+    /// If you set an `amount_off`, that amount will be subtracted from any invoice’s subtotal.
+    /// For example, an invoice with a subtotal of $100 will have a final total of $0 if a coupon with an `amount_off` of 20000 is applied to it and an invoice with a subtotal of $300 will have a final total of $100 if a coupon with an `amount_off` of 20000 is applied to it.
+    pub fn create(client: &Client, params: CreateCoupon<'_>) -> Response<Coupon> {
+        client.post_form("/coupons", &params)
+    }
+
+    /// Retrieves the coupon with the given ID.
+    pub fn retrieve(client: &Client, id: &CouponId, expand: &[&str]) -> Response<Coupon> {
+        client.get_query(&format!("/coupons/{}", id), &Expand { expand })
+    }
+
+    /// Updates the metadata of a coupon.
+    ///
+    /// Other coupon details (currency, duration, amount_off) are, by design, not editable.
+    pub fn update(client: &Client, id: &CouponId, params: UpdateCoupon<'_>) -> Response<Coupon> {
+        client.post_form(&format!("/coupons/{}", id), &params)
+    }
+
+    /// You can delete coupons via the [coupon management](https://dashboard.stripe.com/coupons) page of the Stripe dashboard.
+    ///
+    /// However, deleting a coupon does not affect any customers who have already applied the coupon; it means that new customers can’t redeem the coupon.
+    /// You can also delete coupons via the API.
+    pub fn delete(client: &Client, id: &CouponId) -> Response<Deleted<CouponId>> {
+        client.delete(&format!("/coupons/{}", id))
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CouponAppliesTo {
@@ -159,6 +206,25 @@ pub struct CreateCoupon<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redeem_by: Option<Timestamp>,
 }
+//automatically added back in service of CreateCoupon with hash191720770017175288
+impl<'a> CreateCoupon<'a> {
+    pub fn new() -> Self {
+        CreateCoupon {
+            amount_off: Default::default(),
+            applies_to: Default::default(),
+            currency: Default::default(),
+            duration: Default::default(),
+            duration_in_months: Default::default(),
+            expand: Default::default(),
+            id: Default::default(),
+            max_redemptions: Default::default(),
+            metadata: Default::default(),
+            name: Default::default(),
+            percent_off: Default::default(),
+            redeem_by: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `Coupon::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -193,6 +259,18 @@ pub struct ListCoupons<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<CouponId>,
 }
+//automatically added back in service of ListCoupons with hash1987245680888046085
+impl<'a> ListCoupons<'a> {
+    pub fn new() -> Self {
+        ListCoupons {
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `Coupon::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -214,6 +292,16 @@ pub struct UpdateCoupon<'a> {
     /// By default the `id` is shown if `name` is not set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<&'a str>,
+}
+//automatically added back in service of UpdateCoupon with hash8616485804043887311
+impl<'a> UpdateCoupon<'a> {
+    pub fn new() -> Self {
+        UpdateCoupon {
+            expand: Default::default(),
+            metadata: Default::default(),
+            name: Default::default(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -250,97 +338,5 @@ impl AsRef<str> for CouponDuration {
 impl std::fmt::Display for CouponDuration {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of UpdateCoupon with hash8616485804043887311
-impl<'a> UpdateCoupon<'a> {
-    pub fn new() -> Self {
-        UpdateCoupon {
-            expand: Default::default(),
-            metadata: Default::default(),
-            name: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of CreateCoupon with hash191720770017175288
-impl<'a> CreateCoupon<'a> {
-    pub fn new() -> Self {
-        CreateCoupon {
-            amount_off: Default::default(),
-            applies_to: Default::default(),
-            currency: Default::default(),
-            duration: Default::default(),
-            duration_in_months: Default::default(),
-            expand: Default::default(),
-            id: Default::default(),
-            max_redemptions: Default::default(),
-            metadata: Default::default(),
-            name: Default::default(),
-            percent_off: Default::default(),
-            redeem_by: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of ListCoupons with hash1987245680888046085
-impl<'a> ListCoupons<'a> {
-    pub fn new() -> Self {
-        ListCoupons {
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Coupon with hash8592416896964471419
-impl Object for Coupon {
-    type Id = CouponId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "coupon"
-    }
-}
-
-//automatically added back in service of Coupon with hash414331931315565595
-impl Coupon {
-    /// Returns a list of your coupons.
-    pub fn list(client: &Client, params: ListCoupons<'_>) -> Response<List<Coupon>> {
-        client.get_query("/coupons", &params)
-    }
-
-    /// You can create coupons easily via the [coupon management](https://dashboard.stripe.com/coupons) page of the Stripe dashboard.
-    ///
-    /// Coupon creation is also accessible via the API if you need to create coupons on the fly.  A coupon has either a `percent_off` or an `amount_off` and `currency`.
-    /// If you set an `amount_off`, that amount will be subtracted from any invoice’s subtotal.
-    /// For example, an invoice with a subtotal of $100 will have a final total of $0 if a coupon with an `amount_off` of 20000 is applied to it and an invoice with a subtotal of $300 will have a final total of $100 if a coupon with an `amount_off` of 20000 is applied to it.
-    pub fn create(client: &Client, params: CreateCoupon<'_>) -> Response<Coupon> {
-        client.post_form("/coupons", &params)
-    }
-
-    /// Retrieves the coupon with the given ID.
-    pub fn retrieve(client: &Client, id: &CouponId, expand: &[&str]) -> Response<Coupon> {
-        client.get_query(&format!("/coupons/{}", id), &Expand { expand })
-    }
-
-    /// Updates the metadata of a coupon.
-    ///
-    /// Other coupon details (currency, duration, amount_off) are, by design, not editable.
-    pub fn update(client: &Client, id: &CouponId, params: UpdateCoupon<'_>) -> Response<Coupon> {
-        client.post_form(&format!("/coupons/{}", id), &params)
-    }
-
-    /// You can delete coupons via the [coupon management](https://dashboard.stripe.com/coupons) page of the Stripe dashboard.
-    ///
-    /// However, deleting a coupon does not affect any customers who have already applied the coupon; it means that new customers can’t redeem the coupon.
-    /// You can also delete coupons via the API.
-    pub fn delete(client: &Client, id: &CouponId) -> Response<Deleted<CouponId>> {
-        client.delete(&format!("/coupons/{}", id))
     }
 }

@@ -161,6 +161,45 @@ pub struct Source {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat: Option<Box<SourceTypeWechat>>,
 }
+//automatically added back in service of Source with hash-6934742145524542372
+impl Object for Source {
+    type Id = SourceId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "source"
+    }
+}
+
+//automatically added back in service of Source with hash-1810856875031285932
+impl Source {
+    /// List source transactions for a given source.
+    pub fn list(client: &Client, params: ListSources<'_>) -> Response<List<Source>> {
+        client.get_query("/sources/{source}/source_transactions", &params)
+    }
+
+    /// Creates a new source object.
+    pub fn create(client: &Client, params: CreateSource<'_>) -> Response<Source> {
+        client.post_form("/sources", &params)
+    }
+
+    /// Retrieves an existing source object.
+    ///
+    /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
+    pub fn retrieve(client: &Client, id: &SourceId, expand: &[&str]) -> Response<Source> {
+        client.get_query(&format!("/sources/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified source by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  This request accepts the `metadata` and `owner` as arguments.
+    /// It is also possible to update type specific information for selected payment methods.
+    /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
+    pub fn update(client: &Client, id: &SourceId, params: UpdateSource<'_>) -> Response<Source> {
+        client.post_form(&format!("/sources/{}", id), &params)
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceCodeVerificationFlow {
@@ -930,6 +969,28 @@ pub struct CreateSource<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<&'a str>,
 }
+//automatically added back in service of CreateSource with hash-1044894577135937210
+impl<'a> CreateSource<'a> {
+    pub fn new() -> Self {
+        CreateSource {
+            amount: Default::default(),
+            currency: Default::default(),
+            customer: Default::default(),
+            expand: Default::default(),
+            flow: Default::default(),
+            mandate: Default::default(),
+            metadata: Default::default(),
+            original_source: Default::default(),
+            owner: Default::default(),
+            receiver: Default::default(),
+            redirect: Default::default(),
+            source_order: Default::default(),
+            statement_descriptor: Default::default(),
+            token: Default::default(),
+            type_: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `Source::list`.
 #[derive(Clone, Debug, Serialize)]
@@ -957,6 +1018,17 @@ pub struct ListSources<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<SourceId>,
+}
+//automatically added back in service of ListSources with hash203013446964310674
+impl<'a> ListSources<'a> {
+    pub fn new() -> Self {
+        ListSources {
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Source::update`.
@@ -991,6 +1063,19 @@ pub struct UpdateSource<'a> {
     /// Required for transactional credit (for example Klarna) sources before you can charge it.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_order: Option<Box<UpdateSourceSourceOrder>>,
+}
+//automatically added back in service of UpdateSource with hash990772089895531437
+impl<'a> UpdateSource<'a> {
+    pub fn new() -> Self {
+        UpdateSource {
+            amount: Default::default(),
+            expand: Default::default(),
+            mandate: Default::default(),
+            metadata: Default::default(),
+            owner: Default::default(),
+            source_order: Default::default(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1515,94 +1600,5 @@ impl AsRef<str> for UpdateSourceSourceOrderItemsType {
 impl std::fmt::Display for UpdateSourceSourceOrderItemsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of UpdateSource with hash990772089895531437
-impl<'a> UpdateSource<'a> {
-    pub fn new() -> Self {
-        UpdateSource {
-            amount: Default::default(),
-            expand: Default::default(),
-            mandate: Default::default(),
-            metadata: Default::default(),
-            owner: Default::default(),
-            source_order: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of CreateSource with hash-1044894577135937210
-impl<'a> CreateSource<'a> {
-    pub fn new() -> Self {
-        CreateSource {
-            amount: Default::default(),
-            currency: Default::default(),
-            customer: Default::default(),
-            expand: Default::default(),
-            flow: Default::default(),
-            mandate: Default::default(),
-            metadata: Default::default(),
-            original_source: Default::default(),
-            owner: Default::default(),
-            receiver: Default::default(),
-            redirect: Default::default(),
-            source_order: Default::default(),
-            statement_descriptor: Default::default(),
-            token: Default::default(),
-            type_: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Source with hash-6934742145524542372
-impl Object for Source {
-    type Id = SourceId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "source"
-    }
-}
-
-//automatically added back in service of Source with hash-1810856875031285932
-impl Source {
-    /// List source transactions for a given source.
-    pub fn list(client: &Client, params: ListSources<'_>) -> Response<List<Source>> {
-        client.get_query("/sources/{source}/source_transactions", &params)
-    }
-
-    /// Creates a new source object.
-    pub fn create(client: &Client, params: CreateSource<'_>) -> Response<Source> {
-        client.post_form("/sources", &params)
-    }
-
-    /// Retrieves an existing source object.
-    ///
-    /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
-    pub fn retrieve(client: &Client, id: &SourceId, expand: &[&str]) -> Response<Source> {
-        client.get_query(&format!("/sources/{}", id), &Expand { expand })
-    }
-
-    /// Updates the specified source by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided will be left unchanged.  This request accepts the `metadata` and `owner` as arguments.
-    /// It is also possible to update type specific information for selected payment methods.
-    /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
-    pub fn update(client: &Client, id: &SourceId, params: UpdateSource<'_>) -> Response<Source> {
-        client.post_form(&format!("/sources/{}", id), &params)
-    }
-}
-
-//automatically added back in service of ListSources with hash203013446964310674
-impl<'a> ListSources<'a> {
-    pub fn new() -> Self {
-        ListSources {
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
     }
 }

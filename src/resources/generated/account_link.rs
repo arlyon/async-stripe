@@ -24,6 +24,22 @@ pub struct AccountLink {
     /// The URL for the account link.
     pub url: String,
 }
+//automatically added back in service of AccountLink with hash2253584681737443033
+impl Object for AccountLink {
+    type Id = ();
+    fn id(&self) -> Self::Id {}
+    fn object(&self) -> &'static str {
+        "account_link"
+    }
+}
+
+//automatically added back in service of AccountLink with hash-7213874245416748293
+impl AccountLink {
+    /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
+    pub fn create(client: &Client, params: CreateAccountLink<'_>) -> Response<AccountLink> {
+        client.post_form("/account_links", &params)
+    }
+}
 
 /// The parameters for `AccountLink::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -128,22 +144,5 @@ impl AsRef<str> for AccountLinkType {
 impl std::fmt::Display for AccountLinkType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of AccountLink with hash2253584681737443033
-impl Object for AccountLink {
-    type Id = ();
-    fn id(&self) -> Self::Id {}
-    fn object(&self) -> &'static str {
-        "account_link"
-    }
-}
-
-//automatically added back in service of AccountLink with hash-7213874245416748293
-impl AccountLink {
-    /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
-    pub fn create(client: &Client, params: CreateAccountLink<'_>) -> Response<AccountLink> {
-        client.post_form("/account_links", &params)
     }
 }

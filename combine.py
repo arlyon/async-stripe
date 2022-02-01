@@ -216,15 +216,35 @@ def add_back_impls():
         print("adding back "+str(struct))
         filename = structs_unique[struct]["duplicates"][0]["file"]
         f = open("src/resources/generated/"+filename, "r")
+        print("reading file");
         content = f.read()
+        oldlen = len(content)
         f.close()
-        f = open("src/resources/generated/"+filename, "a")
+
+        f = open("src/resources/generated/"+filename, "w")
         # for now we'll just stick the impl's at the bottom
         # block_end indices are invalid beacuse of the removals process
+
+        impls_stringified = ""
+
+        print("finding block end");
+        end = find_block_end(content, content.find(structs_unique[struct]["header"]))
+        if end == -1:
+            print("failed")
+            exit(1)
+
+        print("collecting related impls");
         for impl in structs_unique[struct]["related_impls"]:
             struct_name = structs_unique[struct]["name"]
-            f.write("\n//automatically added back in service of "+struct_name+" with hash"+str(impl)+"\n"+structs_unique[struct]["related_impls"][impl]["text"]+"\n")
+            impls_stringified += "\n//automatically added back in service of "+struct_name+" with hash"+str(impl)+"\n"+structs_unique[struct]["related_impls"][impl]["text"]+"\n"
+
+        print("impls"+impls_stringified);
+        content = content[:end]+impls_stringified+content[end:]
+        print("end: "+str(end)+" writing "+str(len(content)-oldlen)+" new bytes to "+filename);
+        f.write(content)
         f.close()
+        del content
+        del impls_stringified
 
     # find block end 
     # insert impls there

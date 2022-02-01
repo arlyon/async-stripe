@@ -54,6 +54,65 @@ pub struct SubscriptionItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Box<Vec<TaxRate>>>,
 }
+//automatically added back in service of SubscriptionItem with hash6670535476668204121
+impl Object for SubscriptionItem {
+    type Id = SubscriptionItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "subscription_item"
+    }
+}
+
+//automatically added back in service of SubscriptionItem with hash7470898605362399639
+impl SubscriptionItem {
+    /// Returns a list of your subscription items for a given subscription.
+    pub fn list(
+        client: &Client,
+        params: ListSubscriptionItems<'_>,
+    ) -> Response<List<SubscriptionItem>> {
+        client.get_query("/subscription_items", &params)
+    }
+
+    /// Adds a new item to an existing subscription.
+    ///
+    /// No existing items will be changed or replaced.
+    pub fn create(
+        client: &Client,
+        params: CreateSubscriptionItem<'_>,
+    ) -> Response<SubscriptionItem> {
+        client.post_form("/subscription_items", &params)
+    }
+
+    /// Retrieves the subscription item with the given ID.
+    pub fn retrieve(
+        client: &Client,
+        id: &SubscriptionItemId,
+        expand: &[&str],
+    ) -> Response<SubscriptionItem> {
+        client.get_query(&format!("/subscription_items/{}", id), &Expand { expand })
+    }
+
+    /// Updates the plan or quantity of an item on a current subscription.
+    pub fn update(
+        client: &Client,
+        id: &SubscriptionItemId,
+        params: UpdateSubscriptionItem<'_>,
+    ) -> Response<SubscriptionItem> {
+        client.post_form(&format!("/subscription_items/{}", id), &params)
+    }
+
+    /// Deletes an item from the subscription.
+    ///
+    /// Removing a subscription item from a subscription will not cancel the subscription.
+    pub fn delete(
+        client: &Client,
+        id: &SubscriptionItemId,
+    ) -> Response<Deleted<SubscriptionItemId>> {
+        client.delete(&format!("/subscription_items/{}", id))
+    }
+}
 
 /// The parameters for `SubscriptionItem::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -127,6 +186,24 @@ pub struct CreateSubscriptionItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Box<Vec<String>>>,
 }
+//automatically added back in service of CreateSubscriptionItem with hash6370300438004668447
+impl<'a> CreateSubscriptionItem<'a> {
+    pub fn new(subscription: SubscriptionId) -> Self {
+        CreateSubscriptionItem {
+            billing_thresholds: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            payment_behavior: Default::default(),
+            price: Default::default(),
+            price_data: Default::default(),
+            proration_behavior: Default::default(),
+            proration_date: Default::default(),
+            quantity: Default::default(),
+            subscription,
+            tax_rates: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `SubscriptionItem::list`.
 #[derive(Clone, Debug, Serialize)]
@@ -157,6 +234,18 @@ pub struct ListSubscriptionItems<'a> {
 
     /// The ID of the subscription whose items will be retrieved.
     pub subscription: SubscriptionId,
+}
+//automatically added back in service of ListSubscriptionItems with hash427381695944824741
+impl<'a> ListSubscriptionItems<'a> {
+    pub fn new(subscription: SubscriptionId) -> Self {
+        ListSubscriptionItems {
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+            subscription,
+        }
+    }
 }
 
 /// The parameters for `SubscriptionItem::update`.
@@ -233,6 +322,24 @@ pub struct UpdateSubscriptionItem<'a> {
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Box<Vec<String>>>,
+}
+//automatically added back in service of UpdateSubscriptionItem with hash8548688430132456701
+impl<'a> UpdateSubscriptionItem<'a> {
+    pub fn new() -> Self {
+        UpdateSubscriptionItem {
+            billing_thresholds: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            off_session: Default::default(),
+            payment_behavior: Default::default(),
+            price: Default::default(),
+            price_data: Default::default(),
+            proration_behavior: Default::default(),
+            proration_date: Default::default(),
+            quantity: Default::default(),
+            tax_rates: Default::default(),
+        }
+    }
 }
 
 /// An enum representing the possible values of an `SubscriptionItemPriceDataRecurring`'s `interval` field.
@@ -360,116 +467,5 @@ impl AsRef<str> for SubscriptionProrationBehavior {
 impl std::fmt::Display for SubscriptionProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of UpdateSubscriptionItem with hash8548688430132456701
-impl<'a> UpdateSubscriptionItem<'a> {
-    pub fn new() -> Self {
-        UpdateSubscriptionItem {
-            billing_thresholds: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            off_session: Default::default(),
-            payment_behavior: Default::default(),
-            price: Default::default(),
-            price_data: Default::default(),
-            proration_behavior: Default::default(),
-            proration_date: Default::default(),
-            quantity: Default::default(),
-            tax_rates: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of ListSubscriptionItems with hash427381695944824741
-impl<'a> ListSubscriptionItems<'a> {
-    pub fn new(subscription: SubscriptionId) -> Self {
-        ListSubscriptionItems {
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-            subscription,
-        }
-    }
-}
-
-//automatically added back in service of CreateSubscriptionItem with hash6370300438004668447
-impl<'a> CreateSubscriptionItem<'a> {
-    pub fn new(subscription: SubscriptionId) -> Self {
-        CreateSubscriptionItem {
-            billing_thresholds: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            payment_behavior: Default::default(),
-            price: Default::default(),
-            price_data: Default::default(),
-            proration_behavior: Default::default(),
-            proration_date: Default::default(),
-            quantity: Default::default(),
-            subscription,
-            tax_rates: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of SubscriptionItem with hash6670535476668204121
-impl Object for SubscriptionItem {
-    type Id = SubscriptionItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "subscription_item"
-    }
-}
-
-//automatically added back in service of SubscriptionItem with hash7470898605362399639
-impl SubscriptionItem {
-    /// Returns a list of your subscription items for a given subscription.
-    pub fn list(
-        client: &Client,
-        params: ListSubscriptionItems<'_>,
-    ) -> Response<List<SubscriptionItem>> {
-        client.get_query("/subscription_items", &params)
-    }
-
-    /// Adds a new item to an existing subscription.
-    ///
-    /// No existing items will be changed or replaced.
-    pub fn create(
-        client: &Client,
-        params: CreateSubscriptionItem<'_>,
-    ) -> Response<SubscriptionItem> {
-        client.post_form("/subscription_items", &params)
-    }
-
-    /// Retrieves the subscription item with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionItemId,
-        expand: &[&str],
-    ) -> Response<SubscriptionItem> {
-        client.get_query(&format!("/subscription_items/{}", id), &Expand { expand })
-    }
-
-    /// Updates the plan or quantity of an item on a current subscription.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionItemId,
-        params: UpdateSubscriptionItem<'_>,
-    ) -> Response<SubscriptionItem> {
-        client.post_form(&format!("/subscription_items/{}", id), &params)
-    }
-
-    /// Deletes an item from the subscription.
-    ///
-    /// Removing a subscription item from a subscription will not cancel the subscription.
-    pub fn delete(
-        client: &Client,
-        id: &SubscriptionItemId,
-    ) -> Response<Deleted<SubscriptionItemId>> {
-        client.delete(&format!("/subscription_items/{}", id))
     }
 }

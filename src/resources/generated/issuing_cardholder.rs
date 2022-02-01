@@ -68,6 +68,16 @@ pub struct IssuingCardholder {
     #[serde(rename = "type")]
     pub type_: IssuingCardholderType,
 }
+//automatically added back in service of IssuingCardholder with hash3919303576008855339
+impl Object for IssuingCardholder {
+    type Id = IssuingCardholderId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.cardholder"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderAddress {
@@ -958,16 +968,5 @@ impl AsRef<str> for IssuingCardholderType {
 impl std::fmt::Display for IssuingCardholderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of IssuingCardholder with hash3919303576008855339
-impl Object for IssuingCardholder {
-    type Id = IssuingCardholderId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.cardholder"
     }
 }

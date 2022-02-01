@@ -41,6 +41,29 @@ pub struct CountrySpec {
 
     pub verification_fields: CountrySpecVerificationFields,
 }
+//automatically added back in service of CountrySpec with hash1211382528522869033
+impl Object for CountrySpec {
+    type Id = CountrySpecId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "country_spec"
+    }
+}
+
+//automatically added back in service of CountrySpec with hash-1163452440684776962
+impl CountrySpec {
+    /// Lists all Country Spec objects available in the API.
+    pub fn list(client: &Client, params: ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
+        client.get_query("/country_specs", &params)
+    }
+
+    /// Returns a Country Spec for a given Country code.
+    pub fn retrieve(client: &Client, id: &CountrySpecId, expand: &[&str]) -> Response<CountrySpec> {
+        client.get_query(&format!("/country_specs/{}", id), &Expand { expand })
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFields {
@@ -94,29 +117,5 @@ impl<'a> ListCountrySpecs<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
         }
-    }
-}
-
-//automatically added back in service of CountrySpec with hash1211382528522869033
-impl Object for CountrySpec {
-    type Id = CountrySpecId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "country_spec"
-    }
-}
-
-//automatically added back in service of CountrySpec with hash-1163452440684776962
-impl CountrySpec {
-    /// Lists all Country Spec objects available in the API.
-    pub fn list(client: &Client, params: ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
-        client.get_query("/country_specs", &params)
-    }
-
-    /// Returns a Country Spec for a given Country code.
-    pub fn retrieve(client: &Client, id: &CountrySpecId, expand: &[&str]) -> Response<CountrySpec> {
-        client.get_query(&format!("/country_specs/{}", id), &Expand { expand })
     }
 }

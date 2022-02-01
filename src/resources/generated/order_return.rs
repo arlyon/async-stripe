@@ -44,6 +44,33 @@ pub struct OrderReturn {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund: Option<Box<Expandable<Refund>>>,
 }
+//automatically added back in service of OrderReturn with hash3696570308303053283
+impl OrderReturn {
+    /// Returns a list of your order returns.
+    ///
+    /// The returns are returned sorted by creation date, with the most recently created return appearing first.
+    pub fn list(client: &Client, params: ListOrderReturns<'_>) -> Response<List<OrderReturn>> {
+        client.get_query("/order_returns", &params)
+    }
+
+    /// Retrieves the details of an existing order return.
+    ///
+    /// Supply the unique order ID from either an order return creation request or the order return list, and Stripe will return the corresponding order information.
+    pub fn retrieve(client: &Client, id: &OrderReturnId, expand: &[&str]) -> Response<OrderReturn> {
+        client.get_query(&format!("/order_returns/{}", id), &Expand { expand })
+    }
+}
+
+//automatically added back in service of OrderReturn with hash-3373669299755781116
+impl Object for OrderReturn {
+    type Id = OrderReturnId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "order_return"
+    }
+}
 
 /// The parameters for `OrderReturn::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -91,33 +118,5 @@ impl<'a> ListOrderReturns<'a> {
             order: Default::default(),
             starting_after: Default::default(),
         }
-    }
-}
-
-//automatically added back in service of OrderReturn with hash3696570308303053283
-impl OrderReturn {
-    /// Returns a list of your order returns.
-    ///
-    /// The returns are returned sorted by creation date, with the most recently created return appearing first.
-    pub fn list(client: &Client, params: ListOrderReturns<'_>) -> Response<List<OrderReturn>> {
-        client.get_query("/order_returns", &params)
-    }
-
-    /// Retrieves the details of an existing order return.
-    ///
-    /// Supply the unique order ID from either an order return creation request or the order return list, and Stripe will return the corresponding order information.
-    pub fn retrieve(client: &Client, id: &OrderReturnId, expand: &[&str]) -> Response<OrderReturn> {
-        client.get_query(&format!("/order_returns/{}", id), &Expand { expand })
-    }
-}
-
-//automatically added back in service of OrderReturn with hash-3373669299755781116
-impl Object for OrderReturn {
-    type Id = OrderReturnId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "order_return"
     }
 }

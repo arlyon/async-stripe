@@ -54,6 +54,16 @@ pub struct BillingPortalConfiguration {
     /// Measured in seconds since the Unix epoch.
     pub updated: Timestamp,
 }
+//automatically added back in service of BillingPortalConfiguration with hash-6602685136576475067
+impl Object for BillingPortalConfiguration {
+    type Id = BillingPortalConfigurationId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "billing_portal.configuration"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalBusinessProfile {
@@ -361,16 +371,5 @@ impl AsRef<str> for PortalSubscriptionUpdateProrationBehavior {
 impl std::fmt::Display for PortalSubscriptionUpdateProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of BillingPortalConfiguration with hash-6602685136576475067
-impl Object for BillingPortalConfiguration {
-    type Id = BillingPortalConfigurationId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "billing_portal.configuration"
     }
 }

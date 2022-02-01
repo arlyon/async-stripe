@@ -75,6 +75,16 @@ pub struct IdentityVerificationSession {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_outputs: Option<Box<GelatoVerifiedOutputs>>,
 }
+//automatically added back in service of IdentityVerificationSession with hash8044313806421076226
+impl Object for IdentityVerificationSession {
+    type Id = IdentityVerificationSessionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "identity.verification_session"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSessionLastError {
@@ -379,16 +389,5 @@ impl AsRef<str> for VerificationSessionRedactionStatus {
 impl std::fmt::Display for VerificationSessionRedactionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of IdentityVerificationSession with hash8044313806421076226
-impl Object for IdentityVerificationSession {
-    type Id = IdentityVerificationSessionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "identity.verification_session"
     }
 }

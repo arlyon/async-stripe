@@ -151,6 +151,29 @@ pub struct Quote {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<Box<QuotesResourceTransferData>>,
 }
+//automatically added back in service of Quote with hash-1181984064814864844
+impl Object for Quote {
+    type Id = QuoteId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "quote"
+    }
+}
+
+//automatically added back in service of Quote with hash3562944810908861263
+impl Quote {
+    /// Returns a list of your quotes.
+    pub fn list(client: &Client, params: ListQuotes<'_>) -> Response<List<Quote>> {
+        client.get_query("/quotes", &params)
+    }
+
+    /// Retrieves the quote with the given ID.
+    pub fn retrieve(client: &Client, id: &QuoteId, expand: &[&str]) -> Response<Quote> {
+        client.get_query(&format!("/quotes/{}", id), &Expand { expand })
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceSettingQuoteSetting {
@@ -456,29 +479,5 @@ impl AsRef<str> for QuotesResourceRecurringInterval {
 impl std::fmt::Display for QuotesResourceRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of Quote with hash-1181984064814864844
-impl Object for Quote {
-    type Id = QuoteId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "quote"
-    }
-}
-
-//automatically added back in service of Quote with hash3562944810908861263
-impl Quote {
-    /// Returns a list of your quotes.
-    pub fn list(client: &Client, params: ListQuotes<'_>) -> Response<List<Quote>> {
-        client.get_query("/quotes", &params)
-    }
-
-    /// Retrieves the quote with the given ID.
-    pub fn retrieve(client: &Client, id: &QuoteId, expand: &[&str]) -> Response<Quote> {
-        client.get_query(&format!("/quotes/{}", id), &Expand { expand })
     }
 }

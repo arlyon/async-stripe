@@ -92,6 +92,16 @@ pub struct InvoiceLineItem {
     #[serde(rename = "type")]
     pub type_: InvoiceLineItemType,
 }
+//automatically added back in service of InvoiceLineItem with hash2307922612136106088
+impl Object for InvoiceLineItem {
+    type Id = InvoiceLineItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "line_item"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxAmount {
@@ -132,16 +142,5 @@ impl AsRef<str> for InvoiceLineItemType {
 impl std::fmt::Display for InvoiceLineItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of InvoiceLineItem with hash2307922612136106088
-impl Object for InvoiceLineItem {
-    type Id = InvoiceLineItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "line_item"
     }
 }

@@ -47,7 +47,6 @@ pub struct CheckoutSessionItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub taxes: Option<Box<Vec<LineItemsTaxAmount>>>,
 }
-
 //automatically added back in service of CheckoutSessionItem with hash-7800975525549346558
 impl Object for CheckoutSessionItem {
     type Id = CheckoutSessionItemId;

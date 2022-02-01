@@ -49,6 +49,16 @@ pub struct IssuingDispute {
     /// The transaction being disputed.
     pub transaction: Expandable<IssuingTransaction>,
 }
+//automatically added back in service of IssuingDispute with hash5967689277921946028
+impl Object for IssuingDispute {
+    type Id = IssuingDisputeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.dispute"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeEvidence {
@@ -439,16 +449,5 @@ impl AsRef<str> for IssuingDisputeOtherEvidenceProductType {
 impl std::fmt::Display for IssuingDisputeOtherEvidenceProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of IssuingDispute with hash5967689277921946028
-impl Object for IssuingDispute {
-    type Id = IssuingDisputeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.dispute"
     }
 }

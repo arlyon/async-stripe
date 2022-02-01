@@ -38,6 +38,24 @@ pub struct Balance {
     /// The pending balance for each currency, and for each payment type, can be found in the `source_types` property.
     pub pending: Vec<BalanceAmount>,
 }
+//automatically added back in service of Balance with hash-4264152956785923654
+impl Balance {
+    /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
+    ///
+    /// The transactions are returned in sorted order, with the most recent transactions appearing first.  Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
+    pub fn list(client: &Client, params: ListBalances<'_>) -> Response<List<Balance>> {
+        client.get_query("/balance/history", &params)
+    }
+}
+
+//automatically added back in service of Balance with hash-4826721640922559621
+impl Object for Balance {
+    type Id = ();
+    fn id(&self) -> Self::Id {}
+    fn object(&self) -> &'static str {
+        "balance"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceAmount {
@@ -140,24 +158,5 @@ impl<'a> ListBalances<'a> {
             starting_after: Default::default(),
             type_: Default::default(),
         }
-    }
-}
-
-//automatically added back in service of Balance with hash-4264152956785923654
-impl Balance {
-    /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
-    ///
-    /// The transactions are returned in sorted order, with the most recent transactions appearing first.  Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
-    pub fn list(client: &Client, params: ListBalances<'_>) -> Response<List<Balance>> {
-        client.get_query("/balance/history", &params)
-    }
-}
-
-//automatically added back in service of Balance with hash-4826721640922559621
-impl Object for Balance {
-    type Id = ();
-    fn id(&self) -> Self::Id {}
-    fn object(&self) -> &'static str {
-        "balance"
     }
 }

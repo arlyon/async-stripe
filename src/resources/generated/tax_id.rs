@@ -51,6 +51,16 @@ pub struct TaxId {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<Box<TaxIdVerification>>,
 }
+//automatically added back in service of TaxId with hash992046258278666322
+impl Object for TaxId {
+    type Id = TaxIdId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "tax_id"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxIdVerification {
@@ -207,16 +217,5 @@ impl AsRef<str> for TaxIdVerificationStatus {
 impl std::fmt::Display for TaxIdVerificationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of TaxId with hash992046258278666322
-impl Object for TaxId {
-    type Id = TaxIdId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "tax_id"
     }
 }

@@ -58,6 +58,24 @@ pub struct SetupAttempt {
     /// The value of [usage](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-usage) on the SetupIntent at the time of this confirmation, one of `off_session` or `on_session`.
     pub usage: String,
 }
+//automatically added back in service of SetupAttempt with hash7638470566791935257
+impl SetupAttempt {
+    /// Returns a list of SetupAttempts associated with a provided SetupIntent.
+    pub fn list(client: &Client, params: ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
+        client.get_query("/setup_attempts", &params)
+    }
+}
+
+//automatically added back in service of SetupAttempt with hash2185871494218779887
+impl Object for SetupAttempt {
+    type Id = SetupAttemptId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "setup_attempt"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetails {
@@ -468,24 +486,5 @@ impl AsRef<str> for SetupAttemptPaymentMethodDetailsSofortPreferredLanguage {
 impl std::fmt::Display for SetupAttemptPaymentMethodDetailsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of SetupAttempt with hash7638470566791935257
-impl SetupAttempt {
-    /// Returns a list of SetupAttempts associated with a provided SetupIntent.
-    pub fn list(client: &Client, params: ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
-        client.get_query("/setup_attempts", &params)
-    }
-}
-
-//automatically added back in service of SetupAttempt with hash2185871494218779887
-impl Object for SetupAttempt {
-    type Id = SetupAttemptId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "setup_attempt"
     }
 }

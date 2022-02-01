@@ -83,6 +83,51 @@ pub struct Transfer {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<Box<String>>,
 }
+//automatically added back in service of Transfer with hash1469934724607901288
+impl Object for Transfer {
+    type Id = TransferId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "transfer"
+    }
+}
+
+//automatically added back in service of Transfer with hash8146778775157952691
+impl Transfer {
+    /// Returns a list of existing transfers sent to connected accounts.
+    ///
+    /// The transfers are returned in sorted order, with the most recently created transfers appearing first.
+    pub fn list(client: &Client, params: ListTransfers<'_>) -> Response<List<Transfer>> {
+        client.get_query("/transfers", &params)
+    }
+
+    /// To send funds from your Stripe account to a connected account, you create a new transfer object.
+    ///
+    /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the transfer amount, or you’ll receive an “Insufficient Funds” error.
+    pub fn create(client: &Client, params: CreateTransfer<'_>) -> Response<Transfer> {
+        client.post_form("/transfers", &params)
+    }
+
+    /// Retrieves the details of an existing transfer.
+    ///
+    /// Supply the unique transfer ID from either a transfer creation request or the transfer list, and Stripe will return the corresponding transfer information.
+    pub fn retrieve(client: &Client, id: &TransferId, expand: &[&str]) -> Response<Transfer> {
+        client.get_query(&format!("/transfers/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified transfer by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  This request accepts only metadata as an argument.
+    pub fn update(
+        client: &Client,
+        id: &TransferId,
+        params: UpdateTransfer<'_>,
+    ) -> Response<Transfer> {
+        client.post_form(&format!("/transfers/{}", id), &params)
+    }
+}
 
 /// The parameters for `Transfer::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -132,6 +177,21 @@ pub struct CreateTransfer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }
+//automatically added back in service of CreateTransfer with hash6234710848437019007
+impl<'a> CreateTransfer<'a> {
+    pub fn new(currency: Currency) -> Self {
+        CreateTransfer {
+            amount: Default::default(),
+            currency,
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            source_transaction: Default::default(),
+            source_type: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `Transfer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -166,6 +226,19 @@ pub struct ListTransfers<'a> {
     /// Only return transfers with the specified transfer group.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
+}
+//automatically added back in service of ListTransfers with hash-4190118409139816616
+impl<'a> ListTransfers<'a> {
+    pub fn new() -> Self {
+        ListTransfers {
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+            transfer_group: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Transfer::update`.
@@ -228,81 +301,5 @@ impl AsRef<str> for TransferSourceType {
 impl std::fmt::Display for TransferSourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of ListTransfers with hash-4190118409139816616
-impl<'a> ListTransfers<'a> {
-    pub fn new() -> Self {
-        ListTransfers {
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-            transfer_group: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of CreateTransfer with hash6234710848437019007
-impl<'a> CreateTransfer<'a> {
-    pub fn new(currency: Currency) -> Self {
-        CreateTransfer {
-            amount: Default::default(),
-            currency,
-            description: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            source_transaction: Default::default(),
-            source_type: Default::default(),
-            transfer_group: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Transfer with hash1469934724607901288
-impl Object for Transfer {
-    type Id = TransferId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "transfer"
-    }
-}
-
-//automatically added back in service of Transfer with hash8146778775157952691
-impl Transfer {
-    /// Returns a list of existing transfers sent to connected accounts.
-    ///
-    /// The transfers are returned in sorted order, with the most recently created transfers appearing first.
-    pub fn list(client: &Client, params: ListTransfers<'_>) -> Response<List<Transfer>> {
-        client.get_query("/transfers", &params)
-    }
-
-    /// To send funds from your Stripe account to a connected account, you create a new transfer object.
-    ///
-    /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the transfer amount, or you’ll receive an “Insufficient Funds” error.
-    pub fn create(client: &Client, params: CreateTransfer<'_>) -> Response<Transfer> {
-        client.post_form("/transfers", &params)
-    }
-
-    /// Retrieves the details of an existing transfer.
-    ///
-    /// Supply the unique transfer ID from either a transfer creation request or the transfer list, and Stripe will return the corresponding transfer information.
-    pub fn retrieve(client: &Client, id: &TransferId, expand: &[&str]) -> Response<Transfer> {
-        client.get_query(&format!("/transfers/{}", id), &Expand { expand })
-    }
-
-    /// Updates the specified transfer by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided will be left unchanged.  This request accepts only metadata as an argument.
-    pub fn update(
-        client: &Client,
-        id: &TransferId,
-        params: UpdateTransfer<'_>,
-    ) -> Response<Transfer> {
-        client.post_form(&format!("/transfers/{}", id), &params)
     }
 }

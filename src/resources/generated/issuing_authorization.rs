@@ -101,6 +101,16 @@ pub struct IssuingAuthorization {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wallet: Option<Box<String>>,
 }
+//automatically added back in service of IssuingAuthorization with hash-5141201543021633229
+impl Object for IssuingAuthorization {
+    type Id = IssuingAuthorizationId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.authorization"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationPendingRequest {
@@ -212,16 +222,5 @@ impl AsRef<str> for IssuingAuthorizationStatus {
 impl std::fmt::Display for IssuingAuthorizationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of IssuingAuthorization with hash-5141201543021633229
-impl Object for IssuingAuthorization {
-    type Id = IssuingAuthorizationId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.authorization"
     }
 }

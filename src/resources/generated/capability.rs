@@ -37,6 +37,16 @@ pub struct Capability {
     /// Can be `active`, `inactive`, `pending`, or `unrequested`.
     pub status: CapabilityStatus,
 }
+//automatically added back in service of Capability with hash7770197585324368899
+impl Object for Capability {
+    type Id = CapabilityId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "capability"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilityFutureRequirements {
@@ -271,16 +281,5 @@ impl AsRef<str> for CapabilityStatus {
 impl std::fmt::Display for CapabilityStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of Capability with hash7770197585324368899
-impl Object for Capability {
-    type Id = CapabilityId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "capability"
     }
 }

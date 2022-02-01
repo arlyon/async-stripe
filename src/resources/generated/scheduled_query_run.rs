@@ -44,13 +44,6 @@ pub struct ScheduledQueryRun {
     /// Title of the query.
     pub title: String,
 }
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SigmaScheduledQueryRunError {
-    /// Information about the run failure.
-    pub message: String,
-}
-
 //automatically added back in service of ScheduledQueryRun with hash-768470941936991008
 impl Object for ScheduledQueryRun {
     type Id = ScheduledQueryRunId;
@@ -60,4 +53,10 @@ impl Object for ScheduledQueryRun {
     fn object(&self) -> &'static str {
         "scheduled_query_run"
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SigmaScheduledQueryRunError {
+    /// Information about the run failure.
+    pub message: String,
 }

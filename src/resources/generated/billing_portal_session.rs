@@ -49,6 +49,27 @@ pub struct BillingPortalSession {
     /// The short-lived URL of the session that gives customers access to the customer portal.
     pub url: String,
 }
+//automatically added back in service of BillingPortalSession with hash4519393852987815889
+impl Object for BillingPortalSession {
+    type Id = BillingPortalSessionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "billing_portal.session"
+    }
+}
+
+//automatically added back in service of BillingPortalSession with hash8325353705066617351
+impl BillingPortalSession {
+    /// Creates a session of the customer portal.
+    pub fn create(
+        client: &Client,
+        params: CreateBillingPortalSession<'_>,
+    ) -> Response<BillingPortalSession> {
+        client.post_form("/billing_portal/sessions", &params)
+    }
+}
 
 /// The parameters for `BillingPortalSession::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -226,27 +247,5 @@ impl AsRef<str> for BillingPortalSessionLocale {
 impl std::fmt::Display for BillingPortalSessionLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of BillingPortalSession with hash4519393852987815889
-impl Object for BillingPortalSession {
-    type Id = BillingPortalSessionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "billing_portal.session"
-    }
-}
-
-//automatically added back in service of BillingPortalSession with hash8325353705066617351
-impl BillingPortalSession {
-    /// Creates a session of the customer portal.
-    pub fn create(
-        client: &Client,
-        params: CreateBillingPortalSession<'_>,
-    ) -> Response<BillingPortalSession> {
-        client.post_form("/billing_portal/sessions", &params)
     }
 }

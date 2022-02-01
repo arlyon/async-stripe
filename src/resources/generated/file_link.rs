@@ -44,6 +44,45 @@ pub struct FileLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<Box<String>>,
 }
+//automatically added back in service of FileLink with hash-7310617586032894135
+impl FileLink {
+    /// Returns a list of file links.
+    pub fn list(client: &Client, params: ListFileLinks<'_>) -> Response<List<FileLink>> {
+        client.get_query("/file_links", &params)
+    }
+
+    /// Creates a new file link object.
+    pub fn create(client: &Client, params: CreateFileLink<'_>) -> Response<FileLink> {
+        client.post_form("/file_links", &params)
+    }
+
+    /// Retrieves the file link with the given ID.
+    pub fn retrieve(client: &Client, id: &FileLinkId, expand: &[&str]) -> Response<FileLink> {
+        client.get_query(&format!("/file_links/{}", id), &Expand { expand })
+    }
+
+    /// Updates an existing file link object.
+    ///
+    /// Expired links can no longer be updated.
+    pub fn update(
+        client: &Client,
+        id: &FileLinkId,
+        params: UpdateFileLink<'_>,
+    ) -> Response<FileLink> {
+        client.post_form(&format!("/file_links/{}", id), &params)
+    }
+}
+
+//automatically added back in service of FileLink with hash9019535771774462643
+impl Object for FileLink {
+    type Id = FileLinkId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "file_link"
+    }
+}
 
 /// The parameters for `FileLink::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -68,6 +107,17 @@ pub struct CreateFileLink<'a> {
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+}
+//automatically added back in service of CreateFileLink with hash1700588861826240622
+impl<'a> CreateFileLink<'a> {
+    pub fn new(file: FileId) -> Self {
+        CreateFileLink {
+            expand: Default::default(),
+            expires_at: Default::default(),
+            file,
+            metadata: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `FileLink::list`.
@@ -110,6 +160,20 @@ pub struct ListFileLinks<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<FileLinkId>,
 }
+//automatically added back in service of ListFileLinks with hash-8549440265594601
+impl<'a> ListFileLinks<'a> {
+    pub fn new() -> Self {
+        ListFileLinks {
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            expired: Default::default(),
+            file: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `FileLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -136,73 +200,6 @@ impl<'a> UpdateFileLink<'a> {
         UpdateFileLink {
             expand: Default::default(),
             expires_at: Default::default(),
-            metadata: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of FileLink with hash-7310617586032894135
-impl FileLink {
-    /// Returns a list of file links.
-    pub fn list(client: &Client, params: ListFileLinks<'_>) -> Response<List<FileLink>> {
-        client.get_query("/file_links", &params)
-    }
-
-    /// Creates a new file link object.
-    pub fn create(client: &Client, params: CreateFileLink<'_>) -> Response<FileLink> {
-        client.post_form("/file_links", &params)
-    }
-
-    /// Retrieves the file link with the given ID.
-    pub fn retrieve(client: &Client, id: &FileLinkId, expand: &[&str]) -> Response<FileLink> {
-        client.get_query(&format!("/file_links/{}", id), &Expand { expand })
-    }
-
-    /// Updates an existing file link object.
-    ///
-    /// Expired links can no longer be updated.
-    pub fn update(
-        client: &Client,
-        id: &FileLinkId,
-        params: UpdateFileLink<'_>,
-    ) -> Response<FileLink> {
-        client.post_form(&format!("/file_links/{}", id), &params)
-    }
-}
-
-//automatically added back in service of FileLink with hash9019535771774462643
-impl Object for FileLink {
-    type Id = FileLinkId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "file_link"
-    }
-}
-
-//automatically added back in service of ListFileLinks with hash-8549440265594601
-impl<'a> ListFileLinks<'a> {
-    pub fn new() -> Self {
-        ListFileLinks {
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            expired: Default::default(),
-            file: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of CreateFileLink with hash1700588861826240622
-impl<'a> CreateFileLink<'a> {
-    pub fn new(file: FileId) -> Self {
-        CreateFileLink {
-            expand: Default::default(),
-            expires_at: Default::default(),
-            file,
             metadata: Default::default(),
         }
     }

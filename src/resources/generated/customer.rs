@@ -137,6 +137,59 @@ pub struct Customer {
     #[serde(default)]
     pub tax_ids: List<TaxId>,
 }
+//automatically added back in service of Customer with hash-6890770186154663517
+impl Object for Customer {
+    type Id = CustomerId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "customer"
+    }
+}
+
+//automatically added back in service of Customer with hash7226466852421032247
+impl Customer {
+    /// Returns a list of your customers.
+    ///
+    /// The customers are returned sorted by creation date, with the most recent customers appearing first.
+    pub fn list(client: &Client, params: ListCustomers<'_>) -> Response<List<Customer>> {
+        client.get_query("/customers", &params)
+    }
+
+    /// Creates a new customer object.
+    pub fn create(client: &Client, params: CreateCustomer<'_>) -> Response<Customer> {
+        client.post_form("/customers", &params)
+    }
+
+    /// Retrieves a Customer object.
+    pub fn retrieve(client: &Client, id: &CustomerId, expand: &[&str]) -> Response<Customer> {
+        client.get_query(&format!("/customers/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified customer by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    /// For example, if you pass the **source** parameter, that becomes the customer’s active source (e.g., a card) to be used for all charges in the future.
+    /// When you update a customer to a new valid card source by passing the **source** parameter: for each of the customer’s current subscriptions, if the subscription bills automatically and is in the `past_due` state, then the latest open invoice for the subscription with automatic collection enabled will be retried.
+    /// This retry will not count as an automatic retry, and will not affect the next regularly scheduled payment for the invoice.
+    /// Changing the **default_source** for a customer will not trigger this behavior.  This request accepts mostly the same arguments as the customer creation call.
+    pub fn update(
+        client: &Client,
+        id: &CustomerId,
+        params: UpdateCustomer<'_>,
+    ) -> Response<Customer> {
+        client.post_form(&format!("/customers/{}", id), &params)
+    }
+
+    /// Permanently deletes a customer.
+    ///
+    /// It cannot be undone.
+    /// Also immediately cancels any active subscriptions on the customer.
+    pub fn delete(client: &Client, id: &CustomerId) -> Response<Deleted<CustomerId>> {
+        client.delete(&format!("/customers/{}", id))
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerTax {
@@ -282,6 +335,33 @@ pub struct CreateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id_data: Option<Box<Vec<TaxIdData>>>,
 }
+//automatically added back in service of CreateCustomer with hash2216899000869908635
+impl<'a> CreateCustomer<'a> {
+    pub fn new() -> Self {
+        CreateCustomer {
+            address: Default::default(),
+            balance: Default::default(),
+            coupon: Default::default(),
+            description: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            invoice_prefix: Default::default(),
+            invoice_settings: Default::default(),
+            metadata: Default::default(),
+            name: Default::default(),
+            next_invoice_sequence: Default::default(),
+            payment_method: Default::default(),
+            phone: Default::default(),
+            preferred_locales: Default::default(),
+            promotion_code: Default::default(),
+            shipping: Default::default(),
+            source: Default::default(),
+            tax: Default::default(),
+            tax_exempt: Default::default(),
+            tax_id_data: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `Customer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -318,6 +398,19 @@ pub struct ListCustomers<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<CustomerId>,
+}
+//automatically added back in service of ListCustomers with hash8260311421914000074
+impl<'a> ListCustomers<'a> {
+    pub fn new() -> Self {
+        ListCustomers {
+            created: Default::default(),
+            email: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Customer::update`.
@@ -443,6 +536,36 @@ pub struct UpdateCustomer<'a> {
     /// Can be at most two years from `billing_cycle_anchor`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Scheduled>,
+}
+//automatically added back in service of UpdateCustomer with hash-7713761293574287342
+impl<'a> UpdateCustomer<'a> {
+    pub fn new() -> Self {
+        UpdateCustomer {
+            address: Default::default(),
+            balance: Default::default(),
+            coupon: Default::default(),
+            default_alipay_account: Default::default(),
+            default_bank_account: Default::default(),
+            default_card: Default::default(),
+            default_source: Default::default(),
+            description: Default::default(),
+            email: Default::default(),
+            expand: Default::default(),
+            invoice_prefix: Default::default(),
+            invoice_settings: Default::default(),
+            metadata: Default::default(),
+            name: Default::default(),
+            next_invoice_sequence: Default::default(),
+            phone: Default::default(),
+            preferred_locales: Default::default(),
+            promotion_code: Default::default(),
+            shipping: Default::default(),
+            source: Default::default(),
+            tax: Default::default(),
+            tax_exempt: Default::default(),
+            trial_end: Default::default(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -780,132 +903,5 @@ impl AsRef<str> for TaxIdType {
 impl std::fmt::Display for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of ListCustomers with hash8260311421914000074
-impl<'a> ListCustomers<'a> {
-    pub fn new() -> Self {
-        ListCustomers {
-            created: Default::default(),
-            email: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of UpdateCustomer with hash-7713761293574287342
-impl<'a> UpdateCustomer<'a> {
-    pub fn new() -> Self {
-        UpdateCustomer {
-            address: Default::default(),
-            balance: Default::default(),
-            coupon: Default::default(),
-            default_alipay_account: Default::default(),
-            default_bank_account: Default::default(),
-            default_card: Default::default(),
-            default_source: Default::default(),
-            description: Default::default(),
-            email: Default::default(),
-            expand: Default::default(),
-            invoice_prefix: Default::default(),
-            invoice_settings: Default::default(),
-            metadata: Default::default(),
-            name: Default::default(),
-            next_invoice_sequence: Default::default(),
-            phone: Default::default(),
-            preferred_locales: Default::default(),
-            promotion_code: Default::default(),
-            shipping: Default::default(),
-            source: Default::default(),
-            tax: Default::default(),
-            tax_exempt: Default::default(),
-            trial_end: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of CreateCustomer with hash2216899000869908635
-impl<'a> CreateCustomer<'a> {
-    pub fn new() -> Self {
-        CreateCustomer {
-            address: Default::default(),
-            balance: Default::default(),
-            coupon: Default::default(),
-            description: Default::default(),
-            email: Default::default(),
-            expand: Default::default(),
-            invoice_prefix: Default::default(),
-            invoice_settings: Default::default(),
-            metadata: Default::default(),
-            name: Default::default(),
-            next_invoice_sequence: Default::default(),
-            payment_method: Default::default(),
-            phone: Default::default(),
-            preferred_locales: Default::default(),
-            promotion_code: Default::default(),
-            shipping: Default::default(),
-            source: Default::default(),
-            tax: Default::default(),
-            tax_exempt: Default::default(),
-            tax_id_data: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Customer with hash-6890770186154663517
-impl Object for Customer {
-    type Id = CustomerId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "customer"
-    }
-}
-
-//automatically added back in service of Customer with hash7226466852421032247
-impl Customer {
-    /// Returns a list of your customers.
-    ///
-    /// The customers are returned sorted by creation date, with the most recent customers appearing first.
-    pub fn list(client: &Client, params: ListCustomers<'_>) -> Response<List<Customer>> {
-        client.get_query("/customers", &params)
-    }
-
-    /// Creates a new customer object.
-    pub fn create(client: &Client, params: CreateCustomer<'_>) -> Response<Customer> {
-        client.post_form("/customers", &params)
-    }
-
-    /// Retrieves a Customer object.
-    pub fn retrieve(client: &Client, id: &CustomerId, expand: &[&str]) -> Response<Customer> {
-        client.get_query(&format!("/customers/{}", id), &Expand { expand })
-    }
-
-    /// Updates the specified customer by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided will be left unchanged.
-    /// For example, if you pass the **source** parameter, that becomes the customer’s active source (e.g., a card) to be used for all charges in the future.
-    /// When you update a customer to a new valid card source by passing the **source** parameter: for each of the customer’s current subscriptions, if the subscription bills automatically and is in the `past_due` state, then the latest open invoice for the subscription with automatic collection enabled will be retried.
-    /// This retry will not count as an automatic retry, and will not affect the next regularly scheduled payment for the invoice.
-    /// Changing the **default_source** for a customer will not trigger this behavior.  This request accepts mostly the same arguments as the customer creation call.
-    pub fn update(
-        client: &Client,
-        id: &CustomerId,
-        params: UpdateCustomer<'_>,
-    ) -> Response<Customer> {
-        client.post_form(&format!("/customers/{}", id), &params)
-    }
-
-    /// Permanently deletes a customer.
-    ///
-    /// It cannot be undone.
-    /// Also immediately cancels any active subscriptions on the customer.
-    pub fn delete(client: &Client, id: &CustomerId) -> Response<Deleted<CustomerId>> {
-        client.delete(&format!("/customers/{}", id))
     }
 }

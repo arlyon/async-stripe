@@ -96,6 +96,16 @@ pub struct IssuingCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wallets: Option<Box<IssuingCardWallets>>,
 }
+//automatically added back in service of IssuingCard with hash4501721549196130287
+impl Object for IssuingCard {
+    type Id = IssuingCardId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.card"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardAuthorizationControls {
@@ -1065,16 +1075,5 @@ impl AsRef<str> for IssuingCardStatus {
 impl std::fmt::Display for IssuingCardStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of IssuingCard with hash4501721549196130287
-impl Object for IssuingCard {
-    type Id = IssuingCardId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.card"
     }
 }

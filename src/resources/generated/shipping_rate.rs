@@ -68,6 +68,47 @@ pub struct ShippingRate {
     #[serde(rename = "type")]
     pub type_: ShippingRateType,
 }
+//automatically added back in service of ShippingRate with hash7157132574015334361
+impl ShippingRate {
+    /// Returns a list of your shipping rates.
+    pub fn list(client: &Client, params: ListShippingRates<'_>) -> Response<List<ShippingRate>> {
+        client.get_query("/shipping_rates", &params)
+    }
+
+    /// Creates a new shipping rate object.
+    pub fn create(client: &Client, params: CreateShippingRate<'_>) -> Response<ShippingRate> {
+        client.post_form("/shipping_rates", &params)
+    }
+
+    /// Returns the shipping rate object with the given ID.
+    pub fn retrieve(
+        client: &Client,
+        id: &ShippingRateId,
+        expand: &[&str],
+    ) -> Response<ShippingRate> {
+        client.get_query(&format!("/shipping_rates/{}", id), &Expand { expand })
+    }
+
+    /// Updates an existing shipping rate object.
+    pub fn update(
+        client: &Client,
+        id: &ShippingRateId,
+        params: UpdateShippingRate<'_>,
+    ) -> Response<ShippingRate> {
+        client.post_form(&format!("/shipping_rates/{}", id), &params)
+    }
+}
+
+//automatically added back in service of ShippingRate with hash-6780965776208871927
+impl Object for ShippingRate {
+    type Id = ShippingRateId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "shipping_rate"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimate {
@@ -155,6 +196,21 @@ pub struct CreateShippingRate<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<ShippingRateType>,
 }
+//automatically added back in service of CreateShippingRate with hash2129064391035003235
+impl<'a> CreateShippingRate<'a> {
+    pub fn new(display_name: &'a str) -> Self {
+        CreateShippingRate {
+            delivery_estimate: Default::default(),
+            display_name,
+            expand: Default::default(),
+            fixed_amount: Default::default(),
+            metadata: Default::default(),
+            tax_behavior: Default::default(),
+            tax_code: Default::default(),
+            type_: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `ShippingRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -197,6 +253,20 @@ pub struct ListShippingRates<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<ShippingRateId>,
 }
+//automatically added back in service of ListShippingRates with hash-6470642647643369830
+impl<'a> ListShippingRates<'a> {
+    pub fn new() -> Self {
+        ListShippingRates {
+            active: Default::default(),
+            created: Default::default(),
+            currency: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `ShippingRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -218,6 +288,16 @@ pub struct UpdateShippingRate<'a> {
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+}
+//automatically added back in service of UpdateShippingRate with hash8863980788723415576
+impl<'a> UpdateShippingRate<'a> {
+    pub fn new() -> Self {
+        UpdateShippingRate {
+            active: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -410,89 +490,5 @@ impl AsRef<str> for ShippingRateType {
 impl std::fmt::Display for ShippingRateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of ShippingRate with hash7157132574015334361
-impl ShippingRate {
-    /// Returns a list of your shipping rates.
-    pub fn list(client: &Client, params: ListShippingRates<'_>) -> Response<List<ShippingRate>> {
-        client.get_query("/shipping_rates", &params)
-    }
-
-    /// Creates a new shipping rate object.
-    pub fn create(client: &Client, params: CreateShippingRate<'_>) -> Response<ShippingRate> {
-        client.post_form("/shipping_rates", &params)
-    }
-
-    /// Returns the shipping rate object with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &ShippingRateId,
-        expand: &[&str],
-    ) -> Response<ShippingRate> {
-        client.get_query(&format!("/shipping_rates/{}", id), &Expand { expand })
-    }
-
-    /// Updates an existing shipping rate object.
-    pub fn update(
-        client: &Client,
-        id: &ShippingRateId,
-        params: UpdateShippingRate<'_>,
-    ) -> Response<ShippingRate> {
-        client.post_form(&format!("/shipping_rates/{}", id), &params)
-    }
-}
-
-//automatically added back in service of ShippingRate with hash-6780965776208871927
-impl Object for ShippingRate {
-    type Id = ShippingRateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "shipping_rate"
-    }
-}
-
-//automatically added back in service of ListShippingRates with hash-6470642647643369830
-impl<'a> ListShippingRates<'a> {
-    pub fn new() -> Self {
-        ListShippingRates {
-            active: Default::default(),
-            created: Default::default(),
-            currency: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of CreateShippingRate with hash2129064391035003235
-impl<'a> CreateShippingRate<'a> {
-    pub fn new(display_name: &'a str) -> Self {
-        CreateShippingRate {
-            delivery_estimate: Default::default(),
-            display_name,
-            expand: Default::default(),
-            fixed_amount: Default::default(),
-            metadata: Default::default(),
-            tax_behavior: Default::default(),
-            tax_code: Default::default(),
-            type_: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of UpdateShippingRate with hash8863980788723415576
-impl<'a> UpdateShippingRate<'a> {
-    pub fn new() -> Self {
-        UpdateShippingRate {
-            active: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-        }
     }
 }

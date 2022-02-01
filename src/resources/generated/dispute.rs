@@ -70,6 +70,29 @@ pub struct Dispute {
     /// Possible values are `warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `charge_refunded`, `won`, or `lost`.
     pub status: DisputeStatus,
 }
+//automatically added back in service of Dispute with hash5798063553143893065
+impl Dispute {
+    /// Returns a list of your disputes.
+    pub fn list(client: &Client, params: ListDisputes<'_>) -> Response<List<Dispute>> {
+        client.get_query("/disputes", &params)
+    }
+
+    /// Retrieves the dispute with the given ID.
+    pub fn retrieve(client: &Client, id: &DisputeId, expand: &[&str]) -> Response<Dispute> {
+        client.get_query(&format!("/disputes/{}", id), &Expand { expand })
+    }
+}
+
+//automatically added back in service of Dispute with hash2994297120450655962
+impl Object for Dispute {
+    type Id = DisputeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "dispute"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DisputeEvidence {
@@ -313,29 +336,5 @@ impl AsRef<str> for DisputeStatus {
 impl std::fmt::Display for DisputeStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of Dispute with hash5798063553143893065
-impl Dispute {
-    /// Returns a list of your disputes.
-    pub fn list(client: &Client, params: ListDisputes<'_>) -> Response<List<Dispute>> {
-        client.get_query("/disputes", &params)
-    }
-
-    /// Retrieves the dispute with the given ID.
-    pub fn retrieve(client: &Client, id: &DisputeId, expand: &[&str]) -> Response<Dispute> {
-        client.get_query(&format!("/disputes/{}", id), &Expand { expand })
-    }
-}
-
-//automatically added back in service of Dispute with hash2994297120450655962
-impl Object for Dispute {
-    type Id = DisputeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "dispute"
     }
 }

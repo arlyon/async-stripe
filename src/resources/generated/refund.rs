@@ -94,6 +94,44 @@ pub struct Refund {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_reversal: Option<Box<Expandable<TransferReversal>>>,
 }
+//automatically added back in service of Refund with hash-8173776971715317963
+impl Refund {
+    /// Returns a list of all refunds you’ve previously created.
+    ///
+    /// The refunds are returned in sorted order, with the most recent refunds appearing first.
+    /// For convenience, the 10 most recent refunds are always available by default on the charge object.
+    pub fn list(client: &Client, params: ListRefunds<'_>) -> Response<List<Refund>> {
+        client.get_query("/refunds", &params)
+    }
+
+    /// Create a refund.
+    pub fn create(client: &Client, params: CreateRefund<'_>) -> Response<Refund> {
+        client.post_form("/refunds", &params)
+    }
+
+    /// Retrieves the details of an existing refund.
+    pub fn retrieve(client: &Client, id: &RefundId, expand: &[&str]) -> Response<Refund> {
+        client.get_query(&format!("/refunds/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified refund by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.  This request only accepts `metadata` as an argument.
+    pub fn update(client: &Client, id: &RefundId, params: UpdateRefund<'_>) -> Response<Refund> {
+        client.post_form(&format!("/refunds/{}", id), &params)
+    }
+}
+
+//automatically added back in service of Refund with hash2594001076817569631
+impl Object for Refund {
+    type Id = RefundId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "refund"
+    }
+}
 
 /// The parameters for `Refund::create`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -127,6 +165,21 @@ pub struct CreateRefund<'a> {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reverse_transfer: Option<bool>,
+}
+//automatically added back in service of CreateRefund with hash2250122037972587183
+impl<'a> CreateRefund<'a> {
+    pub fn new() -> Self {
+        CreateRefund {
+            amount: Default::default(),
+            charge: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            payment_intent: Default::default(),
+            reason: Default::default(),
+            refund_application_fee: Default::default(),
+            reverse_transfer: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Refund::list`.
@@ -166,6 +219,20 @@ pub struct ListRefunds<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<RefundId>,
+}
+//automatically added back in service of ListRefunds with hash1285352333081130670
+impl<'a> ListRefunds<'a> {
+    pub fn new() -> Self {
+        ListRefunds {
+            charge: Default::default(),
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            payment_intent: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Refund::update`.
@@ -218,75 +285,5 @@ impl AsRef<str> for RefundReason {
 impl std::fmt::Display for RefundReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of CreateRefund with hash2250122037972587183
-impl<'a> CreateRefund<'a> {
-    pub fn new() -> Self {
-        CreateRefund {
-            amount: Default::default(),
-            charge: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            payment_intent: Default::default(),
-            reason: Default::default(),
-            refund_application_fee: Default::default(),
-            reverse_transfer: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Refund with hash-8173776971715317963
-impl Refund {
-    /// Returns a list of all refunds you’ve previously created.
-    ///
-    /// The refunds are returned in sorted order, with the most recent refunds appearing first.
-    /// For convenience, the 10 most recent refunds are always available by default on the charge object.
-    pub fn list(client: &Client, params: ListRefunds<'_>) -> Response<List<Refund>> {
-        client.get_query("/refunds", &params)
-    }
-
-    /// Create a refund.
-    pub fn create(client: &Client, params: CreateRefund<'_>) -> Response<Refund> {
-        client.post_form("/refunds", &params)
-    }
-
-    /// Retrieves the details of an existing refund.
-    pub fn retrieve(client: &Client, id: &RefundId, expand: &[&str]) -> Response<Refund> {
-        client.get_query(&format!("/refunds/{}", id), &Expand { expand })
-    }
-
-    /// Updates the specified refund by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided will be left unchanged.  This request only accepts `metadata` as an argument.
-    pub fn update(client: &Client, id: &RefundId, params: UpdateRefund<'_>) -> Response<Refund> {
-        client.post_form(&format!("/refunds/{}", id), &params)
-    }
-}
-
-//automatically added back in service of Refund with hash2594001076817569631
-impl Object for Refund {
-    type Id = RefundId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "refund"
-    }
-}
-
-//automatically added back in service of ListRefunds with hash1285352333081130670
-impl<'a> ListRefunds<'a> {
-    pub fn new() -> Self {
-        ListRefunds {
-            charge: Default::default(),
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            payment_intent: Default::default(),
-            starting_after: Default::default(),
-        }
     }
 }

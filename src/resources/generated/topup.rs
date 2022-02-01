@@ -81,6 +81,38 @@ pub struct Topup {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<Box<String>>,
 }
+//automatically added back in service of Topup with hash-4267435505429544645
+impl Topup {
+    /// Returns a list of top-ups.
+    pub fn list(client: &Client, params: ListTopups<'_>) -> Response<List<Topup>> {
+        client.get_query("/topups", &params)
+    }
+
+    /// Retrieves the details of a top-up that has previously been created.
+    ///
+    /// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
+    pub fn retrieve(client: &Client, id: &TopupId, expand: &[&str]) -> Response<Topup> {
+        client.get_query(&format!("/topups/{}", id), &Expand { expand })
+    }
+
+    /// Updates the metadata of a top-up.
+    ///
+    /// Other top-up details are not editable by design.
+    pub fn update(client: &Client, id: &TopupId, params: UpdateTopup<'_>) -> Response<Topup> {
+        client.post_form(&format!("/topups/{}", id), &params)
+    }
+}
+
+//automatically added back in service of Topup with hash-1055834901306071266
+impl Object for Topup {
+    type Id = TopupId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "topup"
+    }
+}
 
 /// The parameters for `Topup::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -124,6 +156,20 @@ pub struct ListTopups<'a> {
     /// One of `canceled`, `failed`, `pending` or `succeeded`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<TopupStatusFilter>,
+}
+//automatically added back in service of ListTopups with hash-2255876390313892147
+impl<'a> ListTopups<'a> {
+    pub fn new() -> Self {
+        ListTopups {
+            amount: Default::default(),
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+            status: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Topup::update`.
@@ -223,53 +269,5 @@ impl AsRef<str> for TopupStatusFilter {
 impl std::fmt::Display for TopupStatusFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of ListTopups with hash-2255876390313892147
-impl<'a> ListTopups<'a> {
-    pub fn new() -> Self {
-        ListTopups {
-            amount: Default::default(),
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-            status: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Topup with hash-4267435505429544645
-impl Topup {
-    /// Returns a list of top-ups.
-    pub fn list(client: &Client, params: ListTopups<'_>) -> Response<List<Topup>> {
-        client.get_query("/topups", &params)
-    }
-
-    /// Retrieves the details of a top-up that has previously been created.
-    ///
-    /// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
-    pub fn retrieve(client: &Client, id: &TopupId, expand: &[&str]) -> Response<Topup> {
-        client.get_query(&format!("/topups/{}", id), &Expand { expand })
-    }
-
-    /// Updates the metadata of a top-up.
-    ///
-    /// Other top-up details are not editable by design.
-    pub fn update(client: &Client, id: &TopupId, params: UpdateTopup<'_>) -> Response<Topup> {
-        client.post_form(&format!("/topups/{}", id), &params)
-    }
-}
-
-//automatically added back in service of Topup with hash-1055834901306071266
-impl Object for Topup {
-    type Id = TopupId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "topup"
     }
 }

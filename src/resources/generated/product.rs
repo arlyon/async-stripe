@@ -91,6 +91,53 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<Box<String>>,
 }
+//automatically added back in service of Product with hash2754917396562206091
+impl Product {
+    /// Returns a list of your products.
+    ///
+    /// The products are returned sorted by creation date, with the most recently created products appearing first.
+    pub fn list(client: &Client, params: ListProducts<'_>) -> Response<List<Product>> {
+        client.get_query("/products", &params)
+    }
+
+    /// Creates a new product object.
+    pub fn create(client: &Client, params: CreateProduct<'_>) -> Response<Product> {
+        client.post_form("/products", &params)
+    }
+
+    /// Retrieves the details of an existing product.
+    ///
+    /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
+    pub fn retrieve(client: &Client, id: &ProductId, expand: &[&str]) -> Response<Product> {
+        client.get_query(&format!("/products/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specific product by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    pub fn update(client: &Client, id: &ProductId, params: UpdateProduct<'_>) -> Response<Product> {
+        client.post_form(&format!("/products/{}", id), &params)
+    }
+
+    /// Delete a product.
+    ///
+    /// Deleting a product is only possible if it has no prices associated with it.
+    /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
+    pub fn delete(client: &Client, id: &ProductId) -> Response<Deleted<ProductId>> {
+        client.delete(&format!("/products/{}", id))
+    }
+}
+
+//automatically added back in service of Product with hash-711423552975651489
+impl Object for Product {
+    type Id = ProductId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "product"
+    }
+}
 
 /// The parameters for `Product::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -164,6 +211,26 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<&'a str>,
 }
+//automatically added back in service of CreateProduct with hash-3622921094322200951
+impl<'a> CreateProduct<'a> {
+    pub fn new(name: &'a str) -> Self {
+        CreateProduct {
+            active: Default::default(),
+            description: Default::default(),
+            expand: Default::default(),
+            id: Default::default(),
+            images: Default::default(),
+            metadata: Default::default(),
+            name,
+            package_dimensions: Default::default(),
+            shippable: Default::default(),
+            statement_descriptor: Default::default(),
+            tax_code: Default::default(),
+            unit_label: Default::default(),
+            url: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `Product::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -211,6 +278,22 @@ pub struct ListProducts<'a> {
     /// Only return products with the given url.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<&'a str>,
+}
+//automatically added back in service of ListProducts with hash920721201489631679
+impl<'a> ListProducts<'a> {
+    pub fn new() -> Self {
+        ListProducts {
+            active: Default::default(),
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            ids: Default::default(),
+            limit: Default::default(),
+            shippable: Default::default(),
+            starting_after: Default::default(),
+            url: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Product::update`.
@@ -295,92 +378,6 @@ impl<'a> UpdateProduct<'a> {
             statement_descriptor: Default::default(),
             tax_code: Default::default(),
             unit_label: Default::default(),
-            url: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Product with hash2754917396562206091
-impl Product {
-    /// Returns a list of your products.
-    ///
-    /// The products are returned sorted by creation date, with the most recently created products appearing first.
-    pub fn list(client: &Client, params: ListProducts<'_>) -> Response<List<Product>> {
-        client.get_query("/products", &params)
-    }
-
-    /// Creates a new product object.
-    pub fn create(client: &Client, params: CreateProduct<'_>) -> Response<Product> {
-        client.post_form("/products", &params)
-    }
-
-    /// Retrieves the details of an existing product.
-    ///
-    /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
-    pub fn retrieve(client: &Client, id: &ProductId, expand: &[&str]) -> Response<Product> {
-        client.get_query(&format!("/products/{}", id), &Expand { expand })
-    }
-
-    /// Updates the specific product by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided will be left unchanged.
-    pub fn update(client: &Client, id: &ProductId, params: UpdateProduct<'_>) -> Response<Product> {
-        client.post_form(&format!("/products/{}", id), &params)
-    }
-
-    /// Delete a product.
-    ///
-    /// Deleting a product is only possible if it has no prices associated with it.
-    /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
-    pub fn delete(client: &Client, id: &ProductId) -> Response<Deleted<ProductId>> {
-        client.delete(&format!("/products/{}", id))
-    }
-}
-
-//automatically added back in service of Product with hash-711423552975651489
-impl Object for Product {
-    type Id = ProductId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "product"
-    }
-}
-
-//automatically added back in service of CreateProduct with hash-3622921094322200951
-impl<'a> CreateProduct<'a> {
-    pub fn new(name: &'a str) -> Self {
-        CreateProduct {
-            active: Default::default(),
-            description: Default::default(),
-            expand: Default::default(),
-            id: Default::default(),
-            images: Default::default(),
-            metadata: Default::default(),
-            name,
-            package_dimensions: Default::default(),
-            shippable: Default::default(),
-            statement_descriptor: Default::default(),
-            tax_code: Default::default(),
-            unit_label: Default::default(),
-            url: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of ListProducts with hash920721201489631679
-impl<'a> ListProducts<'a> {
-    pub fn new() -> Self {
-        ListProducts {
-            active: Default::default(),
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            ids: Default::default(),
-            limit: Default::default(),
-            shippable: Default::default(),
-            starting_after: Default::default(),
             url: Default::default(),
         }
     }

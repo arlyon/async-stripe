@@ -63,6 +63,40 @@ pub struct ApplicationFee {
     /// A list of refunds that have been applied to the fee.
     pub refunds: List<ApplicationFeeRefund>,
 }
+//automatically added back in service of ApplicationFee with hash7758595835525162394
+impl ApplicationFee {
+    /// Returns a list of application fees you’ve previously collected.
+    ///
+    /// The application fees are returned in sorted order, with the most recent fees appearing first.
+    pub fn list(
+        client: &Client,
+        params: ListApplicationFees<'_>,
+    ) -> Response<List<ApplicationFee>> {
+        client.get_query("/application_fees", &params)
+    }
+
+    /// Retrieves the details of an application fee that your account has collected.
+    ///
+    /// The same information is returned when refunding the application fee.
+    pub fn retrieve(
+        client: &Client,
+        id: &ApplicationFeeId,
+        expand: &[&str],
+    ) -> Response<ApplicationFee> {
+        client.get_query(&format!("/application_fees/{}", id), &Expand { expand })
+    }
+}
+
+//automatically added back in service of ApplicationFee with hash727360216826743751
+impl Object for ApplicationFee {
+    type Id = ApplicationFeeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "application_fee"
+    }
+}
 
 /// The parameters for `ApplicationFee::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -109,40 +143,5 @@ impl<'a> ListApplicationFees<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
         }
-    }
-}
-
-//automatically added back in service of ApplicationFee with hash7758595835525162394
-impl ApplicationFee {
-    /// Returns a list of application fees you’ve previously collected.
-    ///
-    /// The application fees are returned in sorted order, with the most recent fees appearing first.
-    pub fn list(
-        client: &Client,
-        params: ListApplicationFees<'_>,
-    ) -> Response<List<ApplicationFee>> {
-        client.get_query("/application_fees", &params)
-    }
-
-    /// Retrieves the details of an application fee that your account has collected.
-    ///
-    /// The same information is returned when refunding the application fee.
-    pub fn retrieve(
-        client: &Client,
-        id: &ApplicationFeeId,
-        expand: &[&str],
-    ) -> Response<ApplicationFee> {
-        client.get_query(&format!("/application_fees/{}", id), &Expand { expand })
-    }
-}
-
-//automatically added back in service of ApplicationFee with hash727360216826743751
-impl Object for ApplicationFee {
-    type Id = ApplicationFeeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "application_fee"
     }
 }

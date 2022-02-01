@@ -53,6 +53,34 @@ pub struct File {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<Box<String>>,
 }
+//automatically added back in service of File with hash7432241759813252425
+impl Object for File {
+    type Id = FileId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "file"
+    }
+}
+
+//automatically added back in service of File with hash-5589240101613797878
+impl File {
+    /// Returns a list of the files that your account has access to.
+    ///
+    /// The files are returned sorted by creation date, with the most recently created files appearing first.
+    pub fn list(client: &Client, params: ListFiles<'_>) -> Response<List<File>> {
+        client.get_query("/files", &params)
+    }
+
+    /// Retrieves the details of an existing file object.
+    ///
+    /// Supply the unique file ID from a file, and Stripe will return the corresponding file object.
+    /// To access file contents, see the [File Upload Guide](https://stripe.com/docs/file-upload#download-file-contents).
+    pub fn retrieve(client: &Client, id: &FileId, expand: &[&str]) -> Response<File> {
+        client.get_query(&format!("/files/{}", id), &Expand { expand })
+    }
+}
 
 /// The parameters for `File::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -154,34 +182,5 @@ impl AsRef<str> for FilePurpose {
 impl std::fmt::Display for FilePurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of File with hash7432241759813252425
-impl Object for File {
-    type Id = FileId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "file"
-    }
-}
-
-//automatically added back in service of File with hash-5589240101613797878
-impl File {
-    /// Returns a list of the files that your account has access to.
-    ///
-    /// The files are returned sorted by creation date, with the most recently created files appearing first.
-    pub fn list(client: &Client, params: ListFiles<'_>) -> Response<List<File>> {
-        client.get_query("/files", &params)
-    }
-
-    /// Retrieves the details of an existing file object.
-    ///
-    /// Supply the unique file ID from a file, and Stripe will return the corresponding file object.
-    /// To access file contents, see the [File Upload Guide](https://stripe.com/docs/file-upload#download-file-contents).
-    pub fn retrieve(client: &Client, id: &FileId, expand: &[&str]) -> Response<File> {
-        client.get_query(&format!("/files/{}", id), &Expand { expand })
     }
 }

@@ -122,6 +122,16 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<Box<PersonVerification>>,
 }
+//automatically added back in service of Person with hash3437362498376385340
+impl Object for Person {
+    type Id = PersonId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "person"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LegalEntityDob {
@@ -446,16 +456,5 @@ impl AsRef<str> for PersonPoliticalExposure {
 impl std::fmt::Display for PersonPoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of Person with hash3437362498376385340
-impl Object for Person {
-    type Id = PersonId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "person"
     }
 }

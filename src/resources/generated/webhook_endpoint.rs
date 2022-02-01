@@ -71,6 +71,61 @@ pub struct WebhookEndpoint {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<Box<String>>,
 }
+//automatically added back in service of WebhookEndpoint with hash-8638974670521242560
+impl WebhookEndpoint {
+    /// Returns a list of your webhook endpoints.
+    pub fn list(
+        client: &Client,
+        params: ListWebhookEndpoints<'_>,
+    ) -> Response<List<WebhookEndpoint>> {
+        client.get_query("/webhook_endpoints", &params)
+    }
+
+    /// A webhook endpoint must have a `url` and a list of `enabled_events`.
+    ///
+    /// You may optionally specify the Boolean `connect` parameter.
+    /// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
+    /// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
+    pub fn create(client: &Client, params: CreateWebhookEndpoint<'_>) -> Response<WebhookEndpoint> {
+        client.post_form("/webhook_endpoints", &params)
+    }
+
+    /// Retrieves the webhook endpoint with the given ID.
+    pub fn retrieve(
+        client: &Client,
+        id: &WebhookEndpointId,
+        expand: &[&str],
+    ) -> Response<WebhookEndpoint> {
+        client.get_query(&format!("/webhook_endpoints/{}", id), &Expand { expand })
+    }
+
+    /// Updates the webhook endpoint.
+    ///
+    /// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
+    pub fn update(
+        client: &Client,
+        id: &WebhookEndpointId,
+        params: UpdateWebhookEndpoint<'_>,
+    ) -> Response<WebhookEndpoint> {
+        client.post_form(&format!("/webhook_endpoints/{}", id), &params)
+    }
+
+    /// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
+    pub fn delete(client: &Client, id: &WebhookEndpointId) -> Response<Deleted<WebhookEndpointId>> {
+        client.delete(&format!("/webhook_endpoints/{}", id))
+    }
+}
+
+//automatically added back in service of WebhookEndpoint with hash-5274357473399814216
+impl Object for WebhookEndpoint {
+    type Id = WebhookEndpointId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "webhook_endpoint"
+    }
+}
 
 /// The parameters for `WebhookEndpoint::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -109,6 +164,20 @@ pub struct CreateWebhookEndpoint<'a> {
     /// The URL of the webhook endpoint.
     pub url: &'a str,
 }
+//automatically added back in service of CreateWebhookEndpoint with hash8082516801620069850
+impl<'a> CreateWebhookEndpoint<'a> {
+    pub fn new(enabled_events: Vec<EventFilter>, url: &'a str) -> Self {
+        CreateWebhookEndpoint {
+            api_version: Default::default(),
+            connect: Default::default(),
+            description: Default::default(),
+            enabled_events,
+            expand: Default::default(),
+            metadata: Default::default(),
+            url,
+        }
+    }
+}
 
 /// The parameters for `WebhookEndpoint::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -136,6 +205,17 @@ pub struct ListWebhookEndpoints<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<WebhookEndpointId>,
+}
+//automatically added back in service of ListWebhookEndpoints with hash1745722768132667490
+impl<'a> ListWebhookEndpoints<'a> {
+    pub fn new() -> Self {
+        ListWebhookEndpoints {
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `WebhookEndpoint::update`.
@@ -775,88 +855,5 @@ impl AsRef<str> for EventFilter {
 impl std::fmt::Display for EventFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of CreateWebhookEndpoint with hash8082516801620069850
-impl<'a> CreateWebhookEndpoint<'a> {
-    pub fn new(enabled_events: Vec<EventFilter>, url: &'a str) -> Self {
-        CreateWebhookEndpoint {
-            api_version: Default::default(),
-            connect: Default::default(),
-            description: Default::default(),
-            enabled_events,
-            expand: Default::default(),
-            metadata: Default::default(),
-            url,
-        }
-    }
-}
-
-//automatically added back in service of WebhookEndpoint with hash-8638974670521242560
-impl WebhookEndpoint {
-    /// Returns a list of your webhook endpoints.
-    pub fn list(
-        client: &Client,
-        params: ListWebhookEndpoints<'_>,
-    ) -> Response<List<WebhookEndpoint>> {
-        client.get_query("/webhook_endpoints", &params)
-    }
-
-    /// A webhook endpoint must have a `url` and a list of `enabled_events`.
-    ///
-    /// You may optionally specify the Boolean `connect` parameter.
-    /// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
-    /// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
-    pub fn create(client: &Client, params: CreateWebhookEndpoint<'_>) -> Response<WebhookEndpoint> {
-        client.post_form("/webhook_endpoints", &params)
-    }
-
-    /// Retrieves the webhook endpoint with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &WebhookEndpointId,
-        expand: &[&str],
-    ) -> Response<WebhookEndpoint> {
-        client.get_query(&format!("/webhook_endpoints/{}", id), &Expand { expand })
-    }
-
-    /// Updates the webhook endpoint.
-    ///
-    /// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
-    pub fn update(
-        client: &Client,
-        id: &WebhookEndpointId,
-        params: UpdateWebhookEndpoint<'_>,
-    ) -> Response<WebhookEndpoint> {
-        client.post_form(&format!("/webhook_endpoints/{}", id), &params)
-    }
-
-    /// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
-    pub fn delete(client: &Client, id: &WebhookEndpointId) -> Response<Deleted<WebhookEndpointId>> {
-        client.delete(&format!("/webhook_endpoints/{}", id))
-    }
-}
-
-//automatically added back in service of WebhookEndpoint with hash-5274357473399814216
-impl Object for WebhookEndpoint {
-    type Id = WebhookEndpointId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "webhook_endpoint"
-    }
-}
-
-//automatically added back in service of ListWebhookEndpoints with hash1745722768132667490
-impl<'a> ListWebhookEndpoints<'a> {
-    pub fn new() -> Self {
-        ListWebhookEndpoints {
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
     }
 }

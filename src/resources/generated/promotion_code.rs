@@ -60,6 +60,46 @@ pub struct PromotionCode {
     /// Number of times this promotion code has been used.
     pub times_redeemed: i64,
 }
+//automatically added back in service of PromotionCode with hash-3696780080453033563
+impl PromotionCode {
+    /// Returns a list of your promotion codes.
+    pub fn list(client: &Client, params: ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
+        client.get_query("/promotion_codes", &params)
+    }
+
+    /// Retrieves the promotion code with the given ID.
+    ///
+    /// In order to retrieve a promotion code by the customer-facing `code` use [list](https://stripe.com/docs/api/promotion_codes/list) with the desired `code`.
+    pub fn retrieve(
+        client: &Client,
+        id: &PromotionCodeId,
+        expand: &[&str],
+    ) -> Response<PromotionCode> {
+        client.get_query(&format!("/promotion_codes/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified promotion code by setting the values of the parameters passed.
+    ///
+    /// Most fields are, by design, not editable.
+    pub fn update(
+        client: &Client,
+        id: &PromotionCodeId,
+        params: UpdatePromotionCode<'_>,
+    ) -> Response<PromotionCode> {
+        client.post_form(&format!("/promotion_codes/{}", id), &params)
+    }
+}
+
+//automatically added back in service of PromotionCode with hash1364410342897565166
+impl Object for PromotionCode {
+    type Id = PromotionCodeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "promotion_code"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PromotionCodesResourceRestrictions {
@@ -124,6 +164,22 @@ pub struct ListPromotionCodes<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<PromotionCodeId>,
 }
+//automatically added back in service of ListPromotionCodes with hash-2986936303336722138
+impl<'a> ListPromotionCodes<'a> {
+    pub fn new() -> Self {
+        ListPromotionCodes {
+            active: Default::default(),
+            code: Default::default(),
+            coupon: Default::default(),
+            created: Default::default(),
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `PromotionCode::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -153,64 +209,6 @@ impl<'a> UpdatePromotionCode<'a> {
             active: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of PromotionCode with hash-3696780080453033563
-impl PromotionCode {
-    /// Returns a list of your promotion codes.
-    pub fn list(client: &Client, params: ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
-        client.get_query("/promotion_codes", &params)
-    }
-
-    /// Retrieves the promotion code with the given ID.
-    ///
-    /// In order to retrieve a promotion code by the customer-facing `code` use [list](https://stripe.com/docs/api/promotion_codes/list) with the desired `code`.
-    pub fn retrieve(
-        client: &Client,
-        id: &PromotionCodeId,
-        expand: &[&str],
-    ) -> Response<PromotionCode> {
-        client.get_query(&format!("/promotion_codes/{}", id), &Expand { expand })
-    }
-
-    /// Updates the specified promotion code by setting the values of the parameters passed.
-    ///
-    /// Most fields are, by design, not editable.
-    pub fn update(
-        client: &Client,
-        id: &PromotionCodeId,
-        params: UpdatePromotionCode<'_>,
-    ) -> Response<PromotionCode> {
-        client.post_form(&format!("/promotion_codes/{}", id), &params)
-    }
-}
-
-//automatically added back in service of PromotionCode with hash1364410342897565166
-impl Object for PromotionCode {
-    type Id = PromotionCodeId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "promotion_code"
-    }
-}
-
-//automatically added back in service of ListPromotionCodes with hash-2986936303336722138
-impl<'a> ListPromotionCodes<'a> {
-    pub fn new() -> Self {
-        ListPromotionCodes {
-            active: Default::default(),
-            code: Default::default(),
-            coupon: Default::default(),
-            created: Default::default(),
-            customer: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
         }
     }
 }

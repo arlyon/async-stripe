@@ -129,6 +129,44 @@ pub struct Plan {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_type: Option<Box<PlanUsageType>>,
 }
+//automatically added back in service of Plan with hash-15758022125050792
+impl Plan {
+    /// Returns a list of your plans.
+    pub fn list(client: &Client, params: ListPlans<'_>) -> Response<List<Plan>> {
+        client.get_query("/plans", &params)
+    }
+
+    /// Retrieves the plan with the given ID.
+    pub fn retrieve(client: &Client, id: &PlanId, expand: &[&str]) -> Response<Plan> {
+        client.get_query(&format!("/plans/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified plan by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided are left unchanged.
+    /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
+    pub fn update(client: &Client, id: &PlanId, params: UpdatePlan<'_>) -> Response<Plan> {
+        client.post_form(&format!("/plans/{}", id), &params)
+    }
+
+    /// Deleting plans means new subscribers can’t be added.
+    ///
+    /// Existing subscribers aren’t affected.
+    pub fn delete(client: &Client, id: &PlanId) -> Response<Deleted<PlanId>> {
+        client.delete(&format!("/plans/{}", id))
+    }
+}
+
+//automatically added back in service of Plan with hash1272108170975119476
+impl Object for Plan {
+    type Id = PlanId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "plan"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PlanTier {
@@ -202,6 +240,20 @@ pub struct ListPlans<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<PlanId>,
+}
+//automatically added back in service of ListPlans with hash-8547766091516829825
+impl<'a> ListPlans<'a> {
+    pub fn new() -> Self {
+        ListPlans {
+            active: Default::default(),
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            product: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Plan::update`.
@@ -430,59 +482,5 @@ impl AsRef<str> for TransformUsageRound {
 impl std::fmt::Display for TransformUsageRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of ListPlans with hash-8547766091516829825
-impl<'a> ListPlans<'a> {
-    pub fn new() -> Self {
-        ListPlans {
-            active: Default::default(),
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            product: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Plan with hash-15758022125050792
-impl Plan {
-    /// Returns a list of your plans.
-    pub fn list(client: &Client, params: ListPlans<'_>) -> Response<List<Plan>> {
-        client.get_query("/plans", &params)
-    }
-
-    /// Retrieves the plan with the given ID.
-    pub fn retrieve(client: &Client, id: &PlanId, expand: &[&str]) -> Response<Plan> {
-        client.get_query(&format!("/plans/{}", id), &Expand { expand })
-    }
-
-    /// Updates the specified plan by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided are left unchanged.
-    /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
-    pub fn update(client: &Client, id: &PlanId, params: UpdatePlan<'_>) -> Response<Plan> {
-        client.post_form(&format!("/plans/{}", id), &params)
-    }
-
-    /// Deleting plans means new subscribers can’t be added.
-    ///
-    /// Existing subscribers aren’t affected.
-    pub fn delete(client: &Client, id: &PlanId) -> Response<Deleted<PlanId>> {
-        client.delete(&format!("/plans/{}", id))
-    }
-}
-
-//automatically added back in service of Plan with hash1272108170975119476
-impl Object for Plan {
-    type Id = PlanId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "plan"
     }
 }

@@ -41,6 +41,16 @@ pub struct IdentityVerificationReport {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_session: Option<Box<String>>,
 }
+//automatically added back in service of IdentityVerificationReport with hash1751292089618843469
+impl Object for IdentityVerificationReport {
+    type Id = IdentityVerificationReportId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "identity.verification_report"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDocumentReport {
@@ -588,16 +598,5 @@ impl AsRef<str> for IdentityVerificationReportType {
 impl std::fmt::Display for IdentityVerificationReportType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of IdentityVerificationReport with hash1751292089618843469
-impl Object for IdentityVerificationReport {
-    type Id = IdentityVerificationReportId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "identity.verification_report"
     }
 }

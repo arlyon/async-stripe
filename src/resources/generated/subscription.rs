@@ -190,6 +190,66 @@ pub struct Subscription {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_start: Option<Box<Timestamp>>,
 }
+//automatically added back in service of Subscription with hash-1426855596312744388
+impl Subscription {
+    /// By default, returns a list of subscriptions that have not been canceled.
+    ///
+    /// In order to list canceled subscriptions, specify `status=canceled`.
+    pub fn list(client: &Client, params: ListSubscriptions<'_>) -> Response<List<Subscription>> {
+        client.get_query("/subscriptions", &params)
+    }
+
+    /// Creates a new subscription on an existing customer.
+    ///
+    /// Each customer can have up to 500 active or scheduled subscriptions.
+    pub fn create(client: &Client, params: CreateSubscription<'_>) -> Response<Subscription> {
+        client.post_form("/subscriptions", &params)
+    }
+
+    /// Retrieves the subscription with the given ID.
+    pub fn retrieve(
+        client: &Client,
+        id: &SubscriptionId,
+        expand: &[&str],
+    ) -> Response<Subscription> {
+        client.get_query(&format!("/subscriptions/{}", id), &Expand { expand })
+    }
+
+    /// Updates an existing subscription on a customer to match the specified parameters.
+    ///
+    /// When changing plans or quantities, we will optionally prorate the price we charge next month to make up for any price changes.
+    /// To preview how the proration will be calculated, use the [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
+    pub fn update(
+        client: &Client,
+        id: &SubscriptionId,
+        params: UpdateSubscription<'_>,
+    ) -> Response<Subscription> {
+        client.post_form(&format!("/subscriptions/{}", id), &params)
+    }
+
+    /// Cancels a customer’s subscription immediately.
+    ///
+    /// The customer will not be charged again for the subscription.  Note, however, that any pending invoice items that you’ve created will still be charged for at the end of the period, unless manually [deleted](https://stripe.com/docs/api#delete_invoiceitem).
+    /// If you’ve set the subscription to cancel at the end of the period, any pending prorations will also be left in place and collected at the end of the period.
+    /// But if the subscription is set to cancel immediately, pending prorations will be removed.  By default, upon subscription cancellation, Stripe will stop automatic collection of all finalized invoices for the customer.
+    /// This is intended to prevent unexpected payment attempts after the customer has canceled a subscription.
+    /// However, you can resume automatic collection of the invoices manually after subscription cancellation to have us proceed.
+    /// Or, you could check for unpaid invoices before allowing the customer to cancel the subscription at all.
+    pub fn delete(client: &Client, id: &SubscriptionId) -> Response<Deleted<SubscriptionId>> {
+        client.delete(&format!("/subscriptions/{}", id))
+    }
+}
+
+//automatically added back in service of Subscription with hash6349076382051314398
+impl Object for Subscription {
+    type Id = SubscriptionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "subscription"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionAutomaticTax {
@@ -495,6 +555,41 @@ pub struct CreateSubscription<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 }
+//automatically added back in service of CreateSubscription with hash-406403584504985029
+impl<'a> CreateSubscription<'a> {
+    pub fn new(customer: CustomerId) -> Self {
+        CreateSubscription {
+            add_invoice_items: Default::default(),
+            application_fee_percent: Default::default(),
+            automatic_tax: Default::default(),
+            backdate_start_date: Default::default(),
+            billing_cycle_anchor: Default::default(),
+            billing_thresholds: Default::default(),
+            cancel_at: Default::default(),
+            cancel_at_period_end: Default::default(),
+            collection_method: Default::default(),
+            coupon: Default::default(),
+            customer,
+            days_until_due: Default::default(),
+            default_payment_method: Default::default(),
+            default_source: Default::default(),
+            default_tax_rates: Default::default(),
+            expand: Default::default(),
+            items: Default::default(),
+            metadata: Default::default(),
+            off_session: Default::default(),
+            payment_behavior: Default::default(),
+            payment_settings: Default::default(),
+            pending_invoice_item_interval: Default::default(),
+            promotion_code: Default::default(),
+            proration_behavior: Default::default(),
+            transfer_data: Default::default(),
+            trial_end: Default::default(),
+            trial_from_plan: Default::default(),
+            trial_period_days: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `Subscription::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -554,6 +649,24 @@ pub struct ListSubscriptions<'a> {
     /// If no value is supplied, all subscriptions that have not been canceled are returned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<SubscriptionStatusFilter>,
+}
+//automatically added back in service of ListSubscriptions with hash6047047728441954113
+impl<'a> ListSubscriptions<'a> {
+    pub fn new() -> Self {
+        ListSubscriptions {
+            collection_method: Default::default(),
+            created: Default::default(),
+            current_period_end: Default::default(),
+            current_period_start: Default::default(),
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            price: Default::default(),
+            starting_after: Default::default(),
+            status: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Subscription::update`.
@@ -736,6 +849,40 @@ pub struct UpdateSubscription<'a> {
     /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_from_plan: Option<bool>,
+}
+//automatically added back in service of UpdateSubscription with hash3463687738660956392
+impl<'a> UpdateSubscription<'a> {
+    pub fn new() -> Self {
+        UpdateSubscription {
+            add_invoice_items: Default::default(),
+            application_fee_percent: Default::default(),
+            automatic_tax: Default::default(),
+            billing_cycle_anchor: Default::default(),
+            billing_thresholds: Default::default(),
+            cancel_at: Default::default(),
+            cancel_at_period_end: Default::default(),
+            collection_method: Default::default(),
+            coupon: Default::default(),
+            days_until_due: Default::default(),
+            default_payment_method: Default::default(),
+            default_source: Default::default(),
+            default_tax_rates: Default::default(),
+            expand: Default::default(),
+            items: Default::default(),
+            metadata: Default::default(),
+            off_session: Default::default(),
+            pause_collection: Default::default(),
+            payment_behavior: Default::default(),
+            payment_settings: Default::default(),
+            pending_invoice_item_interval: Default::default(),
+            promotion_code: Default::default(),
+            proration_behavior: Default::default(),
+            proration_date: Default::default(),
+            transfer_data: Default::default(),
+            trial_end: Default::default(),
+            trial_from_plan: Default::default(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1923,156 +2070,5 @@ impl AsRef<str> for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
 impl std::fmt::Display for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of UpdateSubscription with hash3463687738660956392
-impl<'a> UpdateSubscription<'a> {
-    pub fn new() -> Self {
-        UpdateSubscription {
-            add_invoice_items: Default::default(),
-            application_fee_percent: Default::default(),
-            automatic_tax: Default::default(),
-            billing_cycle_anchor: Default::default(),
-            billing_thresholds: Default::default(),
-            cancel_at: Default::default(),
-            cancel_at_period_end: Default::default(),
-            collection_method: Default::default(),
-            coupon: Default::default(),
-            days_until_due: Default::default(),
-            default_payment_method: Default::default(),
-            default_source: Default::default(),
-            default_tax_rates: Default::default(),
-            expand: Default::default(),
-            items: Default::default(),
-            metadata: Default::default(),
-            off_session: Default::default(),
-            pause_collection: Default::default(),
-            payment_behavior: Default::default(),
-            payment_settings: Default::default(),
-            pending_invoice_item_interval: Default::default(),
-            promotion_code: Default::default(),
-            proration_behavior: Default::default(),
-            proration_date: Default::default(),
-            transfer_data: Default::default(),
-            trial_end: Default::default(),
-            trial_from_plan: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of CreateSubscription with hash-406403584504985029
-impl<'a> CreateSubscription<'a> {
-    pub fn new(customer: CustomerId) -> Self {
-        CreateSubscription {
-            add_invoice_items: Default::default(),
-            application_fee_percent: Default::default(),
-            automatic_tax: Default::default(),
-            backdate_start_date: Default::default(),
-            billing_cycle_anchor: Default::default(),
-            billing_thresholds: Default::default(),
-            cancel_at: Default::default(),
-            cancel_at_period_end: Default::default(),
-            collection_method: Default::default(),
-            coupon: Default::default(),
-            customer,
-            days_until_due: Default::default(),
-            default_payment_method: Default::default(),
-            default_source: Default::default(),
-            default_tax_rates: Default::default(),
-            expand: Default::default(),
-            items: Default::default(),
-            metadata: Default::default(),
-            off_session: Default::default(),
-            payment_behavior: Default::default(),
-            payment_settings: Default::default(),
-            pending_invoice_item_interval: Default::default(),
-            promotion_code: Default::default(),
-            proration_behavior: Default::default(),
-            transfer_data: Default::default(),
-            trial_end: Default::default(),
-            trial_from_plan: Default::default(),
-            trial_period_days: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of ListSubscriptions with hash6047047728441954113
-impl<'a> ListSubscriptions<'a> {
-    pub fn new() -> Self {
-        ListSubscriptions {
-            collection_method: Default::default(),
-            created: Default::default(),
-            current_period_end: Default::default(),
-            current_period_start: Default::default(),
-            customer: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            price: Default::default(),
-            starting_after: Default::default(),
-            status: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Subscription with hash-1426855596312744388
-impl Subscription {
-    /// By default, returns a list of subscriptions that have not been canceled.
-    ///
-    /// In order to list canceled subscriptions, specify `status=canceled`.
-    pub fn list(client: &Client, params: ListSubscriptions<'_>) -> Response<List<Subscription>> {
-        client.get_query("/subscriptions", &params)
-    }
-
-    /// Creates a new subscription on an existing customer.
-    ///
-    /// Each customer can have up to 500 active or scheduled subscriptions.
-    pub fn create(client: &Client, params: CreateSubscription<'_>) -> Response<Subscription> {
-        client.post_form("/subscriptions", &params)
-    }
-
-    /// Retrieves the subscription with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionId,
-        expand: &[&str],
-    ) -> Response<Subscription> {
-        client.get_query(&format!("/subscriptions/{}", id), &Expand { expand })
-    }
-
-    /// Updates an existing subscription on a customer to match the specified parameters.
-    ///
-    /// When changing plans or quantities, we will optionally prorate the price we charge next month to make up for any price changes.
-    /// To preview how the proration will be calculated, use the [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionId,
-        params: UpdateSubscription<'_>,
-    ) -> Response<Subscription> {
-        client.post_form(&format!("/subscriptions/{}", id), &params)
-    }
-
-    /// Cancels a customer’s subscription immediately.
-    ///
-    /// The customer will not be charged again for the subscription.  Note, however, that any pending invoice items that you’ve created will still be charged for at the end of the period, unless manually [deleted](https://stripe.com/docs/api#delete_invoiceitem).
-    /// If you’ve set the subscription to cancel at the end of the period, any pending prorations will also be left in place and collected at the end of the period.
-    /// But if the subscription is set to cancel immediately, pending prorations will be removed.  By default, upon subscription cancellation, Stripe will stop automatic collection of all finalized invoices for the customer.
-    /// This is intended to prevent unexpected payment attempts after the customer has canceled a subscription.
-    /// However, you can resume automatic collection of the invoices manually after subscription cancellation to have us proceed.
-    /// Or, you could check for unpaid invoices before allowing the customer to cancel the subscription at all.
-    pub fn delete(client: &Client, id: &SubscriptionId) -> Response<Deleted<SubscriptionId>> {
-        client.delete(&format!("/subscriptions/{}", id))
-    }
-}
-
-//automatically added back in service of Subscription with hash6349076382051314398
-impl Object for Subscription {
-    type Id = SubscriptionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "subscription"
     }
 }

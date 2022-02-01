@@ -58,6 +58,16 @@ pub struct CreditNoteLineItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<Box<String>>,
 }
+//automatically added back in service of CreditNoteLineItem with hash8512686113266804665
+impl Object for CreditNoteLineItem {
+    type Id = CreditNoteLineItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "credit_note_line_item"
+    }
+}
 
 /// An enum representing the possible values of an `CreditNoteLineItem`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -85,16 +95,5 @@ impl AsRef<str> for CreditNoteLineItemType {
 impl std::fmt::Display for CreditNoteLineItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of CreditNoteLineItem with hash8512686113266804665
-impl Object for CreditNoteLineItem {
-    type Id = CreditNoteLineItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "credit_note_line_item"
     }
 }

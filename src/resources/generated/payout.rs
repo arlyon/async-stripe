@@ -109,6 +109,49 @@ pub struct Payout {
     #[serde(rename = "type")]
     pub type_: PayoutType,
 }
+//automatically added back in service of Payout with hash-3978123762156027741
+impl Object for Payout {
+    type Id = PayoutId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "payout"
+    }
+}
+
+//automatically added back in service of Payout with hash8564909606894776109
+impl Payout {
+    /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
+    ///
+    /// The payouts are returned in sorted order, with the most recently created payouts appearing first.
+    pub fn list(client: &Client, params: ListPayouts<'_>) -> Response<List<Payout>> {
+        client.get_query("/payouts", &params)
+    }
+
+    /// To send funds to your own bank account, you create a new payout object.
+    ///
+    /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the payout amount, or you’ll receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though everything else will occur as if in live mode.  If you are creating a manual payout on a Stripe account that uses multiple payment source types, you’ll need to specify the source type balance that the payout should draw from.
+    /// The [balance object](https://stripe.com/docs/api#balance_object) details available and pending amounts by source type.
+    pub fn create(client: &Client, params: CreatePayout<'_>) -> Response<Payout> {
+        client.post_form("/payouts", &params)
+    }
+
+    /// Retrieves the details of an existing payout.
+    ///
+    /// Supply the unique payout ID from either a payout creation request or the payout list, and Stripe will return the corresponding payout information.
+    pub fn retrieve(client: &Client, id: &PayoutId, expand: &[&str]) -> Response<Payout> {
+        client.get_query(&format!("/payouts/{}", id), &Expand { expand })
+    }
+
+    /// Updates the specified payout by setting the values of the parameters passed.
+    ///
+    /// Any parameters not provided will be left unchanged.
+    /// This request accepts only the metadata as arguments.
+    pub fn update(client: &Client, id: &PayoutId, params: UpdatePayout<'_>) -> Response<Payout> {
+        client.post_form(&format!("/payouts/{}", id), &params)
+    }
+}
 
 /// The parameters for `Payout::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -163,6 +206,21 @@ pub struct CreatePayout<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 }
+//automatically added back in service of CreatePayout with hash-1573184263682151363
+impl<'a> CreatePayout<'a> {
+    pub fn new(amount: i64, currency: Currency) -> Self {
+        CreatePayout {
+            amount,
+            currency,
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            method: Default::default(),
+            source_type: Default::default(),
+            statement_descriptor: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `Payout::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -200,6 +258,20 @@ pub struct ListPayouts<'a> {
     /// Only return payouts that have the given status: `pending`, `paid`, `failed`, or `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<&'a str>,
+}
+//automatically added back in service of ListPayouts with hash6738560087728829207
+impl<'a> ListPayouts<'a> {
+    pub fn new() -> Self {
+        ListPayouts {
+            arrival_date: Default::default(),
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+            status: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `Payout::update`.
@@ -317,80 +389,5 @@ impl AsRef<str> for PayoutType {
 impl std::fmt::Display for PayoutType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of CreatePayout with hash-1573184263682151363
-impl<'a> CreatePayout<'a> {
-    pub fn new(amount: i64, currency: Currency) -> Self {
-        CreatePayout {
-            amount,
-            currency,
-            description: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            method: Default::default(),
-            source_type: Default::default(),
-            statement_descriptor: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of ListPayouts with hash6738560087728829207
-impl<'a> ListPayouts<'a> {
-    pub fn new() -> Self {
-        ListPayouts {
-            arrival_date: Default::default(),
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-            status: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Payout with hash-3978123762156027741
-impl Object for Payout {
-    type Id = PayoutId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "payout"
-    }
-}
-
-//automatically added back in service of Payout with hash8564909606894776109
-impl Payout {
-    /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
-    ///
-    /// The payouts are returned in sorted order, with the most recently created payouts appearing first.
-    pub fn list(client: &Client, params: ListPayouts<'_>) -> Response<List<Payout>> {
-        client.get_query("/payouts", &params)
-    }
-
-    /// To send funds to your own bank account, you create a new payout object.
-    ///
-    /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the payout amount, or you’ll receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though everything else will occur as if in live mode.  If you are creating a manual payout on a Stripe account that uses multiple payment source types, you’ll need to specify the source type balance that the payout should draw from.
-    /// The [balance object](https://stripe.com/docs/api#balance_object) details available and pending amounts by source type.
-    pub fn create(client: &Client, params: CreatePayout<'_>) -> Response<Payout> {
-        client.post_form("/payouts", &params)
-    }
-
-    /// Retrieves the details of an existing payout.
-    ///
-    /// Supply the unique payout ID from either a payout creation request or the payout list, and Stripe will return the corresponding payout information.
-    pub fn retrieve(client: &Client, id: &PayoutId, expand: &[&str]) -> Response<Payout> {
-        client.get_query(&format!("/payouts/{}", id), &Expand { expand })
-    }
-
-    /// Updates the specified payout by setting the values of the parameters passed.
-    ///
-    /// Any parameters not provided will be left unchanged.
-    /// This request accepts only the metadata as arguments.
-    pub fn update(client: &Client, id: &PayoutId, params: UpdatePayout<'_>) -> Response<Payout> {
-        client.post_form(&format!("/payouts/{}", id), &params)
     }
 }

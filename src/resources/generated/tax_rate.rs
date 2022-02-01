@@ -71,6 +71,41 @@ pub struct TaxRate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_type: Option<Box<TaxRateTaxType>>,
 }
+//automatically added back in service of TaxRate with hash-6492601265248383061
+impl TaxRate {
+    /// Returns a list of your tax rates.
+    ///
+    /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
+    pub fn list(client: &Client, params: ListTaxRates<'_>) -> Response<List<TaxRate>> {
+        client.get_query("/tax_rates", &params)
+    }
+
+    /// Creates a new tax rate.
+    pub fn create(client: &Client, params: CreateTaxRate<'_>) -> Response<TaxRate> {
+        client.post_form("/tax_rates", &params)
+    }
+
+    /// Retrieves a tax rate with the given ID.
+    pub fn retrieve(client: &Client, id: &TaxRateId, expand: &[&str]) -> Response<TaxRate> {
+        client.get_query(&format!("/tax_rates/{}", id), &Expand { expand })
+    }
+
+    /// Updates an existing tax rate.
+    pub fn update(client: &Client, id: &TaxRateId, params: UpdateTaxRate<'_>) -> Response<TaxRate> {
+        client.post_form(&format!("/tax_rates/{}", id), &params)
+    }
+}
+
+//automatically added back in service of TaxRate with hash5859477794856546109
+impl Object for TaxRate {
+    type Id = TaxRateId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "tax_rate"
+    }
+}
 
 /// The parameters for `TaxRate::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -129,6 +164,24 @@ pub struct CreateTaxRate<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_type: Option<TaxRateTaxType>,
 }
+//automatically added back in service of CreateTaxRate with hash-7187631991720346399
+impl<'a> CreateTaxRate<'a> {
+    pub fn new(display_name: &'a str, percentage: f64) -> Self {
+        CreateTaxRate {
+            active: Default::default(),
+            country: Default::default(),
+            description: Default::default(),
+            display_name,
+            expand: Default::default(),
+            inclusive: Default::default(),
+            jurisdiction: Default::default(),
+            metadata: Default::default(),
+            percentage,
+            state: Default::default(),
+            tax_type: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `TaxRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -168,6 +221,20 @@ pub struct ListTaxRates<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<TaxRateId>,
+}
+//automatically added back in service of ListTaxRates with hash-6914115661566096600
+impl<'a> ListTaxRates<'a> {
+    pub fn new() -> Self {
+        ListTaxRates {
+            active: Default::default(),
+            created: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            inclusive: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `TaxRate::update`.
@@ -277,75 +344,5 @@ impl AsRef<str> for TaxRateTaxType {
 impl std::fmt::Display for TaxRateTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of ListTaxRates with hash-6914115661566096600
-impl<'a> ListTaxRates<'a> {
-    pub fn new() -> Self {
-        ListTaxRates {
-            active: Default::default(),
-            created: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            inclusive: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of CreateTaxRate with hash-7187631991720346399
-impl<'a> CreateTaxRate<'a> {
-    pub fn new(display_name: &'a str, percentage: f64) -> Self {
-        CreateTaxRate {
-            active: Default::default(),
-            country: Default::default(),
-            description: Default::default(),
-            display_name,
-            expand: Default::default(),
-            inclusive: Default::default(),
-            jurisdiction: Default::default(),
-            metadata: Default::default(),
-            percentage,
-            state: Default::default(),
-            tax_type: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of TaxRate with hash-6492601265248383061
-impl TaxRate {
-    /// Returns a list of your tax rates.
-    ///
-    /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
-    pub fn list(client: &Client, params: ListTaxRates<'_>) -> Response<List<TaxRate>> {
-        client.get_query("/tax_rates", &params)
-    }
-
-    /// Creates a new tax rate.
-    pub fn create(client: &Client, params: CreateTaxRate<'_>) -> Response<TaxRate> {
-        client.post_form("/tax_rates", &params)
-    }
-
-    /// Retrieves a tax rate with the given ID.
-    pub fn retrieve(client: &Client, id: &TaxRateId, expand: &[&str]) -> Response<TaxRate> {
-        client.get_query(&format!("/tax_rates/{}", id), &Expand { expand })
-    }
-
-    /// Updates an existing tax rate.
-    pub fn update(client: &Client, id: &TaxRateId, params: UpdateTaxRate<'_>) -> Response<TaxRate> {
-        client.post_form(&format!("/tax_rates/{}", id), &params)
-    }
-}
-
-//automatically added back in service of TaxRate with hash5859477794856546109
-impl Object for TaxRate {
-    type Id = TaxRateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "tax_rate"
     }
 }

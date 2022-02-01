@@ -70,6 +70,31 @@ pub struct Review {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<Box<RadarReviewResourceSession>>,
 }
+//automatically added back in service of Review with hash2910031241930626001
+impl Object for Review {
+    type Id = ReviewId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "review"
+    }
+}
+
+//automatically added back in service of Review with hash8097246103026098126
+impl Review {
+    /// Returns a list of `Review` objects that have `open` set to `true`.
+    ///
+    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
+    pub fn list(client: &Client, params: ListReviews<'_>) -> Response<List<Review>> {
+        client.get_query("/reviews", &params)
+    }
+
+    /// Retrieves a `Review` object.
+    pub fn retrieve(client: &Client, id: &ReviewId, expand: &[&str]) -> Response<Review> {
+        client.get_query(&format!("/reviews/{}", id), &Expand { expand })
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RadarReviewResourceLocation {
@@ -217,31 +242,5 @@ impl AsRef<str> for ReviewOpenedReason {
 impl std::fmt::Display for ReviewOpenedReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of Review with hash2910031241930626001
-impl Object for Review {
-    type Id = ReviewId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "review"
-    }
-}
-
-//automatically added back in service of Review with hash8097246103026098126
-impl Review {
-    /// Returns a list of `Review` objects that have `open` set to `true`.
-    ///
-    /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn list(client: &Client, params: ListReviews<'_>) -> Response<List<Review>> {
-        client.get_query("/reviews", &params)
-    }
-
-    /// Retrieves a `Review` object.
-    pub fn retrieve(client: &Client, id: &ReviewId, expand: &[&str]) -> Response<Review> {
-        client.get_query(&format!("/reviews/{}", id), &Expand { expand })
     }
 }

@@ -40,6 +40,24 @@ pub struct Mandate {
     #[serde(rename = "type")]
     pub type_: MandateType,
 }
+//automatically added back in service of Mandate with hash-6536031987885030606
+impl Object for Mandate {
+    type Id = MandateId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "mandate"
+    }
+}
+
+//automatically added back in service of Mandate with hash7027347160630395029
+impl Mandate {
+    /// Retrieves a Mandate object.
+    pub fn retrieve(client: &Client, id: &MandateId, expand: &[&str]) -> Response<Mandate> {
+        client.get_query(&format!("/mandates/{}", id), &Expand { expand })
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerAcceptance {
@@ -374,24 +392,5 @@ impl AsRef<str> for MandateType {
 impl std::fmt::Display for MandateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of Mandate with hash-6536031987885030606
-impl Object for Mandate {
-    type Id = MandateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "mandate"
-    }
-}
-
-//automatically added back in service of Mandate with hash7027347160630395029
-impl Mandate {
-    /// Retrieves a Mandate object.
-    pub fn retrieve(client: &Client, id: &MandateId, expand: &[&str]) -> Response<Mandate> {
-        client.get_query(&format!("/mandates/{}", id), &Expand { expand })
     }
 }

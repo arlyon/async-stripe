@@ -33,6 +33,29 @@ pub struct EphemeralKey {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secret: Option<Box<String>>,
 }
+//automatically added back in service of EphemeralKey with hash5674968609221935427
+impl Object for EphemeralKey {
+    type Id = EphemeralKeyId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "ephemeral_key"
+    }
+}
+
+//automatically added back in service of EphemeralKey with hash-3840831942127778539
+impl EphemeralKey {
+    /// Creates a short-lived API key for a given resource.
+    pub fn create(client: &Client, params: CreateEphemeralKey<'_>) -> Response<EphemeralKey> {
+        client.post_form("/ephemeral_keys", &params)
+    }
+
+    /// Invalidates a short-lived API key for a given resource.
+    pub fn delete(client: &Client, id: &EphemeralKeyId) -> Response<Deleted<EphemeralKeyId>> {
+        client.delete(&format!("/ephemeral_keys/{}", id))
+    }
+}
 
 /// The parameters for `EphemeralKey::create`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -57,29 +80,5 @@ impl<'a> CreateEphemeralKey<'a> {
             expand: Default::default(),
             issuing_card: Default::default(),
         }
-    }
-}
-
-//automatically added back in service of EphemeralKey with hash5674968609221935427
-impl Object for EphemeralKey {
-    type Id = EphemeralKeyId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "ephemeral_key"
-    }
-}
-
-//automatically added back in service of EphemeralKey with hash-3840831942127778539
-impl EphemeralKey {
-    /// Creates a short-lived API key for a given resource.
-    pub fn create(client: &Client, params: CreateEphemeralKey<'_>) -> Response<EphemeralKey> {
-        client.post_form("/ephemeral_keys", &params)
-    }
-
-    /// Invalidates a short-lived API key for a given resource.
-    pub fn delete(client: &Client, id: &EphemeralKeyId) -> Response<Deleted<EphemeralKeyId>> {
-        client.delete(&format!("/ephemeral_keys/{}", id))
     }
 }

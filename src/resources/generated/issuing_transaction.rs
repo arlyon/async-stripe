@@ -89,6 +89,16 @@ pub struct IssuingTransaction {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wallet: Option<Box<IssuingTransactionWallet>>,
 }
+//automatically added back in service of IssuingTransaction with hash2453258017434230428
+impl Object for IssuingTransaction {
+    type Id = IssuingTransactionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuing.transaction"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionAmountDetails {
@@ -251,16 +261,5 @@ impl AsRef<str> for IssuingTransactionWallet {
 impl std::fmt::Display for IssuingTransactionWallet {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of IssuingTransaction with hash2453258017434230428
-impl Object for IssuingTransaction {
-    type Id = IssuingTransactionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuing.transaction"
     }
 }

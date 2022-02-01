@@ -393,6 +393,47 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub webhooks_delivered_at: Option<Box<Timestamp>>,
 }
+//automatically added back in service of Invoice with hash-7861122259584202893
+impl Invoice {
+    /// You can list all invoices, or list the invoices for a specific customer.
+    ///
+    /// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
+    pub fn list(client: &Client, params: ListInvoices<'_>) -> Response<List<Invoice>> {
+        client.get_query("/invoices", &params)
+    }
+
+    /// This endpoint creates a draft invoice for a given customer.
+    ///
+    /// The draft invoice created pulls in all pending invoice items on that customer, including prorations.
+    /// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
+    pub fn create(client: &Client, params: CreateInvoice<'_>) -> Response<Invoice> {
+        client.post_form("/invoices", &params)
+    }
+
+    /// Retrieves the invoice with the given ID.
+    pub fn retrieve(client: &Client, id: &InvoiceId, expand: &[&str]) -> Response<Invoice> {
+        client.get_query(&format!("/invoices/{}", id), &Expand { expand })
+    }
+
+    /// Permanently deletes a one-off invoice draft.
+    ///
+    /// This cannot be undone.
+    /// Attempts to delete invoices that are no longer in a draft state will fail; once an invoice has been finalized or if an invoice is for a subscription, it must be [voided](https://stripe.com/docs/api#void_invoice).
+    pub fn delete(client: &Client, id: &InvoiceId) -> Response<Deleted<InvoiceId>> {
+        client.delete(&format!("/invoices/{}", id))
+    }
+}
+
+//automatically added back in service of Invoice with hash-1480097582396266853
+impl Object for Invoice {
+    type Id = InvoiceId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "invoice"
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AutomaticTax {
@@ -644,6 +685,35 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<Box<CreateInvoiceTransferData>>,
 }
+//automatically added back in service of CreateInvoice with hash1393663907565974549
+impl<'a> CreateInvoice<'a> {
+    pub fn new(customer: CustomerId) -> Self {
+        CreateInvoice {
+            account_tax_ids: Default::default(),
+            application_fee_amount: Default::default(),
+            auto_advance: Default::default(),
+            automatic_tax: Default::default(),
+            collection_method: Default::default(),
+            custom_fields: Default::default(),
+            customer,
+            days_until_due: Default::default(),
+            default_payment_method: Default::default(),
+            default_source: Default::default(),
+            default_tax_rates: Default::default(),
+            description: Default::default(),
+            discounts: Default::default(),
+            due_date: Default::default(),
+            expand: Default::default(),
+            footer: Default::default(),
+            metadata: Default::default(),
+            on_behalf_of: Default::default(),
+            payment_settings: Default::default(),
+            statement_descriptor: Default::default(),
+            subscription: Default::default(),
+            transfer_data: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `Invoice::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -697,6 +767,23 @@ pub struct ListInvoices<'a> {
     /// Only return invoices for the subscription specified by this subscription ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<SubscriptionId>,
+}
+//automatically added back in service of ListInvoices with hash453859597195470014
+impl<'a> ListInvoices<'a> {
+    pub fn new() -> Self {
+        ListInvoices {
+            collection_method: Default::default(),
+            created: Default::default(),
+            customer: Default::default(),
+            due_date: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+            status: Default::default(),
+            subscription: Default::default(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1367,95 +1454,5 @@ impl AsRef<str> for TaxIdType {
 impl std::fmt::Display for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of ListInvoices with hash453859597195470014
-impl<'a> ListInvoices<'a> {
-    pub fn new() -> Self {
-        ListInvoices {
-            collection_method: Default::default(),
-            created: Default::default(),
-            customer: Default::default(),
-            due_date: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-            status: Default::default(),
-            subscription: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of CreateInvoice with hash1393663907565974549
-impl<'a> CreateInvoice<'a> {
-    pub fn new(customer: CustomerId) -> Self {
-        CreateInvoice {
-            account_tax_ids: Default::default(),
-            application_fee_amount: Default::default(),
-            auto_advance: Default::default(),
-            automatic_tax: Default::default(),
-            collection_method: Default::default(),
-            custom_fields: Default::default(),
-            customer,
-            days_until_due: Default::default(),
-            default_payment_method: Default::default(),
-            default_source: Default::default(),
-            default_tax_rates: Default::default(),
-            description: Default::default(),
-            discounts: Default::default(),
-            due_date: Default::default(),
-            expand: Default::default(),
-            footer: Default::default(),
-            metadata: Default::default(),
-            on_behalf_of: Default::default(),
-            payment_settings: Default::default(),
-            statement_descriptor: Default::default(),
-            subscription: Default::default(),
-            transfer_data: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of Invoice with hash-7861122259584202893
-impl Invoice {
-    /// You can list all invoices, or list the invoices for a specific customer.
-    ///
-    /// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
-    pub fn list(client: &Client, params: ListInvoices<'_>) -> Response<List<Invoice>> {
-        client.get_query("/invoices", &params)
-    }
-
-    /// This endpoint creates a draft invoice for a given customer.
-    ///
-    /// The draft invoice created pulls in all pending invoice items on that customer, including prorations.
-    /// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
-    pub fn create(client: &Client, params: CreateInvoice<'_>) -> Response<Invoice> {
-        client.post_form("/invoices", &params)
-    }
-
-    /// Retrieves the invoice with the given ID.
-    pub fn retrieve(client: &Client, id: &InvoiceId, expand: &[&str]) -> Response<Invoice> {
-        client.get_query(&format!("/invoices/{}", id), &Expand { expand })
-    }
-
-    /// Permanently deletes a one-off invoice draft.
-    ///
-    /// This cannot be undone.
-    /// Attempts to delete invoices that are no longer in a draft state will fail; once an invoice has been finalized or if an invoice is for a subscription, it must be [voided](https://stripe.com/docs/api#void_invoice).
-    pub fn delete(client: &Client, id: &InvoiceId) -> Response<Deleted<InvoiceId>> {
-        client.delete(&format!("/invoices/{}", id))
-    }
-}
-
-//automatically added back in service of Invoice with hash-1480097582396266853
-impl Object for Invoice {
-    type Id = InvoiceId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "invoice"
     }
 }

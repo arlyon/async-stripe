@@ -83,6 +83,43 @@ pub struct PaymentLink {
     /// The public URL that can be shared with customers.
     pub url: String,
 }
+//automatically added back in service of PaymentLink with hash3477893861966303720
+impl Object for PaymentLink {
+    type Id = PaymentLinkId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "payment_link"
+    }
+}
+
+//automatically added back in service of PaymentLink with hash4196631132834950345
+impl PaymentLink {
+    /// Returns a list of your payment links.
+    pub fn list(client: &Client, params: ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {
+        client.get_query("/payment_links", &params)
+    }
+
+    /// Creates a payment link.
+    pub fn create(client: &Client, params: CreatePaymentLink<'_>) -> Response<PaymentLink> {
+        client.post_form("/payment_links", &params)
+    }
+
+    /// Retrieve a payment link.
+    pub fn retrieve(client: &Client, id: &PaymentLinkId, expand: &[&str]) -> Response<PaymentLink> {
+        client.get_query(&format!("/payment_links/{}", id), &Expand { expand })
+    }
+
+    /// Updates a payment link.
+    pub fn update(
+        client: &Client,
+        id: &PaymentLinkId,
+        params: UpdatePaymentLink<'_>,
+    ) -> Response<PaymentLink> {
+        client.post_form(&format!("/payment_links/{}", id), &params)
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourceAfterCompletion {
@@ -232,6 +269,28 @@ pub struct CreatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<Box<CreatePaymentLinkTransferData>>,
 }
+//automatically added back in service of CreatePaymentLink with hash-4754334452929055701
+impl<'a> CreatePaymentLink<'a> {
+    pub fn new() -> Self {
+        CreatePaymentLink {
+            after_completion: Default::default(),
+            allow_promotion_codes: Default::default(),
+            application_fee_amount: Default::default(),
+            application_fee_percent: Default::default(),
+            automatic_tax: Default::default(),
+            billing_address_collection: Default::default(),
+            expand: Default::default(),
+            line_items: Default::default(),
+            metadata: Default::default(),
+            on_behalf_of: Default::default(),
+            payment_method_types: Default::default(),
+            phone_number_collection: Default::default(),
+            shipping_address_collection: Default::default(),
+            subscription_data: Default::default(),
+            transfer_data: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `PaymentLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -263,6 +322,18 @@ pub struct ListPaymentLinks<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<PaymentLinkId>,
+}
+//automatically added back in service of ListPaymentLinks with hash49685204264081770
+impl<'a> ListPaymentLinks<'a> {
+    pub fn new() -> Self {
+        ListPaymentLinks {
+            active: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `PaymentLink::update`.
@@ -320,6 +391,23 @@ pub struct UpdatePaymentLink<'a> {
     /// Configuration for collecting the customer's shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<Box<UpdatePaymentLinkShippingAddressCollection>>,
+}
+//automatically added back in service of UpdatePaymentLink with hash-5869788619189055379
+impl<'a> UpdatePaymentLink<'a> {
+    pub fn new() -> Self {
+        UpdatePaymentLink {
+            active: Default::default(),
+            after_completion: Default::default(),
+            allow_promotion_codes: Default::default(),
+            automatic_tax: Default::default(),
+            billing_address_collection: Default::default(),
+            expand: Default::default(),
+            line_items: Default::default(),
+            metadata: Default::default(),
+            payment_method_types: Default::default(),
+            shipping_address_collection: Default::default(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -2852,97 +2940,5 @@ impl AsRef<str> for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
 impl std::fmt::Display for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of ListPaymentLinks with hash49685204264081770
-impl<'a> ListPaymentLinks<'a> {
-    pub fn new() -> Self {
-        ListPaymentLinks {
-            active: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of UpdatePaymentLink with hash-5869788619189055379
-impl<'a> UpdatePaymentLink<'a> {
-    pub fn new() -> Self {
-        UpdatePaymentLink {
-            active: Default::default(),
-            after_completion: Default::default(),
-            allow_promotion_codes: Default::default(),
-            automatic_tax: Default::default(),
-            billing_address_collection: Default::default(),
-            expand: Default::default(),
-            line_items: Default::default(),
-            metadata: Default::default(),
-            payment_method_types: Default::default(),
-            shipping_address_collection: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of CreatePaymentLink with hash-4754334452929055701
-impl<'a> CreatePaymentLink<'a> {
-    pub fn new() -> Self {
-        CreatePaymentLink {
-            after_completion: Default::default(),
-            allow_promotion_codes: Default::default(),
-            application_fee_amount: Default::default(),
-            application_fee_percent: Default::default(),
-            automatic_tax: Default::default(),
-            billing_address_collection: Default::default(),
-            expand: Default::default(),
-            line_items: Default::default(),
-            metadata: Default::default(),
-            on_behalf_of: Default::default(),
-            payment_method_types: Default::default(),
-            phone_number_collection: Default::default(),
-            shipping_address_collection: Default::default(),
-            subscription_data: Default::default(),
-            transfer_data: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of PaymentLink with hash3477893861966303720
-impl Object for PaymentLink {
-    type Id = PaymentLinkId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "payment_link"
-    }
-}
-
-//automatically added back in service of PaymentLink with hash4196631132834950345
-impl PaymentLink {
-    /// Returns a list of your payment links.
-    pub fn list(client: &Client, params: ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {
-        client.get_query("/payment_links", &params)
-    }
-
-    /// Creates a payment link.
-    pub fn create(client: &Client, params: CreatePaymentLink<'_>) -> Response<PaymentLink> {
-        client.post_form("/payment_links", &params)
-    }
-
-    /// Retrieve a payment link.
-    pub fn retrieve(client: &Client, id: &PaymentLinkId, expand: &[&str]) -> Response<PaymentLink> {
-        client.get_query(&format!("/payment_links/{}", id), &Expand { expand })
-    }
-
-    /// Updates a payment link.
-    pub fn update(
-        client: &Client,
-        id: &PaymentLinkId,
-        params: UpdatePaymentLink<'_>,
-    ) -> Response<PaymentLink> {
-        client.post_form(&format!("/payment_links/{}", id), &params)
     }
 }

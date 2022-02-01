@@ -111,6 +111,50 @@ pub struct SetupIntent {
     /// If not provided, this value defaults to `off_session`.
     pub usage: String,
 }
+//automatically added back in service of SetupIntent with hash2612784168772775033
+impl Object for SetupIntent {
+    type Id = SetupIntentId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "setup_intent"
+    }
+}
+
+//automatically added back in service of SetupIntent with hash-1408353295733216677
+impl SetupIntent {
+    /// Returns a list of SetupIntents.
+    pub fn list(client: &Client, params: ListSetupIntents<'_>) -> Response<List<SetupIntent>> {
+        client.get_query("/setup_intents", &params)
+    }
+
+    /// Creates a SetupIntent object.
+    ///
+    /// After the SetupIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/setup_intents/confirm)
+    /// to collect any required permissions to charge the payment method later.
+    pub fn create(client: &Client, params: CreateSetupIntent<'_>) -> Response<SetupIntent> {
+        client.post_form("/setup_intents", &params)
+    }
+
+    /// Retrieves the details of a SetupIntent that has previously been created.
+    ///
+    /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
+    /// When retrieved with a publishable key, only a subset of properties will be returned.
+    /// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
+    pub fn retrieve(client: &Client, id: &SetupIntentId, expand: &[&str]) -> Response<SetupIntent> {
+        client.get_query(&format!("/setup_intents/{}", id), &Expand { expand })
+    }
+
+    /// Updates a SetupIntent object.
+    pub fn update(
+        client: &Client,
+        id: &SetupIntentId,
+        params: UpdateSetupIntent<'_>,
+    ) -> Response<SetupIntent> {
+        client.post_form(&format!("/setup_intents/{}", id), &params)
+    }
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentNextAction {
@@ -299,6 +343,25 @@ pub struct CreateSetupIntent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub single_use: Option<Box<CreateSetupIntentSingleUse>>,
 }
+//automatically added back in service of CreateSetupIntent with hash-7509215523626545540
+impl<'a> CreateSetupIntent<'a> {
+    pub fn new() -> Self {
+        CreateSetupIntent {
+            confirm: Default::default(),
+            customer: Default::default(),
+            description: Default::default(),
+            expand: Default::default(),
+            mandate_data: Default::default(),
+            metadata: Default::default(),
+            on_behalf_of: Default::default(),
+            payment_method: Default::default(),
+            payment_method_options: Default::default(),
+            payment_method_types: Default::default(),
+            return_url: Default::default(),
+            single_use: Default::default(),
+        }
+    }
+}
 
 /// The parameters for `SetupIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -340,6 +403,20 @@ pub struct ListSetupIntents<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<SetupIntentId>,
+}
+//automatically added back in service of ListSetupIntents with hash-3252606502611796233
+impl<'a> ListSetupIntents<'a> {
+    pub fn new() -> Self {
+        ListSetupIntents {
+            created: Default::default(),
+            customer: Default::default(),
+            ending_before: Default::default(),
+            expand: Default::default(),
+            limit: Default::default(),
+            payment_method: Default::default(),
+            starting_after: Default::default(),
+        }
+    }
 }
 
 /// The parameters for `SetupIntent::update`.
@@ -385,6 +462,20 @@ pub struct UpdateSetupIntent<'a> {
     /// If this is not provided, defaults to ["card"].
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Box<Vec<String>>>,
+}
+//automatically added back in service of UpdateSetupIntent with hash-7564044353856259758
+impl<'a> UpdateSetupIntent<'a> {
+    pub fn new() -> Self {
+        UpdateSetupIntent {
+            customer: Default::default(),
+            description: Default::default(),
+            expand: Default::default(),
+            metadata: Default::default(),
+            payment_method: Default::default(),
+            payment_method_options: Default::default(),
+            payment_method_types: Default::default(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -1123,100 +1214,5 @@ impl AsRef<str> for UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure
 impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
-    }
-}
-
-//automatically added back in service of CreateSetupIntent with hash-7509215523626545540
-impl<'a> CreateSetupIntent<'a> {
-    pub fn new() -> Self {
-        CreateSetupIntent {
-            confirm: Default::default(),
-            customer: Default::default(),
-            description: Default::default(),
-            expand: Default::default(),
-            mandate_data: Default::default(),
-            metadata: Default::default(),
-            on_behalf_of: Default::default(),
-            payment_method: Default::default(),
-            payment_method_options: Default::default(),
-            payment_method_types: Default::default(),
-            return_url: Default::default(),
-            single_use: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of SetupIntent with hash2612784168772775033
-impl Object for SetupIntent {
-    type Id = SetupIntentId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "setup_intent"
-    }
-}
-
-//automatically added back in service of SetupIntent with hash-1408353295733216677
-impl SetupIntent {
-    /// Returns a list of SetupIntents.
-    pub fn list(client: &Client, params: ListSetupIntents<'_>) -> Response<List<SetupIntent>> {
-        client.get_query("/setup_intents", &params)
-    }
-
-    /// Creates a SetupIntent object.
-    ///
-    /// After the SetupIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/setup_intents/confirm)
-    /// to collect any required permissions to charge the payment method later.
-    pub fn create(client: &Client, params: CreateSetupIntent<'_>) -> Response<SetupIntent> {
-        client.post_form("/setup_intents", &params)
-    }
-
-    /// Retrieves the details of a SetupIntent that has previously been created.
-    ///
-    /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
-    /// When retrieved with a publishable key, only a subset of properties will be returned.
-    /// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
-    pub fn retrieve(client: &Client, id: &SetupIntentId, expand: &[&str]) -> Response<SetupIntent> {
-        client.get_query(&format!("/setup_intents/{}", id), &Expand { expand })
-    }
-
-    /// Updates a SetupIntent object.
-    pub fn update(
-        client: &Client,
-        id: &SetupIntentId,
-        params: UpdateSetupIntent<'_>,
-    ) -> Response<SetupIntent> {
-        client.post_form(&format!("/setup_intents/{}", id), &params)
-    }
-}
-
-//automatically added back in service of ListSetupIntents with hash-3252606502611796233
-impl<'a> ListSetupIntents<'a> {
-    pub fn new() -> Self {
-        ListSetupIntents {
-            created: Default::default(),
-            customer: Default::default(),
-            ending_before: Default::default(),
-            expand: Default::default(),
-            limit: Default::default(),
-            payment_method: Default::default(),
-            starting_after: Default::default(),
-        }
-    }
-}
-
-//automatically added back in service of UpdateSetupIntent with hash-7564044353856259758
-impl<'a> UpdateSetupIntent<'a> {
-    pub fn new() -> Self {
-        UpdateSetupIntent {
-            customer: Default::default(),
-            description: Default::default(),
-            expand: Default::default(),
-            metadata: Default::default(),
-            payment_method: Default::default(),
-            payment_method_options: Default::default(),
-            payment_method_types: Default::default(),
-        }
     }
 }
