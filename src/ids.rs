@@ -1,3 +1,5 @@
+use smart_default::SmartDefault;
+
 macro_rules! def_id_serde_impls {
     ($struct_name:ident) => {
         impl serde::Serialize for $struct_name {
@@ -24,7 +26,7 @@ macro_rules! def_id_serde_impls {
 
 macro_rules! def_id {
     ($struct_name:ident: String) => {
-        #[derive(Clone, Debug, Eq, PartialEq, Hash)]
+        #[derive(Clone, Debug, Default, Eq, PartialEq, Hash)]
         pub struct $struct_name(smol_str::SmolStr);
 
         impl $struct_name {
@@ -117,7 +119,7 @@ macro_rules! def_id {
         ///
         /// This type _typically_ will not allocate and
         /// therefore is usually cheaply clonable.
-        #[derive(Clone, Debug, Eq, PartialEq, Hash)]
+        #[derive(Clone, Debug, Default, Eq, PartialEq, Hash)]
         pub struct $struct_name(smol_str::SmolStr);
 
         impl $struct_name {
@@ -268,6 +270,12 @@ macro_rules! def_id {
             }
         }
 
+        impl std::default::Default for $enum_name {
+            fn default() -> Self {
+                $enum_name::None
+            }
+        }
+
         impl std::str::FromStr for $enum_name {
             type Err = ParseIdError;
 
@@ -318,10 +326,11 @@ macro_rules! def_id {
             }
         )*
     };
-    (enum $enum_name:ident { $( $variant_name:ident($($variant_type:tt)*) ),* $(,)* }) => {
+    (enum $enum_name:ident { $( $(#[$test:meta])? $variant_name:ident($($variant_type:tt)*) ),+ $(,)? }) => {
         #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+        #[derive(SmartDefault)]
         pub enum $enum_name {
-            $( $variant_name($($variant_type)*), )*
+            $( $(#[$test])* $variant_name($($variant_type)*), )*
         }
 
         impl $enum_name {
@@ -487,6 +496,7 @@ def_id!(InvoiceLineItemIdWebhook, "il_");
 
 def_id!(
     enum InvoiceLineItemId {
+        #[default]
         Item(InvoiceItemId),
         Subscription(SubscriptionLineId),
         InvoiceLineItemIdWebhook(InvoiceLineItemIdWebhook),
@@ -505,6 +515,7 @@ def_id!(PaymentLinkId: String);
 def_id!(PaymentMethodId, "pm_" | "card_" | "src_" | "ba_");
 def_id!(
     enum PaymentSourceId {
+        #[default]
         Account(AccountId),
         AlipayAccount(AlipayAccountId),
         BankAccount(BankAccountId),
@@ -515,6 +526,7 @@ def_id!(
 def_id!(PayoutId, "po_");
 def_id!(
     enum PayoutDestinationId {
+        #[default]
         BankAccount(BankAccountId),
         Card(CardId),
     }
@@ -543,6 +555,7 @@ def_id!(TaxCodeId, "txcd_");
 def_id!(TaxRateId, "txr_");
 def_id!(
     enum TokenId {
+        #[default]
         Card(CardTokenId),
         Bank(BankTokenId),
     }

@@ -36,3 +36,9 @@ impl std::fmt::Display for IssuingTransactionType {
         self.as_str().fmt(f)
     }
 }
+
+impl std::default::Default for IssuingTransactionType {
+    fn default() -> Self {
+        Self::Capture
+    }
+}

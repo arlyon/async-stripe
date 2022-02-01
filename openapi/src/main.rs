@@ -1141,6 +1141,25 @@ fn gen_unions(out: &mut String, state: &mut Generated, meta: &Metadata) {
             out.push_str("),\n");
         }
         out.push_str("}\n");
+
+        if let Some(first) = union_
+            .schema_variants
+            .iter()
+            .filter_map(|var| match var.trim() {
+                "" => None,
+                n => Some(n),
+            })
+            .map(|s| gen_variant_name(&s, meta))
+            .next()
+        {
+            out.push_str("impl std::default::Default for ");
+            out.push_str(&union_name.to_camel_case());
+            out.push_str(" {\n");
+            out.push_str("    fn default() -> Self {\n");
+            out.push_str(&format!("        Self::{}(Default::default())\n", first));
+            out.push_str("    }\n");
+            out.push_str("}\n");
+        }
     }
 }
 
@@ -1175,7 +1194,7 @@ fn gen_enums(out: &mut String, state: &mut Generated, meta: &Metadata) {
             if wire_name.trim().is_empty() {
                 continue;
             }
-            let variant_name = gen_variant_name(&wire_name.as_str(), meta);
+            let variant_name = gen_variant_name(&wire_name, meta);
             if variant_name.trim().is_empty() {
                 panic!("unhandled enum variant: {:?}", wire_name)
             }
@@ -1199,7 +1218,7 @@ fn gen_enums(out: &mut String, state: &mut Generated, meta: &Metadata) {
             if wire_name.trim().is_empty() {
                 continue;
             }
-            let variant_name = gen_variant_name(&wire_name.as_str(), meta);
+            let variant_name = gen_variant_name(&wire_name, meta);
             out.push_str("            ");
             out.push_str(&enum_name);
             out.push_str("::");
@@ -1227,6 +1246,25 @@ fn gen_enums(out: &mut String, state: &mut Generated, meta: &Metadata) {
         out.push_str("        self.as_str().fmt(f)\n");
         out.push_str("    }\n");
         out.push_str("}\n");
+
+        if let Some(first) = enum_
+            .options
+            .iter()
+            .filter_map(|var| match var.trim() {
+                "" => None,
+                n => Some(n),
+            })
+            .map(|s| gen_variant_name(&s, meta))
+            .next()
+        {
+            out.push_str("impl std::default::Default for ");
+            out.push_str(&enum_name);
+            out.push_str(" {\n");
+            out.push_str("    fn default() -> Self {\n");
+            out.push_str(&format!("        Self::{}\n", first));
+            out.push_str("    }\n");
+            out.push_str("}\n");
+        }
     }
 }
 
