@@ -6,9 +6,11 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::IssuingDisputeId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
-    BalanceTransaction, Currency, File, IssuingDisputeStatus, IssuingTransaction,
-};
+use crate::resources::{   IssuingTransaction,    Currency,   
+    BalanceTransaction,    IssuingDisputeStatus,    File, };
+
+
+
 
 /// The resource representing a Stripe "IssuingDispute".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -59,6 +61,15 @@ impl Object for IssuingDispute {
         "issuing.dispute"
     }
 }
+
+//automatically added back in service of IssuingDispute with hash5967689277921946028
+
+
+//automatically added back in service of IssuingDispute with hash5967689277921946028
+
+
+//automatically added back in service of IssuingDispute with hash5967689277921946028
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeEvidence {

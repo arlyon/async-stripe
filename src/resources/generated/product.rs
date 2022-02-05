@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{ProductId, TaxCodeId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{PackageDimensions, TaxCode};
+use crate::resources::{  PackageDimensions,   TaxCode, };
+
+
+
 
 /// The resource representing a Stripe "Product".
 ///
@@ -139,6 +142,24 @@ impl Object for Product {
     }
 }
 
+//automatically added back in service of Product with hash2754917396562206091
+
+
+//automatically added back in service of Product with hash-711423552975651489
+
+
+//automatically added back in service of Product with hash2754917396562206091
+
+
+//automatically added back in service of Product with hash-711423552975651489
+
+
+//automatically added back in service of Product with hash2754917396562206091
+
+
+//automatically added back in service of Product with hash-711423552975651489
+
+
 /// The parameters for `Product::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateProduct<'a> {
@@ -232,6 +253,15 @@ impl<'a> CreateProduct<'a> {
     }
 }
 
+//automatically added back in service of CreateProduct with hash-3622921094322200951
+
+
+//automatically added back in service of CreateProduct with hash-3622921094322200951
+
+
+//automatically added back in service of CreateProduct with hash-3622921094322200951
+
+
 /// The parameters for `Product::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListProducts<'a> {
@@ -295,6 +325,15 @@ impl<'a> ListProducts<'a> {
         }
     }
 }
+
+//automatically added back in service of ListProducts with hash920721201489631679
+
+
+//automatically added back in service of ListProducts with hash920721201489631679
+
+
+//automatically added back in service of ListProducts with hash920721201489631679
+
 
 /// The parameters for `Product::update`.
 #[derive(Clone, Debug, Serialize, Default)]

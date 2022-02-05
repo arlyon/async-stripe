@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -65,6 +68,15 @@ impl Object for SourceTransaction {
         "source_transaction"
     }
 }
+
+//automatically added back in service of SourceTransaction with hash5291179622063954757
+
+
+//automatically added back in service of SourceTransaction with hash5291179622063954757
+
+
+//automatically added back in service of SourceTransaction with hash5291179622063954757
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionAchCreditTransferData {

@@ -6,7 +6,10 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::PersonId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Address, File};
+use crate::resources::{ Address,   File, };
+
+
+
 
 /// The resource representing a Stripe "Person".
 ///
@@ -132,6 +135,15 @@ impl Object for Person {
         "person"
     }
 }
+
+//automatically added back in service of Person with hash3437362498376385340
+
+
+//automatically added back in service of Person with hash3437362498376385340
+
+
+//automatically added back in service of Person with hash3437362498376385340
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LegalEntityDob {

@@ -7,9 +7,11 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, OrderId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Charge, Currency, Customer, OrderItem, OrderReturn, OrderStatusFilter, Shipping,
-};
+use crate::resources::{ Customer,    OrderReturn,    OrderItem,    Shipping,    Currency,   
+    Charge,    OrderStatusFilter, };
+
+
+
 
 /// The resource representing a Stripe "Order".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -160,6 +162,24 @@ impl Object for Order {
     }
 }
 
+//automatically added back in service of Order with hash6236284908660826475
+
+
+//automatically added back in service of Order with hash-7707031304986798316
+
+
+//automatically added back in service of Order with hash6236284908660826475
+
+
+//automatically added back in service of Order with hash-7707031304986798316
+
+
+//automatically added back in service of Order with hash6236284908660826475
+
+
+//automatically added back in service of Order with hash-7707031304986798316
+
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingMethod {
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the line item.
@@ -292,6 +312,15 @@ impl<'a> CreateOrder<'a> {
     }
 }
 
+//automatically added back in service of CreateOrder with hash-1337988501525183626
+
+
+//automatically added back in service of CreateOrder with hash-1337988501525183626
+
+
+//automatically added back in service of CreateOrder with hash-1337988501525183626
+
+
 /// The parameters for `Order::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListOrders<'a> {
@@ -363,6 +392,15 @@ impl<'a> ListOrders<'a> {
     }
 }
 
+//automatically added back in service of ListOrders with hash-2376975422990177095
+
+
+//automatically added back in service of ListOrders with hash-2376975422990177095
+
+
+//automatically added back in service of ListOrders with hash-2376975422990177095
+
+
 /// The parameters for `Order::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateOrder<'a> {
@@ -416,6 +454,15 @@ impl<'a> UpdateOrder<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateOrder with hash-5552476356820170002
+
+
+//automatically added back in service of UpdateOrder with hash-5552476356820170002
+
+
+//automatically added back in service of UpdateOrder with hash-5552476356820170002
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateOrderShipping {

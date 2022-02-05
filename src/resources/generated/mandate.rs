@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::MandateId;
 use crate::params::{Expand, Expandable, Object, Timestamp};
-use crate::resources::{Currency, PaymentMethod};
+use crate::resources::{Currency,    PaymentMethod, };
+
+
+
 
 /// The resource representing a Stripe "Mandate".
 ///
@@ -58,6 +61,24 @@ impl Mandate {
         client.get_query(&format!("/mandates/{}", id), &Expand { expand })
     }
 }
+
+//automatically added back in service of Mandate with hash-6536031987885030606
+
+
+//automatically added back in service of Mandate with hash7027347160630395029
+
+
+//automatically added back in service of Mandate with hash-6536031987885030606
+
+
+//automatically added back in service of Mandate with hash7027347160630395029
+
+
+//automatically added back in service of Mandate with hash-6536031987885030606
+
+
+//automatically added back in service of Mandate with hash7027347160630395029
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerAcceptance {

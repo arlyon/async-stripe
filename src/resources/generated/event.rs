@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -75,6 +78,24 @@ impl Object for Event {
         "event"
     }
 }
+
+//automatically added back in service of Event with hash5796066547405634179
+
+
+//automatically added back in service of Event with hash-2407717745563735060
+
+
+//automatically added back in service of Event with hash5796066547405634179
+
+
+//automatically added back in service of Event with hash-2407717745563735060
+
+
+//automatically added back in service of Event with hash5796066547405634179
+
+
+//automatically added back in service of Event with hash-2407717745563735060
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NotificationEventRequest {

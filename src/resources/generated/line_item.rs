@@ -6,9 +6,11 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::InvoiceLineItemId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{
-    Currency, Discount, DiscountsResourceDiscountAmount, Period, Price, TaxRate,
-};
+use crate::resources::{   Period,   Price,    TaxRate,   
+    Currency,    Discount,    DiscountsResourceDiscountAmount, };
+
+
+
 
 /// The resource representing a Stripe "InvoiceLineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -104,6 +106,15 @@ impl Object for InvoiceLineItem {
         "line_item"
     }
 }
+
+//automatically added back in service of InvoiceLineItem with hash2307922612136106088
+
+
+//automatically added back in service of InvoiceLineItem with hash2307922612136106088
+
+
+//automatically added back in service of InvoiceLineItem with hash2307922612136106088
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxAmount {

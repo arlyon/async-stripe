@@ -6,11 +6,13 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::IssuingAuthorizationId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
-    BalanceTransaction, Currency, IssuingAuthorizationAmountDetails, IssuingAuthorizationCheck,
-    IssuingAuthorizationMethod, IssuingAuthorizationReason, IssuingCard, IssuingCardholder,
-    IssuingTransaction, MerchantData,
-};
+use crate::resources::{ IssuingAuthorizationReason,   
+    IssuingAuthorizationMethod,   
+    IssuingTransaction,    IssuingCardholder,    MerchantData,    Currency,   
+    BalanceTransaction,    IssuingAuthorizationAmountDetails,    IssuingCard,    IssuingAuthorizationCheck, };
+
+
+
 
 /// The resource representing a Stripe "IssuingAuthorization".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -111,6 +113,15 @@ impl Object for IssuingAuthorization {
         "issuing.authorization"
     }
 }
+
+//automatically added back in service of IssuingAuthorization with hash-5141201543021633229
+
+
+//automatically added back in service of IssuingAuthorization with hash-5141201543021633229
+
+
+//automatically added back in service of IssuingAuthorization with hash-5141201543021633229
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationPendingRequest {

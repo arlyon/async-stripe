@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -51,6 +54,15 @@ impl Object for IdentityVerificationReport {
         "identity.verification_report"
     }
 }
+
+//automatically added back in service of IdentityVerificationReport with hash1751292089618843469
+
+
+//automatically added back in service of IdentityVerificationReport with hash1751292089618843469
+
+
+//automatically added back in service of IdentityVerificationReport with hash1751292089618843469
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDocumentReport {

@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{FileId, FileLinkId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{File, Scheduled};
+use crate::resources::{  Scheduled,   File, };
+
+
+
 
 /// The resource representing a Stripe "FileLink".
 ///
@@ -44,7 +47,7 @@ pub struct FileLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<Box<String>>,
 }
-//automatically added back in service of FileLink with hash-7310617586032894135
+//automatically added back in service of FileLink with hash7634509955512356458
 impl FileLink {
     /// Returns a list of file links.
     pub fn list(client: &Client, params: ListFileLinks<'_>) -> Response<List<FileLink>> {
@@ -84,6 +87,24 @@ impl Object for FileLink {
     }
 }
 
+//automatically added back in service of FileLink with hash7634509955512356458
+
+
+//automatically added back in service of FileLink with hash9019535771774462643
+
+
+//automatically added back in service of FileLink with hash7634509955512356458
+
+
+//automatically added back in service of FileLink with hash9019535771774462643
+
+
+//automatically added back in service of FileLink with hash-7310617586032894135
+
+
+//automatically added back in service of FileLink with hash9019535771774462643
+
+
 /// The parameters for `FileLink::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateFileLink<'a> {
@@ -119,6 +140,15 @@ impl<'a> CreateFileLink<'a> {
         }
     }
 }
+
+//automatically added back in service of CreateFileLink with hash1700588861826240622
+
+
+//automatically added back in service of CreateFileLink with hash1700588861826240622
+
+
+//automatically added back in service of CreateFileLink with hash1700588861826240622
+
 
 /// The parameters for `FileLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -174,6 +204,15 @@ impl<'a> ListFileLinks<'a> {
         }
     }
 }
+
+//automatically added back in service of ListFileLinks with hash-8549440265594601
+
+
+//automatically added back in service of ListFileLinks with hash-8549440265594601
+
+
+//automatically added back in service of ListFileLinks with hash-8549440265594601
+
 
 /// The parameters for `FileLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]

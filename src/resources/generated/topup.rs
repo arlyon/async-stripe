@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::TopupId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, Currency, Source};
+use crate::resources::{ Currency,   BalanceTransaction,    Source, };
+
+
+
 
 /// The resource representing a Stripe "Topup".
 ///
@@ -114,6 +117,24 @@ impl Object for Topup {
     }
 }
 
+//automatically added back in service of Topup with hash-4267435505429544645
+
+
+//automatically added back in service of Topup with hash-1055834901306071266
+
+
+//automatically added back in service of Topup with hash-4267435505429544645
+
+
+//automatically added back in service of Topup with hash-1055834901306071266
+
+
+//automatically added back in service of Topup with hash-4267435505429544645
+
+
+//automatically added back in service of Topup with hash-1055834901306071266
+
+
 /// The parameters for `Topup::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTopups<'a> {
@@ -171,6 +192,15 @@ impl<'a> ListTopups<'a> {
         }
     }
 }
+
+//automatically added back in service of ListTopups with hash-2255876390313892147
+
+
+//automatically added back in service of ListTopups with hash-2255876390313892147
+
+
+//automatically added back in service of ListTopups with hash-2255876390313892147
+
 
 /// The parameters for `Topup::update`.
 #[derive(Clone, Debug, Serialize, Default)]

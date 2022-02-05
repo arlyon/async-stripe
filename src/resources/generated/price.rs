@@ -9,7 +9,10 @@ use crate::ids::PriceId;
 use crate::params::{
     Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
 };
-use crate::resources::{CreateProduct, Currency, Product, UpTo};
+use crate::resources::{   UpTo,   CreateProduct,    Product,  Currency, };
+
+
+
 
 /// The resource representing a Stripe "Price".
 ///
@@ -119,17 +122,6 @@ pub struct Price {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<Box<String>>,
 }
-//automatically added back in service of Price with hash-7758827137345157121
-impl Object for Price {
-    type Id = PriceId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "price"
-    }
-}
-
 //automatically added back in service of Price with hash-5109749639056774953
 impl Price {
     /// Returns a list of your prices.
@@ -156,6 +148,35 @@ impl Price {
         client.post_form(&format!("/prices/{}", id), &params)
     }
 }
+
+//automatically added back in service of Price with hash-7758827137345157121
+impl Object for Price {
+    type Id = PriceId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "price"
+    }
+}
+
+//automatically added back in service of Price with hash-7758827137345157121
+
+
+//automatically added back in service of Price with hash-5109749639056774953
+
+
+//automatically added back in service of Price with hash-5109749639056774953
+
+
+//automatically added back in service of Price with hash-7758827137345157121
+
+
+//automatically added back in service of Price with hash-7758827137345157121
+
+
+//automatically added back in service of Price with hash-5109749639056774953
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PriceTier {
@@ -338,6 +359,15 @@ impl<'a> CreatePrice<'a> {
     }
 }
 
+//automatically added back in service of CreatePrice with hash-6208507361928840505
+
+
+//automatically added back in service of CreatePrice with hash-6208507361928840505
+
+
+//automatically added back in service of CreatePrice with hash-6208507361928840505
+
+
 /// The parameters for `Price::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPrices<'a> {
@@ -415,6 +445,15 @@ impl<'a> ListPrices<'a> {
     }
 }
 
+//automatically added back in service of ListPrices with hash2804052150451721366
+
+
+//automatically added back in service of ListPrices with hash2804052150451721366
+
+
+//automatically added back in service of ListPrices with hash2804052150451721366
+
+
 /// The parameters for `Price::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePrice<'a> {
@@ -471,6 +510,15 @@ impl<'a> UpdatePrice<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdatePrice with hash-900594503753623857
+
+
+//automatically added back in service of UpdatePrice with hash-900594503753623857
+
+
+//automatically added back in service of UpdatePrice with hash-900594503753623857
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceProductData {

@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -61,6 +64,15 @@ impl Object for TaxId {
         "tax_id"
     }
 }
+
+//automatically added back in service of TaxId with hash992046258278666322
+
+
+//automatically added back in service of TaxId with hash992046258278666322
+
+
+//automatically added back in service of TaxId with hash992046258278666322
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxIdVerification {

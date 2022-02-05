@@ -7,10 +7,12 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CreditNoteId, CustomerId, InvoiceId, RefundId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
-use crate::resources::{
-    CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice, Refund,
-    TaxRate,
-};
+use crate::resources::{  CustomerBalanceTransaction,    Customer,    Refund,    Currency,   Discount,   
+    TaxRate,    Invoice,   
+    CreditNoteLineItem, };
+
+
+
 
 /// The resource representing a Stripe "CreditNote".
 ///
@@ -108,18 +110,7 @@ pub struct CreditNote {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub voided_at: Option<Box<Timestamp>>,
 }
-//automatically added back in service of CreditNote with hash8661481111310142908
-impl Object for CreditNote {
-    type Id = CreditNoteId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "credit_note"
-    }
-}
-
-//automatically added back in service of CreditNote with hash8433732005184596589
+//automatically added back in service of CreditNote with hash5574780636889160172
 impl CreditNote {
     /// Returns a list of credit notes.
     pub fn list(client: &Client, params: ListCreditNotes<'_>) -> Response<List<CreditNote>> {
@@ -150,6 +141,35 @@ impl CreditNote {
         client.post_form(&format!("/credit_notes/{}", id), &params)
     }
 }
+
+//automatically added back in service of CreditNote with hash8661481111310142908
+impl Object for CreditNote {
+    type Id = CreditNoteId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "credit_note"
+    }
+}
+
+//automatically added back in service of CreditNote with hash8661481111310142908
+
+
+//automatically added back in service of CreditNote with hash5574780636889160172
+
+
+//automatically added back in service of CreditNote with hash5574780636889160172
+
+
+//automatically added back in service of CreditNote with hash8661481111310142908
+
+
+//automatically added back in service of CreditNote with hash8661481111310142908
+
+
+//automatically added back in service of CreditNote with hash8433732005184596589
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreditNoteTaxAmount {
@@ -243,6 +263,15 @@ impl<'a> CreateCreditNote<'a> {
     }
 }
 
+//automatically added back in service of CreateCreditNote with hash-7995517879105991074
+
+
+//automatically added back in service of CreateCreditNote with hash-7995517879105991074
+
+
+//automatically added back in service of CreateCreditNote with hash-7995517879105991074
+
+
 /// The parameters for `CreditNote::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCreditNotes<'a> {
@@ -292,6 +321,15 @@ impl<'a> ListCreditNotes<'a> {
     }
 }
 
+//automatically added back in service of ListCreditNotes with hash-224019564851134574
+
+
+//automatically added back in service of ListCreditNotes with hash-224019564851134574
+
+
+//automatically added back in service of ListCreditNotes with hash-224019564851134574
+
+
 /// The parameters for `CreditNote::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCreditNote<'a> {
@@ -321,6 +359,15 @@ impl<'a> UpdateCreditNote<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateCreditNote with hash-6827222864951338418
+
+
+//automatically added back in service of UpdateCreditNote with hash-6827222864951338418
+
+
+//automatically added back in service of UpdateCreditNote with hash-6827222864951338418
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCreditNoteLines {

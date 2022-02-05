@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 use serde_derive::{Deserialize, Serialize};
 
 // ======================================
@@ -106,6 +109,24 @@ impl Object for TaxRate {
     }
 }
 
+//automatically added back in service of TaxRate with hash-6492601265248383061
+
+
+//automatically added back in service of TaxRate with hash5859477794856546109
+
+
+//automatically added back in service of TaxRate with hash-6492601265248383061
+
+
+//automatically added back in service of TaxRate with hash5859477794856546109
+
+
+//automatically added back in service of TaxRate with hash-6492601265248383061
+
+
+//automatically added back in service of TaxRate with hash5859477794856546109
+
+
 /// The parameters for `TaxRate::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTaxRate<'a> {
@@ -182,6 +203,15 @@ impl<'a> CreateTaxRate<'a> {
     }
 }
 
+//automatically added back in service of CreateTaxRate with hash-7187631991720346399
+
+
+//automatically added back in service of CreateTaxRate with hash-7187631991720346399
+
+
+//automatically added back in service of CreateTaxRate with hash-7187631991720346399
+
+
 /// The parameters for `TaxRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxRates<'a> {
@@ -235,6 +265,15 @@ impl<'a> ListTaxRates<'a> {
         }
     }
 }
+
+//automatically added back in service of ListTaxRates with hash-6914115661566096600
+
+
+//automatically added back in service of ListTaxRates with hash-6914115661566096600
+
+
+//automatically added back in service of ListTaxRates with hash-6914115661566096600
+
 
 /// The parameters for `TaxRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]

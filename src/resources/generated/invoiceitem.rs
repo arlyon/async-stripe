@@ -7,9 +7,11 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
-};
+use crate::resources::{ Customer,    Period,    Price,   
+    Currency,    TaxRate,    Discount,    Invoice,    Subscription, };
+
+
+
 
 /// The resource representing a Stripe "InvoiceItem".
 ///
@@ -117,7 +119,18 @@ pub struct InvoiceItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<Box<String>>,
 }
-//automatically added back in service of InvoiceItem with hash3610782074148669050
+//automatically added back in service of InvoiceItem with hash7950177059610030066
+impl Object for InvoiceItem {
+    type Id = InvoiceItemId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "invoiceitem"
+    }
+}
+
+//automatically added back in service of InvoiceItem with hash5837898571213207047
 impl InvoiceItem {
     /// Returns a list of your invoice items.
     ///
@@ -158,15 +171,22 @@ impl InvoiceItem {
 }
 
 //automatically added back in service of InvoiceItem with hash7950177059610030066
-impl Object for InvoiceItem {
-    type Id = InvoiceItemId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "invoiceitem"
-    }
-}
+
+
+//automatically added back in service of InvoiceItem with hash5837898571213207047
+
+
+//automatically added back in service of InvoiceItem with hash7950177059610030066
+
+
+//automatically added back in service of InvoiceItem with hash5837898571213207047
+
+
+//automatically added back in service of InvoiceItem with hash3610782074148669050
+
+
+//automatically added back in service of InvoiceItem with hash7950177059610030066
+
 
 /// The parameters for `InvoiceItem::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -292,6 +312,15 @@ impl<'a> CreateInvoiceItem<'a> {
     }
 }
 
+//automatically added back in service of CreateInvoiceItem with hash-7273036025356157135
+
+
+//automatically added back in service of CreateInvoiceItem with hash-7273036025356157135
+
+
+//automatically added back in service of CreateInvoiceItem with hash-7273036025356157135
+
+
 /// The parameters for `InvoiceItem::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoiceItems<'a> {
@@ -357,6 +386,15 @@ impl<'a> ListInvoiceItems<'a> {
         }
     }
 }
+
+//automatically added back in service of ListInvoiceItems with hash-4087165658960175923
+
+
+//automatically added back in service of ListInvoiceItems with hash-4087165658960175923
+
+
+//automatically added back in service of ListInvoiceItems with hash-4087165658960175923
+
 
 /// The parameters for `InvoiceItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -457,6 +495,15 @@ impl<'a> UpdateInvoiceItem<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateInvoiceItem with hash-8466512287516174739
+
+
+//automatically added back in service of UpdateInvoiceItem with hash-8466512287516174739
+
+
+//automatically added back in service of UpdateInvoiceItem with hash-8466512287516174739
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceItemDiscounts {

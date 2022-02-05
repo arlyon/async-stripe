@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::ReviewId;
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
-use crate::resources::{Charge, PaymentIntent, ReviewReason};
+use crate::resources::{ Charge,    PaymentIntent,    ReviewReason, };
+
+
+
 
 /// The resource representing a Stripe "RadarReview".
 ///
@@ -95,6 +98,24 @@ impl Review {
         client.get_query(&format!("/reviews/{}", id), &Expand { expand })
     }
 }
+
+//automatically added back in service of Review with hash2910031241930626001
+
+
+//automatically added back in service of Review with hash8097246103026098126
+
+
+//automatically added back in service of Review with hash2910031241930626001
+
+
+//automatically added back in service of Review with hash8097246103026098126
+
+
+//automatically added back in service of Review with hash2910031241930626001
+
+
+//automatically added back in service of Review with hash8097246103026098126
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RadarReviewResourceLocation {

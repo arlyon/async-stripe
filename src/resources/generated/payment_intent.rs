@@ -7,11 +7,13 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, ApiErrors, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession,
-    PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsBoleto,
-    PaymentMethodOptionsOxxo, Review, Shipping, TransferData,
-};
+use crate::resources::{ Customer,    PaymentIntentOffSession,    Review,   
+    Shipping,    Charge,    Currency,   
+    PaymentMethod,    Application,   
+    Account,    TransferData,    PaymentMethodOptionsBoleto,    ApiErrors,    Invoice,    PaymentMethodDetailsCardInstallmentsPlan, };
+
+
+
 
 /// The resource representing a Stripe "PaymentIntent".
 ///
@@ -202,7 +204,18 @@ pub struct PaymentIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<Box<String>>,
 }
-//automatically added back in service of PaymentIntent with hash-4712894670497804015
+//automatically added back in service of PaymentIntent with hash8076366564989710908
+impl Object for PaymentIntent {
+    type Id = PaymentIntentId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "payment_intent"
+    }
+}
+
+//automatically added back in service of PaymentIntent with hash833592348371495805
 impl PaymentIntent {
     /// Returns a list of PaymentIntents.
     pub fn list(client: &Client, params: ListPaymentIntents<'_>) -> Response<List<PaymentIntent>> {
@@ -250,15 +263,22 @@ impl PaymentIntent {
 }
 
 //automatically added back in service of PaymentIntent with hash8076366564989710908
-impl Object for PaymentIntent {
-    type Id = PaymentIntentId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "payment_intent"
-    }
-}
+
+
+//automatically added back in service of PaymentIntent with hash833592348371495805
+
+
+//automatically added back in service of PaymentIntent with hash8076366564989710908
+
+
+//automatically added back in service of PaymentIntent with hash833592348371495805
+
+
+//automatically added back in service of PaymentIntent with hash-4712894670497804015
+
+
+//automatically added back in service of PaymentIntent with hash8076366564989710908
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
@@ -659,6 +679,14 @@ pub struct PaymentMethodOptionsKlarna {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsOxxo {
+    /// The number of calendar days before an OXXO invoice expires.
+    ///
+    /// For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
+    pub expires_after_days: u32,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsP24 {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -894,6 +922,15 @@ impl<'a> CreatePaymentIntent<'a> {
     }
 }
 
+//automatically added back in service of CreatePaymentIntent with hash1170915577849856445
+
+
+//automatically added back in service of CreatePaymentIntent with hash1170915577849856445
+
+
+//automatically added back in service of CreatePaymentIntent with hash1170915577849856445
+
+
 /// The parameters for `PaymentIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPaymentIntents<'a> {
@@ -944,6 +981,15 @@ impl<'a> ListPaymentIntents<'a> {
         }
     }
 }
+
+//automatically added back in service of ListPaymentIntents with hash258855227215588353
+
+
+//automatically added back in service of ListPaymentIntents with hash258855227215588353
+
+
+//automatically added back in service of ListPaymentIntents with hash258855227215588353
+
 
 /// The parameters for `PaymentIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -1084,6 +1130,15 @@ impl<'a> UpdatePaymentIntent<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdatePaymentIntent with hash-2799028375146327101
+
+
+//automatically added back in service of UpdatePaymentIntent with hash-2799028375146327101
+
+
+//automatically added back in service of UpdatePaymentIntent with hash-2799028375146327101
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentAutomaticPaymentMethods {

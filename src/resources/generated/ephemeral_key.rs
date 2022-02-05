@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 use serde_derive::{Deserialize, Serialize};
 
 // ======================================
@@ -55,6 +58,24 @@ impl EphemeralKey {
         client.delete(&format!("/ephemeral_keys/{}", id))
     }
 }
+
+//automatically added back in service of EphemeralKey with hash5674968609221935427
+
+
+//automatically added back in service of EphemeralKey with hash-3840831942127778539
+
+
+//automatically added back in service of EphemeralKey with hash5674968609221935427
+
+
+//automatically added back in service of EphemeralKey with hash-3840831942127778539
+
+
+//automatically added back in service of EphemeralKey with hash5674968609221935427
+
+
+//automatically added back in service of EphemeralKey with hash-3840831942127778539
+
 
 /// The parameters for `EphemeralKey::create`.
 #[derive(Clone, Debug, Serialize, Default)]

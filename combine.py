@@ -203,7 +203,8 @@ def parse_content(content):
 
     import_str = import_prefix
     for imported in imports:
-        import_str+=imported+", ";
+        if imported.strip() != "":
+            import_str+=imported+", ";
 
     if import_str != "":
         print("imports "+import_str)

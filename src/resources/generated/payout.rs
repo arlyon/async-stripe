@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::PayoutId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, BankAccount, Card, Currency};
+use crate::resources::{  BalanceTransaction,    BankAccount,  Currency,    Card, };
+
+
+
 
 /// The resource representing a Stripe "Payout".
 ///
@@ -153,6 +156,24 @@ impl Payout {
     }
 }
 
+//automatically added back in service of Payout with hash-3978123762156027741
+
+
+//automatically added back in service of Payout with hash8564909606894776109
+
+
+//automatically added back in service of Payout with hash-3978123762156027741
+
+
+//automatically added back in service of Payout with hash8564909606894776109
+
+
+//automatically added back in service of Payout with hash-3978123762156027741
+
+
+//automatically added back in service of Payout with hash8564909606894776109
+
+
 /// The parameters for `Payout::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePayout<'a> {
@@ -222,6 +243,15 @@ impl<'a> CreatePayout<'a> {
     }
 }
 
+//automatically added back in service of CreatePayout with hash-1573184263682151363
+
+
+//automatically added back in service of CreatePayout with hash-1573184263682151363
+
+
+//automatically added back in service of CreatePayout with hash-1573184263682151363
+
+
 /// The parameters for `Payout::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPayouts<'a> {
@@ -273,6 +303,15 @@ impl<'a> ListPayouts<'a> {
         }
     }
 }
+
+//automatically added back in service of ListPayouts with hash6738560087728829207
+
+
+//automatically added back in service of ListPayouts with hash6738560087728829207
+
+
+//automatically added back in service of ListPayouts with hash6738560087728829207
+
 
 /// The parameters for `Payout::update`.
 #[derive(Clone, Debug, Serialize, Default)]

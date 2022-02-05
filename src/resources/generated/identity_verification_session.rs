@@ -6,7 +6,10 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::IdentityVerificationSessionId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Address, IdentityVerificationReport};
+use crate::resources::{ Address,   IdentityVerificationReport, };
+
+
+
 
 /// The resource representing a Stripe "GelatoVerificationSession".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -85,6 +88,15 @@ impl Object for IdentityVerificationSession {
         "identity.verification_session"
     }
 }
+
+//automatically added back in service of IdentityVerificationSession with hash8044313806421076226
+
+
+//automatically added back in service of IdentityVerificationSession with hash8044313806421076226
+
+
+//automatically added back in service of IdentityVerificationSession with hash8044313806421076226
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSessionLastError {

@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -81,6 +84,24 @@ impl File {
         client.get_query(&format!("/files/{}", id), &Expand { expand })
     }
 }
+
+//automatically added back in service of File with hash7432241759813252425
+
+
+//automatically added back in service of File with hash-5589240101613797878
+
+
+//automatically added back in service of File with hash7432241759813252425
+
+
+//automatically added back in service of File with hash-5589240101613797878
+
+
+//automatically added back in service of File with hash7432241759813252425
+
+
+//automatically added back in service of File with hash-5589240101613797878
+
 
 /// The parameters for `File::list`.
 #[derive(Clone, Debug, Serialize, Default)]

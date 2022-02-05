@@ -6,7 +6,10 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::CustomerBalanceTransactionId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{CreditNote, Currency, Customer, Invoice};
+use crate::resources::{   Customer,  Currency,   CreditNote,    Invoice, };
+
+
+
 
 /// The resource representing a Stripe "CustomerBalanceTransaction".
 ///

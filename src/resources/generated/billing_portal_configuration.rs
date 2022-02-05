@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 use serde_derive::{Deserialize, Serialize};
 
 // ======================================
@@ -63,6 +66,15 @@ impl Object for BillingPortalConfiguration {
         "billing_portal.configuration"
     }
 }
+
+//automatically added back in service of BillingPortalConfiguration with hash-6602685136576475067
+
+
+//automatically added back in service of BillingPortalConfiguration with hash-6602685136576475067
+
+
+//automatically added back in service of BillingPortalConfiguration with hash-6602685136576475067
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalBusinessProfile {

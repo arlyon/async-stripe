@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -64,6 +67,24 @@ impl CountrySpec {
         client.get_query(&format!("/country_specs/{}", id), &Expand { expand })
     }
 }
+
+//automatically added back in service of CountrySpec with hash1211382528522869033
+
+
+//automatically added back in service of CountrySpec with hash-1163452440684776962
+
+
+//automatically added back in service of CountrySpec with hash1211382528522869033
+
+
+//automatically added back in service of CountrySpec with hash-1163452440684776962
+
+
+//automatically added back in service of CountrySpec with hash1211382528522869033
+
+
+//automatically added back in service of CountrySpec with hash-1163452440684776962
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFields {

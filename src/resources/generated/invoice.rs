@@ -7,12 +7,14 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, Address, ApiErrors, Charge, Currency, Customer, Discount,
-    DiscountsResourceDiscountAmount, InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit,
-    InvoicePaymentMethodOptionsBancontact, PaymentIntent, PaymentMethod, PaymentSource, Quote,
-    Shipping, Subscription, TaxAmount, TaxId, TaxRate,
-};
+use crate::resources::{   TaxId,   Customer,   
+    DiscountsResourceDiscountAmount,    TaxRate,    PaymentSource,    Currency,    PaymentIntent,    ApiErrors,    PaymentMethod,    Charge,   
+    InvoicePaymentMethodOptionsBancontact,    InvoicePaymentMethodOptionsAcssDebit,   
+    Shipping,    Discount,    Address,    Subscription,    InvoiceLineItem,    TaxAmount,   Quote,   
+    Account, };
+
+
+
 
 /// The resource representing a Stripe "Invoice".
 ///
@@ -436,6 +438,24 @@ impl Object for Invoice {
     }
 }
 
+//automatically added back in service of Invoice with hash-7861122259584202893
+
+
+//automatically added back in service of Invoice with hash-1480097582396266853
+
+
+//automatically added back in service of Invoice with hash-7861122259584202893
+
+
+//automatically added back in service of Invoice with hash-1480097582396266853
+
+
+//automatically added back in service of Invoice with hash-7861122259584202893
+
+
+//automatically added back in service of Invoice with hash-1480097582396266853
+
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
@@ -716,6 +736,15 @@ impl<'a> CreateInvoice<'a> {
     }
 }
 
+//automatically added back in service of CreateInvoice with hash1393663907565974549
+
+
+//automatically added back in service of CreateInvoice with hash1393663907565974549
+
+
+//automatically added back in service of CreateInvoice with hash1393663907565974549
+
+
 /// The parameters for `Invoice::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoices<'a> {
@@ -786,6 +815,15 @@ impl<'a> ListInvoices<'a> {
         }
     }
 }
+
+//automatically added back in service of ListInvoices with hash453859597195470014
+
+
+//automatically added back in service of ListInvoices with hash453859597195470014
+
+
+//automatically added back in service of ListInvoices with hash453859597195470014
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceAutomaticTax {

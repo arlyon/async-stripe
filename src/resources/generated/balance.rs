@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -56,6 +59,24 @@ impl Object for Balance {
         "balance"
     }
 }
+
+//automatically added back in service of Balance with hash-4264152956785923654
+
+
+//automatically added back in service of Balance with hash-4826721640922559621
+
+
+//automatically added back in service of Balance with hash-4264152956785923654
+
+
+//automatically added back in service of Balance with hash-4826721640922559621
+
+
+//automatically added back in service of Balance with hash-4264152956785923654
+
+
+//automatically added back in service of Balance with hash-4826721640922559621
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceAmount {

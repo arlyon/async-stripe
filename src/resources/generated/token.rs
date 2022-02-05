@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, TokenId};
 use crate::params::{Expand, Metadata, Object, Timestamp};
-use crate::resources::{Address, BankAccount, Card, CompanyParams, PersonParams, TokenType};
+use crate::resources::{  TokenType,    BankAccount,    PersonParams,    CompanyParams,   Address,    Card, };
+
+
+
 
 /// The resource representing a Stripe "Token".
 ///
@@ -69,6 +72,24 @@ impl Token {
     }
 }
 
+//automatically added back in service of Token with hash9108358352469523915
+
+
+//automatically added back in service of Token with hash-6475098656176660956
+
+
+//automatically added back in service of Token with hash9108358352469523915
+
+
+//automatically added back in service of Token with hash-6475098656176660956
+
+
+//automatically added back in service of Token with hash9108358352469523915
+
+
+//automatically added back in service of Token with hash-6475098656176660956
+
+
 /// The parameters for `Token::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateToken<'a> {
@@ -112,6 +133,15 @@ impl<'a> CreateToken<'a> {
         }
     }
 }
+
+//automatically added back in service of CreateToken with hash-7709081031056960565
+
+
+//automatically added back in service of CreateToken with hash-7709081031056960565
+
+
+//automatically added back in service of CreateToken with hash-7709081031056960565
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateTokenAccount {

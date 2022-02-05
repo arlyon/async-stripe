@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{ChargeId, TransferId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Account, BalanceTransaction, Charge, Currency, TransferReversal};
+use crate::resources::{  BalanceTransaction,    TransferReversal,   Account,   Currency,    Charge, };
+
+
+
 
 /// The resource representing a Stripe "Transfer".
 ///
@@ -94,7 +97,7 @@ impl Object for Transfer {
     }
 }
 
-//automatically added back in service of Transfer with hash8146778775157952691
+//automatically added back in service of Transfer with hash1573017057952128344
 impl Transfer {
     /// Returns a list of existing transfers sent to connected accounts.
     ///
@@ -128,6 +131,24 @@ impl Transfer {
         client.post_form(&format!("/transfers/{}", id), &params)
     }
 }
+
+//automatically added back in service of Transfer with hash1469934724607901288
+
+
+//automatically added back in service of Transfer with hash1573017057952128344
+
+
+//automatically added back in service of Transfer with hash1469934724607901288
+
+
+//automatically added back in service of Transfer with hash1573017057952128344
+
+
+//automatically added back in service of Transfer with hash1469934724607901288
+
+
+//automatically added back in service of Transfer with hash8146778775157952691
+
 
 /// The parameters for `Transfer::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -193,6 +214,15 @@ impl<'a> CreateTransfer<'a> {
     }
 }
 
+//automatically added back in service of CreateTransfer with hash6234710848437019007
+
+
+//automatically added back in service of CreateTransfer with hash6234710848437019007
+
+
+//automatically added back in service of CreateTransfer with hash6234710848437019007
+
+
 /// The parameters for `Transfer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTransfers<'a> {
@@ -240,6 +270,15 @@ impl<'a> ListTransfers<'a> {
         }
     }
 }
+
+//automatically added back in service of ListTransfers with hash-4190118409139816616
+
+
+//automatically added back in service of ListTransfers with hash-4190118409139816616
+
+
+//automatically added back in service of ListTransfers with hash-4190118409139816616
+
 
 /// The parameters for `Transfer::update`.
 #[derive(Clone, Debug, Serialize, Default)]

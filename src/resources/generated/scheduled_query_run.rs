@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -54,6 +57,15 @@ impl Object for ScheduledQueryRun {
         "scheduled_query_run"
     }
 }
+
+//automatically added back in service of ScheduledQueryRun with hash-768470941936991008
+
+
+//automatically added back in service of ScheduledQueryRun with hash-768470941936991008
+
+
+//automatically added back in service of ScheduledQueryRun with hash-768470941936991008
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SigmaScheduledQueryRunError {

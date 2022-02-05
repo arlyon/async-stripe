@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{ShippingRateId, TaxCodeId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Currency, TaxCode};
+use crate::resources::{Currency,    TaxCode, };
+
+
+
 
 /// The resource representing a Stripe "ShippingRate".
 ///
@@ -68,7 +71,7 @@ pub struct ShippingRate {
     #[serde(rename = "type")]
     pub type_: ShippingRateType,
 }
-//automatically added back in service of ShippingRate with hash7157132574015334361
+//automatically added back in service of ShippingRate with hash-4880346982358571119
 impl ShippingRate {
     /// Returns a list of your shipping rates.
     pub fn list(client: &Client, params: ListShippingRates<'_>) -> Response<List<ShippingRate>> {
@@ -109,6 +112,24 @@ impl Object for ShippingRate {
         "shipping_rate"
     }
 }
+
+//automatically added back in service of ShippingRate with hash-4880346982358571119
+
+
+//automatically added back in service of ShippingRate with hash-6780965776208871927
+
+
+//automatically added back in service of ShippingRate with hash-4880346982358571119
+
+
+//automatically added back in service of ShippingRate with hash-6780965776208871927
+
+
+//automatically added back in service of ShippingRate with hash7157132574015334361
+
+
+//automatically added back in service of ShippingRate with hash-6780965776208871927
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimate {
@@ -212,6 +233,15 @@ impl<'a> CreateShippingRate<'a> {
     }
 }
 
+//automatically added back in service of CreateShippingRate with hash2129064391035003235
+
+
+//automatically added back in service of CreateShippingRate with hash2129064391035003235
+
+
+//automatically added back in service of CreateShippingRate with hash2129064391035003235
+
+
 /// The parameters for `ShippingRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListShippingRates<'a> {
@@ -268,6 +298,15 @@ impl<'a> ListShippingRates<'a> {
     }
 }
 
+//automatically added back in service of ListShippingRates with hash-6470642647643369830
+
+
+//automatically added back in service of ListShippingRates with hash-6470642647643369830
+
+
+//automatically added back in service of ListShippingRates with hash-6470642647643369830
+
+
 /// The parameters for `ShippingRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateShippingRate<'a> {
@@ -299,6 +338,15 @@ impl<'a> UpdateShippingRate<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateShippingRate with hash8863980788723415576
+
+
+//automatically added back in service of UpdateShippingRate with hash8863980788723415576
+
+
+//automatically added back in service of UpdateShippingRate with hash8863980788723415576
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {

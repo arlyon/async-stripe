@@ -4,7 +4,10 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::resources::{Discount, LineItemsDiscountAmount, LineItemsTaxAmount, TaxRate};
+use crate::resources::{   TaxRate, Discount,    LineItemsTaxAmount,    LineItemsDiscountAmount, };
+
+
+
 
 /// The resource representing a Stripe "QuotesResourceTotalDetails".
 #[derive(Clone, Debug, Deserialize, Serialize)]

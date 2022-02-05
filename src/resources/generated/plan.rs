@@ -9,7 +9,10 @@ use crate::ids::PlanId;
 use crate::params::{
     Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
 };
-use crate::resources::{CreateProduct, Currency, Product};
+use crate::resources::{ Currency,   CreateProduct,    Product, };
+
+
+
 
 /// The resource representing a Stripe "Plan".
 ///
@@ -168,6 +171,24 @@ impl Object for Plan {
     }
 }
 
+//automatically added back in service of Plan with hash-15758022125050792
+
+
+//automatically added back in service of Plan with hash1272108170975119476
+
+
+//automatically added back in service of Plan with hash-15758022125050792
+
+
+//automatically added back in service of Plan with hash1272108170975119476
+
+
+//automatically added back in service of Plan with hash-15758022125050792
+
+
+//automatically added back in service of Plan with hash1272108170975119476
+
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PlanTier {
     /// Price for the entire tier.
@@ -255,6 +276,15 @@ impl<'a> ListPlans<'a> {
         }
     }
 }
+
+//automatically added back in service of ListPlans with hash-8547766091516829825
+
+
+//automatically added back in service of ListPlans with hash-8547766091516829825
+
+
+//automatically added back in service of ListPlans with hash-8547766091516829825
+
 
 /// The parameters for `Plan::update`.
 #[derive(Clone, Debug, Serialize, Default)]

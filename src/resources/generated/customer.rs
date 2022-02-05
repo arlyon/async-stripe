@@ -10,10 +10,12 @@ use crate::ids::{
     PromotionCodeId,
 };
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Address, Currency, Discount, InvoiceSettingCustomField, PaymentMethod, PaymentSource,
-    PaymentSourceParams, Scheduled, Shipping, Subscription, TaxId,
-};
+use crate::resources::{   TaxId,    Scheduled,    PaymentMethod,   
+    Address,    Shipping,    PaymentSource,    Currency,   Discount,    Subscription,    InvoiceSettingCustomField,   
+    PaymentSourceParams, };
+
+
+
 
 /// The resource representing a Stripe "Customer".
 ///
@@ -137,18 +139,7 @@ pub struct Customer {
     #[serde(default)]
     pub tax_ids: List<TaxId>,
 }
-//automatically added back in service of Customer with hash-6890770186154663517
-impl Object for Customer {
-    type Id = CustomerId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "customer"
-    }
-}
-
-//automatically added back in service of Customer with hash7226466852421032247
+//automatically added back in service of Customer with hash-1841310924771182504
 impl Customer {
     /// Returns a list of your customers.
     ///
@@ -190,6 +181,35 @@ impl Customer {
         client.delete(&format!("/customers/{}", id))
     }
 }
+
+//automatically added back in service of Customer with hash-6890770186154663517
+impl Object for Customer {
+    type Id = CustomerId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "customer"
+    }
+}
+
+//automatically added back in service of Customer with hash-1841310924771182504
+
+
+//automatically added back in service of Customer with hash-6890770186154663517
+
+
+//automatically added back in service of Customer with hash-1841310924771182504
+
+
+//automatically added back in service of Customer with hash-6890770186154663517
+
+
+//automatically added back in service of Customer with hash-6890770186154663517
+
+
+//automatically added back in service of Customer with hash7226466852421032247
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerTax {
@@ -363,6 +383,15 @@ impl<'a> CreateCustomer<'a> {
     }
 }
 
+//automatically added back in service of CreateCustomer with hash2216899000869908635
+
+
+//automatically added back in service of CreateCustomer with hash2216899000869908635
+
+
+//automatically added back in service of CreateCustomer with hash2216899000869908635
+
+
 /// The parameters for `Customer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCustomers<'a> {
@@ -412,6 +441,15 @@ impl<'a> ListCustomers<'a> {
         }
     }
 }
+
+//automatically added back in service of ListCustomers with hash8260311421914000074
+
+
+//automatically added back in service of ListCustomers with hash8260311421914000074
+
+
+//automatically added back in service of ListCustomers with hash8260311421914000074
+
 
 /// The parameters for `Customer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -567,6 +605,15 @@ impl<'a> UpdateCustomer<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateCustomer with hash-7713761293574287342
+
+
+//automatically added back in service of UpdateCustomer with hash-7713761293574287342
+
+
+//automatically added back in service of UpdateCustomer with hash-7713761293574287342
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCustomerShipping {

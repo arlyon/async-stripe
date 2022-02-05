@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::*;
@@ -8,7 +11,7 @@ use crate::params::Object;
 pub struct Account {
     pub id: AccountId,
 }
-//automatically added back in service of Account with hash3592802899155702435
+//automatically added back in service of Account with hash2972867375275022447
 #[cfg(not(feature = "connect"))]
 impl Object for Account {
     type Id = AccountId;
@@ -20,12 +23,21 @@ impl Object for Account {
     }
 }
 
+//automatically added back in service of Account with hash2972867375275022447
+
+
+//automatically added back in service of Account with hash2972867375275022447
+
+
+//automatically added back in service of Account with hash3592802899155702435
+
+
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Application {
     pub id: (),
 }
-//automatically added back in service of Application with hash-7924135171204768363
+//automatically added back in service of Application with hash-6459248839763565641
 #[cfg(not(feature = "connect"))]
 impl Object for Application {
     type Id = ();
@@ -37,12 +49,21 @@ impl Object for Application {
     }
 }
 
+//automatically added back in service of Application with hash-6459248839763565641
+
+
+//automatically added back in service of Application with hash-6459248839763565641
+
+
+//automatically added back in service of Application with hash-7924135171204768363
+
+
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ApplicationFee {
     pub id: ApplicationFeeId,
 }
-//automatically added back in service of ApplicationFee with hash6166226494024039131
+//automatically added back in service of ApplicationFee with hash727360216826743751
 #[cfg(not(feature = "connect"))]
 impl Object for ApplicationFee {
     type Id = ApplicationFeeId;
@@ -54,12 +75,21 @@ impl Object for ApplicationFee {
     }
 }
 
+//automatically added back in service of ApplicationFee with hash727360216826743751
+
+
+//automatically added back in service of ApplicationFee with hash727360216826743751
+
+
+//automatically added back in service of ApplicationFee with hash6166226494024039131
+
+
 #[cfg(not(feature = "checkout"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSession {
     pub id: CheckoutSessionId,
 }
-//automatically added back in service of CheckoutSession with hash1064398556010491948
+//automatically added back in service of CheckoutSession with hash-8809814167742878604
 #[cfg(not(feature = "checkout"))]
 impl Object for CheckoutSession {
     type Id = CheckoutSessionId;
@@ -71,12 +101,21 @@ impl Object for CheckoutSession {
     }
 }
 
+//automatically added back in service of CheckoutSession with hash-8809814167742878604
+
+
+//automatically added back in service of CheckoutSession with hash-8809814167742878604
+
+
+//automatically added back in service of CheckoutSession with hash1064398556010491948
+
+
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ConnectCollectionTransfer {
     pub id: (),
 }
-//automatically added back in service of Transfer with hash-946360196327450892
+//automatically added back in service of Transfer with hash1469934724607901288
 #[cfg(not(feature = "connect"))]
 impl Object for Transfer {
     type Id = TransferId;
@@ -88,7 +127,7 @@ impl Object for Transfer {
     }
 }
 
-//automatically added back in service of ConnectCollectionTransfer with hash5040508490302329541
+//automatically added back in service of ConnectCollectionTransfer with hash-5340590057807454939
 #[cfg(not(feature = "connect"))]
 impl Object for ConnectCollectionTransfer {
     type Id = ();
@@ -100,12 +139,30 @@ impl Object for ConnectCollectionTransfer {
     }
 }
 
+//automatically added back in service of Transfer with hash1469934724607901288
+
+
+//automatically added back in service of ConnectCollectionTransfer with hash-5340590057807454939
+
+
+//automatically added back in service of Transfer with hash1469934724607901288
+
+
+//automatically added back in service of ConnectCollectionTransfer with hash-5340590057807454939
+
+
+//automatically added back in service of Transfer with hash-946360196327450892
+
+
+//automatically added back in service of ConnectCollectionTransfer with hash5040508490302329541
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Coupon {
     pub id: CouponId,
 }
-//automatically added back in service of Coupon with hash5062855632676062145
+//automatically added back in service of Coupon with hash8592416896964471419
 #[cfg(not(feature = "billing"))]
 impl Object for Coupon {
     type Id = CouponId;
@@ -117,12 +174,21 @@ impl Object for Coupon {
     }
 }
 
+//automatically added back in service of Coupon with hash8592416896964471419
+
+
+//automatically added back in service of Coupon with hash8592416896964471419
+
+
+//automatically added back in service of Coupon with hash5062855632676062145
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Discount {
     pub id: DiscountId,
 }
-//automatically added back in service of Discount with hash-2175254495179855576
+//automatically added back in service of Discount with hash610163505819025392
 #[cfg(not(feature = "billing"))]
 impl Object for Discount {
     type Id = DiscountId;
@@ -134,12 +200,21 @@ impl Object for Discount {
     }
 }
 
+//automatically added back in service of Discount with hash610163505819025392
+
+
+//automatically added back in service of Discount with hash610163505819025392
+
+
+//automatically added back in service of Discount with hash-2175254495179855576
+
+
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ApplicationFeeRefund {
     pub id: ApplicationFeeRefundId,
 }
-//automatically added back in service of ApplicationFeeRefund with hash4715153609552166390
+//automatically added back in service of ApplicationFeeRefund with hash-5884094980258879102
 #[cfg(not(feature = "connect"))]
 impl Object for ApplicationFeeRefund {
     type Id = ApplicationFeeRefundId;
@@ -151,12 +226,21 @@ impl Object for ApplicationFeeRefund {
     }
 }
 
+//automatically added back in service of ApplicationFeeRefund with hash-5884094980258879102
+
+
+//automatically added back in service of ApplicationFeeRefund with hash-5884094980258879102
+
+
+//automatically added back in service of ApplicationFeeRefund with hash4715153609552166390
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Invoice {
     pub id: InvoiceId,
 }
-//automatically added back in service of Invoice with hash2686597225083832559
+//automatically added back in service of Invoice with hash-1480097582396266853
 #[cfg(not(feature = "billing"))]
 impl Object for Invoice {
     type Id = InvoiceId;
@@ -168,12 +252,21 @@ impl Object for Invoice {
     }
 }
 
+//automatically added back in service of Invoice with hash-1480097582396266853
+
+
+//automatically added back in service of Invoice with hash-1480097582396266853
+
+
+//automatically added back in service of Invoice with hash2686597225083832559
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItem {
     pub id: InvoiceItemId,
 }
-//automatically added back in service of InvoiceItem with hash595189701795417752
+//automatically added back in service of InvoiceItem with hash7950177059610030066
 #[cfg(not(feature = "billing"))]
 impl Object for InvoiceItem {
     type Id = InvoiceItemId;
@@ -185,12 +278,21 @@ impl Object for InvoiceItem {
     }
 }
 
+//automatically added back in service of InvoiceItem with hash7950177059610030066
+
+
+//automatically added back in service of InvoiceItem with hash7950177059610030066
+
+
+//automatically added back in service of InvoiceItem with hash595189701795417752
+
+
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorization {
     pub id: IssuingAuthorizationId,
 }
-//automatically added back in service of IssuingAuthorization with hash5455333282758663823
+//automatically added back in service of IssuingAuthorization with hash-5141201543021633229
 #[cfg(not(feature = "issuing"))]
 impl Object for IssuingAuthorization {
     type Id = IssuingAuthorizationId;
@@ -202,12 +304,21 @@ impl Object for IssuingAuthorization {
     }
 }
 
+//automatically added back in service of IssuingAuthorization with hash-5141201543021633229
+
+
+//automatically added back in service of IssuingAuthorization with hash-5141201543021633229
+
+
+//automatically added back in service of IssuingAuthorization with hash5455333282758663823
+
+
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCard {
     pub id: IssuingCardId,
 }
-//automatically added back in service of IssuingCard with hash-2725050037589636419
+//automatically added back in service of IssuingCard with hash4501721549196130287
 #[cfg(not(feature = "issuing"))]
 impl Object for IssuingCard {
     type Id = IssuingCardId;
@@ -219,12 +330,21 @@ impl Object for IssuingCard {
     }
 }
 
+//automatically added back in service of IssuingCard with hash4501721549196130287
+
+
+//automatically added back in service of IssuingCard with hash4501721549196130287
+
+
+//automatically added back in service of IssuingCard with hash-2725050037589636419
+
+
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholder {
     pub id: IssuingCardholderId,
 }
-//automatically added back in service of IssuingCardholder with hash-3281164070190290591
+//automatically added back in service of IssuingCardholder with hash3919303576008855339
 #[cfg(not(feature = "issuing"))]
 impl Object for IssuingCardholder {
     type Id = IssuingCardholderId;
@@ -236,12 +356,21 @@ impl Object for IssuingCardholder {
     }
 }
 
+//automatically added back in service of IssuingCardholder with hash3919303576008855339
+
+
+//automatically added back in service of IssuingCardholder with hash3919303576008855339
+
+
+//automatically added back in service of IssuingCardholder with hash-3281164070190290591
+
+
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDispute {
     pub id: IssuingDisputeId,
 }
-//automatically added back in service of IssuingDispute with hash-8021036917407596782
+//automatically added back in service of IssuingDispute with hash5967689277921946028
 #[cfg(not(feature = "issuing"))]
 impl Object for IssuingDispute {
     type Id = IssuingDisputeId;
@@ -253,12 +382,21 @@ impl Object for IssuingDispute {
     }
 }
 
+//automatically added back in service of IssuingDispute with hash5967689277921946028
+
+
+//automatically added back in service of IssuingDispute with hash5967689277921946028
+
+
+//automatically added back in service of IssuingDispute with hash-8021036917407596782
+
+
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransaction {
     pub id: IssuingTransactionId,
 }
-//automatically added back in service of IssuingTransaction with hash-6340634987581238962
+//automatically added back in service of IssuingTransaction with hash2453258017434230428
 #[cfg(not(feature = "issuing"))]
 impl Object for IssuingTransaction {
     type Id = IssuingTransactionId;
@@ -270,12 +408,21 @@ impl Object for IssuingTransaction {
     }
 }
 
+//automatically added back in service of IssuingTransaction with hash2453258017434230428
+
+
+//automatically added back in service of IssuingTransaction with hash2453258017434230428
+
+
+//automatically added back in service of IssuingTransaction with hash-6340634987581238962
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceLineItem {
     pub id: InvoiceLineItemId,
 }
-//automatically added back in service of InvoiceLineItem with hash7700006293702222346
+//automatically added back in service of InvoiceLineItem with hash2307922612136106088
 #[cfg(not(feature = "billing"))]
 impl Object for InvoiceLineItem {
     type Id = InvoiceLineItemId;
@@ -287,12 +434,21 @@ impl Object for InvoiceLineItem {
     }
 }
 
+//automatically added back in service of InvoiceLineItem with hash2307922612136106088
+
+
+//automatically added back in service of InvoiceLineItem with hash2307922612136106088
+
+
+//automatically added back in service of InvoiceLineItem with hash7700006293702222346
+
+
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Order {
     pub id: OrderId,
 }
-//automatically added back in service of Order with hash6154026638304160162
+//automatically added back in service of Order with hash-7707031304986798316
 #[cfg(not(feature = "orders"))]
 impl Object for Order {
     type Id = OrderId;
@@ -304,12 +460,21 @@ impl Object for Order {
     }
 }
 
+//automatically added back in service of Order with hash-7707031304986798316
+
+
+//automatically added back in service of Order with hash-7707031304986798316
+
+
+//automatically added back in service of Order with hash6154026638304160162
+
+
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderItem {
     pub id: (),
 }
-//automatically added back in service of OrderItem with hash3895749257816968079
+//automatically added back in service of OrderItem with hash3704032167982539101
 #[cfg(not(feature = "orders"))]
 impl Object for OrderItem {
     type Id = ();
@@ -321,12 +486,21 @@ impl Object for OrderItem {
     }
 }
 
+//automatically added back in service of OrderItem with hash3704032167982539101
+
+
+//automatically added back in service of OrderItem with hash3704032167982539101
+
+
+//automatically added back in service of OrderItem with hash3895749257816968079
+
+
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderReturn {
     pub id: OrderReturnId,
 }
-//automatically added back in service of OrderReturn with hash6629718212312249848
+//automatically added back in service of OrderReturn with hash-3373669299755781116
 #[cfg(not(feature = "orders"))]
 impl Object for OrderReturn {
     type Id = OrderReturnId;
@@ -338,12 +512,21 @@ impl Object for OrderReturn {
     }
 }
 
+//automatically added back in service of OrderReturn with hash-3373669299755781116
+
+
+//automatically added back in service of OrderReturn with hash-3373669299755781116
+
+
+//automatically added back in service of OrderReturn with hash6629718212312249848
+
+
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Person {
     pub id: PersonId,
 }
-//automatically added back in service of Person with hash5620762629573234696
+//automatically added back in service of Person with hash3437362498376385340
 #[cfg(not(feature = "connect"))]
 impl Object for Person {
     type Id = PersonId;
@@ -355,12 +538,21 @@ impl Object for Person {
     }
 }
 
+//automatically added back in service of Person with hash3437362498376385340
+
+
+//automatically added back in service of Person with hash3437362498376385340
+
+
+//automatically added back in service of Person with hash5620762629573234696
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Plan {
     pub id: PlanId,
 }
-//automatically added back in service of Plan with hash3390798107851349328
+//automatically added back in service of Plan with hash1272108170975119476
 #[cfg(not(feature = "billing"))]
 impl Object for Plan {
     type Id = PlanId;
@@ -372,12 +564,21 @@ impl Object for Plan {
     }
 }
 
+//automatically added back in service of Plan with hash1272108170975119476
+
+
+//automatically added back in service of Plan with hash1272108170975119476
+
+
+//automatically added back in service of Plan with hash3390798107851349328
+
+
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Recipient {
     pub id: RecipientId,
 }
-//automatically added back in service of Recipient with hash1817394076928278497
+//automatically added back in service of Recipient with hash-2353419236078842127
 #[cfg(not(feature = "connect"))]
 impl Object for Recipient {
     type Id = RecipientId;
@@ -389,12 +590,21 @@ impl Object for Recipient {
     }
 }
 
+//automatically added back in service of Recipient with hash-2353419236078842127
+
+
+//automatically added back in service of Recipient with hash-2353419236078842127
+
+
+//automatically added back in service of Recipient with hash1817394076928278497
+
+
 #[cfg(not(feature = "fraud"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Review {
     pub id: ReviewId,
 }
-//automatically added back in service of Review with hash-6534407800379077321
+//automatically added back in service of Review with hash2910031241930626001
 #[cfg(not(feature = "fraud"))]
 impl Object for Review {
     type Id = ReviewId;
@@ -406,12 +616,21 @@ impl Object for Review {
     }
 }
 
+//automatically added back in service of Review with hash2910031241930626001
+
+
+//automatically added back in service of Review with hash2910031241930626001
+
+
+//automatically added back in service of Review with hash-6534407800379077321
+
+
 #[cfg(not(feature = "sigma"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ScheduledQueryRun {
     pub id: ScheduledQueryRunId,
 }
-//automatically added back in service of ScheduledQueryRun with hash5690276177249760270
+//automatically added back in service of ScheduledQueryRun with hash-768470941936991008
 #[cfg(not(feature = "sigma"))]
 impl Object for ScheduledQueryRun {
     type Id = ScheduledQueryRunId;
@@ -423,12 +642,21 @@ impl Object for ScheduledQueryRun {
     }
 }
 
+//automatically added back in service of ScheduledQueryRun with hash-768470941936991008
+
+
+//automatically added back in service of ScheduledQueryRun with hash-768470941936991008
+
+
+//automatically added back in service of ScheduledQueryRun with hash5690276177249760270
+
+
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Sku {
     pub id: SkuId,
 }
-//automatically added back in service of Sku with hash-7355070974575702771
+//automatically added back in service of Sku with hash-2970364133945343515
 #[cfg(not(feature = "orders"))]
 impl Object for Sku {
     type Id = SkuId;
@@ -440,12 +668,21 @@ impl Object for Sku {
     }
 }
 
+//automatically added back in service of Sku with hash-2970364133945343515
+
+
+//automatically added back in service of Sku with hash-2970364133945343515
+
+
+//automatically added back in service of Sku with hash-7355070974575702771
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Subscription {
     pub id: SubscriptionId,
 }
-//automatically added back in service of Subscription with hash-6326617233248894842
+//automatically added back in service of Subscription with hash6349076382051314398
 #[cfg(not(feature = "billing"))]
 impl Object for Subscription {
     type Id = SubscriptionId;
@@ -457,12 +694,21 @@ impl Object for Subscription {
     }
 }
 
+//automatically added back in service of Subscription with hash6349076382051314398
+
+
+//automatically added back in service of Subscription with hash6349076382051314398
+
+
+//automatically added back in service of Subscription with hash-6326617233248894842
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItem {
     pub id: SubscriptionItemId,
 }
-//automatically added back in service of SubscriptionItem with hash1114318409582002905
+//automatically added back in service of SubscriptionItem with hash6670535476668204121
 #[cfg(not(feature = "billing"))]
 impl Object for SubscriptionItem {
     type Id = SubscriptionItemId;
@@ -474,12 +720,21 @@ impl Object for SubscriptionItem {
     }
 }
 
+//automatically added back in service of SubscriptionItem with hash6670535476668204121
+
+
+//automatically added back in service of SubscriptionItem with hash6670535476668204121
+
+
+//automatically added back in service of SubscriptionItem with hash1114318409582002905
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionSchedule {
     pub id: SubscriptionScheduleId,
 }
-//automatically added back in service of SubscriptionSchedule with hash6075648035649748343
+//automatically added back in service of SubscriptionSchedule with hash-8605940895179834805
 #[cfg(not(feature = "billing"))]
 impl Object for SubscriptionSchedule {
     type Id = SubscriptionScheduleId;
@@ -491,12 +746,21 @@ impl Object for SubscriptionSchedule {
     }
 }
 
+//automatically added back in service of SubscriptionSchedule with hash-8605940895179834805
+
+
+//automatically added back in service of SubscriptionSchedule with hash-8605940895179834805
+
+
+//automatically added back in service of SubscriptionSchedule with hash6075648035649748343
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleRevision {
     pub id: (),
 }
-//automatically added back in service of SubscriptionScheduleRevision with hash7937448135755504067
+//automatically added back in service of SubscriptionScheduleRevision with hash675248495282515059
 #[cfg(not(feature = "billing"))]
 impl Object for SubscriptionScheduleRevision {
     type Id = ();
@@ -508,12 +772,21 @@ impl Object for SubscriptionScheduleRevision {
     }
 }
 
+//automatically added back in service of SubscriptionScheduleRevision with hash675248495282515059
+
+
+//automatically added back in service of SubscriptionScheduleRevision with hash675248495282515059
+
+
+//automatically added back in service of SubscriptionScheduleRevision with hash7937448135755504067
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxId {
     pub id: TaxIdId,
 }
-//automatically added back in service of TaxId with hash4016838953470791134
+//automatically added back in service of TaxId with hash992046258278666322
 #[cfg(not(feature = "billing"))]
 impl Object for TaxId {
     type Id = TaxIdId;
@@ -525,12 +798,21 @@ impl Object for TaxId {
     }
 }
 
+//automatically added back in service of TaxId with hash992046258278666322
+
+
+//automatically added back in service of TaxId with hash992046258278666322
+
+
+//automatically added back in service of TaxId with hash4016838953470791134
+
+
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxRate {
     pub id: TaxRateId,
 }
-//automatically added back in service of TaxRate with hash-7355842402776281241
+//automatically added back in service of TaxRate with hash5859477794856546109
 #[cfg(not(feature = "billing"))]
 impl Object for TaxRate {
     type Id = TaxRateId;
@@ -542,12 +824,21 @@ impl Object for TaxRate {
     }
 }
 
+//automatically added back in service of TaxRate with hash5859477794856546109
+
+
+//automatically added back in service of TaxRate with hash5859477794856546109
+
+
+//automatically added back in service of TaxRate with hash-7355842402776281241
+
+
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Topup {
     pub id: TopupId,
 }
-//automatically added back in service of Topup with hash9015737665482534784
+//automatically added back in service of Topup with hash-1055834901306071266
 #[cfg(not(feature = "connect"))]
 impl Object for Topup {
     type Id = TopupId;
@@ -558,6 +849,15 @@ impl Object for Topup {
         "topup"
     }
 }
+
+//automatically added back in service of Topup with hash-1055834901306071266
+
+
+//automatically added back in service of Topup with hash-1055834901306071266
+
+
+//automatically added back in service of Topup with hash9015737665482534784
+
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -570,7 +870,7 @@ pub struct Transfer {
 pub struct TransferReversal {
     pub id: TransferReversalId,
 }
-//automatically added back in service of TransferReversal with hash-3912079485920673044
+//automatically added back in service of TransferReversal with hash5771848075456844946
 #[cfg(not(feature = "connect"))]
 impl Object for TransferReversal {
     type Id = TransferReversalId;
@@ -581,6 +881,15 @@ impl Object for TransferReversal {
         "transfer_reversal"
     }
 }
+
+//automatically added back in service of TransferReversal with hash5771848075456844946
+
+
+//automatically added back in service of TransferReversal with hash5771848075456844946
+
+
+//automatically added back in service of TransferReversal with hash-3912079485920673044
+
 
 #[cfg(not(feature = "webhook-endpoints"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]

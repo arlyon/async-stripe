@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 use serde_derive::{Deserialize, Serialize};
 
 // ======================================
@@ -46,6 +49,24 @@ impl TaxCode {
         client.get_query(&format!("/tax_codes/{}", id), &Expand { expand })
     }
 }
+
+//automatically added back in service of TaxCode with hash445504549070456972
+
+
+//automatically added back in service of TaxCode with hash2363185547525466981
+
+
+//automatically added back in service of TaxCode with hash445504549070456972
+
+
+//automatically added back in service of TaxCode with hash2363185547525466981
+
+
+//automatically added back in service of TaxCode with hash445504549070456972
+
+
+//automatically added back in service of TaxCode with hash2363185547525466981
+
 
 /// The parameters for `TaxCode::list`.
 #[derive(Clone, Debug, Serialize, Default)]

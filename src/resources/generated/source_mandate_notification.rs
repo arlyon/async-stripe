@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -66,6 +69,15 @@ impl Object for SourceMandateNotification {
         "source_mandate_notification"
     }
 }
+
+//automatically added back in service of SourceMandateNotification with hash1328300387557951638
+
+
+//automatically added back in service of SourceMandateNotification with hash1328300387557951638
+
+
+//automatically added back in service of SourceMandateNotification with hash1328300387557951638
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateNotificationAcssDebitData {

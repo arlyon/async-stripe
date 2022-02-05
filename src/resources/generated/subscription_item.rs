@@ -7,10 +7,12 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
-use crate::resources::{
-    Currency, Price, SubscriptionItemBillingThresholds, SubscriptionItemPriceData,
-    SubscriptionItemPriceDataRecurring, TaxRate,
-};
+use crate::resources::{  SubscriptionItemPriceData,    Price,   
+    Currency,   
+    SubscriptionItemPriceDataRecurring,    TaxRate,    SubscriptionItemBillingThresholds, };
+
+
+
 
 /// The resource representing a Stripe "SubscriptionItem".
 ///
@@ -68,7 +70,7 @@ impl Object for SubscriptionItem {
     }
 }
 
-//automatically added back in service of SubscriptionItem with hash7470898605362399639
+//automatically added back in service of SubscriptionItem with hash3790658307592474265
 impl SubscriptionItem {
     /// Returns a list of your subscription items for a given subscription.
     pub fn list(
@@ -116,6 +118,24 @@ impl SubscriptionItem {
         client.delete(&format!("/subscription_items/{}", id))
     }
 }
+
+//automatically added back in service of SubscriptionItem with hash6670535476668204121
+
+
+//automatically added back in service of SubscriptionItem with hash3790658307592474265
+
+
+//automatically added back in service of SubscriptionItem with hash6670535476668204121
+
+
+//automatically added back in service of SubscriptionItem with hash3790658307592474265
+
+
+//automatically added back in service of SubscriptionItem with hash6670535476668204121
+
+
+//automatically added back in service of SubscriptionItem with hash7470898605362399639
+
 
 /// The parameters for `SubscriptionItem::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -208,6 +228,15 @@ impl<'a> CreateSubscriptionItem<'a> {
     }
 }
 
+//automatically added back in service of CreateSubscriptionItem with hash6370300438004668447
+
+
+//automatically added back in service of CreateSubscriptionItem with hash6370300438004668447
+
+
+//automatically added back in service of CreateSubscriptionItem with hash6370300438004668447
+
+
 /// The parameters for `SubscriptionItem::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListSubscriptionItems<'a> {
@@ -250,6 +279,15 @@ impl<'a> ListSubscriptionItems<'a> {
         }
     }
 }
+
+//automatically added back in service of ListSubscriptionItems with hash427381695944824741
+
+
+//automatically added back in service of ListSubscriptionItems with hash427381695944824741
+
+
+//automatically added back in service of ListSubscriptionItems with hash427381695944824741
+
 
 /// The parameters for `SubscriptionItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]

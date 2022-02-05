@@ -7,12 +7,14 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    CollectionMethod, Currency, Customer, Discount, Invoice, InvoiceItemPriceData,
-    InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact, PaymentMethod,
-    PaymentSource, Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
-    SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
-};
+use crate::resources::{ 
+    PaymentSource,   
+    SubscriptionItemBillingThresholds,   Customer,    Invoice,    Scheduled,    PaymentMethod,    InvoicePaymentMethodOptionsBancontact,   
+    CollectionMethod,    TaxRate,    Discount,    SubscriptionTransferData,    SubscriptionBillingThresholds,    SubscriptionItem,    SubscriptionSchedule,    InvoiceItemPriceData,    SetupIntent,    Currency,   
+    InvoicePaymentMethodOptionsAcssDebit, };
+
+
+
 
 /// The resource representing a Stripe "Subscription".
 ///
@@ -190,7 +192,7 @@ pub struct Subscription {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_start: Option<Box<Timestamp>>,
 }
-//automatically added back in service of Subscription with hash-1426855596312744388
+//automatically added back in service of Subscription with hash3752503506519761346
 impl Subscription {
     /// By default, returns a list of subscriptions that have not been canceled.
     ///
@@ -250,6 +252,24 @@ impl Object for Subscription {
         "subscription"
     }
 }
+
+//automatically added back in service of Subscription with hash3752503506519761346
+
+
+//automatically added back in service of Subscription with hash6349076382051314398
+
+
+//automatically added back in service of Subscription with hash3752503506519761346
+
+
+//automatically added back in service of Subscription with hash6349076382051314398
+
+
+//automatically added back in service of Subscription with hash-1426855596312744388
+
+
+//automatically added back in service of Subscription with hash6349076382051314398
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionAutomaticTax {
@@ -591,6 +611,15 @@ impl<'a> CreateSubscription<'a> {
     }
 }
 
+//automatically added back in service of CreateSubscription with hash-406403584504985029
+
+
+//automatically added back in service of CreateSubscription with hash-406403584504985029
+
+
+//automatically added back in service of CreateSubscription with hash-406403584504985029
+
+
 /// The parameters for `Subscription::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptions<'a> {
@@ -668,6 +697,15 @@ impl<'a> ListSubscriptions<'a> {
         }
     }
 }
+
+//automatically added back in service of ListSubscriptions with hash6047047728441954113
+
+
+//automatically added back in service of ListSubscriptions with hash6047047728441954113
+
+
+//automatically added back in service of ListSubscriptions with hash6047047728441954113
+
 
 /// The parameters for `Subscription::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -884,6 +922,15 @@ impl<'a> UpdateSubscription<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateSubscription with hash3463687738660956392
+
+
+//automatically added back in service of UpdateSubscription with hash3463687738660956392
+
+
+//automatically added back in service of UpdateSubscription with hash3463687738660956392
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AddInvoiceItems {

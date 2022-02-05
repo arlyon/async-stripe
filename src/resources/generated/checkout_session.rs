@@ -7,11 +7,12 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
-use crate::resources::{
-    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentLink,
-    PaymentMethodOptionsBoleto, PaymentMethodOptionsOxxo, SetupIntent, Shipping, ShippingRate,
-    Subscription, TaxRate,
-};
+use crate::resources::{ Customer,   
+    Shipping,    PaymentLink,    Currency,    TaxRate,    Discount,    PaymentIntent,    ShippingRate,    Subscription,   
+    CheckoutSessionItem,    SetupIntent, };
+
+
+
 
 /// The resource representing a Stripe "Session".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -196,7 +197,18 @@ pub struct CheckoutSession {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<Box<String>>,
 }
-//automatically added back in service of CheckoutSession with hash618968847832598553
+//automatically added back in service of CheckoutSession with hash-2063762736368013191
+impl Object for CheckoutSession {
+    type Id = CheckoutSessionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "checkout.session"
+    }
+}
+
+//automatically added back in service of CheckoutSession with hash-6638799040889401169
 impl CheckoutSession {
     /// Returns a list of Checkout Sessions.
     pub fn list(
@@ -213,15 +225,22 @@ impl CheckoutSession {
 }
 
 //automatically added back in service of CheckoutSession with hash-2063762736368013191
-impl Object for CheckoutSession {
-    type Id = CheckoutSessionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "checkout.session"
-    }
-}
+
+
+//automatically added back in service of CheckoutSession with hash-6638799040889401169
+
+
+//automatically added back in service of CheckoutSession with hash-2063762736368013191
+
+
+//automatically added back in service of CheckoutSession with hash-6638799040889401169
+
+
+//automatically added back in service of CheckoutSession with hash618968847832598553
+
+
+//automatically added back in service of CheckoutSession with hash-2063762736368013191
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSessionPaymentMethodOptions {
@@ -229,10 +248,10 @@ pub struct CheckoutSessionPaymentMethodOptions {
     pub acss_debit: Option<Box<CheckoutAcssDebitPaymentMethodOptions>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto: Option<Box<PaymentMethodOptionsBoleto>>,
+    pub boleto: Option<Box<CheckoutBoletoPaymentMethodOptions>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<Box<PaymentMethodOptionsOxxo>>,
+    pub oxxo: Option<Box<CheckoutOxxoPaymentMethodOptions>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -276,6 +295,22 @@ pub struct CheckoutAcssDebitMandateOptions {
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type: Option<Box<CheckoutAcssDebitMandateOptionsTransactionType>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutBoletoPaymentMethodOptions {
+    /// The number of calendar days before a Boleto voucher expires.
+    ///
+    /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto voucher will expire on Wednesday at 23:59 America/Sao_Paulo time.
+    pub expires_after_days: u32,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutOxxoPaymentMethodOptions {
+    /// The number of calendar days before an OXXO invoice expires.
+    ///
+    /// For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
+    pub expires_after_days: u32,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -647,6 +682,15 @@ impl<'a> CreateCheckoutSession<'a> {
     }
 }
 
+//automatically added back in service of CreateCheckoutSession with hash3949997308854274271
+
+
+//automatically added back in service of CreateCheckoutSession with hash3949997308854274271
+
+
+//automatically added back in service of CreateCheckoutSession with hash3949997308854274271
+
+
 /// The parameters for `CheckoutSession::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCheckoutSessions<'a> {
@@ -695,6 +739,15 @@ impl<'a> ListCheckoutSessions<'a> {
         }
     }
 }
+
+//automatically added back in service of ListCheckoutSessions with hash7735600488563492858
+
+
+//automatically added back in service of ListCheckoutSessions with hash7735600488563492858
+
+
+//automatically added back in service of ListCheckoutSessions with hash7735600488563492858
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAfterExpiration {
@@ -1946,6 +1999,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     AcssDebit,
     AfterpayClearpay,
     Alipay,
+    AuBecsDebit,
     BacsDebit,
     Bancontact,
     Boleto,
@@ -1969,6 +2023,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             CreateCheckoutSessionPaymentMethodTypes::AcssDebit => "acss_debit",
             CreateCheckoutSessionPaymentMethodTypes::AfterpayClearpay => "afterpay_clearpay",
             CreateCheckoutSessionPaymentMethodTypes::Alipay => "alipay",
+            CreateCheckoutSessionPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             CreateCheckoutSessionPaymentMethodTypes::BacsDebit => "bacs_debit",
             CreateCheckoutSessionPaymentMethodTypes::Bancontact => "bancontact",
             CreateCheckoutSessionPaymentMethodTypes::Boleto => "boleto",

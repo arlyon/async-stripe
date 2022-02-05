@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -60,7 +63,7 @@ impl Object for BillingPortalSession {
     }
 }
 
-//automatically added back in service of BillingPortalSession with hash8325353705066617351
+//automatically added back in service of BillingPortalSession with hash4572080641545088697
 impl BillingPortalSession {
     /// Creates a session of the customer portal.
     pub fn create(
@@ -70,6 +73,24 @@ impl BillingPortalSession {
         client.post_form("/billing_portal/sessions", &params)
     }
 }
+
+//automatically added back in service of BillingPortalSession with hash4519393852987815889
+
+
+//automatically added back in service of BillingPortalSession with hash4572080641545088697
+
+
+//automatically added back in service of BillingPortalSession with hash4519393852987815889
+
+
+//automatically added back in service of BillingPortalSession with hash4572080641545088697
+
+
+//automatically added back in service of BillingPortalSession with hash4519393852987815889
+
+
+//automatically added back in service of BillingPortalSession with hash8325353705066617351
+
 
 /// The parameters for `BillingPortalSession::create`.
 #[derive(Clone, Debug, Serialize)]

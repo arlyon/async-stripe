@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{ChargeId, DisputeId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, Charge, Currency, File, PaymentIntent};
+use crate::resources::{  BalanceTransaction,   Currency,    PaymentIntent,    File,    Charge, };
+
+
+
 
 /// The resource representing a Stripe "Dispute".
 ///
@@ -93,6 +96,24 @@ impl Object for Dispute {
         "dispute"
     }
 }
+
+//automatically added back in service of Dispute with hash5798063553143893065
+
+
+//automatically added back in service of Dispute with hash2994297120450655962
+
+
+//automatically added back in service of Dispute with hash5798063553143893065
+
+
+//automatically added back in service of Dispute with hash2994297120450655962
+
+
+//automatically added back in service of Dispute with hash5798063553143893065
+
+
+//automatically added back in service of Dispute with hash2994297120450655962
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DisputeEvidence {

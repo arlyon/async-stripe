@@ -6,7 +6,10 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::CapabilityId;
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{Account, AccountRequirementsAlternative, AccountRequirementsError};
+use crate::resources::{ AccountRequirementsError,    AccountRequirementsAlternative,   Account, };
+
+
+
 
 /// The resource representing a Stripe "AccountCapability".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -47,6 +50,15 @@ impl Object for Capability {
         "capability"
     }
 }
+
+//automatically added back in service of Capability with hash7770197585324368899
+
+
+//automatically added back in service of Capability with hash7770197585324368899
+
+
+//automatically added back in service of Capability with hash7770197585324368899
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AccountCapabilityFutureRequirements {

@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -42,7 +45,18 @@ pub struct IssuerFraudRecord {
     /// The timestamp at which the card issuer posted the issuer fraud record.
     pub post_date: Timestamp,
 }
-//automatically added back in service of IssuerFraudRecord with hash-5878184564617875815
+//automatically added back in service of IssuerFraudRecord with hash-5996173823989904020
+impl Object for IssuerFraudRecord {
+    type Id = IssuerFraudRecordId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "issuer_fraud_record"
+    }
+}
+
+//automatically added back in service of IssuerFraudRecord with hash-2850313433496034458
 impl IssuerFraudRecord {
     /// Returns a list of issuer fraud records.
     pub fn list(
@@ -65,15 +79,22 @@ impl IssuerFraudRecord {
 }
 
 //automatically added back in service of IssuerFraudRecord with hash-5996173823989904020
-impl Object for IssuerFraudRecord {
-    type Id = IssuerFraudRecordId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "issuer_fraud_record"
-    }
-}
+
+
+//automatically added back in service of IssuerFraudRecord with hash-2850313433496034458
+
+
+//automatically added back in service of IssuerFraudRecord with hash-5996173823989904020
+
+
+//automatically added back in service of IssuerFraudRecord with hash-2850313433496034458
+
+
+//automatically added back in service of IssuerFraudRecord with hash-5878184564617875815
+
+
+//automatically added back in service of IssuerFraudRecord with hash-5996173823989904020
+
 
 /// The parameters for `IssuerFraudRecord::list`.
 #[derive(Clone, Debug, Serialize, Default)]

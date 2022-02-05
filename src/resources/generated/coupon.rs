@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 // ======================================
 // This file was automatically generated.
 // ======================================
@@ -86,17 +89,6 @@ pub struct Coupon {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub valid: Option<Box<bool>>,
 }
-//automatically added back in service of Coupon with hash8592416896964471419
-impl Object for Coupon {
-    type Id = CouponId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "coupon"
-    }
-}
-
 //automatically added back in service of Coupon with hash414331931315565595
 impl Coupon {
     /// Returns a list of your coupons.
@@ -133,6 +125,35 @@ impl Coupon {
         client.delete(&format!("/coupons/{}", id))
     }
 }
+
+//automatically added back in service of Coupon with hash8592416896964471419
+impl Object for Coupon {
+    type Id = CouponId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "coupon"
+    }
+}
+
+//automatically added back in service of Coupon with hash8592416896964471419
+
+
+//automatically added back in service of Coupon with hash414331931315565595
+
+
+//automatically added back in service of Coupon with hash414331931315565595
+
+
+//automatically added back in service of Coupon with hash8592416896964471419
+
+
+//automatically added back in service of Coupon with hash8592416896964471419
+
+
+//automatically added back in service of Coupon with hash414331931315565595
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CouponAppliesTo {
@@ -226,6 +247,15 @@ impl<'a> CreateCoupon<'a> {
     }
 }
 
+//automatically added back in service of CreateCoupon with hash191720770017175288
+
+
+//automatically added back in service of CreateCoupon with hash191720770017175288
+
+
+//automatically added back in service of CreateCoupon with hash191720770017175288
+
+
 /// The parameters for `Coupon::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCoupons<'a> {
@@ -272,6 +302,15 @@ impl<'a> ListCoupons<'a> {
     }
 }
 
+//automatically added back in service of ListCoupons with hash1987245680888046085
+
+
+//automatically added back in service of ListCoupons with hash1987245680888046085
+
+
+//automatically added back in service of ListCoupons with hash1987245680888046085
+
+
 /// The parameters for `Coupon::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCoupon<'a> {
@@ -303,6 +342,15 @@ impl<'a> UpdateCoupon<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateCoupon with hash8616485804043887311
+
+
+//automatically added back in service of UpdateCoupon with hash8616485804043887311
+
+
+//automatically added back in service of UpdateCoupon with hash8616485804043887311
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCouponAppliesTo {

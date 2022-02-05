@@ -7,10 +7,12 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    AccountRequirementsAlternative, AccountRequirementsError, Address, BankAccount, Card, Currency,
-    DelayDays, File, Person, PersonVerificationParams, VerificationDocumentParams,
-};
+use crate::resources::{  VerificationDocumentParams,    BankAccount,    AccountRequirementsError,   
+    AccountRequirementsAlternative,    Card,    Currency,    File,    PersonVerificationParams,   
+    DelayDays,    Address,   Person, };
+
+
+
 
 /// The resource representing a Stripe "Account".
 ///
@@ -110,17 +112,6 @@ pub struct Account {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<AccountType>,
 }
-//automatically added back in service of Account with hash2972867375275022447
-impl Object for Account {
-    type Id = AccountId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "account"
-    }
-}
-
 //automatically added back in service of Account with hash-6901179554990850401
 impl Account {
     /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
@@ -161,6 +152,35 @@ impl Account {
         client.delete(&format!("/accounts/{}", id))
     }
 }
+
+//automatically added back in service of Account with hash2972867375275022447
+impl Object for Account {
+    type Id = AccountId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "account"
+    }
+}
+
+//automatically added back in service of Account with hash2972867375275022447
+
+
+//automatically added back in service of Account with hash-6901179554990850401
+
+
+//automatically added back in service of Account with hash-6901179554990850401
+
+
+//automatically added back in service of Account with hash2972867375275022447
+
+
+//automatically added back in service of Account with hash2972867375275022447
+
+
+//automatically added back in service of Account with hash-6901179554990850401
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BusinessProfile {
@@ -845,6 +865,15 @@ impl<'a> CreateAccount<'a> {
     }
 }
 
+//automatically added back in service of CreateAccount with hash-3811867492549884539
+
+
+//automatically added back in service of CreateAccount with hash-3811867492549884539
+
+
+//automatically added back in service of CreateAccount with hash-3811867492549884539
+
+
 /// The parameters for `Account::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListAccounts<'a> {
@@ -887,6 +916,15 @@ impl<'a> ListAccounts<'a> {
         }
     }
 }
+
+//automatically added back in service of ListAccounts with hash7289062467319738547
+
+
+//automatically added back in service of ListAccounts with hash7289062467319738547
+
+
+//automatically added back in service of ListAccounts with hash7289062467319738547
+
 
 /// The parameters for `Account::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -989,6 +1027,15 @@ impl<'a> UpdateAccount<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateAccount with hash-1081931769655045970
+
+
+//automatically added back in service of UpdateAccount with hash-1081931769655045970
+
+
+//automatically added back in service of UpdateAccount with hash-1081931769655045970
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AcceptTos {

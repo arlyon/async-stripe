@@ -7,9 +7,11 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, PaymentMethodId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, ApiErrors, Application, Currency, Customer, Mandate, PaymentMethod, SetupAttempt,
-};
+use crate::resources::{ Customer,    PaymentMethod,    SetupAttempt,    Currency,    Application,   
+    Account,    ApiErrors,    Mandate, };
+
+
+
 
 /// The resource representing a Stripe "SetupIntent".
 ///
@@ -122,7 +124,7 @@ impl Object for SetupIntent {
     }
 }
 
-//automatically added back in service of SetupIntent with hash-1408353295733216677
+//automatically added back in service of SetupIntent with hash2843032243415731790
 impl SetupIntent {
     /// Returns a list of SetupIntents.
     pub fn list(client: &Client, params: ListSetupIntents<'_>) -> Response<List<SetupIntent>> {
@@ -155,6 +157,24 @@ impl SetupIntent {
         client.post_form(&format!("/setup_intents/{}", id), &params)
     }
 }
+
+//automatically added back in service of SetupIntent with hash2612784168772775033
+
+
+//automatically added back in service of SetupIntent with hash2843032243415731790
+
+
+//automatically added back in service of SetupIntent with hash2612784168772775033
+
+
+//automatically added back in service of SetupIntent with hash2843032243415731790
+
+
+//automatically added back in service of SetupIntent with hash2612784168772775033
+
+
+//automatically added back in service of SetupIntent with hash-1408353295733216677
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentNextAction {
@@ -363,6 +383,15 @@ impl<'a> CreateSetupIntent<'a> {
     }
 }
 
+//automatically added back in service of CreateSetupIntent with hash-7509215523626545540
+
+
+//automatically added back in service of CreateSetupIntent with hash-7509215523626545540
+
+
+//automatically added back in service of CreateSetupIntent with hash-7509215523626545540
+
+
 /// The parameters for `SetupIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSetupIntents<'a> {
@@ -418,6 +447,15 @@ impl<'a> ListSetupIntents<'a> {
         }
     }
 }
+
+//automatically added back in service of ListSetupIntents with hash-3252606502611796233
+
+
+//automatically added back in service of ListSetupIntents with hash-3252606502611796233
+
+
+//automatically added back in service of ListSetupIntents with hash-3252606502611796233
+
 
 /// The parameters for `SetupIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -477,6 +515,15 @@ impl<'a> UpdateSetupIntent<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateSetupIntent with hash-7564044353856259758
+
+
+//automatically added back in service of UpdateSetupIntent with hash-7564044353856259758
+
+
+//automatically added back in service of UpdateSetupIntent with hash-7564044353856259758
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateData {

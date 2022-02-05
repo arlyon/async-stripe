@@ -7,12 +7,14 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{BalanceTransactionId, PayoutId, SourceId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    ApplicationFee, ApplicationFeeRefund, BalanceTransactionStatus, Charge,
-    ConnectCollectionTransfer, Currency, Dispute, FeeType, IssuingAuthorization, IssuingDispute,
-    IssuingTransaction, Payout, PlatformTaxFee, Refund, ReserveTransaction, TaxDeductedAtSource,
-    Topup, Transfer, TransferReversal,
-};
+use crate::resources::{   ApplicationFeeRefund,    TransferReversal,    ReserveTransaction,    PlatformTaxFee,   
+    IssuingTransaction,    IssuingAuthorization,    BalanceTransactionStatus,    Transfer,    TaxDeductedAtSource,    Currency,    Payout,   
+    Topup,    FeeType,   
+    ConnectCollectionTransfer,    IssuingDispute,   Dispute,   
+    ApplicationFee,    Refund,    Charge, };
+
+
+
 
 /// The resource representing a Stripe "BalanceTransaction".
 ///
@@ -82,7 +84,18 @@ pub struct BalanceTransaction {
     #[serde(rename = "type")]
     pub type_: BalanceTransactionType,
 }
-//automatically added back in service of BalanceTransaction with hash-8163153116540254744
+//automatically added back in service of BalanceTransaction with hash-8042574980008551559
+impl Object for BalanceTransaction {
+    type Id = BalanceTransactionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "balance_transaction"
+    }
+}
+
+//automatically added back in service of BalanceTransaction with hash-5052364558299030925
 impl BalanceTransaction {
     /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
     ///
@@ -107,15 +120,22 @@ impl BalanceTransaction {
 }
 
 //automatically added back in service of BalanceTransaction with hash-8042574980008551559
-impl Object for BalanceTransaction {
-    type Id = BalanceTransactionId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "balance_transaction"
-    }
-}
+
+
+//automatically added back in service of BalanceTransaction with hash-5052364558299030925
+
+
+//automatically added back in service of BalanceTransaction with hash-8042574980008551559
+
+
+//automatically added back in service of BalanceTransaction with hash-5052364558299030925
+
+
+//automatically added back in service of BalanceTransaction with hash-8163153116540254744
+
+
+//automatically added back in service of BalanceTransaction with hash-8042574980008551559
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Fee {

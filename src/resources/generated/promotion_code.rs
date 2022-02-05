@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PromotionCodeId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Coupon, Currency, Customer};
+use crate::resources::{Coupon,    Customer,    Currency, };
+
+
+
 
 /// The resource representing a Stripe "PromotionCode".
 ///
@@ -60,7 +63,7 @@ pub struct PromotionCode {
     /// Number of times this promotion code has been used.
     pub times_redeemed: i64,
 }
-//automatically added back in service of PromotionCode with hash-3696780080453033563
+//automatically added back in service of PromotionCode with hash-812479903075292075
 impl PromotionCode {
     /// Returns a list of your promotion codes.
     pub fn list(client: &Client, params: ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
@@ -100,6 +103,24 @@ impl Object for PromotionCode {
         "promotion_code"
     }
 }
+
+//automatically added back in service of PromotionCode with hash-812479903075292075
+
+
+//automatically added back in service of PromotionCode with hash1364410342897565166
+
+
+//automatically added back in service of PromotionCode with hash-812479903075292075
+
+
+//automatically added back in service of PromotionCode with hash1364410342897565166
+
+
+//automatically added back in service of PromotionCode with hash-3696780080453033563
+
+
+//automatically added back in service of PromotionCode with hash1364410342897565166
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PromotionCodesResourceRestrictions {
@@ -180,6 +201,15 @@ impl<'a> ListPromotionCodes<'a> {
         }
     }
 }
+
+//automatically added back in service of ListPromotionCodes with hash-2986936303336722138
+
+
+//automatically added back in service of ListPromotionCodes with hash-2986936303336722138
+
+
+//automatically added back in service of ListPromotionCodes with hash-2986936303336722138
+
 
 /// The parameters for `PromotionCode::update`.
 #[derive(Clone, Debug, Serialize, Default)]

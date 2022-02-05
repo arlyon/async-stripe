@@ -4,7 +4,10 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::resources::{BankAccount, Card, PaymentIntent, PaymentMethod, SetupIntent, Source};
+use crate::resources::{BankAccount,    PaymentMethod,    PaymentIntent,    Card,    Source,    SetupIntent, };
+
+
+
 
 /// The resource representing a Stripe "APIErrors".
 #[derive(Clone, Debug, Deserialize, Serialize)]

@@ -7,10 +7,12 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{SetupAttemptId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, ApiErrors, Application, Customer, Mandate, PaymentMethod, SetupIntent,
-    ThreeDSecureDetails,
-};
+use crate::resources::{ Customer,    PaymentMethod,   
+    ThreeDSecureDetails,    Application,   
+    Account,    ApiErrors,    Mandate,    SetupIntent, };
+
+
+
 
 /// The resource representing a Stripe "PaymentFlowsSetupIntentSetupAttempt".
 ///
@@ -76,6 +78,24 @@ impl Object for SetupAttempt {
         "setup_attempt"
     }
 }
+
+//automatically added back in service of SetupAttempt with hash7638470566791935257
+
+
+//automatically added back in service of SetupAttempt with hash2185871494218779887
+
+
+//automatically added back in service of SetupAttempt with hash7638470566791935257
+
+
+//automatically added back in service of SetupAttempt with hash2185871494218779887
+
+
+//automatically added back in service of SetupAttempt with hash7638470566791935257
+
+
+//automatically added back in service of SetupAttempt with hash2185871494218779887
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetails {

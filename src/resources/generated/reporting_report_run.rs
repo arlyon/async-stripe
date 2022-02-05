@@ -6,7 +6,10 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::ReportingReportRunId;
 use crate::params::{Object, Timestamp};
-use crate::resources::{Currency, File};
+use crate::resources::{Currency,    File, };
+
+
+
 
 /// The resource representing a Stripe "reporting_report_run".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -59,6 +62,15 @@ impl Object for ReportingReportRun {
         "reporting.report_run"
     }
 }
+
+//automatically added back in service of ReportingReportRun with hash8849923378255029571
+
+
+//automatically added back in service of ReportingReportRun with hash8849923378255029571
+
+
+//automatically added back in service of ReportingReportRun with hash8849923378255029571
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FinancialReportingFinanceReportRunRunParameters {

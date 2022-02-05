@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::WebhookEndpointId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
-use crate::resources::{ApiVersion, WebhookEndpointStatus};
+use crate::resources::{ WebhookEndpointStatus,   ApiVersion, };
+
+
+
 
 /// The resource representing a Stripe "NotificationWebhookEndpoint".
 ///
@@ -71,7 +74,18 @@ pub struct WebhookEndpoint {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<Box<String>>,
 }
-//automatically added back in service of WebhookEndpoint with hash-8638974670521242560
+//automatically added back in service of WebhookEndpoint with hash-5274357473399814216
+impl Object for WebhookEndpoint {
+    type Id = WebhookEndpointId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "webhook_endpoint"
+    }
+}
+
+//automatically added back in service of WebhookEndpoint with hash1815992211640876098
 impl WebhookEndpoint {
     /// Returns a list of your webhook endpoints.
     pub fn list(
@@ -117,15 +131,22 @@ impl WebhookEndpoint {
 }
 
 //automatically added back in service of WebhookEndpoint with hash-5274357473399814216
-impl Object for WebhookEndpoint {
-    type Id = WebhookEndpointId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "webhook_endpoint"
-    }
-}
+
+
+//automatically added back in service of WebhookEndpoint with hash1815992211640876098
+
+
+//automatically added back in service of WebhookEndpoint with hash-5274357473399814216
+
+
+//automatically added back in service of WebhookEndpoint with hash1815992211640876098
+
+
+//automatically added back in service of WebhookEndpoint with hash-8638974670521242560
+
+
+//automatically added back in service of WebhookEndpoint with hash-5274357473399814216
+
 
 /// The parameters for `WebhookEndpoint::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -179,6 +200,15 @@ impl<'a> CreateWebhookEndpoint<'a> {
     }
 }
 
+//automatically added back in service of CreateWebhookEndpoint with hash8082516801620069850
+
+
+//automatically added back in service of CreateWebhookEndpoint with hash8082516801620069850
+
+
+//automatically added back in service of CreateWebhookEndpoint with hash8082516801620069850
+
+
 /// The parameters for `WebhookEndpoint::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListWebhookEndpoints<'a> {
@@ -217,6 +247,15 @@ impl<'a> ListWebhookEndpoints<'a> {
         }
     }
 }
+
+//automatically added back in service of ListWebhookEndpoints with hash1745722768132667490
+
+
+//automatically added back in service of ListWebhookEndpoints with hash1745722768132667490
+
+
+//automatically added back in service of ListWebhookEndpoints with hash1745722768132667490
+
 
 /// The parameters for `WebhookEndpoint::update`.
 #[derive(Clone, Debug, Serialize, Default)]

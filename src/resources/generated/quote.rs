@@ -7,10 +7,12 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, QuoteId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
-use crate::resources::{
-    Account, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
-    QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate,
-};
+use crate::resources::{   Customer,   
+    QuotesResourceTotalDetails,    CheckoutSessionItem,    Invoice,    SubscriptionSchedule,    Currency,   Discount,   
+    Account,    TaxRate,    Subscription, };
+
+
+
 
 /// The resource representing a Stripe "Quote".
 ///
@@ -174,6 +176,24 @@ impl Quote {
         client.get_query(&format!("/quotes/{}", id), &Expand { expand })
     }
 }
+
+//automatically added back in service of Quote with hash-1181984064814864844
+
+
+//automatically added back in service of Quote with hash3562944810908861263
+
+
+//automatically added back in service of Quote with hash-1181984064814864844
+
+
+//automatically added back in service of Quote with hash3562944810908861263
+
+
+//automatically added back in service of Quote with hash-1181984064814864844
+
+
+//automatically added back in service of Quote with hash3562944810908861263
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceSettingQuoteSetting {

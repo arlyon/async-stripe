@@ -8,11 +8,13 @@ use crate::config::{Client, Response};
 use crate::ids::{CustomerId, SubscriptionScheduleId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    AddInvoiceItems, CollectionMethod, Coupon, Currency, Customer, InvoiceItemPriceData,
-    PaymentMethod, Price, Scheduled, Subscription, SubscriptionBillingThresholds,
-    SubscriptionItemBillingThresholds, SubscriptionScheduleInvoiceSettings,
-    SubscriptionTransferData, TaxRate,
-};
+    AddInvoiceItems,   
+    SubscriptionItemBillingThresholds,    Customer,    Scheduled,    Coupon,    Subscription,    Price,    TaxRate,    Currency,   
+    PaymentMethod,    SubscriptionScheduleInvoiceSettings,    SubscriptionBillingThresholds,    CollectionMethod,   
+    SubscriptionTransferData,    InvoiceItemPriceData, };
+
+
+
 
 /// The resource representing a Stripe "SubscriptionSchedule".
 ///
@@ -96,7 +98,7 @@ impl Object for SubscriptionSchedule {
     }
 }
 
-//automatically added back in service of SubscriptionSchedule with hash-8262815934185951579
+//automatically added back in service of SubscriptionSchedule with hash5664086474422650771
 impl SubscriptionSchedule {
     /// Retrieves the list of your subscription schedules.
     pub fn list(
@@ -136,6 +138,24 @@ impl SubscriptionSchedule {
         client.post_form(&format!("/subscription_schedules/{}", id), &params)
     }
 }
+
+//automatically added back in service of SubscriptionSchedule with hash-8605940895179834805
+
+
+//automatically added back in service of SubscriptionSchedule with hash5664086474422650771
+
+
+//automatically added back in service of SubscriptionSchedule with hash-8605940895179834805
+
+
+//automatically added back in service of SubscriptionSchedule with hash5664086474422650771
+
+
+//automatically added back in service of SubscriptionSchedule with hash-8605940895179834805
+
+
+//automatically added back in service of SubscriptionSchedule with hash-8262815934185951579
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleCurrentPhase {
@@ -381,6 +401,15 @@ impl<'a> CreateSubscriptionSchedule<'a> {
     }
 }
 
+//automatically added back in service of CreateSubscriptionSchedule with hash-44286139511874607
+
+
+//automatically added back in service of CreateSubscriptionSchedule with hash-44286139511874607
+
+
+//automatically added back in service of CreateSubscriptionSchedule with hash-44286139511874607
+
+
 /// The parameters for `SubscriptionSchedule::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptionSchedules<'a> {
@@ -450,6 +479,15 @@ impl<'a> ListSubscriptionSchedules<'a> {
     }
 }
 
+//automatically added back in service of ListSubscriptionSchedules with hash8130888420165609550
+
+
+//automatically added back in service of ListSubscriptionSchedules with hash8130888420165609550
+
+
+//automatically added back in service of ListSubscriptionSchedules with hash8130888420165609550
+
+
 /// The parameters for `SubscriptionSchedule::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionSchedule<'a> {
@@ -503,6 +541,15 @@ impl<'a> UpdateSubscriptionSchedule<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateSubscriptionSchedule with hash6231078576361915594
+
+
+//automatically added back in service of UpdateSubscriptionSchedule with hash6231078576361915594
+
+
+//automatically added back in service of UpdateSubscriptionSchedule with hash6231078576361915594
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhases {

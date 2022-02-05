@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::PaymentLinkId;
 use crate::params::{Expand, Expandable, List, Metadata, Object};
-use crate::resources::{Account, CheckoutSessionItem};
+use crate::resources::{ CheckoutSessionItem,   Account, };
+
+
+
 
 /// The resource representing a Stripe "PaymentLink".
 ///
@@ -94,7 +97,7 @@ impl Object for PaymentLink {
     }
 }
 
-//automatically added back in service of PaymentLink with hash4196631132834950345
+//automatically added back in service of PaymentLink with hash-6576730111448222994
 impl PaymentLink {
     /// Returns a list of your payment links.
     pub fn list(client: &Client, params: ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {
@@ -120,6 +123,24 @@ impl PaymentLink {
         client.post_form(&format!("/payment_links/{}", id), &params)
     }
 }
+
+//automatically added back in service of PaymentLink with hash3477893861966303720
+
+
+//automatically added back in service of PaymentLink with hash-6576730111448222994
+
+
+//automatically added back in service of PaymentLink with hash3477893861966303720
+
+
+//automatically added back in service of PaymentLink with hash-6576730111448222994
+
+
+//automatically added back in service of PaymentLink with hash3477893861966303720
+
+
+//automatically added back in service of PaymentLink with hash4196631132834950345
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourceAfterCompletion {
@@ -292,6 +313,15 @@ impl<'a> CreatePaymentLink<'a> {
     }
 }
 
+//automatically added back in service of CreatePaymentLink with hash-4754334452929055701
+
+
+//automatically added back in service of CreatePaymentLink with hash-4754334452929055701
+
+
+//automatically added back in service of CreatePaymentLink with hash-4754334452929055701
+
+
 /// The parameters for `PaymentLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPaymentLinks<'a> {
@@ -335,6 +365,15 @@ impl<'a> ListPaymentLinks<'a> {
         }
     }
 }
+
+//automatically added back in service of ListPaymentLinks with hash49685204264081770
+
+
+//automatically added back in service of ListPaymentLinks with hash49685204264081770
+
+
+//automatically added back in service of ListPaymentLinks with hash49685204264081770
+
 
 /// The parameters for `PaymentLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -409,6 +448,15 @@ impl<'a> UpdatePaymentLink<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdatePaymentLink with hash-5869788619189055379
+
+
+//automatically added back in service of UpdatePaymentLink with hash-5869788619189055379
+
+
+//automatically added back in service of UpdatePaymentLink with hash-5869788619189055379
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletion {

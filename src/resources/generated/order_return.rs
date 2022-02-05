@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{OrderId, OrderReturnId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
-use crate::resources::{Currency, Order, OrderItem, Refund};
+use crate::resources::{   OrderItem,    Refund,    Order, Currency, };
+
+
+
 
 /// The resource representing a Stripe "OrderReturn".
 ///
@@ -71,6 +74,24 @@ impl Object for OrderReturn {
         "order_return"
     }
 }
+
+//automatically added back in service of OrderReturn with hash3696570308303053283
+
+
+//automatically added back in service of OrderReturn with hash-3373669299755781116
+
+
+//automatically added back in service of OrderReturn with hash3696570308303053283
+
+
+//automatically added back in service of OrderReturn with hash-3373669299755781116
+
+
+//automatically added back in service of OrderReturn with hash3696570308303053283
+
+
+//automatically added back in service of OrderReturn with hash-3373669299755781116
+
 
 /// The parameters for `OrderReturn::list`.
 #[derive(Clone, Debug, Serialize, Default)]

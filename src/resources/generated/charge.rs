@@ -7,12 +7,14 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
-    ChargeSourceParams, Currency, Customer, Invoice, Mandate, Order, PaymentIntent, PaymentMethod,
-    PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodDetailsCardPresent, Refund, Review,
-    Shipping, ThreeDSecureDetails, Transfer,
-};
+use crate::resources::{   BalanceTransaction,   Customer,    PaymentMethodDetailsCardPresent,    Refund,    Currency,    PaymentIntent,    Invoice,    Mandate,    PaymentMethod,    ApplicationFee,    Review,    Transfer,  
+    ChargeSourceParams,    Application,   
+    PaymentMethodDetailsCardInstallmentsPlan,   
+    Shipping,    BillingDetails,    Address,    ThreeDSecureDetails,    Order,   
+    Account, };
+
+
+
 
 /// The resource representing a Stripe "Charge".
 ///
@@ -260,6 +262,24 @@ impl Object for Charge {
         "charge"
     }
 }
+
+//automatically added back in service of Charge with hash-3790820699952775495
+
+
+//automatically added back in service of Charge with hash4884020548677163153
+
+
+//automatically added back in service of Charge with hash-3790820699952775495
+
+
+//automatically added back in service of Charge with hash4884020548677163153
+
+
+//automatically added back in service of Charge with hash-3790820699952775495
+
+
+//automatically added back in service of Charge with hash4884020548677163153
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetails {
@@ -1310,6 +1330,15 @@ impl<'a> CreateCharge<'a> {
     }
 }
 
+//automatically added back in service of CreateCharge with hash93780095678332819
+
+
+//automatically added back in service of CreateCharge with hash93780095678332819
+
+
+//automatically added back in service of CreateCharge with hash93780095678332819
+
+
 /// The parameters for `Charge::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCharges<'a> {
@@ -1367,6 +1396,15 @@ impl<'a> ListCharges<'a> {
         }
     }
 }
+
+//automatically added back in service of ListCharges with hash5258658677103117487
+
+
+//automatically added back in service of ListCharges with hash5258658677103117487
+
+
+//automatically added back in service of ListCharges with hash5258658677103117487
+
 
 /// The parameters for `Charge::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -1438,6 +1476,15 @@ impl<'a> UpdateCharge<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateCharge with hash4044652456747114158
+
+
+//automatically added back in service of UpdateCharge with hash4044652456747114158
+
+
+//automatically added back in service of UpdateCharge with hash4044652456747114158
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetailsParams {

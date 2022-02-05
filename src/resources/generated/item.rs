@@ -6,9 +6,11 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::CheckoutSessionItemId;
 use crate::params::Object;
-use crate::resources::{
-    Currency, Discount, LineItemsDiscountAmount, LineItemsTaxAmount, Price, TaxRate,
-};
+use crate::resources::{  Price,    TaxRate,   
+    Currency,    Discount,    LineItemsTaxAmount,    LineItemsDiscountAmount, };
+
+
+
 
 /// The resource representing a Stripe "LineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]

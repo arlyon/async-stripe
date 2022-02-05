@@ -7,9 +7,11 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
-use crate::resources::{
-    Address, BillingDetails, Charge, Customer, PaymentMethodDetailsCardPresent, SetupAttempt,
-};
+use crate::resources::{ Customer,    PaymentMethodDetailsCardPresent,   
+    Address,    SetupAttempt,    BillingDetails,    Charge, };
+
+
+
 
 /// The resource representing a Stripe "PaymentMethod".
 ///
@@ -111,7 +113,7 @@ pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<Box<PaymentMethodWechatPay>>,
 }
-//automatically added back in service of PaymentMethod with hash6895700544325082243
+//automatically added back in service of PaymentMethod with hash1146975989530125355
 impl PaymentMethod {
     /// Returns a list of PaymentMethods.
     ///
@@ -158,6 +160,24 @@ impl Object for PaymentMethod {
         "payment_method"
     }
 }
+
+//automatically added back in service of PaymentMethod with hash1146975989530125355
+
+
+//automatically added back in service of PaymentMethod with hash6405658487538037
+
+
+//automatically added back in service of PaymentMethod with hash1146975989530125355
+
+
+//automatically added back in service of PaymentMethod with hash6405658487538037
+
+
+//automatically added back in service of PaymentMethod with hash6895700544325082243
+
+
+//automatically added back in service of PaymentMethod with hash6405658487538037
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentFlowsPrivatePaymentMethodsAlipay {}
@@ -722,6 +742,15 @@ impl<'a> CreatePaymentMethod<'a> {
     }
 }
 
+//automatically added back in service of CreatePaymentMethod with hash-9185355834837696803
+
+
+//automatically added back in service of CreatePaymentMethod with hash-9185355834837696803
+
+
+//automatically added back in service of CreatePaymentMethod with hash-9185355834837696803
+
+
 /// The parameters for `PaymentMethod::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPaymentMethods<'a> {
@@ -773,6 +802,15 @@ impl<'a> ListPaymentMethods<'a> {
     }
 }
 
+//automatically added back in service of ListPaymentMethods with hash-6120004710657123887
+
+
+//automatically added back in service of ListPaymentMethods with hash-6120004710657123887
+
+
+//automatically added back in service of ListPaymentMethods with hash-6120004710657123887
+
+
 /// The parameters for `PaymentMethod::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentMethod<'a> {
@@ -802,6 +840,15 @@ impl<'a> UpdatePaymentMethod<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdatePaymentMethod with hash-7492826812432584265
+
+
+//automatically added back in service of UpdatePaymentMethod with hash-7492826812432584265
+
+
+//automatically added back in service of UpdatePaymentMethod with hash-7492826812432584265
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentMethodAcssDebit {

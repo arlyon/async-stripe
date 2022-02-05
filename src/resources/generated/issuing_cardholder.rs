@@ -6,7 +6,10 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::IssuingCardholderId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Address, Currency, File, MerchantCategory};
+use crate::resources::{   MerchantCategory,  Currency,    File,   Address, };
+
+
+
 
 /// The resource representing a Stripe "IssuingCardholder".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -78,6 +81,15 @@ impl Object for IssuingCardholder {
         "issuing.cardholder"
     }
 }
+
+//automatically added back in service of IssuingCardholder with hash3919303576008855339
+
+
+//automatically added back in service of IssuingCardholder with hash3919303576008855339
+
+
+//automatically added back in service of IssuingCardholder with hash3919303576008855339
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderAddress {

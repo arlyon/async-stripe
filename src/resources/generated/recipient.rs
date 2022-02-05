@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::RecipientId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Account, BankAccount, Card};
+use crate::resources::{   BankAccount,  Account,    Card, };
+
+
+
 
 /// The resource representing a Stripe "TransferRecipient".
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -73,7 +76,18 @@ pub struct Recipient {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<RecipientType>,
 }
-//automatically added back in service of Recipient with hash-3860732951025120279
+//automatically added back in service of Recipient with hash-2353419236078842127
+impl Object for Recipient {
+    type Id = RecipientId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "recipient"
+    }
+}
+
+//automatically added back in service of Recipient with hash-2019511360650703802
 impl Recipient {
     /// Returns a list of your recipients.
     ///
@@ -117,15 +131,22 @@ impl Recipient {
 }
 
 //automatically added back in service of Recipient with hash-2353419236078842127
-impl Object for Recipient {
-    type Id = RecipientId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "recipient"
-    }
-}
+
+
+//automatically added back in service of Recipient with hash-2019511360650703802
+
+
+//automatically added back in service of Recipient with hash-2353419236078842127
+
+
+//automatically added back in service of Recipient with hash-2019511360650703802
+
+
+//automatically added back in service of Recipient with hash-3860732951025120279
+
+
+//automatically added back in service of Recipient with hash-2353419236078842127
+
 
 /// The parameters for `Recipient::create`.
 #[derive(Clone, Debug, Serialize)]
@@ -185,6 +206,15 @@ impl<'a> CreateRecipient<'a> {
     }
 }
 
+//automatically added back in service of CreateRecipient with hash-7677209468805475583
+
+
+//automatically added back in service of CreateRecipient with hash-7677209468805475583
+
+
+//automatically added back in service of CreateRecipient with hash-7677209468805475583
+
+
 /// The parameters for `Recipient::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListRecipients<'a> {
@@ -237,6 +267,15 @@ impl<'a> ListRecipients<'a> {
         }
     }
 }
+
+//automatically added back in service of ListRecipients with hash3345823840780291775
+
+
+//automatically added back in service of ListRecipients with hash3345823840780291775
+
+
+//automatically added back in service of ListRecipients with hash3345823840780291775
+
 
 /// The parameters for `Recipient::update`.
 #[derive(Clone, Debug, Serialize, Default)]

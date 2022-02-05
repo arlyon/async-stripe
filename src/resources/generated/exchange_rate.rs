@@ -1,3 +1,6 @@
+use crate::resources::{};
+
+
 use serde_derive::{Deserialize, Serialize};
 
 // ======================================
@@ -18,7 +21,18 @@ pub struct ExchangeRate {
     /// Hash where the keys are supported currencies and the values are the exchange rate at which the base id currency converts to the key currency.
     pub rates: ExchangeRateRates,
 }
-//automatically added back in service of ExchangeRate with hash4615835553361771593
+//automatically added back in service of ExchangeRate with hash-6965219324705362532
+impl Object for ExchangeRate {
+    type Id = ExchangeRateId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "exchange_rate"
+    }
+}
+
+//automatically added back in service of ExchangeRate with hash-4691794435717610588
 impl ExchangeRate {
     /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
     ///
@@ -37,16 +51,23 @@ impl ExchangeRate {
     }
 }
 
+//automatically added back in service of ExchangeRate with hash-4691794435717610588
+
+
 //automatically added back in service of ExchangeRate with hash-6965219324705362532
-impl Object for ExchangeRate {
-    type Id = ExchangeRateId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "exchange_rate"
-    }
-}
+
+
+//automatically added back in service of ExchangeRate with hash-6965219324705362532
+
+
+//automatically added back in service of ExchangeRate with hash-4691794435717610588
+
+
+//automatically added back in service of ExchangeRate with hash4615835553361771593
+
+
+//automatically added back in service of ExchangeRate with hash-6965219324705362532
+
 
 /// The parameters for `ExchangeRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]

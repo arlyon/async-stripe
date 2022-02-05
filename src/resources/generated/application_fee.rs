@@ -7,9 +7,11 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{ApplicationFeeId, ChargeId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, Application, ApplicationFeeRefund, BalanceTransaction, Charge, Currency,
-};
+use crate::resources::{  BalanceTransaction,    ApplicationFeeRefund,    Currency,    Application,   
+    Account,    Charge, };
+
+
+
 
 /// The resource representing a Stripe "PlatformFee".
 ///
@@ -63,7 +65,7 @@ pub struct ApplicationFee {
     /// A list of refunds that have been applied to the fee.
     pub refunds: List<ApplicationFeeRefund>,
 }
-//automatically added back in service of ApplicationFee with hash7758595835525162394
+//automatically added back in service of ApplicationFee with hash6140153625445951217
 impl ApplicationFee {
     /// Returns a list of application fees you’ve previously collected.
     ///
@@ -97,6 +99,24 @@ impl Object for ApplicationFee {
         "application_fee"
     }
 }
+
+//automatically added back in service of ApplicationFee with hash6140153625445951217
+
+
+//automatically added back in service of ApplicationFee with hash727360216826743751
+
+
+//automatically added back in service of ApplicationFee with hash6140153625445951217
+
+
+//automatically added back in service of ApplicationFee with hash727360216826743751
+
+
+//automatically added back in service of ApplicationFee with hash7758595835525162394
+
+
+//automatically added back in service of ApplicationFee with hash727360216826743751
+
 
 /// The parameters for `ApplicationFee::list`.
 #[derive(Clone, Debug, Serialize, Default)]

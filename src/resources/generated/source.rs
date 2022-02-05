@@ -7,10 +7,12 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::{CustomerId, SourceId, TokenId};
 use crate::params::{Expand, List, Metadata, Object, Timestamp};
-use crate::resources::{
-    Address, BillingDetails, Currency, Shipping, SourceRedirectFlowFailureReason,
-    SourceRedirectFlowStatus, SourceStatus, SourceUsage,
-};
+use crate::resources::{  
+    SourceRedirectFlowStatus,    Shipping,  
+    Address,    BillingDetails,    SourceRedirectFlowFailureReason,    Currency,    SourceUsage,    SourceStatus, };
+
+
+
 
 /// The resource representing a Stripe "Source".
 ///
@@ -161,17 +163,6 @@ pub struct Source {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat: Option<Box<SourceTypeWechat>>,
 }
-//automatically added back in service of Source with hash-6934742145524542372
-impl Object for Source {
-    type Id = SourceId;
-    fn id(&self) -> Self::Id {
-        self.id.clone()
-    }
-    fn object(&self) -> &'static str {
-        "source"
-    }
-}
-
 //automatically added back in service of Source with hash-1810856875031285932
 impl Source {
     /// List source transactions for a given source.
@@ -200,6 +191,35 @@ impl Source {
         client.post_form(&format!("/sources/{}", id), &params)
     }
 }
+
+//automatically added back in service of Source with hash-6934742145524542372
+impl Object for Source {
+    type Id = SourceId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
+    fn object(&self) -> &'static str {
+        "source"
+    }
+}
+
+//automatically added back in service of Source with hash-6934742145524542372
+
+
+//automatically added back in service of Source with hash-1810856875031285932
+
+
+//automatically added back in service of Source with hash-1810856875031285932
+
+
+//automatically added back in service of Source with hash-6934742145524542372
+
+
+//automatically added back in service of Source with hash-6934742145524542372
+
+
+//automatically added back in service of Source with hash-1810856875031285932
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceCodeVerificationFlow {
@@ -992,6 +1012,15 @@ impl<'a> CreateSource<'a> {
     }
 }
 
+//automatically added back in service of CreateSource with hash-1044894577135937210
+
+
+//automatically added back in service of CreateSource with hash-1044894577135937210
+
+
+//automatically added back in service of CreateSource with hash-1044894577135937210
+
+
 /// The parameters for `Source::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListSources<'a> {
@@ -1030,6 +1059,15 @@ impl<'a> ListSources<'a> {
         }
     }
 }
+
+//automatically added back in service of ListSources with hash203013446964310674
+
+
+//automatically added back in service of ListSources with hash203013446964310674
+
+
+//automatically added back in service of ListSources with hash203013446964310674
+
 
 /// The parameters for `Source::update`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -1077,6 +1115,15 @@ impl<'a> UpdateSource<'a> {
         }
     }
 }
+
+//automatically added back in service of UpdateSource with hash990772089895531437
+
+
+//automatically added back in service of UpdateSource with hash990772089895531437
+
+
+//automatically added back in service of UpdateSource with hash990772089895531437
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSourceReceiver {

@@ -7,7 +7,10 @@ use serde_derive::{Deserialize, Serialize};
 use crate::config::{Client, Response};
 use crate::ids::SkuId;
 use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Timestamp};
-use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
+use crate::resources::{  CreateProduct,    Product,  Currency,    PackageDimensions, };
+
+
+
 
 /// The resource representing a Stripe "Sku".
 ///
@@ -128,6 +131,24 @@ impl Object for Sku {
     }
 }
 
+//automatically added back in service of Sku with hash4763006567110595561
+
+
+//automatically added back in service of Sku with hash-2970364133945343515
+
+
+//automatically added back in service of Sku with hash4763006567110595561
+
+
+//automatically added back in service of Sku with hash-2970364133945343515
+
+
+//automatically added back in service of Sku with hash4763006567110595561
+
+
+//automatically added back in service of Sku with hash-2970364133945343515
+
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SkuInventory {
     /// The count of inventory available.
@@ -209,7 +230,7 @@ pub struct CreateSku<'a> {
     /// Must be a product with type `good`.
     pub product: IdOrCreate<'a, CreateProduct<'a>>,
 }
-//automatically added back in service of CreateSku with hash3921259969257068177
+//automatically added back in service of CreateSku with hash7688483123037546267
 impl<'a> CreateSku<'a> {
     pub fn new(
         currency: Currency,
@@ -232,6 +253,15 @@ impl<'a> CreateSku<'a> {
         }
     }
 }
+
+//automatically added back in service of CreateSku with hash7688483123037546267
+
+
+//automatically added back in service of CreateSku with hash7688483123037546267
+
+
+//automatically added back in service of CreateSku with hash3921259969257068177
+
 
 /// The parameters for `Sku::list`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -303,6 +333,15 @@ impl<'a> ListSkus<'a> {
         }
     }
 }
+
+//automatically added back in service of ListSkus with hash3273122470441329672
+
+
+//automatically added back in service of ListSkus with hash3273122470441329672
+
+
+//automatically added back in service of ListSkus with hash3273122470441329672
+
 
 /// The parameters for `Sku::update`.
 #[derive(Clone, Debug, Serialize, Default)]
