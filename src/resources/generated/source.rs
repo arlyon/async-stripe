@@ -12,7 +12,6 @@ use crate::resources::{
     SourceRedirectFlowStatus, SourceStatus, SourceUsage,
 };
 
-// written at 378
 /// The resource representing a Stripe "Source".
 ///
 /// For more details see <https://stripe.com/docs/api/sources/object>
@@ -201,7 +200,6 @@ impl Object for Source {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceCodeVerificationFlow {
     /// The number of attempts remaining to authenticate the source object with a verification code.
@@ -211,7 +209,6 @@ pub struct SourceCodeVerificationFlow {
     pub status: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceOrder {
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the order.
@@ -234,7 +231,6 @@ pub struct SourceOrder {
     pub shipping: Option<Box<Shipping>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceOrderItem {
     /// The amount (price) for this order item.
@@ -271,7 +267,6 @@ pub struct SourceOrderItem {
     pub type_: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceOwner {
     /// Owner's address.
@@ -319,7 +314,6 @@ pub struct SourceOwner {
     pub verified_phone: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceReceiverFlow {
     /// The address of the receiver source.
@@ -353,7 +347,6 @@ pub struct SourceReceiverFlow {
     pub refund_attributes_status: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceRedirectFlow {
     /// The failure reason for the redirect, either `user_abort` (the customer aborted or dropped out of the redirect flow), `declined` (the authentication failed or the transaction was declined), or `processing_error` (the redirect failed due to a technical error).
@@ -372,7 +365,6 @@ pub struct SourceRedirectFlow {
     pub url: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeAchCreditTransfer {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -400,7 +392,6 @@ pub struct SourceTypeAchCreditTransfer {
     pub swift_code: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeAchDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -423,7 +414,6 @@ pub struct SourceTypeAchDebit {
     pub type_: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -457,7 +447,6 @@ pub struct SourceTypeAcssDebit {
     pub routing_number: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeAlipay {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -470,7 +459,6 @@ pub struct SourceTypeAlipay {
     pub statement_descriptor: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeAuBecsDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -483,7 +471,6 @@ pub struct SourceTypeAuBecsDebit {
     pub last4: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -505,7 +492,6 @@ pub struct SourceTypeBancontact {
     pub statement_descriptor: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeCard {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -551,7 +537,6 @@ pub struct SourceTypeCard {
     pub tokenization_method: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeCardPresent {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -624,7 +609,6 @@ pub struct SourceTypeCardPresent {
     pub transaction_status_information: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeEps {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -634,7 +618,6 @@ pub struct SourceTypeEps {
     pub statement_descriptor: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeGiropay {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -650,7 +633,6 @@ pub struct SourceTypeGiropay {
     pub statement_descriptor: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeIdeal {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -666,7 +648,6 @@ pub struct SourceTypeIdeal {
     pub statement_descriptor: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeKlarna {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -748,7 +729,6 @@ pub struct SourceTypeKlarna {
     pub shipping_last_name: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeMultibanco {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -782,14 +762,12 @@ pub struct SourceTypeMultibanco {
     pub refund_iban: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeP24 {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -814,7 +792,6 @@ pub struct SourceTypeSepaDebit {
     pub mandate_url: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeSofort {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -839,7 +816,6 @@ pub struct SourceTypeSofort {
     pub statement_descriptor: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeThreeDSecure {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -894,7 +870,6 @@ pub struct SourceTypeThreeDSecure {
     pub tokenization_method: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTypeWechat {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -907,7 +882,6 @@ pub struct SourceTypeWechat {
     pub statement_descriptor: Option<Box<String>>,
 }
 
-// written at 597
 /// The parameters for `Source::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateSource<'a> {
@@ -1017,7 +991,6 @@ impl<'a> CreateSource<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Source::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListSources<'a> {
@@ -1057,7 +1030,6 @@ impl<'a> ListSources<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Source::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSource<'a> {
@@ -1105,20 +1077,17 @@ impl<'a> UpdateSource<'a> {
     }
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSourceReceiver {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_attributes_method: Option<Box<SourceRefundNotificationMethod>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSourceRedirect {
     pub return_url: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSourceSourceOrder {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1128,7 +1097,6 @@ pub struct CreateSourceSourceOrder {
     pub shipping: Option<Box<CreateSourceSourceOrderShipping>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateParams {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1147,7 +1115,6 @@ pub struct SourceMandateParams {
     pub notification_method: Option<Box<SourceMandateNotificationMethod>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSourceSourceOrder {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1157,7 +1124,6 @@ pub struct UpdateSourceSourceOrder {
     pub shipping: Option<Box<UpdateSourceSourceOrderShipping>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSourceSourceOrderItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1180,7 +1146,6 @@ pub struct CreateSourceSourceOrderItems {
     pub type_: Option<Box<CreateSourceSourceOrderItemsType>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSourceSourceOrderShipping {
     pub address: CreateSourceSourceOrderShippingAddress,
@@ -1198,7 +1163,6 @@ pub struct CreateSourceSourceOrderShipping {
     pub tracking_number: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceAcceptanceParams {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1223,7 +1187,6 @@ pub struct SourceAcceptanceParams {
     pub user_agent: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSourceSourceOrderItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1246,7 +1209,6 @@ pub struct UpdateSourceSourceOrderItems {
     pub type_: Option<Box<UpdateSourceSourceOrderItemsType>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSourceSourceOrderShipping {
     pub address: UpdateSourceSourceOrderShippingAddress,
@@ -1264,7 +1226,6 @@ pub struct UpdateSourceSourceOrderShipping {
     pub tracking_number: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSourceSourceOrderShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1285,13 +1246,11 @@ pub struct CreateSourceSourceOrderShippingAddress {
     pub state: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceAcceptanceOfflineParams {
     pub contact_email: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceAcceptanceOnlineParams {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1304,7 +1263,6 @@ pub struct SourceAcceptanceOnlineParams {
     pub user_agent: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSourceSourceOrderShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]

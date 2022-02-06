@@ -7,7 +7,6 @@ use serde_derive::{Deserialize, Serialize};
 use crate::ids::UsageRecordSummaryId;
 use crate::params::{Object, Timestamp};
 
-// written at 378
 /// The resource representing a Stripe "UsageRecordSummary".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UsageRecordSummary {
@@ -40,7 +39,6 @@ impl Object for UsageRecordSummary {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Period {
     /// The end date of this usage period.

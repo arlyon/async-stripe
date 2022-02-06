@@ -4,7 +4,6 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-// written at 378
 /// The resource representing a Stripe "invoice_payment_method_options_acss_debit".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsAcssDebit {
@@ -16,7 +15,6 @@ pub struct InvoicePaymentMethodOptionsAcssDebit {
     pub verification_method: Option<Box<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsAcssDebitMandateOptions {
     /// Transaction type of the mandate.

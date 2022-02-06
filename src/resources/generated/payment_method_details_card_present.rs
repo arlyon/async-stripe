@@ -4,7 +4,6 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-// written at 378
 /// The resource representing a Stripe "payment_method_details_card_present".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardPresent {
@@ -86,7 +85,6 @@ pub struct PaymentMethodDetailsCardPresent {
     pub receipt: Option<Box<PaymentMethodDetailsCardPresentReceipt>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardPresentReceipt {
     /// The type of account being debited or credited.

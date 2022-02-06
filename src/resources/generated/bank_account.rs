@@ -8,7 +8,6 @@ use crate::ids::BankAccountId;
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Account, BankAccountStatus, Currency, Customer};
 
-// written at 378
 /// The resource representing a Stripe "BankAccount".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BankAccount {

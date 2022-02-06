@@ -6,7 +6,6 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::params::{Object, Timestamp};
 
-// written at 378
 /// The resource representing a Stripe "LoginLink".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LoginLink {

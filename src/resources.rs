@@ -163,6 +163,9 @@ pub use {
         subscription_ext::*
     },
     generated::billing::{
+        credit_note::*,
+        credit_note_line_item::*,
+        customer_balance_transaction::*,
         coupon::*,
         discount::*,
         invoice::*,
@@ -178,10 +181,6 @@ pub use {
         quote::*,
         quotes_resource_total_details::*,
         subscription_item::*,
-        subscription_item::SubscriptionItemPriceDataRecurring as SubscriptionItemPriceDataRecurring,
-        subscription_item::SubscriptionItemPriceData as SubscriptionItemPriceData,
-        // need to import this afterwards so that the SubscriptionItemPriceDataRecurring
-        // isn't silently ignored
         subscription::*,
         subscription::SubscriptionItemPriceDataRecurring as SubscriptionPriceDataRecurring,
         subscription::SubscriptionItemPriceData as SubscriptionPriceData,

@@ -11,7 +11,6 @@ use crate::params::{
 };
 use crate::resources::{CreateProduct, Currency, Product, UpTo};
 
-// written at 378
 /// The resource representing a Stripe "Price".
 ///
 /// For more details see <https://stripe.com/docs/api/prices/object>
@@ -157,7 +156,6 @@ impl Object for Price {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PriceTier {
     /// Price for the entire tier.
@@ -181,7 +179,6 @@ pub struct PriceTier {
     pub up_to: Option<Box<i64>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Recurring {
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
@@ -210,7 +207,6 @@ pub struct Recurring {
     pub usage_type: RecurringUsageType,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransformQuantity {
     /// Divide usage by this number.
@@ -220,7 +216,6 @@ pub struct TransformQuantity {
     pub round: TransformQuantityRound,
 }
 
-// written at 597
 /// The parameters for `Price::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePrice<'a> {
@@ -342,7 +337,6 @@ impl<'a> CreatePrice<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Price::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPrices<'a> {
@@ -420,7 +414,6 @@ impl<'a> ListPrices<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Price::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePrice<'a> {
@@ -478,7 +471,6 @@ impl<'a> UpdatePrice<'a> {
     }
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceProductData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -502,7 +494,6 @@ pub struct CreatePriceProductData {
     pub unit_label: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceRecurring {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -517,7 +508,6 @@ pub struct CreatePriceRecurring {
     pub usage_type: Option<Box<CreatePriceRecurringUsageType>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceTiers {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -535,7 +525,6 @@ pub struct CreatePriceTiers {
     pub up_to: Option<UpTo>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePriceTransformQuantity {
     pub divide_by: i64,
@@ -543,7 +532,6 @@ pub struct CreatePriceTransformQuantity {
     pub round: CreatePriceTransformQuantityRound,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ListPricesRecurring {
     #[serde(skip_serializing_if = "Option::is_none")]

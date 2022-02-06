@@ -14,7 +14,6 @@ use crate::resources::{
     Shipping, ThreeDSecureDetails, Transfer,
 };
 
-// written at 378
 /// The resource representing a Stripe "Charge".
 ///
 /// For more details see <https://stripe.com/docs/api/charges/object>
@@ -261,7 +260,6 @@ impl Object for Charge {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetails {
     /// Assessments from Stripe.
@@ -277,7 +275,6 @@ pub struct FraudDetails {
     pub user_report: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ChargeOutcome {
     /// Possible values are `approved_by_network`, `declined_by_network`, `not_sent_to_network`, and `reversed_after_approval`.
@@ -327,7 +324,6 @@ pub struct ChargeOutcome {
     pub type_: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransferData {
     /// The amount transferred to the destination account, if specified.
@@ -340,7 +336,6 @@ pub struct TransferData {
     pub destination: Expandable<Account>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -428,7 +423,6 @@ pub struct PaymentMethodDetails {
     pub wechat_pay: Option<Box<PaymentMethodDetailsWechatPay>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentFlowsPrivatePaymentMethodsAlipayDetails {
     /// Uniquely identifies this particular Alipay account.
@@ -448,7 +442,6 @@ pub struct PaymentFlowsPrivatePaymentMethodsAlipayDetails {
     pub transaction_id: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAchCreditTransfer {
     /// Account number to transfer funds to.
@@ -468,7 +461,6 @@ pub struct PaymentMethodDetailsAchCreditTransfer {
     pub swift_code: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAchDebit {
     /// Type of entity that holds the account.
@@ -500,7 +492,6 @@ pub struct PaymentMethodDetailsAchDebit {
     pub routing_number: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAcssDebit {
     /// Name of the bank associated with the bank account.
@@ -530,7 +521,6 @@ pub struct PaymentMethodDetailsAcssDebit {
     pub transit_number: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAfterpayClearpay {
     /// Order identifier shown to the merchant in Afterpay’s online portal.
@@ -538,7 +528,6 @@ pub struct PaymentMethodDetailsAfterpayClearpay {
     pub reference: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAuBecsDebit {
     /// Bank-State-Branch number of the bank account.
@@ -560,7 +549,6 @@ pub struct PaymentMethodDetailsAuBecsDebit {
     pub mandate: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsBacsDebit {
     /// Uniquely identifies this particular bank account.
@@ -584,7 +572,6 @@ pub struct PaymentMethodDetailsBacsDebit {
     pub sort_code: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsBancontact {
     /// Bank code of bank associated with the bank account.
@@ -624,14 +611,12 @@ pub struct PaymentMethodDetailsBancontact {
     pub verified_name: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsBoleto {
     /// The tax ID of the customer (CPF for individuals consumers or CNPJ for businesses consumers).
     pub tax_id: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCard {
     /// Card brand.
@@ -694,7 +679,6 @@ pub struct PaymentMethodDetailsCard {
     pub wallet: Option<Box<PaymentMethodDetailsCardWallet>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardChecks {
     /// If a address line1 was provided, results of the check, one of `pass`, `fail`, `unavailable`, or `unchecked`.
@@ -710,7 +694,6 @@ pub struct PaymentMethodDetailsCardChecks {
     pub cvc_check: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardInstallments {
     /// Installment plan selected for the payment.
@@ -718,7 +701,6 @@ pub struct PaymentMethodDetailsCardInstallments {
     pub plan: Option<Box<PaymentMethodDetailsCardInstallmentsPlan>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWallet {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -751,19 +733,15 @@ pub struct PaymentMethodDetailsCardWallet {
     pub visa_checkout: Option<Box<PaymentMethodDetailsCardWalletVisaCheckout>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWalletAmexExpressCheckout {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWalletApplePay {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWalletGooglePay {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWalletMasterpass {
     /// Owner's verified billing address.
@@ -795,11 +773,9 @@ pub struct PaymentMethodDetailsCardWalletMasterpass {
     pub shipping_address: Option<Box<Address>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWalletSamsungPay {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWalletVisaCheckout {
     /// Owner's verified billing address.
@@ -831,7 +807,6 @@ pub struct PaymentMethodDetailsCardWalletVisaCheckout {
     pub shipping_address: Option<Box<Address>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsEps {
     /// The customer's bank.
@@ -848,7 +823,6 @@ pub struct PaymentMethodDetailsEps {
     pub verified_name: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsFpx {
     /// The customer's bank.
@@ -861,7 +835,6 @@ pub struct PaymentMethodDetailsFpx {
     pub transaction_id: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsGiropay {
     /// Bank code of bank associated with the bank account.
@@ -884,7 +857,6 @@ pub struct PaymentMethodDetailsGiropay {
     pub verified_name: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsGrabpay {
     /// Unique transaction id generated by GrabPay.
@@ -892,7 +864,6 @@ pub struct PaymentMethodDetailsGrabpay {
     pub transaction_id: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsIdeal {
     /// The customer's bank.
@@ -925,7 +896,6 @@ pub struct PaymentMethodDetailsIdeal {
     pub verified_name: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsInteracPresent {
     /// Card brand.
@@ -1004,7 +974,6 @@ pub struct PaymentMethodDetailsInteracPresent {
     pub receipt: Option<Box<PaymentMethodDetailsInteracPresentReceipt>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsInteracPresentReceipt {
     /// The type of account being debited or credited.
@@ -1048,7 +1017,6 @@ pub struct PaymentMethodDetailsInteracPresentReceipt {
     pub transaction_status_information: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsKlarna {
     /// The Klarna payment method used for this transaction.
@@ -1062,7 +1030,6 @@ pub struct PaymentMethodDetailsKlarna {
     pub preferred_locale: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsMultibanco {
     /// Entity number associated with this Multibanco payment.
@@ -1074,7 +1041,6 @@ pub struct PaymentMethodDetailsMultibanco {
     pub reference: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsOxxo {
     /// OXXO reference number.
@@ -1082,7 +1048,6 @@ pub struct PaymentMethodDetailsOxxo {
     pub number: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsP24 {
     /// The customer's bank.
@@ -1103,7 +1068,6 @@ pub struct PaymentMethodDetailsP24 {
     pub verified_name: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsSepaDebit {
     /// Bank code of bank associated with the bank account.
@@ -1133,7 +1097,6 @@ pub struct PaymentMethodDetailsSepaDebit {
     pub mandate: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsSofort {
     /// Bank code of bank associated with the bank account.
@@ -1177,15 +1140,12 @@ pub struct PaymentMethodDetailsSofort {
     pub verified_name: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsStripeAccount {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsWechat {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsWechatPay {
     /// Uniquely identifies this particular WeChat Pay account.
@@ -1199,7 +1159,6 @@ pub struct PaymentMethodDetailsWechatPay {
     pub transaction_id: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rule {
     /// The action taken on the payment.
@@ -1212,7 +1171,6 @@ pub struct Rule {
     pub predicate: String,
 }
 
-// written at 597
 /// The parameters for `Charge::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCharge<'a> {
@@ -1351,7 +1309,6 @@ impl<'a> CreateCharge<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Charge::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCharges<'a> {
@@ -1410,7 +1367,6 @@ impl<'a> ListCharges<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Charge::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCharge<'a> {
@@ -1482,13 +1438,11 @@ impl<'a> UpdateCharge<'a> {
     }
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FraudDetailsParams {
     pub user_report: FraudDetailsParamsUserReport,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransferDataParams {
     #[serde(skip_serializing_if = "Option::is_none")]

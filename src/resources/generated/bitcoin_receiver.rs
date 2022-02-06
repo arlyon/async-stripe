@@ -8,7 +8,6 @@ use crate::ids::BitcoinReceiverId;
 use crate::params::{List, Metadata, Object, Timestamp};
 use crate::resources::{BitcoinTransaction, Currency};
 
-// written at 378
 /// The resource representing a Stripe "BitcoinReceiver".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BitcoinReceiver {

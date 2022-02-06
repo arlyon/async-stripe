@@ -13,7 +13,6 @@ use crate::resources::{
 };
 use crate::TransferData;
 
-// written at 378
 /// The resource representing a Stripe "PaymentIntent".
 ///
 /// For more details see <https://stripe.com/docs/api/payment_intents/object>
@@ -260,14 +259,12 @@ impl Object for PaymentIntent {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
     /// Automatically calculates compatible payment methods.
     pub enabled: bool,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextAction {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -307,7 +304,6 @@ pub struct PaymentIntentNextAction {
         Option<Box<PaymentIntentNextActionWechatPayRedirectToIosApp>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionAlipayHandleRedirect {
     /// The native data to be used with Alipay SDK you must redirect your customer to in order to authenticate the payment in an Android App.
@@ -327,7 +323,6 @@ pub struct PaymentIntentNextActionAlipayHandleRedirect {
     pub url: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionBoleto {
     /// The timestamp after which the boleto expires.
@@ -347,7 +342,6 @@ pub struct PaymentIntentNextActionBoleto {
     pub pdf: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionDisplayOxxoDetails {
     /// The timestamp after which the OXXO voucher expires.
@@ -363,7 +357,6 @@ pub struct PaymentIntentNextActionDisplayOxxoDetails {
     pub number: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionRedirectToUrl {
     /// If the customer does not exit their browser while authenticating, they will be redirected to this specified URL after completion.
@@ -375,7 +368,6 @@ pub struct PaymentIntentNextActionRedirectToUrl {
     pub url: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionVerifyWithMicrodeposits {
     /// The timestamp when the microdeposits are expected to land.
@@ -385,7 +377,6 @@ pub struct PaymentIntentNextActionVerifyWithMicrodeposits {
     pub hosted_verification_url: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionWechatPayDisplayQrCode {
     /// The data being used to generate QR code.
@@ -401,7 +392,6 @@ pub struct PaymentIntentNextActionWechatPayDisplayQrCode {
     pub image_url_svg: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionWechatPayRedirectToAndroidApp {
     /// app_id is the APP ID registered on WeChat open platform.
@@ -426,14 +416,12 @@ pub struct PaymentIntentNextActionWechatPayRedirectToAndroidApp {
     pub timestamp: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionWechatPayRedirectToIosApp {
     /// An universal link that redirect to Wechat Pay APP.
     pub native_url: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -500,7 +488,6 @@ pub struct PaymentIntentPaymentMethodOptions {
     pub wechat_pay: Option<Box<PaymentIntentPaymentMethodOptionsWechatPayUnion>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -512,11 +499,9 @@ pub struct PaymentIntentPaymentMethodOptionsAcssDebit {
         Option<Box<PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsAuBecsDebit {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsCard {
     /// Installment details for this payment (Mexico only).
@@ -551,11 +536,9 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
     pub setup_future_usage: Option<Box<PaymentIntentPaymentMethodOptionsCardSetupFutureUsage>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsEps {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
     /// A URL for custom mandate text.
@@ -579,18 +562,15 @@ pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
         Option<Box<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<Box<PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentProcessing {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -601,11 +581,9 @@ pub struct PaymentIntentProcessing {
     pub type_: PaymentIntentProcessingType,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentCardProcessing {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentIntentTypeSpecificPaymentMethodOptionsClient {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -618,7 +596,6 @@ pub struct PaymentIntentTypeSpecificPaymentMethodOptionsClient {
         Option<Box<PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsAfterpayClearpay {
     /// Order identifier shown to the merchant in Afterpay’s online portal.
@@ -629,22 +606,18 @@ pub struct PaymentMethodOptionsAfterpayClearpay {
     pub reference: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsAlipay {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsBacsDebit {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsBancontact {
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     pub preferred_language: PaymentMethodOptionsBancontactPreferredLanguage,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsBoleto {
     /// The number of calendar days before a Boleto voucher expires.
@@ -653,7 +626,6 @@ pub struct PaymentMethodOptionsBoleto {
     pub expires_after_days: u32,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsCardInstallments {
     /// Installment plans that may be selected for this PaymentIntent.
@@ -668,31 +640,24 @@ pub struct PaymentMethodOptionsCardInstallments {
     pub plan: Option<Box<PaymentMethodDetailsCardInstallmentsPlan>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsCardPresent {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsFpx {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsGiropay {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsGrabpay {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsIdeal {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsInteracPresent {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsKlarna {
     /// Preferred locale of the Klarna checkout page that the customer is redirected to.
@@ -700,7 +665,6 @@ pub struct PaymentMethodOptionsKlarna {
     pub preferred_locale: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsOxxo {
     /// The number of calendar days before an OXXO invoice expires.
@@ -709,11 +673,9 @@ pub struct PaymentMethodOptionsOxxo {
     pub expires_after_days: u32,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsP24 {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsSofort {
     /// Preferred language of the SOFORT authorization page that the customer is redirected to.
@@ -721,7 +683,6 @@ pub struct PaymentMethodOptionsSofort {
     pub preferred_language: Option<Box<PaymentMethodOptionsSofortPreferredLanguage>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsWechatPay {
     /// The app ID registered with WeChat Pay.
@@ -735,7 +696,6 @@ pub struct PaymentMethodOptionsWechatPay {
     pub client: Option<Box<PaymentMethodOptionsWechatPayClient>>,
 }
 
-// written at 597
 /// The parameters for `PaymentIntent::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePaymentIntent<'a> {
@@ -949,7 +909,6 @@ impl<'a> CreatePaymentIntent<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `PaymentIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPaymentIntents<'a> {
@@ -1001,7 +960,6 @@ impl<'a> ListPaymentIntents<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `PaymentIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentIntent<'a> {
@@ -1142,19 +1100,16 @@ impl<'a> UpdatePaymentIntent<'a> {
     }
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentAutomaticPaymentMethods {
     pub enabled: bool,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentMandateData {
     pub customer_acceptance: CreatePaymentIntentMandateDataCustomerAcceptance,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1224,7 +1179,6 @@ pub struct CreatePaymentIntentPaymentMethodData {
     pub wechat_pay: Option<Box<CreatePaymentIntentPaymentMethodDataWechatPay>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1291,7 +1245,6 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     pub wechat_pay: Option<Box<CreatePaymentIntentPaymentMethodOptionsWechatPay>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentShipping {
     pub address: CreatePaymentIntentShippingAddress,
@@ -1308,7 +1261,6 @@ pub struct CreatePaymentIntentShipping {
     pub tracking_number: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1317,7 +1269,6 @@ pub struct CreatePaymentIntentTransferData {
     pub destination: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1387,7 +1338,6 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     pub wechat_pay: Option<Box<UpdatePaymentIntentPaymentMethodDataWechatPay>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1454,7 +1404,6 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     pub wechat_pay: Option<Box<UpdatePaymentIntentPaymentMethodOptionsWechatPay>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentShipping {
     pub address: UpdatePaymentIntentShippingAddress,
@@ -1471,14 +1420,12 @@ pub struct UpdatePaymentIntentShipping {
     pub tracking_number: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<Box<i64>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentMandateDataCustomerAcceptance {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1494,7 +1441,6 @@ pub struct CreatePaymentIntentMandateDataCustomerAcceptance {
     pub type_: CreatePaymentIntentMandateDataCustomerAcceptanceType,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataAcssDebit {
     pub account_number: String,
@@ -1504,15 +1450,12 @@ pub struct CreatePaymentIntentPaymentMethodDataAcssDebit {
     pub transit_number: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataAfterpayClearpay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataAlipay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataAuBecsDebit {
     pub account_number: String,
@@ -1520,7 +1463,6 @@ pub struct CreatePaymentIntentPaymentMethodDataAuBecsDebit {
     pub bsb_number: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBacsDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1530,11 +1472,9 @@ pub struct CreatePaymentIntentPaymentMethodDataBacsDebit {
     pub sort_code: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBancontact {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBillingDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1550,79 +1490,65 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetails {
     pub phone: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBoleto {
     pub tax_id: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataEps {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<Box<CreatePaymentIntentPaymentMethodDataEpsBank>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataFpx {
     pub bank: CreatePaymentIntentPaymentMethodDataFpxBank,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataGiropay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataGrabpay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataIdeal {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<Box<CreatePaymentIntentPaymentMethodDataIdealBank>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataInteracPresent {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataKlarna {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<Box<CreatePaymentIntentPaymentMethodDataKlarnaDob>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataOxxo {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataP24 {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<Box<CreatePaymentIntentPaymentMethodDataP24Bank>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataSepaDebit {
     pub iban: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataSofort {
     pub country: CreatePaymentIntentPaymentMethodDataSofortCountry,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataWechatPay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1634,26 +1560,21 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
         Option<Box<CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAlipay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAuBecsDebit {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBacsDebit {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1661,14 +1582,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsBancontact {
         Option<Box<CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBoleto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<Box<u32>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1689,56 +1608,45 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
         Option<Box<CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsEps {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsFpx {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsGiropay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsGrabpay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsIdeal {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsInteracPresent {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsKlarna {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locale: Option<Box<CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsOxxo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<Box<u32>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsP24 {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<Box<bool>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1746,7 +1654,6 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit {
         Option<Box<CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSofort {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1754,7 +1661,6 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSofort {
         Option<Box<CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsWechatPay {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1763,7 +1669,6 @@ pub struct CreatePaymentIntentPaymentMethodOptionsWechatPay {
     pub client: CreatePaymentIntentPaymentMethodOptionsWechatPayClient,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1785,7 +1690,6 @@ pub struct CreatePaymentIntentShippingAddress {
     pub state: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataAcssDebit {
     pub account_number: String,
@@ -1795,15 +1699,12 @@ pub struct UpdatePaymentIntentPaymentMethodDataAcssDebit {
     pub transit_number: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataAfterpayClearpay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataAlipay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataAuBecsDebit {
     pub account_number: String,
@@ -1811,7 +1712,6 @@ pub struct UpdatePaymentIntentPaymentMethodDataAuBecsDebit {
     pub bsb_number: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBacsDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1821,11 +1721,9 @@ pub struct UpdatePaymentIntentPaymentMethodDataBacsDebit {
     pub sort_code: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBancontact {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBillingDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1841,79 +1739,65 @@ pub struct UpdatePaymentIntentPaymentMethodDataBillingDetails {
     pub phone: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBoleto {
     pub tax_id: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataEps {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<Box<UpdatePaymentIntentPaymentMethodDataEpsBank>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataFpx {
     pub bank: UpdatePaymentIntentPaymentMethodDataFpxBank,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataGiropay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataGrabpay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataIdeal {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<Box<UpdatePaymentIntentPaymentMethodDataIdealBank>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataInteracPresent {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataKlarna {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<Box<UpdatePaymentIntentPaymentMethodDataKlarnaDob>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataOxxo {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataP24 {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<Box<UpdatePaymentIntentPaymentMethodDataP24Bank>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataSepaDebit {
     pub iban: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataSofort {
     pub country: UpdatePaymentIntentPaymentMethodDataSofortCountry,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataWechatPay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1925,26 +1809,21 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
         Option<Box<UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAlipay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAuBecsDebit {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBacsDebit {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1952,14 +1831,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsBancontact {
         Option<Box<UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBoleto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<Box<u32>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1980,56 +1857,45 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
         Option<Box<UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsEps {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsFpx {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsGiropay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsGrabpay {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsIdeal {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsInteracPresent {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsKlarna {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locale: Option<Box<UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsOxxo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<Box<u32>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsP24 {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<Box<bool>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2037,7 +1903,6 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
         Option<Box<UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSofort {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2045,7 +1910,6 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSofort {
         Option<Box<UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsWechatPay {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2054,7 +1918,6 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsWechatPay {
     pub client: UpdatePaymentIntentPaymentMethodOptionsWechatPayClient,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2076,11 +1939,9 @@ pub struct UpdatePaymentIntentShippingAddress {
     pub state: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentMandateDataCustomerAcceptanceOffline {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentMandateDataCustomerAcceptanceOnline {
     pub ip_address: String,
@@ -2088,7 +1949,6 @@ pub struct CreatePaymentIntentMandateDataCustomerAcceptanceOnline {
     pub user_agent: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2110,7 +1970,6 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     pub state: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataKlarnaDob {
     pub day: i64,
@@ -2120,7 +1979,6 @@ pub struct CreatePaymentIntentPaymentMethodDataKlarnaDob {
     pub year: i64,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2138,7 +1996,6 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
         Option<Box<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallments {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2148,11 +2005,9 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallments {
     pub plan: Option<Box<CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2174,7 +2029,6 @@ pub struct UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     pub state: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataKlarnaDob {
     pub day: i64,
@@ -2184,7 +2038,6 @@ pub struct UpdatePaymentIntentPaymentMethodDataKlarnaDob {
     pub year: i64,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2202,7 +2055,6 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
         Option<Box<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallments {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2212,11 +2064,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallments {
     pub plan: Option<Box<UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub count: u64,
@@ -2227,7 +2077,6 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub type_: CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub count: u64,

@@ -7,7 +7,6 @@ use serde_derive::{Deserialize, Serialize};
 use crate::ids::BillingPortalConfigurationId;
 use crate::params::{Metadata, Object, Timestamp};
 
-// written at 378
 /// The resource representing a Stripe "PortalConfiguration".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BillingPortalConfiguration {
@@ -66,7 +65,6 @@ impl Object for BillingPortalConfiguration {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalBusinessProfile {
     /// The messaging shown to customers in the portal.
@@ -80,7 +78,6 @@ pub struct PortalBusinessProfile {
     pub terms_of_service_url: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalFeatures {
     pub customer_update: PortalCustomerUpdate,
@@ -96,7 +93,6 @@ pub struct PortalFeatures {
     pub subscription_update: PortalSubscriptionUpdate,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalCustomerUpdate {
     /// The types of customer updates that are supported.
@@ -108,21 +104,18 @@ pub struct PortalCustomerUpdate {
     pub enabled: bool,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalInvoiceList {
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalPaymentMethodUpdate {
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionCancel {
     pub cancellation_reason: PortalSubscriptionCancellationReason,
@@ -139,7 +132,6 @@ pub struct PortalSubscriptionCancel {
     pub proration_behavior: PortalSubscriptionCancelProrationBehavior,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionCancellationReason {
     /// Whether the feature is enabled.
@@ -149,14 +141,12 @@ pub struct PortalSubscriptionCancellationReason {
     pub options: Vec<PortalSubscriptionCancellationReasonOptions>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionPause {
     /// Whether the feature is enabled.
     pub enabled: bool,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionUpdate {
     /// The types of subscription updates that are supported for items listed in the `products` attribute.
@@ -177,7 +167,6 @@ pub struct PortalSubscriptionUpdate {
     pub proration_behavior: PortalSubscriptionUpdateProrationBehavior,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PortalSubscriptionUpdateProduct {
     /// The list of price IDs which, when subscribed to, a subscription can be updated.

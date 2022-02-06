@@ -4,7 +4,6 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-// written at 378
 /// The resource representing a Stripe "Address".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Address {

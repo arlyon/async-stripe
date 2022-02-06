@@ -5,10 +5,196 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::{CustomerId, PaymentIntentId, SubscriptionId};
-use crate::params::{Expand, List, Metadata, Object, Timestamp};
-use crate::resources::Currency;
-use crate::CheckoutSession;
+use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
+use crate::resources::{
+    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentLink, SetupIntent,
+    Shipping, ShippingRate, Subscription, TaxRate,
+};
+
+/// The resource representing a Stripe "Session".
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutSession {
+    /// Unique identifier for the object.
+    ///
+    /// Used to pass to `redirectToCheckout` in Stripe.js.
+    pub id: CheckoutSessionId,
+
+    /// When set, provides configuration for actions to take if this Checkout Session expires.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_expiration: Option<Box<PaymentPagesCheckoutSessionAfterExpiration>>,
+
+    /// Enables user redeemable promotion codes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_promotion_codes: Option<Box<bool>>,
+
+    /// Total of all items before discounts or taxes are applied.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_subtotal: Option<Box<i64>>,
+
+    /// Total of all items after discounts and taxes are applied.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_total: Option<Box<i64>>,
+
+    pub automatic_tax: PaymentPagesCheckoutSessionAutomaticTax,
+
+    /// Describes whether Checkout should collect the customer's billing address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_address_collection: Option<Box<CheckoutSessionBillingAddressCollection>>,
+
+    /// The URL the customer will be directed to if they decide to cancel payment and return to your website.
+    pub cancel_url: String,
+
+    /// A unique string to reference the Checkout Session.
+    ///
+    /// This can be a customer ID, a cart ID, or similar, and can be used to reconcile the Session with your internal systems.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub client_reference_id: Option<Box<String>>,
+
+    /// Results of `consent_collection` for this session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub consent: Option<Box<PaymentPagesCheckoutSessionConsent>>,
+
+    /// When set, provides configuration for the Checkout Session to gather active consent from customers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub consent_collection: Option<Box<PaymentPagesCheckoutSessionConsentCollection>>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    /// The ID of the customer for this Session.
+    /// For Checkout Sessions in `payment` or `subscription` mode, Checkout
+    /// will create a new customer object based on information provided
+    /// during the payment flow unless an existing customer was provided when
+    /// the Session was created.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<Box<Expandable<Customer>>>,
+
+    /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_creation: Option<Box<CheckoutSessionCustomerCreation>>,
+
+    /// The customer details including the customer's tax exempt status and the customer's tax IDs.
+    ///
+    /// Only present on Sessions in `payment` or `subscription` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_details: Option<Box<PaymentPagesCheckoutSessionCustomerDetails>>,
+
+    /// If provided, this value will be used when the Customer object is created.
+    /// If not provided, customers will be asked to enter their email address.
+    /// Use this parameter to prefill customer data if you already have an email
+    /// on file.
+    ///
+    /// To access information about the customer once the payment flow is complete, use the `customer` attribute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_email: Option<Box<String>>,
+
+    /// The timestamp at which the Checkout Session will expire.
+    pub expires_at: Timestamp,
+
+    /// The line items purchased by the customer.
+    #[serde(default)]
+    pub line_items: List<CheckoutSessionItem>,
+
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    pub livemode: bool,
+
+    /// The IETF language tag of the locale Checkout is displayed in.
+    ///
+    /// If blank or `auto`, the browser's locale is used.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub locale: Option<Box<CheckoutSessionLocale>>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    /// The mode of the Checkout Session.
+    pub mode: CheckoutSessionMode,
+
+    /// The ID of the PaymentIntent for Checkout Sessions in `payment` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent: Option<Box<Expandable<PaymentIntent>>>,
+
+    /// The ID of the Payment Link that created this Session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_link: Option<Box<Expandable<PaymentLink>>>,
+
+    /// Payment-method-specific configuration for the PaymentIntent or SetupIntent of this CheckoutSession.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_options: Option<Box<CheckoutSessionPaymentMethodOptions>>,
+
+    /// A list of the types of payment methods (e.g.
+    ///
+    /// card) this Checkout Session is allowed to accept.
+    pub payment_method_types: Vec<String>,
+
+    /// The payment status of the Checkout Session, one of `paid`, `unpaid`, or `no_payment_required`.
+    /// You can use this value to decide when to fulfill your customer's order.
+    pub payment_status: CheckoutSessionPaymentStatus,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone_number_collection: Option<Box<PaymentPagesCheckoutSessionPhoneNumberCollection>>,
+
+    /// The ID of the original expired Checkout Session that triggered the recovery flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recovered_from: Option<Box<String>>,
+
+    /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_intent: Option<Box<Expandable<SetupIntent>>>,
+
+    /// Shipping information for this Checkout Session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<Box<Shipping>>,
+
+    /// When set, provides configuration for Checkout to collect a shipping address from a customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address_collection:
+        Option<Box<PaymentPagesCheckoutSessionShippingAddressCollection>>,
+
+    /// The shipping rate options applied to this Session.
+    pub shipping_options: Vec<PaymentPagesCheckoutSessionShippingOption>,
+
+    /// The ID of the ShippingRate for Checkout Sessions in `payment` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_rate: Option<Box<Expandable<ShippingRate>>>,
+
+    /// The status of the Checkout Session, one of `open`, `complete`, or `expired`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<Box<CheckoutSessionStatus>>,
+
+    /// Describes the type of transaction being performed by Checkout in order to customize
+    /// relevant text on the page, such as the submit button.
+    ///
+    /// `submit_type` can only be specified on Checkout Sessions in `payment` mode, but not Checkout Sessions in `subscription` or `setup` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub submit_type: Option<Box<CheckoutSessionSubmitType>>,
+
+    /// The ID of the subscription for Checkout Sessions in `subscription` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<Box<Expandable<Subscription>>>,
+
+    /// The URL the customer will be directed to after the payment or
+    /// subscription creation is successful.
+    pub success_url: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id_collection: Option<Box<PaymentPagesCheckoutSessionTaxIdCollection>>,
+
+    /// Tax and discount details for the computed total amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_details: Option<Box<PaymentPagesCheckoutSessionTotalDetails>>,
+
+    /// The URL to the Checkout Session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<Box<String>>,
+}
 
 impl CheckoutSession {
     /// Returns a list of Checkout Sessions.
@@ -35,7 +221,237 @@ impl Object for CheckoutSession {
     }
 }
 
-// written at 597
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutSessionPaymentMethodOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<Box<CheckoutAcssDebitPaymentMethodOptions>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<Box<CheckoutBoletoPaymentMethodOptions>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo: Option<Box<CheckoutOxxoPaymentMethodOptions>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutAcssDebitPaymentMethodOptions {
+    /// Currency supported by the bank account.
+    ///
+    /// Returned when the Session is in `setup` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<Box<CheckoutAcssDebitMandateOptions>>,
+
+    /// Bank account verification method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<Box<CheckoutAcssDebitPaymentMethodOptionsVerificationMethod>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutAcssDebitMandateOptions {
+    /// A URL for custom mandate text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_mandate_url: Option<Box<String>>,
+
+    /// List of Stripe products where this mandate can be selected automatically.
+    ///
+    /// Returned when the Session is in `setup` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_for: Option<Box<Vec<CheckoutAcssDebitMandateOptionsDefaultFor>>>,
+
+    /// Description of the interval.
+    ///
+    /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_description: Option<Box<String>>,
+
+    /// Payment schedule for the mandate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_schedule: Option<Box<CheckoutAcssDebitMandateOptionsPaymentSchedule>>,
+
+    /// Transaction type of the mandate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction_type: Option<Box<CheckoutAcssDebitMandateOptionsTransactionType>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutBoletoPaymentMethodOptions {
+    /// The number of calendar days before a Boleto voucher expires.
+    ///
+    /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto voucher will expire on Wednesday at 23:59 America/Sao_Paulo time.
+    pub expires_after_days: u32,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutOxxoPaymentMethodOptions {
+    /// The number of calendar days before an OXXO invoice expires.
+    ///
+    /// For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
+    pub expires_after_days: u32,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionAfterExpiration {
+    /// When set, configuration used to recover the Checkout Session on expiry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recovery: Option<Box<PaymentPagesCheckoutSessionAfterExpirationRecovery>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionAfterExpirationRecovery {
+    /// Enables user redeemable promotion codes on the recovered Checkout Sessions.
+    ///
+    /// Defaults to `false`.
+    pub allow_promotion_codes: bool,
+
+    /// If `true`, a recovery url will be generated to recover this Checkout Session if it
+    /// expires before a transaction is completed.
+    ///
+    /// It will be attached to the Checkout Session object upon expiration.
+    pub enabled: bool,
+
+    /// The timestamp at which the recovery URL will expire.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<Box<Timestamp>>,
+
+    /// URL that creates a new Checkout Session when clicked that is a copy of this expired Checkout Session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<Box<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionAutomaticTax {
+    /// Indicates whether automatic tax is enabled for the session.
+    pub enabled: bool,
+
+    /// The status of the most recent automated tax calculation for this session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<Box<PaymentPagesCheckoutSessionAutomaticTaxStatus>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionConsent {
+    /// If `opt_in`, the customer consents to receiving promotional communications
+    /// from the merchant about this Checkout Session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotions: Option<Box<PaymentPagesCheckoutSessionConsentPromotions>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionConsentCollection {
+    /// If set to `auto`, enables the collection of customer consent for promotional communications.
+    ///
+    /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
+    /// Only available to US merchants.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotions: Option<Box<PaymentPagesCheckoutSessionConsentCollectionPromotions>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionCustomerDetails {
+    /// The email associated with the Customer, if one exists, on the Checkout Session at the time of checkout or at time of session expiry.
+    /// Otherwise, if the customer has consented to promotional content, this value is the most recent valid email provided by the customer on the Checkout form.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<Box<String>>,
+
+    /// The customer's phone number at the time of checkout.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<Box<String>>,
+
+    /// The customer’s tax exempt status at time of checkout.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_exempt: Option<Box<PaymentPagesCheckoutSessionCustomerDetailsTaxExempt>>,
+
+    /// The customer’s tax IDs at time of checkout.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_ids: Option<Box<Vec<PaymentPagesCheckoutSessionTaxId>>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionPhoneNumberCollection {
+    /// Indicates whether phone number collection is enabled for the session.
+    pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionShippingAddressCollection {
+    /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
+    /// shipping locations.
+    ///
+    /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
+    pub allowed_countries:
+        Vec<PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionShippingOption {
+    /// A non-negative integer in cents representing how much to charge.
+    pub shipping_amount: i64,
+
+    /// The shipping rate.
+    pub shipping_rate: Expandable<ShippingRate>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionTaxId {
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, or `unknown`.
+    #[serde(rename = "type")]
+    pub type_: PaymentPagesCheckoutSessionTaxIdType,
+
+    /// The value of the tax ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub value: Option<Box<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionTaxIdCollection {
+    /// Indicates whether tax ID collection is enabled for the session.
+    pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionTotalDetails {
+    /// This is the sum of all the line item discounts.
+    pub amount_discount: i64,
+
+    /// This is the sum of all the line item shipping amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_shipping: Option<Box<i64>>,
+
+    /// This is the sum of all the line item tax amounts.
+    pub amount_tax: i64,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub breakdown: Option<Box<PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown {
+    /// The aggregated line item discounts.
+    pub discounts: Vec<LineItemsDiscountAmount>,
+
+    /// The aggregated line item tax amounts by rate.
+    pub taxes: Vec<LineItemsTaxAmount>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct LineItemsDiscountAmount {
+    /// The amount discounted.
+    pub amount: i64,
+
+    pub discount: Discount,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct LineItemsTaxAmount {
+    /// Amount of tax applied for this rate.
+    pub amount: i64,
+
+    pub rate: TaxRate,
+}
+
 /// The parameters for `CheckoutSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateCheckoutSession<'a> {
@@ -245,7 +661,6 @@ impl<'a> CreateCheckoutSession<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `CheckoutSession::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCheckoutSessions<'a> {
@@ -295,27 +710,23 @@ impl<'a> ListCheckoutSessions<'a> {
     }
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAfterExpiration {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recovery: Option<Box<CreateCheckoutSessionAfterExpirationRecovery>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAutomaticTax {
     pub enabled: bool,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionConsentCollection {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<Box<CreateCheckoutSessionConsentCollectionPromotions>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomerUpdate {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -328,7 +739,6 @@ pub struct CreateCheckoutSessionCustomerUpdate {
     pub shipping: Option<Box<CreateCheckoutSessionCustomerUpdateShipping>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionDiscounts {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -338,7 +748,6 @@ pub struct CreateCheckoutSessionDiscounts {
     pub promotion_code: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -363,7 +772,6 @@ pub struct CreateCheckoutSessionLineItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -403,7 +811,6 @@ pub struct CreateCheckoutSessionPaymentIntentData {
     pub transfer_group: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -419,13 +826,11 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     pub wechat_pay: Option<Box<CreateCheckoutSessionPaymentMethodOptionsWechatPay>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPhoneNumberCollection {
     pub enabled: bool,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSetupIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -438,13 +843,11 @@ pub struct CreateCheckoutSessionSetupIntentData {
     pub on_behalf_of: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingAddressCollection {
     pub allowed_countries: Vec<CreateCheckoutSessionShippingAddressCollectionAllowedCountries>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -454,7 +857,6 @@ pub struct CreateCheckoutSessionShippingOptions {
     pub shipping_rate_data: Option<Box<CreateCheckoutSessionShippingOptionsShippingRateData>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -479,13 +881,11 @@ pub struct CreateCheckoutSessionSubscriptionData {
     pub trial_period_days: Option<Box<u32>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionTaxIdCollection {
     pub enabled: bool,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAfterExpirationRecovery {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -494,7 +894,6 @@ pub struct CreateCheckoutSessionAfterExpirationRecovery {
     pub enabled: bool,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsAdjustableQuantity {
     pub enabled: bool,
@@ -506,7 +905,6 @@ pub struct CreateCheckoutSessionLineItemsAdjustableQuantity {
     pub minimum: Option<Box<i64>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceData {
     pub currency: Currency,
@@ -530,7 +928,6 @@ pub struct CreateCheckoutSessionLineItemsPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataShipping {
     pub address: CreateCheckoutSessionPaymentIntentDataShippingAddress,
@@ -547,7 +944,6 @@ pub struct CreateCheckoutSessionPaymentIntentDataShipping {
     pub tracking_number: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -556,7 +952,6 @@ pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
     pub destination: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -571,21 +966,18 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
         Option<Box<CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<Box<u32>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsOxxo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<Box<u32>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -594,7 +986,6 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay {
     pub client: CreateCheckoutSessionPaymentMethodOptionsWechatPayClient,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -620,7 +1011,6 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
     pub type_: Option<Box<CreateCheckoutSessionShippingOptionsShippingRateDataType>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataItems {
     pub plan: String,
@@ -632,7 +1022,6 @@ pub struct CreateCheckoutSessionSubscriptionDataItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -641,7 +1030,6 @@ pub struct CreateCheckoutSessionSubscriptionDataTransferData {
     pub destination: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceDataProductData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -659,7 +1047,6 @@ pub struct CreateCheckoutSessionLineItemsPriceDataProductData {
     pub tax_code: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
     pub interval: CreateCheckoutSessionLineItemsPriceDataRecurringInterval,
@@ -668,7 +1055,6 @@ pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
     pub interval_count: Option<Box<u64>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -689,7 +1075,6 @@ pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
     pub state: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -714,7 +1099,6 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     >,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -726,7 +1110,6 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate 
         Option<Box<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     pub amount: i64,
@@ -734,7 +1117,6 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     pub currency: Currency,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
     pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit,
@@ -742,7 +1124,6 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateM
     pub value: i64,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
     pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit,
@@ -750,7 +1131,129 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateM
     pub value: i64,
 }
 
-/// An enum representing the possible values of an `CreateCheckoutSession`'s `billing_address_collection` field.
+/// An enum representing the possible values of an `CheckoutAcssDebitMandateOptions`'s `default_for` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutAcssDebitMandateOptionsDefaultFor {
+    Invoice,
+    Subscription,
+}
+
+impl CheckoutAcssDebitMandateOptionsDefaultFor {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutAcssDebitMandateOptionsDefaultFor::Invoice => "invoice",
+            CheckoutAcssDebitMandateOptionsDefaultFor::Subscription => "subscription",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutAcssDebitMandateOptionsDefaultFor {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutAcssDebitMandateOptionsDefaultFor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutAcssDebitMandateOptions`'s `payment_schedule` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutAcssDebitMandateOptionsPaymentSchedule {
+    Combined,
+    Interval,
+    Sporadic,
+}
+
+impl CheckoutAcssDebitMandateOptionsPaymentSchedule {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
+            CheckoutAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
+            CheckoutAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutAcssDebitMandateOptionsPaymentSchedule {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutAcssDebitMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutAcssDebitMandateOptions`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutAcssDebitMandateOptionsTransactionType {
+    Business,
+    Personal,
+}
+
+impl CheckoutAcssDebitMandateOptionsTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutAcssDebitMandateOptionsTransactionType::Business => "business",
+            CheckoutAcssDebitMandateOptionsTransactionType::Personal => "personal",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutAcssDebitMandateOptionsTransactionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutAcssDebitMandateOptionsTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutAcssDebitPaymentMethodOptions`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutAcssDebitPaymentMethodOptionsVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl CheckoutAcssDebitPaymentMethodOptionsVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutAcssDebitPaymentMethodOptionsVerificationMethod::Automatic => "automatic",
+            CheckoutAcssDebitPaymentMethodOptionsVerificationMethod::Instant => "instant",
+            CheckoutAcssDebitPaymentMethodOptionsVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutAcssDebitPaymentMethodOptionsVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutAcssDebitPaymentMethodOptionsVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutSession`'s `billing_address_collection` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CheckoutSessionBillingAddressCollection {
@@ -779,7 +1282,7 @@ impl std::fmt::Display for CheckoutSessionBillingAddressCollection {
     }
 }
 
-/// An enum representing the possible values of an `CreateCheckoutSession`'s `customer_creation` field.
+/// An enum representing the possible values of an `CheckoutSession`'s `customer_creation` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CheckoutSessionCustomerCreation {
@@ -808,7 +1311,7 @@ impl std::fmt::Display for CheckoutSessionCustomerCreation {
     }
 }
 
-/// An enum representing the possible values of an `CreateCheckoutSession`'s `locale` field.
+/// An enum representing the possible values of an `CheckoutSession`'s `locale` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CheckoutSessionLocale {
@@ -921,7 +1424,7 @@ impl std::fmt::Display for CheckoutSessionLocale {
     }
 }
 
-/// An enum representing the possible values of an `CreateCheckoutSession`'s `mode` field.
+/// An enum representing the possible values of an `CheckoutSession`'s `mode` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CheckoutSessionMode {
@@ -952,7 +1455,69 @@ impl std::fmt::Display for CheckoutSessionMode {
     }
 }
 
-/// An enum representing the possible values of an `CreateCheckoutSession`'s `submit_type` field.
+/// An enum representing the possible values of an `CheckoutSession`'s `payment_status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutSessionPaymentStatus {
+    NoPaymentRequired,
+    Paid,
+    Unpaid,
+}
+
+impl CheckoutSessionPaymentStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutSessionPaymentStatus::NoPaymentRequired => "no_payment_required",
+            CheckoutSessionPaymentStatus::Paid => "paid",
+            CheckoutSessionPaymentStatus::Unpaid => "unpaid",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutSessionPaymentStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutSessionPaymentStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutSession`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutSessionStatus {
+    Complete,
+    Expired,
+    Open,
+}
+
+impl CheckoutSessionStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutSessionStatus::Complete => "complete",
+            CheckoutSessionStatus::Expired => "expired",
+            CheckoutSessionStatus::Open => "open",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutSessionStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutSessionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutSession`'s `submit_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CheckoutSessionSubmitType {
@@ -2324,6 +2889,973 @@ impl AsRef<str> for CreateCheckoutSessionShippingOptionsShippingRateDataType {
 }
 
 impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionAutomaticTax`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionAutomaticTaxStatus {
+    Complete,
+    Failed,
+    RequiresLocationInputs,
+}
+
+impl PaymentPagesCheckoutSessionAutomaticTaxStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionAutomaticTaxStatus::Complete => "complete",
+            PaymentPagesCheckoutSessionAutomaticTaxStatus::Failed => "failed",
+            PaymentPagesCheckoutSessionAutomaticTaxStatus::RequiresLocationInputs => {
+                "requires_location_inputs"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionAutomaticTaxStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionAutomaticTaxStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionConsentCollection`'s `promotions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionConsentCollectionPromotions {
+    Auto,
+}
+
+impl PaymentPagesCheckoutSessionConsentCollectionPromotions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionConsentCollectionPromotions::Auto => "auto",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionConsentCollectionPromotions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionConsentCollectionPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionConsent`'s `promotions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionConsentPromotions {
+    OptIn,
+    OptOut,
+}
+
+impl PaymentPagesCheckoutSessionConsentPromotions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionConsentPromotions::OptIn => "opt_in",
+            PaymentPagesCheckoutSessionConsentPromotions::OptOut => "opt_out",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionConsentPromotions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionConsentPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionCustomerDetails`'s `tax_exempt` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
+    Exempt,
+    None,
+    Reverse,
+}
+
+impl PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionCustomerDetailsTaxExempt::Exempt => "exempt",
+            PaymentPagesCheckoutSessionCustomerDetailsTaxExempt::None => "none",
+            PaymentPagesCheckoutSessionCustomerDetailsTaxExempt::Reverse => "reverse",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionShippingAddressCollection`'s `allowed_countries` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
+    #[serde(rename = "AC")]
+    Ac,
+    #[serde(rename = "AD")]
+    Ad,
+    #[serde(rename = "AE")]
+    Ae,
+    #[serde(rename = "AF")]
+    Af,
+    #[serde(rename = "AG")]
+    Ag,
+    #[serde(rename = "AI")]
+    Ai,
+    #[serde(rename = "AL")]
+    Al,
+    #[serde(rename = "AM")]
+    Am,
+    #[serde(rename = "AO")]
+    Ao,
+    #[serde(rename = "AQ")]
+    Aq,
+    #[serde(rename = "AR")]
+    Ar,
+    #[serde(rename = "AT")]
+    At,
+    #[serde(rename = "AU")]
+    Au,
+    #[serde(rename = "AW")]
+    Aw,
+    #[serde(rename = "AX")]
+    Ax,
+    #[serde(rename = "AZ")]
+    Az,
+    #[serde(rename = "BA")]
+    Ba,
+    #[serde(rename = "BB")]
+    Bb,
+    #[serde(rename = "BD")]
+    Bd,
+    #[serde(rename = "BE")]
+    Be,
+    #[serde(rename = "BF")]
+    Bf,
+    #[serde(rename = "BG")]
+    Bg,
+    #[serde(rename = "BH")]
+    Bh,
+    #[serde(rename = "BI")]
+    Bi,
+    #[serde(rename = "BJ")]
+    Bj,
+    #[serde(rename = "BL")]
+    Bl,
+    #[serde(rename = "BM")]
+    Bm,
+    #[serde(rename = "BN")]
+    Bn,
+    #[serde(rename = "BO")]
+    Bo,
+    #[serde(rename = "BQ")]
+    Bq,
+    #[serde(rename = "BR")]
+    Br,
+    #[serde(rename = "BS")]
+    Bs,
+    #[serde(rename = "BT")]
+    Bt,
+    #[serde(rename = "BV")]
+    Bv,
+    #[serde(rename = "BW")]
+    Bw,
+    #[serde(rename = "BY")]
+    By,
+    #[serde(rename = "BZ")]
+    Bz,
+    #[serde(rename = "CA")]
+    Ca,
+    #[serde(rename = "CD")]
+    Cd,
+    #[serde(rename = "CF")]
+    Cf,
+    #[serde(rename = "CG")]
+    Cg,
+    #[serde(rename = "CH")]
+    Ch,
+    #[serde(rename = "CI")]
+    Ci,
+    #[serde(rename = "CK")]
+    Ck,
+    #[serde(rename = "CL")]
+    Cl,
+    #[serde(rename = "CM")]
+    Cm,
+    #[serde(rename = "CN")]
+    Cn,
+    #[serde(rename = "CO")]
+    Co,
+    #[serde(rename = "CR")]
+    Cr,
+    #[serde(rename = "CV")]
+    Cv,
+    #[serde(rename = "CW")]
+    Cw,
+    #[serde(rename = "CY")]
+    Cy,
+    #[serde(rename = "CZ")]
+    Cz,
+    #[serde(rename = "DE")]
+    De,
+    #[serde(rename = "DJ")]
+    Dj,
+    #[serde(rename = "DK")]
+    Dk,
+    #[serde(rename = "DM")]
+    Dm,
+    #[serde(rename = "DO")]
+    Do,
+    #[serde(rename = "DZ")]
+    Dz,
+    #[serde(rename = "EC")]
+    Ec,
+    #[serde(rename = "EE")]
+    Ee,
+    #[serde(rename = "EG")]
+    Eg,
+    #[serde(rename = "EH")]
+    Eh,
+    #[serde(rename = "ER")]
+    Er,
+    #[serde(rename = "ES")]
+    Es,
+    #[serde(rename = "ET")]
+    Et,
+    #[serde(rename = "FI")]
+    Fi,
+    #[serde(rename = "FJ")]
+    Fj,
+    #[serde(rename = "FK")]
+    Fk,
+    #[serde(rename = "FO")]
+    Fo,
+    #[serde(rename = "FR")]
+    Fr,
+    #[serde(rename = "GA")]
+    Ga,
+    #[serde(rename = "GB")]
+    Gb,
+    #[serde(rename = "GD")]
+    Gd,
+    #[serde(rename = "GE")]
+    Ge,
+    #[serde(rename = "GF")]
+    Gf,
+    #[serde(rename = "GG")]
+    Gg,
+    #[serde(rename = "GH")]
+    Gh,
+    #[serde(rename = "GI")]
+    Gi,
+    #[serde(rename = "GL")]
+    Gl,
+    #[serde(rename = "GM")]
+    Gm,
+    #[serde(rename = "GN")]
+    Gn,
+    #[serde(rename = "GP")]
+    Gp,
+    #[serde(rename = "GQ")]
+    Gq,
+    #[serde(rename = "GR")]
+    Gr,
+    #[serde(rename = "GS")]
+    Gs,
+    #[serde(rename = "GT")]
+    Gt,
+    #[serde(rename = "GU")]
+    Gu,
+    #[serde(rename = "GW")]
+    Gw,
+    #[serde(rename = "GY")]
+    Gy,
+    #[serde(rename = "HK")]
+    Hk,
+    #[serde(rename = "HN")]
+    Hn,
+    #[serde(rename = "HR")]
+    Hr,
+    #[serde(rename = "HT")]
+    Ht,
+    #[serde(rename = "HU")]
+    Hu,
+    #[serde(rename = "ID")]
+    Id,
+    #[serde(rename = "IE")]
+    Ie,
+    #[serde(rename = "IL")]
+    Il,
+    #[serde(rename = "IM")]
+    Im,
+    #[serde(rename = "IN")]
+    In,
+    #[serde(rename = "IO")]
+    Io,
+    #[serde(rename = "IQ")]
+    Iq,
+    #[serde(rename = "IS")]
+    Is,
+    #[serde(rename = "IT")]
+    It,
+    #[serde(rename = "JE")]
+    Je,
+    #[serde(rename = "JM")]
+    Jm,
+    #[serde(rename = "JO")]
+    Jo,
+    #[serde(rename = "JP")]
+    Jp,
+    #[serde(rename = "KE")]
+    Ke,
+    #[serde(rename = "KG")]
+    Kg,
+    #[serde(rename = "KH")]
+    Kh,
+    #[serde(rename = "KI")]
+    Ki,
+    #[serde(rename = "KM")]
+    Km,
+    #[serde(rename = "KN")]
+    Kn,
+    #[serde(rename = "KR")]
+    Kr,
+    #[serde(rename = "KW")]
+    Kw,
+    #[serde(rename = "KY")]
+    Ky,
+    #[serde(rename = "KZ")]
+    Kz,
+    #[serde(rename = "LA")]
+    La,
+    #[serde(rename = "LB")]
+    Lb,
+    #[serde(rename = "LC")]
+    Lc,
+    #[serde(rename = "LI")]
+    Li,
+    #[serde(rename = "LK")]
+    Lk,
+    #[serde(rename = "LR")]
+    Lr,
+    #[serde(rename = "LS")]
+    Ls,
+    #[serde(rename = "LT")]
+    Lt,
+    #[serde(rename = "LU")]
+    Lu,
+    #[serde(rename = "LV")]
+    Lv,
+    #[serde(rename = "LY")]
+    Ly,
+    #[serde(rename = "MA")]
+    Ma,
+    #[serde(rename = "MC")]
+    Mc,
+    #[serde(rename = "MD")]
+    Md,
+    #[serde(rename = "ME")]
+    Me,
+    #[serde(rename = "MF")]
+    Mf,
+    #[serde(rename = "MG")]
+    Mg,
+    #[serde(rename = "MK")]
+    Mk,
+    #[serde(rename = "ML")]
+    Ml,
+    #[serde(rename = "MM")]
+    Mm,
+    #[serde(rename = "MN")]
+    Mn,
+    #[serde(rename = "MO")]
+    Mo,
+    #[serde(rename = "MQ")]
+    Mq,
+    #[serde(rename = "MR")]
+    Mr,
+    #[serde(rename = "MS")]
+    Ms,
+    #[serde(rename = "MT")]
+    Mt,
+    #[serde(rename = "MU")]
+    Mu,
+    #[serde(rename = "MV")]
+    Mv,
+    #[serde(rename = "MW")]
+    Mw,
+    #[serde(rename = "MX")]
+    Mx,
+    #[serde(rename = "MY")]
+    My,
+    #[serde(rename = "MZ")]
+    Mz,
+    #[serde(rename = "NA")]
+    Na,
+    #[serde(rename = "NC")]
+    Nc,
+    #[serde(rename = "NE")]
+    Ne,
+    #[serde(rename = "NG")]
+    Ng,
+    #[serde(rename = "NI")]
+    Ni,
+    #[serde(rename = "NL")]
+    Nl,
+    #[serde(rename = "NO")]
+    No,
+    #[serde(rename = "NP")]
+    Np,
+    #[serde(rename = "NR")]
+    Nr,
+    #[serde(rename = "NU")]
+    Nu,
+    #[serde(rename = "NZ")]
+    Nz,
+    #[serde(rename = "OM")]
+    Om,
+    #[serde(rename = "PA")]
+    Pa,
+    #[serde(rename = "PE")]
+    Pe,
+    #[serde(rename = "PF")]
+    Pf,
+    #[serde(rename = "PG")]
+    Pg,
+    #[serde(rename = "PH")]
+    Ph,
+    #[serde(rename = "PK")]
+    Pk,
+    #[serde(rename = "PL")]
+    Pl,
+    #[serde(rename = "PM")]
+    Pm,
+    #[serde(rename = "PN")]
+    Pn,
+    #[serde(rename = "PR")]
+    Pr,
+    #[serde(rename = "PS")]
+    Ps,
+    #[serde(rename = "PT")]
+    Pt,
+    #[serde(rename = "PY")]
+    Py,
+    #[serde(rename = "QA")]
+    Qa,
+    #[serde(rename = "RE")]
+    Re,
+    #[serde(rename = "RO")]
+    Ro,
+    #[serde(rename = "RS")]
+    Rs,
+    #[serde(rename = "RU")]
+    Ru,
+    #[serde(rename = "RW")]
+    Rw,
+    #[serde(rename = "SA")]
+    Sa,
+    #[serde(rename = "SB")]
+    Sb,
+    #[serde(rename = "SC")]
+    Sc,
+    #[serde(rename = "SE")]
+    Se,
+    #[serde(rename = "SG")]
+    Sg,
+    #[serde(rename = "SH")]
+    Sh,
+    #[serde(rename = "SI")]
+    Si,
+    #[serde(rename = "SJ")]
+    Sj,
+    #[serde(rename = "SK")]
+    Sk,
+    #[serde(rename = "SL")]
+    Sl,
+    #[serde(rename = "SM")]
+    Sm,
+    #[serde(rename = "SN")]
+    Sn,
+    #[serde(rename = "SO")]
+    So,
+    #[serde(rename = "SR")]
+    Sr,
+    #[serde(rename = "SS")]
+    Ss,
+    #[serde(rename = "ST")]
+    St,
+    #[serde(rename = "SV")]
+    Sv,
+    #[serde(rename = "SX")]
+    Sx,
+    #[serde(rename = "SZ")]
+    Sz,
+    #[serde(rename = "TA")]
+    Ta,
+    #[serde(rename = "TC")]
+    Tc,
+    #[serde(rename = "TD")]
+    Td,
+    #[serde(rename = "TF")]
+    Tf,
+    #[serde(rename = "TG")]
+    Tg,
+    #[serde(rename = "TH")]
+    Th,
+    #[serde(rename = "TJ")]
+    Tj,
+    #[serde(rename = "TK")]
+    Tk,
+    #[serde(rename = "TL")]
+    Tl,
+    #[serde(rename = "TM")]
+    Tm,
+    #[serde(rename = "TN")]
+    Tn,
+    #[serde(rename = "TO")]
+    To,
+    #[serde(rename = "TR")]
+    Tr,
+    #[serde(rename = "TT")]
+    Tt,
+    #[serde(rename = "TV")]
+    Tv,
+    #[serde(rename = "TW")]
+    Tw,
+    #[serde(rename = "TZ")]
+    Tz,
+    #[serde(rename = "UA")]
+    Ua,
+    #[serde(rename = "UG")]
+    Ug,
+    #[serde(rename = "US")]
+    Us,
+    #[serde(rename = "UY")]
+    Uy,
+    #[serde(rename = "UZ")]
+    Uz,
+    #[serde(rename = "VA")]
+    Va,
+    #[serde(rename = "VC")]
+    Vc,
+    #[serde(rename = "VE")]
+    Ve,
+    #[serde(rename = "VG")]
+    Vg,
+    #[serde(rename = "VN")]
+    Vn,
+    #[serde(rename = "VU")]
+    Vu,
+    #[serde(rename = "WF")]
+    Wf,
+    #[serde(rename = "WS")]
+    Ws,
+    #[serde(rename = "XK")]
+    Xk,
+    #[serde(rename = "YE")]
+    Ye,
+    #[serde(rename = "YT")]
+    Yt,
+    #[serde(rename = "ZA")]
+    Za,
+    #[serde(rename = "ZM")]
+    Zm,
+    #[serde(rename = "ZW")]
+    Zw,
+    #[serde(rename = "ZZ")]
+    Zz,
+}
+
+impl PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ac => "AC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ad => "AD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ae => "AE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Af => "AF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ag => "AG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ai => "AI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Al => "AL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Am => "AM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ao => "AO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Aq => "AQ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ar => "AR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::At => "AT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Au => "AU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Aw => "AW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ax => "AX",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Az => "AZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ba => "BA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bb => "BB",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bd => "BD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Be => "BE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bf => "BF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bg => "BG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bh => "BH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bi => "BI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bj => "BJ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bl => "BL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bm => "BM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bn => "BN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bo => "BO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bq => "BQ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Br => "BR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bs => "BS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bt => "BT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bv => "BV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bw => "BW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::By => "BY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Bz => "BZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ca => "CA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cd => "CD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cf => "CF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cg => "CG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ch => "CH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ci => "CI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ck => "CK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cl => "CL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cm => "CM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cn => "CN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Co => "CO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cr => "CR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cv => "CV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cw => "CW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cy => "CY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Cz => "CZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::De => "DE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Dj => "DJ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Dk => "DK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Dm => "DM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Do => "DO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Dz => "DZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ec => "EC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ee => "EE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Eg => "EG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Eh => "EH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Er => "ER",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Es => "ES",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Et => "ET",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Fi => "FI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Fj => "FJ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Fk => "FK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Fo => "FO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Fr => "FR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ga => "GA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gb => "GB",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gd => "GD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ge => "GE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gf => "GF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gg => "GG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gh => "GH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gi => "GI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gl => "GL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gm => "GM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gn => "GN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gp => "GP",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gq => "GQ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gr => "GR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gs => "GS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gt => "GT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gu => "GU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gw => "GW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Gy => "GY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Hk => "HK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Hn => "HN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Hr => "HR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ht => "HT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Hu => "HU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Id => "ID",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ie => "IE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Il => "IL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Im => "IM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::In => "IN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Io => "IO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Iq => "IQ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Is => "IS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::It => "IT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Je => "JE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Jm => "JM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Jo => "JO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Jp => "JP",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ke => "KE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kg => "KG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kh => "KH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ki => "KI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Km => "KM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kn => "KN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kr => "KR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kw => "KW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ky => "KY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Kz => "KZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::La => "LA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lb => "LB",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lc => "LC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Li => "LI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lk => "LK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lr => "LR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ls => "LS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lt => "LT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lu => "LU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Lv => "LV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ly => "LY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ma => "MA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mc => "MC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Md => "MD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Me => "ME",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mf => "MF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mg => "MG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mk => "MK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ml => "ML",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mm => "MM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mn => "MN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mo => "MO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mq => "MQ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mr => "MR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ms => "MS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mt => "MT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mu => "MU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mv => "MV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mw => "MW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mx => "MX",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::My => "MY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Mz => "MZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Na => "NA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Nc => "NC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ne => "NE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ng => "NG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ni => "NI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Nl => "NL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::No => "NO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Np => "NP",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Nr => "NR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Nu => "NU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Nz => "NZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Om => "OM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pa => "PA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pe => "PE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pf => "PF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pg => "PG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ph => "PH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pk => "PK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pl => "PL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pm => "PM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pn => "PN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pr => "PR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ps => "PS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Pt => "PT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Py => "PY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Qa => "QA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Re => "RE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ro => "RO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Rs => "RS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ru => "RU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Rw => "RW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sa => "SA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sb => "SB",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sc => "SC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Se => "SE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sg => "SG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sh => "SH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Si => "SI",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sj => "SJ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sk => "SK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sl => "SL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sm => "SM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sn => "SN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::So => "SO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sr => "SR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ss => "SS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::St => "ST",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sv => "SV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sx => "SX",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Sz => "SZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ta => "TA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tc => "TC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Td => "TD",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tf => "TF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tg => "TG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Th => "TH",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tj => "TJ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tk => "TK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tl => "TL",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tm => "TM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tn => "TN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::To => "TO",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tr => "TR",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tt => "TT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tv => "TV",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tw => "TW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Tz => "TZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ua => "UA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ug => "UG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Us => "US",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Uy => "UY",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Uz => "UZ",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Va => "VA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Vc => "VC",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ve => "VE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Vg => "VG",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Vn => "VN",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Vu => "VU",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Wf => "WF",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ws => "WS",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Xk => "XK",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Ye => "YE",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Yt => "YT",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Za => "ZA",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Zm => "ZM",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Zw => "ZW",
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::Zz => "ZZ",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionTaxId`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionTaxIdType {
+    AeTrn,
+    AuAbn,
+    AuArn,
+    BrCnpj,
+    BrCpf,
+    CaBn,
+    CaGstHst,
+    CaPstBc,
+    CaPstMb,
+    CaPstSk,
+    CaQst,
+    ChVat,
+    ClTin,
+    EsCif,
+    EuVat,
+    GbVat,
+    GeVat,
+    HkBr,
+    IdNpwp,
+    IlVat,
+    InGst,
+    IsVat,
+    JpCn,
+    JpRn,
+    KrBrn,
+    LiUid,
+    MxRfc,
+    MyFrp,
+    MyItn,
+    MySst,
+    NoVat,
+    NzGst,
+    RuInn,
+    RuKpp,
+    SaVat,
+    SgGst,
+    SgUen,
+    ThVat,
+    TwVat,
+    UaVat,
+    Unknown,
+    UsEin,
+    ZaVat,
+}
+
+impl PaymentPagesCheckoutSessionTaxIdType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionTaxIdType::AeTrn => "ae_trn",
+            PaymentPagesCheckoutSessionTaxIdType::AuAbn => "au_abn",
+            PaymentPagesCheckoutSessionTaxIdType::AuArn => "au_arn",
+            PaymentPagesCheckoutSessionTaxIdType::BrCnpj => "br_cnpj",
+            PaymentPagesCheckoutSessionTaxIdType::BrCpf => "br_cpf",
+            PaymentPagesCheckoutSessionTaxIdType::CaBn => "ca_bn",
+            PaymentPagesCheckoutSessionTaxIdType::CaGstHst => "ca_gst_hst",
+            PaymentPagesCheckoutSessionTaxIdType::CaPstBc => "ca_pst_bc",
+            PaymentPagesCheckoutSessionTaxIdType::CaPstMb => "ca_pst_mb",
+            PaymentPagesCheckoutSessionTaxIdType::CaPstSk => "ca_pst_sk",
+            PaymentPagesCheckoutSessionTaxIdType::CaQst => "ca_qst",
+            PaymentPagesCheckoutSessionTaxIdType::ChVat => "ch_vat",
+            PaymentPagesCheckoutSessionTaxIdType::ClTin => "cl_tin",
+            PaymentPagesCheckoutSessionTaxIdType::EsCif => "es_cif",
+            PaymentPagesCheckoutSessionTaxIdType::EuVat => "eu_vat",
+            PaymentPagesCheckoutSessionTaxIdType::GbVat => "gb_vat",
+            PaymentPagesCheckoutSessionTaxIdType::GeVat => "ge_vat",
+            PaymentPagesCheckoutSessionTaxIdType::HkBr => "hk_br",
+            PaymentPagesCheckoutSessionTaxIdType::IdNpwp => "id_npwp",
+            PaymentPagesCheckoutSessionTaxIdType::IlVat => "il_vat",
+            PaymentPagesCheckoutSessionTaxIdType::InGst => "in_gst",
+            PaymentPagesCheckoutSessionTaxIdType::IsVat => "is_vat",
+            PaymentPagesCheckoutSessionTaxIdType::JpCn => "jp_cn",
+            PaymentPagesCheckoutSessionTaxIdType::JpRn => "jp_rn",
+            PaymentPagesCheckoutSessionTaxIdType::KrBrn => "kr_brn",
+            PaymentPagesCheckoutSessionTaxIdType::LiUid => "li_uid",
+            PaymentPagesCheckoutSessionTaxIdType::MxRfc => "mx_rfc",
+            PaymentPagesCheckoutSessionTaxIdType::MyFrp => "my_frp",
+            PaymentPagesCheckoutSessionTaxIdType::MyItn => "my_itn",
+            PaymentPagesCheckoutSessionTaxIdType::MySst => "my_sst",
+            PaymentPagesCheckoutSessionTaxIdType::NoVat => "no_vat",
+            PaymentPagesCheckoutSessionTaxIdType::NzGst => "nz_gst",
+            PaymentPagesCheckoutSessionTaxIdType::RuInn => "ru_inn",
+            PaymentPagesCheckoutSessionTaxIdType::RuKpp => "ru_kpp",
+            PaymentPagesCheckoutSessionTaxIdType::SaVat => "sa_vat",
+            PaymentPagesCheckoutSessionTaxIdType::SgGst => "sg_gst",
+            PaymentPagesCheckoutSessionTaxIdType::SgUen => "sg_uen",
+            PaymentPagesCheckoutSessionTaxIdType::ThVat => "th_vat",
+            PaymentPagesCheckoutSessionTaxIdType::TwVat => "tw_vat",
+            PaymentPagesCheckoutSessionTaxIdType::UaVat => "ua_vat",
+            PaymentPagesCheckoutSessionTaxIdType::Unknown => "unknown",
+            PaymentPagesCheckoutSessionTaxIdType::UsEin => "us_ein",
+            PaymentPagesCheckoutSessionTaxIdType::ZaVat => "za_vat",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionTaxIdType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionTaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

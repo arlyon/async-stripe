@@ -8,7 +8,6 @@ use crate::ids::CardId;
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Account, Currency, Customer, Recipient};
 
-// written at 378
 /// The resource representing a Stripe "Card".
 ///
 /// For more details see <https://stripe.com/docs/api/cards/object>

@@ -9,7 +9,6 @@ use crate::params::Object;
 use crate::resources::TaxRate;
 use crate::{CreditNoteTaxAmount, DiscountsResourceDiscountAmount};
 
-// written at 378
 /// The resource representing a Stripe "CreditNoteLineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreditNoteLineItem {

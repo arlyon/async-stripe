@@ -9,7 +9,6 @@ use crate::ids::PaymentLinkId;
 use crate::params::{Expand, Expandable, List, Metadata, Object};
 use crate::resources::{Account, CheckoutSessionItem};
 
-// written at 378
 /// The resource representing a Stripe "PaymentLink".
 ///
 /// For more details see <https://stripe.com/docs/api/payment_links/object>
@@ -121,7 +120,6 @@ impl Object for PaymentLink {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourceAfterCompletion {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -135,14 +133,12 @@ pub struct PaymentLinksResourceAfterCompletion {
     pub type_: PaymentLinksResourceAfterCompletionType,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourceAutomaticTax {
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCompletionBehaviorConfirmationPage {
     /// The custom message that is displayed to the customer after the purchase is complete.
@@ -150,21 +146,18 @@ pub struct PaymentLinksResourceCompletionBehaviorConfirmationPage {
     pub custom_message: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCompletionBehaviorRedirect {
     /// The URL the customer will be redirected to after the purchase is complete.
     pub url: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourcePhoneNumberCollection {
     /// If `true`, a phone number will be collected during checkout.
     pub enabled: bool,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourceShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for shipping locations.
@@ -173,7 +166,6 @@ pub struct PaymentLinksResourceShippingAddressCollection {
     pub allowed_countries: Vec<PaymentLinksResourceShippingAddressCollectionAllowedCountries>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourceSubscriptionData {
     /// Integer representing the number of trial period days before the customer is charged for the first time.
@@ -181,7 +173,6 @@ pub struct PaymentLinksResourceSubscriptionData {
     pub trial_period_days: Option<Box<u32>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentLinksResourceTransferData {
     /// The amount in %s that will be transferred to the destination account.
@@ -194,7 +185,6 @@ pub struct PaymentLinksResourceTransferData {
     pub destination: Expandable<Account>,
 }
 
-// written at 597
 /// The parameters for `PaymentLink::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreatePaymentLink<'a> {
@@ -301,7 +291,6 @@ impl<'a> CreatePaymentLink<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `PaymentLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPaymentLinks<'a> {
@@ -346,7 +335,6 @@ impl<'a> ListPaymentLinks<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `PaymentLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentLink<'a> {
@@ -421,7 +409,6 @@ impl<'a> UpdatePaymentLink<'a> {
     }
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletion {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -434,13 +421,11 @@ pub struct CreatePaymentLinkAfterCompletion {
     pub type_: CreatePaymentLinkAfterCompletionType,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAutomaticTax {
     pub enabled: bool,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -451,26 +436,22 @@ pub struct CreatePaymentLinkLineItems {
     pub quantity: u64,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkPhoneNumberCollection {
     pub enabled: bool,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkShippingAddressCollection {
     pub allowed_countries: Vec<CreatePaymentLinkShippingAddressCollectionAllowedCountries>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<Box<u32>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -479,7 +460,6 @@ pub struct CreatePaymentLinkTransferData {
     pub destination: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletion {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -492,13 +472,11 @@ pub struct UpdatePaymentLinkAfterCompletion {
     pub type_: UpdatePaymentLinkAfterCompletionType,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAutomaticTax {
     pub enabled: bool,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -510,26 +488,22 @@ pub struct UpdatePaymentLinkLineItems {
     pub quantity: Option<Box<u64>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkShippingAddressCollection {
     pub allowed_countries: Vec<UpdatePaymentLinkShippingAddressCollectionAllowedCountries>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletionHostedConfirmation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_message: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletionRedirect {
     pub url: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItemsAdjustableQuantity {
     pub enabled: bool,
@@ -541,20 +515,17 @@ pub struct CreatePaymentLinkLineItemsAdjustableQuantity {
     pub minimum: Option<Box<i64>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletionHostedConfirmation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_message: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletionRedirect {
     pub url: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
     pub enabled: bool,

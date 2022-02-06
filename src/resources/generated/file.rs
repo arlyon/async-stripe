@@ -9,7 +9,6 @@ use crate::ids::FileId;
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
 use crate::resources::FileLink;
 
-// written at 378
 /// The resource representing a Stripe "File".
 ///
 /// For more details see <https://stripe.com/docs/api/files/object>
@@ -82,7 +81,6 @@ impl Object for File {
     }
 }
 
-// written at 597
 /// The parameters for `File::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFiles<'a> {

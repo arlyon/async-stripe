@@ -5,9 +5,45 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::OrderId;
-use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
-use crate::OrderReturn;
+use crate::ids::{OrderId, OrderReturnId};
+use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
+use crate::resources::{Currency, Order, OrderItem, Refund};
+
+/// The resource representing a Stripe "OrderReturn".
+///
+/// For more details see <https://stripe.com/docs/api/order_returns/object>
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct OrderReturn {
+    /// Unique identifier for the object.
+    pub id: OrderReturnId,
+
+    /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the returned line item.
+    pub amount: i64,
+
+    /// Time at which the object was created.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    pub created: Timestamp,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
+
+    /// The items included in this order return.
+    pub items: Vec<OrderItem>,
+
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    pub livemode: bool,
+
+    /// The order that this return includes items from.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub order: Option<Box<Expandable<Order>>>,
+
+    /// The ID of the refund issued for this return.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund: Option<Box<Expandable<Refund>>>,
+}
 
 impl OrderReturn {
     /// Returns a list of your order returns.
@@ -35,7 +71,6 @@ impl Object for OrderReturn {
     }
 }
 
-// written at 597
 /// The parameters for `OrderReturn::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListOrderReturns<'a> {

@@ -8,7 +8,6 @@ use crate::ids::SourceMandateNotificationId;
 use crate::params::{Object, Timestamp};
 use crate::resources::Source;
 
-// written at 378
 /// The resource representing a Stripe "SourceMandateNotification".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateNotification {
@@ -68,7 +67,6 @@ impl Object for SourceMandateNotification {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateNotificationAcssDebitData {
     /// The statement descriptor associate with the debit.
@@ -76,7 +74,6 @@ pub struct SourceMandateNotificationAcssDebitData {
     pub statement_descriptor: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateNotificationBacsDebitData {
     /// Last 4 digits of the account number associated with the debit.
@@ -84,7 +81,6 @@ pub struct SourceMandateNotificationBacsDebitData {
     pub last4: Option<Box<String>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceMandateNotificationSepaDebitData {
     /// SEPA creditor ID.

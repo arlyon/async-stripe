@@ -137,7 +137,7 @@ fn main() -> Result<()> {
             out.push_str(&format!("\tfn object(&self) -> &'static str {{ \"{}\" }}\n", schema));
             out.push_str("}\n");
             fs::write(format!("{}/{}", &out_path, "placeholders.rs"), out.as_bytes()).unwrap();
-            all_objects.insert(struct_type);
+            //all_objects.insert(struct_type);
         }
     }
 
@@ -236,6 +236,9 @@ impl<'a> Metadata<'a> {
     }
 }
 
+//TODO: differentiate what's actually in the file and what was deduplicated so we don't try to
+//import things we already have
+
 #[derive(Default)]
 struct Generated {
     /// The ids that must be imported in this file.
@@ -258,6 +261,8 @@ struct Generated {
     inferred_parameters: BTreeMap<String, InferredParams>,
     /// The schemas that were / will be generated in this file.
     generated_schemas: BTreeMap<String, bool>,
+    /// Objects that are either already in the file or imported
+    known_objects: BTreeSet<String>,
 }
 
 impl Generated {
@@ -368,7 +373,11 @@ fn gen_struct(
     };
 
     if all_objects.contains(&struct_name) {
-        state.use_root.insert(struct_name);
+        if !state.known_objects.contains(&struct_name) {
+            println!("importing {} because it is unknown on line {}", &struct_name, line!());
+            state.use_root.insert(struct_name.clone());
+            state.known_objects.insert(struct_name);
+        }
         return;
     }
 
@@ -440,6 +449,7 @@ fn gen_struct(
         ));
     }
     out.push_str("}\n");
+    state.known_objects.insert(struct_name.clone());
     all_objects.insert(struct_name);
 }
 
@@ -527,7 +537,11 @@ fn gen_generated_schemas(
     {
         let struct_name = meta.schema_to_rust_type(&schema_name);
         if all_objects.contains(&struct_name) {
-            state.use_root.insert(struct_name);
+            if !state.known_objects.contains(&struct_name) {
+                println!("importing {} because it is unknown on line {}", &struct_name, line!());
+                state.use_root.insert(struct_name.clone());
+                state.known_objects.insert(struct_name);
+            }
 
             // Set the schema to generated
             *state.generated_schemas.entry(schema_name).or_default() = true;
@@ -562,7 +576,8 @@ fn gen_generated_schemas(
             ));
         }
         out.push_str("}\n");
-        all_objects.insert(struct_name);
+        all_objects.insert(struct_name.clone());
+        state.known_objects.insert(struct_name);
 
         // Set the schema to generated
         *state.generated_schemas.entry(schema_name).or_default() = true;
@@ -575,6 +590,7 @@ fn gen_inferred_params(
     meta: &Metadata,
     object: &str,
     shared_objects: &mut BTreeSet<String>,
+    all_objects: &mut BTreeSet<String>,
 ) {
     let id_type = meta.schema_to_id_type(object);
     let struct_name = meta.schema_to_rust_type(object);
@@ -585,6 +601,19 @@ fn gen_inferred_params(
             Some(some) => some.as_slice(),
             None => &[],
         };
+
+        if all_objects.contains(&params.rust_type) {
+            if !state.known_objects.contains(&params.rust_type) {
+                println!(
+                    "importing {} because it is unknown on line {}",
+                    &params.rust_type,
+                    line!()
+                );
+                state.use_root.insert(params.rust_type.clone());
+                state.known_objects.insert(params.rust_type);
+            }
+            continue;
+        }
 
         // Derive Default when no param is required
         let can_derive_default =
@@ -981,6 +1010,9 @@ fn gen_inferred_params(
         out.push_str("        }\n");
         out.push_str("    }\n");
         out.push_str("}\n");
+
+        all_objects.insert(params.rust_type.clone());
+        state.known_objects.insert(params.rust_type);
     }
 }
 
@@ -1009,7 +1041,15 @@ fn gen_emitted_structs(
             }
 
             if all_objects.contains(&struct_name) {
-                state.use_root.insert(struct_name);
+                if !shared_objects.contains(&struct_name) {
+                    println!(
+                        "importing {} because it is unknown on line {}",
+                        &struct_name,
+                        line!()
+                    );
+                    state.known_objects.insert(struct_name.clone());
+                    state.use_root.insert(struct_name);
+                }
                 continue;
             }
 
@@ -1089,8 +1129,10 @@ fn gen_unions(
                 out.push_str("),\n");
             }
             out.push_str("}\n");
+            state.known_objects.insert(union_name.clone());
             all_objects.insert(union_name);
-        } else {
+        } else if !state.known_objects.contains(&union_name) {
+            state.known_objects.insert(union_name.clone());
             state.use_root.insert(union_name);
         }
     }
@@ -1184,8 +1226,10 @@ fn gen_enums(
             out.push_str("        self.as_str().fmt(f)\n");
             out.push_str("    }\n");
             out.push_str("}\n");
+            state.known_objects.insert(enum_name.clone());
             all_objects.insert(enum_name);
-        } else {
+        } else if !state.known_objects.contains(&enum_name) {
+            state.known_objects.insert(enum_name.clone());
             state.use_root.insert(enum_name);
         }
     }
@@ -1205,7 +1249,7 @@ fn gen_extra_object(
 
     gen_generated_schemas(&mut out, &mut state, meta, shared_objects, all_objects);
 
-    gen_inferred_params(&mut out, &mut state, meta, object, shared_objects);
+    gen_inferred_params(&mut out, &mut state, meta, object, shared_objects, all_objects);
 
     gen_emitted_structs(&mut out, &mut state, meta, shared_objects, all_objects);
 
@@ -1273,7 +1317,7 @@ fn gen_impl_object(
 
     gen_generated_schemas(&mut out, &mut state, meta, shared_objects, all_objects);
 
-    gen_inferred_params(&mut out, &mut state, meta, object, shared_objects);
+    gen_inferred_params(&mut out, &mut state, meta, object, shared_objects, all_objects);
 
     gen_emitted_structs(&mut out, &mut state, meta, shared_objects, all_objects);
 

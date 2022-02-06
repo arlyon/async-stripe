@@ -7,7 +7,6 @@ use serde_derive::{Deserialize, Serialize};
 use crate::ids::ReportingReportTypeId;
 use crate::params::{Object, Timestamp};
 
-// written at 378
 /// The resource representing a Stripe "reporting_report_type".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ReportingReportType {

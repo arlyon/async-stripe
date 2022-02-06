@@ -9,7 +9,6 @@ use crate::ids::CountrySpecId;
 use crate::params::{Expand, List, Object};
 use crate::resources::Currency;
 
-// written at 378
 /// The resource representing a Stripe "CountrySpec".
 ///
 /// For more details see <https://stripe.com/docs/api/country_specs/object>
@@ -65,7 +64,6 @@ impl Object for CountrySpec {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFields {
     pub company: CountrySpecVerificationFieldDetails,
@@ -73,7 +71,6 @@ pub struct CountrySpecVerificationFields {
     pub individual: CountrySpecVerificationFieldDetails,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFieldDetails {
     /// Additional fields which are only required for some users.
@@ -83,7 +80,6 @@ pub struct CountrySpecVerificationFieldDetails {
     pub minimum: Vec<String>,
 }
 
-// written at 597
 /// The parameters for `CountrySpec::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCountrySpecs<'a> {

@@ -7,7 +7,6 @@ use serde_derive::{Deserialize, Serialize};
 use crate::ids::UsageRecordId;
 use crate::params::{Object, Timestamp};
 
-// written at 378
 /// The resource representing a Stripe "UsageRecord".
 ///
 /// For more details see <https://stripe.com/docs/api/usage_records/object>

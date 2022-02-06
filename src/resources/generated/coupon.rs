@@ -5,9 +5,87 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
+use crate::ids::CouponId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::Currency;
-use crate::Coupon;
+
+/// The resource representing a Stripe "Coupon".
+///
+/// For more details see <https://stripe.com/docs/api/coupons/object>
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Coupon {
+    /// Unique identifier for the object.
+    pub id: CouponId,
+
+    /// Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_off: Option<Box<i64>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub applies_to: Option<Box<CouponAppliesTo>>,
+
+    /// Time at which the object was created.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<Timestamp>,
+
+    /// If `amount_off` has been set, the three-letter [ISO code for the currency](https://stripe.com/docs/currencies) of the amount to take off.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    // Always true for a deleted object
+    #[serde(default)]
+    pub deleted: bool,
+
+    /// One of `forever`, `once`, and `repeating`.
+    ///
+    /// Describes how long a customer who applies this coupon will get the discount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<Box<CouponDuration>>,
+
+    /// If `duration` is `repeating`, the number of months the coupon applies.
+    ///
+    /// Null if coupon `duration` is `forever` or `once`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration_in_months: Option<Box<i64>>,
+
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub livemode: Option<Box<bool>>,
+
+    /// Maximum number of times this coupon can be redeemed, in total, across all customers, before it is no longer valid.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_redemptions: Option<Box<i64>>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    /// Name of the coupon displayed to customers on for instance invoices or receipts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<Box<String>>,
+
+    /// Percent that will be taken off the subtotal of any invoices for this customer for the duration of the coupon.
+    ///
+    /// For example, a coupon with percent_off of 50 will make a %s100 invoice %s50 instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub percent_off: Option<Box<f64>>,
+
+    /// Date after which the coupon can no longer be redeemed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redeem_by: Option<Box<Timestamp>>,
+
+    /// Number of times this coupon has been applied to a customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub times_redeemed: Option<Box<i64>>,
+
+    /// Taking account of the above properties, whether this coupon can still be applied to a customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valid: Option<Box<bool>>,
+}
 
 impl Coupon {
     /// Returns a list of your coupons.
@@ -55,7 +133,12 @@ impl Object for Coupon {
     }
 }
 
-// written at 597
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CouponAppliesTo {
+    /// A list of product IDs this coupon applies to.
+    pub products: Vec<String>,
+}
+
 /// The parameters for `Coupon::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCoupon<'a> {
@@ -142,7 +225,6 @@ impl<'a> CreateCoupon<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Coupon::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCoupons<'a> {
@@ -189,7 +271,6 @@ impl<'a> ListCoupons<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Coupon::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCoupon<'a> {
@@ -222,14 +303,13 @@ impl<'a> UpdateCoupon<'a> {
     }
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCouponAppliesTo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub products: Option<Box<Vec<String>>>,
 }
 
-/// An enum representing the possible values of an `CreateCoupon`'s `duration` field.
+/// An enum representing the possible values of an `Coupon`'s `duration` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CouponDuration {

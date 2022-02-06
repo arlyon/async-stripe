@@ -9,7 +9,6 @@ use crate::ids::EventId;
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
 use crate::resources::NotificationEventData;
 
-// written at 378
 /// The resource representing a Stripe "NotificationEvent".
 ///
 /// For more details see <https://stripe.com/docs/api/events/object>
@@ -76,7 +75,6 @@ impl Object for Event {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct NotificationEventRequest {
     /// ID of the API request that caused the event.
@@ -93,7 +91,6 @@ pub struct NotificationEventRequest {
     pub idempotency_key: Option<Box<String>>,
 }
 
-// written at 597
 /// The parameters for `Event::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListEvents<'a> {

@@ -9,7 +9,6 @@ use crate::ids::{CouponId, CustomerId, PromotionCodeId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Coupon, Currency, Customer};
 
-// written at 378
 /// The resource representing a Stripe "PromotionCode".
 ///
 /// For more details see <https://stripe.com/docs/api/promotion_codes/object>
@@ -101,7 +100,6 @@ impl Object for PromotionCode {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PromotionCodesResourceRestrictions {
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
@@ -116,7 +114,6 @@ pub struct PromotionCodesResourceRestrictions {
     pub minimum_amount_currency: Option<Currency>,
 }
 
-// written at 597
 /// The parameters for `PromotionCode::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPromotionCodes<'a> {
@@ -183,7 +180,6 @@ impl<'a> ListPromotionCodes<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `PromotionCode::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePromotionCode<'a> {

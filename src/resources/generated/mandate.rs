@@ -9,7 +9,6 @@ use crate::ids::MandateId;
 use crate::params::{Expand, Expandable, Object, Timestamp};
 use crate::resources::{Currency, PaymentMethod};
 
-// written at 378
 /// The resource representing a Stripe "Mandate".
 ///
 /// For more details see <https://stripe.com/docs/api/mandates/object>
@@ -59,7 +58,6 @@ impl Object for Mandate {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerAcceptance {
     /// The time at which the customer accepted the Mandate.
@@ -79,11 +77,9 @@ pub struct CustomerAcceptance {
     pub type_: CustomerAcceptanceType,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandateMultiUse {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandatePaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -109,11 +105,9 @@ pub struct MandatePaymentMethodDetails {
     pub type_: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CardMandatePaymentMethodDetails {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandateAcssDebit {
     /// List of Stripe products where this mandate can be selected automatically.
@@ -133,7 +127,6 @@ pub struct MandateAcssDebit {
     pub transaction_type: MandateAcssDebitTransactionType,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandateAuBecsDebit {
     /// The URL of the mandate.
@@ -142,7 +135,6 @@ pub struct MandateAuBecsDebit {
     pub url: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandateBacsDebit {
     /// The status of the mandate on the Bacs network.
@@ -157,7 +149,6 @@ pub struct MandateBacsDebit {
     pub url: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandateSepaDebit {
     /// The unique reference of the mandate.
@@ -169,7 +160,6 @@ pub struct MandateSepaDebit {
     pub url: String,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MandateSingleUse {
     /// On a single use mandate, the amount of the payment.
@@ -179,11 +169,9 @@ pub struct MandateSingleUse {
     pub currency: Currency,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OfflineAcceptance {}
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OnlineAcceptance {
     /// The IP address from which the Mandate was accepted by the customer.

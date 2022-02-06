@@ -6,7 +6,6 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::{LineItemsDiscountAmount, LineItemsTaxAmount};
 
-// written at 378
 /// The resource representing a Stripe "QuotesResourceTotalDetails".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct QuotesResourceTotalDetails {
@@ -24,7 +23,6 @@ pub struct QuotesResourceTotalDetails {
     pub breakdown: Option<Box<QuotesResourceTotalDetailsResourceBreakdown>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct QuotesResourceTotalDetailsResourceBreakdown {
     /// The aggregated line item discounts.

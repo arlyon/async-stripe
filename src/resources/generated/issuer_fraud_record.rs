@@ -9,7 +9,6 @@ use crate::ids::{ChargeId, IssuerFraudRecordId};
 use crate::params::{Expand, Expandable, List, Object, Timestamp};
 use crate::resources::Charge;
 
-// written at 378
 /// The resource representing a Stripe "IssuerFraudRecord".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuerFraudRecord {
@@ -75,7 +74,6 @@ impl Object for IssuerFraudRecord {
     }
 }
 
-// written at 597
 /// The parameters for `IssuerFraudRecord::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListIssuerFraudRecords<'a> {

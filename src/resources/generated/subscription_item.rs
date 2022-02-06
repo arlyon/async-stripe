@@ -5,13 +5,58 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::{PriceId, SubscriptionId};
+use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
-use crate::resources::SubscriptionItemBillingThresholds;
+use crate::resources::{Price, SubscriptionItemBillingThresholds, TaxRate};
 use crate::{
-    SubscriptionItem, SubscriptionItemPriceData, SubscriptionPaymentBehavior,
-    SubscriptionProrationBehavior,
+    SubscriptionItemPriceData, SubscriptionPaymentBehavior, SubscriptionProrationBehavior,
 };
+
+/// The resource representing a Stripe "SubscriptionItem".
+///
+/// For more details see <https://stripe.com/docs/api/subscription_items/object>
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct SubscriptionItem {
+    /// Unique identifier for the object.
+    pub id: SubscriptionItemId,
+
+    /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_thresholds: Option<Box<SubscriptionItemBillingThresholds>>,
+
+    /// Time at which the object was created.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created: Option<Timestamp>,
+
+    // Always true for a deleted object
+    #[serde(default)]
+    pub deleted: bool,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Box<Price>>,
+
+    /// The [quantity](https://stripe.com/docs/subscriptions/quantities) of the plan to which the customer should be subscribed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<Box<u64>>,
+
+    /// The `subscription` this `subscription_item` belongs to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription: Option<Box<String>>,
+
+    /// The tax rates which apply to this `subscription_item`.
+    ///
+    /// When set, the `default_tax_rates` on the subscription do not apply to this `subscription_item`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Box<Vec<TaxRate>>>,
+}
 
 impl SubscriptionItem {
     /// Returns a list of your subscription items for a given subscription.
@@ -71,7 +116,6 @@ impl Object for SubscriptionItem {
     }
 }
 
-// written at 597
 /// The parameters for `SubscriptionItem::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateSubscriptionItem<'a> {
@@ -163,7 +207,6 @@ impl<'a> CreateSubscriptionItem<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `SubscriptionItem::list`.
 #[derive(Clone, Debug, Serialize)]
 pub struct ListSubscriptionItems<'a> {
@@ -207,7 +250,6 @@ impl<'a> ListSubscriptionItems<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `SubscriptionItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionItem<'a> {

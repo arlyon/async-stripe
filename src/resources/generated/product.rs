@@ -9,7 +9,6 @@ use crate::ids::{ProductId, TaxCodeId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{PackageDimensions, TaxCode};
 
-// written at 378
 /// The resource representing a Stripe "Product".
 ///
 /// For more details see <https://stripe.com/docs/api/products/object>
@@ -139,7 +138,6 @@ impl Object for Product {
     }
 }
 
-// written at 597
 /// The parameters for `Product::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateProduct<'a> {
@@ -233,7 +231,6 @@ impl<'a> CreateProduct<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Product::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListProducts<'a> {
@@ -298,7 +295,6 @@ impl<'a> ListProducts<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Product::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateProduct<'a> {

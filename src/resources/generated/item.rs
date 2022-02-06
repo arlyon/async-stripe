@@ -6,9 +6,9 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::CheckoutSessionItemId;
 use crate::params::Object;
-use crate::resources::{Currency, Discount, Price, TaxRate};
+use crate::resources::{Currency, Price};
+use crate::{LineItemsDiscountAmount, LineItemsTaxAmount};
 
-// written at 378
 /// The resource representing a Stripe "LineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSessionItem {
@@ -57,22 +57,4 @@ impl Object for CheckoutSessionItem {
     fn object(&self) -> &'static str {
         "item"
     }
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct LineItemsDiscountAmount {
-    /// The amount discounted.
-    pub amount: i64,
-
-    pub discount: Discount,
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct LineItemsTaxAmount {
-    /// Amount of tax applied for this rate.
-    pub amount: i64,
-
-    pub rate: TaxRate,
 }

@@ -5,10 +5,121 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::{CouponId, CustomerId};
-use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Currency, OrderStatusFilter};
-use crate::Order;
+use crate::ids::{CouponId, CustomerId, OrderId};
+use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::resources::{
+    Charge, Currency, Customer, OrderItem, OrderReturn, OrderStatusFilter, Shipping,
+};
+
+/// The resource representing a Stripe "Order".
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct Order {
+    /// Unique identifier for the object.
+    pub id: OrderId,
+
+    /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the order.
+    pub amount: i64,
+
+    /// The total amount that was returned to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_returned: Option<Box<i64>>,
+
+    /// ID of the Connect Application that created the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application: Option<Box<String>>,
+
+    /// A fee in cents that will be applied to the order and transferred to the application owner’s Stripe account.
+    ///
+    /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
+    /// For more information, see the application fees documentation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application_fee: Option<Box<i64>>,
+
+    /// The ID of the payment used to pay for the order.
+    ///
+    /// Present if the order status is `paid`, `fulfilled`, or `refunded`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub charge: Option<Box<Expandable<Charge>>>,
+
+    /// Time at which the object was created.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    pub created: Timestamp,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
+
+    /// The customer used for the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<Box<Expandable<Customer>>>,
+
+    /// The email address of the customer placing the order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<Box<String>>,
+
+    /// External coupon code to load for this order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_coupon_code: Option<Box<String>>,
+
+    /// List of items constituting the order.
+    ///
+    /// An order can have up to 25 items.
+    pub items: Vec<OrderItem>,
+
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    pub livemode: bool,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    /// A list of returns that have taken place for this order.
+    #[serde(default)]
+    pub returns: List<OrderReturn>,
+
+    /// The shipping method that is currently selected for this order, if any.
+    ///
+    /// If present, it is equal to one of the `id`s of shipping methods in the `shipping_methods` array.
+    /// At order creation time, if there are multiple shipping methods, Stripe will automatically selected the first method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selected_shipping_method: Option<Box<String>>,
+
+    /// The shipping address for the order.
+    ///
+    /// Present if the order is for goods to be shipped.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping: Option<Box<Shipping>>,
+
+    /// A list of supported shipping methods for this order.
+    ///
+    /// The desired shipping method can be specified either by updating the order, or when paying it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_methods: Option<Box<Vec<ShippingMethod>>>,
+
+    /// Current order status.
+    ///
+    /// One of `created`, `paid`, `canceled`, `fulfilled`, or `returned`.
+    /// More details in the [Orders Guide](https://stripe.com/docs/orders/guide#understanding-order-statuses).
+    pub status: OrderStatus,
+
+    /// The timestamps at which the order status was updated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status_transitions: Option<Box<StatusTransitions>>,
+
+    /// Time at which the object was last updated.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub updated: Option<Box<Timestamp>>,
+
+    /// The user's order ID if it is different from the Stripe order ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upstream_id: Option<Box<String>>,
+}
 
 impl Order {
     /// Returns a list of your orders.
@@ -48,7 +159,71 @@ impl Object for Order {
     }
 }
 
-// written at 597
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ShippingMethod {
+    /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the line item.
+    pub amount: i64,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
+
+    /// The estimated delivery date for the given shipping method.
+    ///
+    /// Can be either a specific date or a range.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delivery_estimate: Option<Box<DeliveryEstimate>>,
+
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    pub description: String,
+
+    /// Unique identifier for the object.
+    pub id: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DeliveryEstimate {
+    /// If `type` is `"exact"`, `date` will be the expected delivery date in the format YYYY-MM-DD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Box<String>>,
+
+    /// If `type` is `"range"`, `earliest` will be be the earliest delivery date in the format YYYY-MM-DD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub earliest: Option<Box<String>>,
+
+    /// If `type` is `"range"`, `latest` will be the latest delivery date in the format YYYY-MM-DD.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub latest: Option<Box<String>>,
+
+    /// The type of estimate.
+    ///
+    /// Must be either `"range"` or `"exact"`.
+    #[serde(rename = "type")]
+    pub type_: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct StatusTransitions {
+    /// The time that the order was canceled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub canceled: Option<Box<Timestamp>>,
+
+    /// The time that the order was fulfilled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fulfiled: Option<Box<Timestamp>>,
+
+    /// The time that the order was paid.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid: Option<Box<Timestamp>>,
+
+    /// The time that the order was returned.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub returned: Option<Box<Timestamp>>,
+}
+
 /// The parameters for `Order::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateOrder<'a> {
@@ -116,7 +291,6 @@ impl<'a> CreateOrder<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Order::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListOrders<'a> {
@@ -188,7 +362,6 @@ impl<'a> ListOrders<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Order::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateOrder<'a> {
@@ -243,7 +416,6 @@ impl<'a> UpdateOrder<'a> {
     }
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateOrderShipping {
     pub address: CreateOrderShippingAddress,
@@ -254,7 +426,6 @@ pub struct CreateOrderShipping {
     pub phone: Option<Box<String>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ListOrdersStatusTransitions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -270,7 +441,6 @@ pub struct ListOrdersStatusTransitions {
     pub returned: Option<Box<RangeQuery<Timestamp>>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderItemParams {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -293,7 +463,6 @@ pub struct OrderItemParams {
     pub type_: Option<Box<OrderItemParamsType>>,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateOrderShipping {
     pub carrier: String,
@@ -301,7 +470,6 @@ pub struct UpdateOrderShipping {
     pub tracking_number: String,
 }
 
-// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateOrderShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]

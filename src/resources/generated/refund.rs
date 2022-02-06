@@ -9,7 +9,6 @@ use crate::ids::{ChargeId, PaymentIntentId, RefundId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Charge, Currency, PaymentIntent, TransferReversal};
 
-// written at 378
 /// The resource representing a Stripe "Refund".
 ///
 /// For more details see <https://stripe.com/docs/api/refunds/object>
@@ -133,7 +132,6 @@ impl Object for Refund {
     }
 }
 
-// written at 597
 /// The parameters for `Refund::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateRefund<'a> {
@@ -183,7 +181,6 @@ impl<'a> CreateRefund<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Refund::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListRefunds<'a> {
@@ -237,7 +234,6 @@ impl<'a> ListRefunds<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `Refund::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRefund<'a> {

@@ -9,7 +9,6 @@ use crate::ids::{PayoutId, SourceId};
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
 use crate::resources::Currency;
 
-// written at 378
 /// The resource representing a Stripe "Balance".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Balance {
@@ -57,7 +56,6 @@ impl Object for Balance {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceAmount {
     /// Balance amount.
@@ -72,7 +70,6 @@ pub struct BalanceAmount {
     pub source_types: Option<Box<BalanceAmountBySourceType>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceAmountBySourceType {
     /// Amount for bank account.
@@ -88,14 +85,12 @@ pub struct BalanceAmountBySourceType {
     pub fpx: Option<Box<i64>>,
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BalanceDetail {
     /// Funds that are available for use.
     pub available: Vec<BalanceAmount>,
 }
 
-// written at 597
 /// The parameters for `Balance::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListBalances<'a> {

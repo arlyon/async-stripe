@@ -9,7 +9,6 @@ use crate::ids::{FileId, FileLinkId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{File, Scheduled};
 
-// written at 378
 /// The resource representing a Stripe "FileLink".
 ///
 /// For more details see <https://stripe.com/docs/api/file_links/object>
@@ -84,7 +83,6 @@ impl Object for FileLink {
     }
 }
 
-// written at 597
 /// The parameters for `FileLink::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateFileLink<'a> {
@@ -121,7 +119,6 @@ impl<'a> CreateFileLink<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `FileLink::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListFileLinks<'a> {
@@ -177,7 +174,6 @@ impl<'a> ListFileLinks<'a> {
     }
 }
 
-// written at 597
 /// The parameters for `FileLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateFileLink<'a> {

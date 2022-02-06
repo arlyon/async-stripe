@@ -8,7 +8,6 @@ use crate::ids::ReportingReportRunId;
 use crate::params::{Object, Timestamp};
 use crate::resources::{Currency, File};
 
-// written at 378
 /// The resource representing a Stripe "reporting_report_run".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ReportingReportRun {
@@ -61,7 +60,6 @@ impl Object for ReportingReportRun {
     }
 }
 
-// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct FinancialReportingFinanceReportRunRunParameters {
     /// The set of output columns requested for inclusion in the report run.

@@ -8,7 +8,6 @@ use crate::ids::RadarValueListId;
 use crate::params::{List, Metadata, Object, Timestamp};
 use crate::resources::RadarValueListItem;
 
-// written at 378
 /// The resource representing a Stripe "RadarListList".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RadarValueList {
