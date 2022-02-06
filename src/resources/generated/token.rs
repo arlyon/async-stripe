@@ -75,6 +75,14 @@ pub struct CreateToken<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<Box<CreateTokenAccount>>,
 
+    #[serde(rename = "card")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card0: Option<CreditCardSpecs>,
+
+    #[serde(rename = "card")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card1: Option<String>,
+
     /// The customer (owned by the application's account) for which to create a token.
     ///
     /// This can be used only with an [OAuth access token](https://stripe.com/docs/connect/standard-accounts) or [Stripe-Account header](https://stripe.com/docs/connect/authentication).
@@ -103,6 +111,8 @@ impl<'a> CreateToken<'a> {
     pub fn new() -> Self {
         CreateToken {
             account: Default::default(),
+            card0: Default::default(),
+            card1: Default::default(),
             customer: Default::default(),
             cvc_update: Default::default(),
             expand: Default::default(),
@@ -319,4 +329,29 @@ impl std::fmt::Display for CreateTokenAccountBusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CreditCardSpecs {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_city: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_country: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_line1: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_line2: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_state: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_zip: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc: Option<String>,
+    pub exp_month: String,
+    pub exp_year: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    pub number: String,
 }

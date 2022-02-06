@@ -20,6 +20,7 @@ mod core {
     pub mod payment_source;
     pub mod payout_ext;
     pub mod placeholders;
+    pub mod setup_intent_ext;
     pub mod token_ext;
 }
 
@@ -90,6 +91,7 @@ pub use {
         placeholders::*,
         payout_ext::*,
         token_ext::*,
+        setup_intent_ext::*,
     },
     generated::core::{
         address::*,

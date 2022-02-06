@@ -129,6 +129,15 @@ impl Object for Recipient {
 /// The parameters for `Recipient::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateRecipient<'a> {
+    /// A U.S.
+    ///
+    /// Visa or MasterCard debit card (_not_ prepaid) to attach to the recipient.
+    /// If the debit card is not valid, recipient creation will fail.
+    /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/js), or a dictionary containing a user's debit card details, with the options described below.
+    /// Although not all information is required, the extra info helps prevent fraud.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<String>,
+
     /// An arbitrary string which you can attach to a `Recipient` object.
     ///
     /// It is displayed alongside the recipient in the web interface.
@@ -173,6 +182,7 @@ pub struct CreateRecipient<'a> {
 impl<'a> CreateRecipient<'a> {
     pub fn new(name: &'a str, type_: RecipientType) -> Self {
         CreateRecipient {
+            card: Default::default(),
             description: Default::default(),
             email: Default::default(),
             expand: Default::default(),
@@ -240,6 +250,16 @@ impl<'a> ListRecipients<'a> {
 /// The parameters for `Recipient::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRecipient<'a> {
+    /// A U.S.
+    ///
+    /// Visa or MasterCard debit card (not prepaid) to attach to the recipient.
+    /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/js), or a dictionary containing a user's debit card details, with the options described below.
+    /// Passing `card` will create a new card, make it the new recipient default card, and delete the old recipient default (if one exists).
+    /// If you want to add additional debit cards instead of replacing the existing default, use the [card creation API](https://stripe.com/docs/api#create_card).
+    /// Whenever you attach a card to a recipient, Stripe will automatically validate the debit card.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<String>,
+
     /// ID of the card to set as the recipient's new default for payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_card: Option<&'a str>,
@@ -285,6 +305,7 @@ pub struct UpdateRecipient<'a> {
 impl<'a> UpdateRecipient<'a> {
     pub fn new() -> Self {
         UpdateRecipient {
+            card: Default::default(),
             default_card: Default::default(),
             description: Default::default(),
             email: Default::default(),

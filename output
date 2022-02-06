@@ -8,8 +8,6 @@
 [cargo-make] INFO - Execute Command: "wget" "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json"
 [cargo-make] INFO - Execute Command: "cargo" "run" "spec3.json"
 struct Account {...}
-object: account, field_name: external_account
-union_schema: account_external_account_union, union_name: ExternalAccount
 impl Account { ... }
 struct AcceptTos { ... }
 struct AccountSettingsParams { ... }
@@ -131,8 +129,6 @@ impl ApplicationFee { ... }
 struct Balance {...}
 impl Balance { ... }
 struct BalanceTransaction {...}
-object: balance_transaction, field_name: source
-union_schema: balance_transaction_source_union, union_name: BalanceTransactionSourceUnion
 impl BalanceTransaction { ... }
 union BalanceTransactionSourceUnion { ... }
 enum BalanceTransactionType { ... }
@@ -151,8 +147,8 @@ enum BillingPortalSessionLocale { ... }
 struct BitcoinReceiver {...}
 struct BitcoinTransaction {...}
 struct Capability {...}
-importing AccountRequirementsAlternative because it is unknown on line 541
-importing AccountRequirementsError because it is unknown on line 541
+importing AccountRequirementsAlternative because it is unknown on line 551
+importing AccountRequirementsError because it is unknown on line 551
 enum CapabilityStatus { ... }
 struct Card {...}
 enum CardAvailablePayoutMethods { ... }
@@ -173,6 +169,148 @@ enum PaymentMethodDetailsInteracPresentReadMethod { ... }
 enum PaymentMethodDetailsInteracPresentReceiptAccountType { ... }
 enum PaymentMethodDetailsP24Bank { ... }
 enum PaymentMethodDetailsSofortPreferredLanguage { ... }
+object: CustomerPaymentSourceCard -- InferredObject {
+    rust_type: "CustomerPaymentSourceCard",
+    schema: Object({
+        "properties": Object({
+            "address_city": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_country": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_line1": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_line2": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_state": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_zip": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "cvc": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "exp_month": Object({
+                "type": String(
+                    "integer",
+                ),
+            }),
+            "exp_year": Object({
+                "type": String(
+                    "integer",
+                ),
+            }),
+            "metadata": Object({
+                "additionalProperties": Object({
+                    "type": String(
+                        "string",
+                    ),
+                }),
+                "type": String(
+                    "object",
+                ),
+            }),
+            "name": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "number": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "object": Object({
+                "enum": Array([
+                    String(
+                        "card",
+                    ),
+                ]),
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+        }),
+        "required": Array([
+            String(
+                "exp_month",
+            ),
+            String(
+                "exp_year",
+            ),
+            String(
+                "number",
+            ),
+        ]),
+        "title": String(
+            "customer_payment_source_card",
+        ),
+        "type": String(
+            "object",
+        ),
+    }),
+}
+object: Metadata -- InferredObject {
+    rust_type: "Metadata",
+    schema: Object({
+        "additionalProperties": Object({
+            "type": String(
+                "string",
+            ),
+        }),
+        "type": String(
+            "object",
+        ),
+    }),
+}
 struct CheckoutSession {...}
 impl CheckoutSession { ... }
 struct CreateCheckoutSessionAfterExpiration { ... }
@@ -261,8 +399,8 @@ enum CreditNoteReason { ... }
 enum CreditNoteStatus { ... }
 enum CreditNoteType { ... }
 struct CreditNoteLineItem {...}
-importing CreditNoteTaxAmount because it is unknown on line 541
-importing DiscountsResourceDiscountAmount because it is unknown on line 541
+importing CreditNoteTaxAmount because it is unknown on line 551
+importing DiscountsResourceDiscountAmount because it is unknown on line 551
 enum CreditNoteLineItemType { ... }
 struct Customer {...}
 impl Customer { ... }
@@ -280,6 +418,148 @@ enum CustomerTaxExempt { ... }
 enum CustomerTaxExemptFilter { ... }
 enum CustomerTaxLocationSource { ... }
 enum TaxIdType { ... }
+object: CustomerPaymentSourceCard -- InferredObject {
+    rust_type: "CustomerPaymentSourceCard",
+    schema: Object({
+        "properties": Object({
+            "address_city": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_country": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_line1": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_line2": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_state": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_zip": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "cvc": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "exp_month": Object({
+                "type": String(
+                    "integer",
+                ),
+            }),
+            "exp_year": Object({
+                "type": String(
+                    "integer",
+                ),
+            }),
+            "metadata": Object({
+                "additionalProperties": Object({
+                    "type": String(
+                        "string",
+                    ),
+                }),
+                "type": String(
+                    "object",
+                ),
+            }),
+            "name": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "number": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "object": Object({
+                "enum": Array([
+                    String(
+                        "card",
+                    ),
+                ]),
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+        }),
+        "required": Array([
+            String(
+                "exp_month",
+            ),
+            String(
+                "exp_year",
+            ),
+            String(
+                "number",
+            ),
+        ]),
+        "title": String(
+            "customer_payment_source_card",
+        ),
+        "type": String(
+            "object",
+        ),
+    }),
+}
+object: Metadata -- InferredObject {
+    rust_type: "Metadata",
+    schema: Object({
+        "additionalProperties": Object({
+            "type": String(
+                "string",
+            ),
+        }),
+        "type": String(
+            "object",
+        ),
+    }),
+}
 struct CustomerBalanceTransaction {...}
 enum CustomerBalanceTransactionType { ... }
 struct Discount {...}
@@ -319,8 +599,8 @@ enum IdentityVerificationSessionType { ... }
 enum VerificationSessionRedactionStatus { ... }
 struct Invoice {...}
 impl Invoice { ... }
-importing DiscountsResourceDiscountAmount because it is unknown on line 541
-importing InvoiceSettingCustomField because it is unknown on line 541
+importing DiscountsResourceDiscountAmount because it is unknown on line 551
+importing InvoiceSettingCustomField because it is unknown on line 551
 struct CreateInvoiceAutomaticTax { ... }
 struct CreateInvoiceCustomFields { ... }
 struct CreateInvoiceDiscounts { ... }
@@ -384,11 +664,11 @@ enum IssuingSettlementNetwork { ... }
 struct IssuingTransaction {...}
 enum IssuingTransactionWallet { ... }
 struct CheckoutSessionItem {...}
-importing LineItemsDiscountAmount because it is unknown on line 541
-importing LineItemsTaxAmount because it is unknown on line 541
+importing LineItemsDiscountAmount because it is unknown on line 551
+importing LineItemsTaxAmount because it is unknown on line 551
 struct InvoiceLineItem {...}
-importing DiscountsResourceDiscountAmount because it is unknown on line 541
-importing TaxAmount because it is unknown on line 541
+importing DiscountsResourceDiscountAmount because it is unknown on line 551
+importing TaxAmount because it is unknown on line 551
 enum InvoiceLineItemType { ... }
 struct LoginLink {...}
 struct Mandate {...}
@@ -414,49 +694,7 @@ struct OrderReturn {...}
 impl OrderReturn { ... }
 struct PaymentIntent {...}
 impl PaymentIntent { ... }
-object: payment_intent_payment_method_options, field_name: acss_debit
-union_schema: payment_intent_payment_method_options_acss_debit_union, union_name: PaymentIntentPaymentMethodOptionsAcssDebitUnion
-object: payment_intent_payment_method_options, field_name: afterpay_clearpay
-union_schema: payment_intent_payment_method_options_afterpay_clearpay_union, union_name: PaymentIntentPaymentMethodOptionsAfterpayClearpayUnion
-object: payment_intent_payment_method_options, field_name: alipay
-union_schema: payment_intent_payment_method_options_alipay_union, union_name: PaymentIntentPaymentMethodOptionsAlipayUnion
-object: payment_intent_payment_method_options, field_name: au_becs_debit
-union_schema: payment_intent_payment_method_options_au_becs_debit_union, union_name: PaymentIntentPaymentMethodOptionsAuBecsDebitUnion
-object: payment_intent_payment_method_options, field_name: bacs_debit
-union_schema: payment_intent_payment_method_options_bacs_debit_union, union_name: PaymentIntentPaymentMethodOptionsBacsDebitUnion
-object: payment_intent_payment_method_options, field_name: bancontact
-union_schema: payment_intent_payment_method_options_bancontact_union, union_name: PaymentIntentPaymentMethodOptionsBancontactUnion
-object: payment_intent_payment_method_options, field_name: boleto
-union_schema: payment_intent_payment_method_options_boleto_union, union_name: PaymentIntentPaymentMethodOptionsBoletoUnion
-object: payment_intent_payment_method_options, field_name: card
-union_schema: payment_intent_payment_method_options_card_union, union_name: PaymentIntentPaymentMethodOptionsCardUnion
-object: payment_intent_payment_method_options, field_name: card_present
-union_schema: payment_intent_payment_method_options_card_present_union, union_name: PaymentIntentPaymentMethodOptionsCardPresentUnion
-object: payment_intent_payment_method_options, field_name: eps
-union_schema: payment_intent_payment_method_options_eps_union, union_name: PaymentIntentPaymentMethodOptionsEpsUnion
-object: payment_intent_payment_method_options, field_name: fpx
-union_schema: payment_intent_payment_method_options_fpx_union, union_name: PaymentIntentPaymentMethodOptionsFpxUnion
-object: payment_intent_payment_method_options, field_name: giropay
-union_schema: payment_intent_payment_method_options_giropay_union, union_name: PaymentIntentPaymentMethodOptionsGiropayUnion
-object: payment_intent_payment_method_options, field_name: grabpay
-union_schema: payment_intent_payment_method_options_grabpay_union, union_name: PaymentIntentPaymentMethodOptionsGrabpayUnion
-object: payment_intent_payment_method_options, field_name: ideal
-union_schema: payment_intent_payment_method_options_ideal_union, union_name: PaymentIntentPaymentMethodOptionsIdealUnion
-object: payment_intent_payment_method_options, field_name: interac_present
-union_schema: payment_intent_payment_method_options_interac_present_union, union_name: PaymentIntentPaymentMethodOptionsInteracPresentUnion
-object: payment_intent_payment_method_options, field_name: klarna
-union_schema: payment_intent_payment_method_options_klarna_union, union_name: PaymentIntentPaymentMethodOptionsKlarnaUnion
-object: payment_intent_payment_method_options, field_name: oxxo
-union_schema: payment_intent_payment_method_options_oxxo_union, union_name: PaymentIntentPaymentMethodOptionsOxxoUnion
-object: payment_intent_payment_method_options, field_name: p24
-union_schema: payment_intent_payment_method_options_p24_union, union_name: PaymentIntentPaymentMethodOptionsP24Union
-object: payment_intent_payment_method_options, field_name: sepa_debit
-union_schema: payment_intent_payment_method_options_sepa_debit_union, union_name: PaymentIntentPaymentMethodOptionsSepaDebitUnion
-object: payment_intent_payment_method_options, field_name: sofort
-union_schema: payment_intent_payment_method_options_sofort_union, union_name: PaymentIntentPaymentMethodOptionsSofortUnion
-object: payment_intent_payment_method_options, field_name: wechat_pay
-union_schema: payment_intent_payment_method_options_wechat_pay_union, union_name: PaymentIntentPaymentMethodOptionsWechatPayUnion
-importing TransferData because it is unknown on line 541
+importing TransferData because it is unknown on line 551
 struct CreatePaymentIntentAutomaticPaymentMethods { ... }
 struct CreatePaymentIntentMandateData { ... }
 struct CreatePaymentIntentPaymentMethodData { ... }
@@ -705,17 +943,117 @@ enum PaymentMethodP24Bank { ... }
 enum PaymentMethodType { ... }
 enum PaymentMethodTypeFilter { ... }
 enum WalletDetailsType { ... }
+object: CardDetailsParams -- InferredObject {
+    rust_type: "CardDetailsParams",
+    schema: Object({
+        "properties": Object({
+            "cvc": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "exp_month": Object({
+                "type": String(
+                    "integer",
+                ),
+            }),
+            "exp_year": Object({
+                "type": String(
+                    "integer",
+                ),
+            }),
+            "number": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+        }),
+        "required": Array([
+            String(
+                "exp_month",
+            ),
+            String(
+                "exp_year",
+            ),
+            String(
+                "number",
+            ),
+        ]),
+        "title": String(
+            "card_details_params",
+        ),
+        "type": String(
+            "object",
+        ),
+    }),
+}
+object: TokenParams -- InferredObject {
+    rust_type: "TokenParams",
+    schema: Object({
+        "properties": Object({
+            "token": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+        }),
+        "required": Array([
+            String(
+                "token",
+            ),
+        ]),
+        "title": String(
+            "token_params",
+        ),
+        "type": String(
+            "object",
+        ),
+    }),
+}
+object: UpdateApiParam -- InferredObject {
+    rust_type: "UpdateApiParam",
+    schema: Object({
+        "description": String(
+            "If this is a `card` PaymentMethod, this hash contains the user's card details.",
+        ),
+        "properties": Object({
+            "exp_month": Object({
+                "type": String(
+                    "integer",
+                ),
+            }),
+            "exp_year": Object({
+                "type": String(
+                    "integer",
+                ),
+            }),
+        }),
+        "title": String(
+            "update_api_param",
+        ),
+        "type": String(
+            "object",
+        ),
+    }),
+}
 struct Payout {...}
-object: payout, field_name: destination
-union_schema: payout_destination_union, union_name: PayoutDestinationUnion
 impl Payout { ... }
 union PayoutDestinationUnion { ... }
 enum PayoutMethod { ... }
 enum PayoutSourceType { ... }
 enum PayoutType { ... }
 struct Person {...}
-importing AccountRequirementsAlternative because it is unknown on line 541
-importing AccountRequirementsError because it is unknown on line 541
+importing AccountRequirementsAlternative because it is unknown on line 551
+importing AccountRequirementsError because it is unknown on line 551
 enum PersonPoliticalExposure { ... }
 struct Plan {...}
 impl Plan { ... }
@@ -877,7 +1215,7 @@ struct UpdateSubscriptionTransferData { ... }
 struct CreateSubscriptionItemsBillingThresholds { ... }
 struct CreateSubscriptionPaymentSettingsPaymentMethodOptions { ... }
 struct InvoiceItemPriceData { ... }
-importing InvoiceItemPriceData because it is unknown on line 1048
+importing InvoiceItemPriceData because it is unknown on line 1145
 struct SubscriptionItemPriceData { ... }
 struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions { ... }
 struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit { ... }
@@ -918,7 +1256,7 @@ enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes { ... }
 struct SubscriptionItem {...}
 impl SubscriptionItem { ... }
 struct SubscriptionItemPriceData { ... }
-importing SubscriptionItemPriceData because it is unknown on line 1048
+importing SubscriptionItemPriceData because it is unknown on line 1145
 enum SubscriptionPaymentBehavior { ... }
 enum SubscriptionProrationBehavior { ... }
 struct SubscriptionSchedule {...}
@@ -927,7 +1265,7 @@ struct CreateSubscriptionSchedulePhases { ... }
 struct SubscriptionScheduleDefaultSettingsParams { ... }
 struct UpdateSubscriptionSchedulePhases { ... }
 struct AddInvoiceItems { ... }
-importing AddInvoiceItems because it is unknown on line 1048
+importing AddInvoiceItems because it is unknown on line 1145
 struct CreateSubscriptionSchedulePhasesAutomaticTax { ... }
 struct CreateSubscriptionSchedulePhasesItems { ... }
 struct CreateSubscriptionSchedulePhasesTransferData { ... }
@@ -986,6 +1324,126 @@ struct CreateTokenPersonDocumentsPassport { ... }
 struct CreateTokenPersonDocumentsVisa { ... }
 struct VerificationDocumentParams { ... }
 enum CreateTokenAccountBusinessType { ... }
+object: CreditCardSpecs -- InferredObject {
+    rust_type: "CreditCardSpecs",
+    schema: Object({
+        "properties": Object({
+            "address_city": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_country": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_line1": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_line2": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_state": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "address_zip": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "currency": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "cvc": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "exp_month": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "exp_year": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "name": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+            "number": Object({
+                "maxLength": Number(
+                    5000,
+                ),
+                "type": String(
+                    "string",
+                ),
+            }),
+        }),
+        "required": Array([
+            String(
+                "exp_month",
+            ),
+            String(
+                "exp_year",
+            ),
+            String(
+                "number",
+            ),
+        ]),
+        "title": String(
+            "credit_card_specs",
+        ),
+        "type": String(
+            "object",
+        ),
+    }),
+}
 struct Topup {...}
 impl Topup { ... }
 enum TopupStatus { ... }
@@ -1021,8 +1479,6 @@ Shared objects: {
 }
 struct Address {...}
 struct ApiErrors {...}
-object: api_errors, field_name: source
-union_schema: api_errors_source_union, union_name: ApiErrorsSourceUnion
 union ApiErrorsSourceUnion { ... }
 enum ApiErrorsType { ... }
 struct BillingDetails {...}
@@ -1031,10 +1487,10 @@ enum InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType { ... }
 enum InvoicePaymentMethodOptionsAcssDebitVerificationMethod { ... }
 struct InvoicePaymentMethodOptionsBancontact {...}
 enum InvoicePaymentMethodOptionsBancontactPreferredLanguage { ... }
-importing SubscriptionScheduleInvoiceSettings because it is unknown on line 377
+importing SubscriptionScheduleInvoiceSettings because it is unknown on line 387
 struct IssuingAuthorizationAmountDetails {...}
 struct MerchantData {...}
-importing Address because it is unknown on line 377
+importing Address because it is unknown on line 387
 struct PackageDimensions {...}
 struct PaymentMethodDetailsCardInstallmentsPlan {...}
 enum PaymentMethodDetailsCardInstallmentsPlanInterval { ... }
@@ -1043,8 +1499,8 @@ struct PaymentMethodDetailsCardPresent {...}
 enum PaymentMethodDetailsCardPresentReadMethod { ... }
 enum PaymentMethodDetailsCardPresentReceiptAccountType { ... }
 struct QuotesResourceTotalDetails {...}
-importing LineItemsDiscountAmount because it is unknown on line 541
-importing LineItemsTaxAmount because it is unknown on line 541
+importing LineItemsDiscountAmount because it is unknown on line 551
+importing LineItemsTaxAmount because it is unknown on line 551
 struct Shipping {...}
 struct SubscriptionBillingThresholds {...}
 struct SubscriptionItemBillingThresholds {...}
@@ -1059,4 +1515,4 @@ BTreeSet: {
 }
 [cargo-make] INFO - Execute Command: "cp" "-a" "out/." "../src/resources/generated"
 [cargo-make] INFO - Execute Command: "rustup" "run" "nightly" "cargo" "fmt" "--" "./bench/binary_size/src/main.rs" "./examples/async-std/src/main.rs" "./examples/blocking/src/create_customer.rs" "./examples/blocking/src/create_customer_with_source.rs" "./examples/blocking/src/list_customers.rs" "./examples/blocking/src/main.rs" "./examples/tokio/src/main.rs" "./openapi/src/main.rs" "./openapi/src/mappings.rs" "./openapi/src/metadata.rs" "./src/client/async_std.rs" "./src/client/blocking.rs" "./src/client/tokio.rs" "./src/error.rs" "./src/ids.rs" "./src/lib.rs" "./src/params.rs" "./src/resources/balance_transaction_ext.rs" "./src/resources/bank_account_ext.rs" "./src/resources/card.rs" "./src/resources/charge_ext.rs" "./src/resources/currency.rs" "./src/resources/customer_ext.rs" "./src/resources/generated/account.rs" "./src/resources/generated/account_link.rs" "./src/resources/generated/address.rs" "./src/resources/generated/alipay_account.rs" "./src/resources/generated/api_errors.rs" "./src/resources/generated/apple_pay_domain.rs" "./src/resources/generated/application.rs" "./src/resources/generated/application_fee.rs" "./src/resources/generated/balance.rs" "./src/resources/generated/balance_transaction.rs" "./src/resources/generated/bank_account.rs" "./src/resources/generated/billing_details.rs" "./src/resources/generated/billing_portal_configuration.rs" "./src/resources/generated/billing_portal_session.rs" "./src/resources/generated/bitcoin_receiver.rs" "./src/resources/generated/bitcoin_transaction.rs" "./src/resources/generated/capability.rs" "./src/resources/generated/card.rs" "./src/resources/generated/charge.rs" "./src/resources/generated/checkout_session.rs" "./src/resources/generated/connect_collection_transfer.rs" "./src/resources/generated/country_spec.rs" "./src/resources/generated/coupon.rs" "./src/resources/generated/credit_note.rs" "./src/resources/generated/credit_note_line_item.rs" "./src/resources/generated/customer.rs" "./src/resources/generated/customer_balance_transaction.rs" "./src/resources/generated/discount.rs" "./src/resources/generated/dispute.rs" "./src/resources/generated/ephemeral_key.rs" "./src/resources/generated/event.rs" "./src/resources/generated/exchange_rate.rs" "./src/resources/generated/fee_refund.rs" "./src/resources/generated/file.rs" "./src/resources/generated/file_link.rs" "./src/resources/generated/identity_verification_report.rs" "./src/resources/generated/identity_verification_session.rs" "./src/resources/generated/invoice.rs" "./src/resources/generated/invoice_payment_method_options_acss_debit.rs" "./src/resources/generated/invoice_payment_method_options_bancontact.rs" "./src/resources/generated/invoice_payment_method_options_card.rs" "./src/resources/generated/invoice_setting_subscription_schedule_setting.rs" "./src/resources/generated/invoiceitem.rs" "./src/resources/generated/issuer_fraud_record.rs" "./src/resources/generated/issuing_authorization.rs" "./src/resources/generated/issuing_authorization_amount_details.rs" "./src/resources/generated/issuing_authorization_merchant_data.rs" "./src/resources/generated/issuing_card.rs" "./src/resources/generated/issuing_cardholder.rs" "./src/resources/generated/issuing_dispute.rs" "./src/resources/generated/issuing_settlement.rs" "./src/resources/generated/issuing_transaction.rs" "./src/resources/generated/item.rs" "./src/resources/generated/legal_entity_japan_address.rs" "./src/resources/generated/line_item.rs" "./src/resources/generated/login_link.rs" "./src/resources/generated/mandate.rs" "./src/resources/generated/notification_event_data.rs" "./src/resources/generated/order.rs" "./src/resources/generated/order_item.rs" "./src/resources/generated/order_return.rs" "./src/resources/generated/package_dimensions.rs" "./src/resources/generated/payment_intent.rs" "./src/resources/generated/payment_link.rs" "./src/resources/generated/payment_method.rs" "./src/resources/generated/payment_method_details_card_installments_plan.rs" "./src/resources/generated/payment_method_details_card_present.rs" "./src/resources/generated/payment_method_options_boleto.rs" "./src/resources/generated/payment_method_options_oxxo.rs" "./src/resources/generated/payout.rs" "./src/resources/generated/person.rs" "./src/resources/generated/placeholders.rs" "./src/resources/generated/plan.rs" "./src/resources/generated/platform_tax_fee.rs" "./src/resources/generated/price.rs" "./src/resources/generated/product.rs" "./src/resources/generated/promotion_code.rs" "./src/resources/generated/quote.rs" "./src/resources/generated/quotes_resource_total_details.rs" "./src/resources/generated/radar_early_fraud_warning.rs" "./src/resources/generated/radar_value_list.rs" "./src/resources/generated/radar_value_list_item.rs" "./src/resources/generated/recipient.rs" "./src/resources/generated/refund.rs" "./src/resources/generated/reporting_report_run.rs" "./src/resources/generated/reporting_report_type.rs" "./src/resources/generated/reserve_transaction.rs" "./src/resources/generated/review.rs" "./src/resources/generated/scheduled_query_run.rs" "./src/resources/generated/setup_attempt.rs" "./src/resources/generated/setup_intent.rs" "./src/resources/generated/shipping.rs" "./src/resources/generated/shipping_rate.rs" "./src/resources/generated/sku.rs" "./src/resources/generated/source.rs" "./src/resources/generated/source_mandate_notification.rs" "./src/resources/generated/source_transaction.rs" "./src/resources/generated/subscription.rs" "./src/resources/generated/subscription_billing_thresholds.rs" "./src/resources/generated/subscription_item.rs" "./src/resources/generated/subscription_item_billing_thresholds.rs" "./src/resources/generated/subscription_schedule.rs" "./src/resources/generated/subscription_transfer_data.rs" "./src/resources/generated/tax_code.rs" "./src/resources/generated/tax_deducted_at_source.rs" "./src/resources/generated/tax_id.rs" "./src/resources/generated/tax_rate.rs" "./src/resources/generated/terminal_connection_token.rs" "./src/resources/generated/terminal_location.rs" "./src/resources/generated/terminal_reader.rs" "./src/resources/generated/three_d_secure.rs" "./src/resources/generated/three_d_secure_details.rs" "./src/resources/generated/token.rs" "./src/resources/generated/topup.rs" "./src/resources/generated/transfer.rs" "./src/resources/generated/transfer_reversal.rs" "./src/resources/generated/usage_record.rs" "./src/resources/generated/usage_record_summary.rs" "./src/resources/generated/webhook_endpoint.rs" "./src/resources/generated.rs" "./src/resources/invoice_ext.rs" "./src/resources/issuing_authorization_ext.rs" "./src/resources/issuing_card_ext.rs" "./src/resources/issuing_dispute_ext.rs" "./src/resources/issuing_merchant_data.rs" "./src/resources/issuing_transaction_ext.rs" "./src/resources/line_item_ext.rs" "./src/resources/login_links_ext.rs" "./src/resources/order_ext.rs" "./src/resources/payment_intent_ext.rs" "./src/resources/payment_method_ext.rs" "./src/resources/payment_source.rs" "./src/resources/payout_ext.rs" "./src/resources/placeholders.rs" "./src/resources/review_ext.rs" "./src/resources/setup_intent_ext.rs" "./src/resources/source_ext.rs" "./src/resources/subscription_ext.rs" "./src/resources/token_ext.rs" "./src/resources/types.rs" "./src/resources/webhook_endpoint_ext.rs" "./src/resources/webhook_events.rs" "./src/resources.rs" "./tests/account.rs" "./tests/charge.rs" "./tests/customer.rs" "./tests/encoding.rs" "./tests/mock/mod.rs" "./tests/plan_interval.rs" "./tests/subscription.rs"
-[cargo-make] INFO - Build Done in 7.40 seconds.
+[cargo-make] INFO - Build Done in 9.73 seconds.
