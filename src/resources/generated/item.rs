@@ -8,6 +8,7 @@ use crate::ids::CheckoutSessionItemId;
 use crate::params::Object;
 use crate::resources::{Currency, Discount, Price, TaxRate};
 
+// written at 378
 /// The resource representing a Stripe "LineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSessionItem {
@@ -58,6 +59,7 @@ impl Object for CheckoutSessionItem {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LineItemsDiscountAmount {
     /// The amount discounted.
@@ -66,6 +68,7 @@ pub struct LineItemsDiscountAmount {
     pub discount: Discount,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LineItemsTaxAmount {
     /// Amount of tax applied for this rate.

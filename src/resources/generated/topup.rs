@@ -9,6 +9,7 @@ use crate::ids::TopupId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Currency, Source};
 
+// written at 378
 /// The resource representing a Stripe "Topup".
 ///
 /// For more details see <https://stripe.com/docs/api/topups/object>
@@ -113,6 +114,7 @@ impl Object for Topup {
     }
 }
 
+// written at 597
 /// The parameters for `Topup::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTopups<'a> {
@@ -171,6 +173,7 @@ impl<'a> ListTopups<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Topup::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTopup<'a> {

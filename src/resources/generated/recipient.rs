@@ -9,6 +9,7 @@ use crate::ids::RecipientId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BankAccount, Card};
 
+// written at 378
 /// The resource representing a Stripe "TransferRecipient".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Recipient {
@@ -126,6 +127,7 @@ impl Object for Recipient {
     }
 }
 
+// written at 597
 /// The parameters for `Recipient::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateRecipient<'a> {
@@ -184,6 +186,7 @@ impl<'a> CreateRecipient<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Recipient::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListRecipients<'a> {
@@ -237,6 +240,7 @@ impl<'a> ListRecipients<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Recipient::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRecipient<'a> {

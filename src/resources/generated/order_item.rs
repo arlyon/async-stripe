@@ -7,6 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::params::{Expandable, Object};
 use crate::resources::{Currency, Sku};
 
+// written at 378
 /// The resource representing a Stripe "OrderItem".
 ///
 /// For more details see <https://stripe.com/docs/api/order_items/object>

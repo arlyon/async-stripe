@@ -6,6 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::resources::{BankAccount, Card, PaymentIntent, PaymentMethod, SetupIntent, Source};
 
+// written at 378
 /// The resource representing a Stripe "APIErrors".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ApiErrors {

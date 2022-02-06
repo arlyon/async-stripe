@@ -4,6 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+// written at 378
 /// The resource representing a Stripe "invoice_payment_method_options_bancontact".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsBancontact {

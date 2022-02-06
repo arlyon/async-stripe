@@ -13,7 +13,9 @@ use crate::resources::{
     SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds,
     SubscriptionSchedule, SubscriptionTransferData, TaxRate,
 };
+use crate::{InvoiceItemPriceDataTaxBehavior, PlanInterval};
 
+// written at 378
 /// The resource representing a Stripe "Subscription".
 ///
 /// For more details see <https://stripe.com/docs/api/subscriptions/object>
@@ -250,12 +252,14 @@ impl Object for Subscription {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionAutomaticTax {
     /// Whether Stripe automatically computes tax on this subscription.
     pub enabled: bool,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionPendingInvoiceItemInterval {
     /// Specifies invoicing frequency.
@@ -270,6 +274,7 @@ pub struct SubscriptionPendingInvoiceItemInterval {
     pub interval_count: u64,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePauseCollection {
     /// The payment collection behavior for this subscription while paused.
@@ -282,6 +287,7 @@ pub struct SubscriptionsResourcePauseCollection {
     pub resumes_at: Option<Box<Timestamp>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePaymentSettings {
     /// Payment-method-specific configuration to provide to invoices created by the subscription.
@@ -296,6 +302,7 @@ pub struct SubscriptionsResourcePaymentSettings {
         Option<Box<Vec<SubscriptionsResourcePaymentSettingsPaymentMethodTypes>>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePaymentMethodOptions {
     /// This sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to invoices created by the subscription.
@@ -311,6 +318,7 @@ pub struct SubscriptionsResourcePaymentMethodOptions {
     pub card: Option<Box<SubscriptionPaymentMethodOptionsCard>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -325,6 +333,7 @@ pub struct SubscriptionPaymentMethodOptionsCard {
         Option<Box<SubscriptionPaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceMandateOptionsCard {
     /// Amount to be charged for future payments.
@@ -343,6 +352,7 @@ pub struct InvoiceMandateOptionsCard {
     pub description: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePendingUpdate {
     /// If the update is applied, determines the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
@@ -369,6 +379,7 @@ pub struct SubscriptionsResourcePendingUpdate {
     pub trial_from_plan: Option<Box<bool>>,
 }
 
+// written at 597
 /// The parameters for `Subscription::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateSubscription<'a> {
@@ -590,6 +601,7 @@ impl<'a> CreateSubscription<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Subscription::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptions<'a> {
@@ -668,6 +680,7 @@ impl<'a> ListSubscriptions<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Subscription::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscription<'a> {
@@ -884,6 +897,7 @@ impl<'a> UpdateSubscription<'a> {
     }
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -899,11 +913,13 @@ pub struct AddInvoiceItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionAutomaticTax {
     pub enabled: bool,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -925,6 +941,7 @@ pub struct CreateSubscriptionItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -934,6 +951,7 @@ pub struct CreateSubscriptionPaymentSettings {
     pub payment_method_types: Option<Box<Vec<CreateSubscriptionPaymentSettingsPaymentMethodTypes>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPendingInvoiceItemInterval {
     pub interval: PlanInterval,
@@ -942,6 +960,7 @@ pub struct CreateSubscriptionPendingInvoiceItemInterval {
     pub interval_count: Option<Box<u64>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -950,11 +969,13 @@ pub struct CreateSubscriptionTransferData {
     pub destination: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionAutomaticTax {
     pub enabled: bool,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -985,6 +1006,7 @@ pub struct UpdateSubscriptionItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPauseCollection {
     pub behavior: UpdateSubscriptionPauseCollectionBehavior,
@@ -993,6 +1015,7 @@ pub struct UpdateSubscriptionPauseCollection {
     pub resumes_at: Option<Box<Timestamp>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1002,6 +1025,7 @@ pub struct UpdateSubscriptionPaymentSettings {
     pub payment_method_types: Option<Box<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodTypes>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPendingInvoiceItemInterval {
     pub interval: PlanInterval,
@@ -1010,6 +1034,7 @@ pub struct UpdateSubscriptionPendingInvoiceItemInterval {
     pub interval_count: Option<Box<u64>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1018,11 +1043,13 @@ pub struct UpdateSubscriptionTransferData {
     pub destination: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionItemsBillingThresholds {
     pub usage_gte: i64,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1035,6 +1062,7 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     pub card: Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
     pub currency: Currency,
@@ -1051,6 +1079,7 @@ pub struct InvoiceItemPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceData {
     pub currency: Currency,
@@ -1069,6 +1098,7 @@ pub struct SubscriptionItemPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1081,6 +1111,7 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
     pub card: Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1093,6 +1124,7 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
     >,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1101,6 +1133,7 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     >,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1112,6 +1145,7 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
         Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceDataRecurring {
     pub interval: PlanInterval,
@@ -1120,6 +1154,7 @@ pub struct SubscriptionItemPriceDataRecurring {
     pub interval_count: Option<Box<u64>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1132,6 +1167,7 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
     >,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1140,6 +1176,7 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     >,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1151,6 +1188,7 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
         Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
 
@@ -1158,6 +1196,7 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandate
     pub transaction_type: Option<Box<CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1172,6 +1211,7 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptio
     pub description: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
 
@@ -1179,6 +1219,7 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandate
     pub transaction_type: Option<Box<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1418,37 +1459,6 @@ impl std::fmt::Display for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     }
 }
 
-/// An enum representing the possible values of an `InvoiceItemPriceData`'s `tax_behavior` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum InvoiceItemPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl InvoiceItemPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            InvoiceItemPriceDataTaxBehavior::Exclusive => "exclusive",
-            InvoiceItemPriceDataTaxBehavior::Inclusive => "inclusive",
-            InvoiceItemPriceDataTaxBehavior::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl AsRef<str> for InvoiceItemPriceDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for InvoiceItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
 /// An enum representing the possible values of an `InvoiceMandateOptionsCard`'s `amount_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1473,39 +1483,6 @@ impl AsRef<str> for InvoiceMandateOptionsCardAmountType {
 }
 
 impl std::fmt::Display for InvoiceMandateOptionsCardAmountType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `SubscriptionPendingInvoiceItemInterval`'s `interval` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum PlanInterval {
-    Day,
-    Month,
-    Week,
-    Year,
-}
-
-impl PlanInterval {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            PlanInterval::Day => "day",
-            PlanInterval::Month => "month",
-            PlanInterval::Week => "week",
-            PlanInterval::Year => "year",
-        }
-    }
-}
-
-impl AsRef<str> for PlanInterval {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PlanInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

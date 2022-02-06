@@ -10,6 +10,7 @@ use crate::resources::{
     BalanceTransaction, Currency, File, IssuingDisputeStatus, IssuingTransaction,
 };
 
+// written at 378
 /// The resource representing a Stripe "IssuingDispute".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDispute {
@@ -60,6 +61,7 @@ impl Object for IssuingDispute {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeEvidence {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -89,6 +91,7 @@ pub struct IssuingDisputeEvidence {
     pub service_not_as_described: Option<Box<IssuingDisputeServiceNotAsDescribedEvidence>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeCanceledEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
@@ -132,6 +135,7 @@ pub struct IssuingDisputeCanceledEvidence {
     pub returned_at: Option<Box<Timestamp>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeDuplicateEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
@@ -161,6 +165,7 @@ pub struct IssuingDisputeDuplicateEvidence {
     pub original_transaction: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeFraudulentEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
@@ -172,6 +177,7 @@ pub struct IssuingDisputeFraudulentEvidence {
     pub explanation: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
@@ -199,6 +205,7 @@ pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
     pub returned_at: Option<Box<Timestamp>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeNotReceivedEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
@@ -222,6 +229,7 @@ pub struct IssuingDisputeNotReceivedEvidence {
     pub product_type: Option<Box<IssuingDisputeNotReceivedEvidenceProductType>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeOtherEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
@@ -241,6 +249,7 @@ pub struct IssuingDisputeOtherEvidence {
     pub product_type: Option<Box<IssuingDisputeOtherEvidenceProductType>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDisputeServiceNotAsDescribedEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.

@@ -8,11 +8,11 @@ use crate::config::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentLink,
-    PaymentMethodOptionsBoleto, PaymentMethodOptionsOxxo, SetupIntent, Shipping, ShippingRate,
-    Subscription, TaxRate,
+    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentLink, SetupIntent,
+    Shipping, ShippingRate, Subscription, TaxRate,
 };
 
+// written at 378
 /// The resource representing a Stripe "Session".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSession {
@@ -222,18 +222,20 @@ impl Object for CheckoutSession {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<Box<CheckoutAcssDebitPaymentMethodOptions>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto: Option<Box<PaymentMethodOptionsBoleto>>,
+    pub boleto: Option<Box<CheckoutBoletoPaymentMethodOptions>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo: Option<Box<PaymentMethodOptionsOxxo>>,
+    pub oxxo: Option<Box<CheckoutOxxoPaymentMethodOptions>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutAcssDebitPaymentMethodOptions {
     /// Currency supported by the bank account.
@@ -250,6 +252,7 @@ pub struct CheckoutAcssDebitPaymentMethodOptions {
     pub verification_method: Option<Box<CheckoutAcssDebitPaymentMethodOptionsVerificationMethod>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutAcssDebitMandateOptions {
     /// A URL for custom mandate text.
@@ -277,6 +280,25 @@ pub struct CheckoutAcssDebitMandateOptions {
     pub transaction_type: Option<Box<CheckoutAcssDebitMandateOptionsTransactionType>>,
 }
 
+// written at 541
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutBoletoPaymentMethodOptions {
+    /// The number of calendar days before a Boleto voucher expires.
+    ///
+    /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto voucher will expire on Wednesday at 23:59 America/Sao_Paulo time.
+    pub expires_after_days: u32,
+}
+
+// written at 541
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct CheckoutOxxoPaymentMethodOptions {
+    /// The number of calendar days before an OXXO invoice expires.
+    ///
+    /// For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
+    pub expires_after_days: u32,
+}
+
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionAfterExpiration {
     /// When set, configuration used to recover the Checkout Session on expiry.
@@ -284,6 +306,7 @@ pub struct PaymentPagesCheckoutSessionAfterExpiration {
     pub recovery: Option<Box<PaymentPagesCheckoutSessionAfterExpirationRecovery>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionAfterExpirationRecovery {
     /// Enables user redeemable promotion codes on the recovered Checkout Sessions.
@@ -306,6 +329,7 @@ pub struct PaymentPagesCheckoutSessionAfterExpirationRecovery {
     pub url: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionAutomaticTax {
     /// Indicates whether automatic tax is enabled for the session.
@@ -316,6 +340,7 @@ pub struct PaymentPagesCheckoutSessionAutomaticTax {
     pub status: Option<Box<PaymentPagesCheckoutSessionAutomaticTaxStatus>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionConsent {
     /// If `opt_in`, the customer consents to receiving promotional communications
@@ -324,6 +349,7 @@ pub struct PaymentPagesCheckoutSessionConsent {
     pub promotions: Option<Box<PaymentPagesCheckoutSessionConsentPromotions>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionConsentCollection {
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
@@ -334,6 +360,7 @@ pub struct PaymentPagesCheckoutSessionConsentCollection {
     pub promotions: Option<Box<PaymentPagesCheckoutSessionConsentCollectionPromotions>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomerDetails {
     /// The email associated with the Customer, if one exists, on the Checkout Session at the time of checkout or at time of session expiry.
@@ -354,12 +381,14 @@ pub struct PaymentPagesCheckoutSessionCustomerDetails {
     pub tax_ids: Option<Box<Vec<PaymentPagesCheckoutSessionTaxId>>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionPhoneNumberCollection {
     /// Indicates whether phone number collection is enabled for the session.
     pub enabled: bool,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
@@ -370,6 +399,7 @@ pub struct PaymentPagesCheckoutSessionShippingAddressCollection {
         Vec<PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionShippingOption {
     /// A non-negative integer in cents representing how much to charge.
@@ -379,6 +409,7 @@ pub struct PaymentPagesCheckoutSessionShippingOption {
     pub shipping_rate: Expandable<ShippingRate>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
     /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, or `unknown`.
@@ -390,12 +421,14 @@ pub struct PaymentPagesCheckoutSessionTaxId {
     pub value: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxIdCollection {
     /// Indicates whether tax ID collection is enabled for the session.
     pub enabled: bool,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTotalDetails {
     /// This is the sum of all the line item discounts.
@@ -412,6 +445,7 @@ pub struct PaymentPagesCheckoutSessionTotalDetails {
     pub breakdown: Option<Box<PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown {
     /// The aggregated line item discounts.
@@ -421,6 +455,7 @@ pub struct PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown {
     pub taxes: Vec<LineItemsTaxAmount>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LineItemsDiscountAmount {
     /// The amount discounted.
@@ -429,6 +464,7 @@ pub struct LineItemsDiscountAmount {
     pub discount: Discount,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct LineItemsTaxAmount {
     /// Amount of tax applied for this rate.
@@ -437,6 +473,7 @@ pub struct LineItemsTaxAmount {
     pub rate: TaxRate,
 }
 
+// written at 597
 /// The parameters for `CheckoutSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateCheckoutSession<'a> {
@@ -646,6 +683,7 @@ impl<'a> CreateCheckoutSession<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `CheckoutSession::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCheckoutSessions<'a> {
@@ -695,23 +733,27 @@ impl<'a> ListCheckoutSessions<'a> {
     }
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAfterExpiration {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recovery: Option<Box<CreateCheckoutSessionAfterExpirationRecovery>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAutomaticTax {
     pub enabled: bool,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionConsentCollection {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<Box<CreateCheckoutSessionConsentCollectionPromotions>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomerUpdate {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -724,6 +766,7 @@ pub struct CreateCheckoutSessionCustomerUpdate {
     pub shipping: Option<Box<CreateCheckoutSessionCustomerUpdateShipping>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionDiscounts {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -733,6 +776,7 @@ pub struct CreateCheckoutSessionDiscounts {
     pub promotion_code: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -757,6 +801,7 @@ pub struct CreateCheckoutSessionLineItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -796,6 +841,7 @@ pub struct CreateCheckoutSessionPaymentIntentData {
     pub transfer_group: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -811,11 +857,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     pub wechat_pay: Option<Box<CreateCheckoutSessionPaymentMethodOptionsWechatPay>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPhoneNumberCollection {
     pub enabled: bool,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSetupIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -828,11 +876,13 @@ pub struct CreateCheckoutSessionSetupIntentData {
     pub on_behalf_of: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingAddressCollection {
     pub allowed_countries: Vec<CreateCheckoutSessionShippingAddressCollectionAllowedCountries>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -842,6 +892,7 @@ pub struct CreateCheckoutSessionShippingOptions {
     pub shipping_rate_data: Option<Box<CreateCheckoutSessionShippingOptionsShippingRateData>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -866,11 +917,13 @@ pub struct CreateCheckoutSessionSubscriptionData {
     pub trial_period_days: Option<Box<u32>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionTaxIdCollection {
     pub enabled: bool,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAfterExpirationRecovery {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -879,6 +932,7 @@ pub struct CreateCheckoutSessionAfterExpirationRecovery {
     pub enabled: bool,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsAdjustableQuantity {
     pub enabled: bool,
@@ -890,6 +944,7 @@ pub struct CreateCheckoutSessionLineItemsAdjustableQuantity {
     pub minimum: Option<Box<i64>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceData {
     pub currency: Currency,
@@ -913,6 +968,7 @@ pub struct CreateCheckoutSessionLineItemsPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataShipping {
     pub address: CreateCheckoutSessionPaymentIntentDataShippingAddress,
@@ -929,6 +985,7 @@ pub struct CreateCheckoutSessionPaymentIntentDataShipping {
     pub tracking_number: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -937,6 +994,7 @@ pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
     pub destination: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -951,18 +1009,21 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
         Option<Box<CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<Box<u32>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsOxxo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<Box<u32>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -971,6 +1032,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay {
     pub client: CreateCheckoutSessionPaymentMethodOptionsWechatPayClient,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -996,6 +1058,7 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
     pub type_: Option<Box<CreateCheckoutSessionShippingOptionsShippingRateDataType>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataItems {
     pub plan: String,
@@ -1007,6 +1070,7 @@ pub struct CreateCheckoutSessionSubscriptionDataItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1015,6 +1079,7 @@ pub struct CreateCheckoutSessionSubscriptionDataTransferData {
     pub destination: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceDataProductData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1032,6 +1097,7 @@ pub struct CreateCheckoutSessionLineItemsPriceDataProductData {
     pub tax_code: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
     pub interval: CreateCheckoutSessionLineItemsPriceDataRecurringInterval,
@@ -1040,6 +1106,7 @@ pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
     pub interval_count: Option<Box<u64>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1060,6 +1127,7 @@ pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
     pub state: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1084,6 +1152,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     >,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1095,6 +1164,7 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate 
         Option<Box<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     pub amount: i64,
@@ -1102,6 +1172,7 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     pub currency: Currency,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
     pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit,
@@ -1109,6 +1180,7 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateM
     pub value: i64,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
     pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit,
@@ -1945,6 +2017,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     AcssDebit,
     AfterpayClearpay,
     Alipay,
+    AuBecsDebit,
     BacsDebit,
     Bancontact,
     Boleto,
@@ -1968,6 +2041,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             CreateCheckoutSessionPaymentMethodTypes::AcssDebit => "acss_debit",
             CreateCheckoutSessionPaymentMethodTypes::AfterpayClearpay => "afterpay_clearpay",
             CreateCheckoutSessionPaymentMethodTypes::Alipay => "alipay",
+            CreateCheckoutSessionPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             CreateCheckoutSessionPaymentMethodTypes::BacsDebit => "bacs_debit",
             CreateCheckoutSessionPaymentMethodTypes::Bancontact => "bancontact",
             CreateCheckoutSessionPaymentMethodTypes::Boleto => "boleto",

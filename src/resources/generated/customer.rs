@@ -15,6 +15,7 @@ use crate::resources::{
     Shipping, Subscription, TaxId,
 };
 
+// written at 378
 /// The resource representing a Stripe "Customer".
 ///
 /// For more details see <https://stripe.com/docs/api/customers/object>
@@ -190,6 +191,7 @@ impl Object for Customer {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerTax {
     /// Surfaces if automatic tax computation is possible given the current customer location information.
@@ -204,6 +206,7 @@ pub struct CustomerTax {
     pub location: Option<Box<CustomerTaxLocation>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerTaxLocation {
     /// The customer's country as identified by Stripe Tax.
@@ -217,6 +220,7 @@ pub struct CustomerTaxLocation {
     pub state: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomerSetting {
     /// Default custom fields to be displayed on invoices for this customer.
@@ -232,6 +236,7 @@ pub struct InvoiceSettingCustomerSetting {
     pub footer: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomField {
     /// The name of the custom field.
@@ -241,6 +246,7 @@ pub struct InvoiceSettingCustomField {
     pub value: String,
 }
 
+// written at 597
 /// The parameters for `Customer::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCustomer<'a> {
@@ -371,6 +377,7 @@ impl<'a> CreateCustomer<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Customer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCustomers<'a> {
@@ -421,6 +428,7 @@ impl<'a> ListCustomers<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Customer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCustomer<'a> {
@@ -576,6 +584,7 @@ impl<'a> UpdateCustomer<'a> {
     }
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCustomerShipping {
     pub address: CreateCustomerShippingAddress,
@@ -586,12 +595,14 @@ pub struct CreateCustomerShipping {
     pub phone: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCustomerTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -604,6 +615,7 @@ pub struct CustomerInvoiceSettings {
     pub footer: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxIdData {
     #[serde(rename = "type")]
@@ -612,6 +624,7 @@ pub struct TaxIdData {
     pub value: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateCustomerShipping {
     pub address: UpdateCustomerShippingAddress,
@@ -622,12 +635,14 @@ pub struct UpdateCustomerShipping {
     pub phone: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateCustomerTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCustomerShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -649,6 +664,7 @@ pub struct CreateCustomerShippingAddress {
     pub state: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettingsCustomFields {
     pub name: String,
@@ -656,6 +672,7 @@ pub struct CustomerInvoiceSettingsCustomFields {
     pub value: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateCustomerShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]

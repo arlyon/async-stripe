@@ -106,6 +106,7 @@ fn main() -> Result<()> {
         object_mappings,
         field_mappings,
     };
+    let mut all_objects = BTreeSet::<String>::new();
 
     // Generate placeholders
     {
@@ -115,6 +116,7 @@ fn main() -> Result<()> {
         out.push_str("use serde_derive::{Deserialize, Serialize};\n");
         for (schema, feature) in &feature_groups {
             out.push('\n');
+            out.push_str(&format!("// written at {}\n", line!()));
             let (id_type, c_c) =
                 meta.schema_to_id_type(schema).unwrap_or_else(|| ("()".into(), CopyOrClone::Copy));
             let struct_type = meta.schema_to_rust_type(schema);
@@ -136,6 +138,7 @@ fn main() -> Result<()> {
             out.push_str(&format!("\tfn object(&self) -> &'static str {{ \"{}\" }}\n", schema));
             out.push_str("}\n");
             fs::write(format!("{}/{}", &out_path, "placeholders.rs"), out.as_bytes()).unwrap();
+            all_objects.insert(struct_type);
         }
     }
 
@@ -151,7 +154,8 @@ fn main() -> Result<()> {
         // Generate the types for the object
         fs::write(
             &format!("{}/{}.rs", &out_path, object.replace('.', "_").to_snake_case()),
-            gen_impl_object(&meta, object, &url_finder, &mut shared_objects).as_bytes(),
+            gen_impl_object(&meta, object, &url_finder, &mut shared_objects, &mut all_objects)
+                .as_bytes(),
         )
         .unwrap();
     }
@@ -166,7 +170,8 @@ fn main() -> Result<()> {
         // Generate the types for the object
         fs::write(
             &format!("{}/{}.rs", &out_path, object.replace('.', "_").to_snake_case()),
-            gen_extra_object(&meta, object, &url_finder, &mut extra_objects).as_bytes(),
+            gen_extra_object(&meta, object, &url_finder, &mut extra_objects, &mut all_objects)
+                .as_bytes(),
         )
         .unwrap();
     }
@@ -242,6 +247,8 @@ struct Generated {
     use_params: BTreeSet<&'static str>,
     /// The resources that must be imported in this file.
     use_resources: BTreeSet<String>,
+    /// The non-duplicated items that must be importedin this file.
+    use_root: BTreeSet<String>,
     /// Extra (simple) enums that were / will be generated in this file.
     inferred_enums: BTreeMap<String, InferredEnum>,
     /// Extra (complex) enums that were / will be generated in this file.
@@ -349,6 +356,7 @@ fn gen_struct(
     object: &str,
     shared_objects: &mut BTreeSet<String>,
     url_finder: &UrlFinder,
+    all_objects: &mut BTreeSet<String>,
 ) {
     let id_type = meta.schema_to_id_type(object);
     let struct_name = meta.schema_to_rust_type(object);
@@ -360,8 +368,14 @@ fn gen_struct(
         None => return (),
     };
 
+    /*if all_objects.contains(&struct_name) {
+        state.use_root.insert(struct_name);
+        return;
+    }*/
+
     println!("struct {} {{...}}", struct_name);
 
+    out.push_str(&format!("// written at {}\n", line!()));
     // Generate the struct type
     out.push_str("/// The resource representing a Stripe \"");
     out.push_str(schema_title);
@@ -428,6 +442,7 @@ fn gen_struct(
         ));
     }
     out.push_str("}\n");
+    all_objects.insert(struct_name);
 }
 
 fn gen_prelude(state: &Generated, meta: &Metadata, object: &str) -> String {
@@ -458,6 +473,16 @@ fn gen_prelude(state: &Generated, meta: &Metadata, object: &str) -> String {
     if !state.use_params.is_empty() {
         prelude.push_str("use crate::params::{");
         for (n, type_) in state.use_params.iter().enumerate() {
+            if n > 0 {
+                prelude.push_str(", ");
+            }
+            prelude.push_str(&type_);
+        }
+        prelude.push_str("};\n");
+    }
+    if !state.use_root.is_empty() {
+        prelude.push_str("use crate::{");
+        for (n, type_) in state.use_root.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
             }
@@ -497,12 +522,23 @@ fn gen_generated_schemas(
     state: &mut Generated,
     meta: &Metadata,
     shared_objects: &mut BTreeSet<String>,
+    all_objects: &mut BTreeSet<String>,
 ) {
     while let Some(schema_name) =
         state.generated_schemas.iter().find_map(|(k, &v)| if !v { Some(k) } else { None }).cloned()
     {
         let struct_name = meta.schema_to_rust_type(&schema_name);
+        /*if all_objects.contains(&struct_name) {
+            state.use_root.insert(struct_name);
+
+            // Set the schema to generated
+            *state.generated_schemas.entry(schema_name).or_default() = true;
+
+            continue;
+        }*/
+
         out.push('\n');
+        out.push_str(&format!("// written at {}\n", line!()));
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
         out.push_str("pub struct ");
         out.push_str(&struct_name);
@@ -529,6 +565,7 @@ fn gen_generated_schemas(
             ));
         }
         out.push_str("}\n");
+        all_objects.insert(struct_name);
 
         // Set the schema to generated
         *state.generated_schemas.entry(schema_name).or_default() = true;
@@ -557,6 +594,7 @@ fn gen_inferred_params(
             parameters.iter().all(|param| param["required"].as_bool() != Some(true));
 
         out.push('\n');
+        out.push_str(&format!("// written at {}\n", line!()));
         out.push_str(&format!("/// The parameters for `{}::{}`.\n", struct_name, params.method));
 
         if can_derive_default {
@@ -955,6 +993,7 @@ fn gen_emitted_structs(
     state: &mut Generated,
     meta: &Metadata,
     shared_objects: &mut BTreeSet<String>,
+    all_objects: &mut BTreeSet<String>,
 ) {
     let mut emitted_structs = BTreeSet::new();
     while state
@@ -973,6 +1012,11 @@ fn gen_emitted_structs(
                 println!("struct {} {{ ... }}", struct_name);
             }
 
+            /*if all_objects.contains(&struct_name) {
+                state.use_root.insert(struct_name);
+                continue;
+            }*/
+
             let fields = match struct_.schema["properties"].as_object() {
                 Some(some) => some,
                 None => {
@@ -982,6 +1026,8 @@ fn gen_emitted_structs(
                 }
             };
             out.push('\n');
+
+            out.push_str(&format!("// written at {}\n", line!()));
             out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
             out.push_str("pub struct ");
             out.push_str(&struct_name.to_camel_case());
@@ -1004,41 +1050,55 @@ fn gen_emitted_structs(
                 ));
             }
             out.push_str("}\n");
+            all_objects.insert(struct_name);
         }
     }
 }
 
-fn gen_unions(out: &mut String, state: &mut Generated, meta: &Metadata) {
+fn gen_unions(
+    out: &mut String,
+    state: &mut Generated,
+    meta: &Metadata,
+    all_objects: &mut BTreeSet<String>,
+) {
     for (union_name, union_) in state.inferred_unions.clone() {
-        println!("union {} {{ ... }}", union_name);
+        if !all_objects.contains(&union_name) {
+            println!("union {} {{ ... }}", union_name);
 
-        out.push('\n');
-        out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
-        out.push_str("#[serde(tag = \"object\", rename_all = \"snake_case\")]\n");
-        out.push_str("pub enum ");
-        out.push_str(&union_name.to_camel_case());
-        out.push_str(" {\n");
-        for variant_schema in &union_.schema_variants {
-            let object_name = meta.spec["components"]["schemas"][&variant_schema]["properties"]
-                ["object"]["enum"][0]
-                .as_str()
-                .unwrap_or_else(|| {
-                    meta.spec["components"]["schemas"][&variant_schema]["title"].as_str().unwrap()
-                });
-            let variant_name = meta.schema_to_rust_type(object_name);
-            let type_name = meta.schema_to_rust_type(&variant_schema);
-            if variant_name.to_snake_case() != object_name {
-                out.push_str("    #[serde(rename = \"");
-                out.push_str(object_name);
-                out.push_str("\")]\n");
+            out.push('\n');
+            out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+            out.push_str("#[serde(tag = \"object\", rename_all = \"snake_case\")]\n");
+            out.push_str("pub enum ");
+            out.push_str(&union_name.to_camel_case());
+            out.push_str(" {\n");
+            for variant_schema in &union_.schema_variants {
+                let object_name = meta.spec["components"]["schemas"][&variant_schema]["properties"]
+                    ["object"]["enum"][0]
+                    .as_str()
+                    .unwrap_or_else(|| {
+                        meta.spec["components"]["schemas"][&variant_schema]["title"]
+                            .as_str()
+                            .unwrap()
+                    });
+                let variant_name = meta.schema_to_rust_type(object_name);
+                let type_name = meta.schema_to_rust_type(&variant_schema);
+                if variant_name.to_snake_case() != object_name {
+                    out.push_str("    #[serde(rename = \"");
+                    out.push_str(object_name);
+                    out.push_str("\")]\n");
+                }
+                out.push_str("    ");
+                out.push_str(&variant_name);
+                out.push('(');
+                out.push_str(&type_name);
+                out.push_str("),\n");
             }
-            out.push_str("    ");
-            out.push_str(&variant_name);
-            out.push('(');
-            out.push_str(&type_name);
-            out.push_str("),\n");
+            out.push_str("}\n");
+            all_objects.insert(union_name);
+        } else {
+            println!("inserting import into state for {}", union_name);
+            state.use_root.insert(union_name);
         }
-        out.push_str("}\n");
     }
 }
 
@@ -1055,76 +1115,86 @@ fn gen_variant_name(wire_name: &str, meta: &Metadata) -> String {
     }
 }
 
-fn gen_enums(out: &mut String, state: &mut Generated, meta: &Metadata) {
+fn gen_enums(
+    out: &mut String,
+    state: &mut Generated,
+    meta: &Metadata,
+    all_objects: &mut BTreeSet<String>,
+) {
     for (enum_name, enum_) in state.inferred_enums.clone() {
         println!("enum {} {{ ... }}", enum_name);
-
-        out.push('\n');
-        out.push_str(&format!(
-            "/// An enum representing the possible values of an `{}`'s `{}` field.\n",
-            enum_.parent, enum_.field
-        ));
-        out.push_str("#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]\n");
-        out.push_str("#[serde(rename_all = \"snake_case\")]\n");
-        out.push_str("pub enum ");
-        out.push_str(&enum_name);
-        out.push_str(" {\n");
-        for wire_name in &enum_.options {
-            if wire_name.trim().is_empty() {
-                continue;
-            }
-            let variant_name = gen_variant_name(&wire_name.as_str(), meta);
-            if variant_name.trim().is_empty() {
-                panic!("unhandled enum variant: {:?}", wire_name)
-            }
-            if &variant_name.to_snake_case() != wire_name {
-                out.push_str("    #[serde(rename = \"");
-                out.push_str(wire_name);
-                out.push_str("\")]\n");
-            }
-            out.push_str("    ");
-            out.push_str(&variant_name);
-            out.push_str(",\n");
-        }
-        out.push_str("}\n");
-        out.push('\n');
-        out.push_str("impl ");
-        out.push_str(&enum_name);
-        out.push_str(" {\n");
-        out.push_str("    pub fn as_str(self) -> &'static str {\n");
-        out.push_str("        match self {\n");
-        for wire_name in &enum_.options {
-            if wire_name.trim().is_empty() {
-                continue;
-            }
-            let variant_name = gen_variant_name(&wire_name.as_str(), meta);
-            out.push_str("            ");
+        if !all_objects.contains(&enum_name) {
+            out.push('\n');
+            out.push_str(&format!(
+                "/// An enum representing the possible values of an `{}`'s `{}` field.\n",
+                enum_.parent, enum_.field
+            ));
+            out.push_str("#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]\n");
+            out.push_str("#[serde(rename_all = \"snake_case\")]\n");
+            out.push_str("pub enum ");
             out.push_str(&enum_name);
-            out.push_str("::");
-            out.push_str(&variant_name);
-            out.push_str(" => ");
-            out.push_str(&format!("{:?}", wire_name));
-            out.push_str(",\n");
+            out.push_str(" {\n");
+            for wire_name in &enum_.options {
+                if wire_name.trim().is_empty() {
+                    continue;
+                }
+                let variant_name = gen_variant_name(&wire_name.as_str(), meta);
+                if variant_name.trim().is_empty() {
+                    panic!("unhandled enum variant: {:?}", wire_name)
+                }
+                if &variant_name.to_snake_case() != wire_name {
+                    out.push_str("    #[serde(rename = \"");
+                    out.push_str(wire_name);
+                    out.push_str("\")]\n");
+                }
+                out.push_str("    ");
+                out.push_str(&variant_name);
+                out.push_str(",\n");
+            }
+            out.push_str("}\n");
+            out.push('\n');
+            out.push_str("impl ");
+            out.push_str(&enum_name);
+            out.push_str(" {\n");
+            out.push_str("    pub fn as_str(self) -> &'static str {\n");
+            out.push_str("        match self {\n");
+            for wire_name in &enum_.options {
+                if wire_name.trim().is_empty() {
+                    continue;
+                }
+                let variant_name = gen_variant_name(&wire_name.as_str(), meta);
+                out.push_str("            ");
+                out.push_str(&enum_name);
+                out.push_str("::");
+                out.push_str(&variant_name);
+                out.push_str(" => ");
+                out.push_str(&format!("{:?}", wire_name));
+                out.push_str(",\n");
+            }
+            out.push_str("        }\n");
+            out.push_str("    }\n");
+            out.push_str("}\n");
+            out.push('\n');
+            out.push_str("impl AsRef<str> for ");
+            out.push_str(&enum_name);
+            out.push_str(" {\n");
+            out.push_str("    fn as_ref(&self) -> &str {\n");
+            out.push_str("        self.as_str()\n");
+            out.push_str("    }\n");
+            out.push_str("}\n");
+            out.push('\n');
+            out.push_str("impl std::fmt::Display for ");
+            out.push_str(&enum_name);
+            out.push_str(" {\n");
+            out.push_str("    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {\n");
+            out.push_str("        self.as_str().fmt(f)\n");
+            out.push_str("    }\n");
+            out.push_str("}\n");
+            all_objects.insert(enum_name);
+        } else {
+            println!("inserting import into state for {}", enum_name);
+            state.use_root.insert(enum_name);
         }
-        out.push_str("        }\n");
-        out.push_str("    }\n");
-        out.push_str("}\n");
-        out.push('\n');
-        out.push_str("impl AsRef<str> for ");
-        out.push_str(&enum_name);
-        out.push_str(" {\n");
-        out.push_str("    fn as_ref(&self) -> &str {\n");
-        out.push_str("        self.as_str()\n");
-        out.push_str("    }\n");
-        out.push_str("}\n");
-        out.push('\n');
-        out.push_str("impl std::fmt::Display for ");
-        out.push_str(&enum_name);
-        out.push_str(" {\n");
-        out.push_str("    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {\n");
-        out.push_str("        self.as_str().fmt(f)\n");
-        out.push_str("    }\n");
-        out.push_str("}\n");
     }
 }
 
@@ -1133,21 +1203,22 @@ fn gen_extra_object(
     object: &str,
     url_finder: &UrlFinder,
     shared_objects: &mut BTreeSet<String>,
+    all_objects: &mut BTreeSet<String>,
 ) -> String {
     let mut out = String::new();
     let mut state = Generated::default();
 
-    gen_struct(&mut out, &mut state, meta, object, shared_objects, url_finder);
+    gen_struct(&mut out, &mut state, meta, object, shared_objects, url_finder, all_objects);
 
-    gen_generated_schemas(&mut out, &mut state, meta, shared_objects);
+    gen_generated_schemas(&mut out, &mut state, meta, shared_objects, all_objects);
 
     gen_inferred_params(&mut out, &mut state, meta, object, shared_objects);
 
-    gen_emitted_structs(&mut out, &mut state, meta, shared_objects);
+    gen_emitted_structs(&mut out, &mut state, meta, shared_objects, all_objects);
 
-    gen_unions(&mut out, &mut state, meta);
+    gen_unions(&mut out, &mut state, meta, all_objects);
 
-    gen_enums(&mut out, &mut state, meta);
+    gen_enums(&mut out, &mut state, meta, all_objects);
 
     let prelude = gen_prelude(&state, meta, object);
 
@@ -1160,6 +1231,7 @@ fn gen_impl_object(
     object: &str,
     url_finder: &UrlFinder,
     shared_objects: &mut BTreeSet<String>,
+    all_objects: &mut BTreeSet<String>,
 ) -> String {
     let mut out = String::new();
     let mut state = Generated::default();
@@ -1176,7 +1248,7 @@ fn gen_impl_object(
         None => return String::new(),
     };
 
-    gen_struct(&mut out, &mut state, meta, object, shared_objects, url_finder);
+    gen_struct(&mut out, &mut state, meta, object, shared_objects, url_finder, all_objects);
 
     // Generate request methods
     if let Some(impls) =
@@ -1206,15 +1278,15 @@ fn gen_impl_object(
     out.push_str("\"\n    }\n");
     out.push_str("}\n");
 
-    gen_generated_schemas(&mut out, &mut state, meta, shared_objects);
+    gen_generated_schemas(&mut out, &mut state, meta, shared_objects, all_objects);
 
     gen_inferred_params(&mut out, &mut state, meta, object, shared_objects);
 
-    gen_emitted_structs(&mut out, &mut state, meta, shared_objects);
+    gen_emitted_structs(&mut out, &mut state, meta, shared_objects, all_objects);
 
-    gen_unions(&mut out, &mut state, meta);
+    gen_unions(&mut out, &mut state, meta, all_objects);
 
-    gen_enums(&mut out, &mut state, meta);
+    gen_enums(&mut out, &mut state, meta, all_objects);
 
     let prelude = gen_prelude(&state, meta, object);
 

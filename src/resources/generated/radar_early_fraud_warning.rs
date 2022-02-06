@@ -8,6 +8,7 @@ use crate::ids::RadarEarlyFraudWarningId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{Charge, PaymentIntent};
 
+// written at 378
 /// The resource representing a Stripe "RadarEarlyFraudWarning".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RadarEarlyFraudWarning {

@@ -9,6 +9,7 @@ use crate::ids::WebhookEndpointId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{ApiVersion, WebhookEndpointStatus};
 
+// written at 378
 /// The resource representing a Stripe "NotificationWebhookEndpoint".
 ///
 /// For more details see <https://stripe.com/docs/api/webhook_endpoints/object>
@@ -126,6 +127,7 @@ impl Object for WebhookEndpoint {
     }
 }
 
+// written at 597
 /// The parameters for `WebhookEndpoint::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateWebhookEndpoint<'a> {
@@ -178,6 +180,7 @@ impl<'a> CreateWebhookEndpoint<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `WebhookEndpoint::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListWebhookEndpoints<'a> {
@@ -217,6 +220,7 @@ impl<'a> ListWebhookEndpoints<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `WebhookEndpoint::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateWebhookEndpoint<'a> {

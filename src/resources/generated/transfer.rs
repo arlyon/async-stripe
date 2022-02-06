@@ -9,6 +9,7 @@ use crate::ids::{ChargeId, TransferId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BalanceTransaction, Charge, Currency, TransferReversal};
 
+// written at 378
 /// The resource representing a Stripe "Transfer".
 ///
 /// For more details see <https://stripe.com/docs/api/transfers/object>
@@ -128,6 +129,7 @@ impl Object for Transfer {
     }
 }
 
+// written at 597
 /// The parameters for `Transfer::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTransfer<'a> {
@@ -192,6 +194,7 @@ impl<'a> CreateTransfer<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Transfer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTransfers<'a> {
@@ -240,6 +243,7 @@ impl<'a> ListTransfers<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Transfer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTransfer<'a> {

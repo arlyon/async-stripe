@@ -8,6 +8,7 @@ use crate::ids::TerminalLocationId;
 use crate::params::{Metadata, Object};
 use crate::resources::Address;
 
+// written at 378
 /// The resource representing a Stripe "TerminalLocationLocation".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TerminalLocation {

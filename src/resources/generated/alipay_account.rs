@@ -8,6 +8,7 @@ use crate::ids::AlipayAccountId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Currency, Customer};
 
+// written at 378
 /// The resource representing a Stripe "AlipayAccount".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AlipayAccount {

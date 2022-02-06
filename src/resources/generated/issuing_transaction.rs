@@ -11,6 +11,7 @@ use crate::resources::{
     IssuingDispute, IssuingTransactionType, MerchantData,
 };
 
+// written at 378
 /// The resource representing a Stripe "IssuingTransaction".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransaction {
@@ -100,6 +101,7 @@ impl Object for IssuingTransaction {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionAmountDetails {
     /// The fee charged by the ATM for the cash withdrawal.
@@ -107,6 +109,7 @@ pub struct IssuingTransactionAmountDetails {
     pub atm_fee: Option<Box<i64>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionPurchaseDetails {
     /// Information about the flight that was purchased with this transaction.
@@ -130,6 +133,7 @@ pub struct IssuingTransactionPurchaseDetails {
     pub reference: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightData {
     /// The time that the flight departed.
@@ -153,6 +157,7 @@ pub struct IssuingTransactionFlightData {
     pub travel_agency: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightDataLeg {
     /// The three-letter IATA airport code of the flight's destination.
@@ -180,6 +185,7 @@ pub struct IssuingTransactionFlightDataLeg {
     pub stopover_allowed: Option<Box<bool>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionFuelData {
     /// The type of fuel that was purchased.
@@ -201,6 +207,7 @@ pub struct IssuingTransactionFuelData {
     pub volume_decimal: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionLodgingData {
     /// The time of checking into the lodging.
@@ -212,6 +219,7 @@ pub struct IssuingTransactionLodgingData {
     pub nights: Option<Box<i64>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransactionReceiptData {
     /// The description of the item.

@@ -8,6 +8,7 @@ use crate::ids::ApplicationFeeRefundId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{ApplicationFee, BalanceTransaction, Currency};
 
+// written at 378
 /// The resource representing a Stripe "FeeRefund".
 ///
 /// For more details see <https://stripe.com/docs/api/fee_refunds/object>

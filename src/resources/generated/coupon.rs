@@ -9,6 +9,7 @@ use crate::ids::CouponId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::Currency;
 
+// written at 378
 /// The resource representing a Stripe "Coupon".
 ///
 /// For more details see <https://stripe.com/docs/api/coupons/object>
@@ -133,12 +134,14 @@ impl Object for Coupon {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CouponAppliesTo {
     /// A list of product IDs this coupon applies to.
     pub products: Vec<String>,
 }
 
+// written at 597
 /// The parameters for `Coupon::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCoupon<'a> {
@@ -225,6 +228,7 @@ impl<'a> CreateCoupon<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Coupon::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCoupons<'a> {
@@ -271,6 +275,7 @@ impl<'a> ListCoupons<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Coupon::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCoupon<'a> {
@@ -303,6 +308,7 @@ impl<'a> UpdateCoupon<'a> {
     }
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateCouponAppliesTo {
     #[serde(skip_serializing_if = "Option::is_none")]

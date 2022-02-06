@@ -9,6 +9,7 @@ use crate::ids::{ChargeId, DisputeId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Charge, Currency, File, PaymentIntent};
 
+// written at 378
 /// The resource representing a Stripe "Dispute".
 ///
 /// For more details see <https://stripe.com/docs/api/disputes/object>
@@ -93,6 +94,7 @@ impl Object for Dispute {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DisputeEvidence {
     /// Any server or activity logs showing proof that the customer accessed or downloaded the purchased digital product.
@@ -221,6 +223,7 @@ pub struct DisputeEvidence {
     pub uncategorized_text: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DisputeEvidenceDetails {
     /// Date by which evidence must be submitted in order to successfully challenge dispute.
@@ -244,6 +247,7 @@ pub struct DisputeEvidenceDetails {
     pub submission_count: u64,
 }
 
+// written at 597
 /// The parameters for `Dispute::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListDisputes<'a> {

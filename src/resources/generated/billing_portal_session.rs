@@ -9,6 +9,7 @@ use crate::ids::{BillingPortalSessionId, CustomerId};
 use crate::params::{Expand, Expandable, Object, Timestamp};
 use crate::resources::BillingPortalConfiguration;
 
+// written at 378
 /// The resource representing a Stripe "PortalSession".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BillingPortalSession {
@@ -70,6 +71,7 @@ impl Object for BillingPortalSession {
     }
 }
 
+// written at 597
 /// The parameters for `BillingPortalSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateBillingPortalSession<'a> {

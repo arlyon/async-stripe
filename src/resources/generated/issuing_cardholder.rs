@@ -8,6 +8,7 @@ use crate::ids::IssuingCardholderId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, Currency, File, MerchantCategory};
 
+// written at 378
 /// The resource representing a Stripe "IssuingCardholder".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholder {
@@ -79,11 +80,13 @@ impl Object for IssuingCardholder {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderAddress {
     pub address: Address,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderAuthorizationControls {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
@@ -109,12 +112,14 @@ pub struct IssuingCardholderAuthorizationControls {
     pub spending_limits_currency: Option<Currency>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderCompany {
     /// Whether the company's business ID number was provided.
     pub tax_id_provided: bool,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividual {
     /// The date of birth of this cardholder.
@@ -132,6 +137,7 @@ pub struct IssuingCardholderIndividual {
     pub verification: Option<Box<IssuingCardholderVerification>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividualDob {
     /// The day of birth, between 1 and 31.
@@ -147,6 +153,7 @@ pub struct IssuingCardholderIndividualDob {
     pub year: Option<Box<i64>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderRequirements {
     /// If `disabled_reason` is present, all cards will decline authorizations with `cardholder_verification_required` reason.
@@ -158,6 +165,7 @@ pub struct IssuingCardholderRequirements {
     pub past_due: Option<Box<Vec<IssuingCardholderRequirementsPastDue>>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderSpendingLimit {
     /// Maximum amount allowed to spend per interval.
@@ -173,6 +181,7 @@ pub struct IssuingCardholderSpendingLimit {
     pub interval: IssuingCardholderSpendingLimitInterval,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderVerification {
     /// An identifying document, either a passport or local ID card.
@@ -180,6 +189,7 @@ pub struct IssuingCardholderVerification {
     pub document: Option<Box<IssuingCardholderIdDocument>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholderIdDocument {
     /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.

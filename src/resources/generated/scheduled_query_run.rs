@@ -8,6 +8,7 @@ use crate::ids::ScheduledQueryRunId;
 use crate::params::{Object, Timestamp};
 use crate::resources::File;
 
+// written at 378
 /// The resource representing a Stripe "ScheduledQueryRun".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ScheduledQueryRun {
@@ -55,6 +56,7 @@ impl Object for ScheduledQueryRun {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SigmaScheduledQueryRunError {
     /// Information about the run failure.

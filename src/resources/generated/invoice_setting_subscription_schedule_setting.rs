@@ -4,6 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+// written at 378
 /// The resource representing a Stripe "InvoiceSettingSubscriptionScheduleSetting".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleInvoiceSettings {

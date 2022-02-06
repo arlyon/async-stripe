@@ -14,6 +14,7 @@ use crate::resources::{
     Topup, Transfer, TransferReversal,
 };
 
+// written at 378
 /// The resource representing a Stripe "BalanceTransaction".
 ///
 /// For more details see <https://stripe.com/docs/api/balance_transactions/object>
@@ -116,6 +117,7 @@ impl Object for BalanceTransaction {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Fee {
     /// Amount of the fee, in cents.
@@ -141,6 +143,7 @@ pub struct Fee {
     pub type_: FeeType,
 }
 
+// written at 597
 /// The parameters for `BalanceTransaction::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListBalanceTransactions<'a> {

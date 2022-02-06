@@ -6,6 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::resources::Address;
 
+// written at 378
 /// The resource representing a Stripe "billing_details".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BillingDetails {

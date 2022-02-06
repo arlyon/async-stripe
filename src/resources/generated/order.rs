@@ -11,6 +11,7 @@ use crate::resources::{
     Charge, Currency, Customer, OrderItem, OrderReturn, OrderStatusFilter, Shipping,
 };
 
+// written at 378
 /// The resource representing a Stripe "Order".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Order {
@@ -159,6 +160,7 @@ impl Object for Order {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingMethod {
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the line item.
@@ -184,6 +186,7 @@ pub struct ShippingMethod {
     pub id: String,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DeliveryEstimate {
     /// If `type` is `"exact"`, `date` will be the expected delivery date in the format YYYY-MM-DD.
@@ -205,6 +208,7 @@ pub struct DeliveryEstimate {
     pub type_: String,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StatusTransitions {
     /// The time that the order was canceled.
@@ -224,6 +228,7 @@ pub struct StatusTransitions {
     pub returned: Option<Box<Timestamp>>,
 }
 
+// written at 597
 /// The parameters for `Order::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateOrder<'a> {
@@ -291,6 +296,7 @@ impl<'a> CreateOrder<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Order::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListOrders<'a> {
@@ -362,6 +368,7 @@ impl<'a> ListOrders<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Order::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateOrder<'a> {
@@ -416,6 +423,7 @@ impl<'a> UpdateOrder<'a> {
     }
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateOrderShipping {
     pub address: CreateOrderShippingAddress,
@@ -426,6 +434,7 @@ pub struct CreateOrderShipping {
     pub phone: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ListOrdersStatusTransitions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -441,6 +450,7 @@ pub struct ListOrdersStatusTransitions {
     pub returned: Option<Box<RangeQuery<Timestamp>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderItemParams {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -463,6 +473,7 @@ pub struct OrderItemParams {
     pub type_: Option<Box<OrderItemParamsType>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateOrderShipping {
     pub carrier: String,
@@ -470,6 +481,7 @@ pub struct UpdateOrderShipping {
     pub tracking_number: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateOrderShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]

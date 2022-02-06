@@ -8,6 +8,7 @@ use crate::ids::ChargeId;
 use crate::params::{Object, Timestamp};
 use crate::resources::Currency;
 
+// written at 378
 /// The resource representing a Stripe "SourceTransaction".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransaction {
@@ -66,6 +67,7 @@ impl Object for SourceTransaction {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionAchCreditTransferData {
     /// Customer data associated with the transfer.
@@ -85,6 +87,7 @@ pub struct SourceTransactionAchCreditTransferData {
     pub routing_number: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionChfCreditTransferData {
     /// Reference associated with the transfer.
@@ -108,6 +111,7 @@ pub struct SourceTransactionChfCreditTransferData {
     pub sender_name: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionGbpCreditTransferData {
     /// Bank account fingerprint associated with the Stripe owned bank account receiving the transfer.
@@ -142,6 +146,7 @@ pub struct SourceTransactionGbpCreditTransferData {
     pub sender_sort_code: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionPaperCheckData {
     /// Time at which the deposited funds will be available for use.
@@ -155,6 +160,7 @@ pub struct SourceTransactionPaperCheckData {
     pub invoices: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SourceTransactionSepaCreditTransferData {
     /// Reference associated with the transfer.

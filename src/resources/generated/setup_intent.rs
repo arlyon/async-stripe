@@ -11,6 +11,7 @@ use crate::resources::{
     Account, ApiErrors, Application, Currency, Customer, Mandate, PaymentMethod, SetupAttempt,
 };
 
+// written at 378
 /// The resource representing a Stripe "SetupIntent".
 ///
 /// For more details see <https://stripe.com/docs/api/setup_intents/object>
@@ -155,6 +156,7 @@ impl Object for SetupIntent {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentNextAction {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -174,6 +176,7 @@ pub struct SetupIntentNextAction {
     pub verify_with_microdeposits: Option<Box<SetupIntentNextActionVerifyWithMicrodeposits>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentNextActionRedirectToUrl {
     /// If the customer does not exit their browser while authenticating, they will be redirected to this specified URL after completion.
@@ -185,6 +188,7 @@ pub struct SetupIntentNextActionRedirectToUrl {
     pub url: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentNextActionVerifyWithMicrodeposits {
     /// The timestamp when the microdeposits are expected to land.
@@ -194,6 +198,7 @@ pub struct SetupIntentNextActionVerifyWithMicrodeposits {
     pub hosted_verification_url: String,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -206,6 +211,7 @@ pub struct SetupIntentPaymentMethodOptions {
     pub sepa_debit: Option<Box<SetupIntentPaymentMethodOptionsSepaDebit>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsAcssDebit {
     /// Currency supported by the bank account.
@@ -221,6 +227,7 @@ pub struct SetupIntentPaymentMethodOptionsAcssDebit {
         Option<Box<SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsCard {
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
@@ -233,6 +240,7 @@ pub struct SetupIntentPaymentMethodOptionsCard {
     pub request_three_d_secure: Option<Box<SetupIntentPaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit {
     /// A URL for custom mandate text.
@@ -261,15 +269,18 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit {
         Option<Box<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<Box<SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
 
+// written at 597
 /// The parameters for `SetupIntent::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateSetupIntent<'a> {
@@ -362,6 +373,7 @@ impl<'a> CreateSetupIntent<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `SetupIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSetupIntents<'a> {
@@ -418,6 +430,7 @@ impl<'a> ListSetupIntents<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `SetupIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSetupIntent<'a> {
@@ -477,11 +490,13 @@ impl<'a> UpdateSetupIntent<'a> {
     }
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateData {
     pub customer_acceptance: CreateSetupIntentMandateDataCustomerAcceptance,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -494,6 +509,7 @@ pub struct CreateSetupIntentPaymentMethodOptions {
     pub sepa_debit: Option<Box<CreateSetupIntentPaymentMethodOptionsSepaDebit>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentSingleUse {
     pub amount: i64,
@@ -501,6 +517,7 @@ pub struct CreateSetupIntentSingleUse {
     pub currency: Currency,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -513,6 +530,7 @@ pub struct UpdateSetupIntentPaymentMethodOptions {
     pub sepa_debit: Option<Box<UpdateSetupIntentPaymentMethodOptionsSepaDebit>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateDataCustomerAcceptance {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -528,6 +546,7 @@ pub struct CreateSetupIntentMandateDataCustomerAcceptance {
     pub type_: CreateSetupIntentMandateDataCustomerAcceptanceType,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -541,6 +560,7 @@ pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit {
         Option<Box<CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -548,12 +568,14 @@ pub struct CreateSetupIntentPaymentMethodOptionsCard {
         Option<Box<CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<Box<CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -567,6 +589,7 @@ pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
         Option<Box<UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -574,15 +597,18 @@ pub struct UpdateSetupIntentPaymentMethodOptionsCard {
         Option<Box<UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<Box<UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateDataCustomerAcceptanceOffline {}
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateDataCustomerAcceptanceOnline {
     pub ip_address: String,
@@ -590,6 +616,7 @@ pub struct CreateSetupIntentMandateDataCustomerAcceptanceOnline {
     pub user_agent: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -611,9 +638,11 @@ pub struct CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
         Option<Box<CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -635,6 +664,7 @@ pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
         Option<Box<UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 

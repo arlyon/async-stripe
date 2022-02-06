@@ -9,6 +9,7 @@ use crate::ids::PayoutId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, BankAccount, Card, Currency};
 
+// written at 378
 /// The resource representing a Stripe "Payout".
 ///
 /// For more details see <https://stripe.com/docs/api/payouts/object>
@@ -152,6 +153,7 @@ impl Object for Payout {
     }
 }
 
+// written at 597
 /// The parameters for `Payout::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreatePayout<'a> {
@@ -221,6 +223,7 @@ impl<'a> CreatePayout<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Payout::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPayouts<'a> {
@@ -273,6 +276,7 @@ impl<'a> ListPayouts<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Payout::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePayout<'a> {

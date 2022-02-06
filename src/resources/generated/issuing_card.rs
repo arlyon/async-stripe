@@ -11,6 +11,7 @@ use crate::resources::{
     IssuingCardType, IssuingCardholder, MerchantCategory,
 };
 
+// written at 378
 /// The resource representing a Stripe "IssuingCard".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCard {
@@ -107,6 +108,7 @@ impl Object for IssuingCard {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardAuthorizationControls {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
@@ -134,6 +136,7 @@ pub struct IssuingCardAuthorizationControls {
     pub spending_limits_currency: Option<Currency>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardShipping {
     pub address: Address,
@@ -169,6 +172,7 @@ pub struct IssuingCardShipping {
     pub type_: IssuingCardShippingType,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardSpendingLimit {
     /// Maximum amount allowed to spend per interval.
@@ -184,6 +188,7 @@ pub struct IssuingCardSpendingLimit {
     pub interval: IssuingCardSpendingLimitInterval,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardWallets {
     pub apple_pay: IssuingCardApplePay,
@@ -195,6 +200,7 @@ pub struct IssuingCardWallets {
     pub primary_account_identifier: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardApplePay {
     /// Apple Pay Eligibility.
@@ -205,6 +211,7 @@ pub struct IssuingCardApplePay {
     pub ineligible_reason: Option<Box<IssuingCardApplePayIneligibleReason>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardGooglePay {
     /// Google Pay Eligibility.

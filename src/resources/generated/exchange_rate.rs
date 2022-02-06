@@ -8,6 +8,7 @@ use crate::config::{Client, Response};
 use crate::ids::ExchangeRateId;
 use crate::params::{Expand, List, Object};
 
+// written at 378
 /// The resource representing a Stripe "ExchangeRate".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ExchangeRate {
@@ -48,6 +49,7 @@ impl Object for ExchangeRate {
     }
 }
 
+// written at 597
 /// The parameters for `ExchangeRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListExchangeRates<'a> {

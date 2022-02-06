@@ -1,0 +1,1065 @@
+[cargo-make] INFO - cargo make 0.35.8
+[cargo-make] INFO - Project: async-stripe
+[cargo-make] INFO - Build File: Makefile.toml
+[cargo-make] INFO - Task: openapi-install
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: legacy-migration
+[cargo-make] INFO - Execute Command: "rm" "-f" "spec3.json"
+[cargo-make] INFO - Execute Command: "wget" "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json"
+[cargo-make] INFO - Execute Command: "cargo" "run" "spec3.json"
+struct Account {...}
+object: account, field_name: external_account
+union_schema: account_external_account_union, union_name: ExternalAccount
+impl Account { ... }
+struct AcceptTos { ... }
+struct AccountSettingsParams { ... }
+struct CompanyParams { ... }
+struct CreateAccountCapabilities { ... }
+struct CreateAccountDocuments { ... }
+struct PersonParams { ... }
+struct UpdateAccountCapabilities { ... }
+struct UpdateAccountDocuments { ... }
+struct AccountSettingsParamsCardIssuing { ... }
+struct BrandingSettingsParams { ... }
+struct CardPaymentsSettingsParams { ... }
+struct CompanyParamsOwnershipDeclaration { ... }
+struct CompanyVerificationParams { ... }
+struct CreateAccountCapabilitiesAcssDebitPayments { ... }
+struct CreateAccountCapabilitiesAfterpayClearpayPayments { ... }
+struct CreateAccountCapabilitiesAuBecsDebitPayments { ... }
+struct CreateAccountCapabilitiesBacsDebitPayments { ... }
+struct CreateAccountCapabilitiesBancontactPayments { ... }
+struct CreateAccountCapabilitiesBoletoPayments { ... }
+struct CreateAccountCapabilitiesCardIssuing { ... }
+struct CreateAccountCapabilitiesCardPayments { ... }
+struct CreateAccountCapabilitiesCartesBancairesPayments { ... }
+struct CreateAccountCapabilitiesEpsPayments { ... }
+struct CreateAccountCapabilitiesFpxPayments { ... }
+struct CreateAccountCapabilitiesGiropayPayments { ... }
+struct CreateAccountCapabilitiesGrabpayPayments { ... }
+struct CreateAccountCapabilitiesIdealPayments { ... }
+struct CreateAccountCapabilitiesJcbPayments { ... }
+struct CreateAccountCapabilitiesKlarnaPayments { ... }
+struct CreateAccountCapabilitiesLegacyPayments { ... }
+struct CreateAccountCapabilitiesOxxoPayments { ... }
+struct CreateAccountCapabilitiesP24Payments { ... }
+struct CreateAccountCapabilitiesSepaDebitPayments { ... }
+struct CreateAccountCapabilitiesSofortPayments { ... }
+struct CreateAccountCapabilitiesTaxReportingUs1099K { ... }
+struct CreateAccountCapabilitiesTaxReportingUs1099Misc { ... }
+struct CreateAccountCapabilitiesTransfers { ... }
+struct CreateAccountDocumentsBankAccountOwnershipVerification { ... }
+struct CreateAccountDocumentsCompanyLicense { ... }
+struct CreateAccountDocumentsCompanyMemorandumOfAssociation { ... }
+struct CreateAccountDocumentsCompanyMinisterialDecree { ... }
+struct CreateAccountDocumentsCompanyRegistrationVerification { ... }
+struct CreateAccountDocumentsCompanyTaxIdVerification { ... }
+struct CreateAccountDocumentsProofOfRegistration { ... }
+struct PaymentsSettingsParams { ... }
+struct PayoutSettingsParams { ... }
+struct PersonParamsDob { ... }
+struct UpdateAccountCapabilitiesAcssDebitPayments { ... }
+struct UpdateAccountCapabilitiesAfterpayClearpayPayments { ... }
+struct UpdateAccountCapabilitiesAuBecsDebitPayments { ... }
+struct UpdateAccountCapabilitiesBacsDebitPayments { ... }
+struct UpdateAccountCapabilitiesBancontactPayments { ... }
+struct UpdateAccountCapabilitiesBoletoPayments { ... }
+struct UpdateAccountCapabilitiesCardIssuing { ... }
+struct UpdateAccountCapabilitiesCardPayments { ... }
+struct UpdateAccountCapabilitiesCartesBancairesPayments { ... }
+struct UpdateAccountCapabilitiesEpsPayments { ... }
+struct UpdateAccountCapabilitiesFpxPayments { ... }
+struct UpdateAccountCapabilitiesGiropayPayments { ... }
+struct UpdateAccountCapabilitiesGrabpayPayments { ... }
+struct UpdateAccountCapabilitiesIdealPayments { ... }
+struct UpdateAccountCapabilitiesJcbPayments { ... }
+struct UpdateAccountCapabilitiesKlarnaPayments { ... }
+struct UpdateAccountCapabilitiesLegacyPayments { ... }
+struct UpdateAccountCapabilitiesOxxoPayments { ... }
+struct UpdateAccountCapabilitiesP24Payments { ... }
+struct UpdateAccountCapabilitiesSepaDebitPayments { ... }
+struct UpdateAccountCapabilitiesSofortPayments { ... }
+struct UpdateAccountCapabilitiesTaxReportingUs1099K { ... }
+struct UpdateAccountCapabilitiesTaxReportingUs1099Misc { ... }
+struct UpdateAccountCapabilitiesTransfers { ... }
+struct UpdateAccountDocumentsBankAccountOwnershipVerification { ... }
+struct UpdateAccountDocumentsCompanyLicense { ... }
+struct UpdateAccountDocumentsCompanyMemorandumOfAssociation { ... }
+struct UpdateAccountDocumentsCompanyMinisterialDecree { ... }
+struct UpdateAccountDocumentsCompanyRegistrationVerification { ... }
+struct UpdateAccountDocumentsCompanyTaxIdVerification { ... }
+struct UpdateAccountDocumentsProofOfRegistration { ... }
+struct AccountSettingsParamsCardIssuingTosAcceptance { ... }
+struct DeclineChargeOnParams { ... }
+struct TransferScheduleParams { ... }
+union ExternalAccount { ... }
+enum AccountBusinessType { ... }
+enum AccountCapabilitiesAcssDebitPayments { ... }
+enum AccountCapabilitiesAfterpayClearpayPayments { ... }
+enum AccountCapabilitiesBacsDebitPayments { ... }
+enum AccountCapabilitiesBancontactPayments { ... }
+enum AccountCapabilitiesBoletoPayments { ... }
+enum AccountCapabilitiesCartesBancairesPayments { ... }
+enum AccountCapabilitiesEpsPayments { ... }
+enum AccountCapabilitiesFpxPayments { ... }
+enum AccountCapabilitiesGiropayPayments { ... }
+enum AccountCapabilitiesGrabpayPayments { ... }
+enum AccountCapabilitiesIdealPayments { ... }
+enum AccountCapabilitiesKlarnaPayments { ... }
+enum AccountCapabilitiesOxxoPayments { ... }
+enum AccountCapabilitiesP24Payments { ... }
+enum AccountCapabilitiesSepaDebitPayments { ... }
+enum AccountCapabilitiesSofortPayments { ... }
+enum AccountRequirementsErrorCode { ... }
+enum AccountType { ... }
+enum AccountUnificationAccountControllerType { ... }
+enum CapabilityStatus { ... }
+enum CompanyParamsStructure { ... }
+enum CompanyStructure { ... }
+enum PersonParamsPoliticalExposure { ... }
+enum TransferScheduleInterval { ... }
+enum TransferScheduleParamsWeeklyAnchor { ... }
+struct AccountLink {...}
+impl AccountLink { ... }
+enum AccountLinkCollect { ... }
+enum AccountLinkType { ... }
+struct AlipayAccount {...}
+struct ApplePayDomain {...}
+struct Application {...}
+struct ApplicationFee {...}
+impl ApplicationFee { ... }
+struct Balance {...}
+impl Balance { ... }
+struct BalanceTransaction {...}
+object: balance_transaction, field_name: source
+union_schema: balance_transaction_source_union, union_name: BalanceTransactionSourceUnion
+impl BalanceTransaction { ... }
+union BalanceTransactionSourceUnion { ... }
+enum BalanceTransactionType { ... }
+struct BankAccount {...}
+enum BankAccountAvailablePayoutMethods { ... }
+struct BillingPortalConfiguration {...}
+enum PortalCustomerUpdateAllowedUpdates { ... }
+enum PortalSubscriptionCancelMode { ... }
+enum PortalSubscriptionCancelProrationBehavior { ... }
+enum PortalSubscriptionCancellationReasonOptions { ... }
+enum PortalSubscriptionUpdateDefaultAllowedUpdates { ... }
+enum PortalSubscriptionUpdateProrationBehavior { ... }
+struct BillingPortalSession {...}
+impl BillingPortalSession { ... }
+enum BillingPortalSessionLocale { ... }
+struct BitcoinReceiver {...}
+struct BitcoinTransaction {...}
+struct Capability {...}
+enum AccountRequirementsErrorCode { ... }
+inserting import into state for AccountRequirementsErrorCode
+enum CapabilityStatus { ... }
+inserting import into state for CapabilityStatus
+struct Card {...}
+enum CardAvailablePayoutMethods { ... }
+struct Charge {...}
+impl Charge { ... }
+struct FraudDetailsParams { ... }
+struct TransferDataParams { ... }
+enum ChargeStatus { ... }
+enum FraudDetailsParamsUserReport { ... }
+enum PaymentMethodDetailsAchDebitAccountHolderType { ... }
+enum PaymentMethodDetailsBancontactPreferredLanguage { ... }
+enum PaymentMethodDetailsCardWalletType { ... }
+enum PaymentMethodDetailsEpsBank { ... }
+enum PaymentMethodDetailsFpxBank { ... }
+enum PaymentMethodDetailsIdealBank { ... }
+enum PaymentMethodDetailsIdealBic { ... }
+enum PaymentMethodDetailsInteracPresentReadMethod { ... }
+enum PaymentMethodDetailsInteracPresentReceiptAccountType { ... }
+enum PaymentMethodDetailsP24Bank { ... }
+enum PaymentMethodDetailsSofortPreferredLanguage { ... }
+struct CheckoutSession {...}
+impl CheckoutSession { ... }
+struct CreateCheckoutSessionAfterExpiration { ... }
+struct CreateCheckoutSessionAutomaticTax { ... }
+struct CreateCheckoutSessionConsentCollection { ... }
+struct CreateCheckoutSessionCustomerUpdate { ... }
+struct CreateCheckoutSessionDiscounts { ... }
+struct CreateCheckoutSessionLineItems { ... }
+struct CreateCheckoutSessionPaymentIntentData { ... }
+struct CreateCheckoutSessionPaymentMethodOptions { ... }
+struct CreateCheckoutSessionPhoneNumberCollection { ... }
+struct CreateCheckoutSessionSetupIntentData { ... }
+struct CreateCheckoutSessionShippingAddressCollection { ... }
+struct CreateCheckoutSessionShippingOptions { ... }
+struct CreateCheckoutSessionSubscriptionData { ... }
+struct CreateCheckoutSessionTaxIdCollection { ... }
+struct CreateCheckoutSessionAfterExpirationRecovery { ... }
+struct CreateCheckoutSessionLineItemsAdjustableQuantity { ... }
+struct CreateCheckoutSessionLineItemsPriceData { ... }
+struct CreateCheckoutSessionPaymentIntentDataShipping { ... }
+struct CreateCheckoutSessionPaymentIntentDataTransferData { ... }
+struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit { ... }
+struct CreateCheckoutSessionPaymentMethodOptionsBoleto { ... }
+struct CreateCheckoutSessionPaymentMethodOptionsOxxo { ... }
+struct CreateCheckoutSessionPaymentMethodOptionsWechatPay { ... }
+struct CreateCheckoutSessionShippingOptionsShippingRateData { ... }
+struct CreateCheckoutSessionSubscriptionDataItems { ... }
+struct CreateCheckoutSessionSubscriptionDataTransferData { ... }
+struct CreateCheckoutSessionLineItemsPriceDataProductData { ... }
+struct CreateCheckoutSessionLineItemsPriceDataRecurring { ... }
+struct CreateCheckoutSessionPaymentIntentDataShippingAddress { ... }
+struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions { ... }
+struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate { ... }
+struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount { ... }
+struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum { ... }
+struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum { ... }
+enum CheckoutAcssDebitMandateOptionsDefaultFor { ... }
+enum CheckoutAcssDebitMandateOptionsPaymentSchedule { ... }
+enum CheckoutAcssDebitMandateOptionsTransactionType { ... }
+enum CheckoutAcssDebitPaymentMethodOptionsVerificationMethod { ... }
+enum CheckoutSessionBillingAddressCollection { ... }
+enum CheckoutSessionCustomerCreation { ... }
+enum CheckoutSessionLocale { ... }
+enum CheckoutSessionMode { ... }
+enum CheckoutSessionPaymentStatus { ... }
+enum CheckoutSessionStatus { ... }
+enum CheckoutSessionSubmitType { ... }
+enum CreateCheckoutSessionConsentCollectionPromotions { ... }
+enum CreateCheckoutSessionCustomerUpdateAddress { ... }
+enum CreateCheckoutSessionCustomerUpdateName { ... }
+enum CreateCheckoutSessionCustomerUpdateShipping { ... }
+enum CreateCheckoutSessionLineItemsPriceDataRecurringInterval { ... }
+enum CreateCheckoutSessionLineItemsPriceDataTaxBehavior { ... }
+enum CreateCheckoutSessionPaymentIntentDataCaptureMethod { ... }
+enum CreateCheckoutSessionPaymentIntentDataSetupFutureUsage { ... }
+enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor { ... }
+enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule { ... }
+enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType { ... }
+enum CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod { ... }
+enum CreateCheckoutSessionPaymentMethodOptionsWechatPayClient { ... }
+enum CreateCheckoutSessionPaymentMethodTypes { ... }
+enum CreateCheckoutSessionShippingAddressCollectionAllowedCountries { ... }
+enum CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit { ... }
+enum CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit { ... }
+enum CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior { ... }
+enum CreateCheckoutSessionShippingOptionsShippingRateDataType { ... }
+enum PaymentPagesCheckoutSessionAutomaticTaxStatus { ... }
+enum PaymentPagesCheckoutSessionConsentCollectionPromotions { ... }
+enum PaymentPagesCheckoutSessionConsentPromotions { ... }
+enum PaymentPagesCheckoutSessionCustomerDetailsTaxExempt { ... }
+enum PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries { ... }
+enum PaymentPagesCheckoutSessionTaxIdType { ... }
+struct ConnectCollectionTransfer {...}
+struct CountrySpec {...}
+impl CountrySpec { ... }
+struct CountrySpecSupportedBankAccountCurrencies { ... }
+struct Coupon {...}
+impl Coupon { ... }
+struct CreateCouponAppliesTo { ... }
+enum CouponDuration { ... }
+struct CreditNote {...}
+impl CreditNote { ... }
+struct CreateCreditNoteLines { ... }
+enum CreateCreditNoteLinesType { ... }
+enum CreditNoteReason { ... }
+enum CreditNoteStatus { ... }
+enum CreditNoteType { ... }
+struct CreditNoteLineItem {...}
+enum CreditNoteLineItemType { ... }
+struct Customer {...}
+impl Customer { ... }
+struct CreateCustomerShipping { ... }
+struct CreateCustomerTax { ... }
+struct CustomerInvoiceSettings { ... }
+struct TaxIdData { ... }
+struct UpdateCustomerShipping { ... }
+struct UpdateCustomerTax { ... }
+struct CreateCustomerShippingAddress { ... }
+struct CustomerInvoiceSettingsCustomFields { ... }
+struct UpdateCustomerShippingAddress { ... }
+enum CustomerTaxAutomaticTax { ... }
+enum CustomerTaxExempt { ... }
+enum CustomerTaxExemptFilter { ... }
+enum CustomerTaxLocationSource { ... }
+enum TaxIdType { ... }
+struct CustomerBalanceTransaction {...}
+enum CustomerBalanceTransactionType { ... }
+struct Discount {...}
+struct Dispute {...}
+impl Dispute { ... }
+enum DisputeStatus { ... }
+struct EphemeralKey {...}
+impl EphemeralKey { ... }
+struct Event {...}
+impl Event { ... }
+struct ExchangeRate {...}
+impl ExchangeRate { ... }
+struct ExchangeRateRates { ... }
+struct ApplicationFeeRefund {...}
+struct File {...}
+impl File { ... }
+enum FilePurpose { ... }
+struct FileLink {...}
+impl FileLink { ... }
+struct IdentityVerificationReport {...}
+enum GelatoDocumentReportErrorCode { ... }
+enum GelatoDocumentReportStatus { ... }
+enum GelatoDocumentReportType { ... }
+enum GelatoIdNumberReportErrorCode { ... }
+enum GelatoIdNumberReportIdNumberType { ... }
+enum GelatoIdNumberReportStatus { ... }
+enum GelatoReportDocumentOptionsAllowedTypes { ... }
+enum GelatoSelfieReportErrorCode { ... }
+enum GelatoSelfieReportStatus { ... }
+enum IdentityVerificationReportType { ... }
+struct IdentityVerificationSession {...}
+enum GelatoSessionDocumentOptionsAllowedTypes { ... }
+enum GelatoSessionLastErrorCode { ... }
+enum GelatoVerifiedOutputsIdNumberType { ... }
+enum IdentityVerificationSessionStatus { ... }
+enum IdentityVerificationSessionType { ... }
+enum VerificationSessionRedactionStatus { ... }
+struct Invoice {...}
+impl Invoice { ... }
+struct CreateInvoiceAutomaticTax { ... }
+struct CreateInvoiceCustomFields { ... }
+struct CreateInvoiceDiscounts { ... }
+struct CreateInvoicePaymentSettings { ... }
+struct CreateInvoiceTransferData { ... }
+struct CreateInvoicePaymentSettingsPaymentMethodOptions { ... }
+struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit { ... }
+struct CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact { ... }
+struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard { ... }
+struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions { ... }
+enum AutomaticTaxStatus { ... }
+enum CollectionMethod { ... }
+enum CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType { ... }
+enum CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod { ... }
+enum CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage { ... }
+enum CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure { ... }
+enum CreateInvoicePaymentSettingsPaymentMethodTypes { ... }
+enum InvoiceBillingReason { ... }
+enum InvoiceCustomerTaxExempt { ... }
+enum InvoicePaymentMethodOptionsCardRequestThreeDSecure { ... }
+enum InvoiceStatus { ... }
+enum InvoiceStatusFilter { ... }
+enum InvoicesPaymentSettingsPaymentMethodTypes { ... }
+enum TaxIdType { ... }
+inserting import into state for TaxIdType
+struct InvoiceItem {...}
+impl InvoiceItem { ... }
+struct CreateInvoiceItemDiscounts { ... }
+struct InvoiceItemPriceData { ... }
+struct UpdateInvoiceItemDiscounts { ... }
+enum InvoiceItemPriceDataTaxBehavior { ... }
+struct IssuerFraudRecord {...}
+impl IssuerFraudRecord { ... }
+struct IssuingAuthorization {...}
+enum IssuingAuthorizationStatus { ... }
+struct IssuingCard {...}
+enum IssuingCardApplePayIneligibleReason { ... }
+enum IssuingCardCancellationReason { ... }
+enum IssuingCardGooglePayIneligibleReason { ... }
+enum IssuingCardReplacementReason { ... }
+enum IssuingCardShippingCarrier { ... }
+enum IssuingCardShippingService { ... }
+enum IssuingCardSpendingLimitCategories { ... }
+enum IssuingCardSpendingLimitInterval { ... }
+enum IssuingCardStatus { ... }
+struct IssuingCardholder {...}
+enum IssuingCardholderRequirementsDisabledReason { ... }
+enum IssuingCardholderRequirementsPastDue { ... }
+enum IssuingCardholderSpendingLimitCategories { ... }
+enum IssuingCardholderSpendingLimitInterval { ... }
+enum IssuingCardholderStatus { ... }
+enum IssuingCardholderType { ... }
+struct IssuingDispute {...}
+enum IssuingDisputeCanceledEvidenceProductType { ... }
+enum IssuingDisputeCanceledEvidenceReturnStatus { ... }
+enum IssuingDisputeEvidenceReason { ... }
+enum IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus { ... }
+enum IssuingDisputeNotReceivedEvidenceProductType { ... }
+enum IssuingDisputeOtherEvidenceProductType { ... }
+struct IssuingSettlement {...}
+enum IssuingSettlementNetwork { ... }
+struct IssuingTransaction {...}
+enum IssuingTransactionWallet { ... }
+struct CheckoutSessionItem {...}
+struct InvoiceLineItem {...}
+enum InvoiceLineItemType { ... }
+struct LoginLink {...}
+struct Mandate {...}
+impl Mandate { ... }
+enum CustomerAcceptanceType { ... }
+enum MandateAcssDebitDefaultFor { ... }
+enum MandateAcssDebitPaymentSchedule { ... }
+enum MandateAcssDebitTransactionType { ... }
+enum MandateBacsDebitNetworkStatus { ... }
+enum MandateStatus { ... }
+enum MandateType { ... }
+struct Order {...}
+impl Order { ... }
+struct CreateOrderShipping { ... }
+struct ListOrdersStatusTransitions { ... }
+struct OrderItemParams { ... }
+struct UpdateOrderShipping { ... }
+struct CreateOrderShippingAddress { ... }
+enum OrderItemParamsType { ... }
+enum OrderStatus { ... }
+struct OrderItem {...}
+struct OrderReturn {...}
+impl OrderReturn { ... }
+struct PaymentIntent {...}
+impl PaymentIntent { ... }
+object: payment_intent_payment_method_options, field_name: acss_debit
+union_schema: payment_intent_payment_method_options_acss_debit_union, union_name: PaymentIntentPaymentMethodOptionsAcssDebitUnion
+object: payment_intent_payment_method_options, field_name: afterpay_clearpay
+union_schema: payment_intent_payment_method_options_afterpay_clearpay_union, union_name: PaymentIntentPaymentMethodOptionsAfterpayClearpayUnion
+object: payment_intent_payment_method_options, field_name: alipay
+union_schema: payment_intent_payment_method_options_alipay_union, union_name: PaymentIntentPaymentMethodOptionsAlipayUnion
+object: payment_intent_payment_method_options, field_name: au_becs_debit
+union_schema: payment_intent_payment_method_options_au_becs_debit_union, union_name: PaymentIntentPaymentMethodOptionsAuBecsDebitUnion
+object: payment_intent_payment_method_options, field_name: bacs_debit
+union_schema: payment_intent_payment_method_options_bacs_debit_union, union_name: PaymentIntentPaymentMethodOptionsBacsDebitUnion
+object: payment_intent_payment_method_options, field_name: bancontact
+union_schema: payment_intent_payment_method_options_bancontact_union, union_name: PaymentIntentPaymentMethodOptionsBancontactUnion
+object: payment_intent_payment_method_options, field_name: boleto
+union_schema: payment_intent_payment_method_options_boleto_union, union_name: PaymentIntentPaymentMethodOptionsBoletoUnion
+object: payment_intent_payment_method_options, field_name: card
+union_schema: payment_intent_payment_method_options_card_union, union_name: PaymentIntentPaymentMethodOptionsCardUnion
+object: payment_intent_payment_method_options, field_name: card_present
+union_schema: payment_intent_payment_method_options_card_present_union, union_name: PaymentIntentPaymentMethodOptionsCardPresentUnion
+object: payment_intent_payment_method_options, field_name: eps
+union_schema: payment_intent_payment_method_options_eps_union, union_name: PaymentIntentPaymentMethodOptionsEpsUnion
+object: payment_intent_payment_method_options, field_name: fpx
+union_schema: payment_intent_payment_method_options_fpx_union, union_name: PaymentIntentPaymentMethodOptionsFpxUnion
+object: payment_intent_payment_method_options, field_name: giropay
+union_schema: payment_intent_payment_method_options_giropay_union, union_name: PaymentIntentPaymentMethodOptionsGiropayUnion
+object: payment_intent_payment_method_options, field_name: grabpay
+union_schema: payment_intent_payment_method_options_grabpay_union, union_name: PaymentIntentPaymentMethodOptionsGrabpayUnion
+object: payment_intent_payment_method_options, field_name: ideal
+union_schema: payment_intent_payment_method_options_ideal_union, union_name: PaymentIntentPaymentMethodOptionsIdealUnion
+object: payment_intent_payment_method_options, field_name: interac_present
+union_schema: payment_intent_payment_method_options_interac_present_union, union_name: PaymentIntentPaymentMethodOptionsInteracPresentUnion
+object: payment_intent_payment_method_options, field_name: klarna
+union_schema: payment_intent_payment_method_options_klarna_union, union_name: PaymentIntentPaymentMethodOptionsKlarnaUnion
+object: payment_intent_payment_method_options, field_name: oxxo
+union_schema: payment_intent_payment_method_options_oxxo_union, union_name: PaymentIntentPaymentMethodOptionsOxxoUnion
+object: payment_intent_payment_method_options, field_name: p24
+union_schema: payment_intent_payment_method_options_p24_union, union_name: PaymentIntentPaymentMethodOptionsP24Union
+object: payment_intent_payment_method_options, field_name: sepa_debit
+union_schema: payment_intent_payment_method_options_sepa_debit_union, union_name: PaymentIntentPaymentMethodOptionsSepaDebitUnion
+object: payment_intent_payment_method_options, field_name: sofort
+union_schema: payment_intent_payment_method_options_sofort_union, union_name: PaymentIntentPaymentMethodOptionsSofortUnion
+object: payment_intent_payment_method_options, field_name: wechat_pay
+union_schema: payment_intent_payment_method_options_wechat_pay_union, union_name: PaymentIntentPaymentMethodOptionsWechatPayUnion
+struct CreatePaymentIntentAutomaticPaymentMethods { ... }
+struct CreatePaymentIntentMandateData { ... }
+struct CreatePaymentIntentPaymentMethodData { ... }
+struct CreatePaymentIntentPaymentMethodOptions { ... }
+struct CreatePaymentIntentShipping { ... }
+struct CreatePaymentIntentTransferData { ... }
+struct UpdatePaymentIntentPaymentMethodData { ... }
+struct UpdatePaymentIntentPaymentMethodOptions { ... }
+struct UpdatePaymentIntentShipping { ... }
+struct UpdatePaymentIntentTransferData { ... }
+struct CreatePaymentIntentMandateDataCustomerAcceptance { ... }
+struct CreatePaymentIntentPaymentMethodDataAcssDebit { ... }
+struct CreatePaymentIntentPaymentMethodDataAfterpayClearpay { ... }
+struct CreatePaymentIntentPaymentMethodDataAlipay { ... }
+struct CreatePaymentIntentPaymentMethodDataAuBecsDebit { ... }
+struct CreatePaymentIntentPaymentMethodDataBacsDebit { ... }
+struct CreatePaymentIntentPaymentMethodDataBancontact { ... }
+struct CreatePaymentIntentPaymentMethodDataBillingDetails { ... }
+struct CreatePaymentIntentPaymentMethodDataBoleto { ... }
+struct CreatePaymentIntentPaymentMethodDataEps { ... }
+struct CreatePaymentIntentPaymentMethodDataFpx { ... }
+struct CreatePaymentIntentPaymentMethodDataGiropay { ... }
+struct CreatePaymentIntentPaymentMethodDataGrabpay { ... }
+struct CreatePaymentIntentPaymentMethodDataIdeal { ... }
+struct CreatePaymentIntentPaymentMethodDataInteracPresent { ... }
+struct CreatePaymentIntentPaymentMethodDataKlarna { ... }
+struct CreatePaymentIntentPaymentMethodDataOxxo { ... }
+struct CreatePaymentIntentPaymentMethodDataP24 { ... }
+struct CreatePaymentIntentPaymentMethodDataSepaDebit { ... }
+struct CreatePaymentIntentPaymentMethodDataSofort { ... }
+struct CreatePaymentIntentPaymentMethodDataWechatPay { ... }
+struct CreatePaymentIntentPaymentMethodOptionsAcssDebit { ... }
+struct CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay { ... }
+struct CreatePaymentIntentPaymentMethodOptionsAlipay { ... }
+struct CreatePaymentIntentPaymentMethodOptionsAuBecsDebit { ... }
+struct CreatePaymentIntentPaymentMethodOptionsBacsDebit { ... }
+struct CreatePaymentIntentPaymentMethodOptionsBancontact { ... }
+struct CreatePaymentIntentPaymentMethodOptionsBoleto { ... }
+struct CreatePaymentIntentPaymentMethodOptionsCard { ... }
+struct CreatePaymentIntentPaymentMethodOptionsCardPresent { ... }
+struct CreatePaymentIntentPaymentMethodOptionsEps { ... }
+struct CreatePaymentIntentPaymentMethodOptionsFpx { ... }
+struct CreatePaymentIntentPaymentMethodOptionsGiropay { ... }
+struct CreatePaymentIntentPaymentMethodOptionsGrabpay { ... }
+struct CreatePaymentIntentPaymentMethodOptionsIdeal { ... }
+struct CreatePaymentIntentPaymentMethodOptionsInteracPresent { ... }
+struct CreatePaymentIntentPaymentMethodOptionsKlarna { ... }
+struct CreatePaymentIntentPaymentMethodOptionsOxxo { ... }
+struct CreatePaymentIntentPaymentMethodOptionsP24 { ... }
+struct CreatePaymentIntentPaymentMethodOptionsSepaDebit { ... }
+struct CreatePaymentIntentPaymentMethodOptionsSofort { ... }
+struct CreatePaymentIntentPaymentMethodOptionsWechatPay { ... }
+struct CreatePaymentIntentShippingAddress { ... }
+struct UpdatePaymentIntentPaymentMethodDataAcssDebit { ... }
+struct UpdatePaymentIntentPaymentMethodDataAfterpayClearpay { ... }
+struct UpdatePaymentIntentPaymentMethodDataAlipay { ... }
+struct UpdatePaymentIntentPaymentMethodDataAuBecsDebit { ... }
+struct UpdatePaymentIntentPaymentMethodDataBacsDebit { ... }
+struct UpdatePaymentIntentPaymentMethodDataBancontact { ... }
+struct UpdatePaymentIntentPaymentMethodDataBillingDetails { ... }
+struct UpdatePaymentIntentPaymentMethodDataBoleto { ... }
+struct UpdatePaymentIntentPaymentMethodDataEps { ... }
+struct UpdatePaymentIntentPaymentMethodDataFpx { ... }
+struct UpdatePaymentIntentPaymentMethodDataGiropay { ... }
+struct UpdatePaymentIntentPaymentMethodDataGrabpay { ... }
+struct UpdatePaymentIntentPaymentMethodDataIdeal { ... }
+struct UpdatePaymentIntentPaymentMethodDataInteracPresent { ... }
+struct UpdatePaymentIntentPaymentMethodDataKlarna { ... }
+struct UpdatePaymentIntentPaymentMethodDataOxxo { ... }
+struct UpdatePaymentIntentPaymentMethodDataP24 { ... }
+struct UpdatePaymentIntentPaymentMethodDataSepaDebit { ... }
+struct UpdatePaymentIntentPaymentMethodDataSofort { ... }
+struct UpdatePaymentIntentPaymentMethodDataWechatPay { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsAlipay { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsAuBecsDebit { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsBacsDebit { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsBancontact { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsBoleto { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsCard { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsCardPresent { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsEps { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsFpx { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsGiropay { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsGrabpay { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsIdeal { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsInteracPresent { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsKlarna { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsOxxo { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsP24 { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsSofort { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsWechatPay { ... }
+struct UpdatePaymentIntentShippingAddress { ... }
+struct CreatePaymentIntentMandateDataCustomerAcceptanceOffline { ... }
+struct CreatePaymentIntentMandateDataCustomerAcceptanceOnline { ... }
+struct CreatePaymentIntentPaymentMethodDataBillingDetailsAddress { ... }
+struct CreatePaymentIntentPaymentMethodDataKlarnaDob { ... }
+struct CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions { ... }
+struct CreatePaymentIntentPaymentMethodOptionsCardInstallments { ... }
+struct CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions { ... }
+struct UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress { ... }
+struct UpdatePaymentIntentPaymentMethodDataKlarnaDob { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsCardInstallments { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions { ... }
+struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan { ... }
+struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan { ... }
+union PaymentIntentPaymentMethodOptionsAcssDebitUnion { ... }
+union PaymentIntentPaymentMethodOptionsAfterpayClearpayUnion { ... }
+union PaymentIntentPaymentMethodOptionsAlipayUnion { ... }
+union PaymentIntentPaymentMethodOptionsAuBecsDebitUnion { ... }
+union PaymentIntentPaymentMethodOptionsBacsDebitUnion { ... }
+union PaymentIntentPaymentMethodOptionsBancontactUnion { ... }
+union PaymentIntentPaymentMethodOptionsBoletoUnion { ... }
+union PaymentIntentPaymentMethodOptionsCardPresentUnion { ... }
+union PaymentIntentPaymentMethodOptionsCardUnion { ... }
+union PaymentIntentPaymentMethodOptionsEpsUnion { ... }
+union PaymentIntentPaymentMethodOptionsFpxUnion { ... }
+union PaymentIntentPaymentMethodOptionsGiropayUnion { ... }
+union PaymentIntentPaymentMethodOptionsGrabpayUnion { ... }
+union PaymentIntentPaymentMethodOptionsIdealUnion { ... }
+union PaymentIntentPaymentMethodOptionsInteracPresentUnion { ... }
+union PaymentIntentPaymentMethodOptionsKlarnaUnion { ... }
+union PaymentIntentPaymentMethodOptionsOxxoUnion { ... }
+union PaymentIntentPaymentMethodOptionsP24Union { ... }
+union PaymentIntentPaymentMethodOptionsSepaDebitUnion { ... }
+union PaymentIntentPaymentMethodOptionsSofortUnion { ... }
+union PaymentIntentPaymentMethodOptionsWechatPayUnion { ... }
+enum CreatePaymentIntentMandateDataCustomerAcceptanceType { ... }
+enum CreatePaymentIntentPaymentMethodDataEpsBank { ... }
+enum CreatePaymentIntentPaymentMethodDataFpxBank { ... }
+enum CreatePaymentIntentPaymentMethodDataIdealBank { ... }
+enum CreatePaymentIntentPaymentMethodDataP24Bank { ... }
+enum CreatePaymentIntentPaymentMethodDataSofortCountry { ... }
+enum CreatePaymentIntentPaymentMethodDataType { ... }
+enum CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule { ... }
+enum CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType { ... }
+enum CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod { ... }
+enum CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage { ... }
+enum CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval { ... }
+enum CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType { ... }
+enum CreatePaymentIntentPaymentMethodOptionsCardNetwork { ... }
+enum CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure { ... }
+enum CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage { ... }
+enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale { ... }
+enum CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage { ... }
+enum CreatePaymentIntentPaymentMethodOptionsWechatPayClient { ... }
+enum PaymentIntentCancellationReason { ... }
+enum PaymentIntentCaptureMethod { ... }
+enum PaymentIntentConfirmationMethod { ... }
+enum PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod { ... }
+enum PaymentIntentPaymentMethodOptionsCardNetwork { ... }
+enum PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure { ... }
+enum PaymentIntentPaymentMethodOptionsCardSetupFutureUsage { ... }
+enum PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule { ... }
+enum PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType { ... }
+enum PaymentIntentProcessingType { ... }
+enum PaymentIntentSetupFutureUsage { ... }
+enum PaymentIntentSetupFutureUsageFilter { ... }
+enum PaymentIntentStatus { ... }
+enum PaymentIntentTypeSpecificPaymentMethodOptionsClientSetupFutureUsage { ... }
+enum PaymentMethodOptionsBancontactPreferredLanguage { ... }
+enum PaymentMethodOptionsSofortPreferredLanguage { ... }
+enum PaymentMethodOptionsWechatPayClient { ... }
+enum UpdatePaymentIntentPaymentMethodDataEpsBank { ... }
+enum UpdatePaymentIntentPaymentMethodDataFpxBank { ... }
+enum UpdatePaymentIntentPaymentMethodDataIdealBank { ... }
+enum UpdatePaymentIntentPaymentMethodDataP24Bank { ... }
+enum UpdatePaymentIntentPaymentMethodDataSofortCountry { ... }
+enum UpdatePaymentIntentPaymentMethodDataType { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsCardNetwork { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage { ... }
+enum UpdatePaymentIntentPaymentMethodOptionsWechatPayClient { ... }
+struct PaymentLink {...}
+impl PaymentLink { ... }
+struct CreatePaymentLinkAfterCompletion { ... }
+struct CreatePaymentLinkAutomaticTax { ... }
+struct CreatePaymentLinkLineItems { ... }
+struct CreatePaymentLinkPhoneNumberCollection { ... }
+struct CreatePaymentLinkShippingAddressCollection { ... }
+struct CreatePaymentLinkSubscriptionData { ... }
+struct CreatePaymentLinkTransferData { ... }
+struct UpdatePaymentLinkAfterCompletion { ... }
+struct UpdatePaymentLinkAutomaticTax { ... }
+struct UpdatePaymentLinkLineItems { ... }
+struct UpdatePaymentLinkShippingAddressCollection { ... }
+struct CreatePaymentLinkAfterCompletionHostedConfirmation { ... }
+struct CreatePaymentLinkAfterCompletionRedirect { ... }
+struct CreatePaymentLinkLineItemsAdjustableQuantity { ... }
+struct UpdatePaymentLinkAfterCompletionHostedConfirmation { ... }
+struct UpdatePaymentLinkAfterCompletionRedirect { ... }
+struct UpdatePaymentLinkLineItemsAdjustableQuantity { ... }
+enum CreatePaymentLinkAfterCompletionType { ... }
+enum CreatePaymentLinkPaymentMethodTypes { ... }
+enum CreatePaymentLinkShippingAddressCollectionAllowedCountries { ... }
+enum PaymentLinkBillingAddressCollection { ... }
+enum PaymentLinkPaymentMethodTypes { ... }
+enum PaymentLinksResourceAfterCompletionType { ... }
+enum PaymentLinksResourceShippingAddressCollectionAllowedCountries { ... }
+enum UpdatePaymentLinkAfterCompletionType { ... }
+enum UpdatePaymentLinkPaymentMethodTypes { ... }
+enum UpdatePaymentLinkShippingAddressCollectionAllowedCountries { ... }
+struct PaymentMethod {...}
+impl PaymentMethod { ... }
+struct CreatePaymentMethodAcssDebit { ... }
+struct CreatePaymentMethodAfterpayClearpay { ... }
+struct CreatePaymentMethodAlipay { ... }
+struct CreatePaymentMethodAuBecsDebit { ... }
+struct CreatePaymentMethodBacsDebit { ... }
+struct CreatePaymentMethodBancontact { ... }
+struct CreatePaymentMethodBoleto { ... }
+struct CreatePaymentMethodEps { ... }
+struct CreatePaymentMethodFpx { ... }
+struct CreatePaymentMethodGiropay { ... }
+struct CreatePaymentMethodGrabpay { ... }
+struct CreatePaymentMethodIdeal { ... }
+struct CreatePaymentMethodInteracPresent { ... }
+struct CreatePaymentMethodKlarna { ... }
+struct CreatePaymentMethodOxxo { ... }
+struct CreatePaymentMethodP24 { ... }
+struct CreatePaymentMethodSepaDebit { ... }
+struct CreatePaymentMethodSofort { ... }
+struct CreatePaymentMethodWechatPay { ... }
+struct CreatePaymentMethodKlarnaDob { ... }
+enum CreatePaymentMethodEpsBank { ... }
+enum CreatePaymentMethodFpxBank { ... }
+enum CreatePaymentMethodIdealBank { ... }
+enum CreatePaymentMethodP24Bank { ... }
+enum CreatePaymentMethodSofortCountry { ... }
+enum PaymentMethodEpsBank { ... }
+enum PaymentMethodFpxBank { ... }
+enum PaymentMethodIdealBank { ... }
+enum PaymentMethodIdealBic { ... }
+enum PaymentMethodP24Bank { ... }
+enum PaymentMethodType { ... }
+enum PaymentMethodTypeFilter { ... }
+enum WalletDetailsType { ... }
+struct Payout {...}
+object: payout, field_name: destination
+union_schema: payout_destination_union, union_name: PayoutDestinationUnion
+impl Payout { ... }
+union PayoutDestinationUnion { ... }
+enum PayoutMethod { ... }
+enum PayoutSourceType { ... }
+enum PayoutType { ... }
+struct Person {...}
+enum AccountRequirementsErrorCode { ... }
+inserting import into state for AccountRequirementsErrorCode
+enum PersonPoliticalExposure { ... }
+struct Plan {...}
+impl Plan { ... }
+enum PlanAggregateUsage { ... }
+enum PlanBillingScheme { ... }
+enum PlanInterval { ... }
+enum PlanTiersMode { ... }
+enum PlanUsageType { ... }
+enum TransformUsageRound { ... }
+struct PlatformTaxFee {...}
+struct Price {...}
+impl Price { ... }
+struct CreatePriceProductData { ... }
+struct CreatePriceRecurring { ... }
+struct CreatePriceTiers { ... }
+struct CreatePriceTransformQuantity { ... }
+struct ListPricesRecurring { ... }
+enum CreatePriceRecurringAggregateUsage { ... }
+enum CreatePriceRecurringInterval { ... }
+enum CreatePriceRecurringUsageType { ... }
+enum CreatePriceTransformQuantityRound { ... }
+enum ListPricesRecurringInterval { ... }
+enum ListPricesRecurringUsageType { ... }
+enum PriceBillingScheme { ... }
+enum PriceTaxBehavior { ... }
+enum PriceTiersMode { ... }
+enum PriceType { ... }
+enum RecurringAggregateUsage { ... }
+enum RecurringInterval { ... }
+enum RecurringUsageType { ... }
+enum TransformQuantityRound { ... }
+struct Product {...}
+impl Product { ... }
+struct PromotionCode {...}
+impl PromotionCode { ... }
+struct Quote {...}
+impl Quote { ... }
+enum QuoteCollectionMethod { ... }
+enum QuoteStatus { ... }
+enum QuotesResourceAutomaticTaxStatus { ... }
+enum QuotesResourceRecurringInterval { ... }
+struct RadarEarlyFraudWarning {...}
+struct RadarValueList {...}
+enum RadarValueListItemType { ... }
+struct RadarValueListItem {...}
+struct Recipient {...}
+impl Recipient { ... }
+enum RecipientType { ... }
+struct Refund {...}
+impl Refund { ... }
+enum RefundReason { ... }
+enum RefundReasonFilter { ... }
+struct ReportingReportRun {...}
+struct ReportingReportType {...}
+struct ReserveTransaction {...}
+struct Review {...}
+impl Review { ... }
+enum ReviewClosedReason { ... }
+enum ReviewOpenedReason { ... }
+struct ScheduledQueryRun {...}
+struct SetupAttempt {...}
+impl SetupAttempt { ... }
+enum SetupAttemptPaymentMethodDetailsBancontactPreferredLanguage { ... }
+enum SetupAttemptPaymentMethodDetailsIdealBank { ... }
+enum SetupAttemptPaymentMethodDetailsIdealBic { ... }
+enum SetupAttemptPaymentMethodDetailsSofortPreferredLanguage { ... }
+struct SetupIntent {...}
+impl SetupIntent { ... }
+struct CreateSetupIntentMandateData { ... }
+struct CreateSetupIntentPaymentMethodOptions { ... }
+struct CreateSetupIntentSingleUse { ... }
+struct UpdateSetupIntentPaymentMethodOptions { ... }
+struct CreateSetupIntentMandateDataCustomerAcceptance { ... }
+struct CreateSetupIntentPaymentMethodOptionsAcssDebit { ... }
+struct CreateSetupIntentPaymentMethodOptionsCard { ... }
+struct CreateSetupIntentPaymentMethodOptionsSepaDebit { ... }
+struct UpdateSetupIntentPaymentMethodOptionsAcssDebit { ... }
+struct UpdateSetupIntentPaymentMethodOptionsCard { ... }
+struct UpdateSetupIntentPaymentMethodOptionsSepaDebit { ... }
+struct CreateSetupIntentMandateDataCustomerAcceptanceOffline { ... }
+struct CreateSetupIntentMandateDataCustomerAcceptanceOnline { ... }
+struct CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions { ... }
+struct CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions { ... }
+struct UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions { ... }
+struct UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions { ... }
+enum CreateSetupIntentMandateDataCustomerAcceptanceType { ... }
+enum CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor { ... }
+enum CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule { ... }
+enum CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType { ... }
+enum CreateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod { ... }
+enum CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure { ... }
+enum SetupIntentCancellationReason { ... }
+enum SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod { ... }
+enum SetupIntentPaymentMethodOptionsCardRequestThreeDSecure { ... }
+enum SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor { ... }
+enum SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule { ... }
+enum SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType { ... }
+enum SetupIntentStatus { ... }
+enum UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor { ... }
+enum UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule { ... }
+enum UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType { ... }
+enum UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod { ... }
+enum UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure { ... }
+struct ShippingRate {...}
+impl ShippingRate { ... }
+struct CreateShippingRateDeliveryEstimate { ... }
+struct CreateShippingRateFixedAmount { ... }
+struct CreateShippingRateDeliveryEstimateMaximum { ... }
+struct CreateShippingRateDeliveryEstimateMinimum { ... }
+enum CreateShippingRateDeliveryEstimateMaximumUnit { ... }
+enum CreateShippingRateDeliveryEstimateMinimumUnit { ... }
+enum ShippingRateDeliveryEstimateBoundUnit { ... }
+enum ShippingRateTaxBehavior { ... }
+enum ShippingRateType { ... }
+struct Sku {...}
+impl Sku { ... }
+struct Source {...}
+impl Source { ... }
+struct CreateSourceReceiver { ... }
+struct CreateSourceRedirect { ... }
+struct CreateSourceSourceOrder { ... }
+struct SourceMandateParams { ... }
+struct UpdateSourceSourceOrder { ... }
+struct CreateSourceSourceOrderItems { ... }
+struct CreateSourceSourceOrderShipping { ... }
+struct SourceAcceptanceParams { ... }
+struct UpdateSourceSourceOrderItems { ... }
+struct UpdateSourceSourceOrderShipping { ... }
+struct CreateSourceSourceOrderShippingAddress { ... }
+struct SourceAcceptanceOfflineParams { ... }
+struct SourceAcceptanceOnlineParams { ... }
+struct UpdateSourceSourceOrderShippingAddress { ... }
+enum CreateSourceSourceOrderItemsType { ... }
+enum SourceAcceptanceParamsStatus { ... }
+enum SourceAcceptanceParamsType { ... }
+enum SourceFlow { ... }
+enum SourceMandateInterval { ... }
+enum SourceMandateNotificationMethod { ... }
+enum SourceRefundNotificationMethod { ... }
+enum SourceType { ... }
+enum UpdateSourceSourceOrderItemsType { ... }
+struct SourceMandateNotification {...}
+struct SourceTransaction {...}
+enum SourceTransactionType { ... }
+struct Subscription {...}
+impl Subscription { ... }
+struct AddInvoiceItems { ... }
+struct CreateSubscriptionAutomaticTax { ... }
+struct CreateSubscriptionItems { ... }
+struct CreateSubscriptionPaymentSettings { ... }
+struct CreateSubscriptionPendingInvoiceItemInterval { ... }
+struct CreateSubscriptionTransferData { ... }
+struct UpdateSubscriptionAutomaticTax { ... }
+struct UpdateSubscriptionItems { ... }
+struct UpdateSubscriptionPauseCollection { ... }
+struct UpdateSubscriptionPaymentSettings { ... }
+struct UpdateSubscriptionPendingInvoiceItemInterval { ... }
+struct UpdateSubscriptionTransferData { ... }
+struct CreateSubscriptionItemsBillingThresholds { ... }
+struct CreateSubscriptionPaymentSettingsPaymentMethodOptions { ... }
+struct InvoiceItemPriceData { ... }
+struct SubscriptionItemPriceData { ... }
+struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions { ... }
+struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit { ... }
+struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact { ... }
+struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard { ... }
+struct SubscriptionItemPriceDataRecurring { ... }
+struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit { ... }
+struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact { ... }
+struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard { ... }
+struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions { ... }
+struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions { ... }
+struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions { ... }
+struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions { ... }
+enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType { ... }
+enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod { ... }
+enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage { ... }
+enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType { ... }
+enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure { ... }
+enum CreateSubscriptionPaymentSettingsPaymentMethodTypes { ... }
+enum InvoiceItemPriceDataTaxBehavior { ... }
+inserting import into state for InvoiceItemPriceDataTaxBehavior
+enum InvoiceMandateOptionsCardAmountType { ... }
+enum PlanInterval { ... }
+inserting import into state for PlanInterval
+enum SubscriptionBillingCycleAnchor { ... }
+enum SubscriptionItemPriceDataTaxBehavior { ... }
+enum SubscriptionPaymentBehavior { ... }
+enum SubscriptionPaymentMethodOptionsCardRequestThreeDSecure { ... }
+enum SubscriptionProrationBehavior { ... }
+enum SubscriptionStatus { ... }
+enum SubscriptionStatusFilter { ... }
+enum SubscriptionsResourcePauseCollectionBehavior { ... }
+enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes { ... }
+enum UpdateSubscriptionPauseCollectionBehavior { ... }
+enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType { ... }
+enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod { ... }
+enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage { ... }
+enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType { ... }
+enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure { ... }
+enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes { ... }
+struct SubscriptionItem {...}
+impl SubscriptionItem { ... }
+struct SubscriptionItemPriceData { ... }
+struct SubscriptionItemPriceDataRecurring { ... }
+enum PlanInterval { ... }
+inserting import into state for PlanInterval
+enum SubscriptionItemPriceDataTaxBehavior { ... }
+inserting import into state for SubscriptionItemPriceDataTaxBehavior
+enum SubscriptionPaymentBehavior { ... }
+inserting import into state for SubscriptionPaymentBehavior
+enum SubscriptionProrationBehavior { ... }
+inserting import into state for SubscriptionProrationBehavior
+struct SubscriptionSchedule {...}
+impl SubscriptionSchedule { ... }
+struct CreateSubscriptionSchedulePhases { ... }
+struct SubscriptionScheduleDefaultSettingsParams { ... }
+struct UpdateSubscriptionSchedulePhases { ... }
+struct AddInvoiceItems { ... }
+struct CreateSubscriptionSchedulePhasesAutomaticTax { ... }
+struct CreateSubscriptionSchedulePhasesItems { ... }
+struct CreateSubscriptionSchedulePhasesTransferData { ... }
+struct SubscriptionScheduleBillingThresholds { ... }
+struct SubscriptionScheduleDefaultSettingsParamsAutomaticTax { ... }
+struct SubscriptionScheduleDefaultSettingsParamsTransferData { ... }
+struct SubscriptionScheduleInvoiceSettings { ... }
+struct UpdateSubscriptionSchedulePhasesAutomaticTax { ... }
+struct UpdateSubscriptionSchedulePhasesItems { ... }
+struct UpdateSubscriptionSchedulePhasesTransferData { ... }
+struct CreateSubscriptionSchedulePhasesItemsBillingThresholds { ... }
+struct CreateSubscriptionSchedulePhasesItemsPriceData { ... }
+struct InvoiceItemPriceData { ... }
+struct UpdateSubscriptionSchedulePhasesItemsBillingThresholds { ... }
+struct UpdateSubscriptionSchedulePhasesItemsPriceData { ... }
+struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring { ... }
+struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring { ... }
+enum CreateSubscriptionSchedulePhasesBillingCycleAnchor { ... }
+enum CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval { ... }
+enum CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior { ... }
+enum InvoiceItemPriceDataTaxBehavior { ... }
+inserting import into state for InvoiceItemPriceDataTaxBehavior
+enum SubscriptionProrationBehavior { ... }
+inserting import into state for SubscriptionProrationBehavior
+enum SubscriptionScheduleDefaultSettingsBillingCycleAnchor { ... }
+enum SubscriptionScheduleDefaultSettingsCollectionMethod { ... }
+enum SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor { ... }
+enum SubscriptionScheduleEndBehavior { ... }
+enum SubscriptionSchedulePhaseConfigurationBillingCycleAnchor { ... }
+enum SubscriptionScheduleStatus { ... }
+enum UpdateSubscriptionSchedulePhasesBillingCycleAnchor { ... }
+enum UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval { ... }
+enum UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior { ... }
+struct TaxCode {...}
+impl TaxCode { ... }
+struct TaxDeductedAtSource {...}
+struct TaxId {...}
+enum TaxIdType { ... }
+inserting import into state for TaxIdType
+enum TaxIdVerificationStatus { ... }
+struct TaxRate {...}
+impl TaxRate { ... }
+enum TaxRateTaxType { ... }
+struct TerminalConnectionToken {...}
+struct TerminalLocation {...}
+struct TerminalReader {...}
+enum TerminalReaderDeviceType { ... }
+struct ThreeDSecure {...}
+struct Token {...}
+impl Token { ... }
+struct CreateTokenAccount { ... }
+struct CreateTokenCvcUpdate { ... }
+struct CreateTokenPerson { ... }
+struct CreateTokenPii { ... }
+struct CreateTokenPersonDob { ... }
+struct CreateTokenPersonDocuments { ... }
+struct CreateTokenPersonRelationship { ... }
+struct PersonVerificationParams { ... }
+struct CreateTokenPersonDocumentsCompanyAuthorization { ... }
+struct CreateTokenPersonDocumentsPassport { ... }
+struct CreateTokenPersonDocumentsVisa { ... }
+struct VerificationDocumentParams { ... }
+enum CreateTokenAccountBusinessType { ... }
+struct Topup {...}
+impl Topup { ... }
+enum TopupStatus { ... }
+enum TopupStatusFilter { ... }
+struct Transfer {...}
+impl Transfer { ... }
+enum TransferSourceType { ... }
+struct TransferReversal {...}
+struct UsageRecord {...}
+struct UsageRecordSummary {...}
+struct WebhookEndpoint {...}
+impl WebhookEndpoint { ... }
+enum EventFilter { ... }
+Shared objects: {
+    "address",
+    "api_errors",
+    "billing_details",
+    "invoice_payment_method_options_acss_debit",
+    "invoice_payment_method_options_bancontact",
+    "invoice_setting_subscription_schedule_setting",
+    "issuing_authorization_amount_details",
+    "issuing_authorization_merchant_data",
+    "legal_entity_japan_address",
+    "package_dimensions",
+    "payment_method_details_card_installments_plan",
+    "payment_method_details_card_present",
+    "quotes_resource_total_details",
+    "shipping",
+    "subscription_billing_thresholds",
+    "subscription_item_billing_thresholds",
+    "subscription_transfer_data",
+    "three_d_secure_details",
+}
+struct Address {...}
+struct ApiErrors {...}
+object: api_errors, field_name: source
+union_schema: api_errors_source_union, union_name: ApiErrorsSourceUnion
+union ApiErrorsSourceUnion { ... }
+enum ApiErrorsType { ... }
+struct BillingDetails {...}
+struct InvoicePaymentMethodOptionsAcssDebit {...}
+enum InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType { ... }
+enum InvoicePaymentMethodOptionsAcssDebitVerificationMethod { ... }
+struct InvoicePaymentMethodOptionsBancontact {...}
+enum InvoicePaymentMethodOptionsBancontactPreferredLanguage { ... }
+struct SubscriptionScheduleInvoiceSettings {...}
+struct IssuingAuthorizationAmountDetails {...}
+struct MerchantData {...}
+struct Address {...}
+struct PackageDimensions {...}
+struct PaymentMethodDetailsCardInstallmentsPlan {...}
+enum PaymentMethodDetailsCardInstallmentsPlanInterval { ... }
+enum PaymentMethodDetailsCardInstallmentsPlanType { ... }
+struct PaymentMethodDetailsCardPresent {...}
+enum PaymentMethodDetailsCardPresentReadMethod { ... }
+enum PaymentMethodDetailsCardPresentReceiptAccountType { ... }
+struct QuotesResourceTotalDetails {...}
+struct Shipping {...}
+struct SubscriptionBillingThresholds {...}
+struct SubscriptionItemBillingThresholds {...}
+struct SubscriptionTransferData {...}
+struct ThreeDSecureDetails {...}
+enum ThreeDSecureDetailsAuthenticationFlow { ... }
+enum ThreeDSecureDetailsResult { ... }
+enum ThreeDSecureDetailsResultReason { ... }
+enum ThreeDSecureDetailsVersion { ... }
+BTreeSet: {
+    "address",
+}
+[cargo-make] INFO - Execute Command: "cp" "-a" "out/." "../src/resources/generated"
+[cargo-make] INFO - Execute Command: "rustup" "run" "nightly" "cargo" "fmt" "--" "./bench/binary_size/src/main.rs" "./examples/async-std/src/main.rs" "./examples/blocking/src/create_customer.rs" "./examples/blocking/src/create_customer_with_source.rs" "./examples/blocking/src/list_customers.rs" "./examples/blocking/src/main.rs" "./examples/tokio/src/main.rs" "./openapi/src/main.rs" "./openapi/src/mappings.rs" "./openapi/src/metadata.rs" "./src/client/async_std.rs" "./src/client/blocking.rs" "./src/client/tokio.rs" "./src/error.rs" "./src/ids.rs" "./src/lib.rs" "./src/params.rs" "./src/resources/balance_transaction_ext.rs" "./src/resources/bank_account_ext.rs" "./src/resources/card.rs" "./src/resources/charge_ext.rs" "./src/resources/currency.rs" "./src/resources/customer_ext.rs" "./src/resources/generated/account.rs" "./src/resources/generated/account_link.rs" "./src/resources/generated/address.rs" "./src/resources/generated/alipay_account.rs" "./src/resources/generated/api_errors.rs" "./src/resources/generated/apple_pay_domain.rs" "./src/resources/generated/application.rs" "./src/resources/generated/application_fee.rs" "./src/resources/generated/balance.rs" "./src/resources/generated/balance_transaction.rs" "./src/resources/generated/bank_account.rs" "./src/resources/generated/billing_details.rs" "./src/resources/generated/billing_portal_configuration.rs" "./src/resources/generated/billing_portal_session.rs" "./src/resources/generated/bitcoin_receiver.rs" "./src/resources/generated/bitcoin_transaction.rs" "./src/resources/generated/capability.rs" "./src/resources/generated/card.rs" "./src/resources/generated/charge.rs" "./src/resources/generated/checkout_session.rs" "./src/resources/generated/connect_collection_transfer.rs" "./src/resources/generated/country_spec.rs" "./src/resources/generated/coupon.rs" "./src/resources/generated/credit_note.rs" "./src/resources/generated/credit_note_line_item.rs" "./src/resources/generated/customer.rs" "./src/resources/generated/customer_balance_transaction.rs" "./src/resources/generated/discount.rs" "./src/resources/generated/dispute.rs" "./src/resources/generated/ephemeral_key.rs" "./src/resources/generated/event.rs" "./src/resources/generated/exchange_rate.rs" "./src/resources/generated/fee_refund.rs" "./src/resources/generated/file.rs" "./src/resources/generated/file_link.rs" "./src/resources/generated/identity_verification_report.rs" "./src/resources/generated/identity_verification_session.rs" "./src/resources/generated/invoice.rs" "./src/resources/generated/invoice_payment_method_options_acss_debit.rs" "./src/resources/generated/invoice_payment_method_options_bancontact.rs" "./src/resources/generated/invoice_payment_method_options_card.rs" "./src/resources/generated/invoice_setting_subscription_schedule_setting.rs" "./src/resources/generated/invoiceitem.rs" "./src/resources/generated/issuer_fraud_record.rs" "./src/resources/generated/issuing_authorization.rs" "./src/resources/generated/issuing_authorization_amount_details.rs" "./src/resources/generated/issuing_authorization_merchant_data.rs" "./src/resources/generated/issuing_card.rs" "./src/resources/generated/issuing_cardholder.rs" "./src/resources/generated/issuing_dispute.rs" "./src/resources/generated/issuing_settlement.rs" "./src/resources/generated/issuing_transaction.rs" "./src/resources/generated/item.rs" "./src/resources/generated/legal_entity_japan_address.rs" "./src/resources/generated/line_item.rs" "./src/resources/generated/login_link.rs" "./src/resources/generated/mandate.rs" "./src/resources/generated/notification_event_data.rs" "./src/resources/generated/order.rs" "./src/resources/generated/order_item.rs" "./src/resources/generated/order_return.rs" "./src/resources/generated/package_dimensions.rs" "./src/resources/generated/payment_intent.rs" "./src/resources/generated/payment_link.rs" "./src/resources/generated/payment_method.rs" "./src/resources/generated/payment_method_details_card_installments_plan.rs" "./src/resources/generated/payment_method_details_card_present.rs" "./src/resources/generated/payment_method_options_boleto.rs" "./src/resources/generated/payment_method_options_oxxo.rs" "./src/resources/generated/payout.rs" "./src/resources/generated/person.rs" "./src/resources/generated/placeholders.rs" "./src/resources/generated/plan.rs" "./src/resources/generated/platform_tax_fee.rs" "./src/resources/generated/price.rs" "./src/resources/generated/product.rs" "./src/resources/generated/promotion_code.rs" "./src/resources/generated/quote.rs" "./src/resources/generated/quotes_resource_total_details.rs" "./src/resources/generated/radar_early_fraud_warning.rs" "./src/resources/generated/radar_value_list.rs" "./src/resources/generated/radar_value_list_item.rs" "./src/resources/generated/recipient.rs" "./src/resources/generated/refund.rs" "./src/resources/generated/reporting_report_run.rs" "./src/resources/generated/reporting_report_type.rs" "./src/resources/generated/reserve_transaction.rs" "./src/resources/generated/review.rs" "./src/resources/generated/scheduled_query_run.rs" "./src/resources/generated/setup_attempt.rs" "./src/resources/generated/setup_intent.rs" "./src/resources/generated/shipping.rs" "./src/resources/generated/shipping_rate.rs" "./src/resources/generated/sku.rs" "./src/resources/generated/source.rs" "./src/resources/generated/source_mandate_notification.rs" "./src/resources/generated/source_transaction.rs" "./src/resources/generated/subscription.rs" "./src/resources/generated/subscription_billing_thresholds.rs" "./src/resources/generated/subscription_item.rs" "./src/resources/generated/subscription_item_billing_thresholds.rs" "./src/resources/generated/subscription_schedule.rs" "./src/resources/generated/subscription_transfer_data.rs" "./src/resources/generated/tax_code.rs" "./src/resources/generated/tax_deducted_at_source.rs" "./src/resources/generated/tax_id.rs" "./src/resources/generated/tax_rate.rs" "./src/resources/generated/terminal_connection_token.rs" "./src/resources/generated/terminal_location.rs" "./src/resources/generated/terminal_reader.rs" "./src/resources/generated/three_d_secure.rs" "./src/resources/generated/three_d_secure_details.rs" "./src/resources/generated/token.rs" "./src/resources/generated/topup.rs" "./src/resources/generated/transfer.rs" "./src/resources/generated/transfer_reversal.rs" "./src/resources/generated/usage_record.rs" "./src/resources/generated/usage_record_summary.rs" "./src/resources/generated/webhook_endpoint.rs" "./src/resources/generated.rs" "./src/resources/invoice_ext.rs" "./src/resources/issuing_authorization_ext.rs" "./src/resources/issuing_card_ext.rs" "./src/resources/issuing_dispute_ext.rs" "./src/resources/issuing_merchant_data.rs" "./src/resources/issuing_transaction_ext.rs" "./src/resources/line_item_ext.rs" "./src/resources/login_links_ext.rs" "./src/resources/order_ext.rs" "./src/resources/payment_intent_ext.rs" "./src/resources/payment_method_ext.rs" "./src/resources/payment_source.rs" "./src/resources/payout_ext.rs" "./src/resources/placeholders.rs" "./src/resources/review_ext.rs" "./src/resources/setup_intent_ext.rs" "./src/resources/source_ext.rs" "./src/resources/subscription_ext.rs" "./src/resources/token_ext.rs" "./src/resources/types.rs" "./src/resources/webhook_endpoint_ext.rs" "./src/resources/webhook_events.rs" "./src/resources.rs" "./tests/account.rs" "./tests/charge.rs" "./tests/customer.rs" "./tests/encoding.rs" "./tests/mock/mod.rs" "./tests/plan_interval.rs" "./tests/subscription.rs"
+[cargo-make] INFO - Build Done in 14.25 seconds.

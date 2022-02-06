@@ -12,6 +12,7 @@ use crate::resources::{
     IssuingTransaction, MerchantData,
 };
 
+// written at 378
 /// The resource representing a Stripe "IssuingAuthorization".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorization {
@@ -112,6 +113,7 @@ impl Object for IssuingAuthorization {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationPendingRequest {
     /// The additional amount Stripe will hold if the authorization is approved, in the card's [currency](https://stripe.com/docs/api#issuing_authorization_object-pending-request-currency) and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -140,6 +142,7 @@ pub struct IssuingAuthorizationPendingRequest {
     pub merchant_currency: Currency,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationRequest {
     /// The `pending_request.amount` at the time of the request, presented in your card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -179,6 +182,7 @@ pub struct IssuingAuthorizationRequest {
     pub reason: IssuingAuthorizationReason,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorizationVerificationData {
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.

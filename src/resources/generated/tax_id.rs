@@ -7,7 +7,9 @@ use serde_derive::{Deserialize, Serialize};
 use crate::ids::TaxIdId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::Customer;
+use crate::TaxIdType;
 
+// written at 378
 /// The resource representing a Stripe "tax_id".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxId {
@@ -62,6 +64,7 @@ impl Object for TaxId {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxIdVerification {
     /// Verification status, one of `pending`, `verified`, `unverified`, or `unavailable`.
@@ -74,117 +77,6 @@ pub struct TaxIdVerification {
     /// Verified name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_name: Option<Box<String>>,
-}
-
-/// An enum representing the possible values of an `TaxId`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum TaxIdType {
-    AeTrn,
-    AuAbn,
-    AuArn,
-    BrCnpj,
-    BrCpf,
-    CaBn,
-    CaGstHst,
-    CaPstBc,
-    CaPstMb,
-    CaPstSk,
-    CaQst,
-    ChVat,
-    ClTin,
-    EsCif,
-    EuVat,
-    GbVat,
-    GeVat,
-    HkBr,
-    IdNpwp,
-    IlVat,
-    InGst,
-    IsVat,
-    JpCn,
-    JpRn,
-    KrBrn,
-    LiUid,
-    MxRfc,
-    MyFrp,
-    MyItn,
-    MySst,
-    NoVat,
-    NzGst,
-    RuInn,
-    RuKpp,
-    SaVat,
-    SgGst,
-    SgUen,
-    ThVat,
-    TwVat,
-    UaVat,
-    Unknown,
-    UsEin,
-    ZaVat,
-}
-
-impl TaxIdType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            TaxIdType::AeTrn => "ae_trn",
-            TaxIdType::AuAbn => "au_abn",
-            TaxIdType::AuArn => "au_arn",
-            TaxIdType::BrCnpj => "br_cnpj",
-            TaxIdType::BrCpf => "br_cpf",
-            TaxIdType::CaBn => "ca_bn",
-            TaxIdType::CaGstHst => "ca_gst_hst",
-            TaxIdType::CaPstBc => "ca_pst_bc",
-            TaxIdType::CaPstMb => "ca_pst_mb",
-            TaxIdType::CaPstSk => "ca_pst_sk",
-            TaxIdType::CaQst => "ca_qst",
-            TaxIdType::ChVat => "ch_vat",
-            TaxIdType::ClTin => "cl_tin",
-            TaxIdType::EsCif => "es_cif",
-            TaxIdType::EuVat => "eu_vat",
-            TaxIdType::GbVat => "gb_vat",
-            TaxIdType::GeVat => "ge_vat",
-            TaxIdType::HkBr => "hk_br",
-            TaxIdType::IdNpwp => "id_npwp",
-            TaxIdType::IlVat => "il_vat",
-            TaxIdType::InGst => "in_gst",
-            TaxIdType::IsVat => "is_vat",
-            TaxIdType::JpCn => "jp_cn",
-            TaxIdType::JpRn => "jp_rn",
-            TaxIdType::KrBrn => "kr_brn",
-            TaxIdType::LiUid => "li_uid",
-            TaxIdType::MxRfc => "mx_rfc",
-            TaxIdType::MyFrp => "my_frp",
-            TaxIdType::MyItn => "my_itn",
-            TaxIdType::MySst => "my_sst",
-            TaxIdType::NoVat => "no_vat",
-            TaxIdType::NzGst => "nz_gst",
-            TaxIdType::RuInn => "ru_inn",
-            TaxIdType::RuKpp => "ru_kpp",
-            TaxIdType::SaVat => "sa_vat",
-            TaxIdType::SgGst => "sg_gst",
-            TaxIdType::SgUen => "sg_uen",
-            TaxIdType::ThVat => "th_vat",
-            TaxIdType::TwVat => "tw_vat",
-            TaxIdType::UaVat => "ua_vat",
-            TaxIdType::Unknown => "unknown",
-            TaxIdType::UsEin => "us_ein",
-            TaxIdType::ZaVat => "za_vat",
-        }
-    }
-}
-
-impl AsRef<str> for TaxIdType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TaxIdType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
 }
 
 /// An enum representing the possible values of an `TaxIdVerification`'s `status` field.

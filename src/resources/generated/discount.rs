@@ -8,6 +8,7 @@ use crate::ids::DiscountId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{Coupon, Customer, PromotionCode};
 
+// written at 378
 /// The resource representing a Stripe "Discount".
 ///
 /// For more details see <https://stripe.com/docs/api/discounts/object>

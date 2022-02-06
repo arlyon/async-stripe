@@ -3,6 +3,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::ids::*;
 use crate::params::Object;
 
+// written at 119
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Account {
@@ -20,6 +21,7 @@ impl Object for Account {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Application {
@@ -37,6 +39,7 @@ impl Object for Application {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ApplicationFee {
@@ -54,6 +57,7 @@ impl Object for ApplicationFee {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "checkout"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CheckoutSession {
@@ -71,6 +75,7 @@ impl Object for CheckoutSession {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ConnectCollectionTransfer {
@@ -88,6 +93,7 @@ impl Object for ConnectCollectionTransfer {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Coupon {
@@ -105,6 +111,7 @@ impl Object for Coupon {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Discount {
@@ -122,6 +129,7 @@ impl Object for Discount {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ApplicationFeeRefund {
@@ -139,6 +147,7 @@ impl Object for ApplicationFeeRefund {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Invoice {
@@ -156,6 +165,7 @@ impl Object for Invoice {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItem {
@@ -173,6 +183,7 @@ impl Object for InvoiceItem {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingAuthorization {
@@ -190,6 +201,7 @@ impl Object for IssuingAuthorization {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCard {
@@ -207,6 +219,7 @@ impl Object for IssuingCard {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingCardholder {
@@ -224,6 +237,7 @@ impl Object for IssuingCardholder {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingDispute {
@@ -241,6 +255,7 @@ impl Object for IssuingDispute {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "issuing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IssuingTransaction {
@@ -258,6 +273,7 @@ impl Object for IssuingTransaction {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceLineItem {
@@ -275,6 +291,7 @@ impl Object for InvoiceLineItem {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Order {
@@ -292,6 +309,7 @@ impl Object for Order {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderItem {
@@ -309,6 +327,7 @@ impl Object for OrderItem {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct OrderReturn {
@@ -326,6 +345,7 @@ impl Object for OrderReturn {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Person {
@@ -343,6 +363,7 @@ impl Object for Person {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Plan {
@@ -360,6 +381,7 @@ impl Object for Plan {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Recipient {
@@ -377,6 +399,7 @@ impl Object for Recipient {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "fraud"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Review {
@@ -394,6 +417,7 @@ impl Object for Review {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "sigma"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ScheduledQueryRun {
@@ -411,6 +435,7 @@ impl Object for ScheduledQueryRun {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Sku {
@@ -428,6 +453,7 @@ impl Object for Sku {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Subscription {
@@ -445,6 +471,7 @@ impl Object for Subscription {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionItem {
@@ -462,6 +489,7 @@ impl Object for SubscriptionItem {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionSchedule {
@@ -479,6 +507,7 @@ impl Object for SubscriptionSchedule {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleRevision {
@@ -496,6 +525,7 @@ impl Object for SubscriptionScheduleRevision {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxId {
@@ -513,6 +543,7 @@ impl Object for TaxId {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "billing"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxRate {
@@ -530,6 +561,7 @@ impl Object for TaxRate {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Topup {
@@ -547,6 +579,7 @@ impl Object for Topup {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Transfer {
@@ -564,6 +597,7 @@ impl Object for Transfer {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransferReversal {
@@ -581,6 +615,7 @@ impl Object for TransferReversal {
     }
 }
 
+// written at 119
 #[cfg(not(feature = "webhook-endpoints"))]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct WebhookEndpoint {

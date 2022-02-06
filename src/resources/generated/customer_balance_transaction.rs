@@ -8,6 +8,7 @@ use crate::ids::CustomerBalanceTransactionId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{CreditNote, Currency, Customer, Invoice};
 
+// written at 378
 /// The resource representing a Stripe "CustomerBalanceTransaction".
 ///
 /// For more details see <https://stripe.com/docs/api/customer_balance_transactions/object>

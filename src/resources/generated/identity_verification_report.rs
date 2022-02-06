@@ -8,6 +8,7 @@ use crate::ids::IdentityVerificationReportId;
 use crate::params::{Object, Timestamp};
 use crate::resources::Address;
 
+// written at 378
 /// The resource representing a Stripe "GelatoVerificationReport".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IdentityVerificationReport {
@@ -52,6 +53,7 @@ impl Object for IdentityVerificationReport {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDocumentReport {
     /// Address as it appears in the document.
@@ -105,6 +107,7 @@ pub struct GelatoDocumentReport {
     pub type_: Option<Box<GelatoDocumentReportType>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDataDocumentReportDateOfBirth {
     /// Numerical day between 1 and 31.
@@ -120,6 +123,7 @@ pub struct GelatoDataDocumentReportDateOfBirth {
     pub year: Option<Box<i64>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDataDocumentReportExpirationDate {
     /// Numerical day between 1 and 31.
@@ -135,6 +139,7 @@ pub struct GelatoDataDocumentReportExpirationDate {
     pub year: Option<Box<i64>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDataDocumentReportIssuedDate {
     /// Numerical day between 1 and 31.
@@ -150,6 +155,7 @@ pub struct GelatoDataDocumentReportIssuedDate {
     pub year: Option<Box<i64>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDocumentReportError {
     /// A short machine-readable string giving the reason for the verification failure.
@@ -163,6 +169,7 @@ pub struct GelatoDocumentReportError {
     pub reason: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoIdNumberReport {
     /// Date of birth.
@@ -195,6 +202,7 @@ pub struct GelatoIdNumberReport {
     pub status: GelatoIdNumberReportStatus,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDataIdNumberReportDate {
     /// Numerical day between 1 and 31.
@@ -210,6 +218,7 @@ pub struct GelatoDataIdNumberReportDate {
     pub year: Option<Box<i64>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoIdNumberReportError {
     /// A short machine-readable string giving the reason for the verification failure.
@@ -223,6 +232,7 @@ pub struct GelatoIdNumberReportError {
     pub reason: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSelfieReport {
     /// ID of the [File](https://stripe.com/docs/api/files) holding the image of the identity document used in this check.
@@ -243,6 +253,7 @@ pub struct GelatoSelfieReport {
     pub status: GelatoSelfieReportStatus,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSelfieReportError {
     /// A short machine-readable string giving the reason for the verification failure.
@@ -256,6 +267,7 @@ pub struct GelatoSelfieReportError {
     pub reason: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoVerificationReportOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -265,6 +277,7 @@ pub struct GelatoVerificationReportOptions {
     pub id_number: Option<Box<GelatoReportIdNumberOptions>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoReportDocumentOptions {
     /// Array of strings of allowed identity document types.
@@ -288,6 +301,7 @@ pub struct GelatoReportDocumentOptions {
     pub require_matching_selfie: Option<Box<bool>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoReportIdNumberOptions {}
 

@@ -9,6 +9,7 @@ use crate::ids::SkuId;
 use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Timestamp};
 use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
 
+// written at 378
 /// The resource representing a Stripe "Sku".
 ///
 /// For more details see <https://stripe.com/docs/api/skus/object>
@@ -127,6 +128,7 @@ impl Object for Sku {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SkuInventory {
     /// The count of inventory available.
@@ -149,6 +151,7 @@ pub struct SkuInventory {
     pub value: Option<Box<String>>,
 }
 
+// written at 597
 /// The parameters for `Sku::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateSku<'a> {
@@ -232,6 +235,7 @@ impl<'a> CreateSku<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Sku::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSkus<'a> {
@@ -303,6 +307,7 @@ impl<'a> ListSkus<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Sku::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSku<'a> {

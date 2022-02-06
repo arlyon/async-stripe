@@ -9,6 +9,7 @@ use crate::ids::{OrderId, OrderReturnId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use crate::resources::{Currency, Order, OrderItem, Refund};
 
+// written at 378
 /// The resource representing a Stripe "OrderReturn".
 ///
 /// For more details see <https://stripe.com/docs/api/order_returns/object>
@@ -71,6 +72,7 @@ impl Object for OrderReturn {
     }
 }
 
+// written at 597
 /// The parameters for `OrderReturn::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListOrderReturns<'a> {

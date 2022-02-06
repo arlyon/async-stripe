@@ -8,6 +8,7 @@ use crate::ids::TransferReversalId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{BalanceTransaction, Currency, Refund, Transfer};
 
+// written at 378
 /// The resource representing a Stripe "TransferReversal".
 ///
 /// For more details see <https://stripe.com/docs/api/transfer_reversals/object>

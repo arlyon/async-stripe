@@ -9,6 +9,7 @@ use crate::ids::{ShippingRateId, TaxCodeId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Currency, TaxCode};
 
+// written at 378
 /// The resource representing a Stripe "ShippingRate".
 ///
 /// For more details see <https://stripe.com/docs/api/shipping_rates/object>
@@ -109,6 +110,7 @@ impl Object for ShippingRate {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range.
@@ -124,6 +126,7 @@ pub struct ShippingRateDeliveryEstimate {
     pub minimum: Option<Box<ShippingRateDeliveryEstimateBound>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimateBound {
     /// A unit of time.
@@ -133,6 +136,7 @@ pub struct ShippingRateDeliveryEstimateBound {
     pub value: i64,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ShippingRateFixedAmount {
     /// A non-negative integer in cents representing how much to charge.
@@ -144,6 +148,7 @@ pub struct ShippingRateFixedAmount {
     pub currency: Currency,
 }
 
+// written at 597
 /// The parameters for `ShippingRate::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateShippingRate<'a> {
@@ -211,6 +216,7 @@ impl<'a> CreateShippingRate<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `ShippingRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListShippingRates<'a> {
@@ -267,6 +273,7 @@ impl<'a> ListShippingRates<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `ShippingRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateShippingRate<'a> {
@@ -299,6 +306,7 @@ impl<'a> UpdateShippingRate<'a> {
     }
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -308,6 +316,7 @@ pub struct CreateShippingRateDeliveryEstimate {
     pub minimum: Option<Box<CreateShippingRateDeliveryEstimateMinimum>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateFixedAmount {
     pub amount: i64,
@@ -315,6 +324,7 @@ pub struct CreateShippingRateFixedAmount {
     pub currency: Currency,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMaximum {
     pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
@@ -322,6 +332,7 @@ pub struct CreateShippingRateDeliveryEstimateMaximum {
     pub value: i64,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMinimum {
     pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,

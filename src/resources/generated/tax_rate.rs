@@ -8,6 +8,7 @@ use crate::config::{Client, Response};
 use crate::ids::TaxRateId;
 use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
 
+// written at 378
 /// The resource representing a Stripe "TaxRate".
 ///
 /// For more details see <https://stripe.com/docs/api/tax_rates/object>
@@ -106,6 +107,7 @@ impl Object for TaxRate {
     }
 }
 
+// written at 597
 /// The parameters for `TaxRate::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTaxRate<'a> {
@@ -182,6 +184,7 @@ impl<'a> CreateTaxRate<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `TaxRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxRates<'a> {
@@ -236,6 +239,7 @@ impl<'a> ListTaxRates<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `TaxRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTaxRate<'a> {

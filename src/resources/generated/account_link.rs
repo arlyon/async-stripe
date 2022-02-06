@@ -8,6 +8,7 @@ use crate::config::{Client, Response};
 use crate::ids::AccountId;
 use crate::params::{Expand, Object, Timestamp};
 
+// written at 378
 /// The resource representing a Stripe "AccountLink".
 ///
 /// For more details see <https://stripe.com/docs/api/account_links/object>
@@ -40,6 +41,7 @@ impl Object for AccountLink {
     }
 }
 
+// written at 597
 /// The parameters for `AccountLink::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateAccountLink<'a> {

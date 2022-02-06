@@ -9,6 +9,7 @@ use crate::ids::ReviewId;
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use crate::resources::{Charge, PaymentIntent, ReviewReason};
 
+// written at 378
 /// The resource representing a Stripe "RadarReview".
 ///
 /// For more details see <https://stripe.com/docs/api/reviews/object>
@@ -95,6 +96,7 @@ impl Object for Review {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RadarReviewResourceLocation {
     /// The city where the payment originated.
@@ -118,6 +120,7 @@ pub struct RadarReviewResourceLocation {
     pub region: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct RadarReviewResourceSession {
     /// The browser used in this browser session (e.g., `Chrome`).
@@ -137,6 +140,7 @@ pub struct RadarReviewResourceSession {
     pub version: Option<Box<String>>,
 }
 
+// written at 597
 /// The parameters for `Review::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListReviews<'a> {

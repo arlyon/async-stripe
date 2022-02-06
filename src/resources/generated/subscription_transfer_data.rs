@@ -7,6 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::params::Expandable;
 use crate::resources::Account;
 
+// written at 378
 /// The resource representing a Stripe "SubscriptionTransferData".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionTransferData {

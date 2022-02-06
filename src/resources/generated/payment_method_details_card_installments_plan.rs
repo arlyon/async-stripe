@@ -4,6 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+// written at 378
 /// The resource representing a Stripe "payment_method_details_card_installments_plan".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardInstallmentsPlan {

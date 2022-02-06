@@ -8,6 +8,7 @@ use crate::ids::BitcoinTransactionId;
 use crate::params::{Object, Timestamp};
 use crate::resources::Currency;
 
+// written at 378
 /// The resource representing a Stripe "BitcoinTransaction".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct BitcoinTransaction {

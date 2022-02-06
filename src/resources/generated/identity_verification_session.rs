@@ -8,6 +8,7 @@ use crate::ids::IdentityVerificationSessionId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, IdentityVerificationReport};
 
+// written at 378
 /// The resource representing a Stripe "GelatoVerificationSession".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct IdentityVerificationSession {
@@ -86,6 +87,7 @@ impl Object for IdentityVerificationSession {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSessionLastError {
     /// A short machine-readable string giving the reason for the verification or user-session failure.
@@ -97,6 +99,7 @@ pub struct GelatoSessionLastError {
     pub reason: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoVerificationSessionOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -106,6 +109,7 @@ pub struct GelatoVerificationSessionOptions {
     pub id_number: Option<Box<GelatoSessionIdNumberOptions>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSessionDocumentOptions {
     /// Array of strings of allowed identity document types.
@@ -129,9 +133,11 @@ pub struct GelatoSessionDocumentOptions {
     pub require_matching_selfie: Option<Box<bool>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoSessionIdNumberOptions {}
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoVerifiedOutputs {
     /// The user's verified address.
@@ -159,6 +165,7 @@ pub struct GelatoVerifiedOutputs {
     pub last_name: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GelatoDataVerifiedOutputsDate {
     /// Numerical day between 1 and 31.
@@ -174,6 +181,7 @@ pub struct GelatoDataVerifiedOutputsDate {
     pub year: Option<Box<i64>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct VerificationSessionRedaction {
     /// Indicates whether this object and its related objects have been redacted or not.

@@ -11,6 +11,7 @@ use crate::resources::{
     Account, Application, ApplicationFeeRefund, BalanceTransaction, Charge, Currency,
 };
 
+// written at 378
 /// The resource representing a Stripe "PlatformFee".
 ///
 /// For more details see <https://stripe.com/docs/api/application_fees/object>
@@ -97,6 +98,7 @@ impl Object for ApplicationFee {
     }
 }
 
+// written at 597
 /// The parameters for `ApplicationFee::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListApplicationFees<'a> {

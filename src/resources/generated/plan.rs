@@ -11,6 +11,7 @@ use crate::params::{
 };
 use crate::resources::{CreateProduct, Currency, Product};
 
+// written at 378
 /// The resource representing a Stripe "Plan".
 ///
 /// For more details see <https://stripe.com/docs/api/plans/object>
@@ -167,6 +168,7 @@ impl Object for Plan {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PlanTier {
     /// Price for the entire tier.
@@ -190,6 +192,7 @@ pub struct PlanTier {
     pub up_to: Option<Box<i64>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TransformUsage {
     /// Divide usage by this number.
@@ -199,6 +202,7 @@ pub struct TransformUsage {
     pub round: TransformUsageRound,
 }
 
+// written at 597
 /// The parameters for `Plan::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPlans<'a> {
@@ -255,6 +259,7 @@ impl<'a> ListPlans<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Plan::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePlan<'a> {

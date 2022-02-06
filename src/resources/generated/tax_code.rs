@@ -8,6 +8,7 @@ use crate::config::{Client, Response};
 use crate::ids::TaxCodeId;
 use crate::params::{Expand, List, Object};
 
+// written at 378
 /// The resource representing a Stripe "TaxProductResourceTaxCode".
 ///
 /// For more details see <https://stripe.com/docs/api/tax_codes/object>
@@ -47,6 +48,7 @@ impl Object for TaxCode {
     }
 }
 
+// written at 597
 /// The parameters for `TaxCode::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListTaxCodes<'a> {

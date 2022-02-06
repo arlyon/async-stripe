@@ -7,6 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::params::{Expandable, Object};
 use crate::resources::{Account, Currency};
 
+// written at 378
 /// The resource representing a Stripe "ConnectCollectionTransfer".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ConnectCollectionTransfer {

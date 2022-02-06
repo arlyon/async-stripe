@@ -8,6 +8,7 @@ use crate::ids::InvoiceLineItemId;
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Currency, Discount, Period, Price, TaxRate};
 
+// written at 378
 /// The resource representing a Stripe "InvoiceLineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceLineItem {
@@ -103,6 +104,7 @@ impl Object for InvoiceLineItem {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
     /// The amount, in %s, of the discount.
@@ -112,6 +114,7 @@ pub struct DiscountsResourceDiscountAmount {
     pub discount: Expandable<Discount>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxAmount {
     /// The amount, in %s, of the tax.

@@ -8,6 +8,7 @@ use crate::ids::ThreeDSecureId;
 use crate::params::{Object, Timestamp};
 use crate::resources::{Card, Currency};
 
+// written at 378
 /// The resource representing a Stripe "ThreeDSecure".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ThreeDSecure {

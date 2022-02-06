@@ -178,13 +178,11 @@ pub use {
         quote::*,
         quotes_resource_total_details::*,
         subscription_item::*,
-        subscription_item::PlanInterval as SubscriptionItemInterval,
         subscription_item::SubscriptionItemPriceDataRecurring as SubscriptionItemPriceDataRecurring,
         subscription_item::SubscriptionItemPriceData as SubscriptionItemPriceData,
         // need to import this afterwards so that the SubscriptionItemPriceDataRecurring
         // isn't silently ignored
         subscription::*,
-        subscription::PlanInterval as SubscriptionInterval,
         subscription::SubscriptionItemPriceDataRecurring as SubscriptionPriceDataRecurring,
         subscription::SubscriptionItemPriceData as SubscriptionPriceData,
         subscription_schedule::*,

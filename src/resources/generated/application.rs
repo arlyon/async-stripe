@@ -6,6 +6,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::params::Object;
 
+// written at 378
 /// The resource representing a Stripe "Application".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Application {

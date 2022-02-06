@@ -12,7 +12,9 @@ use crate::resources::{
     SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData,
     TaxRate,
 };
+use crate::{InvoiceItemPriceDataTaxBehavior, SubscriptionProrationBehavior};
 
+// written at 378
 /// The resource representing a Stripe "SubscriptionSchedule".
 ///
 /// For more details see <https://stripe.com/docs/api/subscription_schedules/object>
@@ -135,6 +137,7 @@ impl Object for SubscriptionSchedule {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleCurrentPhase {
     /// The end of this phase of the subscription schedule.
@@ -144,6 +147,7 @@ pub struct SubscriptionScheduleCurrentPhase {
     pub start_date: Timestamp,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionSchedulePhaseConfiguration {
     /// A list of prices and quantities that will generate invoice items appended to the first invoice for this phase.
@@ -219,12 +223,14 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     pub trial_end: Option<Box<Timestamp>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SchedulesPhaseAutomaticTax {
     /// Whether Stripe automatically computes tax on invoices created during this phase.
     pub enabled: bool,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleAddInvoiceItem {
     /// ID of the price used to generate the invoice item.
@@ -241,6 +247,7 @@ pub struct SubscriptionScheduleAddInvoiceItem {
     pub tax_rates: Option<Box<Vec<TaxRate>>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleConfigurationItem {
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
@@ -261,6 +268,7 @@ pub struct SubscriptionScheduleConfigurationItem {
     pub tax_rates: Option<Box<Vec<TaxRate>>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettings {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
@@ -305,12 +313,14 @@ pub struct SubscriptionScheduleDefaultSettings {
     pub transfer_data: Option<Box<SubscriptionTransferData>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
     /// Whether Stripe automatically computes tax on invoices created during this phase.
     pub enabled: bool,
 }
 
+// written at 597
 /// The parameters for `SubscriptionSchedule::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateSubscriptionSchedule<'a> {
@@ -379,6 +389,7 @@ impl<'a> CreateSubscriptionSchedule<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `SubscriptionSchedule::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptionSchedules<'a> {
@@ -448,6 +459,7 @@ impl<'a> ListSubscriptionSchedules<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `SubscriptionSchedule::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionSchedule<'a> {
@@ -502,6 +514,7 @@ impl<'a> UpdateSubscriptionSchedule<'a> {
     }
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -555,6 +568,7 @@ pub struct CreateSubscriptionSchedulePhases {
     pub trial_end: Option<Scheduled>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -583,6 +597,7 @@ pub struct SubscriptionScheduleDefaultSettingsParams {
     pub transfer_data: Option<Box<SubscriptionScheduleDefaultSettingsParamsTransferData>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -639,6 +654,7 @@ pub struct UpdateSubscriptionSchedulePhases {
     pub trial_end: Option<Scheduled>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -654,11 +670,13 @@ pub struct AddInvoiceItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
     pub enabled: bool,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -677,6 +695,7 @@ pub struct CreateSubscriptionSchedulePhasesItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -685,6 +704,7 @@ pub struct CreateSubscriptionSchedulePhasesTransferData {
     pub destination: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleBillingThresholds {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -694,11 +714,13 @@ pub struct SubscriptionScheduleBillingThresholds {
     pub reset_billing_cycle_anchor: Option<Box<bool>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsAutomaticTax {
     pub enabled: bool,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -707,17 +729,20 @@ pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
     pub destination: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct SubscriptionScheduleInvoiceSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub days_until_due: Option<Box<u32>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
     pub enabled: bool,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItems {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -736,6 +761,7 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -744,11 +770,13 @@ pub struct UpdateSubscriptionSchedulePhasesTransferData {
     pub destination: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsBillingThresholds {
     pub usage_gte: i64,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
     pub currency: Currency,
@@ -767,6 +795,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
     pub currency: Currency,
@@ -783,11 +812,13 @@ pub struct InvoiceItemPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsBillingThresholds {
     pub usage_gte: i64,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
     pub currency: Currency,
@@ -806,6 +837,7 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     pub interval: CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
@@ -814,6 +846,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     pub interval_count: Option<Box<u64>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     pub interval: UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
@@ -910,68 +943,6 @@ impl AsRef<str> for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
 }
 
 impl std::fmt::Display for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `InvoiceItemPriceData`'s `tax_behavior` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum InvoiceItemPriceDataTaxBehavior {
-    Exclusive,
-    Inclusive,
-    Unspecified,
-}
-
-impl InvoiceItemPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            InvoiceItemPriceDataTaxBehavior::Exclusive => "exclusive",
-            InvoiceItemPriceDataTaxBehavior::Inclusive => "inclusive",
-            InvoiceItemPriceDataTaxBehavior::Unspecified => "unspecified",
-        }
-    }
-}
-
-impl AsRef<str> for InvoiceItemPriceDataTaxBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for InvoiceItemPriceDataTaxBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `SubscriptionSchedulePhaseConfiguration`'s `proration_behavior` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionProrationBehavior {
-    AlwaysInvoice,
-    CreateProrations,
-    None,
-}
-
-impl SubscriptionProrationBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionProrationBehavior::AlwaysInvoice => "always_invoice",
-            SubscriptionProrationBehavior::CreateProrations => "create_prorations",
-            SubscriptionProrationBehavior::None => "none",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionProrationBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

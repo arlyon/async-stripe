@@ -8,6 +8,7 @@ use crate::config::{Client, Response};
 use crate::ids::{CustomerId, EphemeralKeyId, IssuingCardId};
 use crate::params::{Deleted, Expand, Object, Timestamp};
 
+// written at 378
 /// The resource representing a Stripe "EphemeralKey".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct EphemeralKey {
@@ -56,6 +57,7 @@ impl Object for EphemeralKey {
     }
 }
 
+// written at 597
 /// The parameters for `EphemeralKey::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateEphemeralKey<'a> {

@@ -11,6 +11,7 @@ use crate::resources::{
     Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
 };
 
+// written at 378
 /// The resource representing a Stripe "InvoiceItem".
 ///
 /// For more details see <https://stripe.com/docs/api/invoiceitems/object>
@@ -167,6 +168,7 @@ impl Object for InvoiceItem {
     }
 }
 
+// written at 597
 /// The parameters for `InvoiceItem::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateInvoiceItem<'a> {
@@ -291,6 +293,7 @@ impl<'a> CreateInvoiceItem<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `InvoiceItem::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoiceItems<'a> {
@@ -357,6 +360,7 @@ impl<'a> ListInvoiceItems<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `InvoiceItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateInvoiceItem<'a> {
@@ -457,6 +461,7 @@ impl<'a> UpdateInvoiceItem<'a> {
     }
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceItemDiscounts {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -466,6 +471,7 @@ pub struct CreateInvoiceItemDiscounts {
     pub discount: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
     pub currency: Currency,
@@ -482,6 +488,7 @@ pub struct InvoiceItemPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct UpdateInvoiceItemDiscounts {
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -12,7 +12,9 @@ use crate::resources::{
     InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact, PaymentIntent,
     PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
 };
+use crate::TaxIdType;
 
+// written at 378
 /// The resource representing a Stripe "Invoice".
 ///
 /// For more details see <https://stripe.com/docs/api/invoices/object>
@@ -434,6 +436,7 @@ impl Object for Invoice {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
@@ -444,6 +447,7 @@ pub struct AutomaticTax {
     pub status: Option<Box<AutomaticTaxStatus>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
     /// The amount, in %s, of the discount.
@@ -453,6 +457,7 @@ pub struct DiscountsResourceDiscountAmount {
     pub discount: Expandable<Discount>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomField {
     /// The name of the custom field.
@@ -462,6 +467,7 @@ pub struct InvoiceSettingCustomField {
     pub value: String,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TaxAmount {
     /// The amount, in %s, of the tax.
@@ -474,6 +480,7 @@ pub struct TaxAmount {
     pub tax_rate: Expandable<TaxRate>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceThresholdReason {
     /// The total invoice amount threshold boundary if it triggered the threshold invoice.
@@ -484,6 +491,7 @@ pub struct InvoiceThresholdReason {
     pub item_reasons: Vec<InvoiceItemThresholdReason>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceItemThresholdReason {
     /// The IDs of the line items that triggered the threshold invoice.
@@ -493,6 +501,7 @@ pub struct InvoiceItemThresholdReason {
     pub usage_gte: i64,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoiceTransferData {
     /// The amount in %s that will be transferred to the destination account when the invoice is paid.
@@ -505,6 +514,7 @@ pub struct InvoiceTransferData {
     pub destination: Expandable<Account>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesPaymentSettings {
     /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
@@ -519,6 +529,7 @@ pub struct InvoicesPaymentSettings {
     pub payment_method_types: Option<Box<Vec<InvoicesPaymentSettingsPaymentMethodTypes>>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesPaymentMethodOptions {
     /// If paying by `acss_debit`, this sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to the invoice’s PaymentIntent.
@@ -534,6 +545,7 @@ pub struct InvoicesPaymentMethodOptions {
     pub card: Option<Box<InvoicePaymentMethodOptionsCard>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsCard {
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
@@ -544,6 +556,7 @@ pub struct InvoicePaymentMethodOptionsCard {
     pub request_three_d_secure: Option<Box<InvoicePaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesResourceInvoiceTaxId {
     /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, or `unknown`.
@@ -555,6 +568,7 @@ pub struct InvoicesResourceInvoiceTaxId {
     pub value: Option<Box<String>>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct InvoicesStatusTransitions {
     /// The time that the invoice draft was finalized.
@@ -574,6 +588,7 @@ pub struct InvoicesStatusTransitions {
     pub voided_at: Option<Box<Timestamp>>,
 }
 
+// written at 597
 /// The parameters for `Invoice::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateInvoice<'a> {
@@ -735,6 +750,7 @@ impl<'a> CreateInvoice<'a> {
     }
 }
 
+// written at 597
 /// The parameters for `Invoice::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListInvoices<'a> {
@@ -806,11 +822,13 @@ impl<'a> ListInvoices<'a> {
     }
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceAutomaticTax {
     pub enabled: bool,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceCustomFields {
     pub name: String,
@@ -818,6 +836,7 @@ pub struct CreateInvoiceCustomFields {
     pub value: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceDiscounts {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -827,6 +846,7 @@ pub struct CreateInvoiceDiscounts {
     pub discount: Option<Box<String>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -836,6 +856,7 @@ pub struct CreateInvoicePaymentSettings {
     pub payment_method_types: Option<Box<Vec<CreateInvoicePaymentSettingsPaymentMethodTypes>>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoiceTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -844,6 +865,7 @@ pub struct CreateInvoiceTransferData {
     pub destination: String,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -856,6 +878,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     pub card: Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsCard>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -867,6 +890,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit {
         Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -874,6 +898,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact {
         Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -881,6 +906,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
         Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>>,
 }
 
+// written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1361,117 +1387,6 @@ impl AsRef<str> for InvoicesPaymentSettingsPaymentMethodTypes {
 }
 
 impl std::fmt::Display for InvoicesPaymentSettingsPaymentMethodTypes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `InvoicesResourceInvoiceTaxId`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum TaxIdType {
-    AeTrn,
-    AuAbn,
-    AuArn,
-    BrCnpj,
-    BrCpf,
-    CaBn,
-    CaGstHst,
-    CaPstBc,
-    CaPstMb,
-    CaPstSk,
-    CaQst,
-    ChVat,
-    ClTin,
-    EsCif,
-    EuVat,
-    GbVat,
-    GeVat,
-    HkBr,
-    IdNpwp,
-    IlVat,
-    InGst,
-    IsVat,
-    JpCn,
-    JpRn,
-    KrBrn,
-    LiUid,
-    MxRfc,
-    MyFrp,
-    MyItn,
-    MySst,
-    NoVat,
-    NzGst,
-    RuInn,
-    RuKpp,
-    SaVat,
-    SgGst,
-    SgUen,
-    ThVat,
-    TwVat,
-    UaVat,
-    Unknown,
-    UsEin,
-    ZaVat,
-}
-
-impl TaxIdType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            TaxIdType::AeTrn => "ae_trn",
-            TaxIdType::AuAbn => "au_abn",
-            TaxIdType::AuArn => "au_arn",
-            TaxIdType::BrCnpj => "br_cnpj",
-            TaxIdType::BrCpf => "br_cpf",
-            TaxIdType::CaBn => "ca_bn",
-            TaxIdType::CaGstHst => "ca_gst_hst",
-            TaxIdType::CaPstBc => "ca_pst_bc",
-            TaxIdType::CaPstMb => "ca_pst_mb",
-            TaxIdType::CaPstSk => "ca_pst_sk",
-            TaxIdType::CaQst => "ca_qst",
-            TaxIdType::ChVat => "ch_vat",
-            TaxIdType::ClTin => "cl_tin",
-            TaxIdType::EsCif => "es_cif",
-            TaxIdType::EuVat => "eu_vat",
-            TaxIdType::GbVat => "gb_vat",
-            TaxIdType::GeVat => "ge_vat",
-            TaxIdType::HkBr => "hk_br",
-            TaxIdType::IdNpwp => "id_npwp",
-            TaxIdType::IlVat => "il_vat",
-            TaxIdType::InGst => "in_gst",
-            TaxIdType::IsVat => "is_vat",
-            TaxIdType::JpCn => "jp_cn",
-            TaxIdType::JpRn => "jp_rn",
-            TaxIdType::KrBrn => "kr_brn",
-            TaxIdType::LiUid => "li_uid",
-            TaxIdType::MxRfc => "mx_rfc",
-            TaxIdType::MyFrp => "my_frp",
-            TaxIdType::MyItn => "my_itn",
-            TaxIdType::MySst => "my_sst",
-            TaxIdType::NoVat => "no_vat",
-            TaxIdType::NzGst => "nz_gst",
-            TaxIdType::RuInn => "ru_inn",
-            TaxIdType::RuKpp => "ru_kpp",
-            TaxIdType::SaVat => "sa_vat",
-            TaxIdType::SgGst => "sg_gst",
-            TaxIdType::SgUen => "sg_uen",
-            TaxIdType::ThVat => "th_vat",
-            TaxIdType::TwVat => "tw_vat",
-            TaxIdType::UaVat => "ua_vat",
-            TaxIdType::Unknown => "unknown",
-            TaxIdType::UsEin => "us_ein",
-            TaxIdType::ZaVat => "za_vat",
-        }
-    }
-}
-
-impl AsRef<str> for TaxIdType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

@@ -8,6 +8,7 @@ use crate::ids::CreditNoteLineItemId;
 use crate::params::{Expandable, Object};
 use crate::resources::{Discount, TaxRate};
 
+// written at 378
 /// The resource representing a Stripe "CreditNoteLineItem".
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreditNoteLineItem {
@@ -69,6 +70,7 @@ impl Object for CreditNoteLineItem {
     }
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreditNoteTaxAmount {
     /// The amount, in %s, of the tax.
@@ -81,6 +83,7 @@ pub struct CreditNoteTaxAmount {
     pub tax_rate: Expandable<TaxRate>,
 }
 
+// written at 541
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
     /// The amount, in %s, of the discount.
