@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::resources::{Discount, TaxRate};
+use crate::{LineItemsDiscountAmount, LineItemsTaxAmount};
 
 // written at 378
 /// The resource representing a Stripe "QuotesResourceTotalDetails".
@@ -32,22 +32,4 @@ pub struct QuotesResourceTotalDetailsResourceBreakdown {
 
     /// The aggregated line item tax amounts by rate.
     pub taxes: Vec<LineItemsTaxAmount>,
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct LineItemsDiscountAmount {
-    /// The amount discounted.
-    pub amount: i64,
-
-    pub discount: Discount,
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct LineItemsTaxAmount {
-    /// Amount of tax applied for this rate.
-    pub amount: i64,
-
-    pub rate: TaxRate,
 }

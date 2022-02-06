@@ -5,87 +5,10 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::{CustomerId, SubscriptionScheduleId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{
-    CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled, Subscription,
-    SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData,
-    TaxRate,
-};
-use crate::{InvoiceItemPriceDataTaxBehavior, SubscriptionProrationBehavior};
-
-// written at 378
-/// The resource representing a Stripe "SubscriptionSchedule".
-///
-/// For more details see <https://stripe.com/docs/api/subscription_schedules/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionSchedule {
-    /// Unique identifier for the object.
-    pub id: SubscriptionScheduleId,
-
-    /// Time at which the subscription schedule was canceled.
-    ///
-    /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<Box<Timestamp>>,
-
-    /// Time at which the subscription schedule was completed.
-    ///
-    /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub completed_at: Option<Box<Timestamp>>,
-
-    /// Time at which the object was created.
-    ///
-    /// Measured in seconds since the Unix epoch.
-    pub created: Timestamp,
-
-    /// Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub current_phase: Option<Box<SubscriptionScheduleCurrentPhase>>,
-
-    /// ID of the customer who owns the subscription schedule.
-    pub customer: Expandable<Customer>,
-
-    pub default_settings: SubscriptionScheduleDefaultSettings,
-
-    /// Behavior of the subscription schedule and underlying subscription when it ends.
-    ///
-    /// Possible values are `release` and `cancel`.
-    pub end_behavior: SubscriptionScheduleEndBehavior,
-
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: bool,
-
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    ///
-    /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
-    pub metadata: Metadata,
-
-    /// Configuration for the subscription schedule's phases.
-    pub phases: Vec<SubscriptionSchedulePhaseConfiguration>,
-
-    /// Time at which the subscription schedule was released.
-    ///
-    /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub released_at: Option<Box<Timestamp>>,
-
-    /// ID of the subscription once managed by the subscription schedule (if it is released).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub released_subscription: Option<Box<String>>,
-
-    /// The present status of the subscription schedule.
-    ///
-    /// Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`.
-    /// You can read more about the different states in our [behavior guide](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
-    pub status: SubscriptionScheduleStatus,
-
-    /// ID of the subscription managed by the subscription schedule.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<Box<Expandable<Subscription>>>,
-}
+use crate::ids::CustomerId;
+use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::resources::{CollectionMethod, Currency, Scheduled, SubscriptionBillingThresholds};
+use crate::{AddInvoiceItems, SubscriptionProrationBehavior, SubscriptionSchedule};
 
 impl SubscriptionSchedule {
     /// Retrieves the list of your subscription schedules.
@@ -135,189 +58,6 @@ impl Object for SubscriptionSchedule {
     fn object(&self) -> &'static str {
         "subscription_schedule"
     }
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionScheduleCurrentPhase {
-    /// The end of this phase of the subscription schedule.
-    pub end_date: Timestamp,
-
-    /// The start of this phase of the subscription schedule.
-    pub start_date: Timestamp,
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionSchedulePhaseConfiguration {
-    /// A list of prices and quantities that will generate invoice items appended to the first invoice for this phase.
-    pub add_invoice_items: Vec<SubscriptionScheduleAddInvoiceItem>,
-
-    /// A non-negative decimal between 0 and 100, with at most two decimal places.
-    ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account during this phase of the schedule.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_percent: Option<Box<f64>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<Box<SchedulesPhaseAutomaticTax>>,
-
-    /// Possible values are `phase_start` or `automatic`.
-    ///
-    /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
-    /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_cycle_anchor: Option<Box<SubscriptionSchedulePhaseConfigurationBillingCycleAnchor>>,
-
-    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<Box<SubscriptionBillingThresholds>>,
-
-    /// Either `charge_automatically`, or `send_invoice`.
-    ///
-    /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
-    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<CollectionMethod>,
-
-    /// ID of the coupon to use during this phase of the subscription schedule.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<Box<Expandable<Coupon>>>,
-
-    /// ID of the default payment method for the subscription schedule.
-    ///
-    /// It must belong to the customer associated with the subscription schedule.
-    /// If not set, invoices will use the default payment method in the customer's invoice settings.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<Box<Expandable<PaymentMethod>>>,
-
-    /// The default tax rates to apply to the subscription during this phase of the subscription schedule.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<Box<Vec<TaxRate>>>,
-
-    /// The end of this phase of the subscription schedule.
-    pub end_date: Timestamp,
-
-    /// The invoice settings applicable during this phase.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<Box<SubscriptionScheduleInvoiceSettings>>,
-
-    /// Subscription items to configure the subscription to during this phase of the subscription schedule.
-    pub items: Vec<SubscriptionScheduleConfigurationItem>,
-
-    /// If the subscription schedule will prorate when transitioning to this phase.
-    ///
-    /// Possible values are `create_prorations` and `none`.
-    pub proration_behavior: SubscriptionProrationBehavior,
-
-    /// The start of this phase of the subscription schedule.
-    pub start_date: Timestamp,
-
-    /// The account (if any) the associated subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<Box<SubscriptionTransferData>>,
-
-    /// When the trial ends within the phase.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_end: Option<Box<Timestamp>>,
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SchedulesPhaseAutomaticTax {
-    /// Whether Stripe automatically computes tax on invoices created during this phase.
-    pub enabled: bool,
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionScheduleAddInvoiceItem {
-    /// ID of the price used to generate the invoice item.
-    pub price: Expandable<Price>,
-
-    /// The quantity of the invoice item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
-
-    /// The tax rates which apply to the item.
-    ///
-    /// When set, the `default_tax_rates` do not apply to this item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<TaxRate>>>,
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionScheduleConfigurationItem {
-    /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<Box<SubscriptionItemBillingThresholds>>,
-
-    /// ID of the price to which the customer should be subscribed.
-    pub price: Expandable<Price>,
-
-    /// Quantity of the plan to which the customer should be subscribed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
-
-    /// The tax rates which apply to this `phase_item`.
-    ///
-    /// When set, the `default_tax_rates` on the phase do not apply to this `phase_item`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<TaxRate>>>,
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionScheduleDefaultSettings {
-    /// A non-negative decimal between 0 and 100, with at most two decimal places.
-    ///
-    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account during this phase of the schedule.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_percent: Option<Box<f64>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<Box<SubscriptionSchedulesResourceDefaultSettingsAutomaticTax>>,
-
-    /// Possible values are `phase_start` or `automatic`.
-    ///
-    /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
-    /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-    pub billing_cycle_anchor: SubscriptionScheduleDefaultSettingsBillingCycleAnchor,
-
-    /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<Box<SubscriptionBillingThresholds>>,
-
-    /// Either `charge_automatically`, or `send_invoice`.
-    ///
-    /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
-    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<Box<SubscriptionScheduleDefaultSettingsCollectionMethod>>,
-
-    /// ID of the default payment method for the subscription schedule.
-    ///
-    /// If not set, invoices will use the default payment method in the customer's invoice settings.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<Box<Expandable<PaymentMethod>>>,
-
-    /// The subscription schedule's default invoice settings.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<Box<SubscriptionScheduleInvoiceSettings>>,
-
-    /// The account (if any) the associated subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<Box<SubscriptionTransferData>>,
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
-    /// Whether Stripe automatically computes tax on invoices created during this phase.
-    pub enabled: bool,
 }
 
 // written at 597
@@ -656,22 +396,6 @@ pub struct UpdateSubscriptionSchedulePhases {
 
 // written at 1030
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AddInvoiceItems {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<Box<String>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<Box<InvoiceItemPriceData>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<String>>>,
-}
-
-// written at 1030
-#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
     pub enabled: bool,
 }
@@ -787,23 +511,6 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<Box<CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<Box<i64>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<Box<String>>,
-}
-
-// written at 1030
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct InvoiceItemPriceData {
-    pub currency: Currency,
-
-    pub product: String,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<Box<InvoiceItemPriceDataTaxBehavior>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<Box<i64>>,
@@ -948,66 +655,6 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBeha
     }
 }
 
-/// An enum representing the possible values of an `SubscriptionScheduleDefaultSettings`'s `billing_cycle_anchor` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    Automatic,
-    PhaseStart,
-}
-
-impl SubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionScheduleDefaultSettingsBillingCycleAnchor::Automatic => "automatic",
-            SubscriptionScheduleDefaultSettingsBillingCycleAnchor::PhaseStart => "phase_start",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionScheduleDefaultSettingsBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `SubscriptionScheduleDefaultSettings`'s `collection_method` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionScheduleDefaultSettingsCollectionMethod {
-    ChargeAutomatically,
-    SendInvoice,
-}
-
-impl SubscriptionScheduleDefaultSettingsCollectionMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionScheduleDefaultSettingsCollectionMethod::ChargeAutomatically => {
-                "charge_automatically"
-            }
-            SubscriptionScheduleDefaultSettingsCollectionMethod::SendInvoice => "send_invoice",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionScheduleDefaultSettingsCollectionMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
 /// An enum representing the possible values of an `SubscriptionScheduleDefaultSettingsParams`'s `billing_cycle_anchor` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1039,7 +686,7 @@ impl std::fmt::Display for SubscriptionScheduleDefaultSettingsParamsBillingCycle
     }
 }
 
-/// An enum representing the possible values of an `SubscriptionSchedule`'s `end_behavior` field.
+/// An enum representing the possible values of an `CreateSubscriptionSchedule`'s `end_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SubscriptionScheduleEndBehavior {
@@ -1067,70 +714,6 @@ impl AsRef<str> for SubscriptionScheduleEndBehavior {
 }
 
 impl std::fmt::Display for SubscriptionScheduleEndBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `SubscriptionSchedulePhaseConfiguration`'s `billing_cycle_anchor` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
-    Automatic,
-    PhaseStart,
-}
-
-impl SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionSchedulePhaseConfigurationBillingCycleAnchor::Automatic => "automatic",
-            SubscriptionSchedulePhaseConfigurationBillingCycleAnchor::PhaseStart => "phase_start",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `SubscriptionSchedule`'s `status` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionScheduleStatus {
-    Active,
-    Canceled,
-    Completed,
-    NotStarted,
-    Released,
-}
-
-impl SubscriptionScheduleStatus {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionScheduleStatus::Active => "active",
-            SubscriptionScheduleStatus::Canceled => "canceled",
-            SubscriptionScheduleStatus::Completed => "completed",
-            SubscriptionScheduleStatus::NotStarted => "not_started",
-            SubscriptionScheduleStatus::Released => "released",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionScheduleStatus {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionScheduleStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

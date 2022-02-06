@@ -5,83 +5,8 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::TopupId;
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, Currency, Source};
-
-// written at 378
-/// The resource representing a Stripe "Topup".
-///
-/// For more details see <https://stripe.com/docs/api/topups/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Topup {
-    /// Unique identifier for the object.
-    pub id: TopupId,
-
-    /// Amount transferred.
-    pub amount: i64,
-
-    /// ID of the balance transaction that describes the impact of this top-up on your account balance.
-    ///
-    /// May not be specified depending on status of top-up.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
-
-    /// Time at which the object was created.
-    ///
-    /// Measured in seconds since the Unix epoch.
-    pub created: Timestamp,
-
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: Currency,
-
-    /// An arbitrary string attached to the object.
-    ///
-    /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
-
-    /// Date the funds are expected to arrive in your Stripe account for payouts.
-    ///
-    /// This factors in delays like weekends or bank holidays.
-    /// May not be specified depending on status of top-up.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub expected_availability_date: Option<Box<Timestamp>>,
-
-    /// Error code explaining reason for top-up failure if available (see [the errors section](https://stripe.com/docs/api#errors) for a list of codes).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub failure_code: Option<Box<String>>,
-
-    /// Message to user further explaining reason for top-up failure if available.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub failure_message: Option<Box<String>>,
-
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: bool,
-
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    ///
-    /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
-
-    pub source: Source,
-
-    /// Extra information about a top-up.
-    ///
-    /// This will appear on your source's bank statement.
-    /// It must contain at least one letter.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<Box<String>>,
-
-    /// The status of the top-up is either `canceled`, `failed`, `pending`, `reversed`, or `succeeded`.
-    pub status: TopupStatus,
-
-    /// A string that identifies this top-up as part of a group.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_group: Option<Box<String>>,
-}
+use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::Topup;
 
 impl Topup {
     /// Returns a list of top-ups.
@@ -156,7 +81,7 @@ pub struct ListTopups<'a> {
     ///
     /// One of `canceled`, `failed`, `pending` or `succeeded`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<TopupStatusFilter>,
+    pub status: Option<TopupStatus>,
 }
 
 impl<'a> ListTopups<'a> {
@@ -206,14 +131,13 @@ impl<'a> UpdateTopup<'a> {
     }
 }
 
-/// An enum representing the possible values of an `Topup`'s `status` field.
+/// An enum representing the possible values of an `ListTopups`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TopupStatus {
     Canceled,
     Failed,
     Pending,
-    Reversed,
     Succeeded,
 }
 
@@ -223,7 +147,6 @@ impl TopupStatus {
             TopupStatus::Canceled => "canceled",
             TopupStatus::Failed => "failed",
             TopupStatus::Pending => "pending",
-            TopupStatus::Reversed => "reversed",
             TopupStatus::Succeeded => "succeeded",
         }
     }
@@ -236,39 +159,6 @@ impl AsRef<str> for TopupStatus {
 }
 
 impl std::fmt::Display for TopupStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-
-/// An enum representing the possible values of an `ListTopups`'s `status` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum TopupStatusFilter {
-    Canceled,
-    Failed,
-    Pending,
-    Succeeded,
-}
-
-impl TopupStatusFilter {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            TopupStatusFilter::Canceled => "canceled",
-            TopupStatusFilter::Failed => "failed",
-            TopupStatusFilter::Pending => "pending",
-            TopupStatusFilter::Succeeded => "succeeded",
-        }
-    }
-}
-
-impl AsRef<str> for TopupStatusFilter {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for TopupStatusFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }

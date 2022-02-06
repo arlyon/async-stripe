@@ -5,73 +5,8 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::TaxRateId;
 use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
-
-// written at 378
-/// The resource representing a Stripe "TaxRate".
-///
-/// For more details see <https://stripe.com/docs/api/tax_rates/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TaxRate {
-    /// Unique identifier for the object.
-    pub id: TaxRateId,
-
-    /// Defaults to `true`.
-    ///
-    /// When set to `false`, this tax rate cannot be used with new applications or Checkout Sessions, but will still work for subscriptions and invoices that already have it set.
-    pub active: bool,
-
-    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<Box<String>>,
-
-    /// Time at which the object was created.
-    ///
-    /// Measured in seconds since the Unix epoch.
-    pub created: Timestamp,
-
-    /// An arbitrary string attached to the tax rate for your internal use only.
-    ///
-    /// It will not be visible to your customers.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
-
-    /// The display name of the tax rates as it will appear to your customer on their receipt email, PDF, and the hosted invoice page.
-    pub display_name: String,
-
-    /// This specifies if the tax rate is inclusive or exclusive.
-    pub inclusive: bool,
-
-    /// The jurisdiction for the tax rate.
-    ///
-    /// You can use this label field for tax reporting purposes.
-    /// It also appears on your customer’s invoice.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub jurisdiction: Option<Box<String>>,
-
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: bool,
-
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    ///
-    /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
-    pub metadata: Metadata,
-
-    /// This represents the tax rate percent out of 100.
-    pub percentage: f64,
-
-    /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
-    ///
-    /// For example, "NY" for New York, United States.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<Box<String>>,
-
-    /// The high-level tax type, such as `vat` or `sales_tax`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_type: Option<Box<TaxRateTaxType>>,
-}
+use crate::TaxRate;
 
 impl TaxRate {
     /// Returns a list of your tax rates.
@@ -309,7 +244,7 @@ impl<'a> UpdateTaxRate<'a> {
     }
 }
 
-/// An enum representing the possible values of an `TaxRate`'s `tax_type` field.
+/// An enum representing the possible values of an `CreateTaxRate`'s `tax_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TaxRateTaxType {

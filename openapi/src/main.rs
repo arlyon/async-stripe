@@ -116,7 +116,6 @@ fn main() -> Result<()> {
         out.push_str("use serde_derive::{Deserialize, Serialize};\n");
         for (schema, feature) in &feature_groups {
             out.push('\n');
-            out.push_str(&format!("// written at {}\n", line!()));
             let (id_type, c_c) =
                 meta.schema_to_id_type(schema).unwrap_or_else(|| ("()".into(), CopyOrClone::Copy));
             let struct_type = meta.schema_to_rust_type(schema);
@@ -368,14 +367,13 @@ fn gen_struct(
         None => return (),
     };
 
-    /*if all_objects.contains(&struct_name) {
+    if all_objects.contains(&struct_name) {
         state.use_root.insert(struct_name);
         return;
-    }*/
+    }
 
     println!("struct {} {{...}}", struct_name);
 
-    out.push_str(&format!("// written at {}\n", line!()));
     // Generate the struct type
     out.push_str("/// The resource representing a Stripe \"");
     out.push_str(schema_title);
@@ -528,17 +526,16 @@ fn gen_generated_schemas(
         state.generated_schemas.iter().find_map(|(k, &v)| if !v { Some(k) } else { None }).cloned()
     {
         let struct_name = meta.schema_to_rust_type(&schema_name);
-        /*if all_objects.contains(&struct_name) {
+        if all_objects.contains(&struct_name) {
             state.use_root.insert(struct_name);
 
             // Set the schema to generated
             *state.generated_schemas.entry(schema_name).or_default() = true;
 
             continue;
-        }*/
+        }
 
         out.push('\n');
-        out.push_str(&format!("// written at {}\n", line!()));
         out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
         out.push_str("pub struct ");
         out.push_str(&struct_name);
@@ -594,7 +591,6 @@ fn gen_inferred_params(
             parameters.iter().all(|param| param["required"].as_bool() != Some(true));
 
         out.push('\n');
-        out.push_str(&format!("// written at {}\n", line!()));
         out.push_str(&format!("/// The parameters for `{}::{}`.\n", struct_name, params.method));
 
         if can_derive_default {
@@ -1012,10 +1008,10 @@ fn gen_emitted_structs(
                 println!("struct {} {{ ... }}", struct_name);
             }
 
-            /*if all_objects.contains(&struct_name) {
+            if all_objects.contains(&struct_name) {
                 state.use_root.insert(struct_name);
                 continue;
-            }*/
+            }
 
             let fields = match struct_.schema["properties"].as_object() {
                 Some(some) => some,
@@ -1027,7 +1023,6 @@ fn gen_emitted_structs(
             };
             out.push('\n');
 
-            out.push_str(&format!("// written at {}\n", line!()));
             out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
             out.push_str("pub struct ");
             out.push_str(&struct_name.to_camel_case());
@@ -1096,7 +1091,6 @@ fn gen_unions(
             out.push_str("}\n");
             all_objects.insert(union_name);
         } else {
-            println!("inserting import into state for {}", union_name);
             state.use_root.insert(union_name);
         }
     }
@@ -1192,7 +1186,6 @@ fn gen_enums(
             out.push_str("}\n");
             all_objects.insert(enum_name);
         } else {
-            println!("inserting import into state for {}", enum_name);
             state.use_root.insert(enum_name);
         }
     }

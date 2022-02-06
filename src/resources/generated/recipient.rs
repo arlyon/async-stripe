@@ -5,75 +5,8 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::RecipientId;
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{Account, BankAccount, Card};
-
-// written at 378
-/// The resource representing a Stripe "TransferRecipient".
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Recipient {
-    /// Unique identifier for the object.
-    pub id: RecipientId,
-
-    /// Hash describing the current account on the recipient, if there is one.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub active_account: Option<Box<BankAccount>>,
-
-    #[serde(default)]
-    pub cards: List<Card>,
-
-    /// Time at which the object was created.
-    ///
-    /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<Timestamp>,
-
-    /// The default card to use for creating transfers to this recipient.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_card: Option<Box<Expandable<Card>>>,
-
-    // Always true for a deleted object
-    #[serde(default)]
-    pub deleted: bool,
-
-    /// An arbitrary string attached to the object.
-    ///
-    /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<Box<String>>,
-
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
-
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    ///
-    /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
-    pub metadata: Metadata,
-
-    /// The ID of the [Custom account](https://stripe.com/docs/connect/custom-accounts) this recipient was migrated to.
-    ///
-    /// If set, the recipient can no longer be updated, nor can transfers be made to it: use the Custom account instead.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub migrated_to: Option<Box<Expandable<Account>>>,
-
-    /// Full, legal name of the recipient.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<Box<String>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rolled_back_from: Option<Box<Expandable<Account>>>,
-
-    /// Type of the recipient, one of `individual` or `corporation`.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<RecipientType>,
-}
+use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::Recipient;
 
 impl Recipient {
     /// Returns a list of your recipients.

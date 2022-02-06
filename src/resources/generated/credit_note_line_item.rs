@@ -5,8 +5,9 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::CreditNoteLineItemId;
-use crate::params::{Expandable, Object};
-use crate::resources::{Discount, TaxRate};
+use crate::params::Object;
+use crate::resources::TaxRate;
+use crate::{CreditNoteTaxAmount, DiscountsResourceDiscountAmount};
 
 // written at 378
 /// The resource representing a Stripe "CreditNoteLineItem".
@@ -68,29 +69,6 @@ impl Object for CreditNoteLineItem {
     fn object(&self) -> &'static str {
         "credit_note_line_item"
     }
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CreditNoteTaxAmount {
-    /// The amount, in %s, of the tax.
-    pub amount: i64,
-
-    /// Whether this tax amount is inclusive or exclusive.
-    pub inclusive: bool,
-
-    /// The tax rate that was applied to get this tax amount.
-    pub tax_rate: Expandable<TaxRate>,
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct DiscountsResourceDiscountAmount {
-    /// The amount, in %s, of the discount.
-    pub amount: i64,
-
-    /// The discount that was applied to get this discount amount.
-    pub discount: Expandable<Discount>,
 }
 
 /// An enum representing the possible values of an `CreditNoteLineItem`'s `type` field.

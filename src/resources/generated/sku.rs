@@ -5,82 +5,9 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::config::{Client, Response};
-use crate::ids::SkuId;
-use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Timestamp};
-use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
-
-// written at 378
-/// The resource representing a Stripe "Sku".
-///
-/// For more details see <https://stripe.com/docs/api/skus/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Sku {
-    /// Unique identifier for the object.
-    pub id: SkuId,
-
-    /// Whether the SKU is available for purchase.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub active: Option<Box<bool>>,
-
-    /// A dictionary of attributes and values for the attributes defined by the product.
-    ///
-    /// If, for example, a product's attributes are `["size", "gender"]`, a valid SKU has the following dictionary of attributes: `{"size": "Medium", "gender": "Unisex"}`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Metadata>,
-
-    /// Time at which the object was created.
-    ///
-    /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub created: Option<Timestamp>,
-
-    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
-
-    // Always true for a deleted object
-    #[serde(default)]
-    pub deleted: bool,
-
-    /// The URL of an image for this SKU, meant to be displayable to the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub image: Option<Box<String>>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub inventory: Option<Box<SkuInventory>>,
-
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
-
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
-    ///
-    /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
-    pub metadata: Metadata,
-
-    /// The dimensions of this SKU for shipping purposes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub package_dimensions: Option<Box<PackageDimensions>>,
-
-    /// The cost of the item as a positive integer in the smallest currency unit (that is, 100 cents to charge $1.00, or 100 to charge ¥100, Japanese Yen being a zero-decimal currency).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<Box<i64>>,
-
-    /// The ID of the product this SKU is associated with.
-    ///
-    /// The product must be currently active.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product: Option<Box<Expandable<Product>>>,
-
-    /// Time at which the object was last updated.
-    ///
-    /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub updated: Option<Box<Timestamp>>,
-}
+use crate::params::{Deleted, Expand, IdOrCreate, List, Metadata, Object};
+use crate::resources::{CreateProduct, Currency, PackageDimensions, SkuInventory};
+use crate::Sku;
 
 impl Sku {
     /// Returns a list of your SKUs.
@@ -126,29 +53,6 @@ impl Object for Sku {
     fn object(&self) -> &'static str {
         "sku"
     }
-}
-
-// written at 541
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct SkuInventory {
-    /// The count of inventory available.
-    ///
-    /// Will be present if and only if `type` is `finite`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
-
-    /// Inventory type.
-    ///
-    /// Possible values are `finite`, `bucket` (not quantified), and `infinite`.
-    #[serde(rename = "type")]
-    pub type_: String,
-
-    /// An indicator of the inventory available.
-    ///
-    /// Possible values are `in_stock`, `limited`, and `out_of_stock`.
-    /// Will be present if and only if `type` is `bucket`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<Box<String>>,
 }
 
 // written at 597
