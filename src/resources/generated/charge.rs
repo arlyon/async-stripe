@@ -2121,6 +2121,13 @@ pub struct CustomerPaymentSourceCard {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum DestinationUnion {
+    DestinationSpecs(DestinationSpecs),
+    Alternate1(String),
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DestinationSpecs {
     pub account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
