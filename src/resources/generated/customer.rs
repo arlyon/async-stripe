@@ -435,13 +435,8 @@ pub struct UpdateCustomer<'a> {
     pub balance: Option<i64>,
 
     /// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
-    #[serde(rename = "card")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card0: Option<CustomerPaymentSourceCard>,
-
-    #[serde(rename = "card")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card1: Option<String>,
+    pub card: Option<UpdateCustomerCardUnion>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
@@ -560,8 +555,7 @@ impl<'a> UpdateCustomer<'a> {
         UpdateCustomer {
             address: Default::default(),
             balance: Default::default(),
-            card0: Default::default(),
-            card1: Default::default(),
+            card: Default::default(),
             coupon: Default::default(),
             default_alipay_account: Default::default(),
             default_bank_account: Default::default(),
@@ -923,6 +917,14 @@ impl std::fmt::Display for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
+}
+
+/// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum UpdateCustomerCardUnion {
+    CustomerPaymentSourceCard(CustomerPaymentSourceCard),
+    Alternate1(String),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

@@ -75,13 +75,8 @@ pub struct CreateToken<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<Box<CreateTokenAccount>>,
 
-    #[serde(rename = "card")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card0: Option<CreditCardSpecs>,
-
-    #[serde(rename = "card")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card1: Option<String>,
+    pub card: Option<CreateTokenCardUnion>,
 
     /// The customer (owned by the application's account) for which to create a token.
     ///
@@ -111,8 +106,7 @@ impl<'a> CreateToken<'a> {
     pub fn new() -> Self {
         CreateToken {
             account: Default::default(),
-            card0: Default::default(),
-            card1: Default::default(),
+            card: Default::default(),
             customer: Default::default(),
             cvc_update: Default::default(),
             expand: Default::default(),
@@ -329,6 +323,13 @@ impl std::fmt::Display for CreateTokenAccountBusinessType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum CreateTokenCardUnion {
+    CreditCardSpecs(CreditCardSpecs),
+    Alternate1(String),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

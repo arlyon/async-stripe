@@ -559,6 +559,7 @@ fn gen_multitype_params(
     initializers: &mut Vec<(String, String, bool)>,
     required: bool,
     state: &mut Generated,
+    meta: &Metadata,
     out: &mut String,
 ) {
     let member_schema = param["schema"].clone();
@@ -570,29 +571,20 @@ fn gen_multitype_params(
         Err(TypeError::NoType) => {
             //Weird case, found with anyOf so only case we are handling
             //at the current moment
-            if let Some(inner_vec) = member_schema["anyOf"].as_array() {
-                for (index, val) in inner_vec.iter().enumerate() {
-                    let new_member_name = format!("{}{}", param_name, index);
-                    let new_member_type: String;
-                    if let Ok(normal_type) = gen_member_variable_string(val) {
-                        new_member_type = normal_type;
-                    } else {
-                        if let Some(title) = val["title"].as_str() {
-                            new_member_type = title.to_camel_case();
-                        } else {
-                            new_member_type = new_member_name.to_camel_case();
-                        }
-                        let inferred_object = InferredObject {
-                            rust_type: new_member_type.clone(),
-                            schema: val.clone(),
-                        };
-                        state.generated_objects.insert(new_member_type.clone(), inferred_object);
-                    }
-                    initializers.push((new_member_name.clone(), new_member_type.clone(), required));
-                    out.push_str(&format!("    #[serde(rename = \"{}\")]\n", param_name));
-                    write_out_field(out, &new_member_name, &new_member_type, required);
-                    out.push_str("\n");
-                }
+            if let Some(_) = member_schema["anyOf"].as_array() {
+                let mut union_addition = param_name.to_owned();
+                union_addition.push_str("_union");
+                let mut new_type_name = parent_struct_rust_type.to_owned();
+                new_type_name.push_str(&meta.schema_to_rust_type(&union_addition));
+
+                //println!("TEST: {:#?}", member_schema);
+                let inferred_object = InferredObject {
+                    rust_type: new_type_name.clone(),
+                    schema: member_schema.clone(),
+                };
+                state.generated_objects.insert(new_type_name.clone(), inferred_object);
+                initializers.push((param_name.into(), new_type_name.clone(), required));
+                write_out_field(out, &param_name.into(), &new_type_name, required);
             } else {
                 assert!(false, "Strange case, haven't handled this yet: {:#?}", member_schema);
             }
@@ -686,6 +678,7 @@ fn gen_inferred_params(
                         &mut initializers,
                         required,
                         state,
+                        meta,
                         out,
                     );
                 }
@@ -698,6 +691,7 @@ fn gen_inferred_params(
                         &mut initializers,
                         required,
                         state,
+                        meta,
                         out,
                     );
                 }
@@ -1345,14 +1339,11 @@ fn gen_objects(out: &mut String, state: &mut Generated) {
                 }
                 other => assert!(false, "Expected an object here got: {}", other),
             }
-        } else {
-            assert!(false, "Schema does not have a type {:#?}", schema);
         }
-        generated_objects.remove(&key_str);
 
-        /*if let Some(array) = schema["anyOf"].as_array() {
+        if let Some(array) = schema["anyOf"].as_array() {
             out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
-            out.push_str("#[serde(rename_all = \"snake_case\")]\n");
+            out.push_str("#[serde(untagged, rename_all = \"snake_case\")]\n");
             out.push_str(&format!("pub enum {} {{\n", key_str));
 
             let mut index = 0;
@@ -1378,7 +1369,9 @@ fn gen_objects(out: &mut String, state: &mut Generated) {
                 println!("value: {:#?}", value);
             }
             out.push_str("}\n");
-        }*/
+        }
+
+        generated_objects.remove(&key_str);
     }
 }
 

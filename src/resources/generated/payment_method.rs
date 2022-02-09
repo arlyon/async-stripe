@@ -617,13 +617,8 @@ pub struct CreatePaymentMethod<'a> {
     /// For backwards compatibility, you can alternatively provide a Stripe token (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with format `card: {token: "tok_visa"}`.
     /// When providing a card number, you must meet the requirements for [PCI compliance](https://stripe.com/docs/security#validating-pci-compliance).
     /// We strongly recommend using Stripe.js instead of interacting with this API directly.
-    #[serde(rename = "card")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card0: Option<CardDetailsParams>,
-
-    #[serde(rename = "card")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card1: Option<TokenParams>,
+    pub card: Option<CreatePaymentMethodCardUnion>,
 
     /// The `Customer` to whom the original PaymentMethod is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -713,8 +708,7 @@ impl<'a> CreatePaymentMethod<'a> {
             bancontact: Default::default(),
             billing_details: Default::default(),
             boleto: Default::default(),
-            card0: Default::default(),
-            card1: Default::default(),
+            card: Default::default(),
             customer: Default::default(),
             eps: Default::default(),
             expand: Default::default(),
@@ -1764,6 +1758,18 @@ impl std::fmt::Display for WalletDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
+}
+
+/// If this is a `card` PaymentMethod, this hash contains the user's card details.
+///
+/// For backwards compatibility, you can alternatively provide a Stripe token (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with format `card: {token: "tok_visa"}`.
+/// When providing a card number, you must meet the requirements for [PCI compliance](https://stripe.com/docs/security#validating-pci-compliance).
+/// We strongly recommend using Stripe.js instead of interacting with this API directly.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum CreatePaymentMethodCardUnion {
+    CardDetailsParams(CardDetailsParams),
+    TokenParams(TokenParams),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
