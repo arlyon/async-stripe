@@ -1,8 +1,4 @@
-use std::{
-    collections::{BTreeMap, BTreeSet, HashMap},
-    fs::write,
-    path::Path,
-};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 use heck::{CamelCase, SnakeCase};
 use serde_json::{json, Value};
@@ -11,46 +7,12 @@ use crate::{
     file_generator::FileGenerator,
     metadata::Metadata,
     types::{
-        CopyOrClone, InferredEnum, InferredObject, InferredParams, InferredStruct, InferredUnion,
-        MethodTypes, TypeError,
+        InferredEnum, InferredObject, InferredParams, InferredStruct, InferredUnion, MethodTypes,
+        TypeError,
     },
     url_finder::UrlFinder,
     util::{infer_integer_type, print_doc_comment, print_doc_from_schema, write_out_field},
 };
-
-pub fn gen_placeholders<T>(out_path: T, meta: &Metadata)
-where
-    T: AsRef<Path>,
-{
-    let mut out = String::new();
-    out.push_str("use crate::ids::*;\n");
-    out.push_str("use crate::params::Object;\n");
-    out.push_str("use serde_derive::{Deserialize, Serialize};\n");
-    for (schema, feature) in meta.feature_groups.iter() {
-        out.push('\n');
-        let (id_type, c_c) =
-            meta.schema_to_id_type(schema).unwrap_or_else(|| ("()".into(), CopyOrClone::Copy));
-        let struct_type = meta.schema_to_rust_type(schema);
-        out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
-        out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
-        out.push_str(&format!("pub struct {} {{\n", struct_type));
-        out.push_str(&format!("\tpub id: {},\n", id_type));
-        out.push_str("}\n\n");
-        out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
-        out.push_str(&format!("impl Object for {} {{\n", struct_type));
-        out.push_str(&format!("\ttype Id = {};\n", id_type));
-        out.push_str(&format!(
-            "\tfn id(&self) -> Self::Id {{ self.id{} }}\n",
-            match c_c {
-                CopyOrClone::Clone => ".clone()",
-                CopyOrClone::Copy => "",
-            }
-        ));
-        out.push_str(&format!("\tfn object(&self) -> &'static str {{ \"{}\" }}\n", schema));
-        out.push_str("}\n");
-        write(&out_path.as_ref().join("placeholders.rs"), out.as_bytes()).unwrap();
-    }
-}
 
 #[tracing::instrument(skip_all)]
 pub fn gen_struct(

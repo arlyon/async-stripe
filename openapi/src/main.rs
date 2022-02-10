@@ -2,7 +2,7 @@ use std::{collections::BTreeSet, fs};
 
 use anyhow::{Context, Result};
 
-use crate::{codegen::gen_placeholders, metadata::Metadata, url_finder::UrlFinder};
+use crate::{metadata::Metadata, url_finder::UrlFinder};
 
 mod codegen;
 mod file_generator;
@@ -29,8 +29,7 @@ fn main() -> Result<()> {
     let meta = Metadata::from_spec(&spec);
     let url_finder = UrlFinder::new().context("couldn't initialize url finder")?;
 
-    // Generate placeholders with stubs for missing features
-    gen_placeholders(&out_path, &meta);
+    meta.write_placeholders(&out_path);
 
     // write files and get those files referenced
     let shared_objects = meta

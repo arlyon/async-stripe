@@ -1,4 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
+use std::fs::write;
+use std::path::Path;
 
 use heck::{CamelCase, SnakeCase};
 use serde_json::Value;
@@ -94,6 +96,43 @@ impl<'a> Metadata<'a> {
             field_mappings,
             feature_groups,
         }
+    }
+
+    /// generate placeholder types with stubs for potentially missing features
+    pub fn write_placeholders<T>(&self, out_path: T)
+    where
+        T: AsRef<Path>,
+    {
+        let mut out = String::new();
+        out.push_str("use crate::ids::*;\n");
+        out.push_str("use crate::params::Object;\n");
+        out.push_str("use serde_derive::{Deserialize, Serialize};\n");
+
+        for (schema, feature) in self.feature_groups.iter() {
+            out.push('\n');
+            let (id_type, c_c) =
+                self.schema_to_id_type(schema).unwrap_or_else(|| ("()".into(), CopyOrClone::Copy));
+            let struct_type = self.schema_to_rust_type(schema);
+            out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
+            out.push_str("#[derive(Clone, Debug, Default, Deserialize, Serialize)]\n");
+            out.push_str(&format!("pub struct {} {{\n", struct_type));
+            out.push_str(&format!("\tpub id: {},\n", id_type));
+            out.push_str("}\n\n");
+            out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
+            out.push_str(&format!("impl Object for {} {{\n", struct_type));
+            out.push_str(&format!("\ttype Id = {};\n", id_type));
+            out.push_str(&format!(
+                "\tfn id(&self) -> Self::Id {{ self.id{} }}\n",
+                match c_c {
+                    CopyOrClone::Clone => ".clone()",
+                    CopyOrClone::Copy => "",
+                }
+            ));
+            out.push_str(&format!("\tfn object(&self) -> &'static str {{ \"{}\" }}\n", schema));
+            out.push_str("}\n");
+        }
+
+        write(&out_path.as_ref().join("placeholders.rs"), out.as_bytes()).unwrap();
     }
 
     #[tracing::instrument(skip_all)]
