@@ -329,7 +329,7 @@ impl std::fmt::Display for CreateTokenAccountBusinessType {
 #[serde(untagged, rename_all = "snake_case")]
 pub enum CreateTokenCardUnion {
     CreditCardSpecs(CreditCardSpecs),
-    Alternate1(String),
+    String(String),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

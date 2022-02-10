@@ -924,7 +924,7 @@ impl std::fmt::Display for TaxIdType {
 #[serde(untagged, rename_all = "snake_case")]
 pub enum UpdateCustomerCardUnion {
     CustomerPaymentSourceCard(CustomerPaymentSourceCard),
-    Alternate1(String),
+    String(String),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

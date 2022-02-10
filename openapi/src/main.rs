@@ -1,5 +1,5 @@
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::{BTreeMap, BTreeSet, HashMap},
     fs,
 };
 
@@ -1346,27 +1346,33 @@ fn gen_objects(out: &mut String, state: &mut Generated) {
             out.push_str("#[serde(untagged, rename_all = \"snake_case\")]\n");
             out.push_str(&format!("pub enum {} {{\n", key_str));
 
-            let mut index = 0;
+            let mut variants = HashMap::new();
+
             for value in array {
-                if let Some(title) = value["title"].as_str() {
-                    out.push_str(&format!("    pub {}(", title.to_camel_case()));
-                } else {
-                    out.push_str(&format!("    pub Alternate{}(", index));
-                }
-                index += 1;
+                let type_name = gen_member_variable_string(&value).unwrap_or_else(|_| {
+                    let type_name = value["title"].as_str().unwrap().to_camel_case();
 
-                if let Ok(obj_str) = gen_member_variable_string(&value) {
-                    out.push_str(&format!("{}),\n", obj_str));
-                } else {
-                    let object_name = value["title"].as_str().unwrap();
-                    let rust_obj_name = object_name.to_camel_case();
+                    generated_objects.insert(
+                        type_name.clone(),
+                        InferredObject { rust_type: type_name.clone(), schema: value.clone() },
+                    );
 
-                    out.push_str(&format!("{}),\n", rust_obj_name));
-                    let obj_desc =
-                        InferredObject { rust_type: rust_obj_name.clone(), schema: value.clone() };
-                    generated_objects.insert(object_name.to_camel_case(), obj_desc);
-                }
-                println!("value: {:#?}", value);
+                    type_name
+                });
+
+                // if the title is not provided, the variant
+                // should have the same name as the type it contains
+                // with an optional suffix if there are clashes
+                let variant_name =
+                    value["title"].as_str().map(|s| s.to_camel_case()).unwrap_or_else(|| {
+                        let count = variants.entry(type_name.clone()).or_insert(0);
+                        let suffix = if *count == 0 { "".to_string() } else { count.to_string() };
+                        *count += 1;
+
+                        format!("{}{}", type_name, suffix)
+                    });
+
+                out.push_str(&format!("    pub {}({}),\n", variant_name, type_name));
             }
             out.push_str("}\n");
         }

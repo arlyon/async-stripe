@@ -2083,14 +2083,14 @@ impl std::fmt::Display for PaymentMethodDetailsSofortPreferredLanguage {
 #[serde(untagged, rename_all = "snake_case")]
 pub enum CreateChargeCardUnion {
     CustomerPaymentSourceCard(CustomerPaymentSourceCard),
-    Alternate1(String),
+    String(String),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "snake_case")]
 pub enum CreateChargeDestinationUnion {
     DestinationSpecs(DestinationSpecs),
-    Alternate1(String),
+    String(String),
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
