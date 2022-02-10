@@ -144,6 +144,11 @@ pub struct CreateTransfer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
 
+    /// The ID of a connected Stripe account.
+    ///
+    /// [See the Connect documentation](https://stripe.com/docs/connect/charges-transfers) for details.
+    pub destination: String,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -178,11 +183,12 @@ pub struct CreateTransfer<'a> {
 }
 
 impl<'a> CreateTransfer<'a> {
-    pub fn new(currency: Currency) -> Self {
+    pub fn new(currency: Currency, destination: String) -> Self {
         CreateTransfer {
             amount: Default::default(),
             currency,
             description: Default::default(),
+            destination,
             expand: Default::default(),
             metadata: Default::default(),
             source_transaction: Default::default(),
@@ -197,6 +203,10 @@ impl<'a> CreateTransfer<'a> {
 pub struct ListTransfers<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
+
+    /// Only return transfers for the destination specified by this account ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination: Option<String>,
 
     /// A cursor for use in pagination.
     ///
@@ -231,6 +241,7 @@ impl<'a> ListTransfers<'a> {
     pub fn new() -> Self {
         ListTransfers {
             created: Default::default(),
+            destination: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),

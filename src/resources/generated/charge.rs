@@ -1202,13 +1202,8 @@ pub struct CreateCharge<'a> {
     pub capture: Option<bool>,
 
     /// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
-    #[serde(rename = "card")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card0: Option<CustomerPaymentSourceCard>,
-
-    #[serde(rename = "card")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card1: Option<String>,
+    pub card: Option<CreateChargeCardUnion>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -1226,6 +1221,9 @@ pub struct CreateCharge<'a> {
     /// Note that if you use Stripe to send automatic email receipts to your customers, your receipt emails will include the `description` of the charge(s) that they are describing.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination: Option<CreateChargeDestinationUnion>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -1301,11 +1299,11 @@ impl<'a> CreateCharge<'a> {
             application_fee: Default::default(),
             application_fee_amount: Default::default(),
             capture: Default::default(),
-            card0: Default::default(),
-            card1: Default::default(),
+            card: Default::default(),
             currency: Default::default(),
             customer: Default::default(),
             description: Default::default(),
+            destination: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
             on_behalf_of: Default::default(),
@@ -2080,6 +2078,21 @@ impl std::fmt::Display for PaymentMethodDetailsSofortPreferredLanguage {
     }
 }
 
+/// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum CreateChargeCardUnion {
+    CustomerPaymentSourceCard(CustomerPaymentSourceCard),
+    String(String),
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum CreateChargeDestinationUnion {
+    DestinationSpecs(DestinationSpecs),
+    String(String),
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct CustomerPaymentSourceCard {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2105,4 +2118,11 @@ pub struct CustomerPaymentSourceCard {
     pub number: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub object: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DestinationSpecs {
+    pub account: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i32>,
 }
