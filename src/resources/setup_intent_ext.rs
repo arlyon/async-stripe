@@ -43,7 +43,6 @@ pub trait SetupIntentExt {
     where
         Self: Sized;
 
-
     fn cancel(
         client: &Client,
         setup_id: &SetupIntentId,
@@ -75,7 +74,6 @@ impl SetupIntentExt for SetupIntent {
     ) -> Response<SetupIntent> {
         client.post_form(&format!("/setup_intents/{}/confirm", setup_id), &params, Some(idem_key))
     }
-
 
     fn cancel(
         _client: &Client,
