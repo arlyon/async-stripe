@@ -1334,10 +1334,14 @@ pub fn gen_field_rust_type(
         }
     };
 
-    if !required || field["nullable"].as_bool() == Some(true) {
-        format!("Option<Box<{}>>", ty)
-    } else {
-        ty
+    let optional = !required || field["nullable"].as_bool() == Some(true);
+    let should_box = ty.as_str() == "ApiErrors";
+
+    match (optional, should_box) {
+        (true, true) => format!("Option<Box<{}>>", ty),
+        (true, false) => format!("Option<{}>", ty),
+        (false, true) => format!("Box<{}>", ty),
+        (false, false) => ty,
     }
 }
 
