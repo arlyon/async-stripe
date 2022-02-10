@@ -9,8 +9,7 @@ use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Charge, Currency, Customer, Invoice, PaymentIntentOffSession,
-    PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsBoleto,
-    PaymentMethodOptionsOxxo, Review, Shipping,
+    PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan, Review, Shipping,
 };
 
 /// The resource representing a Stripe "PaymentIntent".
@@ -619,6 +618,14 @@ pub struct PaymentMethodOptionsBancontact {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsBoleto {
+    /// The number of calendar days before a Boleto voucher expires.
+    ///
+    /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto voucher will expire on Wednesday at 23:59 America/Sao_Paulo time.
+    pub expires_after_days: u32,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsCardInstallments {
     /// Installment plans that may be selected for this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -655,6 +662,14 @@ pub struct PaymentMethodOptionsKlarna {
     /// Preferred locale of the Klarna checkout page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locale: Option<Box<String>>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsOxxo {
+    /// The number of calendar days before an OXXO invoice expires.
+    ///
+    /// For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
+    pub expires_after_days: u32,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
