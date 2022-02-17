@@ -13,6 +13,20 @@ pub struct AttachPaymentMethod {
 }
 
 impl PaymentMethod {
+    #[cfg(features = "idempotency")]
+    pub fn attach_with_idempotency(
+        client: &Client,
+        payment_method_id: &PaymentMethodId,
+        params: AttachPaymentMethod,
+        idem_key: &str,
+    ) -> Response<PaymentMethod> {
+        client.post_form(
+            &format!("/payment_methods/{}/attach", payment_method_id),
+            params,
+            Some(idem_key),
+        )
+    }
+
     /// Attach a payment method to a customer
     ///
     /// For more details see <https://stripe.com/docs/api/payment_methods/attach>.
@@ -20,13 +34,22 @@ impl PaymentMethod {
         client: &Client,
         payment_method_id: &PaymentMethodId,
         params: AttachPaymentMethod,
-        idem_key: Option<&str>,
     ) -> Response<PaymentMethod> {
         client.post_form(
             &format!("/payment_methods/{}/attach", payment_method_id),
             params,
-            idem_key,
+            None,
         )
+    }
+
+
+    #[cfg(features = "idempotency")]
+    pub fn detach_with_idempotency(
+        client: &Client,
+        payment_method_id: &PaymentMethodId,
+        idem_key: &str,
+    ) -> Response<PaymentMethod> {
+        client.post(&format!("/payment_methods/{}/detach", payment_method_id), Some(idem_key))
     }
 
     /// Detach a PaymentMethod from a Customer
@@ -35,8 +58,8 @@ impl PaymentMethod {
     pub fn detach(
         client: &Client,
         payment_method_id: &PaymentMethodId,
-        idem_key: Option<&str>,
     ) -> Response<PaymentMethod> {
-        client.post(&format!("/payment_methods/{}/detach", payment_method_id), idem_key)
+        client.post(&format!("/payment_methods/{}/detach", payment_method_id), None)
     }
+
 }
