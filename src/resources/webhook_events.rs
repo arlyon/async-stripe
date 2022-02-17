@@ -175,6 +175,14 @@ pub enum EventType {
     SkuDeleted,
     #[serde(rename = "sku.updated")]
     SkuUpdated,
+    #[serde(rename = "setup_intent.created")]
+    SetupIntentCreated,
+    #[serde(rename = "setup_intent.requires_action")]
+    SetupIntentRequiresAction,
+    #[serde(rename = "setup_intent.setup_failed")]
+    SetupIntentSetupFailed,
+    #[serde(rename = "setup_intent.succeeded")]
+    SetupIntentSucceeded,
     #[serde(rename = "source.canceled")]
     SourceCanceled,
     #[serde(rename = "source.chargeable")]
@@ -236,6 +244,7 @@ pub enum EventObject {
     Review(Review),
     Sku(Sku),
     Subscription(Subscription),
+    SetupIntent(SetupIntent),
     Transfer(Transfer),
 }
 
