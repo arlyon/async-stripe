@@ -5,6 +5,7 @@ use serde_derive::{Deserialize, Serialize};
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
 
+use crate::params::Timestamp;
 use crate::error::WebhookError;
 use crate::ids::EventId;
 use crate::resources::*;
@@ -205,11 +206,39 @@ pub enum EventType {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct WebhookEvent {
+    /// Unique identifier for the object.
     pub id: EventId,
-    #[serde(rename = "type")]
-    pub event_type: EventType,
+
+    /// The connected account that originated the event.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<Box<String>>,
+
+    /// The Stripe API version used to render `data`.
+    ///
+    /// *Note: This property is populated only for events on or after October 31, 2014*.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub api_version: Option<Box<String>>,
+
+    /// Time at which the object was created.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    pub created: Timestamp,
+
     pub data: EventData,
-    // ...
+
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    pub livemode: bool,
+
+    /// Number of webhooks that have yet to be successfully delivered (i.e., to return a 20x response) to the URLs you've specified.
+    pub pending_webhooks: i64,
+
+    /// Information on the API request that instigated the event.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request: Option<Box<NotificationEventRequest>>,
+
+    /// Description of the event (e.g., `invoice.created` or `charge.refunded`).
+    #[serde(rename = "type")]
+    pub type_: EventType,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
