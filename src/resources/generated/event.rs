@@ -19,13 +19,13 @@ pub struct Event {
 
     /// The connected account that originated the event.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<Box<String>>,
+    pub account: Option<String>,
 
     /// The Stripe API version used to render `data`.
     ///
     /// *Note: This property is populated only for events on or after October 31, 2014*.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub api_version: Option<Box<String>>,
+    pub api_version: Option<String>,
 
     /// Time at which the object was created.
     ///
@@ -42,7 +42,7 @@ pub struct Event {
 
     /// Information on the API request that instigated the event.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub request: Option<Box<NotificationEventRequest>>,
+    pub request: Option<NotificationEventRequest>,
 
     /// Description of the event (e.g., `invoice.created` or `charge.refunded`).
     #[serde(rename = "type")]
@@ -82,13 +82,13 @@ pub struct NotificationEventRequest {
     /// If null, the event was automatic (e.g., Stripe's automatic subscription handling).
     /// Request logs are available in the [dashboard](https://dashboard.stripe.com/logs), but currently not in the API.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<Box<String>>,
+    pub id: Option<String>,
 
     /// The idempotency key transmitted during the request, if any.
     ///
     /// *Note: This property is populated only for events on or after May 23, 2017*.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub idempotency_key: Option<Box<String>>,
+    pub idempotency_key: Option<String>,
 }
 
 /// The parameters for `Event::list`.
@@ -139,7 +139,7 @@ pub struct ListEvents<'a> {
     /// The list will be filtered to include only events with a matching event property.
     /// You may pass either `type` or `types`, but not both.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub types: Option<Box<Vec<String>>>,
+    pub types: Option<Vec<String>>,
 }
 
 impl<'a> ListEvents<'a> {

@@ -16,7 +16,7 @@ pub struct TaxId {
 
     /// Two-letter ISO code representing the country of the tax ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<Box<String>>,
+    pub country: Option<String>,
 
     /// Time at which the object was created.
     ///
@@ -26,7 +26,7 @@ pub struct TaxId {
 
     /// ID of the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Box<Expandable<Customer>>>,
+    pub customer: Option<Expandable<Customer>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -34,22 +34,22 @@ pub struct TaxId {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `es_cif`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `th_vat`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
     ///
     /// Note that some legacy tax IDs have type `unknown`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<Box<TaxIdType>>,
+    pub type_: Option<TaxIdType>,
 
     /// Value of the tax ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<Box<String>>,
+    pub value: Option<String>,
 
     /// Tax ID verification information.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<Box<TaxIdVerification>>,
+    pub verification: Option<TaxIdVerification>,
 }
 
 impl Object for TaxId {
@@ -69,11 +69,11 @@ pub struct TaxIdVerification {
 
     /// Verified address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified_address: Option<Box<String>>,
+    pub verified_address: Option<String>,
 
     /// Verified name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified_name: Option<Box<String>>,
+    pub verified_name: Option<String>,
 }
 
 /// An enum representing the possible values of an `TaxId`'s `type` field.

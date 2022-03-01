@@ -11,7 +11,7 @@ use crate::params::Object;
 pub struct Application {
     /// The name of the application.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<Box<String>>,
+    pub name: Option<String>,
 }
 
 impl Object for Application {

@@ -18,7 +18,7 @@ pub struct Capability {
     pub account: Expandable<Account>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub future_requirements: Option<Box<AccountCapabilityFutureRequirements>>,
+    pub future_requirements: Option<AccountCapabilityFutureRequirements>,
 
     /// Whether the capability has been requested.
     pub requested: bool,
@@ -27,10 +27,10 @@ pub struct Capability {
     ///
     /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested_at: Option<Box<Timestamp>>,
+    pub requested_at: Option<Timestamp>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requirements: Option<Box<AccountCapabilityRequirements>>,
+    pub requirements: Option<AccountCapabilityRequirements>,
 
     /// The status of the capability.
     ///
@@ -52,13 +52,13 @@ impl Object for Capability {
 pub struct AccountCapabilityFutureRequirements {
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alternatives: Option<Box<Vec<AccountRequirementsAlternative>>>,
+    pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
 
     /// Date on which `future_requirements` merges with the main `requirements` hash and `future_requirements` becomes empty.
     ///
     /// After the transition, `currently_due` requirements may immediately become `past_due`, but the account may also be given a grace period depending on the capability's enablement state prior to transitioning.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub current_deadline: Option<Box<Timestamp>>,
+    pub current_deadline: Option<Timestamp>,
 
     /// Fields that need to be collected to keep the capability enabled.
     ///
@@ -67,7 +67,7 @@ pub struct AccountCapabilityFutureRequirements {
 
     /// This is typed as a string for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is empty because fields in `future_requirements` will never disable the account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub disabled_reason: Option<Box<String>>,
+    pub disabled_reason: Option<String>,
 
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<AccountRequirementsError>,
@@ -94,13 +94,13 @@ pub struct AccountCapabilityFutureRequirements {
 pub struct AccountCapabilityRequirements {
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alternatives: Option<Box<Vec<AccountRequirementsAlternative>>>,
+    pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
 
     /// Date by which the fields in `currently_due` must be collected to keep the capability enabled for the account.
     ///
     /// These fields may disable the capability sooner if the next threshold is reached before they are collected.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub current_deadline: Option<Box<Timestamp>>,
+    pub current_deadline: Option<Timestamp>,
 
     /// Fields that need to be collected to keep the capability enabled.
     ///
@@ -112,7 +112,7 @@ pub struct AccountCapabilityRequirements {
     /// Can be `requirements.past_due`, `requirements.pending_verification`, `listed`, `platform_paused`, `rejected.fraud`, `rejected.listed`, `rejected.terms_of_service`, `rejected.other`, `under_review`, or `other`.  `rejected.unsupported_business` means that the account's business is not supported by the capability.
     /// For example, payment methods may restrict the businesses they support in their terms of service:  - [Afterpay Clearpay's terms of service](/afterpay-clearpay/legal#restricted-businesses)  If you believe that the rejection is in error, please contact support at https://support.stripe.com/contact/ for assistance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub disabled_reason: Option<Box<String>>,
+    pub disabled_reason: Option<String>,
 
     /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
     pub errors: Vec<AccountRequirementsError>,

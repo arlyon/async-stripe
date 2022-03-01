@@ -26,11 +26,11 @@ pub struct InvoiceLineItem {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// The amount of discount calculated per discount for this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount_amounts: Option<Box<Vec<DiscountsResourceDiscountAmount>>>,
+    pub discount_amounts: Option<Vec<DiscountsResourceDiscountAmount>>,
 
     /// If true, discounts will apply to this line item.
     ///
@@ -42,11 +42,11 @@ pub struct InvoiceLineItem {
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Box<Vec<Expandable<Discount>>>>,
+    pub discounts: Option<Vec<Expandable<Discount>>>,
 
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_item: Option<Box<String>>,
+    pub invoice_item: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -61,32 +61,32 @@ pub struct InvoiceLineItem {
 
     /// The price of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<Box<Price>>,
+    pub price: Option<Price>,
 
     /// Whether this is a proration.
     pub proration: bool,
 
     /// The quantity of the subscription, if the line item is a subscription or a proration.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
+    pub quantity: Option<u64>,
 
     /// The subscription that the invoice item pertains to, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<Box<String>>,
+    pub subscription: Option<String>,
 
     /// The subscription item that generated this invoice item.
     ///
     /// Left empty if the line item is not an explicit result of a subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_item: Option<Box<String>>,
+    pub subscription_item: Option<String>,
 
     /// The amount of tax calculated per tax rate for this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_amounts: Option<Box<Vec<TaxAmount>>>,
+    pub tax_amounts: Option<Vec<TaxAmount>>,
 
     /// The tax rates which apply to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<TaxRate>>>,
+    pub tax_rates: Option<Vec<TaxRate>>,
 
     /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
     #[serde(rename = "type")]

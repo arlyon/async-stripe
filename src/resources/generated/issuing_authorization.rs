@@ -27,7 +27,7 @@ pub struct IssuingAuthorization {
     ///
     /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_details: Option<Box<IssuingAuthorizationAmountDetails>>,
+    pub amount_details: Option<IssuingAuthorizationAmountDetails>,
 
     /// Whether the authorization has been approved.
     pub approved: bool,
@@ -42,7 +42,7 @@ pub struct IssuingAuthorization {
 
     /// The cardholder to whom this authorization belongs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cardholder: Option<Box<Expandable<IssuingCardholder>>>,
+    pub cardholder: Option<Expandable<IssuingCardholder>>,
 
     /// Time at which the object was created.
     ///
@@ -79,7 +79,7 @@ pub struct IssuingAuthorization {
     ///
     /// This field will only be non-null during an `issuing_authorization.request` webhook.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pending_request: Option<Box<IssuingAuthorizationPendingRequest>>,
+    pub pending_request: Option<IssuingAuthorizationPendingRequest>,
 
     /// History of every time `pending_request` was approved/denied, either by you directly or by Stripe (e.g.
     ///
@@ -99,7 +99,7 @@ pub struct IssuingAuthorization {
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wallet: Option<Box<String>>,
+    pub wallet: Option<String>,
 }
 
 impl Object for IssuingAuthorization {
@@ -121,7 +121,7 @@ pub struct IssuingAuthorizationPendingRequest {
     ///
     /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_details: Option<Box<IssuingAuthorizationAmountDetails>>,
+    pub amount_details: Option<IssuingAuthorizationAmountDetails>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -151,7 +151,7 @@ pub struct IssuingAuthorizationRequest {
     ///
     /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_details: Option<Box<IssuingAuthorizationAmountDetails>>,
+    pub amount_details: Option<IssuingAuthorizationAmountDetails>,
 
     /// Whether this request was approved.
     pub approved: bool,

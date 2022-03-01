@@ -23,7 +23,7 @@ pub struct WebhookEndpoint {
 
     /// The ID of the associated Connect application.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<Box<String>>,
+    pub application: Option<String>,
 
     /// Time at which the object was created.
     ///
@@ -37,7 +37,7 @@ pub struct WebhookEndpoint {
 
     /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// The list of events to enable for this endpoint.
     ///
@@ -47,7 +47,7 @@ pub struct WebhookEndpoint {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -59,7 +59,7 @@ pub struct WebhookEndpoint {
     ///
     /// Only returned at creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub secret: Option<Box<String>>,
+    pub secret: Option<String>,
 
     /// The status of the webhook.
     ///
@@ -69,7 +69,7 @@ pub struct WebhookEndpoint {
 
     /// The URL of the webhook endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<Box<String>>,
+    pub url: Option<String>,
 }
 
 impl WebhookEndpoint {
@@ -232,7 +232,7 @@ pub struct UpdateWebhookEndpoint<'a> {
     ///
     /// You may specify `['*']` to enable all events, except those that require explicit selection.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub enabled_events: Option<Box<Vec<EventFilter>>>,
+    pub enabled_events: Option<Vec<EventFilter>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]

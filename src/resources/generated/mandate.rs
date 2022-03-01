@@ -23,7 +23,7 @@ pub struct Mandate {
     pub livemode: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub multi_use: Option<Box<MandateMultiUse>>,
+    pub multi_use: Option<MandateMultiUse>,
 
     /// ID of the payment method associated with this mandate.
     pub payment_method: Expandable<PaymentMethod>,
@@ -31,7 +31,7 @@ pub struct Mandate {
     pub payment_method_details: MandatePaymentMethodDetails,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub single_use: Option<Box<MandateSingleUse>>,
+    pub single_use: Option<MandateSingleUse>,
 
     /// The status of the mandate, which indicates whether it can be used to initiate a payment.
     pub status: MandateStatus,
@@ -62,13 +62,13 @@ impl Object for Mandate {
 pub struct CustomerAcceptance {
     /// The time at which the customer accepted the Mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub accepted_at: Option<Box<Timestamp>>,
+    pub accepted_at: Option<Timestamp>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub offline: Option<Box<OfflineAcceptance>>,
+    pub offline: Option<OfflineAcceptance>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub online: Option<Box<OnlineAcceptance>>,
+    pub online: Option<OnlineAcceptance>,
 
     /// The type of customer acceptance information included with the Mandate.
     ///
@@ -83,19 +83,19 @@ pub struct MandateMultiUse {}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandatePaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<Box<MandateAcssDebit>>,
+    pub acss_debit: Option<MandateAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<Box<MandateAuBecsDebit>>,
+    pub au_becs_debit: Option<MandateAuBecsDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<Box<MandateBacsDebit>>,
+    pub bacs_debit: Option<MandateBacsDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<Box<CardMandatePaymentMethodDetails>>,
+    pub card: Option<CardMandatePaymentMethodDetails>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<Box<MandateSepaDebit>>,
+    pub sepa_debit: Option<MandateSepaDebit>,
 
     /// The type of the payment method associated with this mandate.
     ///
@@ -112,13 +112,13 @@ pub struct CardMandatePaymentMethodDetails {}
 pub struct MandateAcssDebit {
     /// List of Stripe products where this mandate can be selected automatically.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_for: Option<Box<Vec<MandateAcssDebitDefaultFor>>>,
+    pub default_for: Option<Vec<MandateAcssDebitDefaultFor>>,
 
     /// Description of the interval.
     ///
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_description: Option<Box<String>>,
+    pub interval_description: Option<String>,
 
     /// Payment schedule for the mandate.
     pub payment_schedule: MandateAcssDebitPaymentSchedule,
@@ -176,11 +176,11 @@ pub struct OfflineAcceptance {}
 pub struct OnlineAcceptance {
     /// The IP address from which the Mandate was accepted by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<Box<String>>,
+    pub ip_address: Option<String>,
 
     /// The user agent of the browser from which the Mandate was accepted by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub user_agent: Option<Box<String>>,
+    pub user_agent: Option<String>,
 }
 
 /// An enum representing the possible values of an `CustomerAcceptance`'s `type` field.

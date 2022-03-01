@@ -15,7 +15,7 @@ pub struct TerminalLocation {
     pub id: TerminalLocationId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<Box<Address>>,
+    pub address: Option<Address>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -23,11 +23,11 @@ pub struct TerminalLocation {
 
     /// The display name of the location.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub display_name: Option<Box<String>>,
+    pub display_name: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
