@@ -22,7 +22,7 @@ pub struct AlipayAccount {
 
     /// The ID of the customer associated with this Alipay Account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Box<Expandable<Customer>>>,
+    pub customer: Option<Expandable<Customer>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -30,11 +30,11 @@ pub struct AlipayAccount {
 
     /// Uniquely identifies the account and will be the same across all Alipay account objects that are linked to the same Alipay account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fingerprint: Option<Box<String>>,
+    pub fingerprint: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -44,7 +44,7 @@ pub struct AlipayAccount {
 
     /// If the Alipay account object is not reusable, the exact amount that you can create a charge for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_amount: Option<Box<i64>>,
+    pub payment_amount: Option<i64>,
 
     /// If the Alipay account object is not reusable, the exact currency that you can create a charge for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -54,15 +54,15 @@ pub struct AlipayAccount {
     ///
     /// If the account is reusable, then you can freely choose the amount of each payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reusable: Option<Box<bool>>,
+    pub reusable: Option<bool>,
 
     /// Whether this Alipay account object has ever been used for a payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub used: Option<Box<bool>>,
+    pub used: Option<bool>,
 
     /// The username for the Alipay account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub username: Option<Box<String>>,
+    pub username: Option<String>,
 }
 
 impl Object for AlipayAccount {

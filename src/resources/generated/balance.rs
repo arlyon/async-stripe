@@ -21,14 +21,14 @@ pub struct Balance {
     ///
     /// The connect reserve balance for each currency and payment type can be found in the `source_types` property.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub connect_reserved: Option<Box<Vec<BalanceAmount>>>,
+    pub connect_reserved: Option<Vec<BalanceAmount>>,
 
     /// Funds that can be paid out using Instant Payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub instant_available: Option<Box<Vec<BalanceAmount>>>,
+    pub instant_available: Option<Vec<BalanceAmount>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuing: Option<Box<BalanceDetail>>,
+    pub issuing: Option<BalanceDetail>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -67,22 +67,22 @@ pub struct BalanceAmount {
     pub currency: Currency,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_types: Option<Box<BalanceAmountBySourceType>>,
+    pub source_types: Option<BalanceAmountBySourceType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BalanceAmountBySourceType {
     /// Amount for bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account: Option<Box<i64>>,
+    pub bank_account: Option<i64>,
 
     /// Amount for card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<Box<i64>>,
+    pub card: Option<i64>,
 
     /// Amount for FPX.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx: Option<Box<i64>>,
+    pub fpx: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

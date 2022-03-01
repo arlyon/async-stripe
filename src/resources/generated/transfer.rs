@@ -25,7 +25,7 @@ pub struct Transfer {
 
     /// Balance transaction that describes the impact of this transfer on your account balance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
+    pub balance_transaction: Option<Expandable<BalanceTransaction>>,
 
     /// Time that this record of the transfer was first created.
     pub created: Timestamp,
@@ -39,15 +39,15 @@ pub struct Transfer {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// ID of the Stripe account the transfer was sent to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination: Option<Box<Expandable<Account>>>,
+    pub destination: Option<Expandable<Account>>,
 
     /// If the destination is a Stripe account, this will be the ID of the payment that the destination account received for the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination_payment: Option<Box<Expandable<Charge>>>,
+    pub destination_payment: Option<Expandable<Charge>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -69,7 +69,7 @@ pub struct Transfer {
     ///
     /// If null, the transfer was funded from the available balance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_transaction: Option<Box<Expandable<Charge>>>,
+    pub source_transaction: Option<Expandable<Charge>>,
 
     /// The source balance this transfer came from.
     ///
@@ -81,7 +81,7 @@ pub struct Transfer {
     ///
     /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_group: Option<Box<String>>,
+    pub transfer_group: Option<String>,
 }
 
 impl Transfer {

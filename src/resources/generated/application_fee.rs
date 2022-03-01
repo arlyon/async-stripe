@@ -33,7 +33,7 @@ pub struct ApplicationFee {
 
     /// Balance transaction that describes the impact of this collected application fee on your account balance (not including refunds).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
+    pub balance_transaction: Option<Expandable<BalanceTransaction>>,
 
     /// ID of the charge that the application fee was taken from.
     pub charge: Expandable<Charge>,
@@ -53,7 +53,7 @@ pub struct ApplicationFee {
 
     /// ID of the corresponding charge on the platform account, if this fee was the result of a charge using the `destination` parameter.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub originating_transaction: Option<Box<Expandable<Charge>>>,
+    pub originating_transaction: Option<Expandable<Charge>>,
 
     /// Whether the fee has been fully refunded.
     ///

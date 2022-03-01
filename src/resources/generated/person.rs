@@ -18,16 +18,16 @@ pub struct Person {
 
     /// The account the person is associated with.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<Box<String>>,
+    pub account: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<Box<Address>>,
+    pub address: Option<Address>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_kana: Option<Box<Address>>,
+    pub address_kana: Option<Address>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_kanji: Option<Box<Address>>,
+    pub address_kanji: Option<Address>,
 
     /// Time at which the object was created.
     ///
@@ -40,54 +40,54 @@ pub struct Person {
     pub deleted: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<Box<LegalEntityDob>>,
+    pub dob: Option<LegalEntityDob>,
 
     /// The person's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<Box<String>>,
+    pub email: Option<String>,
 
     /// The person's first name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub first_name: Option<Box<String>>,
+    pub first_name: Option<String>,
 
     /// The Kana variation of the person's first name (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub first_name_kana: Option<Box<String>>,
+    pub first_name_kana: Option<String>,
 
     /// The Kanji variation of the person's first name (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub first_name_kanji: Option<Box<String>>,
+    pub first_name_kanji: Option<String>,
 
     /// A list of alternate names or aliases that the person is known by.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub full_name_aliases: Option<Box<Vec<String>>>,
+    pub full_name_aliases: Option<Vec<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub future_requirements: Option<Box<PersonFutureRequirements>>,
+    pub future_requirements: Option<PersonFutureRequirements>,
 
     /// The person's gender (International regulations require either "male" or "female").
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub gender: Option<Box<String>>,
+    pub gender: Option<String>,
 
     /// Whether the person's `id_number` was provided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id_number_provided: Option<Box<bool>>,
+    pub id_number_provided: Option<bool>,
 
     /// The person's last name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_name: Option<Box<String>>,
+    pub last_name: Option<String>,
 
     /// The Kana variation of the person's last name (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_name_kana: Option<Box<String>>,
+    pub last_name_kana: Option<String>,
 
     /// The Kanji variation of the person's last name (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_name_kanji: Option<Box<String>>,
+    pub last_name_kanji: Option<String>,
 
     /// The person's maiden name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maiden_name: Option<Box<String>>,
+    pub maiden_name: Option<String>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -97,30 +97,30 @@ pub struct Person {
 
     /// The country where the person is a national.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub nationality: Option<Box<String>>,
+    pub nationality: Option<String>,
 
     /// The person's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<Box<String>>,
+    pub phone: Option<String>,
 
     /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub political_exposure: Option<Box<PersonPoliticalExposure>>,
+    pub political_exposure: Option<PersonPoliticalExposure>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub relationship: Option<Box<PersonRelationship>>,
+    pub relationship: Option<PersonRelationship>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requirements: Option<Box<PersonRequirements>>,
+    pub requirements: Option<PersonRequirements>,
 
     /// Whether the last four digits of the person's Social Security number have been provided (U.S.
     ///
     /// only).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ssn_last_4_provided: Option<Box<bool>>,
+    pub ssn_last_4_provided: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<Box<PersonVerification>>,
+    pub verification: Option<PersonVerification>,
 }
 
 impl Object for Person {
@@ -137,37 +137,37 @@ impl Object for Person {
 pub struct LegalEntityDob {
     /// The day of birth, between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub day: Option<Box<i64>>,
+    pub day: Option<i64>,
 
     /// The month of birth, between 1 and 12.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub month: Option<Box<i64>>,
+    pub month: Option<i64>,
 
     /// The four-digit year of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub year: Option<Box<i64>>,
+    pub year: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonVerification {
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub additional_document: Option<Box<PersonVerificationDocument>>,
+    pub additional_document: Option<PersonVerificationDocument>,
 
     /// A user-displayable string describing the verification state for the person.
     ///
     /// For example, this may say "Provided identity information could not be verified".
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub details: Option<Box<String>>,
+    pub details: Option<String>,
 
     /// One of `document_address_mismatch`, `document_dob_mismatch`, `document_duplicate_type`, `document_id_number_mismatch`, `document_name_mismatch`, `document_nationality_mismatch`, `failed_keyed_identity`, or `failed_other`.
     ///
     /// A machine-readable code specifying the verification state for the person.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub details_code: Option<Box<String>>,
+    pub details_code: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<Box<PersonVerificationDocument>>,
+    pub document: Option<PersonVerificationDocument>,
 
     /// The state of verification for the person.
     ///
@@ -179,30 +179,30 @@ pub struct PersonVerification {
 pub struct PersonVerificationDocument {
     /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub back: Option<Box<Expandable<File>>>,
+    pub back: Option<Expandable<File>>,
 
     /// A user-displayable string describing the verification state of this document.
     ///
     /// For example, if a document is uploaded and the picture is too fuzzy, this may say "Identity document is too unclear to read".
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub details: Option<Box<String>>,
+    pub details: Option<String>,
 
     /// One of `document_corrupt`, `document_country_not_supported`, `document_expired`, `document_failed_copy`, `document_failed_other`, `document_failed_test_mode`, `document_fraudulent`, `document_failed_greyscale`, `document_incomplete`, `document_invalid`, `document_manipulated`, `document_missing_back`, `document_missing_front`, `document_not_readable`, `document_not_uploaded`, `document_photo_mismatch`, `document_too_large`, or `document_type_not_supported`.
     ///
     /// A machine-readable code specifying the verification state for this document.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub details_code: Option<Box<String>>,
+    pub details_code: Option<String>,
 
     /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub front: Option<Box<Expandable<File>>>,
+    pub front: Option<Expandable<File>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonFutureRequirements {
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alternatives: Option<Box<Vec<AccountRequirementsAlternative>>>,
+    pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
 
     /// Fields that need to be collected to keep the person's account enabled.
     ///
@@ -257,19 +257,19 @@ pub struct PersonRelationship {
     ///
     /// Directors are typically members of the governing board of the company, or responsible for ensuring the company meets its regulatory obligations.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub director: Option<Box<bool>>,
+    pub director: Option<bool>,
 
     /// Whether the person has significant responsibility to control, manage, or direct the organization.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub executive: Option<Box<bool>>,
+    pub executive: Option<bool>,
 
     /// Whether the person is an owner of the account’s legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub owner: Option<Box<bool>>,
+    pub owner: Option<bool>,
 
     /// The percent owned by the person of the account's legal entity.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub percent_ownership: Option<Box<f64>>,
+    pub percent_ownership: Option<f64>,
 
     /// Whether the person is authorized as the primary representative of the account.
     ///
@@ -277,18 +277,18 @@ pub struct PersonRelationship {
     /// There can only be one representative at any given time.
     /// At the time the account is created, this person should be set to the person responsible for opening the account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub representative: Option<Box<bool>>,
+    pub representative: Option<bool>,
 
     /// The person's title (e.g., CEO, Support Engineer).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub title: Option<Box<String>>,
+    pub title: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonRequirements {
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub alternatives: Option<Box<Vec<AccountRequirementsAlternative>>>,
+    pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
 
     /// Fields that need to be collected to keep the person's account enabled.
     ///

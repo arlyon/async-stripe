@@ -41,7 +41,7 @@ pub trait SetupIntentExt {
     where
         Self: Sized;
 
-    fn retrieve_ext(client: &Client, setup_intent_secret: &String) -> Response<Self>
+    fn retrieve_ext(client: &Client, setup_intent_secret: &str) -> Response<Self>
     where
         Self: Sized;
 }
@@ -63,7 +63,7 @@ impl SetupIntentExt for SetupIntent {
         unimplemented!()
     }
 
-    fn retrieve_ext(_client: &Client, _setup_intent_secret: &String) -> Response<SetupIntent> {
+    fn retrieve_ext(_client: &Client, _setup_intent_secret: &str) -> Response<SetupIntent> {
         unimplemented!()
         //client.get(&format!("/setup_intents/{}", setup_intent_secret))
     }

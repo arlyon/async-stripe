@@ -11,5 +11,5 @@ pub struct SubscriptionScheduleInvoiceSettings {
     ///
     /// This value will be `null` for subscription schedules where `billing=charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub days_until_due: Option<Box<u32>>,
+    pub days_until_due: Option<u32>,
 }

@@ -18,7 +18,7 @@ pub struct BillingPortalConfiguration {
 
     /// ID of the Connect Application that created the configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<Box<String>>,
+    pub application: Option<String>,
 
     pub business_profile: PortalBusinessProfile,
 
@@ -31,7 +31,7 @@ pub struct BillingPortalConfiguration {
     ///
     /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_return_url: Option<Box<String>>,
+    pub default_return_url: Option<String>,
 
     pub features: PortalFeatures,
 
@@ -69,15 +69,15 @@ impl Object for BillingPortalConfiguration {
 pub struct PortalBusinessProfile {
     /// The messaging shown to customers in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub headline: Option<Box<String>>,
+    pub headline: Option<String>,
 
     /// A link to the business’s publicly available privacy policy.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub privacy_policy_url: Option<Box<String>>,
+    pub privacy_policy_url: Option<String>,
 
     /// A link to the business’s publicly available terms of service.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub terms_of_service_url: Option<Box<String>>,
+    pub terms_of_service_url: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -161,7 +161,7 @@ pub struct PortalSubscriptionUpdate {
 
     /// The list of products that support subscription updates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub products: Option<Box<Vec<PortalSubscriptionUpdateProduct>>>,
+    pub products: Option<Vec<PortalSubscriptionUpdateProduct>>,
 
     /// Determines how to handle prorations resulting from subscription updates.
     ///

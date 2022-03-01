@@ -15,17 +15,17 @@ pub struct SourceMandateNotification {
     pub id: SourceMandateNotificationId,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<Box<SourceMandateNotificationAcssDebitData>>,
+    pub acss_debit: Option<SourceMandateNotificationAcssDebitData>,
 
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the amount associated with the mandate notification.
     ///
     /// The amount is expressed in the currency of the underlying source.
     /// Required if the notification type is `debit_initiated`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<Box<i64>>,
+    pub amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<Box<SourceMandateNotificationBacsDebitData>>,
+    pub bacs_debit: Option<SourceMandateNotificationBacsDebitData>,
 
     /// Time at which the object was created.
     ///
@@ -41,7 +41,7 @@ pub struct SourceMandateNotification {
     pub reason: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<Box<SourceMandateNotificationSepaDebitData>>,
+    pub sepa_debit: Option<SourceMandateNotificationSepaDebitData>,
 
     pub source: Source,
 
@@ -71,27 +71,27 @@ impl Object for SourceMandateNotification {
 pub struct SourceMandateNotificationAcssDebitData {
     /// The statement descriptor associate with the debit.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<Box<String>>,
+    pub statement_descriptor: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceMandateNotificationBacsDebitData {
     /// Last 4 digits of the account number associated with the debit.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last4: Option<Box<String>>,
+    pub last4: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceMandateNotificationSepaDebitData {
     /// SEPA creditor ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub creditor_identifier: Option<Box<String>>,
+    pub creditor_identifier: Option<String>,
 
     /// Last 4 digits of the account number associated with the debit.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last4: Option<Box<String>>,
+    pub last4: Option<String>,
 
     /// Mandate reference associated with the debit.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_reference: Option<Box<String>>,
+    pub mandate_reference: Option<String>,
 }

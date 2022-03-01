@@ -21,7 +21,7 @@ pub struct RadarValueListItem {
 
     /// The name or email address of the user who added this item to the value list.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub created_by: Option<Box<String>>,
+    pub created_by: Option<String>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -29,15 +29,15 @@ pub struct RadarValueListItem {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// The value of the item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<Box<String>>,
+    pub value: Option<String>,
 
     /// The identifier of the value list this item belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub value_list: Option<Box<String>>,
+    pub value_list: Option<String>,
 }
 
 impl Object for RadarValueListItem {

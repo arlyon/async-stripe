@@ -15,7 +15,7 @@ pub struct UsageRecordSummary {
 
     /// The invoice in which this usage period has been billed for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice: Option<Box<String>>,
+    pub invoice: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -45,11 +45,11 @@ pub struct Period {
     ///
     /// All usage up to and including this point in time is included.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub end: Option<Box<Timestamp>>,
+    pub end: Option<Timestamp>,
 
     /// The start date of this usage period.
     ///
     /// All usage after this point in time is included.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub start: Option<Box<Timestamp>>,
+    pub start: Option<Timestamp>,
 }

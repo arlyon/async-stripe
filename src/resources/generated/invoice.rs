@@ -25,17 +25,17 @@ pub struct Invoice {
 
     /// The country of the business associated with this invoice, most often the business creating the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_country: Option<Box<String>>,
+    pub account_country: Option<String>,
 
     /// The public name of the business associated with this invoice, most often the business creating the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_name: Option<Box<String>>,
+    pub account_name: Option<String>,
 
     /// The account tax IDs associated with the invoice.
     ///
     /// Only editable when the invoice is a draft.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_tax_ids: Option<Box<Vec<Expandable<TaxId>>>>,
+    pub account_tax_ids: Option<Vec<Expandable<TaxId>>>,
 
     /// Final amount due at this time for this invoice.
     ///
@@ -43,41 +43,41 @@ pub struct Invoice {
     /// If there is a positive `starting_balance` for the invoice (the customer owes money), the `amount_due` will also take that into account.
     /// The charge that gets generated for the invoice will be for the amount specified in `amount_due`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_due: Option<Box<i64>>,
+    pub amount_due: Option<i64>,
 
     /// The amount, in %s, that was paid.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_paid: Option<Box<i64>>,
+    pub amount_paid: Option<i64>,
 
     /// The amount remaining, in %s, that is due.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_remaining: Option<Box<i64>>,
+    pub amount_remaining: Option<i64>,
 
     /// The fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_amount: Option<Box<i64>>,
+    pub application_fee_amount: Option<i64>,
 
     /// Number of payment attempts made for this invoice, from the perspective of the payment retry schedule.
     ///
     /// Any payment attempt counts as the first attempt, and subsequently only automatic retries increment the attempt count.
     /// In other words, manual payment attempts after the first attempt do not affect the retry schedule.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub attempt_count: Option<Box<u64>>,
+    pub attempt_count: Option<u64>,
 
     /// Whether an attempt has been made to pay the invoice.
     ///
     /// An invoice is not attempted until 1 hour after the `invoice.created` webhook, for example, so you might not want to display that invoice as unpaid to your users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub attempted: Option<Box<bool>>,
+    pub attempted: Option<bool>,
 
     /// Controls whether Stripe will perform [automatic collection](https://stripe.com/docs/billing/invoices/workflow/#auto_advance) of the invoice.
     ///
     /// When `false`, the invoice's state will not automatically advance without an explicit action.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub auto_advance: Option<Box<bool>>,
+    pub auto_advance: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<Box<AutomaticTax>>,
+    pub automatic_tax: Option<AutomaticTax>,
 
     /// Indicates the reason why the invoice was created.
     ///
@@ -89,18 +89,18 @@ pub struct Invoice {
     /// The `upcoming` value is reserved for simulated invoices per the upcoming invoice endpoint.
     /// `subscription_threshold` indicates an invoice created due to a billing threshold being reached.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_reason: Option<Box<InvoiceBillingReason>>,
+    pub billing_reason: Option<InvoiceBillingReason>,
 
     /// ID of the latest charge generated for this invoice, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub charge: Option<Box<Expandable<Charge>>>,
+    pub charge: Option<Expandable<Charge>>,
 
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay this invoice using the default source attached to the customer.
     /// When sending an invoice, Stripe will email this invoice to the customer with payment instructions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub collection_method: Option<Box<CollectionMethod>>,
+    pub collection_method: Option<CollectionMethod>,
 
     /// Time at which the object was created.
     ///
@@ -116,67 +116,67 @@ pub struct Invoice {
 
     /// Custom fields displayed on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<Box<Vec<InvoiceSettingCustomField>>>,
+    pub custom_fields: Option<Vec<InvoiceSettingCustomField>>,
 
     /// The ID of the customer who will be billed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Box<Expandable<Customer>>>,
+    pub customer: Option<Expandable<Customer>>,
 
     /// The customer's address.
     ///
     /// Until the invoice is finalized, this field will equal `customer.address`.
     /// Once the invoice is finalized, this field will no longer be updated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_address: Option<Box<Address>>,
+    pub customer_address: Option<Address>,
 
     /// The customer's email.
     ///
     /// Until the invoice is finalized, this field will equal `customer.email`.
     /// Once the invoice is finalized, this field will no longer be updated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_email: Option<Box<String>>,
+    pub customer_email: Option<String>,
 
     /// The customer's name.
     ///
     /// Until the invoice is finalized, this field will equal `customer.name`.
     /// Once the invoice is finalized, this field will no longer be updated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_name: Option<Box<String>>,
+    pub customer_name: Option<String>,
 
     /// The customer's phone number.
     ///
     /// Until the invoice is finalized, this field will equal `customer.phone`.
     /// Once the invoice is finalized, this field will no longer be updated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_phone: Option<Box<String>>,
+    pub customer_phone: Option<String>,
 
     /// The customer's shipping information.
     ///
     /// Until the invoice is finalized, this field will equal `customer.shipping`.
     /// Once the invoice is finalized, this field will no longer be updated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_shipping: Option<Box<Shipping>>,
+    pub customer_shipping: Option<Shipping>,
 
     /// The customer's tax exempt status.
     ///
     /// Until the invoice is finalized, this field will equal `customer.tax_exempt`.
     /// Once the invoice is finalized, this field will no longer be updated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_tax_exempt: Option<Box<InvoiceCustomerTaxExempt>>,
+    pub customer_tax_exempt: Option<InvoiceCustomerTaxExempt>,
 
     /// The customer's tax IDs.
     ///
     /// Until the invoice is finalized, this field will contain the same tax IDs as `customer.tax_ids`.
     /// Once the invoice is finalized, this field will no longer be updated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer_tax_ids: Option<Box<Vec<InvoicesResourceInvoiceTaxId>>>,
+    pub customer_tax_ids: Option<Vec<InvoicesResourceInvoiceTaxId>>,
 
     /// ID of the default payment method for the invoice.
     ///
     /// It must belong to the customer associated with the invoice.
     /// If not set, defaults to the subscription's default payment method, if any, or to the default payment method in the customer's invoice settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<Box<Expandable<PaymentMethod>>>,
+    pub default_payment_method: Option<Expandable<PaymentMethod>>,
 
     /// ID of the default payment source for the invoice.
     ///
@@ -187,7 +187,7 @@ pub struct Invoice {
 
     /// The tax rates applied to this invoice, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<Box<Vec<TaxRate>>>,
+    pub default_tax_rates: Option<Vec<TaxRate>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -198,49 +198,49 @@ pub struct Invoice {
     /// Often useful for displaying to users.
     /// Referenced as 'memo' in the Dashboard.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// Describes the current discount applied to this invoice, if there is one.
     ///
     /// Not populated if there are multiple discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<Box<Discount>>,
+    pub discount: Option<Discount>,
 
     /// The discounts applied to the invoice.
     ///
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Box<Vec<Expandable<Discount>>>>,
+    pub discounts: Option<Vec<Expandable<Discount>>>,
 
     /// The date on which payment for this invoice is due.
     ///
     /// This value will be `null` for invoices where `collection_method=charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub due_date: Option<Box<Timestamp>>,
+    pub due_date: Option<Timestamp>,
 
     /// Ending customer balance after the invoice is finalized.
     ///
     /// Invoices are finalized approximately an hour after successful webhook delivery or when payment collection is attempted for the invoice.
     /// If the invoice has not been finalized yet, this will be null.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ending_balance: Option<Box<i64>>,
+    pub ending_balance: Option<i64>,
 
     /// Footer displayed on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<Box<String>>,
+    pub footer: Option<String>,
 
     /// The URL for the hosted invoice page, which allows customers to view and pay an invoice.
     ///
     /// If the invoice has not been finalized yet, this will be null.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_invoice_url: Option<Box<String>>,
+    pub hosted_invoice_url: Option<String>,
 
     /// The link to download the PDF for the invoice.
     ///
     /// If the invoice has not been finalized yet, this will be null.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_pdf: Option<Box<String>>,
+    pub invoice_pdf: Option<String>,
 
     /// The error encountered during the previous attempt to finalize the invoice.
     ///
@@ -256,7 +256,7 @@ pub struct Invoice {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -268,131 +268,131 @@ pub struct Invoice {
     ///
     /// This value will be `null` for invoices where `collection_method=send_invoice`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub next_payment_attempt: Option<Box<Timestamp>>,
+    pub next_payment_attempt: Option<Timestamp>,
 
     /// A unique, identifying string that appears on emails sent to the customer for this invoice.
     ///
     /// This starts with the customer's unique invoice_prefix if it is specified.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub number: Option<Box<String>>,
+    pub number: Option<String>,
 
     /// The account (if any) for which the funds of the invoice payment are intended.
     ///
     /// If set, the invoice will be presented with the branding and support information of the specified account.
     /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<Box<Expandable<Account>>>,
+    pub on_behalf_of: Option<Expandable<Account>>,
 
     /// Whether payment was successfully collected for this invoice.
     ///
     /// An invoice can be paid (most commonly) with a charge or with credit from the customer's account balance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paid: Option<Box<bool>>,
+    pub paid: Option<bool>,
 
     /// Returns true if the invoice was manually marked paid, returns false if the invoice hasn't been paid yet or was paid on Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paid_out_of_band: Option<Box<bool>>,
+    pub paid_out_of_band: Option<bool>,
 
     /// The PaymentIntent associated with this invoice.
     ///
     /// The PaymentIntent is generated when the invoice is finalized, and can then be used to pay the invoice.
     /// Note that voiding an invoice will cancel the PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_intent: Option<Box<Expandable<PaymentIntent>>>,
+    pub payment_intent: Option<Expandable<PaymentIntent>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_settings: Option<Box<InvoicesPaymentSettings>>,
+    pub payment_settings: Option<InvoicesPaymentSettings>,
 
     /// End of the usage period during which invoice items were added to this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub period_end: Option<Box<Timestamp>>,
+    pub period_end: Option<Timestamp>,
 
     /// Start of the usage period during which invoice items were added to this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub period_start: Option<Box<Timestamp>>,
+    pub period_start: Option<Timestamp>,
 
     /// Total amount of all post-payment credit notes issued for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub post_payment_credit_notes_amount: Option<Box<i64>>,
+    pub post_payment_credit_notes_amount: Option<i64>,
 
     /// Total amount of all pre-payment credit notes issued for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub pre_payment_credit_notes_amount: Option<Box<i64>>,
+    pub pre_payment_credit_notes_amount: Option<i64>,
 
     /// The quote this invoice was generated from.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quote: Option<Box<Expandable<Quote>>>,
+    pub quote: Option<Expandable<Quote>>,
 
     /// This is the transaction number that appears on email receipts sent for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub receipt_number: Option<Box<String>>,
+    pub receipt_number: Option<String>,
 
     /// Starting customer balance before the invoice is finalized.
     ///
     /// If the invoice has not been finalized yet, this will be the current customer balance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub starting_balance: Option<Box<i64>>,
+    pub starting_balance: Option<i64>,
 
     /// Extra information about an invoice for the customer's credit card statement.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<Box<String>>,
+    pub statement_descriptor: Option<String>,
 
     /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
     ///
     /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<Box<InvoiceStatus>>,
+    pub status: Option<InvoiceStatus>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status_transitions: Option<Box<InvoicesStatusTransitions>>,
+    pub status_transitions: Option<InvoicesStatusTransitions>,
 
     /// The subscription that this invoice was prepared for, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<Box<Expandable<Subscription>>>,
+    pub subscription: Option<Expandable<Subscription>>,
 
     /// Only set for upcoming invoices that preview prorations.
     ///
     /// The time used to calculate prorations.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_proration_date: Option<Box<Timestamp>>,
+    pub subscription_proration_date: Option<Timestamp>,
 
     /// Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.
     ///
     /// Item discounts are already incorporated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subtotal: Option<Box<i64>>,
+    pub subtotal: Option<i64>,
 
     /// The amount of tax on this invoice.
     ///
     /// This is the sum of all the tax amounts on this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<Box<i64>>,
+    pub tax: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub threshold_reason: Option<Box<InvoiceThresholdReason>>,
+    pub threshold_reason: Option<InvoiceThresholdReason>,
 
     /// Total after discounts and taxes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub total: Option<Box<i64>>,
+    pub total: Option<i64>,
 
     /// The aggregate amounts calculated per discount across all line items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_discount_amounts: Option<Box<Vec<DiscountsResourceDiscountAmount>>>,
+    pub total_discount_amounts: Option<Vec<DiscountsResourceDiscountAmount>>,
 
     /// The aggregate amounts calculated per tax rate for all line items.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub total_tax_amounts: Option<Box<Vec<TaxAmount>>>,
+    pub total_tax_amounts: Option<Vec<TaxAmount>>,
 
     /// The account (if any) the payment will be attributed to for tax reporting, and where funds from the payment will be transferred to for the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<Box<InvoiceTransferData>>,
+    pub transfer_data: Option<InvoiceTransferData>,
 
     /// Invoices are automatically paid or sent 1 hour after webhooks are delivered, or until all webhook delivery attempts have [been exhausted](https://stripe.com/docs/billing/webhooks#understand).
     ///
     /// This field tracks the time when webhooks for this invoice were successfully delivered.
     /// If the invoice had no webhooks to deliver, this will be set while the invoice is being created.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub webhooks_delivered_at: Option<Box<Timestamp>>,
+    pub webhooks_delivered_at: Option<Timestamp>,
 }
 
 impl Invoice {
@@ -442,7 +442,7 @@ pub struct AutomaticTax {
 
     /// The status of the most recent automated tax calculation for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<Box<AutomaticTaxStatus>>,
+    pub status: Option<AutomaticTaxStatus>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -479,7 +479,7 @@ pub struct TaxAmount {
 pub struct InvoiceThresholdReason {
     /// The total invoice amount threshold boundary if it triggered the threshold invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_gte: Option<Box<i64>>,
+    pub amount_gte: Option<i64>,
 
     /// Indicates which line items triggered a threshold invoice.
     pub item_reasons: Vec<InvoiceItemThresholdReason>,
@@ -500,7 +500,7 @@ pub struct InvoiceTransferData {
     ///
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<Box<i64>>,
+    pub amount: Option<i64>,
 
     /// The account where funds from the payment will be transferred to upon payment success.
     pub destination: Expandable<Account>,
@@ -510,33 +510,33 @@ pub struct InvoiceTransferData {
 pub struct InvoicesPaymentSettings {
     /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_options: Option<Box<InvoicesPaymentMethodOptions>>,
+    pub payment_method_options: Option<InvoicesPaymentMethodOptions>,
 
     /// The list of payment method types (e.g.
     ///
     /// card) to provide to the invoice’s PaymentIntent.
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<Box<Vec<InvoicesPaymentSettingsPaymentMethodTypes>>>,
+    pub payment_method_types: Option<Vec<InvoicesPaymentSettingsPaymentMethodTypes>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesPaymentMethodOptions {
     /// If paying by `acss_debit`, this sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<Box<InvoicePaymentMethodOptionsAcssDebit>>,
+    pub acss_debit: Option<InvoicePaymentMethodOptionsAcssDebit>,
 
     /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<Box<InvoicePaymentMethodOptionsBancontact>>,
+    pub bancontact: Option<InvoicePaymentMethodOptionsBancontact>,
 
     /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<Box<InvoicePaymentMethodOptionsCard>>,
+    pub card: Option<InvoicePaymentMethodOptionsCard>,
 
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<Box<InvoicePaymentMethodOptionsKonbini>>,
+    pub konbini: Option<InvoicePaymentMethodOptionsKonbini>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -546,7 +546,7 @@ pub struct InvoicePaymentMethodOptionsCard {
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub request_three_d_secure: Option<Box<InvoicePaymentMethodOptionsCardRequestThreeDSecure>>,
+    pub request_three_d_secure: Option<InvoicePaymentMethodOptionsCardRequestThreeDSecure>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -557,26 +557,26 @@ pub struct InvoicesResourceInvoiceTaxId {
 
     /// The value of the tax ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<Box<String>>,
+    pub value: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesStatusTransitions {
     /// The time that the invoice draft was finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub finalized_at: Option<Box<Timestamp>>,
+    pub finalized_at: Option<Timestamp>,
 
     /// The time that the invoice was marked uncollectible.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub marked_uncollectible_at: Option<Box<Timestamp>>,
+    pub marked_uncollectible_at: Option<Timestamp>,
 
     /// The time that the invoice was paid.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub paid_at: Option<Box<Timestamp>>,
+    pub paid_at: Option<Timestamp>,
 
     /// The time that the invoice was voided.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub voided_at: Option<Box<Timestamp>>,
+    pub voided_at: Option<Timestamp>,
 }
 
 /// The parameters for `Invoice::create`.
@@ -586,7 +586,7 @@ pub struct CreateInvoice<'a> {
     ///
     /// Only editable when the invoice is a draft.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_tax_ids: Option<Box<Vec<String>>>,
+    pub account_tax_ids: Option<Vec<String>>,
 
     /// A fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account.
     ///
@@ -603,7 +603,7 @@ pub struct CreateInvoice<'a> {
 
     /// Settings for automatic tax lookup for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<Box<CreateInvoiceAutomaticTax>>,
+    pub automatic_tax: Option<CreateInvoiceAutomaticTax>,
 
     /// Either `charge_automatically`, or `send_invoice`.
     ///
@@ -615,7 +615,7 @@ pub struct CreateInvoice<'a> {
 
     /// A list of up to 4 custom fields to be displayed on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<Box<Vec<CreateInvoiceCustomFields>>>,
+    pub custom_fields: Option<Vec<CreateInvoiceCustomFields>>,
 
     /// The ID of the customer who will be billed.
     pub customer: CustomerId,
@@ -642,7 +642,7 @@ pub struct CreateInvoice<'a> {
 
     /// The tax rates that will apply to any line item that does not have `tax_rates` set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<Box<Vec<String>>>,
+    pub default_tax_rates: Option<Vec<String>>,
 
     /// An arbitrary string attached to the object.
     ///
@@ -656,7 +656,7 @@ pub struct CreateInvoice<'a> {
     /// If not specified, inherits the discount from the invoice's customer.
     /// Pass an empty string to avoid inheriting any discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Box<Vec<CreateInvoiceDiscounts>>>,
+    pub discounts: Option<Vec<CreateInvoiceDiscounts>>,
 
     /// The date on which payment for this invoice is due.
     ///
@@ -689,7 +689,7 @@ pub struct CreateInvoice<'a> {
 
     /// Configuration settings for the PaymentIntent that is generated when the invoice is finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_settings: Option<Box<CreateInvoicePaymentSettings>>,
+    pub payment_settings: Option<CreateInvoicePaymentSettings>,
 
     /// Extra information about a charge for the customer's credit card statement.
     ///
@@ -708,7 +708,7 @@ pub struct CreateInvoice<'a> {
 
     /// If specified, the funds from the invoice will be transferred to the destination and the ID of the resulting transfer will be found on the invoice's charge.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<Box<CreateInvoiceTransferData>>,
+    pub transfer_data: Option<CreateInvoiceTransferData>,
 }
 
 impl<'a> CreateInvoice<'a> {
@@ -826,25 +826,25 @@ pub struct CreateInvoiceCustomFields {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceDiscounts {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<Box<String>>,
+    pub coupon: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<Box<String>>,
+    pub discount: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_options: Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptions>>,
+    pub payment_method_options: Option<CreateInvoicePaymentSettingsPaymentMethodOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<Box<Vec<CreateInvoicePaymentSettingsPaymentMethodTypes>>>,
+    pub payment_method_types: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodTypes>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<Box<i64>>,
+    pub amount: Option<i64>,
 
     pub destination: String,
 }
@@ -852,41 +852,41 @@ pub struct CreateInvoiceTransferData {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit>>,
+    pub acss_debit: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact>>,
+    pub bancontact: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsCard>>,
+    pub card: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini: Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsKonbini>>,
+    pub konbini: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsKonbini>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options:
-        Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions>>,
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
-        Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>>,
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language:
-        Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>>,
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
-        Option<Box<CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>>,
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -896,7 +896,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsKonbini {}
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type: Option<
-        Box<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+        CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType,
     >,
 }
 

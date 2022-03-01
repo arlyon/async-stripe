@@ -27,13 +27,13 @@ pub struct OrderItem {
     ///
     /// Expandable if not null (e.g., expandable to a SKU).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub parent: Option<Box<Expandable<Sku>>>,
+    pub parent: Option<Expandable<Sku>>,
 
     /// A positive integer representing the number of instances of `parent` that are included in this order item.
     ///
     /// Applicable/present only if `type` is `sku`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
+    pub quantity: Option<u64>,
 
     /// The type of line item.
     ///
