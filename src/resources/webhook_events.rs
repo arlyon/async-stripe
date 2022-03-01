@@ -53,6 +53,10 @@ pub enum EventType {
     ChargeDisputeUpdated,
     #[serde(rename = "charge.refund.updated")]
     ChargeRefundUpdated,
+    #[serde(rename = "checkout.session.async_payment_failed")]
+    CheckoutSessionAsyncPaymentFailed,
+    #[serde(rename = "checkout.session.async_payment_succeeded")]
+    CheckoutSessionAsyncPaymentSucceeded,
     #[serde(rename = "checkout.session.completed")]
     CheckoutSessionCompleted,
     #[serde(rename = "coupon.created")]
