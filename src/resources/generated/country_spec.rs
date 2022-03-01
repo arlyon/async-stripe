@@ -12,7 +12,7 @@ use crate::resources::Currency;
 /// The resource representing a Stripe "CountrySpec".
 ///
 /// For more details see <https://stripe.com/docs/api/country_specs/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CountrySpec {
     /// Unique identifier for the object.
     ///
@@ -64,14 +64,14 @@ impl Object for CountrySpec {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFields {
     pub company: CountrySpecVerificationFieldDetails,
 
     pub individual: CountrySpecVerificationFieldDetails,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFieldDetails {
     /// Additional fields which are only required for some users.
     pub additional: Vec<String>,

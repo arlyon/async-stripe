@@ -16,7 +16,7 @@ use crate::resources::{
 /// The resource representing a Stripe "SubscriptionSchedule".
 ///
 /// For more details see <https://stripe.com/docs/api/subscription_schedules/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionSchedule {
     /// Unique identifier for the object.
     pub id: SubscriptionScheduleId,
@@ -135,7 +135,7 @@ impl Object for SubscriptionSchedule {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleCurrentPhase {
     /// The end of this phase of the subscription schedule.
     pub end_date: Timestamp,
@@ -144,7 +144,7 @@ pub struct SubscriptionScheduleCurrentPhase {
     pub start_date: Timestamp,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionSchedulePhaseConfiguration {
     /// A list of prices and quantities that will generate invoice items appended to the first invoice for this phase.
     pub add_invoice_items: Vec<SubscriptionScheduleAddInvoiceItem>,
@@ -219,13 +219,13 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     pub trial_end: Option<Box<Timestamp>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SchedulesPhaseAutomaticTax {
     /// Whether Stripe automatically computes tax on invoices created during this phase.
     pub enabled: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleAddInvoiceItem {
     /// ID of the price used to generate the invoice item.
     pub price: Expandable<Price>,
@@ -241,7 +241,7 @@ pub struct SubscriptionScheduleAddInvoiceItem {
     pub tax_rates: Option<Box<Vec<TaxRate>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleConfigurationItem {
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -261,7 +261,7 @@ pub struct SubscriptionScheduleConfigurationItem {
     pub tax_rates: Option<Box<Vec<TaxRate>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettings {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
@@ -305,7 +305,7 @@ pub struct SubscriptionScheduleDefaultSettings {
     pub transfer_data: Option<Box<SubscriptionTransferData>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
     /// Whether Stripe automatically computes tax on invoices created during this phase.
     pub enabled: bool,
@@ -502,7 +502,7 @@ impl<'a> UpdateSubscriptionSchedule<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub add_invoice_items: Option<Box<Vec<AddInvoiceItems>>>,
@@ -555,7 +555,7 @@ pub struct CreateSubscriptionSchedulePhases {
     pub trial_end: Option<Scheduled>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<Box<f64>>,
@@ -583,7 +583,7 @@ pub struct SubscriptionScheduleDefaultSettingsParams {
     pub transfer_data: Option<Box<SubscriptionScheduleDefaultSettingsParamsTransferData>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub add_invoice_items: Option<Box<Vec<AddInvoiceItems>>>,
@@ -639,7 +639,7 @@ pub struct UpdateSubscriptionSchedulePhases {
     pub trial_end: Option<Scheduled>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<Box<String>>,
@@ -654,12 +654,12 @@ pub struct AddInvoiceItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
     pub enabled: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<Box<CreateSubscriptionSchedulePhasesItemsBillingThresholds>>,
@@ -677,7 +677,7 @@ pub struct CreateSubscriptionSchedulePhasesItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<Box<f64>>,
@@ -685,7 +685,7 @@ pub struct CreateSubscriptionSchedulePhasesTransferData {
     pub destination: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleBillingThresholds {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_gte: Option<Box<i64>>,
@@ -694,12 +694,12 @@ pub struct SubscriptionScheduleBillingThresholds {
     pub reset_billing_cycle_anchor: Option<Box<bool>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsAutomaticTax {
     pub enabled: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<Box<f64>>,
@@ -707,18 +707,18 @@ pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
     pub destination: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleInvoiceSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub days_until_due: Option<Box<u32>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
     pub enabled: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<Box<UpdateSubscriptionSchedulePhasesItemsBillingThresholds>>,
@@ -736,7 +736,7 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
     pub tax_rates: Option<Box<Vec<String>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<Box<f64>>,
@@ -744,12 +744,12 @@ pub struct UpdateSubscriptionSchedulePhasesTransferData {
     pub destination: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsBillingThresholds {
     pub usage_gte: i64,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
     pub currency: Currency,
 
@@ -767,7 +767,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
     pub currency: Currency,
 
@@ -783,12 +783,12 @@ pub struct InvoiceItemPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsBillingThresholds {
     pub usage_gte: i64,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
     pub currency: Currency,
 
@@ -806,7 +806,7 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     pub interval: CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
 
@@ -814,7 +814,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     pub interval_count: Option<Box<u64>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     pub interval: UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
 
@@ -850,6 +850,11 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
 
 /// An enum representing the possible values of an `CreateSubscriptionSchedulePhasesItemsPriceDataRecurring`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -883,6 +888,11 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesItemsPriceDataRecurri
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `CreateSubscriptionSchedulePhasesItemsPriceData`'s `tax_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -912,6 +922,11 @@ impl AsRef<str> for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
 impl std::fmt::Display for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
     }
 }
 
@@ -945,6 +960,11 @@ impl std::fmt::Display for InvoiceItemPriceDataTaxBehavior {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for InvoiceItemPriceDataTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
+    }
+}
 
 /// An enum representing the possible values of an `SubscriptionSchedulePhaseConfiguration`'s `proration_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -976,6 +996,11 @@ impl std::fmt::Display for SubscriptionProrationBehavior {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for SubscriptionProrationBehavior {
+    fn default() -> Self {
+        Self::AlwaysInvoice
+    }
+}
 
 /// An enum representing the possible values of an `SubscriptionScheduleDefaultSettings`'s `billing_cycle_anchor` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1003,6 +1028,11 @@ impl AsRef<str> for SubscriptionScheduleDefaultSettingsBillingCycleAnchor {
 impl std::fmt::Display for SubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionScheduleDefaultSettingsBillingCycleAnchor {
+    fn default() -> Self {
+        Self::Automatic
     }
 }
 
@@ -1036,6 +1066,11 @@ impl std::fmt::Display for SubscriptionScheduleDefaultSettingsCollectionMethod {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for SubscriptionScheduleDefaultSettingsCollectionMethod {
+    fn default() -> Self {
+        Self::ChargeAutomatically
+    }
+}
 
 /// An enum representing the possible values of an `SubscriptionScheduleDefaultSettingsParams`'s `billing_cycle_anchor` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1065,6 +1100,11 @@ impl AsRef<str> for SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor 
 impl std::fmt::Display for SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor {
+    fn default() -> Self {
+        Self::Automatic
     }
 }
 
@@ -1100,6 +1140,11 @@ impl std::fmt::Display for SubscriptionScheduleEndBehavior {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for SubscriptionScheduleEndBehavior {
+    fn default() -> Self {
+        Self::Cancel
+    }
+}
 
 /// An enum representing the possible values of an `SubscriptionSchedulePhaseConfiguration`'s `billing_cycle_anchor` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1127,6 +1172,11 @@ impl AsRef<str> for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
 impl std::fmt::Display for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
+    fn default() -> Self {
+        Self::Automatic
     }
 }
 
@@ -1164,6 +1214,11 @@ impl std::fmt::Display for SubscriptionScheduleStatus {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for SubscriptionScheduleStatus {
+    fn default() -> Self {
+        Self::Active
+    }
+}
 
 /// An enum representing the possible values of an `UpdateSubscriptionSchedulePhases`'s `billing_cycle_anchor` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1191,6 +1246,11 @@ impl AsRef<str> for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
 impl std::fmt::Display for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
+    fn default() -> Self {
+        Self::Automatic
     }
 }
 
@@ -1226,6 +1286,11 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurri
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `UpdateSubscriptionSchedulePhasesItemsPriceData`'s `tax_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1255,5 +1320,10 @@ impl AsRef<str> for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
 impl std::fmt::Display for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
     }
 }

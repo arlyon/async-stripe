@@ -12,7 +12,7 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "Order".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Order {
     /// Unique identifier for the object.
     pub id: OrderId,
@@ -159,7 +159,7 @@ impl Object for Order {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ShippingMethod {
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the line item.
     pub amount: i64,
@@ -184,7 +184,7 @@ pub struct ShippingMethod {
     pub id: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DeliveryEstimate {
     /// If `type` is `"exact"`, `date` will be the expected delivery date in the format YYYY-MM-DD.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -205,7 +205,7 @@ pub struct DeliveryEstimate {
     pub type_: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct StatusTransitions {
     /// The time that the order was canceled.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -416,7 +416,7 @@ impl<'a> UpdateOrder<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShipping {
     pub address: CreateOrderShippingAddress,
 
@@ -426,7 +426,7 @@ pub struct CreateOrderShipping {
     pub phone: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ListOrdersStatusTransitions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled: Option<Box<RangeQuery<Timestamp>>>,
@@ -441,7 +441,7 @@ pub struct ListOrdersStatusTransitions {
     pub returned: Option<Box<RangeQuery<Timestamp>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OrderItemParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<Box<i64>>,
@@ -463,14 +463,14 @@ pub struct OrderItemParams {
     pub type_: Option<Box<OrderItemParamsType>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderShipping {
     pub carrier: String,
 
     pub tracking_number: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<Box<String>>,
@@ -523,6 +523,11 @@ impl std::fmt::Display for OrderItemParamsType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for OrderItemParamsType {
+    fn default() -> Self {
+        Self::Discount
+    }
+}
 
 /// An enum representing the possible values of an `UpdateOrder`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -556,5 +561,10 @@ impl AsRef<str> for OrderStatus {
 impl std::fmt::Display for OrderStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for OrderStatus {
+    fn default() -> Self {
+        Self::Canceled
     }
 }

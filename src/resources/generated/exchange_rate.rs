@@ -9,7 +9,7 @@ use crate::ids::ExchangeRateId;
 use crate::params::{Expand, List, Object};
 
 /// The resource representing a Stripe "ExchangeRate".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ExchangeRate {
     /// Unique identifier for the object.
     ///

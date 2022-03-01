@@ -11,7 +11,7 @@ use crate::resources::{CreditNote, Currency, Customer, Invoice};
 /// The resource representing a Stripe "CustomerBalanceTransaction".
 ///
 /// For more details see <https://stripe.com/docs/api/customer_balance_transactions/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerBalanceTransaction {
     /// Unique identifier for the object.
     pub id: CustomerBalanceTransactionId,
@@ -120,5 +120,10 @@ impl AsRef<str> for CustomerBalanceTransactionType {
 impl std::fmt::Display for CustomerBalanceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CustomerBalanceTransactionType {
+    fn default() -> Self {
+        Self::Adjustment
     }
 }

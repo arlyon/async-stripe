@@ -31,20 +31,6 @@ impl Subscription {
 
 impl CreateSubscriptionItems {
     pub fn new() -> Self {
-        Self {
-            billing_thresholds: Default::default(),
-            metadata: Default::default(),
-            // plan: Default::default(),
-            price: Default::default(),
-            price_data: Default::default(),
-            quantity: Default::default(),
-            tax_rates: Default::default(),
-        }
-    }
-}
-
-impl Default for CreateSubscriptionItems {
-    fn default() -> Self {
-        Self::new()
+        Default::default()
     }
 }

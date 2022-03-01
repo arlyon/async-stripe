@@ -4,7 +4,7 @@ use crate::ids::*;
 use crate::params::Object;
 
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Account {
     pub id: AccountId,
 }
@@ -21,7 +21,7 @@ impl Object for Account {
 }
 
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Application {
     pub id: (),
 }
@@ -38,7 +38,7 @@ impl Object for Application {
 }
 
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ApplicationFee {
     pub id: ApplicationFeeId,
 }
@@ -55,7 +55,7 @@ impl Object for ApplicationFee {
 }
 
 #[cfg(not(feature = "checkout"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CheckoutSession {
     pub id: CheckoutSessionId,
 }
@@ -72,7 +72,7 @@ impl Object for CheckoutSession {
 }
 
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ConnectCollectionTransfer {
     pub id: (),
 }
@@ -89,7 +89,7 @@ impl Object for ConnectCollectionTransfer {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Coupon {
     pub id: CouponId,
 }
@@ -106,7 +106,7 @@ impl Object for Coupon {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Discount {
     pub id: DiscountId,
 }
@@ -123,7 +123,7 @@ impl Object for Discount {
 }
 
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ApplicationFeeRefund {
     pub id: ApplicationFeeRefundId,
 }
@@ -140,7 +140,7 @@ impl Object for ApplicationFeeRefund {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Invoice {
     pub id: InvoiceId,
 }
@@ -157,7 +157,7 @@ impl Object for Invoice {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceItem {
     pub id: InvoiceItemId,
 }
@@ -174,7 +174,7 @@ impl Object for InvoiceItem {
 }
 
 #[cfg(not(feature = "issuing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorization {
     pub id: IssuingAuthorizationId,
 }
@@ -191,7 +191,7 @@ impl Object for IssuingAuthorization {
 }
 
 #[cfg(not(feature = "issuing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCard {
     pub id: IssuingCardId,
 }
@@ -208,7 +208,7 @@ impl Object for IssuingCard {
 }
 
 #[cfg(not(feature = "issuing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholder {
     pub id: IssuingCardholderId,
 }
@@ -225,7 +225,7 @@ impl Object for IssuingCardholder {
 }
 
 #[cfg(not(feature = "issuing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDispute {
     pub id: IssuingDisputeId,
 }
@@ -242,7 +242,7 @@ impl Object for IssuingDispute {
 }
 
 #[cfg(not(feature = "issuing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransaction {
     pub id: IssuingTransactionId,
 }
@@ -259,7 +259,7 @@ impl Object for IssuingTransaction {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceLineItem {
     pub id: InvoiceLineItemId,
 }
@@ -276,7 +276,7 @@ impl Object for InvoiceLineItem {
 }
 
 #[cfg(not(feature = "orders"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Order {
     pub id: OrderId,
 }
@@ -293,7 +293,7 @@ impl Object for Order {
 }
 
 #[cfg(not(feature = "orders"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OrderItem {
     pub id: (),
 }
@@ -310,7 +310,7 @@ impl Object for OrderItem {
 }
 
 #[cfg(not(feature = "orders"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OrderReturn {
     pub id: OrderReturnId,
 }
@@ -327,7 +327,7 @@ impl Object for OrderReturn {
 }
 
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Person {
     pub id: PersonId,
 }
@@ -344,7 +344,7 @@ impl Object for Person {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Plan {
     pub id: PlanId,
 }
@@ -361,7 +361,7 @@ impl Object for Plan {
 }
 
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Recipient {
     pub id: RecipientId,
 }
@@ -378,7 +378,7 @@ impl Object for Recipient {
 }
 
 #[cfg(not(feature = "fraud"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Review {
     pub id: ReviewId,
 }
@@ -395,7 +395,7 @@ impl Object for Review {
 }
 
 #[cfg(not(feature = "sigma"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ScheduledQueryRun {
     pub id: ScheduledQueryRunId,
 }
@@ -412,7 +412,7 @@ impl Object for ScheduledQueryRun {
 }
 
 #[cfg(not(feature = "orders"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Sku {
     pub id: SkuId,
 }
@@ -429,7 +429,7 @@ impl Object for Sku {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Subscription {
     pub id: SubscriptionId,
 }
@@ -446,7 +446,7 @@ impl Object for Subscription {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItem {
     pub id: SubscriptionItemId,
 }
@@ -463,7 +463,7 @@ impl Object for SubscriptionItem {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionSchedule {
     pub id: SubscriptionScheduleId,
 }
@@ -480,7 +480,7 @@ impl Object for SubscriptionSchedule {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleRevision {
     pub id: (),
 }
@@ -497,7 +497,7 @@ impl Object for SubscriptionScheduleRevision {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxId {
     pub id: TaxIdId,
 }
@@ -514,7 +514,7 @@ impl Object for TaxId {
 }
 
 #[cfg(not(feature = "billing"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxRate {
     pub id: TaxRateId,
 }
@@ -531,7 +531,7 @@ impl Object for TaxRate {
 }
 
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Topup {
     pub id: TopupId,
 }
@@ -548,7 +548,7 @@ impl Object for Topup {
 }
 
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Transfer {
     pub id: TransferId,
 }
@@ -565,7 +565,7 @@ impl Object for Transfer {
 }
 
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransferReversal {
     pub id: TransferReversalId,
 }
@@ -582,7 +582,7 @@ impl Object for TransferReversal {
 }
 
 #[cfg(not(feature = "webhook-endpoints"))]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WebhookEndpoint {
     pub id: WebhookEndpointId,
 }

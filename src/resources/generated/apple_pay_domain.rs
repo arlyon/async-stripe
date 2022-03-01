@@ -8,7 +8,7 @@ use crate::ids::ApplePayDomainId;
 use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "ApplePayDomain".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ApplePayDomain {
     /// Unique identifier for the object.
     pub id: ApplePayDomainId,

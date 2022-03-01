@@ -12,7 +12,7 @@ use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
 /// The resource representing a Stripe "Sku".
 ///
 /// For more details see <https://stripe.com/docs/api/skus/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Sku {
     /// Unique identifier for the object.
     pub id: SkuId,
@@ -127,7 +127,7 @@ impl Object for Sku {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SkuInventory {
     /// The count of inventory available.
     ///

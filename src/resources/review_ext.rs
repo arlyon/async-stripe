@@ -36,3 +36,9 @@ impl std::fmt::Display for ReviewReason {
         self.as_str().fmt(f)
     }
 }
+
+impl std::default::Default for ReviewReason {
+    fn default() -> Self {
+        Self::Approved
+    }
+}

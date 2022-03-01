@@ -1,7 +1,7 @@
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingAuthorizationMerchantData".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Default, Serialize)]
 pub struct MerchantData {
     /// Identifier assigned to the seller by the card brand.
     pub network_id: String,
@@ -322,4 +322,10 @@ pub enum MerchantCategory {
     WomensAccessoryAndSpecialtyShops,
     WomensReadyToWearStores,
     WreckingAndSalvageYards,
+}
+
+impl std::default::Default for MerchantCategory {
+    fn default() -> Self {
+        Self::Miscellaneous
+    }
 }

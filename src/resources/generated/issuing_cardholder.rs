@@ -9,7 +9,7 @@ use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, Currency, File, MerchantCategory};
 
 /// The resource representing a Stripe "IssuingCardholder".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholder {
     /// Unique identifier for the object.
     pub id: IssuingCardholderId,
@@ -79,12 +79,12 @@ impl Object for IssuingCardholder {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderAddress {
     pub address: Address,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderAuthorizationControls {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     ///
@@ -109,13 +109,13 @@ pub struct IssuingCardholderAuthorizationControls {
     pub spending_limits_currency: Option<Currency>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderCompany {
     /// Whether the company's business ID number was provided.
     pub tax_id_provided: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividual {
     /// The date of birth of this cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -132,7 +132,7 @@ pub struct IssuingCardholderIndividual {
     pub verification: Option<Box<IssuingCardholderVerification>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividualDob {
     /// The day of birth, between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -147,7 +147,7 @@ pub struct IssuingCardholderIndividualDob {
     pub year: Option<Box<i64>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderRequirements {
     /// If `disabled_reason` is present, all cards will decline authorizations with `cardholder_verification_required` reason.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -158,7 +158,7 @@ pub struct IssuingCardholderRequirements {
     pub past_due: Option<Box<Vec<IssuingCardholderRequirementsPastDue>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderSpendingLimit {
     /// Maximum amount allowed to spend per interval.
     pub amount: i64,
@@ -173,14 +173,14 @@ pub struct IssuingCardholderSpendingLimit {
     pub interval: IssuingCardholderSpendingLimitInterval,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderVerification {
     /// An identifying document, either a passport or local ID card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<Box<IssuingCardholderIdDocument>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderIdDocument {
     /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -220,6 +220,11 @@ impl AsRef<str> for IssuingCardholderRequirementsDisabledReason {
 impl std::fmt::Display for IssuingCardholderRequirementsDisabledReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingCardholderRequirementsDisabledReason {
+    fn default() -> Self {
+        Self::Listed
     }
 }
 
@@ -268,6 +273,11 @@ impl AsRef<str> for IssuingCardholderRequirementsPastDue {
 impl std::fmt::Display for IssuingCardholderRequirementsPastDue {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingCardholderRequirementsPastDue {
+    fn default() -> Self {
+        Self::CompanyTaxId
     }
 }
 
@@ -873,6 +883,11 @@ impl std::fmt::Display for IssuingCardholderSpendingLimitCategories {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingCardholderSpendingLimitCategories {
+    fn default() -> Self {
+        Self::AcRefrigerationRepair
+    }
+}
 
 /// An enum representing the possible values of an `IssuingCardholderSpendingLimit`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -910,6 +925,11 @@ impl std::fmt::Display for IssuingCardholderSpendingLimitInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingCardholderSpendingLimitInterval {
+    fn default() -> Self {
+        Self::AllTime
+    }
+}
 
 /// An enum representing the possible values of an `IssuingCardholder`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -941,6 +961,11 @@ impl std::fmt::Display for IssuingCardholderStatus {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingCardholderStatus {
+    fn default() -> Self {
+        Self::Active
+    }
+}
 
 /// An enum representing the possible values of an `IssuingCardholder`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -968,5 +993,10 @@ impl AsRef<str> for IssuingCardholderType {
 impl std::fmt::Display for IssuingCardholderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingCardholderType {
+    fn default() -> Self {
+        Self::Company
     }
 }

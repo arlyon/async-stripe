@@ -12,7 +12,7 @@ use crate::resources::{PackageDimensions, TaxCode};
 /// The resource representing a Stripe "Product".
 ///
 /// For more details see <https://stripe.com/docs/api/products/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Product {
     /// Unique identifier for the object.
     pub id: ProductId,

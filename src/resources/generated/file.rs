@@ -12,7 +12,7 @@ use crate::resources::FileLink;
 /// The resource representing a Stripe "File".
 ///
 /// For more details see <https://stripe.com/docs/api/files/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct File {
     /// Unique identifier for the object.
     pub id: FileId,
@@ -181,5 +181,10 @@ impl AsRef<str> for FilePurpose {
 impl std::fmt::Display for FilePurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for FilePurpose {
+    fn default() -> Self {
+        Self::AccountRequirement
     }
 }

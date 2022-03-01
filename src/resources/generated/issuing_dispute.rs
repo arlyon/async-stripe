@@ -11,7 +11,7 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "IssuingDispute".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDispute {
     /// Unique identifier for the object.
     pub id: IssuingDisputeId,
@@ -60,7 +60,7 @@ impl Object for IssuingDispute {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeEvidence {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled: Option<Box<IssuingDisputeCanceledEvidence>>,
@@ -89,7 +89,7 @@ pub struct IssuingDisputeEvidence {
     pub service_not_as_described: Option<Box<IssuingDisputeServiceNotAsDescribedEvidence>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeCanceledEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -132,7 +132,7 @@ pub struct IssuingDisputeCanceledEvidence {
     pub returned_at: Option<Box<Timestamp>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeDuplicateEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -161,7 +161,7 @@ pub struct IssuingDisputeDuplicateEvidence {
     pub original_transaction: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeFraudulentEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -172,7 +172,7 @@ pub struct IssuingDisputeFraudulentEvidence {
     pub explanation: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -199,7 +199,7 @@ pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
     pub returned_at: Option<Box<Timestamp>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeNotReceivedEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -222,7 +222,7 @@ pub struct IssuingDisputeNotReceivedEvidence {
     pub product_type: Option<Box<IssuingDisputeNotReceivedEvidenceProductType>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeOtherEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -241,7 +241,7 @@ pub struct IssuingDisputeOtherEvidence {
     pub product_type: Option<Box<IssuingDisputeOtherEvidenceProductType>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDisputeServiceNotAsDescribedEvidence {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -292,6 +292,11 @@ impl std::fmt::Display for IssuingDisputeCanceledEvidenceProductType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingDisputeCanceledEvidenceProductType {
+    fn default() -> Self {
+        Self::Merchandise
+    }
+}
 
 /// An enum representing the possible values of an `IssuingDisputeCanceledEvidence`'s `return_status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -319,6 +324,11 @@ impl AsRef<str> for IssuingDisputeCanceledEvidenceReturnStatus {
 impl std::fmt::Display for IssuingDisputeCanceledEvidenceReturnStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingDisputeCanceledEvidenceReturnStatus {
+    fn default() -> Self {
+        Self::MerchantRejected
     }
 }
 
@@ -362,6 +372,11 @@ impl std::fmt::Display for IssuingDisputeEvidenceReason {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingDisputeEvidenceReason {
+    fn default() -> Self {
+        Self::Canceled
+    }
+}
 
 /// An enum representing the possible values of an `IssuingDisputeMerchandiseNotAsDescribedEvidence`'s `return_status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -393,6 +408,11 @@ impl std::fmt::Display for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturn
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
+    fn default() -> Self {
+        Self::MerchantRejected
+    }
+}
 
 /// An enum representing the possible values of an `IssuingDisputeNotReceivedEvidence`'s `product_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -422,6 +442,11 @@ impl std::fmt::Display for IssuingDisputeNotReceivedEvidenceProductType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IssuingDisputeNotReceivedEvidenceProductType {
+    fn default() -> Self {
+        Self::Merchandise
+    }
+}
 
 /// An enum representing the possible values of an `IssuingDisputeOtherEvidence`'s `product_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -449,5 +474,10 @@ impl AsRef<str> for IssuingDisputeOtherEvidenceProductType {
 impl std::fmt::Display for IssuingDisputeOtherEvidenceProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingDisputeOtherEvidenceProductType {
+    fn default() -> Self {
+        Self::Merchandise
     }
 }

@@ -17,7 +17,7 @@ use crate::resources::{
 /// The resource representing a Stripe "BalanceTransaction".
 ///
 /// For more details see <https://stripe.com/docs/api/balance_transactions/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BalanceTransaction {
     /// Unique identifier for the object.
     pub id: BalanceTransactionId,
@@ -116,7 +116,7 @@ impl Object for BalanceTransaction {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Fee {
     /// Amount of the fee, in cents.
     pub amount: i64,
@@ -234,6 +234,11 @@ pub enum BalanceTransactionSourceUnion {
     Transfer(Transfer),
     TransferReversal(TransferReversal),
 }
+impl std::default::Default for BalanceTransactionSourceUnion {
+    fn default() -> Self {
+        Self::ApplicationFee(Default::default())
+    }
+}
 
 /// An enum representing the possible values of an `BalanceTransaction`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -321,5 +326,10 @@ impl AsRef<str> for BalanceTransactionType {
 impl std::fmt::Display for BalanceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for BalanceTransactionType {
+    fn default() -> Self {
+        Self::Adjustment
     }
 }

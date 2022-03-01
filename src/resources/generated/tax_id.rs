@@ -9,7 +9,7 @@ use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::Customer;
 
 /// The resource representing a Stripe "tax_id".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxId {
     /// Unique identifier for the object.
     pub id: TaxIdId,
@@ -62,7 +62,7 @@ impl Object for TaxId {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIdVerification {
     /// Verification status, one of `pending`, `verified`, `unverified`, or `unavailable`.
     pub status: TaxIdVerificationStatus,
@@ -186,6 +186,11 @@ impl std::fmt::Display for TaxIdType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for TaxIdType {
+    fn default() -> Self {
+        Self::AeTrn
+    }
+}
 
 /// An enum representing the possible values of an `TaxIdVerification`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -217,5 +222,10 @@ impl AsRef<str> for TaxIdVerificationStatus {
 impl std::fmt::Display for TaxIdVerificationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TaxIdVerificationStatus {
+    fn default() -> Self {
+        Self::Pending
     }
 }

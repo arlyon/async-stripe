@@ -5,7 +5,7 @@
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Address".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Address {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]

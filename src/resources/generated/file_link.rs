@@ -12,7 +12,7 @@ use crate::resources::{File, Scheduled};
 /// The resource representing a Stripe "FileLink".
 ///
 /// For more details see <https://stripe.com/docs/api/file_links/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FileLink {
     /// Unique identifier for the object.
     pub id: FileLinkId,

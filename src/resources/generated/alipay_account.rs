@@ -9,7 +9,7 @@ use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Currency, Customer};
 
 /// The resource representing a Stripe "AlipayAccount".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AlipayAccount {
     /// Unique identifier for the object.
     pub id: AlipayAccountId,

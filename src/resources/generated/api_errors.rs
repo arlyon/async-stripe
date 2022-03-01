@@ -7,7 +7,7 @@ use serde_derive::{Deserialize, Serialize};
 use crate::resources::{BankAccount, Card, PaymentIntent, PaymentMethod, SetupIntent, Source};
 
 /// The resource representing a Stripe "APIErrors".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ApiErrors {
     /// For card errors, the ID of the failed charge.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -70,6 +70,11 @@ pub enum ApiErrorsSourceUnion {
     Card(Card),
     Source(Source),
 }
+impl std::default::Default for ApiErrorsSourceUnion {
+    fn default() -> Self {
+        Self::BankAccount(Default::default())
+    }
+}
 
 /// An enum representing the possible values of an `ApiErrors`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -101,5 +106,10 @@ impl AsRef<str> for ApiErrorsType {
 impl std::fmt::Display for ApiErrorsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ApiErrorsType {
+    fn default() -> Self {
+        Self::ApiError
     }
 }

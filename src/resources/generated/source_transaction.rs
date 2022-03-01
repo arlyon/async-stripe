@@ -9,7 +9,7 @@ use crate::params::{Object, Timestamp};
 use crate::resources::Currency;
 
 /// The resource representing a Stripe "SourceTransaction".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransaction {
     /// Unique identifier for the object.
     pub id: ChargeId,
@@ -66,7 +66,7 @@ impl Object for SourceTransaction {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransactionAchCreditTransferData {
     /// Customer data associated with the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -85,7 +85,7 @@ pub struct SourceTransactionAchCreditTransferData {
     pub routing_number: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransactionChfCreditTransferData {
     /// Reference associated with the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -108,7 +108,7 @@ pub struct SourceTransactionChfCreditTransferData {
     pub sender_name: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransactionGbpCreditTransferData {
     /// Bank account fingerprint associated with the Stripe owned bank account receiving the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -142,7 +142,7 @@ pub struct SourceTransactionGbpCreditTransferData {
     pub sender_sort_code: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransactionPaperCheckData {
     /// Time at which the deposited funds will be available for use.
     ///
@@ -155,7 +155,7 @@ pub struct SourceTransactionPaperCheckData {
     pub invoices: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransactionSepaCreditTransferData {
     /// Reference associated with the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -224,5 +224,10 @@ impl AsRef<str> for SourceTransactionType {
 impl std::fmt::Display for SourceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SourceTransactionType {
+    fn default() -> Self {
+        Self::AchCreditTransfer
     }
 }

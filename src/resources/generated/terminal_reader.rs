@@ -9,7 +9,7 @@ use crate::params::{Expandable, Metadata, Object};
 use crate::resources::TerminalLocation;
 
 /// The resource representing a Stripe "TerminalReaderReader".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReader {
     /// Unique identifier for the object.
     pub id: TerminalReaderId,
@@ -100,5 +100,10 @@ impl AsRef<str> for TerminalReaderDeviceType {
 impl std::fmt::Display for TerminalReaderDeviceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TerminalReaderDeviceType {
+    fn default() -> Self {
+        Self::BbposChipper2x
     }
 }

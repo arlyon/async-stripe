@@ -9,7 +9,7 @@ use crate::params::{Object, Timestamp};
 use crate::resources::{Currency, File};
 
 /// The resource representing a Stripe "reporting_report_run".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ReportingReportRun {
     /// Unique identifier for the object.
     pub id: ReportingReportRunId,
@@ -60,7 +60,7 @@ impl Object for ReportingReportRun {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FinancialReportingFinanceReportRunRunParameters {
     /// The set of output columns requested for inclusion in the report run.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -12,7 +12,7 @@ use crate::resources::{Account, BalanceTransaction, Charge, Currency, TransferRe
 /// The resource representing a Stripe "Transfer".
 ///
 /// For more details see <https://stripe.com/docs/api/transfers/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Transfer {
     /// Unique identifier for the object.
     pub id: TransferId,
@@ -311,5 +311,10 @@ impl AsRef<str> for TransferSourceType {
 impl std::fmt::Display for TransferSourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TransferSourceType {
+    fn default() -> Self {
+        Self::BankAccount
     }
 }

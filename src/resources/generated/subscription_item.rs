@@ -12,7 +12,7 @@ use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRa
 /// The resource representing a Stripe "SubscriptionItem".
 ///
 /// For more details see <https://stripe.com/docs/api/subscription_items/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItem {
     /// Unique identifier for the object.
     pub id: SubscriptionItemId,
@@ -341,7 +341,7 @@ impl<'a> UpdateSubscriptionItem<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceData {
     pub currency: Currency,
 
@@ -359,7 +359,7 @@ pub struct SubscriptionItemPriceData {
     pub unit_amount_decimal: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceDataRecurring {
     pub interval: PlanInterval,
 
@@ -399,6 +399,11 @@ impl std::fmt::Display for PlanInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PlanInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `SubscriptionItemPriceData`'s `tax_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -428,6 +433,11 @@ impl AsRef<str> for SubscriptionItemPriceDataTaxBehavior {
 impl std::fmt::Display for SubscriptionItemPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionItemPriceDataTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
     }
 }
 
@@ -463,6 +473,11 @@ impl std::fmt::Display for SubscriptionPaymentBehavior {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for SubscriptionPaymentBehavior {
+    fn default() -> Self {
+        Self::AllowIncomplete
+    }
+}
 
 /// An enum representing the possible values of an `CreateSubscriptionItem`'s `proration_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -492,5 +507,10 @@ impl AsRef<str> for SubscriptionProrationBehavior {
 impl std::fmt::Display for SubscriptionProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionProrationBehavior {
+    fn default() -> Self {
+        Self::AlwaysInvoice
     }
 }

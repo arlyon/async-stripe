@@ -5,7 +5,7 @@
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "payment_method_details_card_present".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardPresent {
     /// The authorized amount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -85,7 +85,7 @@ pub struct PaymentMethodDetailsCardPresent {
     pub receipt: Option<Box<PaymentMethodDetailsCardPresentReceipt>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardPresentReceipt {
     /// The type of account being debited or credited.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -168,6 +168,11 @@ impl std::fmt::Display for PaymentMethodDetailsCardPresentReadMethod {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PaymentMethodDetailsCardPresentReadMethod {
+    fn default() -> Self {
+        Self::ContactEmv
+    }
+}
 
 /// An enum representing the possible values of an `PaymentMethodDetailsCardPresentReceipt`'s `account_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -199,5 +204,10 @@ impl AsRef<str> for PaymentMethodDetailsCardPresentReceiptAccountType {
 impl std::fmt::Display for PaymentMethodDetailsCardPresentReceiptAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodDetailsCardPresentReceiptAccountType {
+    fn default() -> Self {
+        Self::Checking
     }
 }

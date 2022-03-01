@@ -12,7 +12,7 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "IssuingTransaction".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransaction {
     /// Unique identifier for the object.
     pub id: IssuingTransactionId,
@@ -100,14 +100,14 @@ impl Object for IssuingTransaction {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionAmountDetails {
     /// The fee charged by the ATM for the cash withdrawal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub atm_fee: Option<Box<i64>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionPurchaseDetails {
     /// Information about the flight that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -130,7 +130,7 @@ pub struct IssuingTransactionPurchaseDetails {
     pub reference: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightData {
     /// The time that the flight departed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -153,7 +153,7 @@ pub struct IssuingTransactionFlightData {
     pub travel_agency: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightDataLeg {
     /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -180,7 +180,7 @@ pub struct IssuingTransactionFlightDataLeg {
     pub stopover_allowed: Option<Box<bool>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFuelData {
     /// The type of fuel that was purchased.
     ///
@@ -201,7 +201,7 @@ pub struct IssuingTransactionFuelData {
     pub volume_decimal: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionLodgingData {
     /// The time of checking into the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -212,7 +212,7 @@ pub struct IssuingTransactionLodgingData {
     pub nights: Option<Box<i64>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionReceiptData {
     /// The description of the item.
     ///
@@ -261,5 +261,10 @@ impl AsRef<str> for IssuingTransactionWallet {
 impl std::fmt::Display for IssuingTransactionWallet {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingTransactionWallet {
+    fn default() -> Self {
+        Self::ApplePay
     }
 }

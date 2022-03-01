@@ -12,7 +12,7 @@ use crate::resources::{BalanceTransaction, Currency, Source};
 /// The resource representing a Stripe "Topup".
 ///
 /// For more details see <https://stripe.com/docs/api/topups/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Topup {
     /// Unique identifier for the object.
     pub id: TopupId,
@@ -237,6 +237,11 @@ impl std::fmt::Display for TopupStatus {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for TopupStatus {
+    fn default() -> Self {
+        Self::Canceled
+    }
+}
 
 /// An enum representing the possible values of an `ListTopups`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -268,5 +273,10 @@ impl AsRef<str> for TopupStatusFilter {
 impl std::fmt::Display for TopupStatusFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TopupStatusFilter {
+    fn default() -> Self {
+        Self::Canceled
     }
 }

@@ -5,7 +5,7 @@
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingAuthorizationMerchantData".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MerchantData {
     /// A categorization of the seller's type of business.
     ///

@@ -25,6 +25,12 @@ pub enum CardBrand {
     Unknown,
 }
 
+impl std::default::Default for CardBrand {
+    fn default() -> Self {
+        Self::Unknown
+    }
+}
+
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 pub enum CardType {
     #[serde(rename = "credit")]
@@ -40,4 +46,10 @@ pub enum CardType {
     #[serde(other)]
     #[serde(rename = "unknown")]
     Unknown,
+}
+
+impl std::default::Default for CardType {
+    fn default() -> Self {
+        Self::Unknown
+    }
 }

@@ -9,7 +9,7 @@ use crate::params::{Metadata, Object};
 use crate::resources::Address;
 
 /// The resource representing a Stripe "TerminalLocationLocation".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalLocation {
     /// Unique identifier for the object.
     pub id: TerminalLocationId,

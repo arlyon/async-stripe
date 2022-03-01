@@ -9,7 +9,7 @@ use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Currency, Discount, Period, Price, TaxRate};
 
 /// The resource representing a Stripe "InvoiceLineItem".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceLineItem {
     /// Unique identifier for the object.
     pub id: InvoiceLineItemId,
@@ -103,7 +103,7 @@ impl Object for InvoiceLineItem {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
     /// The amount, in %s, of the discount.
     pub amount: i64,
@@ -112,7 +112,7 @@ pub struct DiscountsResourceDiscountAmount {
     pub discount: Expandable<Discount>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxAmount {
     /// The amount, in %s, of the tax.
     pub amount: i64,
@@ -151,5 +151,10 @@ impl AsRef<str> for InvoiceLineItemType {
 impl std::fmt::Display for InvoiceLineItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for InvoiceLineItemType {
+    fn default() -> Self {
+        Self::InvoiceItem
     }
 }

@@ -9,7 +9,7 @@ use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{Charge, PaymentIntent};
 
 /// The resource representing a Stripe "RadarEarlyFraudWarning".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RadarEarlyFraudWarning {
     /// Unique identifier for the object.
     pub id: RadarEarlyFraudWarningId,

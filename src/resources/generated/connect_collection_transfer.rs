@@ -8,7 +8,7 @@ use crate::params::{Expandable, Object};
 use crate::resources::{Account, Currency};
 
 /// The resource representing a Stripe "ConnectCollectionTransfer".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ConnectCollectionTransfer {
     /// Amount transferred, in %s.
     pub amount: i64,

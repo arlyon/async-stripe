@@ -11,7 +11,7 @@ use crate::resources::{Address, File};
 /// The resource representing a Stripe "Person".
 ///
 /// For more details see <https://stripe.com/docs/api/persons/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Person {
     /// Unique identifier for the object.
     pub id: PersonId,
@@ -133,7 +133,7 @@ impl Object for Person {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LegalEntityDob {
     /// The day of birth, between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -148,7 +148,7 @@ pub struct LegalEntityDob {
     pub year: Option<Box<i64>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonVerification {
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -175,7 +175,7 @@ pub struct PersonVerification {
     pub status: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonVerificationDocument {
     /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -198,7 +198,7 @@ pub struct PersonVerificationDocument {
     pub front: Option<Box<Expandable<File>>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonFutureRequirements {
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -230,7 +230,7 @@ pub struct PersonFutureRequirements {
     pub pending_verification: Vec<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsAlternative {
     /// Fields that can be provided to satisfy all fields in `original_fields_due`.
     pub alternative_fields_due: Vec<String>,
@@ -239,7 +239,7 @@ pub struct AccountRequirementsAlternative {
     pub original_fields_due: Vec<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsError {
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
@@ -251,7 +251,7 @@ pub struct AccountRequirementsError {
     pub requirement: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonRelationship {
     /// Whether the person is a director of the account's legal entity.
     ///
@@ -284,7 +284,7 @@ pub struct PersonRelationship {
     pub title: Option<Box<String>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PersonRequirements {
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -429,6 +429,11 @@ impl std::fmt::Display for AccountRequirementsErrorCode {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for AccountRequirementsErrorCode {
+    fn default() -> Self {
+        Self::InvalidAddressCityStatePostalCode
+    }
+}
 
 /// An enum representing the possible values of an `Person`'s `political_exposure` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -456,5 +461,10 @@ impl AsRef<str> for PersonPoliticalExposure {
 impl std::fmt::Display for PersonPoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PersonPoliticalExposure {
+    fn default() -> Self {
+        Self::Existing
     }
 }

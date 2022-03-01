@@ -14,7 +14,7 @@ use crate::resources::{
 /// The resource representing a Stripe "PlatformFee".
 ///
 /// For more details see <https://stripe.com/docs/api/application_fees/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ApplicationFee {
     /// Unique identifier for the object.
     pub id: ApplicationFeeId,

@@ -95,6 +95,12 @@ impl std::fmt::Display for IssuingCardShippingType {
     }
 }
 
+impl std::default::Default for IssuingCardShippingType {
+    fn default() -> Self {
+        Self::Individual
+    }
+}
+
 /// An enum representing the possible values of an `IssuingCard`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -121,5 +127,11 @@ impl AsRef<str> for IssuingCardType {
 impl std::fmt::Display for IssuingCardType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl std::default::Default for IssuingCardType {
+    fn default() -> Self {
+        Self::Physical
     }
 }
