@@ -97,6 +97,7 @@ pub enum ErrorCode {
     CustomerMaxSubscriptions,
     EmailInvalid,
     ExpiredCard,
+    IdempotencyKeyInUse,
     IncorrectAddress,
     IncorrectCvc,
     IncorrectNumber,
