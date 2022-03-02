@@ -61,10 +61,17 @@ impl Client {
     ///
     /// This is the recommended way to send requests for many different Stripe accounts
     /// or with different Meta, Extra, and Expand headers while using the same secret key.
-    pub fn with_headers(&self, headers: Headers) -> Client {
-        let mut client = self.clone();
-        client.headers = headers;
-        client
+    pub fn with_headers(mut self, headers: Headers) -> Client {
+        self.headers = headers;
+        self
+    }
+
+    /// Clones a new client with idempotency key headers.
+    ///
+    /// For short living idempotency keys, they only matter on push requests
+    pub fn with_idempotency_key(mut self, idempotency_key: String) -> Client {
+        self.headers.idempotency_key = Some(idempotency_key);
+        self
     }
 
     pub fn set_app_info(&mut self, name: String, version: Option<String>, url: Option<String>) {
@@ -174,6 +181,9 @@ impl Client {
         }
         if let Some(stripe_version) = &self.headers.stripe_version {
             req.set_header("stripe-version", stripe_version.as_str());
+        }
+        if let Some(idempotency_key) = &self.headers.idempotency_key {
+            req.set_header("idempotency-key", idempotency_key.as_str());
         }
         const CRATE_VERSION: &str = env!("CARGO_PKG_VERSION");
         let user_agent: String = format!("Stripe/v3 RustBindings/{}", CRATE_VERSION);

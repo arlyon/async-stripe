@@ -20,6 +20,7 @@ pub struct Headers {
     pub stripe_version: Option<ApiVersion>,
     pub stripe_account: Option<String>,
     pub user_agent: Option<String>,
+    pub idempotency_key: Option<String>,
 }
 
 /// Implemented by types which represent stripe objects.
