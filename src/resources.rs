@@ -118,6 +118,7 @@ pub use {
         shipping_rate::*,
         tax_code::*,
         tax_deducted_at_source::*,
+        test_helpers_test_clock::*,
         token::*,
         api_errors::*,
     },
