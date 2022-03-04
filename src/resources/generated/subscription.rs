@@ -12,6 +12,7 @@ use crate::resources::{
     InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsKonbini, PaymentMethod,
     PaymentSource, Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
     SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Subscription".
@@ -177,6 +178,10 @@ pub struct Subscription {
     /// Note that when a subscription has a status of `unpaid`, no subsequent invoices will be attempted (invoices will be created, but then immediately automatically closed).
     /// After receiving updated payment information from a customer, you may choose to reopen and pay their closed invoices.
     pub status: SubscriptionStatus,
+
+    /// ID of the test clock this subscription belongs to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<Expandable<TestHelpersTestClock>>,
 
     /// The account (if any) the subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]

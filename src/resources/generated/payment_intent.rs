@@ -374,23 +374,53 @@ pub struct PaymentIntentNextActionKonbini {
 pub struct PaymentIntentNextActionKonbiniStores {
     /// FamilyMart instruction details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub familymart: Option<PaymentIntentNextActionKonbiniStoresStore>,
+    pub familymart: Option<PaymentIntentNextActionKonbiniFamilymart>,
 
     /// Lawson instruction details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub lawson: Option<PaymentIntentNextActionKonbiniStoresStore>,
+    pub lawson: Option<PaymentIntentNextActionKonbiniLawson>,
 
     /// Ministop instruction details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ministop: Option<PaymentIntentNextActionKonbiniStoresStore>,
+    pub ministop: Option<PaymentIntentNextActionKonbiniMinistop>,
 
     /// Seicomart instruction details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub seicomart: Option<PaymentIntentNextActionKonbiniStoresStore>,
+    pub seicomart: Option<PaymentIntentNextActionKonbiniSeicomart>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentIntentNextActionKonbiniStoresStore {
+pub struct PaymentIntentNextActionKonbiniFamilymart {
+    /// The confirmation number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confirmation_number: Option<String>,
+
+    /// The payment code.
+    pub payment_code: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionKonbiniLawson {
+    /// The confirmation number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confirmation_number: Option<String>,
+
+    /// The payment code.
+    pub payment_code: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionKonbiniMinistop {
+    /// The confirmation number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confirmation_number: Option<String>,
+
+    /// The payment code.
+    pub payment_code: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionKonbiniSeicomart {
     /// The confirmation number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub confirmation_number: Option<String>,

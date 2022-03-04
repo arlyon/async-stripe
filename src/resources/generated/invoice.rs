@@ -11,7 +11,7 @@ use crate::resources::{
     Account, Address, ApiErrors, Charge, Currency, Customer, Discount, InvoiceLineItem,
     InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
     InvoicePaymentMethodOptionsKonbini, PaymentIntent, PaymentMethod, PaymentSource, Quote,
-    Shipping, Subscription, TaxId, TaxRate,
+    Shipping, Subscription, TaxId, TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Invoice".
@@ -368,6 +368,10 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<i64>,
 
+    /// ID of the test clock this invoice belongs to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<Expandable<TestHelpersTestClock>>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub threshold_reason: Option<InvoiceThresholdReason>,
 
@@ -691,6 +695,16 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_settings: Option<CreateInvoicePaymentSettings>,
 
+    /// How to handle pending invoice items on invoice creation.
+    ///
+    /// One of `include`, `include_and_require`, or `exclude`.
+    /// `include` will include any pending invoice items, and will create an empty draft invoice if no pending invoice items exist.
+    /// `include_and_require` will include any pending invoice items, if no pending invoice items exist then the request will fail.
+    /// `exclude` will always create an empty invoice draft regardless if there are pending invoice items or not.
+    /// Defaults to `include_and_require` if the parameter is omitted.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pending_invoice_items_behavior: Option<InvoicePendingInvoiceItemsBehavior>,
+
     /// Extra information about a charge for the customer's credit card statement.
     ///
     /// It must contain at least one letter.
@@ -733,6 +747,7 @@ impl<'a> CreateInvoice<'a> {
             metadata: Default::default(),
             on_behalf_of: Default::default(),
             payment_settings: Default::default(),
+            pending_invoice_items_behavior: Default::default(),
             statement_descriptor: Default::default(),
             subscription: Default::default(),
             transfer_data: Default::default(),
@@ -1311,6 +1326,42 @@ impl std::fmt::Display for InvoicePaymentMethodOptionsCardRequestThreeDSecure {
 impl std::default::Default for InvoicePaymentMethodOptionsCardRequestThreeDSecure {
     fn default() -> Self {
         Self::Any
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoice`'s `pending_invoice_items_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoicePendingInvoiceItemsBehavior {
+    Exclude,
+    Include,
+    IncludeAndRequire,
+}
+
+impl InvoicePendingInvoiceItemsBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoicePendingInvoiceItemsBehavior::Exclude => "exclude",
+            InvoicePendingInvoiceItemsBehavior::Include => "include",
+            InvoicePendingInvoiceItemsBehavior::IncludeAndRequire => "include_and_require",
+        }
+    }
+}
+
+impl AsRef<str> for InvoicePendingInvoiceItemsBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoicePendingInvoiceItemsBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for InvoicePendingInvoiceItemsBehavior {
+    fn default() -> Self {
+        Self::Exclude
     }
 }
 
