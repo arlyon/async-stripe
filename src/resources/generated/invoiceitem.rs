@@ -9,6 +9,7 @@ use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "InvoiceItem".
@@ -108,6 +109,10 @@ pub struct InvoiceItem {
     /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<TaxRate>>,
+
+    /// ID of the test clock this invoice item belongs to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<Expandable<TestHelpersTestClock>>,
 
     /// Unit amount (in the `currency` specified) of the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -12,7 +12,7 @@ use crate::ids::{
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Address, Currency, Discount, PaymentMethod, PaymentSource, PaymentSourceParams, Scheduled,
-    Shipping, Subscription, TaxId,
+    Shipping, Subscription, TaxId, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Customer".
@@ -136,6 +136,10 @@ pub struct Customer {
     /// The customer's tax IDs.
     #[serde(default)]
     pub tax_ids: List<TaxId>,
+
+    /// ID of the test clock this customer belongs to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<Expandable<TestHelpersTestClock>>,
 }
 
 impl Customer {
@@ -342,6 +346,10 @@ pub struct CreateCustomer<'a> {
     /// The customer's tax IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id_data: Option<Vec<TaxIdData>>,
+
+    /// ID of the test clock to attach to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<&'a str>,
 }
 
 impl<'a> CreateCustomer<'a> {
@@ -367,6 +375,7 @@ impl<'a> CreateCustomer<'a> {
             tax: Default::default(),
             tax_exempt: Default::default(),
             tax_id_data: Default::default(),
+            test_clock: Default::default(),
         }
     }
 }
