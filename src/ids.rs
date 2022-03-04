@@ -553,6 +553,7 @@ def_id!(SubscriptionScheduleId, "sub_sched_");
 def_id!(TaxIdId, "txi_");
 def_id!(TaxCodeId, "txcd_");
 def_id!(TaxRateId, "txr_");
+def_id!(TestHelpersTestClockId, "clock_");
 def_id!(
     enum TokenId {
         #[default]
