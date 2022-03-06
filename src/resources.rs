@@ -165,6 +165,8 @@ pub use {
         subscription_ext::*
     },
     generated::billing::{
+        billing_portal_session::*,
+        billing_portal_configuration::*,
         coupon::*,
         discount::*,
         invoice::*,
