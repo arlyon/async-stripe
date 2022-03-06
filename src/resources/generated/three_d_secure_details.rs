@@ -5,25 +5,25 @@
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "three_d_secure_details".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ThreeDSecureDetails {
     /// For authenticated transactions: how the customer was authenticated by
     /// the issuing bank.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub authentication_flow: Option<Box<ThreeDSecureDetailsAuthenticationFlow>>,
+    pub authentication_flow: Option<ThreeDSecureDetailsAuthenticationFlow>,
 
     /// Indicates the outcome of 3D Secure authentication.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub result: Option<Box<ThreeDSecureDetailsResult>>,
+    pub result: Option<ThreeDSecureDetailsResult>,
 
     /// Additional information about why 3D Secure succeeded or failed based
     /// on the `result`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub result_reason: Option<Box<ThreeDSecureDetailsResultReason>>,
+    pub result_reason: Option<ThreeDSecureDetailsResultReason>,
 
     /// The version of 3D Secure that was used.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<Box<ThreeDSecureDetailsVersion>>,
+    pub version: Option<ThreeDSecureDetailsVersion>,
 }
 
 /// An enum representing the possible values of an `ThreeDSecureDetails`'s `authentication_flow` field.
@@ -52,6 +52,11 @@ impl AsRef<str> for ThreeDSecureDetailsAuthenticationFlow {
 impl std::fmt::Display for ThreeDSecureDetailsAuthenticationFlow {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ThreeDSecureDetailsAuthenticationFlow {
+    fn default() -> Self {
+        Self::Challenge
     }
 }
 
@@ -87,6 +92,11 @@ impl AsRef<str> for ThreeDSecureDetailsResult {
 impl std::fmt::Display for ThreeDSecureDetailsResult {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ThreeDSecureDetailsResult {
+    fn default() -> Self {
+        Self::AttemptAcknowledged
     }
 }
 
@@ -128,6 +138,11 @@ impl std::fmt::Display for ThreeDSecureDetailsResultReason {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for ThreeDSecureDetailsResultReason {
+    fn default() -> Self {
+        Self::Abandoned
+    }
+}
 
 /// An enum representing the possible values of an `ThreeDSecureDetails`'s `version` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -160,5 +175,10 @@ impl AsRef<str> for ThreeDSecureDetailsVersion {
 impl std::fmt::Display for ThreeDSecureDetailsVersion {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ThreeDSecureDetailsVersion {
+    fn default() -> Self {
+        Self::V1_0_2
     }
 }

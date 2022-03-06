@@ -5,7 +5,7 @@
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "payment_method_options_oxxo".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsOxxo {
     /// The number of calendar days before an OXXO invoice expires.
     ///

@@ -8,7 +8,7 @@ use crate::params::Object;
 use crate::resources::Currency;
 
 /// The resource representing a Stripe "ReserveTransaction".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ReserveTransaction {
     pub amount: i64,
 
@@ -21,7 +21,7 @@ pub struct ReserveTransaction {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 }
 
 impl Object for ReserveTransaction {

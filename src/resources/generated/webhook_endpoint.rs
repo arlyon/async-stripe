@@ -12,7 +12,7 @@ use crate::resources::{ApiVersion, WebhookEndpointStatus};
 /// The resource representing a Stripe "NotificationWebhookEndpoint".
 ///
 /// For more details see <https://stripe.com/docs/api/webhook_endpoints/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WebhookEndpoint {
     /// Unique identifier for the object.
     pub id: WebhookEndpointId,
@@ -23,7 +23,7 @@ pub struct WebhookEndpoint {
 
     /// The ID of the associated Connect application.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<Box<String>>,
+    pub application: Option<String>,
 
     /// Time at which the object was created.
     ///
@@ -37,7 +37,7 @@ pub struct WebhookEndpoint {
 
     /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// The list of events to enable for this endpoint.
     ///
@@ -47,7 +47,7 @@ pub struct WebhookEndpoint {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -59,7 +59,7 @@ pub struct WebhookEndpoint {
     ///
     /// Only returned at creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub secret: Option<Box<String>>,
+    pub secret: Option<String>,
 
     /// The status of the webhook.
     ///
@@ -69,7 +69,7 @@ pub struct WebhookEndpoint {
 
     /// The URL of the webhook endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<Box<String>>,
+    pub url: Option<String>,
 }
 
 impl WebhookEndpoint {
@@ -232,7 +232,7 @@ pub struct UpdateWebhookEndpoint<'a> {
     ///
     /// You may specify `['*']` to enable all events, except those that require explicit selection.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub enabled_events: Option<Box<Vec<EventFilter>>>,
+    pub enabled_events: Option<Vec<EventFilter>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -480,6 +480,10 @@ pub enum EventFilter {
     PaymentIntentRequiresAction,
     #[serde(rename = "payment_intent.succeeded")]
     PaymentIntentSucceeded,
+    #[serde(rename = "payment_link.created")]
+    PaymentLinkCreated,
+    #[serde(rename = "payment_link.updated")]
+    PaymentLinkUpdated,
     #[serde(rename = "payment_method.attached")]
     PaymentMethodAttached,
     #[serde(rename = "payment_method.automatically_updated")]
@@ -761,6 +765,8 @@ impl EventFilter {
             EventFilter::PaymentIntentProcessing => "payment_intent.processing",
             EventFilter::PaymentIntentRequiresAction => "payment_intent.requires_action",
             EventFilter::PaymentIntentSucceeded => "payment_intent.succeeded",
+            EventFilter::PaymentLinkCreated => "payment_link.created",
+            EventFilter::PaymentLinkUpdated => "payment_link.updated",
             EventFilter::PaymentMethodAttached => "payment_method.attached",
             EventFilter::PaymentMethodAutomaticallyUpdated => {
                 "payment_method.automatically_updated"
@@ -848,5 +854,10 @@ impl AsRef<str> for EventFilter {
 impl std::fmt::Display for EventFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for EventFilter {
+    fn default() -> Self {
+        Self::All
     }
 }

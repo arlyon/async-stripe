@@ -1,13 +1,9 @@
-use std::iter::once;
-
 use chrono::Utc;
 #[cfg(feature = "webhook-events")]
-use hmac::{Hmac, Mac, NewMac};
+use hmac::{Hmac, Mac};
 use serde_derive::{Deserialize, Serialize};
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
-#[cfg(feature = "webhook-events")]
-use subtle::ConstantTimeEq;
 
 use crate::error::WebhookError;
 use crate::ids::EventId;
@@ -57,6 +53,10 @@ pub enum EventType {
     ChargeDisputeUpdated,
     #[serde(rename = "charge.refund.updated")]
     ChargeRefundUpdated,
+    #[serde(rename = "checkout.session.async_payment_failed")]
+    CheckoutSessionAsyncPaymentFailed,
+    #[serde(rename = "checkout.session.async_payment_succeeded")]
+    CheckoutSessionAsyncPaymentSucceeded,
     #[serde(rename = "checkout.session.completed")]
     CheckoutSessionCompleted,
     #[serde(rename = "coupon.created")]
@@ -179,6 +179,14 @@ pub enum EventType {
     SkuDeleted,
     #[serde(rename = "sku.updated")]
     SkuUpdated,
+    #[serde(rename = "setup_intent.created")]
+    SetupIntentCreated,
+    #[serde(rename = "setup_intent.requires_action")]
+    SetupIntentRequiresAction,
+    #[serde(rename = "setup_intent.setup_failed")]
+    SetupIntentSetupFailed,
+    #[serde(rename = "setup_intent.succeeded")]
+    SetupIntentSucceeded,
     #[serde(rename = "source.canceled")]
     SourceCanceled,
     #[serde(rename = "source.chargeable")]
@@ -240,6 +248,7 @@ pub enum EventObject {
     Review(Review),
     Sku(Sku),
     Subscription(Subscription),
+    SetupIntent(SetupIntent),
     Transfer(Transfer),
 }
 
@@ -270,17 +279,12 @@ impl Webhook {
 
         // Compute HMAC with the SHA256 hash function, using endpoing secret as key
         // and signed_payload string as the message.
-        let hex = {
-            let mut mac = Hmac::<Sha256>::new_from_slice(secret.as_bytes())
-                .map_err(|_| WebhookError::BadKey)?;
-            mac.update(signed_payload.as_bytes());
-            to_hex(&mac.finalize().into_bytes())
-        };
+        let mut mac =
+            Hmac::<Sha256>::new_from_slice(secret.as_bytes()).map_err(|_| WebhookError::BadKey)?;
+        mac.update(signed_payload.as_bytes());
 
-        // if the hex signature doesn't equal the stripe signature
-        if hex.as_bytes().ct_eq(signature.v1.as_bytes()).unwrap_u8() == 0 {
-            return Err(WebhookError::BadSignature);
-        }
+        let sig = hex::decode(signature.v1).map_err(|_| WebhookError::BadSignature)?;
+        mac.verify_slice(sig.as_slice()).map_err(|_| WebhookError::BadSignature)?;
 
         // Get current timestamp to compare to signature timestamp
         if (self.current_timestamp - signature.t).abs() > 300 {
@@ -289,15 +293,6 @@ impl Webhook {
 
         Ok(serde_json::from_str(payload)?)
     }
-}
-
-// TODO: If there is a lightweight hex crate, we should just rely on that instead.
-fn to_hex(bytes: &[u8]) -> String {
-    let chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
-    bytes
-        .iter()
-        .flat_map(|b| once(chars[(b >> 4) as usize]).chain(once(chars[(b & 0xf) as usize])))
-        .collect()
 }
 
 #[cfg(feature = "webhook-events")]

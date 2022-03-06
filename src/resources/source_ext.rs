@@ -35,6 +35,12 @@ impl std::fmt::Display for SourceStatus {
     }
 }
 
+impl std::default::Default for SourceStatus {
+    fn default() -> Self {
+        Self::Pending
+    }
+}
+
 /// An enum representing the possible values of an `Source`'s `usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -95,6 +101,12 @@ impl std::fmt::Display for SourceRedirectFlowFailureReason {
     }
 }
 
+impl std::default::Default for SourceRedirectFlowFailureReason {
+    fn default() -> Self {
+        Self::Declined
+    }
+}
+
 /// An enum representing the possible values of an `SourceRedirectFlow`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -125,5 +137,11 @@ impl AsRef<str> for SourceRedirectFlowStatus {
 impl std::fmt::Display for SourceRedirectFlowStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl std::default::Default for SourceRedirectFlowStatus {
+    fn default() -> Self {
+        Self::Pending
     }
 }

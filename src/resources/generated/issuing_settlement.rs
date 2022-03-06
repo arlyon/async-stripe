@@ -9,7 +9,7 @@ use crate::params::{Metadata, Object, Timestamp};
 use crate::resources::Currency;
 
 /// The resource representing a Stripe "IssuingSettlement".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingSettlement {
     /// Unique identifier for the object.
     pub id: IssuingSettlementId,
@@ -99,5 +99,10 @@ impl AsRef<str> for IssuingSettlementNetwork {
 impl std::fmt::Display for IssuingSettlementNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingSettlementNetwork {
+    fn default() -> Self {
+        Self::Visa
     }
 }

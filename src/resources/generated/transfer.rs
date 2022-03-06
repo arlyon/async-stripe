@@ -12,7 +12,7 @@ use crate::resources::{Account, BalanceTransaction, Charge, Currency, TransferRe
 /// The resource representing a Stripe "Transfer".
 ///
 /// For more details see <https://stripe.com/docs/api/transfers/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Transfer {
     /// Unique identifier for the object.
     pub id: TransferId,
@@ -25,7 +25,7 @@ pub struct Transfer {
 
     /// Balance transaction that describes the impact of this transfer on your account balance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
+    pub balance_transaction: Option<Expandable<BalanceTransaction>>,
 
     /// Time that this record of the transfer was first created.
     pub created: Timestamp,
@@ -39,15 +39,15 @@ pub struct Transfer {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// ID of the Stripe account the transfer was sent to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination: Option<Box<Expandable<Account>>>,
+    pub destination: Option<Expandable<Account>>,
 
     /// If the destination is a Stripe account, this will be the ID of the payment that the destination account received for the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination_payment: Option<Box<Expandable<Charge>>>,
+    pub destination_payment: Option<Expandable<Charge>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -69,7 +69,7 @@ pub struct Transfer {
     ///
     /// If null, the transfer was funded from the available balance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_transaction: Option<Box<Expandable<Charge>>>,
+    pub source_transaction: Option<Expandable<Charge>>,
 
     /// The source balance this transfer came from.
     ///
@@ -81,7 +81,7 @@ pub struct Transfer {
     ///
     /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_group: Option<Box<String>>,
+    pub transfer_group: Option<String>,
 }
 
 impl Transfer {
@@ -144,6 +144,11 @@ pub struct CreateTransfer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
 
+    /// The ID of a connected Stripe account.
+    ///
+    /// [See the Connect documentation](https://stripe.com/docs/connect/charges-transfers) for details.
+    pub destination: String,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -178,11 +183,12 @@ pub struct CreateTransfer<'a> {
 }
 
 impl<'a> CreateTransfer<'a> {
-    pub fn new(currency: Currency) -> Self {
+    pub fn new(currency: Currency, destination: String) -> Self {
         CreateTransfer {
             amount: Default::default(),
             currency,
             description: Default::default(),
+            destination,
             expand: Default::default(),
             metadata: Default::default(),
             source_transaction: Default::default(),
@@ -197,6 +203,10 @@ impl<'a> CreateTransfer<'a> {
 pub struct ListTransfers<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
+
+    /// Only return transfers for the destination specified by this account ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination: Option<String>,
 
     /// A cursor for use in pagination.
     ///
@@ -231,6 +241,7 @@ impl<'a> ListTransfers<'a> {
     pub fn new() -> Self {
         ListTransfers {
             created: Default::default(),
+            destination: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
@@ -300,5 +311,10 @@ impl AsRef<str> for TransferSourceType {
 impl std::fmt::Display for TransferSourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TransferSourceType {
+    fn default() -> Self {
+        Self::BankAccount
     }
 }

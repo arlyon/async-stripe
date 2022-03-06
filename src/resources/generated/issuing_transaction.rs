@@ -12,7 +12,7 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "IssuingTransaction".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransaction {
     /// Unique identifier for the object.
     pub id: IssuingTransactionId,
@@ -26,22 +26,22 @@ pub struct IssuingTransaction {
     ///
     /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_details: Option<Box<IssuingTransactionAmountDetails>>,
+    pub amount_details: Option<IssuingTransactionAmountDetails>,
 
     /// The `Authorization` object that led to this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub authorization: Option<Box<Expandable<IssuingAuthorization>>>,
+    pub authorization: Option<Expandable<IssuingAuthorization>>,
 
     /// ID of the [balance transaction](https://stripe.com/docs/api/balance_transactions) associated with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
+    pub balance_transaction: Option<Expandable<BalanceTransaction>>,
 
     /// The card used to make this transaction.
     pub card: Expandable<IssuingCard>,
 
     /// The cardholder to whom this transaction belongs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub cardholder: Option<Box<Expandable<IssuingCardholder>>>,
+    pub cardholder: Option<Expandable<IssuingCardholder>>,
 
     /// Time at which the object was created.
     ///
@@ -55,7 +55,7 @@ pub struct IssuingTransaction {
 
     /// If you've disputed the transaction, the ID of the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dispute: Option<Box<Expandable<IssuingDispute>>>,
+    pub dispute: Option<Expandable<IssuingDispute>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -77,7 +77,7 @@ pub struct IssuingTransaction {
 
     /// Additional purchase information that is optionally provided by the merchant.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub purchase_details: Option<Box<IssuingTransactionPurchaseDetails>>,
+    pub purchase_details: Option<IssuingTransactionPurchaseDetails>,
 
     /// The nature of the transaction.
     #[serde(rename = "type")]
@@ -87,7 +87,7 @@ pub struct IssuingTransaction {
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub wallet: Option<Box<IssuingTransactionWallet>>,
+    pub wallet: Option<IssuingTransactionWallet>,
 }
 
 impl Object for IssuingTransaction {
@@ -100,87 +100,87 @@ impl Object for IssuingTransaction {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionAmountDetails {
     /// The fee charged by the ATM for the cash withdrawal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub atm_fee: Option<Box<i64>>,
+    pub atm_fee: Option<i64>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionPurchaseDetails {
     /// Information about the flight that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flight: Option<Box<IssuingTransactionFlightData>>,
+    pub flight: Option<IssuingTransactionFlightData>,
 
     /// Information about fuel that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fuel: Option<Box<IssuingTransactionFuelData>>,
+    pub fuel: Option<IssuingTransactionFuelData>,
 
     /// Information about lodging that was purchased with this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub lodging: Option<Box<IssuingTransactionLodgingData>>,
+    pub lodging: Option<IssuingTransactionLodgingData>,
 
     /// The line items in the purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub receipt: Option<Box<Vec<IssuingTransactionReceiptData>>>,
+    pub receipt: Option<Vec<IssuingTransactionReceiptData>>,
 
     /// A merchant-specific order number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reference: Option<Box<String>>,
+    pub reference: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightData {
     /// The time that the flight departed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub departure_at: Option<Box<i64>>,
+    pub departure_at: Option<i64>,
 
     /// The name of the passenger.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub passenger_name: Option<Box<String>>,
+    pub passenger_name: Option<String>,
 
     /// Whether the ticket is refundable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub refundable: Option<Box<bool>>,
+    pub refundable: Option<bool>,
 
     /// The legs of the trip.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub segments: Option<Box<Vec<IssuingTransactionFlightDataLeg>>>,
+    pub segments: Option<Vec<IssuingTransactionFlightDataLeg>>,
 
     /// The travel agency that issued the ticket.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub travel_agency: Option<Box<String>>,
+    pub travel_agency: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFlightDataLeg {
     /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub arrival_airport_code: Option<Box<String>>,
+    pub arrival_airport_code: Option<String>,
 
     /// The airline carrier code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub carrier: Option<Box<String>>,
+    pub carrier: Option<String>,
 
     /// The three-letter IATA airport code that the flight departed from.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub departure_airport_code: Option<Box<String>>,
+    pub departure_airport_code: Option<String>,
 
     /// The flight number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flight_number: Option<Box<String>>,
+    pub flight_number: Option<String>,
 
     /// The flight's service class.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub service_class: Option<Box<String>>,
+    pub service_class: Option<String>,
 
     /// Whether a stopover is allowed on this flight.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub stopover_allowed: Option<Box<bool>>,
+    pub stopover_allowed: Option<bool>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionFuelData {
     /// The type of fuel that was purchased.
     ///
@@ -198,39 +198,39 @@ pub struct IssuingTransactionFuelData {
 
     /// The volume of the fuel that was pumped, represented as a decimal string with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub volume_decimal: Option<Box<String>>,
+    pub volume_decimal: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionLodgingData {
     /// The time of checking into the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub check_in_at: Option<Box<i64>>,
+    pub check_in_at: Option<i64>,
 
     /// The number of nights stayed at the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub nights: Option<Box<i64>>,
+    pub nights: Option<i64>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionReceiptData {
     /// The description of the item.
     ///
     /// The maximum length of this field is 26 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// The quantity of the item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<f64>>,
+    pub quantity: Option<f64>,
 
     /// The total for this line item in cents.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub total: Option<Box<i64>>,
+    pub total: Option<i64>,
 
     /// The unit cost of the item in cents.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_cost: Option<Box<i64>>,
+    pub unit_cost: Option<i64>,
 }
 
 /// An enum representing the possible values of an `IssuingTransaction`'s `wallet` field.
@@ -261,5 +261,10 @@ impl AsRef<str> for IssuingTransactionWallet {
 impl std::fmt::Display for IssuingTransactionWallet {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingTransactionWallet {
+    fn default() -> Self {
+        Self::ApplePay
     }
 }

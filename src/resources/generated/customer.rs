@@ -18,14 +18,14 @@ use crate::resources::{
 /// The resource representing a Stripe "Customer".
 ///
 /// For more details see <https://stripe.com/docs/api/customers/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Customer {
     /// Unique identifier for the object.
     pub id: CustomerId,
 
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<Box<Address>>,
+    pub address: Option<Address>,
 
     /// Current balance, if any, being stored on the customer.
     ///
@@ -34,7 +34,7 @@ pub struct Customer {
     /// The balance does not refer to any unpaid invoices; it solely takes into account amounts that have yet to be successfully applied to any invoice.
     /// This balance is only taken into account as invoices are finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance: Option<Box<i64>>,
+    pub balance: Option<i64>,
 
     /// Time at which the object was created.
     ///
@@ -60,32 +60,32 @@ pub struct Customer {
     ///
     /// When the customer's latest invoice is billed by sending an invoice, `delinquent` is `true` if the invoice isn't paid by its due date.  If an invoice is marked uncollectible by [dunning](https://stripe.com/docs/billing/automatic-collection), `delinquent` doesn't get reset to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub delinquent: Option<Box<bool>>,
+    pub delinquent: Option<bool>,
 
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// Describes the current discount active on the customer, if there is one.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<Box<Discount>>,
+    pub discount: Option<Discount>,
 
     /// The customer's email address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<Box<String>>,
+    pub email: Option<String>,
 
     /// The prefix for the customer used to generate unique invoice numbers.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_prefix: Option<Box<String>>,
+    pub invoice_prefix: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<Box<InvoiceSettingCustomerSetting>>,
+    pub invoice_settings: Option<InvoiceSettingCustomerSetting>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -95,25 +95,25 @@ pub struct Customer {
 
     /// The customer's full name or business name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<Box<String>>,
+    pub name: Option<String>,
 
     /// The suffix of the customer's next invoice number, e.g., 0001.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub next_invoice_sequence: Option<Box<i64>>,
+    pub next_invoice_sequence: Option<i64>,
 
     /// The customer's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<Box<String>>,
+    pub phone: Option<String>,
 
     /// The customer's preferred locales (languages), ordered by preference.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_locales: Option<Box<Vec<String>>>,
+    pub preferred_locales: Option<Vec<String>>,
 
     /// Mailing and shipping address for the customer.
     ///
     /// Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<Box<Shipping>>,
+    pub shipping: Option<Shipping>,
 
     /// The customer's payment sources, if any.
     #[serde(default)]
@@ -124,14 +124,14 @@ pub struct Customer {
     pub subscriptions: List<Subscription>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<Box<CustomerTax>>,
+    pub tax: Option<CustomerTax>,
 
     /// Describes the customer's tax exemption status.
     ///
     /// One of `none`, `exempt`, or `reverse`.
     /// When set to `reverse`, invoice and receipt PDFs include the text **"Reverse charge"**.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_exempt: Option<Box<CustomerTaxExempt>>,
+    pub tax_exempt: Option<CustomerTaxExempt>,
 
     /// The customer's tax IDs.
     #[serde(default)]
@@ -190,21 +190,21 @@ impl Object for Customer {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerTax {
     /// Surfaces if automatic tax computation is possible given the current customer location information.
     pub automatic_tax: CustomerTaxAutomaticTax,
 
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<Box<String>>,
+    pub ip_address: Option<String>,
 
     /// The customer's location as identified by Stripe Tax.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub location: Option<Box<CustomerTaxLocation>>,
+    pub location: Option<CustomerTaxLocation>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerTaxLocation {
     /// The customer's country as identified by Stripe Tax.
     pub country: String,
@@ -214,25 +214,25 @@ pub struct CustomerTaxLocation {
 
     /// The customer's state, county, province, or region as identified by Stripe Tax.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<Box<String>>,
+    pub state: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomerSetting {
     /// Default custom fields to be displayed on invoices for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<Box<Vec<InvoiceSettingCustomField>>>,
+    pub custom_fields: Option<Vec<InvoiceSettingCustomField>>,
 
     /// ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<Box<Expandable<PaymentMethod>>>,
+    pub default_payment_method: Option<Expandable<PaymentMethod>>,
 
     /// Default footer to be displayed on invoices for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<Box<String>>,
+    pub footer: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomField {
     /// The name of the custom field.
     pub name: String,
@@ -282,7 +282,7 @@ pub struct CreateCustomer<'a> {
 
     /// Default invoice settings for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<Box<CustomerInvoiceSettings>>,
+    pub invoice_settings: Option<CustomerInvoiceSettings>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -311,7 +311,7 @@ pub struct CreateCustomer<'a> {
 
     /// Customer's preferred languages, ordered by preference.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_locales: Option<Box<Vec<String>>>,
+    pub preferred_locales: Option<Vec<String>>,
 
     /// The API ID of a promotion code to apply to the customer.
     ///
@@ -324,14 +324,14 @@ pub struct CreateCustomer<'a> {
     ///
     /// Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<Box<CreateCustomerShipping>>,
+    pub shipping: Option<CreateCustomerShipping>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<PaymentSourceParams>,
 
     /// Tax details about the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<Box<CreateCustomerTax>>,
+    pub tax: Option<CreateCustomerTax>,
 
     /// The customer's tax exemption.
     ///
@@ -341,7 +341,7 @@ pub struct CreateCustomer<'a> {
 
     /// The customer's tax IDs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_id_data: Option<Box<Vec<TaxIdData>>>,
+    pub tax_id_data: Option<Vec<TaxIdData>>,
 }
 
 impl<'a> CreateCustomer<'a> {
@@ -434,6 +434,10 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<i64>,
 
+    /// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<UpdateCustomerCardUnion>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
 
@@ -482,7 +486,7 @@ pub struct UpdateCustomer<'a> {
 
     /// Default invoice settings for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<Box<CustomerInvoiceSettings>>,
+    pub invoice_settings: Option<CustomerInvoiceSettings>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -508,7 +512,7 @@ pub struct UpdateCustomer<'a> {
 
     /// Customer's preferred languages, ordered by preference.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_locales: Option<Box<Vec<String>>>,
+    pub preferred_locales: Option<Vec<String>>,
 
     /// The API ID of a promotion code to apply to the customer.
     ///
@@ -521,14 +525,14 @@ pub struct UpdateCustomer<'a> {
     ///
     /// Appears on invoices emailed to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping: Option<Box<UpdateCustomerShipping>>,
+    pub shipping: Option<UpdateCustomerShipping>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<PaymentSourceParams>,
 
     /// Tax details about the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax: Option<Box<UpdateCustomerTax>>,
+    pub tax: Option<UpdateCustomerTax>,
 
     /// The customer's tax exemption.
     ///
@@ -551,6 +555,7 @@ impl<'a> UpdateCustomer<'a> {
         UpdateCustomer {
             address: Default::default(),
             balance: Default::default(),
+            card: Default::default(),
             coupon: Default::default(),
             default_alipay_account: Default::default(),
             default_bank_account: Default::default(),
@@ -576,35 +581,35 @@ impl<'a> UpdateCustomer<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerShipping {
     pub address: CreateCustomerShippingAddress,
 
     pub name: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<Box<String>>,
+    pub phone: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerTax {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<Box<String>>,
+    pub ip_address: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_fields: Option<Box<Vec<CustomerInvoiceSettingsCustomFields>>>,
+    pub custom_fields: Option<Vec<CustomerInvoiceSettingsCustomFields>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_payment_method: Option<Box<String>>,
+    pub default_payment_method: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<Box<String>>,
+    pub footer: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIdData {
     #[serde(rename = "type")]
     pub type_: TaxIdType,
@@ -612,69 +617,69 @@ pub struct TaxIdData {
     pub value: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerShipping {
     pub address: UpdateCustomerShippingAddress,
 
     pub name: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone: Option<Box<String>>,
+    pub phone: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerTax {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<Box<String>>,
+    pub ip_address: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<Box<String>>,
+    pub city: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<Box<String>>,
+    pub country: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<Box<String>>,
+    pub line1: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<Box<String>>,
+    pub line2: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<Box<String>>,
+    pub postal_code: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<Box<String>>,
+    pub state: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettingsCustomFields {
     pub name: String,
 
     pub value: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<Box<String>>,
+    pub city: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<Box<String>>,
+    pub country: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line1: Option<Box<String>>,
+    pub line1: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line2: Option<Box<String>>,
+    pub line2: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub postal_code: Option<Box<String>>,
+    pub postal_code: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<Box<String>>,
+    pub state: Option<String>,
 }
 
 /// An enum representing the possible values of an `CustomerTax`'s `automatic_tax` field.
@@ -709,6 +714,11 @@ impl std::fmt::Display for CustomerTaxAutomaticTax {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CustomerTaxAutomaticTax {
+    fn default() -> Self {
+        Self::Failed
+    }
+}
 
 /// An enum representing the possible values of an `Customer`'s `tax_exempt` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -740,6 +750,11 @@ impl std::fmt::Display for CustomerTaxExempt {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CustomerTaxExempt {
+    fn default() -> Self {
+        Self::Exempt
+    }
+}
 
 /// An enum representing the possible values of an `CreateCustomer`'s `tax_exempt` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -769,6 +784,11 @@ impl AsRef<str> for CustomerTaxExemptFilter {
 impl std::fmt::Display for CustomerTaxExemptFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CustomerTaxExemptFilter {
+    fn default() -> Self {
+        Self::Exempt
     }
 }
 
@@ -804,6 +824,11 @@ impl std::fmt::Display for CustomerTaxLocationSource {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CustomerTaxLocationSource {
+    fn default() -> Self {
+        Self::BillingAddress
+    }
+}
 
 /// An enum representing the possible values of an `TaxIdData`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -830,6 +855,7 @@ pub enum TaxIdType {
     IdNpwp,
     IlVat,
     InGst,
+    IsVat,
     JpCn,
     JpRn,
     KrBrn,
@@ -876,6 +902,7 @@ impl TaxIdType {
             TaxIdType::IdNpwp => "id_npwp",
             TaxIdType::IlVat => "il_vat",
             TaxIdType::InGst => "in_gst",
+            TaxIdType::IsVat => "is_vat",
             TaxIdType::JpCn => "jp_cn",
             TaxIdType::JpRn => "jp_rn",
             TaxIdType::KrBrn => "kr_brn",
@@ -910,4 +937,44 @@ impl std::fmt::Display for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
+}
+impl std::default::Default for TaxIdType {
+    fn default() -> Self {
+        Self::AeTrn
+    }
+}
+
+/// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum UpdateCustomerCardUnion {
+    CustomerPaymentSourceCard(CustomerPaymentSourceCard),
+    String(String),
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CustomerPaymentSourceCard {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_city: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_country: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_line1: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_line2: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_state: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address_zip: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cvc: Option<String>,
+    pub exp_month: i32,
+    pub exp_year: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    pub number: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub object: Option<String>,
 }

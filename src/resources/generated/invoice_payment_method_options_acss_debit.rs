@@ -5,22 +5,21 @@
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "invoice_payment_method_options_acss_debit".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub mandate_options: Option<Box<InvoicePaymentMethodOptionsAcssDebitMandateOptions>>,
+    pub mandate_options: Option<InvoicePaymentMethodOptionsAcssDebitMandateOptions>,
 
     /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification_method: Option<Box<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>>,
+    pub verification_method: Option<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsAcssDebitMandateOptions {
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type:
-        Option<Box<InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType>>,
+    pub transaction_type: Option<InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 
 /// An enum representing the possible values of an `InvoicePaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
@@ -55,6 +54,11 @@ impl std::fmt::Display for InvoicePaymentMethodOptionsAcssDebitMandateOptionsTra
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
+    fn default() -> Self {
+        Self::Business
+    }
+}
 
 /// An enum representing the possible values of an `InvoicePaymentMethodOptionsAcssDebit`'s `verification_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -86,5 +90,10 @@ impl AsRef<str> for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
 impl std::fmt::Display for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for InvoicePaymentMethodOptionsAcssDebitVerificationMethod {
+    fn default() -> Self {
+        Self::Automatic
     }
 }

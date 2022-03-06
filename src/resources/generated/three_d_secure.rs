@@ -9,7 +9,7 @@ use crate::params::{Object, Timestamp};
 use crate::resources::{Card, Currency};
 
 /// The resource representing a Stripe "ThreeDSecure".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ThreeDSecure {
     /// Unique identifier for the object.
     pub id: ThreeDSecureId,
@@ -39,7 +39,7 @@ pub struct ThreeDSecure {
     ///
     /// If you are going to use Stripe.js to display the authentication page in an iframe, you should use the value "_callback".
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub redirect_url: Option<Box<String>>,
+    pub redirect_url: Option<String>,
 
     /// Possible values are `redirect_pending`, `succeeded`, or `failed`.
     ///

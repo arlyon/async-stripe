@@ -9,6 +9,12 @@ pub enum IssuingAuthorizationCheck {
     NotProvided,
 }
 
+impl std::default::Default for IssuingAuthorizationCheck {
+    fn default() -> Self {
+        Self::NotProvided
+    }
+}
+
 /// An enum representing the possible values of the `IssuingAuthorization`'s `authorization_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -18,6 +24,12 @@ pub enum IssuingAuthorizationMethod {
     Chip,
     Contactless,
     Online,
+}
+
+impl std::default::Default for IssuingAuthorizationMethod {
+    fn default() -> Self {
+        Self::Online
+    }
 }
 
 /// An enum representing the possible values of the `IssuingAuthorizationRequest`'s `reason` field.
@@ -35,6 +47,12 @@ pub enum IssuingAuthorizationReason {
     WebhookApproved,
     WebhookDeclined,
     WebhookTimeout,
+}
+
+impl std::default::Default for IssuingAuthorizationReason {
+    fn default() -> Self {
+        Self::AuthenticationFailed
+    }
 }
 
 /// An enum representing the possible values of an `IssuingAuthorization`'s `wallet_provider` field.
@@ -65,5 +83,11 @@ impl AsRef<str> for IssuingAuthorizationWalletProvider {
 impl std::fmt::Display for IssuingAuthorizationWalletProvider {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+impl std::default::Default for IssuingAuthorizationWalletProvider {
+    fn default() -> Self {
+        Self::ApplePay
     }
 }

@@ -12,7 +12,7 @@ use crate::resources::{Currency, Order, OrderItem, Refund};
 /// The resource representing a Stripe "OrderReturn".
 ///
 /// For more details see <https://stripe.com/docs/api/order_returns/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OrderReturn {
     /// Unique identifier for the object.
     pub id: OrderReturnId,
@@ -38,11 +38,11 @@ pub struct OrderReturn {
 
     /// The order that this return includes items from.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub order: Option<Box<Expandable<Order>>>,
+    pub order: Option<Expandable<Order>>,
 
     /// The ID of the refund issued for this return.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub refund: Option<Box<Expandable<Refund>>>,
+    pub refund: Option<Expandable<Refund>>,
 }
 
 impl OrderReturn {

@@ -7,7 +7,7 @@ fn customer_create_and_delete(client: &stripe::Client) {
     let result = stripe::Customer::delete(client, &customer.id);
     match result {
         Ok(deleted) => assert!(deleted.deleted, "customer wasn't deleted"),
-        Err(err) => assert!(false, "{}", err),
+        Err(err) => panic!("{}", err),
     }
 }
 

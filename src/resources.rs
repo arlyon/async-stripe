@@ -20,6 +20,7 @@ mod core {
     pub mod payment_source;
     pub mod payout_ext;
     pub mod placeholders;
+    pub mod setup_intent_ext;
     pub mod token_ext;
 }
 
@@ -90,6 +91,7 @@ pub use {
         placeholders::*,
         payout_ext::*,
         token_ext::*,
+        setup_intent_ext::*,
     },
     generated::core::{
         address::*,
@@ -149,6 +151,7 @@ pub use {
 pub use {
     generated::checkout::{
         checkout_session::*,
+        payment_link::*,
         item::*
     },
 };
@@ -170,6 +173,7 @@ pub use {
         invoice_payment_method_options_acss_debit::*,
         invoice_payment_method_options_bancontact::*,
         invoice_payment_method_options_card::*,
+        invoice_payment_method_options_konbini::*,
         invoiceitem::*,
         line_item::*,
         plan::*,

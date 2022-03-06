@@ -9,7 +9,7 @@ use crate::params::{Expandable, Object};
 use crate::resources::{Discount, TaxRate};
 
 /// The resource representing a Stripe "CreditNoteLineItem".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreditNoteLineItem {
     /// Unique identifier for the object.
     pub id: CreditNoteLineItemId,
@@ -19,7 +19,7 @@ pub struct CreditNoteLineItem {
 
     /// Description of the item being credited.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// The integer amount in %s representing the discount being credited for this line item.
     pub discount_amount: i64,
@@ -29,14 +29,14 @@ pub struct CreditNoteLineItem {
 
     /// ID of the invoice line item being credited.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_line_item: Option<Box<String>>,
+    pub invoice_line_item: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
     /// The number of units of product being credited.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
+    pub quantity: Option<u64>,
 
     /// The amount of tax calculated per tax rate for this line item.
     pub tax_amounts: Vec<CreditNoteTaxAmount>,
@@ -52,11 +52,11 @@ pub struct CreditNoteLineItem {
 
     /// The cost of each unit of product being credited.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<Box<i64>>,
+    pub unit_amount: Option<i64>,
 
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<Box<String>>,
+    pub unit_amount_decimal: Option<String>,
 }
 
 impl Object for CreditNoteLineItem {
@@ -69,7 +69,7 @@ impl Object for CreditNoteLineItem {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreditNoteTaxAmount {
     /// The amount, in %s, of the tax.
     pub amount: i64,
@@ -81,7 +81,7 @@ pub struct CreditNoteTaxAmount {
     pub tax_rate: Expandable<TaxRate>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DiscountsResourceDiscountAmount {
     /// The amount, in %s, of the discount.
     pub amount: i64,
@@ -116,5 +116,10 @@ impl AsRef<str> for CreditNoteLineItemType {
 impl std::fmt::Display for CreditNoteLineItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreditNoteLineItemType {
+    fn default() -> Self {
+        Self::CustomLineItem
     }
 }

@@ -12,7 +12,7 @@ use crate::resources::{Currency, TaxCode};
 /// The resource representing a Stripe "ShippingRate".
 ///
 /// For more details see <https://stripe.com/docs/api/shipping_rates/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ShippingRate {
     /// Unique identifier for the object.
     pub id: ShippingRateId,
@@ -31,16 +31,16 @@ pub struct ShippingRate {
     ///
     /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub delivery_estimate: Option<Box<ShippingRateDeliveryEstimate>>,
+    pub delivery_estimate: Option<ShippingRateDeliveryEstimate>,
 
     /// The name of the shipping rate, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub display_name: Option<Box<String>>,
+    pub display_name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<Box<ShippingRateFixedAmount>>,
+    pub fixed_amount: Option<ShippingRateFixedAmount>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -54,13 +54,13 @@ pub struct ShippingRate {
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<Box<ShippingRateTaxBehavior>>,
+    pub tax_behavior: Option<ShippingRateTaxBehavior>,
 
     /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
     ///
     /// The Shipping tax code is `txcd_92010001`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<Box<Expandable<TaxCode>>>,
+    pub tax_code: Option<Expandable<TaxCode>>,
 
     /// The type of calculation to use on the shipping rate.
     ///
@@ -109,22 +109,22 @@ impl Object for ShippingRate {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range.
     ///
     /// If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<Box<ShippingRateDeliveryEstimateBound>>,
+    pub maximum: Option<ShippingRateDeliveryEstimateBound>,
 
     /// The lower bound of the estimated range.
     ///
     /// If empty, represents no lower bound.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<Box<ShippingRateDeliveryEstimateBound>>,
+    pub minimum: Option<ShippingRateDeliveryEstimateBound>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ShippingRateDeliveryEstimateBound {
     /// A unit of time.
     pub unit: ShippingRateDeliveryEstimateBoundUnit,
@@ -133,7 +133,7 @@ pub struct ShippingRateDeliveryEstimateBound {
     pub value: i64,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ShippingRateFixedAmount {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -151,7 +151,7 @@ pub struct CreateShippingRate<'a> {
     ///
     /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub delivery_estimate: Option<Box<CreateShippingRateDeliveryEstimate>>,
+    pub delivery_estimate: Option<CreateShippingRateDeliveryEstimate>,
 
     /// The name of the shipping rate, meant to be displayable to the customer.
     ///
@@ -166,7 +166,7 @@ pub struct CreateShippingRate<'a> {
     ///
     /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<Box<CreateShippingRateFixedAmount>>,
+    pub fixed_amount: Option<CreateShippingRateFixedAmount>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -299,30 +299,30 @@ impl<'a> UpdateShippingRate<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<Box<CreateShippingRateDeliveryEstimateMaximum>>,
+    pub maximum: Option<CreateShippingRateDeliveryEstimateMaximum>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<Box<CreateShippingRateDeliveryEstimateMinimum>>,
+    pub minimum: Option<CreateShippingRateDeliveryEstimateMinimum>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateFixedAmount {
     pub amount: i64,
 
     pub currency: Currency,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMaximum {
     pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
 
     pub value: i64,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMinimum {
     pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,
 
@@ -363,6 +363,11 @@ impl std::fmt::Display for CreateShippingRateDeliveryEstimateMaximumUnit {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreateShippingRateDeliveryEstimateMaximumUnit {
+    fn default() -> Self {
+        Self::BusinessDay
+    }
+}
 
 /// An enum representing the possible values of an `CreateShippingRateDeliveryEstimateMinimum`'s `unit` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -396,6 +401,11 @@ impl AsRef<str> for CreateShippingRateDeliveryEstimateMinimumUnit {
 impl std::fmt::Display for CreateShippingRateDeliveryEstimateMinimumUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateShippingRateDeliveryEstimateMinimumUnit {
+    fn default() -> Self {
+        Self::BusinessDay
     }
 }
 
@@ -433,6 +443,11 @@ impl std::fmt::Display for ShippingRateDeliveryEstimateBoundUnit {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for ShippingRateDeliveryEstimateBoundUnit {
+    fn default() -> Self {
+        Self::BusinessDay
+    }
+}
 
 /// An enum representing the possible values of an `ShippingRate`'s `tax_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -464,6 +479,11 @@ impl std::fmt::Display for ShippingRateTaxBehavior {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for ShippingRateTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
+    }
+}
 
 /// An enum representing the possible values of an `ShippingRate`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -489,5 +509,10 @@ impl AsRef<str> for ShippingRateType {
 impl std::fmt::Display for ShippingRateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ShippingRateType {
+    fn default() -> Self {
+        Self::FixedAmount
     }
 }

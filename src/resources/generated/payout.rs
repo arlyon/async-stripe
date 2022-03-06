@@ -12,7 +12,7 @@ use crate::resources::{BalanceTransaction, BankAccount, Card, Currency};
 /// The resource representing a Stripe "Payout".
 ///
 /// For more details see <https://stripe.com/docs/api/payouts/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Payout {
     /// Unique identifier for the object.
     pub id: PayoutId,
@@ -30,7 +30,7 @@ pub struct Payout {
 
     /// ID of the balance transaction that describes the impact of this payout on your account balance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
+    pub balance_transaction: Option<Expandable<BalanceTransaction>>,
 
     /// Time at which the object was created.
     ///
@@ -46,25 +46,25 @@ pub struct Payout {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// ID of the bank account or card the payout was sent to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination: Option<Box<Expandable<PayoutDestinationUnion>>>,
+    pub destination: Option<Expandable<PayoutDestinationUnion>>,
 
     /// If the payout failed or was canceled, this will be the ID of the balance transaction that reversed the initial balance transaction, and puts the funds from the failed payout back in your balance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub failure_balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
+    pub failure_balance_transaction: Option<Expandable<BalanceTransaction>>,
 
     /// Error code explaining reason for payout failure if available.
     ///
     /// See [Types of payout failures](https://stripe.com/docs/api#payout_failures) for a list of failure codes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub failure_code: Option<Box<String>>,
+    pub failure_code: Option<String>,
 
     /// Message to user further explaining reason for payout failure if available.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub failure_message: Option<Box<String>>,
+    pub failure_message: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -83,11 +83,11 @@ pub struct Payout {
 
     /// If the payout reverses another, this is the ID of the original payout.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub original_payout: Option<Box<Expandable<Payout>>>,
+    pub original_payout: Option<Expandable<Payout>>,
 
     /// If the payout was reversed, this is the ID of the payout that reverses this payout.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reversed_by: Option<Box<Expandable<Payout>>>,
+    pub reversed_by: Option<Expandable<Payout>>,
 
     /// The source balance this payout came from.
     ///
@@ -96,7 +96,7 @@ pub struct Payout {
 
     /// Extra information about a payout to be displayed on the user's bank statement.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<Box<String>>,
+    pub statement_descriptor: Option<String>,
 
     /// Current status of the payout: `paid`, `pending`, `in_transit`, `canceled` or `failed`.
     ///
@@ -169,6 +169,12 @@ pub struct CreatePayout<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<&'a str>,
 
+    /// The ID of a bank account or a card to send the payout to.
+    ///
+    /// If no destination is supplied, the default external account for the specified currency will be used.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination: Option<String>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -212,6 +218,7 @@ impl<'a> CreatePayout<'a> {
             amount,
             currency,
             description: Default::default(),
+            destination: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
             method: Default::default(),
@@ -229,6 +236,10 @@ pub struct ListPayouts<'a> {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
+
+    /// The ID of an external account - only return payouts sent to this external account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub destination: Option<String>,
 
     /// A cursor for use in pagination.
     ///
@@ -264,6 +275,7 @@ impl<'a> ListPayouts<'a> {
         ListPayouts {
             arrival_date: Default::default(),
             created: Default::default(),
+            destination: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
@@ -296,10 +308,15 @@ impl<'a> UpdatePayout<'a> {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(tag = "object", rename_all = "snake_case")]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PayoutDestinationUnion {
     BankAccount(BankAccount),
     Card(Card),
+}
+impl std::default::Default for PayoutDestinationUnion {
+    fn default() -> Self {
+        Self::BankAccount(Default::default())
+    }
 }
 
 /// An enum representing the possible values of an `CreatePayout`'s `method` field.
@@ -328,6 +345,11 @@ impl AsRef<str> for PayoutMethod {
 impl std::fmt::Display for PayoutMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PayoutMethod {
+    fn default() -> Self {
+        Self::Instant
     }
 }
 
@@ -361,6 +383,11 @@ impl std::fmt::Display for PayoutSourceType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PayoutSourceType {
+    fn default() -> Self {
+        Self::BankAccount
+    }
+}
 
 /// An enum representing the possible values of an `Payout`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -388,5 +415,10 @@ impl AsRef<str> for PayoutType {
 impl std::fmt::Display for PayoutType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PayoutType {
+    fn default() -> Self {
+        Self::BankAccount
     }
 }

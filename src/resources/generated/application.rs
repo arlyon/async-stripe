@@ -7,11 +7,11 @@ use serde_derive::{Deserialize, Serialize};
 use crate::params::Object;
 
 /// The resource representing a Stripe "Application".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Application {
     /// The name of the application.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<Box<String>>,
+    pub name: Option<String>,
 }
 
 impl Object for Application {

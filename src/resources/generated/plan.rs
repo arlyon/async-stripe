@@ -14,33 +14,33 @@ use crate::resources::{CreateProduct, Currency, Product};
 /// The resource representing a Stripe "Plan".
 ///
 /// For more details see <https://stripe.com/docs/api/plans/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Plan {
     /// Unique identifier for the object.
     pub id: PlanId,
 
     /// Whether the plan can be used for new purchases.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub active: Option<Box<bool>>,
+    pub active: Option<bool>,
 
     /// Specifies a usage aggregation strategy for plans of `usage_type=metered`.
     ///
     /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
     /// Defaults to `sum`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub aggregate_usage: Option<Box<PlanAggregateUsage>>,
+    pub aggregate_usage: Option<PlanAggregateUsage>,
 
     /// The unit amount in %s to be charged, represented as a whole integer if possible.
     ///
     /// Only set if `billing_scheme=per_unit`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<Box<i64>>,
+    pub amount: Option<i64>,
 
     /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
     ///
     /// Only set if `billing_scheme=per_unit`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_decimal: Option<Box<String>>,
+    pub amount_decimal: Option<String>,
 
     /// Describes how to compute the price per period.
     ///
@@ -48,7 +48,7 @@ pub struct Plan {
     /// `per_unit` indicates that the fixed amount (specified in `amount`) will be charged per unit in `quantity` (for plans with `usage_type=licensed`), or per unit of total usage (for plans with `usage_type=metered`).
     /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_scheme: Option<Box<PlanBillingScheme>>,
+    pub billing_scheme: Option<PlanBillingScheme>,
 
     /// Time at which the object was created.
     ///
@@ -70,17 +70,17 @@ pub struct Plan {
     ///
     /// One of `day`, `week`, `month` or `year`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<Box<PlanInterval>>,
+    pub interval: Option<PlanInterval>,
 
     /// The number of intervals (specified in the `interval` attribute) between subscription billings.
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<Box<u64>>,
+    pub interval_count: Option<u64>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -90,35 +90,35 @@ pub struct Plan {
 
     /// A brief description of the plan, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub nickname: Option<Box<String>>,
+    pub nickname: Option<String>,
 
     /// The product whose pricing this plan determines.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product: Option<Box<Expandable<Product>>>,
+    pub product: Option<Expandable<Product>>,
 
     /// Each element represents a pricing tier.
     ///
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers: Option<Box<Vec<PlanTier>>>,
+    pub tiers: Option<Vec<PlanTier>>,
 
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
     /// In `graduated` tiering, pricing can change as the quantity grows.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers_mode: Option<Box<PlanTiersMode>>,
+    pub tiers_mode: Option<PlanTiersMode>,
 
     /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     ///
     /// Cannot be combined with `tiers`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transform_usage: Option<Box<TransformUsage>>,
+    pub transform_usage: Option<TransformUsage>,
 
     /// Default number of trial days when subscribing a customer to this plan using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_period_days: Option<Box<u32>>,
+    pub trial_period_days: Option<u32>,
 
     /// Configures how the quantity per period should be determined.
     ///
@@ -127,7 +127,7 @@ pub struct Plan {
     /// `metered` aggregates the total usage based on usage records.
     /// Defaults to `licensed`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage_type: Option<Box<PlanUsageType>>,
+    pub usage_type: Option<PlanUsageType>,
 }
 
 impl Plan {
@@ -167,30 +167,30 @@ impl Object for Plan {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PlanTier {
     /// Price for the entire tier.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flat_amount: Option<Box<i64>>,
+    pub flat_amount: Option<i64>,
 
     /// Same as `flat_amount`, but contains a decimal value with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flat_amount_decimal: Option<Box<String>>,
+    pub flat_amount_decimal: Option<String>,
 
     /// Per unit price for units relevant to the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<Box<i64>>,
+    pub unit_amount: Option<i64>,
 
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<Box<String>>,
+    pub unit_amount_decimal: Option<String>,
 
     /// Up to and including to this quantity will be contained in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub up_to: Option<Box<i64>>,
+    pub up_to: Option<i64>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransformUsage {
     /// Divide usage by this number.
     pub divide_by: i64,
@@ -334,6 +334,11 @@ impl std::fmt::Display for PlanAggregateUsage {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PlanAggregateUsage {
+    fn default() -> Self {
+        Self::LastDuringPeriod
+    }
+}
 
 /// An enum representing the possible values of an `Plan`'s `billing_scheme` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -361,6 +366,11 @@ impl AsRef<str> for PlanBillingScheme {
 impl std::fmt::Display for PlanBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PlanBillingScheme {
+    fn default() -> Self {
+        Self::PerUnit
     }
 }
 
@@ -396,6 +406,11 @@ impl std::fmt::Display for PlanInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PlanInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `Plan`'s `tiers_mode` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -423,6 +438,11 @@ impl AsRef<str> for PlanTiersMode {
 impl std::fmt::Display for PlanTiersMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PlanTiersMode {
+    fn default() -> Self {
+        Self::Graduated
     }
 }
 
@@ -454,6 +474,11 @@ impl std::fmt::Display for PlanUsageType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PlanUsageType {
+    fn default() -> Self {
+        Self::Licensed
+    }
+}
 
 /// An enum representing the possible values of an `TransformUsage`'s `round` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -481,5 +506,10 @@ impl AsRef<str> for TransformUsageRound {
 impl std::fmt::Display for TransformUsageRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TransformUsageRound {
+    fn default() -> Self {
+        Self::Down
     }
 }
