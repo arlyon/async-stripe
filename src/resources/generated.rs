@@ -60,6 +60,8 @@ pub mod checkout {
 #[path = "generated"]
 #[cfg(feature = "billing")]
 pub mod billing {
+    pub mod billing_portal_configuration;
+    pub mod billing_portal_session;
     pub mod coupon;
     pub mod discount;
     pub mod invoice;

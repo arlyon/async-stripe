@@ -450,6 +450,8 @@ def_id!(ApplicationFeeId, "fee_");
 def_id!(ApplicationFeeRefundId, "fr_");
 def_id!(BalanceTransactionId, "txn_");
 def_id!(BankAccountId, "ba_");
+def_id!(BillingPortalSessionId, "bps_");
+def_id!(BillingPortalConfigurationId, "bpc_");
 def_id!(BankTokenId, "btok_");
 def_id!(
     #[optional]
