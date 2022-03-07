@@ -61,6 +61,9 @@ pub struct Refund {
     #[serde(default)]
     pub metadata: Metadata,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub next_action: Option<RefundNextAction>,
+
     /// ID of the PaymentIntent that was refunded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<Expandable<PaymentIntent>>,
@@ -130,6 +133,34 @@ impl Object for Refund {
     fn object(&self) -> &'static str {
         "refund"
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct RefundNextAction {
+    /// Contains the refund details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_details: Option<RefundNextActionDisplayDetails>,
+
+    /// Type of the next action to perform.
+    #[serde(rename = "type")]
+    pub type_: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct RefundNextActionDisplayDetails {
+    pub email_sent: EmailSent,
+
+    /// The expiry timestamp.
+    pub expires_at: Timestamp,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct EmailSent {
+    /// The timestamp when the email was sent.
+    pub email_sent_at: Timestamp,
+
+    /// The recipient's email address.
+    pub email_sent_to: String,
 }
 
 /// The parameters for `Refund::create`.

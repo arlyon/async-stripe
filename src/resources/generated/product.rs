@@ -360,7 +360,7 @@ pub struct UpdateProduct<'a> {
 
     /// A URL of a publicly-accessible webpage for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<&'a str>,
+    pub url: Option<String>,
 }
 
 impl<'a> UpdateProduct<'a> {

@@ -66,6 +66,10 @@ pub struct InvoiceLineItem {
     /// Whether this is a proration.
     pub proration: bool,
 
+    /// Additional details for proration line items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_details: Option<InvoicesLineItemsProrationDetails>,
+
     /// The quantity of the subscription, if the line item is a subscription or a proration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -122,6 +126,22 @@ pub struct TaxAmount {
 
     /// The tax rate that was applied to get this tax amount.
     pub tax_rate: Expandable<TaxRate>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InvoicesLineItemsProrationDetails {
+    /// For a credit proration `line_item`, the original debit line_items to which the credit proration applies.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub credited_items: Option<InvoicesLineItemsCreditedItems>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InvoicesLineItemsCreditedItems {
+    /// Invoice containing the credited invoice line items.
+    pub invoice: String,
+
+    /// Credited invoice line items.
+    pub invoice_line_items: Vec<String>,
 }
 
 /// An enum representing the possible values of an `InvoiceLineItem`'s `type` field.

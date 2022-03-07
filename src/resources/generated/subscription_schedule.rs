@@ -10,7 +10,7 @@ use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Time
 use crate::resources::{
     CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled, Subscription,
     SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData,
-    TaxRate,
+    TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "SubscriptionSchedule".
@@ -83,6 +83,10 @@ pub struct SubscriptionSchedule {
     /// ID of the subscription managed by the subscription schedule.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<Expandable<Subscription>>,
+
+    /// ID of the test clock this subscription schedule belongs to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<Expandable<TestHelpersTestClock>>,
 }
 
 impl SubscriptionSchedule {

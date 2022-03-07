@@ -9,7 +9,7 @@ use crate::ids::{CustomerId, QuoteId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
     Account, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
-    QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate,
+    QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Quote".
@@ -144,6 +144,10 @@ pub struct Quote {
     /// The subscription schedule that was created or updated from this quote.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_schedule: Option<Expandable<SubscriptionSchedule>>,
+
+    /// ID of the test clock this quote belongs to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<Expandable<TestHelpersTestClock>>,
 
     pub total_details: QuotesResourceTotalDetails,
 
