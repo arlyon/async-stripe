@@ -697,7 +697,7 @@ pub struct CreateInvoice<'a> {
 
     /// How to handle pending invoice items on invoice creation.
     ///
-    /// One of `include`, `include_and_require`, or `exclude`.
+    /// One of `include`, `exclude`, or `include_and_require`.
     /// `include` will include any pending invoice items, and will create an empty draft invoice if no pending invoice items exist.
     /// `include_and_require` will include any pending invoice items, if no pending invoice items exist then the request will fail.
     /// `exclude` will always create an empty invoice draft regardless if there are pending invoice items or not.
