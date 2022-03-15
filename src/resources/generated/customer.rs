@@ -415,6 +415,12 @@ pub struct ListCustomers<'a> {
     /// For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<CustomerId>,
+
+    /// Provides a list of customers that are associated with the specified test clock.
+    ///
+    /// If no list is provided, the response won't include customers with test clocks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<&'a str>,
 }
 
 impl<'a> ListCustomers<'a> {
@@ -426,6 +432,7 @@ impl<'a> ListCustomers<'a> {
             expand: Default::default(),
             limit: Default::default(),
             starting_after: Default::default(),
+            test_clock: Default::default(),
         }
     }
 }
