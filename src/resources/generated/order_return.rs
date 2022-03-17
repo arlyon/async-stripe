@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{OrderId, OrderReturnId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use crate::resources::{Currency, Order, OrderItem, Refund};

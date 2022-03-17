@@ -22,43 +22,46 @@ pub(crate) fn err<T>(err: crate::StripeError) -> Response<T> {
 }
 
 #[derive(Clone)]
-pub struct Client {
+pub struct TokioBlockingClient {
     inner: AsyncClient,
     runtime: Arc<RefCell<tokio::runtime::Runtime>>,
 }
 
-impl Client {
+impl TokioBlockingClient {
     /// Creates a new client pointed to `https://api.stripe.com/`
-    pub fn new(secret_key: impl Into<String>) -> Client {
-        Client::from_async(AsyncClient::new(secret_key))
+    pub fn new(secret_key: impl Into<String>) -> TokioBlockingClient {
+        TokioBlockingClient::from_async(AsyncClient::new(secret_key))
     }
 
     /// Creates a new client posted to a custom `scheme://host/`
-    pub fn from_url(scheme_host: impl Into<String>, secret_key: impl Into<String>) -> Client {
-        Client::from_async(AsyncClient::from_url(scheme_host, secret_key))
+    pub fn from_url(
+        scheme_host: impl Into<String>,
+        secret_key: impl Into<String>,
+    ) -> TokioBlockingClient {
+        TokioBlockingClient::from_async(AsyncClient::from_url(scheme_host, secret_key))
     }
 
-    fn from_async(inner: AsyncClient) -> Client {
+    fn from_async(inner: AsyncClient) -> TokioBlockingClient {
         let runtime = tokio::runtime::Builder::new_current_thread()
             .enable_io()
             .enable_time() // use separate `io/time` instead of `all` to ensure `tokio/time` is enabled
             .build()
             .expect("should be able to get a runtime");
-        Client { inner, runtime: Arc::new(RefCell::new(runtime)) }
+        TokioBlockingClient { inner, runtime: Arc::new(RefCell::new(runtime)) }
     }
 
     /// Clones a new client with different headers.
     ///
     /// This is the recommended way to send requests for many different Stripe accounts
     /// or with different Meta, Extra, and Expand headers while using the same secret key.
-    pub fn with_headers(self, headers: Headers) -> Client {
-        Client { inner: self.inner.with_headers(headers), runtime: self.runtime }
+    pub fn with_headers(self, headers: Headers) -> TokioBlockingClient {
+        TokioBlockingClient { inner: self.inner.with_headers(headers), runtime: self.runtime }
     }
 
     /// Clones a new client with idempotency key headers.
     ///
     /// For short living idempotency keys, they only matter on push requests
-    pub fn with_idempotency_key(mut self, idempotency_key: String) -> Client {
+    pub fn with_idempotency_key(mut self, idempotency_key: String) -> TokioBlockingClient {
         self.inner = self.inner.with_idempotency_key(idempotency_key);
         self
     }

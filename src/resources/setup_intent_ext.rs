@@ -1,6 +1,6 @@
 use serde_derive::Serialize;
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::resources::SetupIntent;
 use crate::SetupIntentId;
 

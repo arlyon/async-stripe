@@ -116,7 +116,7 @@ pub fn gen_prelude(state: &FileGenerator, meta: &Metadata) -> String {
     prelude.push_str("// This file was automatically generated.\n");
     prelude.push_str("// ======================================\n\n");
     if !state.use_config.is_empty() {
-        prelude.push_str("use crate::config::{");
+        prelude.push_str("use crate::client::{");
         for (n, type_) in state.use_config.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
