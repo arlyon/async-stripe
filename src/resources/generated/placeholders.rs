@@ -23,14 +23,14 @@ impl Object for Account {
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Application {
-    pub id: (),
+    pub id: ApplicationId,
 }
 
 #[cfg(not(feature = "connect"))]
 impl Object for Application {
-    type Id = ();
+    type Id = ApplicationId;
     fn id(&self) -> Self::Id {
-        self.id
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "application"
@@ -74,14 +74,14 @@ impl Object for CheckoutSession {
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ConnectCollectionTransfer {
-    pub id: (),
+    pub id: ConnectCollectionTransferId,
 }
 
 #[cfg(not(feature = "connect"))]
 impl Object for ConnectCollectionTransfer {
-    type Id = ();
+    type Id = ConnectCollectionTransferId;
     fn id(&self) -> Self::Id {
-        self.id
+        self.id.clone()
     }
     fn object(&self) -> &'static str {
         "connect_collection_transfer"

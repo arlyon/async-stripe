@@ -4,11 +4,15 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+use crate::ids::TaxDeductedAtSourceId;
 use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "TaxDeductedAtSource".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxDeductedAtSource {
+    /// Unique identifier for the object.
+    pub id: TaxDeductedAtSourceId,
+
     /// The end of the invoicing period.
     ///
     /// This TDS applies to Stripe fees collected during this invoicing period.
@@ -24,8 +28,10 @@ pub struct TaxDeductedAtSource {
 }
 
 impl Object for TaxDeductedAtSource {
-    type Id = ();
-    fn id(&self) -> Self::Id {}
+    type Id = TaxDeductedAtSourceId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
     fn object(&self) -> &'static str {
         "tax_deducted_at_source"
     }

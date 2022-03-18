@@ -146,6 +146,12 @@ pub struct Card {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recipient: Option<Expandable<Recipient>>,
 
+    /// For external accounts, possible values are `new` and `errored`.
+    ///
+    /// If a transfer fails, the status is set to `errored` and transfers are stopped until account details are updated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+
     /// If the card number is tokenized, this is the method that was used.
     ///
     /// Can be `android_pay` (includes Google Pay), `apple_pay`, `masterpass`, `visa_checkout`, or null.

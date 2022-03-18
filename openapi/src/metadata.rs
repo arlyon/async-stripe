@@ -57,17 +57,17 @@ impl<'a> Metadata<'a> {
             if fields.contains_key("object") {
                 objects.insert(schema_name);
                 if !schema["properties"]["id"].is_null() {
-                    if let Some(id_src) = schema["x-resourceId"].as_str() {
-                        let id_type = if let Some(rename) = id_renames.get(&id_src) {
-                            rename.to_camel_case() + "Id"
-                        } else {
-                            id_src.replace('.', "_").to_camel_case() + "Id"
-                        };
-                        id_mappings.insert(
-                            schema_name.replace('.', "_").to_owned(),
-                            (id_type, CopyOrClone::Clone),
-                        );
-                    }
+                    let id_type = id_renames
+                        .get(&schema_name)
+                        .unwrap_or_else(|| &schema_name)
+                        .replace('.', "_")
+                        .to_camel_case()
+                        + "Id";
+
+                    id_mappings.insert(
+                        schema_name.replace('.', "_").to_owned(),
+                        (id_type, CopyOrClone::Clone),
+                    );
                 }
             }
             for (_, field) in fields {
