@@ -4,12 +4,16 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+use crate::ids::ReserveTransactionId;
 use crate::params::Object;
 use crate::resources::Currency;
 
 /// The resource representing a Stripe "ReserveTransaction".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ReserveTransaction {
+    /// Unique identifier for the object.
+    pub id: ReserveTransactionId,
+
     pub amount: i64,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -25,8 +29,10 @@ pub struct ReserveTransaction {
 }
 
 impl Object for ReserveTransaction {
-    type Id = ();
-    fn id(&self) -> Self::Id {}
+    type Id = ReserveTransactionId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
     fn object(&self) -> &'static str {
         "reserve_transaction"
     }
