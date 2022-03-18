@@ -59,7 +59,7 @@ impl<'a> Metadata<'a> {
                 if !schema["properties"]["id"].is_null() {
                     let id_type = id_renames
                         .get(&schema_name)
-                        .unwrap_or_else(|| &schema_name)
+                        .unwrap_or(&schema_name)
                         .replace('.', "_")
                         .to_camel_case()
                         + "Id";
