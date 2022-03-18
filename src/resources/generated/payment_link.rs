@@ -186,7 +186,7 @@ pub struct PaymentLinksResourceTransferData {
 }
 
 /// The parameters for `PaymentLink::create`.
-#[derive(Clone, Debug, Serialize, Default)]
+#[derive(Clone, Debug, Serialize)]
 pub struct CreatePaymentLink<'a> {
     /// Behavior after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -225,8 +225,7 @@ pub struct CreatePaymentLink<'a> {
     ///
     /// Each line item represents an item being sold.
     /// Up to 20 line items are supported.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line_items: Option<Vec<CreatePaymentLinkLineItems>>,
+    pub line_items: Vec<CreatePaymentLinkLineItems>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -270,7 +269,7 @@ pub struct CreatePaymentLink<'a> {
 }
 
 impl<'a> CreatePaymentLink<'a> {
-    pub fn new() -> Self {
+    pub fn new(line_items: Vec<CreatePaymentLinkLineItems>) -> Self {
         CreatePaymentLink {
             after_completion: Default::default(),
             allow_promotion_codes: Default::default(),
@@ -279,7 +278,7 @@ impl<'a> CreatePaymentLink<'a> {
             automatic_tax: Default::default(),
             billing_address_collection: Default::default(),
             expand: Default::default(),
-            line_items: Default::default(),
+            line_items,
             metadata: Default::default(),
             on_behalf_of: Default::default(),
             payment_method_types: Default::default(),

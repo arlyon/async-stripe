@@ -418,7 +418,7 @@ pub struct ListCustomers<'a> {
 
     /// Provides a list of customers that are associated with the specified test clock.
     ///
-    /// If no list is provided, the response won't include customers with test clocks.
+    /// The response will not include customers with test clocks if this parameter is not set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub test_clock: Option<&'a str>,
 }

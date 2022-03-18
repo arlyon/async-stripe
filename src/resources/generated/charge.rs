@@ -667,6 +667,10 @@ pub struct PaymentMethodDetailsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
 
+    /// ID of the mandate used to make this payment or created by it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate: Option<String>,
+
     /// Identifies which network this charge was processed on.
     ///
     /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
