@@ -19,7 +19,7 @@ mod base {
 
 #[cfg(any(feature = "runtime-blocking", feature = "runtime-blocking-rustls"))]
 pub(crate) mod config {
-    pub use super::base::tokio_blocking::{err, ok};
+    pub(crate) use super::base::tokio_blocking::{err, ok};
     pub use super::base::tokio_blocking::{Response, TokioBlockingClient as BaseClient};
 }
 

@@ -5,12 +5,14 @@ use serde::{de::DeserializeOwned, Serialize};
 
 use crate::{
     client::{request_strategy::RequestStrategy, BaseClient, Response},
+    config::{err, ok},
     params::AppInfo,
     ApiVersion, Headers, StripeError,
 };
 
 static USER_AGENT: &str = concat!("Stripe/v3 RustBindings/", env!("CARGO_PKG_VERSION"));
 
+#[derive(Clone)]
 pub struct Client {
     client: crate::client::BaseClient,
     secret_key: String,
@@ -81,7 +83,7 @@ impl Client {
         params: P,
     ) -> Response<T> {
         let url = match self.url_with_params(path, params) {
-            Err(err) => return Box::pin(future::ready(Err(err))),
+            Err(e) => return err(e),
             Ok(ok) => ok,
         };
         self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy)
@@ -100,7 +102,7 @@ impl Client {
         params: P,
     ) -> Response<T> {
         let url = match self.url_with_params(path, params) {
-            Err(err) => return Box::pin(future::ready(Err(err))),
+            Err(e) => return err(e),
             Ok(ok) => ok,
         };
         self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy)
@@ -121,9 +123,7 @@ impl Client {
         let url = self.url(path);
         let mut req = self.create_request(Method::Post, url);
         req.set_body(match serde_qs::to_string(&form) {
-            Err(err) => {
-                return Box::pin(future::ready(Err(StripeError::QueryStringSerialize(err))))
-            }
+            Err(e) => return err(StripeError::QueryStringSerialize(e)),
             Ok(body) => Body::from_string(body),
         });
         req.insert_header("content-type", "application/x-www-form-urlencoded");

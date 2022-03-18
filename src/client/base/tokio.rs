@@ -1,13 +1,18 @@
+use std::convert::TryInto;
 use std::future::{self, Future};
 use std::pin::Pin;
 
+use http_types::Request;
+use hyper::http;
 use hyper::{
     client::HttpConnector,
     header::{HeaderMap, HeaderName, HeaderValue},
-    Body, Request,
+    Body,
 };
 use serde::de::DeserializeOwned;
+use thiserror::Error;
 
+use crate::client::request_strategy::RequestStrategy;
 use crate::error::{ErrorResponse, StripeError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
@@ -53,250 +58,38 @@ pub(crate) fn err<T: Send + 'static>(err: StripeError) -> Response<T> {
 
 #[derive(Clone)]
 pub struct TokioClient {
-    host: String,
     client: HttpClient,
-    secret_key: String,
-    headers: Headers,
-    app_info: Option<AppInfo>,
 }
 
 impl TokioClient {
-    /// Creates a new client pointed to `https://api.stripe.com/`
-    pub fn new(secret_key: impl Into<String>) -> TokioClient {
-        TokioClient::from_url("https://api.stripe.com/", secret_key)
+    pub fn new() -> Self {
+        Self { client: hyper::Client::builder().build(connector::create()) }
     }
 
-    /// Creates a new client posted to a custom `scheme://host/`
-    pub fn from_url(scheme_host: impl Into<String>, secret_key: impl Into<String>) -> TokioClient {
-        let url = scheme_host.into();
-        let host = if url.ends_with('/') { format!("{}v1", url) } else { format!("{}/v1", url) };
-        let https = connector::create();
-        let client = hyper::Client::builder().build(https);
-
-        // TODO: Automatically determine the latest supported api version in codegen?
-        let headers =
-            Headers { stripe_version: Some(ApiVersion::V2020_08_27), ..Default::default() };
-
-        TokioClient {
-            host,
-            client,
-            secret_key: secret_key.into(),
-            headers,
-            app_info: Some(AppInfo::default()),
-        }
-    }
-
-    /// Clones a new client with different headers.
-    ///
-    /// This is the recommended way to send requests for many different Stripe accounts
-    /// or with different Meta, Extra, and Expand headers while using the same secret key.
-    pub fn with_headers(mut self, headers: Headers) -> TokioClient {
-        self.headers = headers;
-        self
-    }
-
-    /// Clones a new client with idempotency key headers.
-    ///
-    /// For short living idempotency keys, they only matter on push requests
-    pub fn with_idempotency_key(mut self, idempotency_key: String) -> TokioClient {
-        self.headers.idempotency_key = Some(idempotency_key);
-        self
-    }
-
-    pub fn set_app_info(&mut self, name: String, version: Option<String>, url: Option<String>) {
-        self.app_info = Some(AppInfo { name, url, version });
-    }
-
-    /// Sets a value for the Stripe-Account header
-    ///
-    /// This is recommended if you are acting as only one Account for the lifetime of the client.
-    /// Otherwise, prefer `client.with(Headers{stripe_account: "acct_ABC", ..})`.
-    pub fn set_stripe_account<S: Into<String>>(&mut self, account_id: S) {
-        self.headers.stripe_account = Some(account_id.into());
-    }
-
-    /// Make a `GET` http request with just a path
-    pub fn get<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
-        let url = self.url(path);
-        let mut req = Request::builder()
-            .method("GET")
-            .uri(url)
-            .body(Body::empty())
-            .expect("request is correct");
-        *req.headers_mut() = self.headers();
-        send(&self.client, req)
-    }
-
-    /// Make a `GET` http request with url query parameters
-    pub fn get_query<T: DeserializeOwned + Send + 'static, P: serde::Serialize>(
+    pub fn execute<T: DeserializeOwned + Send + 'static>(
         &self,
-        path: &str,
-        params: P,
+        request: Request,
+        strategy: &RequestStrategy,
     ) -> Response<T> {
-        let url = match self.url_with_params(path, params) {
-            Err(err) => return Box::pin(future::ready(Err(err))),
-            Ok(ok) => ok,
-        };
-        let mut req = Request::builder()
-            .method("GET")
-            .uri(url)
-            .body(Body::empty())
-            .expect("request is correct");
-        *req.headers_mut() = self.headers();
-        send(&self.client, req)
-    }
+        // need to clone here since client could be used across threads.
+        // N.B. Client is send sync; cloned clients share the same pool.
+        let client = self.client.clone();
+        let strategy = strategy.clone();
 
-    /// Make a `DELETE` http request with just a path
-    pub fn delete<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
-        let url = self.url(path);
-        let mut req = Request::builder()
-            .method("DELETE")
-            .uri(url)
-            .body(Body::empty())
-            .expect("request is correct");
-        *req.headers_mut() = self.headers();
-        send(&self.client, req)
+        Box::pin(async move {
+            let bytes = send_inner(&client, request, &strategy).await?;
+            serde_json::from_slice(&bytes).map_err(StripeError::from)
+        })
     }
-
-    /// Make a `DELETE` http request with url query parameters
-    pub fn delete_query<T: DeserializeOwned + Send + 'static, P: serde::Serialize>(
-        &self,
-        path: &str,
-        params: P,
-    ) -> Response<T> {
-        let url = match self.url_with_params(path, params) {
-            Err(err) => return Box::pin(future::ready(Err(err))),
-            Ok(ok) => ok,
-        };
-        let mut req = Request::builder()
-            .method("DELETE")
-            .uri(url)
-            .body(Body::empty())
-            .expect("request is correct");
-        *req.headers_mut() = self.headers();
-        send(&self.client, req)
-    }
-
-    /// Make a `POST` http request with just a path
-    pub fn post<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
-        let url = self.url(path);
-        let mut req = Request::builder()
-            .method("POST")
-            .uri(url)
-            .body(Body::empty())
-            .expect("request is correct");
-        *req.headers_mut() = self.headers();
-        send(&self.client, req)
-    }
-
-    /// Make a `POST` http request with urlencoded body
-    pub fn post_form<T: DeserializeOwned + Send + 'static, F: serde::Serialize>(
-        &self,
-        path: &str,
-        form: F,
-    ) -> Response<T> {
-        let url = self.url(path);
-        let mut req = Request::builder()
-            .method("POST")
-            .uri(url)
-            .body(match serde_qs::to_string(&form) {
-                Err(err) => {
-                    return Box::pin(future::ready(Err(StripeError::QueryStringSerialize(err))))
-                }
-                Ok(body) => Body::from(body),
-            })
-            .expect("request is correct");
-        *req.headers_mut() = self.headers();
-        req.headers_mut().insert(
-            HeaderName::from_static("content-type"),
-            HeaderValue::from_static("application/x-www-form-urlencoded"),
-        );
-        send(&self.client, req)
-    }
-
-    fn url(&self, path: &str) -> String {
-        format!("{}/{}", self.host, path.trim_start_matches('/'))
-    }
-
-    fn url_with_params<P: serde::Serialize>(
-        &self,
-        path: &str,
-        params: P,
-    ) -> Result<String, StripeError> {
-        let params = serde_qs::to_string(&params).map_err(StripeError::from)?;
-        Ok(format!("{}/{}?{}", self.host, &path[1..], params))
-    }
-
-    fn headers(&self) -> HeaderMap {
-        let mut headers = HeaderMap::new();
-        headers.insert(
-            HeaderName::from_static("authorization"),
-            HeaderValue::from_str(&format!("Bearer {}", self.secret_key))
-                .expect("secret key is valid header value"),
-        );
-        if let Some(account) = &self.headers.stripe_account {
-            headers.insert(
-                HeaderName::from_static("stripe-account"),
-                HeaderValue::from_str(account).expect("stripe account is valid header value"),
-            );
-        }
-        if let Some(client_id) = &self.headers.client_id {
-            headers.insert(
-                HeaderName::from_static("client-id"),
-                HeaderValue::from_str(client_id).expect("client id valid header value"),
-            );
-        }
-        if let Some(stripe_version) = &self.headers.stripe_version {
-            headers.insert(
-                HeaderName::from_static("stripe-version"),
-                HeaderValue::from_str(stripe_version.as_str())
-                    .expect("stripe version is valid header value"),
-            );
-        }
-        if let Some(idempotency_key) = &self.headers.idempotency_key {
-            headers.insert(
-                HeaderName::from_static("idempotency-key"),
-                HeaderValue::from_str(idempotency_key.as_str())
-                    .expect("idempotency key is valid header value"),
-            );
-        }
-        if let Some(app_info) = &self.app_info {
-            let user_agent_app_info = format!("{} {}", USER_AGENT, format_app_info(app_info));
-            headers.insert(
-                HeaderName::from_static("user-agent"),
-                HeaderValue::from_str(user_agent_app_info.trim())
-                    .expect("app info is valid header value"),
-            );
-        } else {
-            headers.insert(
-                HeaderName::from_static("user-agent"),
-                HeaderValue::from_static(USER_AGENT),
-            );
-        };
-        headers
-    }
-}
-
-fn send<T: DeserializeOwned + Send + 'static>(
-    client: &HttpClient,
-    request: hyper::Request<Body>,
-) -> Response<T> {
-    let client = client.clone(); // N.B. Client is send sync;  cloned clients share the same pool.
-    Box::pin(async move {
-        let bytes = send_inner(&client, request).await?;
-        let mut jd = serde_json::Deserializer::from_slice(&bytes);
-        let result: Result<T, _> = serde_path_to_error::deserialize(&mut jd);
-        if let Err(err) = result {
-            println!("{:#?}", err);
-        }
-        serde_json::from_slice(&bytes).map_err(StripeError::from)
-    })
 }
 
 async fn send_inner(
     client: &HttpClient,
-    request: hyper::Request<Body>,
+    mut request: Request,
+    strategy: &RequestStrategy,
 ) -> Result<hyper::body::Bytes, StripeError> {
+    let request = convert_request(request).await;
+
     let response = client.request(request).await?;
     let status = response.status();
     let bytes = hyper::body::to_bytes(response.into_body()).await?;
@@ -312,15 +105,16 @@ async fn send_inner(
     }
 }
 
-/// Formats a plugin's 'App Info' into a string that can be added to the end of an User-Agent string.
+/// convert an http_types::Request with a http_types::Body into a http::Request<hyper::Body>
 ///
-/// This formatting matches that of other libraries, and if changed then it should be changed everywhere.
-fn format_app_info(info: &AppInfo) -> String {
-    let formatted: String = match (&info.version, &info.url) {
-        (Some(a), Some(b)) => format!("{}/{} ({})", &info.name, a, b),
-        (Some(a), None) => format!("{}/{}", &info.name, a),
-        (None, Some(b)) => format!("{}/{}", &info.name, b),
-        _ => info.name.to_string(),
+/// note: this is necesarry because `http` deliberately does not support a `Body` type
+///       so hyper has a `Body` for which http_types cannot provide automatic conversion.
+async fn convert_request(request: http_types::Request) -> http::Request<hyper::Body> {
+    let request: http::Request<_> = request.into();
+    let (a, b) = request.into_parts();
+    let body = match b.into_bytes().await {
+        Ok(body) => hyper::Body::from(body),
+        Err(e) => hyper::Body::empty(),
     };
-    formatted
+    http::Request::from_parts(a, body)
 }

@@ -63,17 +63,20 @@ events = []
 async = []
 blocking = []
 
-runtime-tokio-hyper = ["tokio", "hyper", "hyper-tls", "async"]
-runtime-tokio-hyper-rustls = ["tokio", "hyper", "hyper-rustls", "async"]
-runtime-blocking = ["tokio", "tokio/rt", "hyper", "hyper-tls", "blocking"]
+runtime-tokio-hyper = ["tokio", "hyper-client", "hyper-tls", "async"]
+runtime-tokio-hyper-rustls = ["tokio", "hyper-client", "hyper-rustls", "async"]
+runtime-blocking = ["tokio", "tokio/rt", "hyper-client", "hyper-tls", "blocking"]
 runtime-blocking-rustls = [
   "tokio",
   "tokio/rt",
-  "hyper",
+  "hyper-client",
   "hyper-rustls",
   "blocking",
 ]
 runtime-async-std-surf = ["async-std", "surf", "async"]
+
+# we need the compat crate if using hyper
+hyper-client = ["hyper", "http-types/hyperium_http"]
 
 [dependencies]
 async-std = { version = "1.9", optional = true }
