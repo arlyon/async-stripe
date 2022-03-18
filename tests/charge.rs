@@ -25,22 +25,7 @@ fn is_charge_retrievable() {
 fn is_charge_expandable() {
     mock::with_client(|client| {
         let id = "ch_123".parse().unwrap();
-        let result = stripe::Charge::retrieve(
-            client,
-            &id,
-            &[
-                "application",
-                // "application_fee",
-                // "balance_transaction",
-                // "customer",
-                // "dispute",
-                // "invoice",
-                // "review",
-                // FIXME: Figure out what the `py_` id prefix is for
-                // "source_transfer",
-                // "transfer",
-            ],
-        );
+        let result = stripe::Charge::retrieve(client, &id, &[]);
         let charge = match result {
             Err(err) => panic!("{}", err),
             Ok(ok) => ok,
