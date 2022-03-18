@@ -273,6 +273,9 @@ pub struct PaymentIntentNextAction {
     pub boleto_display_details: Option<PaymentIntentNextActionBoleto>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_await_notification: Option<PaymentIntentNextActionCardAwaitNotification>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini_display_details: Option<PaymentIntentNextActionKonbini>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -341,6 +344,21 @@ pub struct PaymentIntentNextActionBoleto {
     /// The URL to the downloadable boleto voucher PDF.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pdf: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionCardAwaitNotification {
+    /// The time that payment will be attempted.
+    ///
+    /// If customer approval is required, they need to provide approval before this time.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub charge_attempt_at: Option<Timestamp>,
+
+    /// For payments greater than INR 5000, the customer must provide explicit approval of the payment with their bank.
+    ///
+    /// For payments of lower amount, no customer action is required.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_approval_required: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -600,6 +618,10 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub installments: Option<PaymentMethodOptionsCardInstallments>,
 
+    /// Configuration options for setting up an eMandate for cards issued in India.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<PaymentMethodOptionsCardMandateOptions>,
+
     /// Selected network to process this payment intent on.
     ///
     /// Depends on the available networks of the card attached to the payment intent.
@@ -687,7 +709,23 @@ pub struct PaymentIntentProcessing {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentIntentCardProcessing {}
+pub struct PaymentIntentCardProcessing {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_notification: Option<PaymentIntentProcessingCustomerNotification>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentProcessingCustomerNotification {
+    /// Whether customer approval has been requested for this payment.
+    ///
+    /// For payments greater than INR 5000 or mandate amount, the customer must provide explicit approval of the payment with their bank.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub approval_requested: Option<bool>,
+
+    /// If customer approval is required, they need to provide approval before this time.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub completes_at: Option<Timestamp>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentIntentTypeSpecificPaymentMethodOptionsClient {
@@ -783,6 +821,56 @@ pub struct PaymentMethodOptionsCardInstallments {
     /// Installment plan selected for this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<PaymentMethodDetailsCardInstallmentsPlan>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsCardMandateOptions {
+    /// Amount to be charged for future payments.
+    pub amount: i64,
+
+    /// One of `fixed` or `maximum`.
+    ///
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    pub amount_type: PaymentMethodOptionsCardMandateOptionsAmountType,
+
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    /// End date of the mandate or subscription.
+    ///
+    /// If not provided, the mandate will be active until canceled.
+    /// If provided, end date should be after start date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<Timestamp>,
+
+    /// Specifies payment frequency.
+    ///
+    /// One of `day`, `week`, `month`, `year`, or `sporadic`.
+    pub interval: PaymentMethodOptionsCardMandateOptionsInterval,
+
+    /// The number of intervals between payments.
+    ///
+    /// For example, `interval=month` and `interval_count=3` indicates one payment every three months.
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
+    /// This parameter is optional when `interval=sporadic`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+
+    /// Unique identifier for the mandate or subscription.
+    pub reference: String,
+
+    /// Start date of the mandate or subscription.
+    ///
+    /// Start date should not be lesser than yesterday.
+    pub start_date: Timestamp,
+
+    /// Specifies the type of mandates supported.
+    ///
+    /// Possible values are `india`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supported_types: Option<Vec<PaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1901,6 +1989,9 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
     pub installments: Option<CreatePaymentIntentPaymentMethodOptionsCardInstallments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreatePaymentIntentPaymentMethodOptionsCardMandateOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub network: Option<CreatePaymentIntentPaymentMethodOptionsCardNetwork>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2228,6 +2319,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
     pub installments: Option<UpdatePaymentIntentPaymentMethodOptionsCardInstallments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub network: Option<UpdatePaymentIntentPaymentMethodOptionsCardNetwork>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2438,6 +2532,32 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallments {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsCardMandateOptions {
+    pub amount: i64,
+
+    pub amount_type: CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<Timestamp>,
+
+    pub interval: CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+
+    pub reference: String,
+
+    pub start_date: Timestamp,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supported_types:
+        Option<Vec<CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2494,6 +2614,32 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallments {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions {
+    pub amount: i64,
+
+    pub amount_type: UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<Timestamp>,
+
+    pub interval: UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+
+    pub reference: String,
+
+    pub start_date: Timestamp,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supported_types:
+        Option<Vec<UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3812,6 +3958,120 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardInstallmen
 impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn default() -> Self {
         Self::FixedCount
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsCardMandateOptions`'s `amount_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType::Fixed => "fixed",
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType::Maximum => {
+                "maximum"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn default() -> Self {
+        Self::Fixed
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsCardMandateOptions`'s `interval` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    Day,
+    Month,
+    Sporadic,
+    Week,
+    Year,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::Day => "day",
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::Month => "month",
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::Sporadic => {
+                "sporadic"
+            }
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::Week => "week",
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::Year => "year",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsCardMandateOptions`'s `supported_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    India,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes::India => {
+                "india"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
+{
+    fn default() -> Self {
+        Self::India
     }
 }
 
@@ -5429,6 +5689,112 @@ impl std::default::Default for PaymentMethodOptionsBoletoSetupFutureUsage {
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodOptionsCardMandateOptions`'s `amount_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCardMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+}
+
+impl PaymentMethodOptionsCardMandateOptionsAmountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCardMandateOptionsAmountType::Fixed => "fixed",
+            PaymentMethodOptionsCardMandateOptionsAmountType::Maximum => "maximum",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCardMandateOptionsAmountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCardMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCardMandateOptionsAmountType {
+    fn default() -> Self {
+        Self::Fixed
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsCardMandateOptions`'s `interval` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCardMandateOptionsInterval {
+    Day,
+    Month,
+    Sporadic,
+    Week,
+    Year,
+}
+
+impl PaymentMethodOptionsCardMandateOptionsInterval {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCardMandateOptionsInterval::Day => "day",
+            PaymentMethodOptionsCardMandateOptionsInterval::Month => "month",
+            PaymentMethodOptionsCardMandateOptionsInterval::Sporadic => "sporadic",
+            PaymentMethodOptionsCardMandateOptionsInterval::Week => "week",
+            PaymentMethodOptionsCardMandateOptionsInterval::Year => "year",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCardMandateOptionsInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCardMandateOptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCardMandateOptionsInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsCardMandateOptions`'s `supported_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    India,
+}
+
+impl PaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCardMandateOptionsSupportedTypes::India => "india",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn default() -> Self {
+        Self::India
+    }
+}
+
 /// An enum representing the possible values of an `PaymentMethodOptionsFpx`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -6762,6 +7128,120 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardInstallmen
 impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn default() -> Self {
         Self::FixedCount
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions`'s `amount_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType::Fixed => "fixed",
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType::Maximum => {
+                "maximum"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn default() -> Self {
+        Self::Fixed
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions`'s `interval` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    Day,
+    Month,
+    Sporadic,
+    Week,
+    Year,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::Day => "day",
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::Month => "month",
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::Sporadic => {
+                "sporadic"
+            }
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::Week => "week",
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval::Year => "year",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions`'s `supported_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    India,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes::India => {
+                "india"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
+{
+    fn default() -> Self {
+        Self::India
     }
 }
 
