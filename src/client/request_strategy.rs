@@ -1,9 +1,9 @@
 use std::time::Duration;
 
-use crate::{client::BaseClient, Response, StripeError};
-
 use http_types::{Request, StatusCode};
 use serde::{de::DeserializeOwned, Serialize};
+
+use crate::{client::BaseClient, Response, StripeError};
 
 #[derive(Clone, Debug)]
 pub enum RequestStrategy {
@@ -91,8 +91,9 @@ pub enum Outcome {
 
 #[cfg(test)]
 mod tests {
-    use super::{Outcome, RequestStrategy};
     use std::time::Duration;
+
+    use super::{Outcome, RequestStrategy};
 
     #[test]
     fn test_idempotent_strategy() {

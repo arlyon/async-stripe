@@ -3,6 +3,7 @@
 use std::future::{self, Future};
 use std::pin::Pin;
 
+use async_std::task::sleep;
 use http_types::{Request, StatusCode};
 use serde::de::DeserializeOwned;
 use surf::{Body, Url};
@@ -68,17 +69,17 @@ async fn send_inner(
     }
 
     loop {
-        match strategy.test(last_status, last_retry_header, tries) {
+        return match strategy.test(last_status, last_retry_header, tries) {
             Outcome::Stop => Err(StripeError::Timeout),
-            Outcome::Continue(sleep) => {
-                if let Some(sleep) = sleep {
-                    std::thread::sleep(sleep);
+            Outcome::Continue(duration) => {
+                if let Some(duration) = duration {
+                    sleep(duration).await;
                 }
 
-                let mut res = client.send(request.clone()).await.unwrap();
-                let status = res.status();
+                let mut response = client.send(request.clone()).await.unwrap();
+                let status = response.status();
                 let retry =
-                    res.header("Stripe-Should-Retry").and_then(|s| s.to_string().parse().ok());
+                    response.header("Stripe-Should-Retry").and_then(|s| s.to_string().parse().ok());
 
                 if !status.is_success() {
                     tries += 1;
@@ -87,7 +88,7 @@ async fn send_inner(
                     continue;
                 }
 
-                res.body_bytes().await.map_err(StripeError::from)
+                Ok(response.body_bytes().await?)
             }
         };
     }

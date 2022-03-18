@@ -35,6 +35,7 @@ pub(crate) mod config {
     pub use super::base::async_std::{AsyncStdClient as BaseClient, Response};
 }
 
+pub use config::BaseClient;
 /// An alias for `Result`.
 ///
 /// If `blocking` is enabled, defined as:
@@ -51,4 +52,3 @@ pub(crate) mod config {
 pub use config::Response;
 
 pub use self::stripe::Client;
-pub use config::BaseClient;

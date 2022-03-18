@@ -2,7 +2,7 @@ use std::convert::TryInto;
 use std::future::{self, Future};
 use std::pin::Pin;
 
-use http_types::Request;
+use http_types::{Request, StatusCode};
 use hyper::http;
 use hyper::{
     client::HttpConnector,
@@ -11,8 +11,9 @@ use hyper::{
 };
 use serde::de::DeserializeOwned;
 use thiserror::Error;
+use tokio::time::sleep;
 
-use crate::client::request_strategy::RequestStrategy;
+use crate::client::request_strategy::{Outcome, RequestStrategy};
 use crate::error::{ErrorResponse, StripeError};
 use crate::params::{AppInfo, Headers};
 use crate::resources::ApiVersion;
@@ -88,20 +89,43 @@ async fn send_inner(
     mut request: Request,
     strategy: &RequestStrategy,
 ) -> Result<hyper::body::Bytes, StripeError> {
-    let request = convert_request(request).await;
+    let mut tries = 0;
+    let mut last_status: Option<StatusCode> = None;
+    let mut last_retry_header: Option<bool> = None;
 
-    let response = client.request(request).await?;
-    let status = response.status();
-    let bytes = hyper::body::to_bytes(response.into_body()).await?;
-    if !status.is_success() {
-        Err(serde_json::from_slice(&bytes)
-            .map(|mut e: ErrorResponse| {
-                e.error.http_status = status.into();
-                StripeError::from(e.error)
-            })
-            .unwrap_or_else(StripeError::from))
-    } else {
-        Ok(bytes)
+    if let Some(key) = strategy.get_key() {
+        request.insert_header("Idempotency-Key", key);
+    }
+
+    loop {
+        return match strategy.test(last_status, last_retry_header, tries) {
+            Outcome::Stop => Err(StripeError::Timeout),
+            Outcome::Continue(duration) => {
+                if let Some(duration) = duration {
+                    sleep(duration).await;
+                }
+
+                // note: http::Request provides no easy way to clone, so we perform
+                //       the conversion from the clonable http_types::Request each time
+                //       obviously cloning before the first request is not ideal
+                let response = client.request(convert_request(request.clone()).await).await?;
+                let status = response.status();
+                let retry = response
+                    .headers()
+                    .get("Stripe-Should-Retry")
+                    .and_then(|s| s.to_str().unwrap().parse().ok());
+
+                if !status.is_success() {
+                    tries += 1;
+                    last_status = Some(status.into());
+                    last_retry_header = retry;
+                    println!("failed! {} {:?} {:?}", tries, last_status, request.clone());
+                    continue;
+                }
+
+                Ok(hyper::body::to_bytes(response.into_body()).await?)
+            }
+        };
     }
 }
 
@@ -117,4 +141,63 @@ async fn convert_request(request: http_types::Request) -> http::Request<hyper::B
         Err(e) => hyper::Body::empty(),
     };
     http::Request::from_parts(a, body)
+}
+
+#[cfg(test)]
+mod tests {
+    use http_types::{Method, Request};
+    use hyper::{body::to_bytes, Body, Request as HyperRequest};
+
+    use super::convert_request;
+
+    const TEST_URL: &str = "https://api.stripe.com/v1/";
+
+    #[tokio::test]
+    async fn basic_conversion() {
+        req_equal(
+            convert_request(Request::new(Method::Get, TEST_URL)).await,
+            HyperRequest::builder()
+                .method("GET")
+                .uri("http://test.com")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await;
+    }
+
+    #[tokio::test]
+    async fn bytes_body_conversion() {
+        let body = "test".as_bytes();
+
+        let mut req = Request::new(Method::Post, TEST_URL);
+        req.set_body(body);
+
+        req_equal(
+            convert_request(req).await,
+            HyperRequest::builder().method("POST").uri(TEST_URL).body(Body::from(body)).unwrap(),
+        )
+        .await;
+    }
+
+    #[tokio::test]
+    async fn string_body_conversion() {
+        let body = "test";
+
+        let mut req = Request::new(Method::Post, TEST_URL);
+        req.set_body(body);
+
+        req_equal(
+            convert_request(req).await,
+            HyperRequest::builder().method("POST").uri(TEST_URL).body(Body::from(body)).unwrap(),
+        )
+        .await;
+    }
+
+    async fn req_equal(a: HyperRequest<Body>, b: HyperRequest<Body>) {
+        let (a_parts, a_body) = a.into_parts();
+        let (b_parts, b_body) = b.into_parts();
+
+        assert_eq!(a_parts.method, b_parts.method);
+        assert_eq!(to_bytes(a_body).await.unwrap().len(), to_bytes(b_body).await.unwrap().len());
+    }
 }

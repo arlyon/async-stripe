@@ -107,3 +107,4 @@ hex = { version = "0.4", optional = true }
 [dev-dependencies]
 anyhow = "1.0.38"
 lazy_static = "1.4"
+tokio = {version = "1.2", features = ["rt", "macros"]}
