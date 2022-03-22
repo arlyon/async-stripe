@@ -31,9 +31,10 @@ impl Client {
             client: BaseClient::new(),
             secret_key: secret_key.into(),
             headers: Headers {
-                stripe_version: Some(ApiVersion::V2020_08_27),
+                stripe_version: ApiVersion::V2020_08_27,
                 user_agent: USER_AGENT.to_string(),
-                ..Default::default()
+                client_id: None,
+                stripe_account: None,
             },
             strategy: RequestStrategy::Once,
             app_info: None,

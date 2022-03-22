@@ -32,12 +32,13 @@ impl ToString for AppInfo {
     }
 }
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct Headers {
+    pub stripe_version: ApiVersion,
+    pub user_agent: String,
+
     pub client_id: Option<String>,
     pub stripe_account: Option<String>,
-    pub stripe_version: Option<ApiVersion>,
-    pub user_agent: String,
 }
 
 impl<'a> IntoIterator for &'a Headers {
@@ -49,7 +50,7 @@ impl<'a> IntoIterator for &'a Headers {
         IntoIter::new([
             ("Client-Id", self.client_id.as_deref()),
             ("Stripe-Account", self.stripe_account.as_deref()),
-            ("Stripe-Version", self.stripe_version.map(|v| v.as_str())),
+            ("Stripe-Version", Some(self.stripe_version.as_str())),
             ("User-Agent", Some(&self.user_agent)),
         ])
     }
