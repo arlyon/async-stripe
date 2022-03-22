@@ -24,30 +24,8 @@ pub struct ConfirmSetupIntent {
 #[derive(Clone, Debug, Serialize)]
 pub struct CancelSetupIntent {}
 
-pub trait SetupIntentExt {
-    fn confirm(
-        client: &Client,
-        setup_id: &SetupIntentId,
-        params: ConfirmSetupIntent,
-    ) -> Response<Self>
-    where
-        Self: Sized;
-
-    fn cancel(
-        client: &Client,
-        setup_id: &SetupIntentId,
-        params: CancelSetupIntent,
-    ) -> Response<Self>
-    where
-        Self: Sized;
-
-    fn retrieve_ext(client: &Client, setup_intent_secret: &str) -> Response<Self>
-    where
-        Self: Sized;
-}
-
-impl SetupIntentExt for SetupIntent {
-    fn confirm(
+impl SetupIntent {
+    pub fn confirm(
         client: &Client,
         setup_id: &SetupIntentId,
         params: ConfirmSetupIntent,
@@ -55,7 +33,7 @@ impl SetupIntentExt for SetupIntent {
         client.post_form(&format!("/setup_intents/{}/confirm", setup_id), &params)
     }
 
-    fn cancel(
+    pub fn cancel(
         _client: &Client,
         _setup_id: &SetupIntentId,
         _params: CancelSetupIntent,
@@ -63,7 +41,7 @@ impl SetupIntentExt for SetupIntent {
         unimplemented!()
     }
 
-    fn retrieve_ext(_client: &Client, _setup_intent_secret: &str) -> Response<SetupIntent> {
+    pub fn retrieve_ext(_client: &Client, _setup_intent_secret: &str) -> Response<SetupIntent> {
         unimplemented!()
         //client.get(&format!("/setup_intents/{}", setup_intent_secret))
     }
