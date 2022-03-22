@@ -33,7 +33,7 @@ features = ["runtime-async-std-surf"]
 name = "stripe"
 
 [features]
-default = ["full", "webhook-events"]
+default = ["full", "webhook-events", "uuid"]
 full = [
   "checkout",
   "billing",
@@ -63,23 +63,27 @@ events = []
 async = []
 blocking = []
 
-runtime-tokio-hyper = ["tokio", "hyper", "hyper-tls", "async"]
-runtime-tokio-hyper-rustls = ["tokio", "hyper", "hyper-rustls", "async"]
-runtime-blocking = ["tokio", "tokio/rt", "hyper", "hyper-tls", "blocking"]
+runtime-tokio-hyper = ["tokio", "hyper-client", "hyper-tls", "async"]
+runtime-tokio-hyper-rustls = ["tokio", "hyper-client", "hyper-rustls", "async"]
+runtime-blocking = ["tokio", "tokio/rt", "hyper-client", "hyper-tls", "blocking"]
 runtime-blocking-rustls = [
   "tokio",
   "tokio/rt",
-  "hyper",
+  "hyper-client",
   "hyper-rustls",
   "blocking",
 ]
 runtime-async-std-surf = ["async-std", "surf", "async"]
+
+# we need the compat crate if using hyper
+hyper-client = ["hyper", "http-types/hyperium_http"]
 
 [dependencies]
 async-std = { version = "1.9", optional = true }
 bumpalo = {version = "=3.8.0", optional = true } # to avoid msrv bump
 chrono = { version = "0.4", features = ["serde"], optional = true }
 thiserror = "1.0.24"
+http-types = "2.12.0"
 hyper = { version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true }
 hyper-tls = { version = "0.5", optional = true }
 hyper-rustls = { version = "0.22", optional = true }
@@ -92,6 +96,7 @@ smol_str = "0.1"
 surf = { version = "2.1", optional = true }
 tokio = { version = "1.2", optional = true }
 smart-default = "0.6.0"
+uuid = { version = "0.8", optional=true, features=["v4"] }
 
 # webhook support
 hmac = { version = "0.12", optional = true }
@@ -101,4 +106,7 @@ hex = { version = "0.4", optional = true }
 
 [dev-dependencies]
 anyhow = "1.0.38"
+async-std = { version = "1.10.0", features = ["attributes"] }
+httpmock = "0.6.6"
 lazy_static = "1.4"
+tokio = {version = "1.2", features = ["rt", "macros"]}

@@ -3,7 +3,10 @@ use std::collections::HashMap;
 use serde::de::DeserializeOwned;
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{err, ok, Client, Response};
+use crate::client::{
+    config::{err, ok},
+    Client, Response,
+};
 use crate::error::StripeError;
 use crate::resources::ApiVersion;
 
@@ -14,13 +17,38 @@ pub struct AppInfo {
     pub version: Option<String>,
 }
 
-#[derive(Clone, Default)]
+impl ToString for AppInfo {
+    /// Formats a plugin's 'App Info' into a string that can be added to the end of an User-Agent string.
+    ///
+    /// This formatting matches that of other libraries, and if changed then it should be changed everywhere.
+    fn to_string(&self) -> String {
+        match (&self.version, &self.url) {
+            (Some(a), Some(b)) => format!("{}/{} ({})", &self.name, a, b),
+            (Some(a), None) => format!("{}/{}", &self.name, a),
+            (None, Some(b)) => format!("{} ({})", &self.name, b),
+            _ => self.name.to_string(),
+        }
+    }
+}
+
+#[derive(Clone)]
 pub struct Headers {
+    pub stripe_version: ApiVersion,
+    pub user_agent: String,
+
     pub client_id: Option<String>,
-    pub stripe_version: Option<ApiVersion>,
     pub stripe_account: Option<String>,
-    pub user_agent: Option<String>,
-    pub idempotency_key: Option<String>,
+}
+
+impl Headers {
+    pub fn to_array<'a>(&'a self) -> [(&'a str, Option<&'a str>); 4] {
+        [
+            ("Client-Id", self.client_id.as_deref()),
+            ("Stripe-Account", self.stripe_account.as_deref()),
+            ("Stripe-Version", Some(self.stripe_version.as_str())),
+            ("User-Agent", Some(&self.user_agent)),
+        ]
+    }
 }
 
 /// Implemented by types which represent stripe objects.

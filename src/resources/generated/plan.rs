@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::PlanId;
 use crate::params::{
     Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,

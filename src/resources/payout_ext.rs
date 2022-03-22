@@ -1,4 +1,4 @@
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{PayoutDestinationId, PayoutId};
 use crate::params::Object;
 use crate::resources::{Payout, PayoutDestinationUnion};

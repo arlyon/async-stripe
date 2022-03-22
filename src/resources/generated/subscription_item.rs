@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};

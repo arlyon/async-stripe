@@ -65,22 +65,7 @@
 #![warn(clippy::unwrap_used)]
 #![forbid(unsafe_code)]
 
-mod client {
-    #[cfg(any(
-        feature = "runtime-tokio-hyper",
-        feature = "runtime-tokio-hyper-rustls",
-        feature = "runtime-blocking",
-        feature = "runtime-blocking-rustls",
-    ))]
-    pub mod tokio;
-
-    #[cfg(feature = "runtime-async-std-surf")]
-    pub mod async_std;
-
-    #[cfg(any(feature = "runtime-blocking", feature = "runtime-blocking-rustls"))]
-    pub mod blocking;
-}
-
+mod client;
 mod error;
 mod ids;
 mod params;
@@ -93,48 +78,10 @@ mod resources;
 //
 // See https://github.com/wyyerd/stripe-rs/issues/24#issuecomment-451514187
 // See https://github.com/rust-lang/rust/issues/44265
+pub use crate::client::*;
 pub use crate::error::{ErrorCode, ErrorType, RequestError, StripeError, WebhookError};
 pub use crate::ids::*;
 pub use crate::params::{
     Expandable, Headers, IdOrCreate, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,
 };
 pub use crate::resources::*;
-
-#[cfg(any(feature = "runtime-blocking", feature = "runtime-blocking-rustls"))]
-mod config {
-    pub(crate) use crate::client::blocking::{err, ok};
-    pub type Client = crate::client::blocking::Client;
-
-    /// An alias for `Result`.
-    ///
-    /// If `blocking` is enabled, defined as:
-    ///
-    /// ```rust,ignore
-    /// type Response<T> = Result<T, Error>;
-    /// ```
-    ///
-    /// If the `async` feature is enabled, this type is defined as:
-    ///
-    /// ```rust,ignore
-    /// type Response<T> = Box<dyn Future<Result<T, Error>>>;
-    /// ```
-    ///
-    pub type Response<T> = crate::client::blocking::Response<T>;
-}
-
-#[cfg(any(feature = "runtime-tokio-hyper", feature = "runtime-tokio-hyper-rustls"))]
-mod config {
-    pub(crate) use crate::client::tokio::{err, ok};
-    pub type Client = crate::client::tokio::Client;
-    pub type Response<T> = crate::client::tokio::Response<T>;
-}
-
-#[cfg(feature = "runtime-async-std-surf")]
-mod config {
-    pub(crate) use crate::client::async_std::{err, ok};
-    pub type Client = crate::client::async_std::Client;
-    pub type Response<T> = crate::client::async_std::Response<T>;
-}
-
-pub use self::config::Client;
-pub use self::config::Response;
