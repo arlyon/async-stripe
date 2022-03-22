@@ -168,11 +168,10 @@ mod tests {
     use httpmock::prelude::*;
     use hyper::{body::to_bytes, Body, Request as HyperRequest};
 
-    use crate::client::request_strategy::RequestStrategy;
-    use crate::StripeError;
-
     use super::convert_request;
     use super::TokioClient;
+    use crate::client::request_strategy::RequestStrategy;
+    use crate::StripeError;
 
     const TEST_URL: &str = "https://api.stripe.com/v1/";
 
