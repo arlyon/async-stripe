@@ -93,13 +93,18 @@ async fn send_inner(
     let mut last_status: Option<StatusCode> = None;
     let mut last_retry_header: Option<bool> = None;
 
+    // if we have no last error, then the strategy is invalid
+    let mut last_error = StripeError::ClientError("Invalid strategy".to_string());
+
     if let Some(key) = strategy.get_key() {
         request.insert_header("Idempotency-Key", key);
     }
 
+    let body = request.body_bytes().await?;
+
     loop {
         return match strategy.test(last_status, last_retry_header, tries) {
-            Outcome::Stop => Err(StripeError::Timeout),
+            Outcome::Stop => Err(last_error),
             Outcome::Continue(duration) => {
                 if let Some(duration) = duration {
                     sleep(duration).await;
@@ -108,22 +113,40 @@ async fn send_inner(
                 // note: http::Request provides no easy way to clone, so we perform
                 //       the conversion from the clonable http_types::Request each time
                 //       obviously cloning before the first request is not ideal
-                let response = client.request(convert_request(request.clone()).await).await?;
+                let mut request = request.clone();
+                request.set_body(body.clone());
+
+                let response = match client.request(convert_request(request).await).await {
+                    Ok(response) => response,
+                    Err(err) => {
+                        last_error = StripeError::from(err);
+                        continue;
+                    }
+                };
+
                 let status = response.status();
                 let retry = response
                     .headers()
                     .get("Stripe-Should-Retry")
-                    .and_then(|s| s.to_str().unwrap().parse().ok());
+                    .and_then(|s| s.to_str().ok())
+                    .and_then(|s| s.parse().ok());
+
+                let bytes = hyper::body::to_bytes(response.into_body()).await?;
 
                 if !status.is_success() {
                     tries += 1;
+                    last_error = serde_json::from_slice(&bytes)
+                        .map(|mut e: ErrorResponse| {
+                            e.error.http_status = status.into();
+                            StripeError::from(e.error)
+                        })
+                        .unwrap_or_else(StripeError::from);
                     last_status = Some(status.into());
                     last_retry_header = retry;
-                    println!("failed! {} {:?} {:?}", tries, last_status, request.clone());
                     continue;
                 }
 
-                Ok(hyper::body::to_bytes(response.into_body()).await?)
+                Ok(bytes)
             }
         };
     }
@@ -133,22 +156,23 @@ async fn send_inner(
 ///
 /// note: this is necesarry because `http` deliberately does not support a `Body` type
 ///       so hyper has a `Body` for which http_types cannot provide automatic conversion.
-async fn convert_request(request: http_types::Request) -> http::Request<hyper::Body> {
+async fn convert_request(mut request: http_types::Request) -> http::Request<hyper::Body> {
+    let body = request.body_bytes().await.unwrap();
     let request: http::Request<_> = request.into();
-    let (a, b) = request.into_parts();
-    let body = match b.into_bytes().await {
-        Ok(body) => hyper::Body::from(body),
-        Err(e) => hyper::Body::empty(),
-    };
-    http::Request::from_parts(a, body)
+    http::Request::from_parts(request.into_parts().0, hyper::Body::from(body))
 }
 
 #[cfg(test)]
 mod tests {
-    use http_types::{Method, Request};
+    use http_types::{Method, Request, Url};
+    use httpmock::prelude::*;
     use hyper::{body::to_bytes, Body, Request as HyperRequest};
 
+    use crate::client::request_strategy::RequestStrategy;
+    use crate::StripeError;
+
     use super::convert_request;
+    use super::TokioClient;
 
     const TEST_URL: &str = "https://api.stripe.com/v1/";
 
@@ -199,5 +223,95 @@ mod tests {
 
         assert_eq!(a_parts.method, b_parts.method);
         assert_eq!(to_bytes(a_body).await.unwrap().len(), to_bytes(b_body).await.unwrap().len());
+    }
+
+    #[tokio::test]
+    async fn retry() {
+        let client = TokioClient::new();
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        // Create a mock on the server.
+        let hello_mock = server.mock(|when, then| {
+            when.method(GET).path("/server-errors");
+            then.status(500);
+        });
+
+        let req = Request::get(Url::parse(&server.url("/server-errors")).unwrap());
+        let res = client.execute::<()>(req, &RequestStrategy::Retry(5)).await;
+
+        hello_mock.assert_hits_async(5).await;
+        assert!(res.is_err());
+    }
+
+    #[tokio::test]
+    async fn user_error() {
+        let client = TokioClient::new();
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        let mock = server.mock(|when, then| {
+            when.method(GET).path("/v1/missing");
+            then.status(404).body("{
+                \"error\": {
+                  \"message\": \"Unrecognized request URL (GET: /v1/missing). Please see https://stripe.com/docs or we can help at https://support.stripe.com/.\",
+                  \"type\": \"invalid_request_error\"
+                }
+              }
+              ");
+        });
+
+        let req = Request::get(Url::parse(&server.url("/v1/missing")).unwrap());
+        let res = client.execute::<()>(req, &RequestStrategy::Retry(3)).await;
+
+        mock.assert_hits_async(1).await;
+
+        match res {
+            Err(StripeError::Stripe(x)) => println!("{:?}", x),
+            _ => panic!("Expected stripe error {:?}", res),
+        }
+    }
+
+    #[tokio::test]
+    async fn retry_header() {
+        let client = TokioClient::new();
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        // Create a mock on the server.
+        let hello_mock = server.mock(|when, then| {
+            when.method(GET).path("/server-errors");
+            then.status(500).header("Stripe-Should-Retry", "false");
+        });
+
+        let req = Request::get(Url::parse(&server.url("/server-errors")).unwrap());
+        let res = client.execute::<()>(req, &RequestStrategy::Retry(5)).await;
+
+        hello_mock.assert_hits_async(1).await;
+        assert!(res.is_err());
+    }
+
+    #[tokio::test]
+    async fn retry_body() {
+        let client = TokioClient::new();
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        // Create a mock on the server.
+        let hello_mock = server.mock(|when, then| {
+            when.method(POST).path("/server-errors").body("body");
+            then.status(500);
+        });
+
+        let mut req = Request::post(Url::parse(&server.url("/server-errors")).unwrap());
+        req.set_body("body");
+        let res = client.execute::<()>(req, &RequestStrategy::Retry(5)).await;
+
+        hello_mock.assert_hits_async(5).await;
+        assert!(res.is_err());
     }
 }

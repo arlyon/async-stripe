@@ -1,11 +1,9 @@
-use std::future;
-
 use http_types::{Body, Method, Request, Url};
 use serde::{de::DeserializeOwned, Serialize};
 
 use crate::{
     client::{request_strategy::RequestStrategy, BaseClient, Response},
-    config::{err, ok},
+    config::err,
     params::AppInfo,
     ApiVersion, Headers, StripeError,
 };

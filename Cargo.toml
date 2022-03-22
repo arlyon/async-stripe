@@ -106,5 +106,7 @@ hex = { version = "0.4", optional = true }
 
 [dev-dependencies]
 anyhow = "1.0.38"
+async-std = { version = "1.10.0", features = ["attributes"] }
+httpmock = "0.6.6"
 lazy_static = "1.4"
 tokio = {version = "1.2", features = ["rt", "macros"]}

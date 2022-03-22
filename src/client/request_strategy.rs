@@ -1,9 +1,6 @@
 use std::time::Duration;
 
-use http_types::{Request, StatusCode};
-use serde::{de::DeserializeOwned, Serialize};
-
-use crate::{client::BaseClient, Response, StripeError};
+use http_types::StatusCode;
 
 #[derive(Clone, Debug)]
 pub enum RequestStrategy {
@@ -13,11 +10,11 @@ pub enum RequestStrategy {
     /// This strategy will retry the request up to the
     /// specified number of times using the same, random,
     /// idempotency key, up to n times.
-    Retry(u64),
+    Retry(u32),
     /// This strategy will retry the request up to the
     /// specified number of times using the same, random,
     /// idempotency key with exponential backoff, up to n times.
-    ExponentialBackoff(u64),
+    ExponentialBackoff(u32),
 }
 
 impl RequestStrategy {
@@ -25,7 +22,7 @@ impl RequestStrategy {
         &self,
         status: Option<StatusCode>,
         stripe_should_retry: Option<bool>,
-        retry_count: u64,
+        retry_count: u32,
     ) -> Outcome {
         // if stripe explicitly says not to retry then don't
         if !stripe_should_retry.unwrap_or(true) {
@@ -75,12 +72,8 @@ impl RequestStrategy {
     }
 }
 
-fn calculate_backoff(retry_count: u64) -> Duration {
-    let mut duration = Duration::from_secs(1);
-    for _ in 0..retry_count {
-        duration = duration * 2;
-    }
-    duration
+fn calculate_backoff(retry_count: u32) -> Duration {
+    Duration::from_secs(2_u64.pow(retry_count))
 }
 
 #[derive(PartialEq, Eq, Debug)]
@@ -142,5 +135,11 @@ mod tests {
         assert_eq!(strategy.test(None, None, 2), Outcome::Continue(Some(Duration::from_secs(4))));
         assert_eq!(strategy.test(None, None, 3), Outcome::Stop);
         assert_eq!(strategy.test(None, None, 4), Outcome::Stop);
+    }
+
+    #[test]
+    fn test_retry_header() {
+        let strategy = RequestStrategy::Retry(3);
+        assert_eq!(strategy.test(None, Some(false), 0), Outcome::Stop);
     }
 }
