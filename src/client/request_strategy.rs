@@ -42,9 +42,7 @@ impl RequestStrategy {
             // requests with idempotency keys that hit client
             // errors usually cannot be solved with retries
             // see: https://stripe.com/docs/error-handling#content-errors
-            (Retry(_), Some(c), _) if c.is_client_error() => Outcome::Stop,
-            (Idempotent(_), Some(c), _) if c.is_client_error() => Outcome::Stop,
-            (ExponentialBackoff(_), Some(c), _) if c.is_client_error() => Outcome::Stop,
+            (_, Some(c), _) if c.is_client_error() => Outcome::Stop,
 
             // a strategy of retry or exponential backoff should retry with
             // the appropriate delay if the number of retries is less than the max

@@ -1,22 +1,14 @@
-use std::convert::TryInto;
 use std::future::{self, Future};
 use std::pin::Pin;
 
 use http_types::{Request, StatusCode};
 use hyper::http;
-use hyper::{
-    client::HttpConnector,
-    header::{HeaderMap, HeaderName, HeaderValue},
-    Body,
-};
+use hyper::{client::HttpConnector, Body};
 use serde::de::DeserializeOwned;
-use thiserror::Error;
 use tokio::time::sleep;
 
 use crate::client::request_strategy::{Outcome, RequestStrategy};
 use crate::error::{ErrorResponse, StripeError};
-use crate::params::{AppInfo, Headers};
-use crate::resources::ApiVersion;
 
 #[cfg(feature = "hyper-rustls")]
 mod connector {

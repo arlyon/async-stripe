@@ -157,7 +157,7 @@ impl Client {
         let mut req = Request::new(method, url);
         req.insert_header("authorization", &format!("Bearer {}", self.secret_key));
 
-        for (key, value) in self.headers.into_iter().filter_map(|(k, v)| v.map(|v| (k, v))) {
+        for (key, value) in self.headers.to_array().iter().filter_map(|(k, v)| v.map(|v| (*k, v))) {
             req.insert_header(key, value);
         }
 

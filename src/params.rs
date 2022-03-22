@@ -1,4 +1,3 @@
-use std::array::IntoIter;
 use std::collections::HashMap;
 
 use serde::de::DeserializeOwned;
@@ -41,18 +40,14 @@ pub struct Headers {
     pub stripe_account: Option<String>,
 }
 
-impl<'a> IntoIterator for &'a Headers {
-    type Item = (&'static str, Option<&'a str>);
-    type IntoIter = IntoIter<Self::Item, 4>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        // todo: upon bumping to 1.53 use into_iter instead
-        IntoIter::new([
+impl Headers {
+    pub fn to_array<'a>(&'a self) -> [(&'a str, Option<&'a str>); 4] {
+        [
             ("Client-Id", self.client_id.as_deref()),
             ("Stripe-Account", self.stripe_account.as_deref()),
             ("Stripe-Version", Some(self.stripe_version.as_str())),
             ("User-Agent", Some(&self.user_agent)),
-        ])
+        ]
     }
 }
 
