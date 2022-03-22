@@ -15,7 +15,7 @@ The latest supported version of the Stripe API is `2020-08-27`.
 Set the corresponding crate version depending on which version of the Stripe API you are pinned to.
 If you don't see the specific version you are on, prefer the next available version.
 
-- `0.13` - stripe version `2020-08-27`
+- `0.14` - stripe version `2020-08-27`
 - `0.12` - stripe version `2019-09-09`
 
 ## Install
@@ -24,7 +24,7 @@ If you don't see the specific version you are on, prefer the next available vers
 
 ```toml
 [dependencies]
-async-stripe = { version = "0.13", features = ["runtime-async-std-surf"] }
+async-stripe = { version = "0.14", features = ["runtime-async-std-surf"] }
 ```
 
 ### Feature Flags

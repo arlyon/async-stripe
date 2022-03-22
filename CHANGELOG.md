@@ -1,4 +1,19 @@
-# Version 0.13.0 (Jan 22, 2021)
+# Version 0.14.0 (March 22, 2022)
+
+This release has been focused on refining the ergonomics
+supporting additional stripe APIs, and adding retries / idempotency.
+
+## Features
+
+- Add the `card` param to the codegen. (@erichCompSci)
+- Derive `Default` across the codebase.
+- Opt-in idempotency functionality. (@erichCompSci)
+- Opt-in retry logic.
+
+In addition we have expanded the test coverage, and will
+continue to do so with more examples.
+
+# Version 0.13.0 (January 22, 2021)
 
 First release of async-stripe with swappable runtimes.
 
