@@ -23,12 +23,7 @@ fn customer_create_and_delete_without_account() {
 #[cfg(feature = "blocking")]
 fn customer_create_and_delete_with_account() {
     mock::with_client(|client| {
-        let client = client.to_owned().with_headers(stripe::Headers {
-            stripe_account: Some("TEST".into()),
-            client_id: Some("ca_123".into()),
-            stripe_version: Some(stripe::ApiVersion::V2019_03_14),
-            user_agent: "Stripe Test".into(),
-        });
+        let client = client.to_owned().with_client_id("ca_123").with_stripe_account("TEST");
         customer_create_and_delete(&client);
     });
 }
