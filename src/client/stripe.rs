@@ -22,10 +22,12 @@ pub struct Client {
 }
 
 impl Client {
+    /// Create a new account with the given secret key.
     pub fn new(secret_key: impl Into<String>) -> Self {
         Self::from_url("https://api.stripe.com/", secret_key)
     }
 
+    /// Create a new account pointed at a specific URL. This is useful for testing.
     pub fn from_url<'a>(url: impl Into<&'a str>, secret_key: impl Into<String>) -> Self {
         Client {
             client: BaseClient::new(),
@@ -43,20 +45,29 @@ impl Client {
         }
     }
 
-    /// Clones a new client with different headers.
-    ///
-    /// This is the recommended way to send requests for many different Stripe accounts
-    /// or with different Meta, Extra, and Expand headers while using the same secret key.
-    pub fn with_headers(mut self, headers: Headers) -> Self {
-        self.headers = headers;
+    /// Set the client id for the client.
+    pub fn with_client_id(mut self, client_id: impl Into<String>) -> Self {
+        self.headers.client_id = Some(client_id.into());
         self
     }
 
+    /// Set the stripe account for the client.
+    pub fn with_stripe_account(mut self, stripe_account: impl Into<String>) -> Self {
+        self.headers.stripe_account = Some(stripe_account.into());
+        self
+    }
+
+    /// Set the request strategy for the client.
     pub fn with_strategy(mut self, strategy: RequestStrategy) -> Self {
         self.strategy = strategy;
         self
     }
 
+    /// Set the application info for the client.
+    ///
+    /// It is recommended that applications set this so that
+    /// stripe is able to undestand usage patterns from your
+    /// user agent.
     pub fn with_app_info(
         mut self,
         name: String,
