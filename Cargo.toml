@@ -120,7 +120,7 @@ name = "connect"
 required-features = ["runtime-tokio-hyper"]
 
 [[example]]
-name = "create-customer"
+name = "customer"
 required-features = ["runtime-tokio-hyper"]
 
 [[example]]

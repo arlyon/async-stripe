@@ -1,3 +1,11 @@
+//! Subscription
+//! ============
+//!
+//! Reference: https://stripe.com/docs/api/subscriptions
+//!
+//! This example shows how to create a subscription for
+//! a particular product and recurring price.
+
 use common::create_customer;
 use stripe::{
     AttachPaymentMethod, CardDetailsParams, Client, CreatePaymentMethod,

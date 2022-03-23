@@ -1,13 +1,11 @@
-//! Stripe connect
-//! ==============
+//! Payment Link
+//! ============
 //!
-//! This example runs through how to manange a Stripe connect account.
-//! To get started, you'll need to make sure you have signed up to use
-//! stripe connect and configure branding settings with an icon and a
-//! brand color. See more: https://dashboard.stripe.com/connect/accounts/overview
+//! Reference: https://stripe.com/docs/api/payment_links/payment_links
 //!
-//! The example below initiates an account link which can be used to
-//! onboard a new user to your application.
+//! This example shows how to create a payment link for
+//! a particular product and price. The nice thing with
+//! this API is the lack of associated customer.
 
 use stripe::{
     Client, CreatePaymentLink, CreatePaymentLinkLineItems, CreatePrice, CreateProduct, Currency,

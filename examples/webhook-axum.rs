@@ -1,10 +1,10 @@
 //! Web Hooks
 //! =========
 //!
-//! This example runs through how to manage web hooks.
-//! To trigger it, you can use the stripe cli.
+//! Reference: https://stripe.com/docs/webhooks/test
 //!
-//! See: https://stripe.com/docs/webhooks/test
+//! This example shows how to manage web hooks.
+//! To trigger it, you can use the stripe cli.
 //!
 //! TLDR;
 //! ```

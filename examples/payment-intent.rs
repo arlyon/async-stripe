@@ -1,8 +1,10 @@
-//! Payment Intents
+//! Payment Intent
 //! ==============
 //!
-//! This is an example of creating a PaymentIntent and using it to create a
-//! charge for a fictional charge. We create a customer, an intent, update
+//! Reference: https://stripe.com/docs/api/payment_intents
+//!
+//! This example shows how to creeate a [PaymentIntent] and use it to create a
+//! charge for a fictional card. We create a customer, an intent, update
 //! their payment information, and lastly use the intent to create a charge.
 
 use std::collections::HashMap;
