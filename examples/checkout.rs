@@ -22,7 +22,7 @@ async fn main() {
 
     // create a new exmaple project
     let product = {
-        let mut create_product = CreateProduct::new("T Shirt");
+        let mut create_product = CreateProduct::new("T-Shirt");
         create_product.metadata =
             Some([("async-stripe".to_string(), "true".to_string())].iter().cloned().collect());
         Product::create(&client, create_product).await.unwrap()
