@@ -127,6 +127,7 @@ pub enum ErrorCode {
     ParameterMissing,
     ParameterUnknown,
     PaymentMethodUnactivated,
+    PaymentIntentUnexpectedState,
     PayoutsNotAllowed,
     PlatformApiKeyExpired,
     PostalCodeInvalid,

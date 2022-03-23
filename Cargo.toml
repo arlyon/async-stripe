@@ -3,9 +3,7 @@ members = [
   ".",
   "openapi",
   "bench/binary_size",
-  "examples/async-std",
-  "examples/blocking",
-  "examples/tokio",
+  "examples/common"
 ]
 
 [package]
@@ -110,3 +108,37 @@ async-std = { version = "1.10.0", features = ["attributes"] }
 httpmock = "0.6.6"
 lazy_static = "1.4"
 tokio = {version = "1.2", features = ["rt", "macros"]}
+common = {path= "examples/common"}
+axum = "0.4.8"
+
+[[example]]
+name = "checkout"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "connect"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "create-customer"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "payment-intent"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "payment-link"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "subscriptions"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "test-clock"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "webhook-axum"
+required-features = ["runtime-tokio-hyper"]

@@ -1,0 +1,10 @@
+[package]
+edition = "2021"
+name = "common"
+version = "0.1.0"
+description = "Common snippets used in the examples"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-stripe = {path = "../../"}
