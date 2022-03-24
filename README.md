@@ -1,6 +1,6 @@
 # async-stripe
 
-![CI](https://github.com/arlyon/stripe-rs/workflows/CI/badge.svg)
+![CI](https://github.com/arlyon/async-stripe/workflows/CI/badge.svg)
 [![async-stripe on crates.io](https://img.shields.io/crates/v/async-stripe.svg)](https://crates.io/crates/async-stripe)
 [![async-stripe  on docs.rs](https://docs.rs/async-stripe/badge.svg)](https://docs.rs/async-stripe)
 

@@ -17,10 +17,10 @@ authors = [
 ]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-homepage = "https://github.com/arlyon/stripe-rs"
-repository = "https://github.com/arlyon/stripe-rs"
+homepage = "https://github.com/arlyon/async-stripe"
+repository = "https://github.com/arlyon/async-stripe"
 documentation = "https://docs.rs/async-stripe"
-keywords = ["stripe", "v1", "api"]
+keywords = ["stripe", "v1", "api", "async"]
 categories = ["api-bindings"]
 edition = "2018"
 
