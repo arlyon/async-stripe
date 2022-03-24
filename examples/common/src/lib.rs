@@ -1,5 +1,6 @@
 use stripe::{Client, CreateCustomer, Customer};
 
+#[cfg(not(feature = "blocking"))]
 pub async fn create_customer(client: &Client) -> Customer {
     Customer::create(
         &client,

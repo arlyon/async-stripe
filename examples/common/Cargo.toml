@@ -6,5 +6,8 @@ description = "Common snippets used in the examples"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+blocking = []
+
 [dependencies]
 async-stripe = {path = "../../"}

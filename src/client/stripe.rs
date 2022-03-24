@@ -5,7 +5,7 @@ use crate::{
     client::{request_strategy::RequestStrategy, BaseClient, Response},
     config::err,
     params::AppInfo,
-    ApiVersion, Headers, StripeError,
+    AccountId, ApiVersion, ApplicationId, Headers, StripeError,
 };
 
 static USER_AGENT: &str = concat!("Stripe/v1 RustBindings/", env!("CARGO_PKG_VERSION"));
@@ -46,14 +46,14 @@ impl Client {
     }
 
     /// Set the client id for the client.
-    pub fn with_client_id(mut self, client_id: impl Into<String>) -> Self {
-        self.headers.client_id = Some(client_id.into());
+    pub fn with_client_id(mut self, id: ApplicationId) -> Self {
+        self.headers.client_id = Some(id);
         self
     }
 
     /// Set the stripe account for the client.
-    pub fn with_stripe_account(mut self, stripe_account: impl Into<String>) -> Self {
-        self.headers.stripe_account = Some(stripe_account.into());
+    pub fn with_stripe_account(mut self, id: AccountId) -> Self {
+        self.headers.stripe_account = Some(id);
         self
     }
 

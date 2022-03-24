@@ -61,7 +61,7 @@ events = []
 
 # runtimes
 async = []
-blocking = []
+blocking = ["common/blocking"]
 
 runtime-tokio-hyper = ["tokio", "hyper-client", "hyper-tls", "async"]
 runtime-tokio-hyper-rustls = ["tokio", "hyper-client", "hyper-rustls", "async"]
@@ -108,8 +108,8 @@ anyhow = "1.0.38"
 async-std = { version = "1.10.0", features = ["attributes"] }
 httpmock = "0.6.6"
 lazy_static = "1.4"
-tokio = {version = "1.2", features = ["rt", "macros"]}
-common = {path= "examples/common"}
+tokio = { version = "1.2", features = ["rt", "macros"] }
+common = { path= "examples/common" }
 axum = "0.4.8"
 actix-web = "4.0.1"
 

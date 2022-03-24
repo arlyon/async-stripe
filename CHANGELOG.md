@@ -5,6 +5,7 @@ supporting additional stripe APIs, and adding retries / idempotency.
 
 ## Features
 
+- BREAKING: fluent client config api.
 - Add the `card` param to the codegen. (@erichCompSci)
 - Derive `Default` across the codebase.
 - Opt-in idempotency functionality. (@erichCompSci)

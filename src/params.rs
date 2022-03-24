@@ -3,12 +3,15 @@ use std::collections::HashMap;
 use serde::de::DeserializeOwned;
 use serde_derive::{Deserialize, Serialize};
 
-use crate::client::{
-    config::{err, ok},
-    Client, Response,
-};
 use crate::error::StripeError;
 use crate::resources::ApiVersion;
+use crate::{
+    client::{
+        config::{err, ok},
+        Client, Response,
+    },
+    AccountId, ApplicationId,
+};
 
 #[derive(Clone, Default)]
 pub struct AppInfo {
@@ -36,8 +39,8 @@ pub struct Headers {
     pub stripe_version: ApiVersion,
     pub user_agent: String,
 
-    pub client_id: Option<String>,
-    pub stripe_account: Option<String>,
+    pub client_id: Option<ApplicationId>,
+    pub stripe_account: Option<AccountId>,
 }
 
 impl Headers {
