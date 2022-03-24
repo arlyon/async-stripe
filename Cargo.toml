@@ -111,6 +111,7 @@ lazy_static = "1.4"
 tokio = {version = "1.2", features = ["rt", "macros"]}
 common = {path= "examples/common"}
 axum = "0.4.8"
+actix-web = "4.0.1"
 
 [[example]]
 name = "checkout"
@@ -138,4 +139,8 @@ required-features = ["runtime-tokio-hyper"]
 
 [[example]]
 name = "webhook-axum"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "webhook-actix"
 required-features = ["runtime-tokio-hyper"]
