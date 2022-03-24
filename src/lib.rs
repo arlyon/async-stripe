@@ -35,6 +35,7 @@
 #![allow(clippy::map_clone, clippy::large_enum_variant)]
 #![warn(clippy::unwrap_used, clippy::missing_errors_doc, clippy::missing_panics_doc)]
 #![forbid(unsafe_code)]
+#![clippy::msrv = "1.54"]
 
 mod client;
 mod error;

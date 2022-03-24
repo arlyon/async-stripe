@@ -29,15 +29,11 @@ impl RequestStrategy {
             return Outcome::Stop;
         }
 
-        // todo(arlyon): or patterns stabilized in 1.53, clean up on MSRV bump
-        //               https://github.com/rust-lang/rust/pull/79278
-
         use RequestStrategy::*;
 
         match (self, status, retry_count) {
             // a strategy of once or idempotent should run once
-            (Once, _, 0) => Outcome::Continue(None),
-            (Idempotent(_), _, 0) => Outcome::Continue(None),
+            (Once | Idempotent(_), _, 0) => Outcome::Continue(None),
 
             // requests with idempotency keys that hit client
             // errors usually cannot be solved with retries

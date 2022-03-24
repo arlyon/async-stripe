@@ -104,7 +104,8 @@ println!("{:?}", customers); // =>  List { data: [Customer { .. }] }
 
 ## MSRV
 
-We currently have `1.49.0` pinned in CI, so any version of rustc newer than that should work. If this is not the case, please open an issue.
+We currently have `1.54.0` pinned in CI, so any version of rustc newer than that should work.
+If this is not the case, please open an issue. As a policy, we permit MSRV increases in non-breaking releases.
 
 ## Contributing
 

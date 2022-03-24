@@ -16,7 +16,7 @@
 
 use std::borrow::Borrow;
 
-use actix_web::{post, web, App, HttpRequest, HttpResponse, HttpServer, Responder, ResponseError};
+use actix_web::{post, web, App, HttpRequest, HttpResponse, HttpServer};
 use stripe::{EventObject, EventType, Webhook, WebhookError};
 
 #[actix_web::main]
