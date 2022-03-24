@@ -137,9 +137,5 @@ name = "subscriptions"
 required-features = ["runtime-tokio-hyper"]
 
 [[example]]
-name = "test-clock"
-required-features = ["runtime-tokio-hyper"]
-
-[[example]]
 name = "webhook-axum"
 required-features = ["runtime-tokio-hyper"]
