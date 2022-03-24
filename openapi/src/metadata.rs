@@ -12,6 +12,8 @@ use crate::{
     types::CopyOrClone,
 };
 
+const CRATES: [(&str, [&str; 0]); 2] = [("billing", []), ("billing", [])];
+
 /// Global metadata for the entire codegen process.
 #[derive(Debug)]
 pub struct Metadata<'a> {

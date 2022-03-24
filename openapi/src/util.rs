@@ -100,7 +100,7 @@ pub fn infer_integer_type(state: &mut FileGenerator, name: &str, format: Option<
     let name_snake = name.to_snake_case();
     let name_words = name_snake.split('_').collect::<Vec<_>>();
     if format == Some("unix-time") || name_words.contains(&"date") {
-        state.use_params.insert("Timestamp");
+        state.imported.params.insert(("stripe", "Timestamp"));
         "Timestamp".into()
     } else if name == "monthly_anchor" {
         "u8".into()

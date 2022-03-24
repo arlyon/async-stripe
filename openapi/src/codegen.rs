@@ -53,7 +53,7 @@ pub fn gen_struct(
     out.push_str(&struct_name);
     out.push_str(" {\n");
     if let Some((id_type, _)) = &id_type {
-        state.use_ids.insert(id_type.clone());
+        state.imported.ids.insert(("stripe", id_type.clone()));
         if let Some(doc) = schema["properties"]["id"]["description"].as_str() {
             print_doc_comment(out, doc, 1);
         }
@@ -115,9 +115,9 @@ pub fn gen_prelude(state: &FileGenerator, meta: &Metadata) -> String {
     prelude.push_str("// ======================================\n");
     prelude.push_str("// This file was automatically generated.\n");
     prelude.push_str("// ======================================\n\n");
-    if !state.use_config.is_empty() {
+    if !state.imported.config.is_empty() {
         prelude.push_str("use crate::client::{");
-        for (n, type_) in state.use_config.iter().enumerate() {
+        for (n, (crate_, type_)) in state.imported.config.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
             }
@@ -125,9 +125,9 @@ pub fn gen_prelude(state: &FileGenerator, meta: &Metadata) -> String {
         }
         prelude.push_str("};\n");
     }
-    if !state.use_ids.is_empty() {
+    if !state.imported.ids.is_empty() {
         prelude.push_str("use crate::ids::{");
-        for (n, type_) in state.use_ids.iter().enumerate() {
+        for (n, (crate_, type_)) in state.imported.ids.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
             }
@@ -135,9 +135,9 @@ pub fn gen_prelude(state: &FileGenerator, meta: &Metadata) -> String {
         }
         prelude.push_str("};\n");
     }
-    if !state.use_params.is_empty() {
+    if !state.imported.params.is_empty() {
         prelude.push_str("use crate::params::{");
-        for (n, type_) in state.use_params.iter().enumerate() {
+        for (n, (crate_, type_)) in state.imported.params.iter().enumerate() {
             if n > 0 {
                 prelude.push_str(", ");
             }
@@ -145,17 +145,18 @@ pub fn gen_prelude(state: &FileGenerator, meta: &Metadata) -> String {
         }
         prelude.push_str("};\n");
     }
-    if !state.use_resources.is_empty() {
+    if !state.imported.resources.is_empty() {
         prelude.push_str("use crate::resources::{");
-        for (n, type_) in state
-            .use_resources
+        for (n, (crate_, type_)) in state
+            .imported
+            .resources
             .iter()
-            .filter(|&x| {
-                state.generated_schemas.keys().all(|sch| x != &meta.schema_to_rust_type(sch))
-                    && !state.inferred_parameters.contains_key(x)
-                    && !state.inferred_structs.contains_key(x)
-                    && !state.inferred_unions.contains_key(x)
-                    && !state.inferred_enums.contains_key(x)
+            .filter(|&(_, x)| {
+                state.generated.schemas.keys().all(|sch| x != &meta.schema_to_rust_type(sch))
+                    && !state.inferred.parameters.contains_key(x)
+                    && !state.inferred.structs.contains_key(x)
+                    && !state.inferred.unions.contains_key(x)
+                    && !state.inferred.enums.contains_key(x)
                     && x != &meta.schema_to_rust_type(object)
             })
             .enumerate()
@@ -180,7 +181,7 @@ pub fn gen_generated_schemas(
     shared_objects: &mut BTreeSet<FileGenerator>,
 ) {
     while let Some(schema_name) =
-        state.generated_schemas.iter().find_map(|(k, &v)| if !v { Some(k) } else { None }).cloned()
+        state.generated.schemas.iter().find_map(|(k, &v)| if !v { Some(k) } else { None }).cloned()
     {
         let struct_name = meta.schema_to_rust_type(&schema_name);
         out.push('\n');
@@ -212,7 +213,7 @@ pub fn gen_generated_schemas(
         out.push_str("}\n");
 
         // Set the schema to generated
-        *state.generated_schemas.entry(schema_name).or_default() = true;
+        *state.generated.schemas.entry(schema_name).or_default() = true;
     }
 }
 
@@ -246,7 +247,7 @@ pub fn gen_multitype_params(
                     rust_type: new_type_name.clone(),
                     schema: member_schema.clone(),
                 };
-                state.generated_objects.insert(new_type_name.clone(), inferred_object);
+                state.generated.objects.insert(new_type_name.clone(), inferred_object);
                 initializers.push((param_name.into(), new_type_name.clone(), required));
                 write_out_field(out, param_name, &new_type_name, required);
             } else {
@@ -263,7 +264,7 @@ pub fn gen_multitype_params(
                 rust_type: new_type_name.clone(),
                 schema: param["schema"].clone(),
             };
-            state.generated_objects.insert(new_type_name.clone(), inferred_object);
+            state.generated.objects.insert(new_type_name.clone(), inferred_object);
             initializers.push((param_name.into(), new_type_name.clone(), required));
             write_out_field(out, param_name, &new_type_name, required);
         }
@@ -284,7 +285,7 @@ pub fn gen_inferred_params(
     let id_type = meta.schema_to_id_type(&object);
     let struct_name = meta.schema_to_rust_type(&object);
 
-    for (_, params) in state.inferred_parameters.clone() {
+    for (_, params) in state.inferred.parameters.clone() {
         let params_schema = params.rust_type.to_snake_case();
         let parameters = match params.parameters.as_array() {
             Some(some) => some.as_slice(),
@@ -366,8 +367,8 @@ pub fn gen_inferred_params(
                         "IdOrCreate<'a, CreateProduct<'a>>".into(),
                         required,
                     ));
-                    state.use_params.insert("IdOrCreate");
-                    state.use_resources.insert("CreateProduct".to_owned());
+                    state.imported.params.insert(("stripe", "IdOrCreate"));
+                    state.imported.resources.insert(("stripe", "CreateProduct".to_owned()));
                     if required {
                         out.push_str("    pub product: IdOrCreate<'a, CreateProduct<'a>>,\n");
                     } else {
@@ -380,7 +381,7 @@ pub fn gen_inferred_params(
                 "metadata" => {
                     print_doc(out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
-                    state.use_params.insert("Metadata");
+                    state.imported.params.insert(("stripe", "Metadata"));
                     if required {
                         out.push_str("    pub metadata: Metadata,\n");
                     } else {
@@ -391,7 +392,7 @@ pub fn gen_inferred_params(
                 "expand" => {
                     print_doc(out);
                     initializers.push(("expand".into(), "&'a [&'a str]".into(), false));
-                    state.use_params.insert("Expand");
+                    state.imported.params.insert(("stripe", "Expand"));
                     out.push_str("    #[serde(skip_serializing_if = \"Expand::is_empty\")]\n");
                     out.push_str("    pub expand: &'a [&'a str],\n");
                 }
@@ -442,13 +443,13 @@ pub fn gen_inferred_params(
                         match use_path {
                             "" | "String" => {}
                             "Metadata" => {
-                                state.use_params.insert("Metadata");
+                                state.imported.params.insert(("stripe", "Metadata"));
                             }
                             path if path.ends_with("Id") && path != "TaxId" => {
-                                state.use_ids.insert(path.into());
+                                state.imported.ids.insert(("stripe", path.into()));
                             }
                             path => {
-                                state.use_resources.insert(path.into());
+                                state.imported.resources.insert(("stripe", path.into()));
                             }
                         }
                         if rust_type.starts_with("Option<") {
@@ -468,7 +469,7 @@ pub fn gen_inferred_params(
                         let (id_type, _) = meta.schema_to_id_type(param_name).unwrap();
                         print_doc(out);
                         initializers.push((param_name.into(), id_type.clone(), required));
-                        state.use_ids.insert(id_type.clone());
+                        state.imported.ids.insert(("stripe", id_type.clone()));
                         if required {
                             out.push_str("    pub ");
                             out.push_str(param_name);
@@ -549,8 +550,8 @@ pub fn gen_inferred_params(
                             "RangeQuery<Timestamp>".into(),
                             required,
                         ));
-                        state.use_params.insert("RangeQuery");
-                        state.use_params.insert("Timestamp");
+                        state.imported.params.insert(("stripe", "RangeQuery"));
+                        state.imported.params.insert(("stripe", "Timestamp"));
                         if required {
                             out.push_str("    pub ");
                             out.push_str(param_rename);
@@ -611,7 +612,7 @@ pub fn gen_inferred_params(
                     {
                         print_doc(out);
                         initializers.push((param_rename.into(), "Currency".into(), required));
-                        state.use_resources.insert("Currency".into());
+                        state.imported.resources.insert(("stripe", "Currency".into()));
                         if required {
                             out.push_str("    pub ");
                             out.push_str(param_rename);
@@ -742,14 +743,15 @@ pub fn gen_emitted_structs(
 ) {
     let mut emitted_structs = BTreeSet::new();
     while state
-        .inferred_structs
+        .inferred
+        .structs
         .keys()
         .cloned()
         .collect::<BTreeSet<_>>()
         .difference(&emitted_structs)
         .any(|_| true)
     {
-        for (struct_name, struct_) in state.inferred_structs.clone() {
+        for (struct_name, struct_) in state.inferred.structs.clone() {
             if emitted_structs.contains(&struct_name) {
                 continue;
             } else {
@@ -794,7 +796,7 @@ pub fn gen_emitted_structs(
 
 #[tracing::instrument(skip_all)]
 pub fn gen_unions(out: &mut String, state: &mut FileGenerator, meta: &Metadata) {
-    for (union_name, union_) in state.inferred_unions.clone() {
+    for (union_name, union_) in state.inferred.unions.clone() {
         log::trace!("union {} {{ ... }}", union_name);
 
         out.push('\n');
@@ -862,7 +864,7 @@ pub fn gen_variant_name(wire_name: &str, meta: &Metadata) -> String {
 
 #[tracing::instrument(skip_all)]
 pub fn gen_enums(out: &mut String, state: &mut FileGenerator, meta: &Metadata) {
-    for (enum_name, enum_) in &state.inferred_enums {
+    for (enum_name, enum_) in &state.inferred.enums {
         log::trace!("enum {} {{ ... }}", enum_name);
 
         out.push('\n');
@@ -973,7 +975,7 @@ pub fn gen_member_variable_string(schema: &Value) -> Result<String, TypeError> {
 
 #[tracing::instrument(skip_all)]
 pub fn gen_objects(out: &mut String, state: &mut FileGenerator) {
-    let mut generated_objects = state.generated_objects.clone();
+    let mut generated_objects = state.generated.objects.clone();
     while !generated_objects.is_empty() {
         let key_str: String;
         let value_obj: InferredObject;
@@ -1145,6 +1147,39 @@ fn gen_field_type(
     default: bool,
     shared_objects: &mut BTreeSet<FileGenerator>,
 ) -> String {
+    if let Some((use_path, rust_type)) = meta.field_to_rust_type(object, field_name) {
+        match use_path {
+            "" | "String" => (),
+            "Metadata" => {
+                state.imported.params.insert(("stripe", "Metadata"));
+            }
+            _ => {
+                state.imported.resources.insert(("stripe", use_path.into()));
+            }
+        }
+        return rust_type.into();
+    }
+    if field_name == "metadata" {
+        state.imported.params.insert(("stripe", "Metadata"));
+        return "Metadata".into();
+    } else if (field_name == "currency" || field_name.ends_with("_currency"))
+        && field["type"].as_str() == Some("string")
+    {
+        state.imported.resources.insert(("stripe", "Currency".into()));
+        if !required || field["nullable"].as_bool() == Some(true) {
+            return "Option<Currency>".into();
+        } else {
+            return "Currency".into();
+        }
+    } else if field_name == "created" {
+        state.imported.params.insert(("stripe", "Timestamp"));
+        if !required || field["nullable"].as_bool() == Some(true) {
+            return "Option<Timestamp>".into();
+        } else {
+            return "Timestamp".into();
+        }
+    }
+
     let ty = match field["type"].as_str() {
         Some("boolean") => {
             if default {
@@ -1188,7 +1223,7 @@ fn gen_field_type(
         }
         Some("object") => {
             if field["properties"]["object"]["enum"][0].as_str() == Some("list") {
-                state.use_params.insert("List");
+                state.imported.params.insert(("stripe", "List"));
                 let element = &field["properties"]["data"]["items"];
                 let element_field_name = if field_name.ends_with('s') {
                     field_name[0..field_name.len() - 1].into()
@@ -1237,12 +1272,12 @@ fn gen_field_type(
                 let type_name = meta.schema_to_rust_type(schema_name);
                 if schema_name != object {
                     if meta.objects.contains(schema_name) {
-                        state.use_resources.insert(type_name.clone());
+                        state.imported.resources.insert(("stripe", type_name.clone()));
                     } else if meta.dependents.get(schema_name).map(|x| x.len()).unwrap_or(0) > 1 {
-                        state.use_resources.insert(type_name.clone());
+                        state.imported.resources.insert(("stripe", type_name.clone()));
                         shared_objects.insert(FileGenerator::new(schema_name.to_string()));
-                    } else if !state.generated_schemas.contains_key(schema_name) {
-                        state.generated_schemas.insert(schema_name.into(), false);
+                    } else if !state.generated.schemas.contains_key(schema_name) {
+                        state.generated.schemas.insert(schema_name.into(), false);
                     }
                 }
                 type_name
@@ -1279,11 +1314,11 @@ fn gen_field_type(
                         false,
                         shared_objects,
                     );
-                    state.use_params.insert("Expandable");
+                    state.imported.params.insert(("stripe", "Expandable"));
                     format!("Expandable<{}>", ty_)
                 } else if any_of[0]["title"].as_str() == Some("range_query_specs") {
-                    state.use_params.insert("RangeQuery");
-                    state.use_params.insert("Timestamp");
+                    state.imported.params.insert(("stripe", "RangeQuery"));
+                    state.imported.params.insert(("stripe", "Timestamp"));
                     "RangeQuery<Timestamp>".into()
                 } else {
                     log::trace!("object: {}, field_name: {}", object, field_name);
@@ -1315,15 +1350,15 @@ fn gen_field_type(
                                         .unwrap_or(0)
                                         > 1
                                 {
-                                    state.use_resources.insert(type_name);
-                                } else if !state.generated_schemas.contains_key(schema_name) {
-                                    state.generated_schemas.insert(schema_name.into(), false);
+                                    state.imported.resources.insert(("stripe", type_name));
+                                } else if !state.generated.schemas.contains_key(schema_name) {
+                                    state.generated.schemas.insert(schema_name.into(), false);
                                 }
                                 schema_name.into()
                             })
                             .collect(),
                     };
-                    state.inferred_unions.insert(union_name.clone(), union_);
+                    state.inferred.unions.insert(union_name.clone(), union_);
                     union_name
                 }
             } else {
@@ -1443,8 +1478,8 @@ pub fn gen_impl_requests(
                     rust_type: params_name.clone(),
                     parameters: get_request["parameters"].clone(),
                 };
-                state.inferred_parameters.insert(params_name.to_snake_case(), params);
-                state.use_params.insert("List");
+                state.inferred.parameters.insert(params_name.to_snake_case(), params);
+                state.imported.params.insert(("stripe", "List"));
 
                 let mut out = String::new();
                 out.push('\n');
@@ -1480,7 +1515,7 @@ pub fn gen_impl_requests(
                     out.push_str("    pub fn retrieve(client: &Client, id: &");
                     out.push_str(id_type);
                     if let Some(param) = expand_param {
-                        state.use_params.insert("Expand");
+                        state.imported.params.insert(("stripe", "Expand"));
                         assert_eq!(param["in"].as_str(), Some("query"));
                         out.push_str(", expand: &[&str]) -> Response<");
                         out.push_str(&rust_struct);
@@ -1564,7 +1599,7 @@ pub fn gen_impl_requests(
                     rust_type: params_name.clone(),
                     parameters: Value::Array(create_parameters),
                 };
-                state.inferred_parameters.insert(params_name.to_snake_case(), params);
+                state.inferred.parameters.insert(params_name.to_snake_case(), params);
 
                 let mut out = String::new();
                 out.push('\n');
@@ -1612,7 +1647,7 @@ pub fn gen_impl_requests(
                     rust_type: params_name.clone(),
                     parameters: Value::Array(update_parameters),
                 };
-                state.inferred_parameters.insert(params_name.to_snake_case(), params);
+                state.inferred.parameters.insert(params_name.to_snake_case(), params);
 
                 if let Some(id_type) = &object_id {
                     assert_eq!(id_param["required"].as_bool(), Some(true));
@@ -1668,7 +1703,7 @@ pub fn gen_impl_requests(
                     None => continue,
                 };
                 if let Some(id_type) = &object_id {
-                    state.use_params.insert("Deleted");
+                    state.imported.params.insert(("stripe", "Deleted"));
                     assert_eq!(id_param["required"].as_bool(), Some(true));
                     assert_eq!(id_param["style"].as_str(), Some("simple"));
 
@@ -1696,8 +1731,8 @@ pub fn gen_impl_requests(
         None
     } else {
         // Add imports
-        state.use_config.insert("Client");
-        state.use_config.insert("Response");
+        state.imported.config.insert(("stripe", "Client"));
+        state.imported.config.insert(("stripe", "Response"));
 
         // Output the impl block
         Some(format!(

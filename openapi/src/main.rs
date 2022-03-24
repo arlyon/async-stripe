@@ -1,4 +1,7 @@
-use std::{collections::BTreeSet, fs};
+use std::{
+    collections::{BTreeSet, HashSet},
+    fs,
+};
 
 use anyhow::{Context, Result};
 use structopt::StructOpt;
@@ -58,6 +61,25 @@ fn main() -> Result<()> {
         .into_iter()
         .flat_map(|mut f| f.write(&out_path, &meta, &url_finder))
         .flatten();
+
+    // println!(
+    //     "{:#?}",
+    //     meta.get_files()
+    //         .into_iter()
+    //         .map(|mut f| {
+    //             f.generate(&meta, &url_finder).unwrap();
+    //             format!(
+    //                 "{} - {:?} {:?} {:?} {:?}",
+    //                 &f.name,
+    //                 f.imported.config,
+    //                 f.imported.ids,
+    //                 f.imported.params,
+    //                 f.imported.resources
+    //             )
+    //         })
+    //         .collect::<HashSet<_>>()
+    // );
+    // println!("{:#?}", shared_objects.map(|f| f.name).collect::<HashSet<_>>());
 
     // write out the 'indirect' files
     let extra_objects = shared_objects

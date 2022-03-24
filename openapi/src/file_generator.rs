@@ -30,28 +30,42 @@ use crate::{
 #[derive(Default, Debug)]
 pub struct FileGenerator {
     pub name: String,
+    pub imported: Imported,
+    pub inferred: Inferred,
+    pub generated: Generated,
+}
 
+#[derive(Default, Debug)]
+pub struct Imported {
     /// The ids that must be imported in this file.
-    pub use_ids: BTreeSet<String>,
+    pub ids: BTreeSet<(&'static str, String)>,
     /// The config that must be imported in this file.
-    pub use_config: BTreeSet<&'static str>,
+    pub config: BTreeSet<(&'static str, &'static str)>,
     /// The params that must be imported in this file.
-    pub use_params: BTreeSet<&'static str>,
+    pub params: BTreeSet<(&'static str, &'static str)>,
     /// The resources that must be imported in this file.
-    pub use_resources: BTreeSet<String>,
+    pub resources: BTreeSet<(&'static str, String)>,
+}
+
+#[derive(Default, Debug)]
+pub struct Inferred {
     /// Extra (simple) enums that were / will be generated in this file.
-    pub inferred_enums: BTreeMap<String, InferredEnum>,
+    pub enums: BTreeMap<String, InferredEnum>,
     /// Extra (complex) enums that were / will be generated in this file.
-    pub inferred_unions: BTreeMap<String, InferredUnion>,
+    pub unions: BTreeMap<String, InferredUnion>,
     /// Extra structs that were / will be generated in this file.
-    pub inferred_structs: BTreeMap<String, InferredStruct>,
+    pub structs: BTreeMap<String, InferredStruct>,
     /// The request parameter structs that were / will be generated in this file.
-    pub inferred_parameters: BTreeMap<String, InferredParams>,
+    pub parameters: BTreeMap<String, InferredParams>,
+}
+
+#[derive(Default, Debug)]
+pub struct Generated {
     /// The schemas that were / will be generated in this file.
-    pub generated_schemas: BTreeMap<String, bool>,
+    pub schemas: BTreeMap<String, bool>,
     /// New experimental struct thatclear
     ///  will eventually do most of the general work
-    pub generated_objects: BTreeMap<String, InferredObject>,
+    pub objects: BTreeMap<String, InferredObject>,
 }
 
 impl FileGenerator {
@@ -136,7 +150,7 @@ impl FileGenerator {
             out.push('\n');
             out.push_str(&impls);
         }
-        self.use_params.insert("Object");
+        self.imported.params.insert(("stripe", "Object"));
         out.push('\n');
         out.push_str("impl Object for ");
         out.push_str(&struct_name);
@@ -171,12 +185,12 @@ impl FileGenerator {
         let mut enum_ = enum_;
         enum_.options.sort();
         if let std::collections::btree_map::Entry::Vacant(e) =
-            self.inferred_enums.entry(name.clone())
+            self.inferred.enums.entry(name.clone())
         {
             e.insert(enum_);
             return Ok(());
         }
-        if let Some(other) = self.inferred_enums.get(&name) {
+        if let Some(other) = self.inferred.enums.get(&name) {
             if enum_.options != other.options {
                 return Err(other);
             }
@@ -196,11 +210,11 @@ impl FileGenerator {
         struct_: InferredStruct,
     ) -> Result<(), &InferredStruct> {
         let name = name.into();
-        if let Entry::Vacant(e) = self.inferred_structs.entry(name.clone()) {
+        if let Entry::Vacant(e) = self.inferred.structs.entry(name.clone()) {
             e.insert(struct_);
             return Ok(());
         }
-        if let Some(other) = self.inferred_structs.get(&name) {
+        if let Some(other) = self.inferred.structs.get(&name) {
             let mut self_schema = struct_.schema;
             let mut other_schema = other.schema.clone();
             if let Some(x) = self_schema.as_object_mut() {
