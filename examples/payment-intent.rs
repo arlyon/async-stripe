@@ -7,11 +7,10 @@
 //! charge for a fictional card. We create a customer, an intent, update
 //! their payment information, and lastly use the intent to create a charge.
 
-use common::create_customer;
 use stripe::{
-    AttachPaymentMethod, CardDetailsParams, Client, CreatePaymentIntent, CreatePaymentMethod,
-    CreatePaymentMethodCardUnion, Currency, PaymentIntent, PaymentIntentConfirmParams,
-    PaymentMethod, PaymentMethodTypeFilter, UpdatePaymentIntent,
+    AttachPaymentMethod, CardDetailsParams, Client, CreateCustomer, CreatePaymentIntent,
+    CreatePaymentMethod, CreatePaymentMethodCardUnion, Currency, Customer, PaymentIntent,
+    PaymentIntentConfirmParams, PaymentMethod, PaymentMethodTypeFilter, UpdatePaymentIntent,
 };
 
 #[tokio::main]
@@ -19,7 +18,24 @@ async fn main() {
     let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
     let client = Client::new(secret_key);
 
-    let customer = create_customer(&client).await;
+    let customer = Customer::create(
+        &client,
+        CreateCustomer {
+            name: Some("Alexander Lyon"),
+            email: Some("test@async-stripe.com"),
+            description: Some(
+                "A fake customer that is used to illustrate the examples in async-stripe.",
+            ),
+            metadata: Some(
+                [("async-stripe".to_string(), "true".to_string())].iter().cloned().collect(),
+            ),
+
+            ..Default::default()
+        },
+    )
+    .await
+    .unwrap();
+
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 
     // we create an intent to pay
