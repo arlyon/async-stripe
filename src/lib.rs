@@ -13,7 +13,7 @@
 //!
 //! ## Getting Started
 //!
-//! To get started, we need to create a client:
+//! To get started, we need to create a [Client]:
 //!
 //! ```
 //! let client = stripe::Client::new("sk_test_YOUR_STRIPE_SECRET");
@@ -27,42 +27,13 @@
 //! so you may frequently need to refer to the [official API docs](https://stripe.com/docs/api)
 //! to determine which fields are required for either request.
 //!
-//! ```
-//! /* Creating a Stripe Charge */
-//! # #[cfg(feature = "blocking")]
-//! # {
-//! # let client = stripe::Client::from_url("http://localhost:12111", "sk_test_123");
-//! let token = "tok_ID_FROM_CHECKOUT".parse().unwrap();
-//! let mut params = stripe::CreateCharge::new();
-//! // NOTE: Stripe represents currency in the lowest denominations (e.g. cents)
-//! params.amount = Some(1095); // e.g. $10.95
-//! params.source = Some(stripe::ChargeSourceParams::Token(token));
-//!
-//! // Example: Override currency to be in Canadian Dollars
-//! params.currency = Some(stripe::Currency::CAD);
-//! let charge = stripe::Charge::create(&client, params).unwrap();
-//! println!("{:?}", charge); // =>  Charge { id: "ch_12345", amount: 1095, .. }
-//! # }
-//! ```
-//!
-//! ```
-//! /* Listing Stripe Charges */
-//! # #[cfg(feature = "blocking")]
-//! # {
-//! # let client = stripe::Client::from_url("http://localhost:12111", "sk_test_123");
-//! let params = stripe::ListCharges::new();
-//! let charges = stripe::Charge::list(&client, params).unwrap();
-//! println!("{:?}", charges); // =>  List { data: [Charge { id: "ch_12345", .. }] }
-//! # }
-//! ```
-//!
-//! > **A note about creating card tokens**: Stripe introduced the [PaymentIntent](crate::PaymentIntent) api
-//! > to replace the old token and charge API. This library only supports the former. To migrate, you can
-//! > have a look at [the official migration guide](https://stripe.com/docs/payments/payment-intents/migration).
+//! > **Note:** We have an extensive collection of examples which are interspersed in
+//!   the documentation. Any time an API is used in an example it is highlighted in the
+//!   docs for that item. You can also find all the raw examples in the `examples` directory.
+//!   Please have a look at those for inspiration or ideas on how to get started.
 
-#![allow(clippy::map_clone)]
-#![allow(clippy::large_enum_variant)]
-#![warn(clippy::unwrap_used)]
+#![allow(clippy::map_clone, clippy::large_enum_variant)]
+#![warn(clippy::unwrap_used, clippy::missing_errors_doc, clippy::missing_panics_doc)]
 #![forbid(unsafe_code)]
 
 mod client;

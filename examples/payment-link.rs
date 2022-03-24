@@ -1,7 +1,7 @@
 //! Payment Link
 //! ============
 //!
-//! Reference: https://stripe.com/docs/api/payment_links/payment_links
+//! Reference: <https://stripe.com/docs/api/payment_links/payment_links>
 //!
 //! This example shows how to create a payment link for
 //! a particular product and price. The nice thing with

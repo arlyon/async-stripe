@@ -1,7 +1,7 @@
 //! Customer
 //! ========
 //!
-//! Reference: https://stripe.com/docs/api/customers
+//! Reference: <https://stripe.com/docs/api/customers>
 //!
 //! This example shows how to create and list customers.
 

@@ -25,7 +25,8 @@ categories = ["api-bindings"]
 edition = "2018"
 
 [package.metadata.docs.rs]
-features = ["runtime-async-std-surf"]
+features = ["runtime-tokio-hyper"]
+cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples=examples"]
 
 [lib]
 name = "stripe"

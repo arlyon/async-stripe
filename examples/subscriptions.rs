@@ -1,7 +1,7 @@
 //! Subscription
 //! ============
 //!
-//! Reference: https://stripe.com/docs/api/subscriptions
+//! Reference: <https://stripe.com/docs/api/subscriptions>
 //!
 //! This example shows how to create a subscription for
 //! a particular product and recurring price.
@@ -10,8 +10,8 @@ use common::create_customer;
 use stripe::{
     AttachPaymentMethod, CardDetailsParams, Client, CreatePaymentMethod,
     CreatePaymentMethodCardUnion, CreatePrice, CreatePriceRecurring, CreatePriceRecurringInterval,
-    CreateProduct, CreateSubscription, CreateSubscriptionItems, Currency, Customer, Expandable,
-    IdOrCreate, PaymentMethod, PaymentMethodTypeFilter, Price, Product, Subscription,
+    CreateProduct, CreateSubscription, CreateSubscriptionItems, Currency, Expandable, IdOrCreate,
+    PaymentMethod, PaymentMethodTypeFilter, Price, Product, Subscription,
 };
 
 #[tokio::main]

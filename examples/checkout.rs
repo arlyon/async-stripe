@@ -1,19 +1,19 @@
 //! Checkout
 //! ========
 //!
-//! Reference: https://stripe.com/docs/api/checkout/sessions
+//! Reference: <https://stripe.com/docs/api/checkout/sessions>
 //!
 //! This example shows how to build a checkout session for
 //! a particular product and price. Creating a checkout
 //! session generates a URL that the user can use to pay.
 //! Notice you have to define the customer ahead of time.
-//! If you'd rather avoid this, you can use a [stripe::PaymenLink].
+//! If you'd rather avoid this, you can use a [stripe::PaymentLink].
 
 use common::create_customer;
 use stripe::{
     CheckoutSession, CheckoutSessionMode, Client, CreateCheckoutSession,
-    CreateCheckoutSessionLineItems, CreatePrice, CreateProduct, Currency, Customer, Expandable,
-    IdOrCreate, Price, Product,
+    CreateCheckoutSessionLineItems, CreatePrice, CreateProduct, Currency, Expandable, IdOrCreate,
+    Price, Product,
 };
 
 #[tokio::main]

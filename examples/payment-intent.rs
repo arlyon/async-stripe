@@ -1,19 +1,17 @@
 //! Payment Intent
 //! ==============
 //!
-//! Reference: https://stripe.com/docs/api/payment_intents
+//! Reference: <https://stripe.com/docs/api/payment_intents>
 //!
 //! This example shows how to creeate a [PaymentIntent] and use it to create a
 //! charge for a fictional card. We create a customer, an intent, update
 //! their payment information, and lastly use the intent to create a charge.
 
-use std::collections::HashMap;
-
 use common::create_customer;
 use stripe::{
-    AttachPaymentMethod, CardDetailsParams, Client, CreateCustomer, CreatePaymentIntent,
-    CreatePaymentMethod, CreatePaymentMethodCardUnion, Currency, Customer, PaymentIntent,
-    PaymentIntentConfirmParams, PaymentMethod, PaymentMethodTypeFilter, UpdatePaymentIntent,
+    AttachPaymentMethod, CardDetailsParams, Client, CreatePaymentIntent, CreatePaymentMethod,
+    CreatePaymentMethodCardUnion, Currency, PaymentIntent, PaymentIntentConfirmParams,
+    PaymentMethod, PaymentMethodTypeFilter, UpdatePaymentIntent,
 };
 
 #[tokio::main]

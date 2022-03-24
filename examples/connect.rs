@@ -1,7 +1,7 @@
 //! Stripe Connect
 //! ==============
 //!
-//! Reference: https://stripe.com/docs/api/account_links
+//! Reference: <https://stripe.com/docs/api/account_links>
 //!
 //! This example shows how to manange a Stripe connect account,
 //! initiating an account link which can be used to onboard a
@@ -9,7 +9,7 @@
 //!
 //! Node: To get started, you'll need to make sure you have signed up to
 //! use stripe connect and configure branding settings with an icon and a
-//! brand color. See more: https://dashboard.stripe.com/connect/accounts/overview
+//! brand color. See more: <https://dashboard.stripe.com/connect/accounts/overview>
 
 use stripe::{
     Account, AccountLink, AccountLinkType, AccountType, Client, CreateAccount,

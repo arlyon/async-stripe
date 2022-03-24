@@ -149,7 +149,7 @@ async fn send_inner(
 /// note: this is necesarry because `http` deliberately does not support a `Body` type
 ///       so hyper has a `Body` for which http_types cannot provide automatic conversion.
 async fn convert_request(mut request: http_types::Request) -> http::Request<hyper::Body> {
-    let body = request.body_bytes().await.unwrap();
+    let body = request.body_bytes().await.expect("We know the data is a valid bytes object.");
     let request: http::Request<_> = request.into();
     http::Request::from_parts(request.into_parts().0, hyper::Body::from(body))
 }

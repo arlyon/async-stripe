@@ -32,19 +32,6 @@ impl SetupIntent {
     ) -> Response<SetupIntent> {
         client.post_form(&format!("/setup_intents/{}/confirm", setup_id), &params)
     }
-
-    pub fn cancel(
-        _client: &Client,
-        _setup_id: &SetupIntentId,
-        _params: CancelSetupIntent,
-    ) -> Response<SetupIntent> {
-        unimplemented!()
-    }
-
-    pub fn retrieve_ext(_client: &Client, _setup_intent_secret: &str) -> Response<SetupIntent> {
-        unimplemented!()
-        //client.get(&format!("/setup_intents/{}", setup_intent_secret))
-    }
 }
 
 #[cfg(test)]
