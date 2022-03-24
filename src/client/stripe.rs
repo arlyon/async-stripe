@@ -5,10 +5,10 @@ use crate::{
     client::{request_strategy::RequestStrategy, BaseClient, Response},
     config::err,
     params::AppInfo,
-    ApiVersion, Headers, StripeError,
+    AccountId, ApiVersion, ApplicationId, Headers, StripeError,
 };
 
-static USER_AGENT: &str = concat!("Stripe/v3 RustBindings/", env!("CARGO_PKG_VERSION"));
+static USER_AGENT: &str = concat!("Stripe/v1 RustBindings/", env!("CARGO_PKG_VERSION"));
 
 #[derive(Clone)]
 pub struct Client {
@@ -46,14 +46,14 @@ impl Client {
     }
 
     /// Set the client id for the client.
-    pub fn with_client_id(mut self, client_id: impl Into<String>) -> Self {
-        self.headers.client_id = Some(client_id.into());
+    pub fn with_client_id(mut self, id: ApplicationId) -> Self {
+        self.headers.client_id = Some(id);
         self
     }
 
     /// Set the stripe account for the client.
-    pub fn with_stripe_account(mut self, stripe_account: impl Into<String>) -> Self {
-        self.headers.stripe_account = Some(stripe_account.into());
+    pub fn with_stripe_account(mut self, id: AccountId) -> Self {
+        self.headers.stripe_account = Some(id);
         self
     }
 
@@ -75,7 +75,7 @@ impl Client {
         url: Option<String>,
     ) -> Self {
         let app_info = AppInfo { name, version, url };
-        self.headers.user_agent = format!("{}/{}", USER_AGENT, app_info.to_string());
+        self.headers.user_agent = format!("{} {}", USER_AGENT, app_info.to_string());
         self.app_info = Some(app_info);
         self
     }
@@ -162,5 +162,52 @@ impl Client {
         }
 
         req
+    }
+}
+
+#[cfg(test)]
+mod test {
+    //! Ensures our user agent matches the format of the other stripe clients.
+    //!
+    //! See: <https://github.com/stripe/stripe-python/blob/3b917dc4cec6a3cccfd46961e05fe7b55c6bee87/stripe/api_requestor.py#L241>
+
+    use super::Client;
+
+    #[test]
+    fn user_agent_base() {
+        let client = Client::new("sk_test_12345");
+
+        assert_eq!(
+            client.headers.user_agent,
+            format!("Stripe/v1 RustBindings/{}", env!("CARGO_PKG_VERSION"))
+        );
+    }
+
+    #[test]
+    fn user_agent_minimal_app_info() {
+        let client =
+            Client::new("sk_test_12345").with_app_info("sick-new-startup".to_string(), None, None);
+
+        assert_eq!(
+            client.headers.user_agent,
+            format!("Stripe/v1 RustBindings/{} sick-new-startup", env!("CARGO_PKG_VERSION"))
+        );
+    }
+
+    #[test]
+    fn user_agent_all() {
+        let client = Client::new("sk_test_12345").with_app_info(
+            "sick-new-startup".to_string(),
+            Some("0.1.0".to_string()),
+            Some("https://sick-startup.io".to_string()),
+        );
+
+        assert_eq!(
+            client.headers.user_agent,
+            format!(
+                "Stripe/v1 RustBindings/{} sick-new-startup/0.1.0 (https://sick-startup.io)",
+                env!("CARGO_PKG_VERSION")
+            )
+        );
     }
 }

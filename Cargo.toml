@@ -3,15 +3,14 @@ members = [
   ".",
   "openapi",
   "bench/binary_size",
-  "examples/async-std",
-  "examples/blocking",
-  "examples/tokio",
+  "examples/common"
 ]
 
 [package]
 name = "async-stripe"
-version = "0.13.0"
+version = "0.14.0"
 description = "API bindings for the Stripe HTTP API"
+rust-version = "1.54.0"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
   "Kevin Stenerson <kestred@users.noreply.github.com>",
@@ -19,15 +18,16 @@ authors = [
 ]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-homepage = "https://github.com/arlyon/stripe-rs"
-repository = "https://github.com/arlyon/stripe-rs"
+homepage = "https://github.com/arlyon/async-stripe"
+repository = "https://github.com/arlyon/async-stripe"
 documentation = "https://docs.rs/async-stripe"
-keywords = ["stripe", "v1", "api"]
+keywords = ["stripe", "v1", "api", "async"]
 categories = ["api-bindings"]
 edition = "2018"
 
 [package.metadata.docs.rs]
-features = ["runtime-async-std-surf"]
+features = ["runtime-tokio-hyper"]
+cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples=examples"]
 
 [lib]
 name = "stripe"
@@ -61,7 +61,7 @@ events = []
 
 # runtimes
 async = []
-blocking = []
+blocking = ["common/blocking"]
 
 runtime-tokio-hyper = ["tokio", "hyper-client", "hyper-tls", "async"]
 runtime-tokio-hyper-rustls = ["tokio", "hyper-client", "hyper-rustls", "async"]
@@ -80,7 +80,6 @@ hyper-client = ["hyper", "http-types/hyperium_http"]
 
 [dependencies]
 async-std = { version = "1.9", optional = true }
-bumpalo = {version = "=3.8.0", optional = true } # to avoid msrv bump
 chrono = { version = "0.4", features = ["serde"], optional = true }
 thiserror = "1.0.24"
 http-types = "2.12.0"
@@ -109,4 +108,39 @@ anyhow = "1.0.38"
 async-std = { version = "1.10.0", features = ["attributes"] }
 httpmock = "0.6.6"
 lazy_static = "1.4"
-tokio = {version = "1.2", features = ["rt", "macros"]}
+tokio = { version = "1.2", features = ["rt", "macros"] }
+common = { path= "examples/common" }
+axum = "0.4.8"
+actix-web = "4.0.1"
+
+[[example]]
+name = "checkout"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "connect"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "customer"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "payment-intent"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "payment-link"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "subscriptions"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "webhook-axum"
+required-features = ["runtime-tokio-hyper"]
+
+[[example]]
+name = "webhook-actix"
+required-features = ["runtime-tokio-hyper"]
