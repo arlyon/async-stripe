@@ -11,7 +11,7 @@
 //! stripe listen --forward-to localhost:4242/stripe_webhooks
 //! Provide webhook secret to construct_event
 //! stripe trigger checkout.session.completed
-//! stripe trigger account.updated 
+//! stripe trigger account.updated
 //! ```
 
 use std::borrow::Borrow;
