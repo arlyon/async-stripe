@@ -114,6 +114,9 @@ pub struct SetupAttemptPaymentMethodDetails {
     /// It contains confirmation-specific information for the payment method.
     #[serde(rename = "type")]
     pub type_: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<SetupAttemptPaymentMethodDetailsUsBankAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -254,6 +257,9 @@ pub struct SetupAttemptPaymentMethodDetailsSofort {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_name: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsUsBankAccount {}
 
 /// The parameters for `SetupAttempt::list`.
 #[derive(Clone, Debug, Serialize)]

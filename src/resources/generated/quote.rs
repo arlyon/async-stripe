@@ -344,6 +344,12 @@ pub struct ListQuotes<'a> {
     /// The status of the quote.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<QuoteStatus>,
+
+    /// Provides a list of quotes that are associated with the specified test clock.
+    ///
+    /// The response will not include quotes with test clocks if this and the customer parameter is not set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<&'a str>,
 }
 
 impl<'a> ListQuotes<'a> {
@@ -355,6 +361,7 @@ impl<'a> ListQuotes<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
             status: Default::default(),
+            test_clock: Default::default(),
         }
     }
 }

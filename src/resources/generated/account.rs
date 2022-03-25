@@ -282,6 +282,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24_payments: Option<AccountCapabilitiesP24Payments>,
 
+    /// The status of the paynow payments capability of the account, or whether the account can directly process paynow charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow_payments: Option<AccountCapabilitiesPaynowPayments>,
+
     /// The status of the SEPA Direct Debits payments capability of the account, or whether the account can directly process SEPA Direct Debits charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<AccountCapabilitiesSepaDebitPayments>,
@@ -1164,6 +1168,9 @@ pub struct CreateAccountCapabilities {
     pub p24_payments: Option<CreateAccountCapabilitiesP24Payments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow_payments: Option<CreateAccountCapabilitiesPaynowPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<CreateAccountCapabilitiesSepaDebitPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1330,6 +1337,9 @@ pub struct UpdateAccountCapabilities {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24_payments: Option<UpdateAccountCapabilitiesP24Payments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow_payments: Option<UpdateAccountCapabilitiesPaynowPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<UpdateAccountCapabilitiesSepaDebitPayments>,
@@ -1538,6 +1548,12 @@ pub struct CreateAccountCapabilitiesOxxoPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesP24Payments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesPaynowPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -1763,6 +1779,12 @@ pub struct UpdateAccountCapabilitiesOxxoPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesP24Payments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesPaynowPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -2460,6 +2482,42 @@ impl std::fmt::Display for AccountCapabilitiesP24Payments {
     }
 }
 impl std::default::Default for AccountCapabilitiesP24Payments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `paynow_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesPaynowPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesPaynowPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesPaynowPayments::Active => "active",
+            AccountCapabilitiesPaynowPayments::Inactive => "inactive",
+            AccountCapabilitiesPaynowPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesPaynowPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesPaynowPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesPaynowPayments {
     fn default() -> Self {
         Self::Active
     }

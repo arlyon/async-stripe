@@ -99,6 +99,9 @@ pub struct PaymentMethod {
     pub p24: Option<PaymentMethodP24>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow: Option<PaymentMethodPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<PaymentMethodSepaDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -110,6 +113,9 @@ pub struct PaymentMethod {
     /// It contains additional information specific to the PaymentMethod type.
     #[serde(rename = "type")]
     pub type_: PaymentMethodType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<PaymentMethodUsBankAccount>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<PaymentMethodWechatPay>,
@@ -528,6 +534,9 @@ pub struct PaymentMethodP24 {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodSepaDebit {
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -561,6 +570,37 @@ pub struct PaymentMethodSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodUsBankAccount {
+    /// Account holder type: individual or company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_type: Option<PaymentMethodUsBankAccountAccountHolderType>,
+
+    /// Account type: checkings or savings.
+    ///
+    /// Defaults to checking if omitted.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_type: Option<PaymentMethodUsBankAccountAccountType>,
+
+    /// The name of the bank.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_name: Option<String>,
+
+    /// Uniquely identifies this particular bank account.
+    ///
+    /// You can use this attribute to check whether two bank accounts are the same.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<String>,
+
+    /// Last four digits of the bank account number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last4: Option<String>,
+
+    /// Routing number of the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub routing_number: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -686,6 +726,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<PaymentMethodId>,
 
+    /// If this is a `paynow` PaymentMethod, this hash contains details about the PayNow payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow: Option<CreatePaymentMethodPaynow>,
+
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreatePaymentMethodSepaDebit>,
@@ -701,6 +745,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<PaymentMethodTypeFilter>,
+
+    /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<CreatePaymentMethodUsBankAccount>,
 
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -733,9 +781,11 @@ impl<'a> CreatePaymentMethod<'a> {
             oxxo: Default::default(),
             p24: Default::default(),
             payment_method: Default::default(),
+            paynow: Default::default(),
             sepa_debit: Default::default(),
             sofort: Default::default(),
             type_: Default::default(),
+            us_bank_account: Default::default(),
             wechat_pay: Default::default(),
         }
     }
@@ -814,6 +864,10 @@ pub struct UpdatePaymentMethod<'a> {
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<UpdatePaymentMethodUsBankAccount>,
 }
 
 impl<'a> UpdatePaymentMethod<'a> {
@@ -823,6 +877,7 @@ impl<'a> UpdatePaymentMethod<'a> {
             card: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
+            us_bank_account: Default::default(),
         }
     }
 }
@@ -911,6 +966,9 @@ pub struct CreatePaymentMethodP24 {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodSepaDebit {
     pub iban: String,
 }
@@ -921,7 +979,28 @@ pub struct CreatePaymentMethodSofort {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_type: Option<CreatePaymentMethodUsBankAccountAccountHolderType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_number: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_type: Option<CreatePaymentMethodUsBankAccountAccountType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub routing_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodWechatPay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_type: Option<UpdatePaymentMethodUsBankAccountAccountHolderType>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodKlarnaDob {
@@ -1281,6 +1360,74 @@ impl std::fmt::Display for CreatePaymentMethodSofortCountry {
 impl std::default::Default for CreatePaymentMethodSofortCountry {
     fn default() -> Self {
         Self::At
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentMethodUsBankAccount`'s `account_holder_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentMethodUsBankAccountAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl CreatePaymentMethodUsBankAccountAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentMethodUsBankAccountAccountHolderType::Company => "company",
+            CreatePaymentMethodUsBankAccountAccountHolderType::Individual => "individual",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentMethodUsBankAccountAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentMethodUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentMethodUsBankAccountAccountHolderType {
+    fn default() -> Self {
+        Self::Company
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentMethodUsBankAccount`'s `account_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentMethodUsBankAccountAccountType {
+    Checking,
+    Savings,
+}
+
+impl CreatePaymentMethodUsBankAccountAccountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentMethodUsBankAccountAccountType::Checking => "checking",
+            CreatePaymentMethodUsBankAccountAccountType::Savings => "savings",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentMethodUsBankAccountAccountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentMethodUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentMethodUsBankAccountAccountType {
+    fn default() -> Self {
+        Self::Checking
     }
 }
 
@@ -1680,8 +1827,10 @@ pub enum PaymentMethodType {
     Konbini,
     Oxxo,
     P24,
+    Paynow,
     SepaDebit,
     Sofort,
+    UsBankAccount,
     WechatPay,
 }
 
@@ -1707,8 +1856,10 @@ impl PaymentMethodType {
             PaymentMethodType::Konbini => "konbini",
             PaymentMethodType::Oxxo => "oxxo",
             PaymentMethodType::P24 => "p24",
+            PaymentMethodType::Paynow => "paynow",
             PaymentMethodType::SepaDebit => "sepa_debit",
             PaymentMethodType::Sofort => "sofort",
+            PaymentMethodType::UsBankAccount => "us_bank_account",
             PaymentMethodType::WechatPay => "wechat_pay",
         }
     }
@@ -1752,8 +1903,10 @@ pub enum PaymentMethodTypeFilter {
     Konbini,
     Oxxo,
     P24,
+    Paynow,
     SepaDebit,
     Sofort,
+    UsBankAccount,
     WechatPay,
 }
 
@@ -1777,8 +1930,10 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Konbini => "konbini",
             PaymentMethodTypeFilter::Oxxo => "oxxo",
             PaymentMethodTypeFilter::P24 => "p24",
+            PaymentMethodTypeFilter::Paynow => "paynow",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",
             PaymentMethodTypeFilter::Sofort => "sofort",
+            PaymentMethodTypeFilter::UsBankAccount => "us_bank_account",
             PaymentMethodTypeFilter::WechatPay => "wechat_pay",
         }
     }
@@ -1798,6 +1953,108 @@ impl std::fmt::Display for PaymentMethodTypeFilter {
 impl std::default::Default for PaymentMethodTypeFilter {
     fn default() -> Self {
         Self::AcssDebit
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodUsBankAccount`'s `account_holder_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodUsBankAccountAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl PaymentMethodUsBankAccountAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodUsBankAccountAccountHolderType::Company => "company",
+            PaymentMethodUsBankAccountAccountHolderType::Individual => "individual",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodUsBankAccountAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodUsBankAccountAccountHolderType {
+    fn default() -> Self {
+        Self::Company
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodUsBankAccount`'s `account_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodUsBankAccountAccountType {
+    Checking,
+    Savings,
+}
+
+impl PaymentMethodUsBankAccountAccountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodUsBankAccountAccountType::Checking => "checking",
+            PaymentMethodUsBankAccountAccountType::Savings => "savings",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodUsBankAccountAccountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodUsBankAccountAccountType {
+    fn default() -> Self {
+        Self::Checking
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentMethodUsBankAccount`'s `account_holder_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentMethodUsBankAccountAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl UpdatePaymentMethodUsBankAccountAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentMethodUsBankAccountAccountHolderType::Company => "company",
+            UpdatePaymentMethodUsBankAccountAccountHolderType::Individual => "individual",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    fn default() -> Self {
+        Self::Company
     }
 }
 
