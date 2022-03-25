@@ -26,7 +26,9 @@ jobs:
           args: openapi-install
       - name: verify
         id: verify
-        uses: actions-rs/cargo@v1
+        # currently waiting for https://github.com/actions-rs/cargo/pull/206
+        # so we use this in the mean time
+        uses: arlyon/cargo@v1.0.4
         with:
           command: make
           args: verify --loglevel error
