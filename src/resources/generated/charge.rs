@@ -89,6 +89,10 @@ pub struct Charge {
     /// Whether the charge has been disputed.
     pub disputed: bool,
 
+    /// ID of the balance transaction that describes the reversal of the balance on your account due to payment failure.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failure_balance_transaction: Option<Expandable<BalanceTransaction>>,
+
     /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/api#errors) for a list of codes).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_code: Option<String>,
@@ -405,6 +409,9 @@ pub struct PaymentMethodDetails {
     pub p24: Option<PaymentMethodDetailsP24>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow: Option<PaymentMethodDetailsPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<PaymentMethodDetailsSepaDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -418,6 +425,9 @@ pub struct PaymentMethodDetails {
     /// It contains information specific to the payment method.
     #[serde(rename = "type")]
     pub type_: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<PaymentMethodDetailsUsBankAccount>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat: Option<PaymentMethodDetailsWechat>,
@@ -1090,6 +1100,13 @@ pub struct PaymentMethodDetailsP24 {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsPaynow {
+    /// Reference number associated with this PayNow payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsSepaDebit {
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1163,6 +1180,37 @@ pub struct PaymentMethodDetailsSofort {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsStripeAccount {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsUsBankAccount {
+    /// Account holder type: individual or company.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_type: Option<PaymentMethodDetailsUsBankAccountAccountHolderType>,
+
+    /// Account type: checkings or savings.
+    ///
+    /// Defaults to checking if omitted.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_type: Option<PaymentMethodDetailsUsBankAccountAccountType>,
+
+    /// Name of the bank associated with the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_name: Option<String>,
+
+    /// Uniquely identifies this particular bank account.
+    ///
+    /// You can use this attribute to check whether two bank accounts are the same.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fingerprint: Option<String>,
+
+    /// Last four digits of the bank account number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub last4: Option<String>,
+
+    /// Routing number of the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub routing_number: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsWechat {}
@@ -2199,6 +2247,74 @@ impl std::fmt::Display for PaymentMethodDetailsSofortPreferredLanguage {
 impl std::default::Default for PaymentMethodDetailsSofortPreferredLanguage {
     fn default() -> Self {
         Self::De
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodDetailsUsBankAccount`'s `account_holder_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodDetailsUsBankAccountAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl PaymentMethodDetailsUsBankAccountAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodDetailsUsBankAccountAccountHolderType::Company => "company",
+            PaymentMethodDetailsUsBankAccountAccountHolderType::Individual => "individual",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodDetailsUsBankAccountAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodDetailsUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodDetailsUsBankAccountAccountHolderType {
+    fn default() -> Self {
+        Self::Company
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodDetailsUsBankAccount`'s `account_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodDetailsUsBankAccountAccountType {
+    Checking,
+    Savings,
+}
+
+impl PaymentMethodDetailsUsBankAccountAccountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodDetailsUsBankAccountAccountType::Checking => "checking",
+            PaymentMethodDetailsUsBankAccountAccountType::Savings => "savings",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodDetailsUsBankAccountAccountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodDetailsUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodDetailsUsBankAccountAccountType {
+    fn default() -> Self {
+        Self::Checking
     }
 }
 
