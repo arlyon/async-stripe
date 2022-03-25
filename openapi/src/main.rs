@@ -56,16 +56,17 @@ fn main() -> Result<()> {
     let meta = Metadata::from_spec(&spec);
     let url_finder = UrlFinder::new().context("couldn't initialize url finder")?;
 
-    let crate_state = CrateGenerator { crate_name: "stripe".to_string() };
-
     meta.write_placeholders(&out_path);
 
+    let v: Vec<_> =
+        meta.get_crates().into_iter().map(|mut c| c.write(&out_path, &meta, &url_finder)).collect();
+
     // write files and get those files referenced
-    let shared_objects = meta
-        .get_files()
-        .into_iter()
-        .flat_map(|mut f| f.write(&out_path, &meta, &crate_state, &url_finder))
-        .flatten();
+    // let shared_objects = meta
+    //     .get_files()
+    //     .into_iter()
+    //     .flat_map(|mut f| f.write(&out_path, &meta, &crate_state, &url_finder))
+    //     .flatten();
 
     // println!(
     //     "{:#?}",
@@ -87,13 +88,13 @@ fn main() -> Result<()> {
     // println!("{:#?}", shared_objects.map(|f| f.name).collect::<HashSet<_>>());
 
     // write out the 'indirect' files
-    let extra_objects = shared_objects
-        .flat_map(|mut f| f.write(&out_path, &meta, &crate_state, &url_finder))
-        .flatten()
-        .collect::<BTreeSet<_>>();
+    // let extra_objects = shared_objects
+    //     .flat_map(|mut f| f.write(&out_path, &meta, &crate_state, &url_finder))
+    //     .flatten()
+    //     .collect::<BTreeSet<_>>();
 
     // todo(arlyon): understand the implications of this
-    log::warn!("leftover objects: {:#?}", extra_objects);
+    // log::warn!("leftover objects: {:#?}", extra_objects);
 
     Ok(())
 }

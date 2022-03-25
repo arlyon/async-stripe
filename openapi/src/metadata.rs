@@ -1,15 +1,17 @@
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::{BTreeMap, BTreeSet, HashMap},
     fs::write,
     path::Path,
 };
 
 use heck::{CamelCase, SnakeCase};
+use itertools::Itertools;
 use serde_json::Value;
 
 use crate::{
+    crate_generator::CrateGenerator,
     file_generator::FileGenerator,
-    mappings::{self, FieldMap, ObjectMap},
+    mappings::{self, crate_mappings, FieldMap, ObjectMap},
     metadata,
     types::CopyOrClone,
 };
@@ -24,6 +26,8 @@ pub struct Metadata<'a> {
     pub id_mappings: BTreeMap<String, (String, CopyOrClone)>,
 
     pub feature_groups: BTreeMap<&'a str, &'a str>,
+
+    pub crate_lookup: BTreeMap<&'a str, &'a str>,
 
     /// The set of schemas which should implement `Object`.
     /// These have both an `id` property and on `object` property.
@@ -99,6 +103,7 @@ impl<'a> Metadata<'a> {
             object_mappings,
             field_mappings,
             feature_groups,
+            crate_lookup: crate_mappings(),
         }
     }
 
@@ -145,6 +150,19 @@ impl<'a> Metadata<'a> {
             .iter()
             .filter(|o| !o.starts_with("deleted_"))
             .map(|o| FileGenerator::new(o.to_string()))
+            .collect()
+    }
+
+    pub fn get_crates(&self) -> Vec<CrateGenerator> {
+        self.objects
+            .iter()
+            .filter(|o| !o.starts_with("deleted_"))
+            .into_group_map_by(|object| self.crate_lookup.get(*object).unwrap_or(&"unknown"))
+            .into_iter()
+            .map(|(crate_name, objects)| CrateGenerator {
+                crate_name: crate_name.to_string(),
+                objects: objects.into_iter().map(|o| o.to_string()).collect(),
+            })
             .collect()
     }
 

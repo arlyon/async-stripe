@@ -1,7 +1,7 @@
 use std::{
     collections::{btree_map::Entry, BTreeMap, BTreeSet},
     fs::write,
-    path::Path,
+    path::{Path, PathBuf},
 };
 
 use anyhow::{anyhow, Result};
@@ -103,19 +103,23 @@ impl FileGenerator {
     }
 
     fn get_path(&self) -> String {
-        self.name.replace('.', "_").to_snake_case() + ".rs"
+        self.get_module() + ".rs"
+    }
+
+    fn get_module(&self) -> String {
+        self.name.replace('.', "_").to_snake_case()
     }
 
     /// Generates this file to the given Path, returning a set
     /// of FileGenerators for the files this one depends on.
-    #[tracing::instrument(skip(self, meta, url_finder))]
+    #[tracing::instrument(skip(self, meta, crate_state, url_finder))]
     pub fn write<T>(
         &mut self,
         base: T,
         meta: &Metadata,
         crate_state: &CrateGenerator,
         url_finder: &UrlFinder,
-    ) -> Result<BTreeSet<FileGenerator>>
+    ) -> Result<(String, BTreeSet<FileGenerator>)>
     where
         T: AsRef<Path> + std::fmt::Debug,
     {
@@ -124,12 +128,12 @@ impl FileGenerator {
         let pathbuf = base.as_ref().join(path);
         log::debug!("writing object {} to {:?}", self.name, pathbuf);
         write(&pathbuf, out.as_bytes())?;
-        Ok(additional)
+        Ok((self.get_module(), additional))
     }
 
     /// Generates this file, returning a set of FileGenerators
     /// for the files this one depends on.
-    #[tracing::instrument(skip(self, meta, url_finder))]
+    #[tracing::instrument(skip(self, meta, crate_state, url_finder))]
     pub fn generate(
         &mut self,
         meta: &Metadata,
