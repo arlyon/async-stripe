@@ -49,6 +49,8 @@ impl Imported {
         crate_state: &CrateGenerator,
         meta: &Metadata,
     ) -> String {
+        let a_orig = &crate_state.crate_name;
+
         let imports = [(&self.client, "client"), (&self.ids, "ids"), (&self.params, "params")];
         let imports = imports
             .iter()
@@ -65,18 +67,11 @@ impl Imported {
                     && !file_state.inferred.enums.contains_key(x)
                     && x != &meta.schema_to_rust_type(&file_state.name)
             })
-            .map(|(a, b)| (a, &"resources", b));
+            .map(|(crate_, type_)| (crate_, &"resources", type_));
 
         imports
             .chain(resources)
-            .map(|(a, b, c)| {
-                format!(
-                    "use {}::{}::{};",
-                    if a.eq(&crate_state.crate_name) { "crate" } else { a },
-                    b,
-                    c,
-                )
-            })
+            .map(|(a, b, c)| format!("use {}::{b}::{c};", if a.eq(&a_orig) { "crate" } else { a }))
             .join("\n")
     }
 }
