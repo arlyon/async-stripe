@@ -175,6 +175,7 @@ pub use {
         invoice_payment_method_options_bancontact::*,
         invoice_payment_method_options_card::*,
         invoice_payment_method_options_konbini::*,
+        invoice_payment_method_options_us_bank_account::*,
         invoiceitem::*,
         line_item::*,
         plan::*,

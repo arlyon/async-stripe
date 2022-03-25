@@ -7,7 +7,6 @@ use serde_derive::{Deserialize, Serialize};
 /// The resource representing a Stripe "invoice_payment_method_options_us_bank_account".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsUsBankAccount {
-
     /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method: Option<InvoicePaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -27,7 +26,9 @@ impl InvoicePaymentMethodOptionsUsBankAccountVerificationMethod {
         match self {
             InvoicePaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
             InvoicePaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
-            InvoicePaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
+            InvoicePaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }
