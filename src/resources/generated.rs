@@ -71,6 +71,7 @@ pub mod billing {
     pub mod invoice_payment_method_options_bancontact;
     pub mod invoice_payment_method_options_card;
     pub mod invoice_payment_method_options_konbini;
+    pub mod invoice_payment_method_options_us_bank_account;
     pub mod invoiceitem;
     pub mod line_item;
     pub mod plan;
