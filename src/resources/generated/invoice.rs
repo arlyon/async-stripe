@@ -10,8 +10,9 @@ use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQu
 use crate::resources::{
     Account, Address, ApiErrors, Charge, Currency, Customer, Discount, InvoiceLineItem,
     InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
-    InvoicePaymentMethodOptionsKonbini, PaymentIntent, PaymentMethod, PaymentSource, Quote,
-    Shipping, Subscription, TaxId, TaxRate, TestHelpersTestClock,
+    InvoicePaymentMethodOptionsKonbini, InvoicePaymentMethodOptionsUsBankAccount, PaymentIntent,
+    PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Invoice".
@@ -541,6 +542,10 @@ pub struct InvoicesPaymentMethodOptions {
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<InvoicePaymentMethodOptionsKonbini>,
+
+    /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<InvoicePaymentMethodOptionsUsBankAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -555,7 +560,7 @@ pub struct InvoicePaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesResourceInvoiceTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: TaxIdType,
 
@@ -584,7 +589,7 @@ pub struct InvoicesStatusTransitions {
 }
 
 /// The parameters for `Invoice::create`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateInvoice<'a> {
     /// The account tax IDs associated with the invoice.
     ///
@@ -622,7 +627,8 @@ pub struct CreateInvoice<'a> {
     pub custom_fields: Option<Vec<CreateInvoiceCustomFields>>,
 
     /// The ID of the customer who will be billed.
-    pub customer: CustomerId,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<CustomerId>,
 
     /// The number of days from when the invoice is created until it is due.
     ///
@@ -726,7 +732,7 @@ pub struct CreateInvoice<'a> {
 }
 
 impl<'a> CreateInvoice<'a> {
-    pub fn new(customer: CustomerId) -> Self {
+    pub fn new() -> Self {
         CreateInvoice {
             account_tax_ids: Default::default(),
             application_fee_amount: Default::default(),
@@ -734,7 +740,7 @@ impl<'a> CreateInvoice<'a> {
             automatic_tax: Default::default(),
             collection_method: Default::default(),
             custom_fields: Default::default(),
-            customer,
+            customer: Default::default(),
             days_until_due: Default::default(),
             default_payment_method: Default::default(),
             default_source: Default::default(),
@@ -877,6 +883,9 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsKonbini>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -906,6 +915,13 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsKonbini {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method:
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
@@ -1145,6 +1161,48 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
+            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
+            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
+
 /// An enum representing the possible values of an `CreateInvoicePaymentSettings`'s `payment_method_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1162,8 +1220,10 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Grabpay,
     Ideal,
     Konbini,
+    Paynow,
     SepaDebit,
     Sofort,
+    UsBankAccount,
     WechatPay,
 }
 
@@ -1185,8 +1245,10 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             CreateInvoicePaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Ideal => "ideal",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Konbini => "konbini",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::Paynow => "paynow",
             CreateInvoicePaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Sofort => "sofort",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::UsBankAccount => "us_bank_account",
             CreateInvoicePaymentSettingsPaymentMethodTypes::WechatPay => "wechat_pay",
         }
     }
@@ -1464,8 +1526,10 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     Grabpay,
     Ideal,
     Konbini,
+    Paynow,
     SepaDebit,
     Sofort,
+    UsBankAccount,
     WechatPay,
 }
 
@@ -1485,8 +1549,10 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             InvoicesPaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
             InvoicesPaymentSettingsPaymentMethodTypes::Ideal => "ideal",
             InvoicesPaymentSettingsPaymentMethodTypes::Konbini => "konbini",
+            InvoicesPaymentSettingsPaymentMethodTypes::Paynow => "paynow",
             InvoicesPaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
             InvoicesPaymentSettingsPaymentMethodTypes::Sofort => "sofort",
+            InvoicesPaymentSettingsPaymentMethodTypes::UsBankAccount => "us_bank_account",
             InvoicesPaymentSettingsPaymentMethodTypes::WechatPay => "wechat_pay",
         }
     }
@@ -1516,6 +1582,7 @@ pub enum TaxIdType {
     AeTrn,
     AuAbn,
     AuArn,
+    BgUic,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -1531,6 +1598,7 @@ pub enum TaxIdType {
     GbVat,
     GeVat,
     HkBr,
+    HuTin,
     IdNpwp,
     IlVat,
     InGst,
@@ -1550,6 +1618,7 @@ pub enum TaxIdType {
     SaVat,
     SgGst,
     SgUen,
+    SiTin,
     ThVat,
     TwVat,
     UaVat,
@@ -1564,6 +1633,7 @@ impl TaxIdType {
             TaxIdType::AeTrn => "ae_trn",
             TaxIdType::AuAbn => "au_abn",
             TaxIdType::AuArn => "au_arn",
+            TaxIdType::BgUic => "bg_uic",
             TaxIdType::BrCnpj => "br_cnpj",
             TaxIdType::BrCpf => "br_cpf",
             TaxIdType::CaBn => "ca_bn",
@@ -1579,6 +1649,7 @@ impl TaxIdType {
             TaxIdType::GbVat => "gb_vat",
             TaxIdType::GeVat => "ge_vat",
             TaxIdType::HkBr => "hk_br",
+            TaxIdType::HuTin => "hu_tin",
             TaxIdType::IdNpwp => "id_npwp",
             TaxIdType::IlVat => "il_vat",
             TaxIdType::InGst => "in_gst",
@@ -1598,6 +1669,7 @@ impl TaxIdType {
             TaxIdType::SaVat => "sa_vat",
             TaxIdType::SgGst => "sg_gst",
             TaxIdType::SgUen => "sg_uen",
+            TaxIdType::SiTin => "si_tin",
             TaxIdType::ThVat => "th_vat",
             TaxIdType::TwVat => "tw_vat",
             TaxIdType::UaVat => "ua_vat",

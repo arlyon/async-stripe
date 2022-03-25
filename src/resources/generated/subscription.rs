@@ -9,10 +9,10 @@ use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId}
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     CollectionMethod, Currency, Customer, Discount, Invoice, InvoicePaymentMethodOptionsAcssDebit,
-    InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsKonbini, PaymentMethod,
-    PaymentSource, Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
-    SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
-    TestHelpersTestClock,
+    InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsKonbini,
+    InvoicePaymentMethodOptionsUsBankAccount, PaymentMethod, PaymentSource, Scheduled, SetupIntent,
+    SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds,
+    SubscriptionSchedule, SubscriptionTransferData, TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Subscription".
@@ -317,6 +317,10 @@ pub struct SubscriptionsResourcePaymentMethodOptions {
     /// This sub-hash contains details about the Konbini payment method options to pass to invoices created by the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<InvoicePaymentMethodOptionsKonbini>,
+
+    /// This sub-hash contains details about the ACH direct debit payment method options to pass to invoices created by the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<InvoicePaymentMethodOptionsUsBankAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1043,6 +1047,9 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsKonbini>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1092,6 +1099,9 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsKonbini>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1125,6 +1135,14 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsKonbini {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<
+        CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod,
+    >,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceDataRecurring {
@@ -1165,6 +1183,14 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsKonbini {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<
+        UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod,
+    >,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
@@ -1413,6 +1439,48 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
+
 /// An enum representing the possible values of an `CreateSubscriptionPaymentSettings`'s `payment_method_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1430,8 +1498,10 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     Grabpay,
     Ideal,
     Konbini,
+    Paynow,
     SepaDebit,
     Sofort,
+    UsBankAccount,
     WechatPay,
 }
 
@@ -1453,8 +1523,10 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Ideal => "ideal",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Konbini => "konbini",
+            CreateSubscriptionPaymentSettingsPaymentMethodTypes::Paynow => "paynow",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Sofort => "sofort",
+            CreateSubscriptionPaymentSettingsPaymentMethodTypes::UsBankAccount => "us_bank_account",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::WechatPay => "wechat_pay",
         }
     }
@@ -1908,8 +1980,10 @@ pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     Grabpay,
     Ideal,
     Konbini,
+    Paynow,
     SepaDebit,
     Sofort,
+    UsBankAccount,
     WechatPay,
 }
 
@@ -1931,8 +2005,12 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Ideal => "ideal",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Konbini => "konbini",
+            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Paynow => "paynow",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Sofort => "sofort",
+            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::UsBankAccount => {
+                "us_bank_account"
+            }
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::WechatPay => "wechat_pay",
         }
     }
@@ -2196,6 +2274,48 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
+
 /// An enum representing the possible values of an `UpdateSubscriptionPaymentSettings`'s `payment_method_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2213,8 +2333,10 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     Grabpay,
     Ideal,
     Konbini,
+    Paynow,
     SepaDebit,
     Sofort,
+    UsBankAccount,
     WechatPay,
 }
 
@@ -2236,8 +2358,10 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Ideal => "ideal",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Konbini => "konbini",
+            UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Paynow => "paynow",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Sofort => "sofort",
+            UpdateSubscriptionPaymentSettingsPaymentMethodTypes::UsBankAccount => "us_bank_account",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::WechatPay => "wechat_pay",
         }
     }
