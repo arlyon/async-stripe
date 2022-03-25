@@ -4,8 +4,10 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::AppsSecretId;
-use crate::params::{Object, Timestamp};
+use crate::{
+    ids::AppsSecretId,
+    params::{Object, Timestamp},
+};
 
 /// The resource representing a Stripe "SecretServiceResourceSecret".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

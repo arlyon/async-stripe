@@ -4,18 +4,20 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
-use crate::params::{
-    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-};
-use crate::resources::{
-    Account, Address, ApiErrors, Application, Charge, Currency, Customer, Discount,
-    InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
-    InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
-    InvoicePaymentMethodOptionsUsBankAccount, InvoiceSettingRenderingOptions, PaymentIntent,
-    PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
-    TestHelpersTestClock,
+use crate::{
+    client::{Client, Response},
+    ids::{CustomerId, InvoiceId, SubscriptionId},
+    params::{
+        Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+    },
+    resources::{
+        Account, Address, ApiErrors, Application, Charge, Currency, Customer, Discount,
+        InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit,
+        InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsCustomerBalance,
+        InvoicePaymentMethodOptionsKonbini, InvoicePaymentMethodOptionsUsBankAccount,
+        InvoiceSettingRenderingOptions, PaymentIntent, PaymentMethod, PaymentSource, Quote,
+        Shipping, Subscription, TaxId, TaxRate, TestHelpersTestClock,
+    },
 };
 
 /// The resource representing a Stripe "Invoice".

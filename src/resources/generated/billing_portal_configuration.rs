@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::BillingPortalConfigurationId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::Application;
+use crate::{
+    ids::BillingPortalConfigurationId,
+    params::{Expandable, Metadata, Object, Timestamp},
+    resources::Application,
+};
 
 /// The resource representing a Stripe "PortalConfiguration".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

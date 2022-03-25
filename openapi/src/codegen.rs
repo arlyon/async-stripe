@@ -4,6 +4,7 @@ use heck::{CamelCase, SnakeCase};
 use serde_json::{json, Value};
 
 use crate::{
+    crate_generator::CrateGenerator,
     file_generator::FileGenerator,
     metadata::Metadata,
     types::{
@@ -107,69 +108,18 @@ pub fn gen_struct(
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_prelude(state: &FileGenerator, meta: &Metadata) -> String {
-    let name = state.name.clone();
-    let object = &name;
-
+pub fn gen_prelude(
+    file_state: &FileGenerator,
+    crate_state: &CrateGenerator,
+    meta: &Metadata,
+) -> String {
     let mut prelude = String::new();
     prelude.push_str("// ======================================\n");
     prelude.push_str("// This file was automatically generated.\n");
     prelude.push_str("// ======================================\n\n");
-    if !state.imported.config.is_empty() {
-        prelude.push_str("use crate::client::{");
-        for (n, (crate_, type_)) in state.imported.config.iter().enumerate() {
-            if n > 0 {
-                prelude.push_str(", ");
-            }
-            prelude.push_str(type_);
-        }
-        prelude.push_str("};\n");
-    }
-    if !state.imported.ids.is_empty() {
-        prelude.push_str("use crate::ids::{");
-        for (n, (crate_, type_)) in state.imported.ids.iter().enumerate() {
-            if n > 0 {
-                prelude.push_str(", ");
-            }
-            prelude.push_str(type_);
-        }
-        prelude.push_str("};\n");
-    }
-    if !state.imported.params.is_empty() {
-        prelude.push_str("use crate::params::{");
-        for (n, (crate_, type_)) in state.imported.params.iter().enumerate() {
-            if n > 0 {
-                prelude.push_str(", ");
-            }
-            prelude.push_str(type_);
-        }
-        prelude.push_str("};\n");
-    }
-    if !state.imported.resources.is_empty() {
-        prelude.push_str("use crate::resources::{");
-        for (n, (crate_, type_)) in state
-            .imported
-            .resources
-            .iter()
-            .filter(|&(_, x)| {
-                state.generated.schemas.keys().all(|sch| x != &meta.schema_to_rust_type(sch))
-                    && !state.inferred.parameters.contains_key(x)
-                    && !state.inferred.structs.contains_key(x)
-                    && !state.inferred.unions.contains_key(x)
-                    && !state.inferred.enums.contains_key(x)
-                    && x != &meta.schema_to_rust_type(object)
-            })
-            .enumerate()
-        {
-            if n > 0 {
-                prelude.push_str(", ");
-            }
-            prelude.push_str(type_);
-        }
-        prelude.push_str("};\n");
-    }
-    prelude.push_str("use serde::{Deserialize, Serialize};\n");
-    prelude.push('\n');
+    prelude.push_str("use serde::{Deserialize, Serialize};\n\n");
+    prelude.push_str(&file_state.imported.gen_imports(file_state, crate_state, meta));
+    prelude.push_str("\n\n");
     prelude
 }
 
@@ -367,7 +317,7 @@ pub fn gen_inferred_params(
                         "IdOrCreate<'a, CreateProduct<'a>>".into(),
                         required,
                     ));
-                    state.imported.params.insert(("stripe", "IdOrCreate"));
+                    state.imported.params.insert(("stripe", "IdOrCreate".to_string()));
                     state.imported.resources.insert(("stripe", "CreateProduct".to_owned()));
                     if required {
                         out.push_str("    pub product: IdOrCreate<'a, CreateProduct<'a>>,\n");
@@ -381,7 +331,7 @@ pub fn gen_inferred_params(
                 "metadata" => {
                     print_doc(out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
-                    state.imported.params.insert(("stripe", "Metadata"));
+                    state.imported.params.insert(("stripe", "Metadata".to_string()));
                     if required {
                         out.push_str("    pub metadata: Metadata,\n");
                     } else {
@@ -392,7 +342,7 @@ pub fn gen_inferred_params(
                 "expand" => {
                     print_doc(out);
                     initializers.push(("expand".into(), "&'a [&'a str]".into(), false));
-                    state.imported.params.insert(("stripe", "Expand"));
+                    state.imported.params.insert(("stripe", "Expand".to_string()));
                     out.push_str("    #[serde(skip_serializing_if = \"Expand::is_empty\")]\n");
                     out.push_str("    pub expand: &'a [&'a str],\n");
                 }
@@ -443,7 +393,7 @@ pub fn gen_inferred_params(
                         match use_path {
                             "" | "String" => {}
                             "Metadata" => {
-                                state.imported.params.insert(("stripe", "Metadata"));
+                                state.imported.params.insert(("stripe", "Metadata".to_string()));
                             }
                             path if path.ends_with("Id") && path != "TaxId" => {
                                 state.imported.ids.insert(("stripe", path.into()));
@@ -550,8 +500,8 @@ pub fn gen_inferred_params(
                             "RangeQuery<Timestamp>".into(),
                             required,
                         ));
-                        state.imported.params.insert(("stripe", "RangeQuery"));
-                        state.imported.params.insert(("stripe", "Timestamp"));
+                        state.imported.params.insert(("stripe", "RangeQuery".to_string()));
+                        state.imported.params.insert(("stripe", "Timestamp".to_string()));
                         if required {
                             out.push_str("    pub ");
                             out.push_str(param_rename);
@@ -716,7 +666,7 @@ pub fn gen_inferred_params(
 
         // we implement paginate on lists that have an Id
         if let ("list", Some(_)) = (params.method.as_str(), &id_type) {
-            state.use_params.insert("Paginable");
+            state.imported.params.insert(("stripe", "Paginable".into()));
 
             out.push_str("impl Paginable for ");
             out.push_str(&params.rust_type);
@@ -1151,7 +1101,7 @@ fn gen_field_type(
         match use_path {
             "" | "String" => (),
             "Metadata" => {
-                state.imported.params.insert(("stripe", "Metadata"));
+                state.imported.params.insert(("stripe", "Metadata".to_string()));
             }
             _ => {
                 state.imported.resources.insert(("stripe", use_path.into()));
@@ -1160,7 +1110,7 @@ fn gen_field_type(
         return rust_type.into();
     }
     if field_name == "metadata" {
-        state.imported.params.insert(("stripe", "Metadata"));
+        state.imported.params.insert(("stripe", "Metadata".to_string()));
         return "Metadata".into();
     } else if (field_name == "currency" || field_name.ends_with("_currency"))
         && field["type"].as_str() == Some("string")
@@ -1172,7 +1122,7 @@ fn gen_field_type(
             return "Currency".into();
         }
     } else if field_name == "created" {
-        state.imported.params.insert(("stripe", "Timestamp"));
+        state.imported.params.insert(("stripe", "Timestamp".to_string()));
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Timestamp>".into();
         } else {
@@ -1223,7 +1173,7 @@ fn gen_field_type(
         }
         Some("object") => {
             if field["properties"]["object"]["enum"][0].as_str() == Some("list") {
-                state.imported.params.insert(("stripe", "List"));
+                state.imported.params.insert(("stripe", "List".to_string()));
                 let element = &field["properties"]["data"]["items"];
                 let element_field_name = if field_name.ends_with('s') {
                     field_name[0..field_name.len() - 1].into()
@@ -1314,11 +1264,11 @@ fn gen_field_type(
                         false,
                         shared_objects,
                     );
-                    state.imported.params.insert(("stripe", "Expandable"));
+                    state.imported.params.insert(("stripe", "Expandable".to_string()));
                     format!("Expandable<{}>", ty_)
                 } else if any_of[0]["title"].as_str() == Some("range_query_specs") {
-                    state.imported.params.insert(("stripe", "RangeQuery"));
-                    state.imported.params.insert(("stripe", "Timestamp"));
+                    state.imported.params.insert(("stripe", "RangeQuery".to_string()));
+                    state.imported.params.insert(("stripe", "Timestamp".to_string()));
                     "RangeQuery<Timestamp>".into()
                 } else {
                     log::trace!("object: {}, field_name: {}", object, field_name);
@@ -1384,28 +1334,28 @@ pub fn gen_field_rust_type(
         match use_path {
             "" | "String" => (),
             "Metadata" => {
-                state.use_params.insert("Metadata");
+                state.imported.params.insert(("stripe", "Metadata".into()));
             }
             _ => {
-                state.use_resources.insert(use_path.into());
+                state.imported.resources.insert(("stripe", use_path.into()));
             }
         }
         return rust_type.into();
     }
     if field_name == "metadata" {
-        state.use_params.insert("Metadata");
+        state.imported.params.insert(("stripe", "Metadata".into()));
         return "Metadata".into();
     } else if (field_name == "currency" || field_name.ends_with("_currency"))
         && field["type"].as_str() == Some("string")
     {
-        state.use_resources.insert("Currency".into());
+        state.imported.resources.insert(("stripe", "Currency".into()));
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Currency>".into();
         } else {
             return "Currency".into();
         }
     } else if field_name == "created" {
-        state.use_params.insert("Timestamp");
+        state.imported.params.insert(("stripe", "Timestamp".into()));
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Timestamp>".into();
         } else {
@@ -1479,7 +1429,7 @@ pub fn gen_impl_requests(
                     parameters: get_request["parameters"].clone(),
                 };
                 state.inferred.parameters.insert(params_name.to_snake_case(), params);
-                state.imported.params.insert(("stripe", "List"));
+                state.imported.params.insert(("stripe", "List".to_string()));
 
                 let mut out = String::new();
                 out.push('\n');
@@ -1515,7 +1465,7 @@ pub fn gen_impl_requests(
                     out.push_str("    pub fn retrieve(client: &Client, id: &");
                     out.push_str(id_type);
                     if let Some(param) = expand_param {
-                        state.imported.params.insert(("stripe", "Expand"));
+                        state.imported.params.insert(("stripe", "Expand".to_string()));
                         assert_eq!(param["in"].as_str(), Some("query"));
                         out.push_str(", expand: &[&str]) -> Response<");
                         out.push_str(&rust_struct);
@@ -1703,7 +1653,7 @@ pub fn gen_impl_requests(
                     None => continue,
                 };
                 if let Some(id_type) = &object_id {
-                    state.imported.params.insert(("stripe", "Deleted"));
+                    state.imported.params.insert(("stripe", "Deleted".to_string()));
                     assert_eq!(id_param["required"].as_bool(), Some(true));
                     assert_eq!(id_param["style"].as_str(), Some("simple"));
 
@@ -1731,8 +1681,8 @@ pub fn gen_impl_requests(
         None
     } else {
         // Add imports
-        state.imported.config.insert(("stripe", "Client"));
-        state.imported.config.insert(("stripe", "Response"));
+        state.imported.client.insert(("stripe", "Client".to_string()));
+        state.imported.client.insert(("stripe", "Response".to_string()));
 
         // Output the impl block
         Some(format!(

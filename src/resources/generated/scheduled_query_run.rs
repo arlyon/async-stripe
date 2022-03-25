@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::ScheduledQueryRunId;
-use crate::params::{Object, Timestamp};
-use crate::resources::File;
+use crate::{
+    ids::ScheduledQueryRunId,
+    params::{Object, Timestamp},
+    resources::File,
+};
 
 /// The resource representing a Stripe "ScheduledQueryRun".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

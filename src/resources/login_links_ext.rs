@@ -1,9 +1,11 @@
 use serde::Serialize;
 
-use crate::client::{Client, Response};
-use crate::params::Expand;
-use crate::resources::LoginLink;
-use crate::AccountId;
+use crate::{
+    client::{Client, Response},
+    params::Expand,
+    resources::LoginLink,
+    AccountId,
+};
 
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateLoginLink<'a> {

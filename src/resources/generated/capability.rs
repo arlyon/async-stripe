@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::CapabilityId;
-use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::Account;
+use crate::{
+    ids::CapabilityId,
+    params::{Expandable, Object, Timestamp},
+    resources::Account,
+};
 
 /// The resource representing a Stripe "AccountCapability".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

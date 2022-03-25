@@ -4,8 +4,10 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::UsageRecordId;
-use crate::params::{Object, Timestamp};
+use crate::{
+    ids::UsageRecordId,
+    params::{Object, Timestamp},
+};
 
 /// The resource representing a Stripe "UsageRecord".
 ///

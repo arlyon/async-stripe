@@ -4,8 +4,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::ApplicationId;
-use crate::params::Object;
+use crate::{ids::ApplicationId, params::Object};
 
 /// The resource representing a Stripe "Application".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

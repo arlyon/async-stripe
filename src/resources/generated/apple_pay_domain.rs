@@ -4,8 +4,10 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::ApplePayDomainId;
-use crate::params::{Object, Timestamp};
+use crate::{
+    ids::ApplePayDomainId,
+    params::{Object, Timestamp},
+};
 
 /// The resource representing a Stripe "ApplePayDomain".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

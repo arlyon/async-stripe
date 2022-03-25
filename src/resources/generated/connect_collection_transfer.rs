@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::ConnectCollectionTransferId;
-use crate::params::{Expandable, Object};
-use crate::resources::{Account, Currency};
+use crate::{
+    ids::ConnectCollectionTransferId,
+    params::{Expandable, Object},
+    resources::{Account, Currency},
+};
 
 /// The resource representing a Stripe "ConnectCollectionTransfer".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

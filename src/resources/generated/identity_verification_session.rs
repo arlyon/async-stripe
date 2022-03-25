@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::IdentityVerificationSessionId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Address, IdentityVerificationReport};
+use crate::{
+    ids::IdentityVerificationSessionId,
+    params::{Expandable, Metadata, Object, Timestamp},
+    resources::{Address, IdentityVerificationReport},
+};
 
 /// The resource representing a Stripe "GelatoVerificationSession".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

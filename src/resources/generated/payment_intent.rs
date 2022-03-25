@@ -4,18 +4,21 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, ApiErrors, Application, Charge, Currency, Customer, Invoice,
-    LinkedAccountOptionsUsBankAccount, PaymentIntentOffSession,
-    PaymentIntentPaymentMethodOptionsAcssDebit, PaymentIntentPaymentMethodOptionsLink,
-    PaymentIntentPaymentMethodOptionsSepaDebit, PaymentMethod,
-    PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsAlipay,
-    PaymentMethodOptionsBancontact, PaymentMethodOptionsCustomerBalance, PaymentMethodOptionsIdeal,
-    PaymentMethodOptionsKlarna, PaymentMethodOptionsOxxo, PaymentMethodOptionsP24,
-    PaymentMethodOptionsSofort, PaymentMethodOptionsWechatPay, Review, Shipping,
+use crate::{
+    client::{Client, Response},
+    ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId},
+    params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp},
+    resources::{
+        Account, ApiErrors, Application, Charge, Currency, Customer, Invoice,
+        LinkedAccountOptionsUsBankAccount, PaymentIntentOffSession,
+        PaymentIntentPaymentMethodOptionsAcssDebit, PaymentIntentPaymentMethodOptionsLink,
+        PaymentIntentPaymentMethodOptionsSepaDebit, PaymentMethod,
+        PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsAlipay,
+        PaymentMethodOptionsBancontact, PaymentMethodOptionsCustomerBalance,
+        PaymentMethodOptionsIdeal, PaymentMethodOptionsKlarna, PaymentMethodOptionsOxxo,
+        PaymentMethodOptionsP24, PaymentMethodOptionsSofort, PaymentMethodOptionsWechatPay, Review,
+        Shipping,
+    },
 };
 
 /// The resource representing a Stripe "PaymentIntent".

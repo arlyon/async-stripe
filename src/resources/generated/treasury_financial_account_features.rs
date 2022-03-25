@@ -4,8 +4,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::params::Object;
-use crate::resources::TreasuryFinancialAccountsResourceToggleSettings;
+use crate::{params::Object, resources::TreasuryFinancialAccountsResourceToggleSettings};
 
 /// The resource representing a Stripe "TreasuryFinancialAccountsResourceFinancialAccountFeatures".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

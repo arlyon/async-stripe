@@ -4,13 +4,15 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{CustomerId, SubscriptionScheduleId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{
-    Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled,
-    Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds,
-    SubscriptionTransferData, TaxRate, TestHelpersTestClock,
+use crate::{
+    client::{Client, Response},
+    ids::{CustomerId, SubscriptionScheduleId},
+    params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp},
+    resources::{
+        Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled,
+        Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds,
+        SubscriptionTransferData, TaxRate, TestHelpersTestClock,
+    },
 };
 
 /// The resource representing a Stripe "SubscriptionSchedule".

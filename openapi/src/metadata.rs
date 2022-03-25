@@ -1,6 +1,8 @@
-use std::collections::{BTreeMap, BTreeSet};
-use std::fs::write;
-use std::path::Path;
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    fs::write,
+    path::Path,
+};
 
 use heck::{CamelCase, SnakeCase};
 use serde_json::Value;

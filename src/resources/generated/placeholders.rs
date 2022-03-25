@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::ids::*;
-use crate::params::Object;
+use crate::{ids::*, params::Object};
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

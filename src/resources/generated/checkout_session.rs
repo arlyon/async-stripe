@@ -4,13 +4,16 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
-use crate::resources::{
-    Address, CheckoutSessionItem, Currency, Customer, Discount, LinkedAccountOptionsUsBankAccount,
-    PaymentIntent, PaymentLink, PaymentMethodOptionsCustomerBalanceEuBankAccount, SetupIntent,
-    Shipping, ShippingRate, Subscription, TaxRate,
+use crate::{
+    client::{Client, Response},
+    ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId},
+    params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp},
+    resources::{
+        Address, CheckoutSessionItem, Currency, Customer, Discount,
+        LinkedAccountOptionsUsBankAccount, PaymentIntent, PaymentLink,
+        PaymentMethodOptionsCustomerBalanceEuBankAccount, SetupIntent, Shipping, ShippingRate,
+        Subscription, TaxRate,
+    },
 };
 
 /// The resource representing a Stripe "Session".

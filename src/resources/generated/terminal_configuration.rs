@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::TerminalConfigurationId;
-use crate::params::{Expandable, Object};
-use crate::resources::File;
+use crate::{
+    ids::TerminalConfigurationId,
+    params::{Expandable, Object},
+    resources::File,
+};
 
 /// The resource representing a Stripe "TerminalConfigurationConfiguration".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

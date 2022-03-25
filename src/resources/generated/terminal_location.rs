@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::TerminalLocationId;
-use crate::params::{Metadata, Object};
-use crate::resources::Address;
+use crate::{
+    ids::TerminalLocationId,
+    params::{Metadata, Object},
+    resources::Address,
+};
 
 /// The resource representing a Stripe "TerminalLocationLocation".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

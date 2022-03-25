@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::FileId;
-use crate::params::{Expand, List, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::FileLink;
+use crate::{
+    client::{Client, Response},
+    ids::FileId,
+    params::{Expand, List, Object, Paginable, RangeQuery, Timestamp},
+    resources::FileLink,
+};
 
 /// The resource representing a Stripe "File".
 ///

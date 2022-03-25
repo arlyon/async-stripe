@@ -3,9 +3,10 @@ use std::{cell::RefCell, sync::Arc, time::Duration};
 use http_types::Request;
 use serde::de::DeserializeOwned;
 
-use crate::client::base::tokio::TokioClient;
-use crate::client::request_strategy::RequestStrategy;
-use crate::error::StripeError;
+use crate::{
+    client::{base::tokio::TokioClient, request_strategy::RequestStrategy},
+    error::StripeError,
+};
 
 /// The delay after which the blocking `Client` will assume the request has failed.
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);

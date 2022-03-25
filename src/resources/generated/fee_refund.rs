@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::ApplicationFeeRefundId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{ApplicationFee, BalanceTransaction, Currency};
+use crate::{
+    ids::ApplicationFeeRefundId,
+    params::{Expandable, Metadata, Object, Timestamp},
+    resources::{ApplicationFee, BalanceTransaction, Currency},
+};
 
 /// The resource representing a Stripe "FeeRefund".
 ///

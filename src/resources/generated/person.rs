@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::PersonId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Address, File};
+use crate::{
+    ids::PersonId,
+    params::{Expandable, Metadata, Object, Timestamp},
+    resources::{Address, File},
+};
 
 /// The resource representing a Stripe "Person".
 ///

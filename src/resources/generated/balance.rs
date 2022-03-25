@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{PayoutId, SourceId};
-use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
-use crate::resources::Currency;
+use crate::{
+    client::{Client, Response},
+    ids::{PayoutId, SourceId},
+    params::{Expand, List, Object, RangeQuery, Timestamp},
+    resources::Currency,
+};
 
 /// The resource representing a Stripe "Balance".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

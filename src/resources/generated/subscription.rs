@@ -4,18 +4,21 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
-use crate::params::{
-    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-};
-use crate::resources::{
-    Application, CollectionMethod, Currency, Customer, Discount, Invoice,
-    InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
-    InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
-    InvoicePaymentMethodOptionsUsBankAccount, PaymentMethod, PaymentSource, Scheduled, SetupIntent,
-    SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds,
-    SubscriptionSchedule, SubscriptionTransferData, TaxRate, TestHelpersTestClock,
+use crate::{
+    client::{Client, Response},
+    ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId},
+    params::{
+        Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+    },
+    resources::{
+        Application, CollectionMethod, Currency, Customer, Discount, Invoice,
+        InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
+        InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
+        InvoicePaymentMethodOptionsUsBankAccount, PaymentMethod, PaymentSource, Scheduled,
+        SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
+        SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
+        TestHelpersTestClock,
+    },
 };
 
 /// The resource representing a Stripe "Subscription".

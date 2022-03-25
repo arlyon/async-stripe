@@ -4,12 +4,14 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{CreditNoteId, CustomerId, InvoiceId, RefundId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
-use crate::resources::{
-    CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice, Refund,
-    TaxRate,
+use crate::{
+    client::{Client, Response},
+    ids::{CreditNoteId, CustomerId, InvoiceId, RefundId},
+    params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp},
+    resources::{
+        CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice,
+        Refund, TaxRate,
+    },
 };
 
 /// The resource representing a Stripe "CreditNote".

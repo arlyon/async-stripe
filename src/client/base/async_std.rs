@@ -1,12 +1,16 @@
-use std::future::{self, Future};
-use std::pin::Pin;
+use std::{
+    future::{self, Future},
+    pin::Pin,
+};
 
 use async_std::task::sleep;
 use http_types::{Request, StatusCode};
 use serde::de::DeserializeOwned;
 
-use crate::client::request_strategy::{Outcome, RequestStrategy};
-use crate::error::{ErrorResponse, StripeError};
+use crate::{
+    client::request_strategy::{Outcome, RequestStrategy},
+    error::{ErrorResponse, StripeError},
+};
 
 pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
 

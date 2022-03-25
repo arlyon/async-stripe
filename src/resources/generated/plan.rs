@@ -4,13 +4,15 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::PlanId;
-use crate::params::{
-    Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery,
-    Timestamp,
+use crate::{
+    client::{Client, Response},
+    ids::PlanId,
+    params::{
+        Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery,
+        Timestamp,
+    },
+    resources::{CreateProduct, Currency, Product},
 };
-use crate::resources::{CreateProduct, Currency, Product};
 
 /// The resource representing a Stripe "Plan".
 ///

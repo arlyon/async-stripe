@@ -6,23 +6,18 @@ use std::{
 
 use anyhow::{anyhow, Result};
 use heck::SnakeCase;
+use itertools::Itertools;
 
 use crate::{
-    codegen::gen_emitted_structs,
-    codegen::gen_enums,
-    codegen::gen_generated_schemas,
-    codegen::gen_impl_requests,
-    codegen::gen_inferred_params,
-    codegen::gen_objects,
-    codegen::gen_prelude,
-    codegen::gen_struct,
-    codegen::gen_unions,
+    codegen::{
+        gen_emitted_structs, gen_enums, gen_generated_schemas, gen_impl_requests,
+        gen_inferred_params, gen_objects, gen_prelude, gen_struct, gen_unions,
+    },
+    crate_generator::CrateGenerator,
     metadata::Metadata,
-    types::InferredEnum,
-    types::InferredObject,
-    types::InferredStruct,
-    types::InferredUnion,
-    types::{CopyOrClone, InferredParams},
+    types::{
+        CopyOrClone, InferredEnum, InferredObject, InferredParams, InferredStruct, InferredUnion,
+    },
     url_finder::UrlFinder,
 };
 
@@ -40,11 +35,50 @@ pub struct Imported {
     /// The ids that must be imported in this file.
     pub ids: BTreeSet<(&'static str, String)>,
     /// The config that must be imported in this file.
-    pub config: BTreeSet<(&'static str, &'static str)>,
+    pub client: BTreeSet<(&'static str, String)>,
     /// The params that must be imported in this file.
-    pub params: BTreeSet<(&'static str, &'static str)>,
+    pub params: BTreeSet<(&'static str, String)>,
     /// The resources that must be imported in this file.
     pub resources: BTreeSet<(&'static str, String)>,
+}
+
+impl Imported {
+    pub fn gen_imports(
+        &self,
+        file_state: &FileGenerator,
+        crate_state: &CrateGenerator,
+        meta: &Metadata,
+    ) -> String {
+        let imports = [(&self.client, "client"), (&self.ids, "ids"), (&self.params, "params")];
+        let imports = imports
+            .iter()
+            .flat_map(|(set, name)| set.iter().map(move |(crate_, type_)| (crate_, name, type_)));
+
+        let resources = self
+            .resources
+            .iter()
+            .filter(|&(_, x)| {
+                file_state.generated.schemas.keys().all(|sch| x != &meta.schema_to_rust_type(sch))
+                    && !file_state.inferred.parameters.contains_key(x)
+                    && !file_state.inferred.structs.contains_key(x)
+                    && !file_state.inferred.unions.contains_key(x)
+                    && !file_state.inferred.enums.contains_key(x)
+                    && x != &meta.schema_to_rust_type(&file_state.name)
+            })
+            .map(|(a, b)| (a, &"resources", b));
+
+        imports
+            .chain(resources)
+            .map(|(a, b, c)| {
+                format!(
+                    "use {}::{}::{};",
+                    if a.eq(&crate_state.crate_name) { "crate" } else { a },
+                    b,
+                    c,
+                )
+            })
+            .join("\n")
+    }
 }
 
 #[derive(Default, Debug)]
@@ -84,13 +118,14 @@ impl FileGenerator {
         &mut self,
         base: T,
         meta: &Metadata,
+        crate_state: &CrateGenerator,
         url_finder: &UrlFinder,
     ) -> Result<BTreeSet<FileGenerator>>
     where
         T: AsRef<Path> + std::fmt::Debug,
     {
         let path = self.get_path();
-        let (out, additional) = self.generate(meta, url_finder)?;
+        let (out, additional) = self.generate(meta, crate_state, url_finder)?;
         let pathbuf = base.as_ref().join(path);
         log::debug!("writing object {} to {:?}", self.name, pathbuf);
         write(&pathbuf, out.as_bytes())?;
@@ -103,6 +138,7 @@ impl FileGenerator {
     pub fn generate(
         &mut self,
         meta: &Metadata,
+        crate_state: &CrateGenerator,
         url_finder: &UrlFinder,
     ) -> Result<(String, BTreeSet<FileGenerator>)> {
         let mut out = String::new();
@@ -133,7 +169,7 @@ impl FileGenerator {
 
         gen_objects(&mut out, self);
 
-        Ok((gen_prelude(self, meta) + &out, shared_objects))
+        Ok((gen_prelude(self, crate_state, meta) + &out, shared_objects))
     }
 
     fn gen_object_trait(
@@ -150,7 +186,7 @@ impl FileGenerator {
             out.push('\n');
             out.push_str(&impls);
         }
-        self.imported.params.insert(("stripe", "Object"));
+        self.imported.params.insert(("stripe", "Object".to_string()));
         out.push('\n');
         out.push_str("impl Object for ");
         out.push_str(&struct_name);

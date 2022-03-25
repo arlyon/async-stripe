@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{ChargeId, DisputeId, PaymentIntentId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, Charge, Currency, File, PaymentIntent};
+use crate::{
+    client::{Client, Response},
+    ids::{ChargeId, DisputeId, PaymentIntentId},
+    params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp},
+    resources::{BalanceTransaction, Charge, Currency, File, PaymentIntent},
+};
 
 /// The resource representing a Stripe "Dispute".
 ///

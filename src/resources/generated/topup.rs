@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::TopupId;
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, Currency, Source};
+use crate::{
+    client::{Client, Response},
+    ids::TopupId,
+    params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp},
+    resources::{BalanceTransaction, Currency, Source},
+};
 
 /// The resource representing a Stripe "Topup".
 ///

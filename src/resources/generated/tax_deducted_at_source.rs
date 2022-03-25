@@ -4,8 +4,10 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::TaxDeductedAtSourceId;
-use crate::params::{Object, Timestamp};
+use crate::{
+    ids::TaxDeductedAtSourceId,
+    params::{Object, Timestamp},
+};
 
 /// The resource representing a Stripe "TaxDeductedAtSource".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

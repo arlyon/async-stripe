@@ -1,7 +1,9 @@
-use crate::client::{Client, Response};
-use crate::ids::{PayoutDestinationId, PayoutId};
-use crate::params::Object;
-use crate::resources::{Payout, PayoutDestinationUnion};
+use crate::{
+    client::{Client, Response},
+    ids::{PayoutDestinationId, PayoutId},
+    params::Object,
+    resources::{Payout, PayoutDestinationUnion},
+};
 
 impl Payout {
     /// Cancels the payout.

@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::AlipayAccountId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Currency, Customer};
+use crate::{
+    ids::AlipayAccountId,
+    params::{Expandable, Metadata, Object, Timestamp},
+    resources::{Currency, Customer},
+};
 
 /// The resource representing a Stripe "AlipayAccount".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

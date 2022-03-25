@@ -4,12 +4,14 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::PriceId;
-use crate::params::{
-    Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+use crate::{
+    client::{Client, Response},
+    ids::PriceId,
+    params::{
+        Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+    },
+    resources::{CreateProduct, Currency, CustomUnitAmount, Product, UpTo},
 };
-use crate::resources::{CreateProduct, Currency, CustomUnitAmount, Product, UpTo};
 
 /// The resource representing a Stripe "Price".
 ///

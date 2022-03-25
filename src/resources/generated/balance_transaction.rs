@@ -4,14 +4,16 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{BalanceTransactionId, PayoutId, SourceId};
-use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{
-    ApplicationFee, ApplicationFeeRefund, BalanceTransactionStatus, Charge,
-    ConnectCollectionTransfer, Currency, Dispute, FeeType, IssuingAuthorization, IssuingDispute,
-    IssuingTransaction, Payout, PlatformTaxFee, Refund, ReserveTransaction, TaxDeductedAtSource,
-    Topup, Transfer, TransferReversal,
+use crate::{
+    client::{Client, Response},
+    ids::{BalanceTransactionId, PayoutId, SourceId},
+    params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp},
+    resources::{
+        ApplicationFee, ApplicationFeeRefund, BalanceTransactionStatus, Charge,
+        ConnectCollectionTransfer, Currency, Dispute, FeeType, IssuingAuthorization,
+        IssuingDispute, IssuingTransaction, Payout, PlatformTaxFee, Refund, ReserveTransaction,
+        TaxDeductedAtSource, Topup, Transfer, TransferReversal,
+    },
 };
 
 /// The resource representing a Stripe "BalanceTransaction".

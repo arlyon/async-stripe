@@ -2,8 +2,7 @@ use std::fs;
 
 use anyhow::Context;
 use regex::Regex;
-use reqwest::blocking::Client;
-use reqwest::header::USER_AGENT;
+use reqwest::{blocking::Client, header::USER_AGENT};
 use serde_json::Value;
 
 const VERSION_FILE_PATH: &str = "version.json";

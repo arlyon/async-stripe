@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::CountrySpecId;
-use crate::params::{Expand, List, Object, Paginable};
-use crate::resources::Currency;
+use crate::{
+    client::{Client, Response},
+    ids::CountrySpecId,
+    params::{Expand, List, Object, Paginable},
+    resources::Currency,
+};
 
 /// The resource representing a Stripe "CountrySpec".
 ///

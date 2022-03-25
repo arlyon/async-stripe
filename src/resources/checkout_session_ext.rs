@@ -1,7 +1,9 @@
-use crate::client::{Client, Response};
-use crate::ids::CheckoutSessionId;
-use crate::params::Expand;
-use crate::resources::CheckoutSession;
+use crate::{
+    client::{Client, Response},
+    ids::CheckoutSessionId,
+    params::Expand,
+    resources::CheckoutSession,
+};
 
 impl CheckoutSession {
     /// Retrieves a Session object.

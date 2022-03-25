@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::CustomerBalanceTransactionId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{CreditNote, Currency, Customer, Invoice};
+use crate::{
+    ids::CustomerBalanceTransactionId,
+    params::{Expandable, Metadata, Object, Timestamp},
+    resources::{CreditNote, Currency, Customer, Invoice},
+};
 
 /// The resource representing a Stripe "CustomerBalanceTransaction".
 ///

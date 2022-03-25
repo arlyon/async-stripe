@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::WebhookEndpointId;
-use crate::params::{Deleted, Expand, List, Metadata, Object, Paginable, Timestamp};
-use crate::resources::{ApiVersion, WebhookEndpointStatus};
+use crate::{
+    client::{Client, Response},
+    ids::WebhookEndpointId,
+    params::{Deleted, Expand, List, Metadata, Object, Paginable, Timestamp},
+    resources::{ApiVersion, WebhookEndpointStatus},
+};
 
 /// The resource representing a Stripe "NotificationWebhookEndpoint".
 ///

@@ -4,14 +4,16 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId};
-use crate::params::{
-    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-};
-use crate::resources::{
-    Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
-    TestHelpersTestClock,
+use crate::{
+    client::{Client, Response},
+    ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId},
+    params::{
+        Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+    },
+    resources::{
+        Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
+        TestHelpersTestClock,
+    },
 };
 
 /// The resource representing a Stripe "InvoiceItem".

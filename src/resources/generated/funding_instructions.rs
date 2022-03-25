@@ -4,8 +4,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::params::Object;
-use crate::resources::Currency;
+use crate::{params::Object, resources::Currency};
 
 /// The resource representing a Stripe "CustomerBalanceFundingInstructionsCustomerBalanceFundingInstructions".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

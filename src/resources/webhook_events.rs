@@ -5,9 +5,7 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
 
-use crate::error::WebhookError;
-use crate::ids::EventId;
-use crate::{resources::*, AccountId, Timestamp};
+use crate::{crate_generator::CrateGenerator, resources::*, AccountId, Timestamp};
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 pub enum EventType {

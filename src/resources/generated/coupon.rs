@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::CouponId;
-use crate::params::{Deleted, Expand, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::Currency;
+use crate::{
+    client::{Client, Response},
+    ids::CouponId,
+    params::{Deleted, Expand, List, Metadata, Object, Paginable, RangeQuery, Timestamp},
+    resources::Currency,
+};
 
 /// The resource representing a Stripe "Coupon".
 ///

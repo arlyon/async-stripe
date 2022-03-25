@@ -1,10 +1,10 @@
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{BankAccountId, CardId, CustomerId, PaymentSourceId};
-use crate::params::{Deleted, Expand, List};
-use crate::resources::{
-    BankAccount, Customer, PaymentMethod, PaymentSource, PaymentSourceParams, Source,
+use crate::{
+    client::{Client, Response},
+    ids::{BankAccountId, CardId, CustomerId, PaymentSourceId},
+    params::{Deleted, Expand, List},
+    resources::{BankAccount, Customer, PaymentMethod, PaymentSource, PaymentSourceParams, Source},
 };
 
 #[derive(Clone, Debug, Serialize, Eq, PartialEq)]

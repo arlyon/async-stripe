@@ -5,8 +5,7 @@
 //!
 //! This example shows how to create and list customers.
 
-use futures_util::StreamExt;
-use futures_util::TryStreamExt;
+use futures_util::{StreamExt, TryStreamExt};
 use stripe::{Client, CreateCustomer, Customer, ListCustomers};
 
 #[tokio::main]

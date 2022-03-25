@@ -4,12 +4,14 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::SkuId;
-use crate::params::{
-    Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, Timestamp,
+use crate::{
+    client::{Client, Response},
+    ids::SkuId,
+    params::{
+        Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, Timestamp,
+    },
+    resources::{CreateProduct, Currency, PackageDimensions, Product},
 };
-use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
 
 /// The resource representing a Stripe "Sku".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

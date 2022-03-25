@@ -4,17 +4,19 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{CustomerId, OrderId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
-use crate::resources::{
-    Account, Address, Application, CheckoutSessionItem, Currency, Customer, Discount,
-    PaymentIntent, PaymentIntentPaymentMethodOptionsAcssDebit,
-    PaymentIntentPaymentMethodOptionsLink, PaymentIntentPaymentMethodOptionsSepaDebit,
-    PaymentMethodOptionsAlipay, PaymentMethodOptionsBancontact,
-    PaymentMethodOptionsCustomerBalance, PaymentMethodOptionsIdeal, PaymentMethodOptionsKlarna,
-    PaymentMethodOptionsOxxo, PaymentMethodOptionsP24, PaymentMethodOptionsSofort,
-    PaymentMethodOptionsWechatPay, ShippingRate, TaxRate,
+use crate::{
+    client::{Client, Response},
+    ids::{CustomerId, OrderId},
+    params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp},
+    resources::{
+        Account, Address, Application, CheckoutSessionItem, Currency, Customer, Discount,
+        PaymentIntent, PaymentIntentPaymentMethodOptionsAcssDebit,
+        PaymentIntentPaymentMethodOptionsLink, PaymentIntentPaymentMethodOptionsSepaDebit,
+        PaymentMethodOptionsAlipay, PaymentMethodOptionsBancontact,
+        PaymentMethodOptionsCustomerBalance, PaymentMethodOptionsIdeal, PaymentMethodOptionsKlarna,
+        PaymentMethodOptionsOxxo, PaymentMethodOptionsP24, PaymentMethodOptionsSofort,
+        PaymentMethodOptionsWechatPay, ShippingRate, TaxRate,
+    },
 };
 
 /// The resource representing a Stripe "OrdersV2ResourceOrder".

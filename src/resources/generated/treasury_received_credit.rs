@@ -4,12 +4,14 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::TreasuryReceivedCreditId;
-use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{
-    Currency, Payout, TreasuryCreditReversal, TreasuryOutboundPayment,
-    TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
-    TreasuryTransaction,
+use crate::{
+    ids::TreasuryReceivedCreditId,
+    params::{Expandable, Object, Timestamp},
+    resources::{
+        Currency, Payout, TreasuryCreditReversal, TreasuryOutboundPayment,
+        TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+        TreasuryTransaction,
+    },
 };
 
 /// The resource representing a Stripe "TreasuryReceivedCreditsResourceReceivedCredit".

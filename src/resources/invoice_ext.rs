@@ -1,9 +1,11 @@
 use serde::Serialize;
 
-use crate::client::{Client, Response};
-use crate::ids::{CouponId, CustomerId, InvoiceId, PlanId, SubscriptionId, SubscriptionItemId};
-use crate::params::{Metadata, Timestamp};
-use crate::resources::{CollectionMethod, Invoice};
+use crate::{
+    client::{Client, Response},
+    ids::{CouponId, CustomerId, InvoiceId, PlanId, SubscriptionId, SubscriptionItemId},
+    params::{Metadata, Timestamp},
+    resources::{CollectionMethod, Invoice},
+};
 
 #[deprecated(since = "0.12.0")]
 pub type InvoiceCollectionMethod = CollectionMethod;

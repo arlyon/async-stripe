@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::MandateId;
-use crate::params::{Expand, Expandable, Object, Timestamp};
-use crate::resources::{Currency, MandateOptionsOffSessionDetailsBlik, PaymentMethod};
+use crate::{
+    client::{Client, Response},
+    ids::MandateId,
+    params::{Expand, Expandable, Object, Timestamp},
+    resources::{Currency, MandateOptionsOffSessionDetailsBlik, PaymentMethod},
+};
 
 /// The resource representing a Stripe "Mandate".
 ///

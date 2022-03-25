@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::IssuingSettlementId;
-use crate::params::{Metadata, Object, Timestamp};
-use crate::resources::Currency;
+use crate::{
+    ids::IssuingSettlementId,
+    params::{Metadata, Object, Timestamp},
+    resources::Currency,
+};
 
 /// The resource representing a Stripe "IssuingSettlement".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

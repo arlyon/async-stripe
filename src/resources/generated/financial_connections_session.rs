@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::FinancialConnectionsSessionId;
-use crate::params::{Expand, List, Object};
-use crate::resources::{BankConnectionsResourceAccountholder, FinancialConnectionsAccount};
+use crate::{
+    client::{Client, Response},
+    ids::FinancialConnectionsSessionId,
+    params::{Expand, List, Object},
+    resources::{BankConnectionsResourceAccountholder, FinancialConnectionsAccount},
+};
 
 /// The resource representing a Stripe "BankConnectionsResourceLinkAccountSession".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

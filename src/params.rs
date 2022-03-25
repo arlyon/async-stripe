@@ -1,15 +1,14 @@
 use std::collections::HashMap;
 
-use serde::de::DeserializeOwned;
-use serde::{Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
-use crate::error::StripeError;
-use crate::resources::ApiVersion;
 use crate::{
     client::{
         config::{err, ok},
         Client, Response,
     },
+    error::StripeError,
+    resources::ApiVersion,
     AccountId, ApplicationId,
 };
 
@@ -462,11 +461,9 @@ mod tests {
     #[cfg(feature = "async")]
     #[tokio::test]
     async fn list() {
-        use httpmock::Method::GET;
-        use httpmock::MockServer;
+        use httpmock::{Method::GET, MockServer};
 
-        use crate::Client;
-        use crate::{Customer, ListCustomers};
+        use crate::{Client, Customer, ListCustomers};
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;
@@ -531,11 +528,9 @@ mod tests {
     #[tokio::test]
     async fn stream() {
         use futures_util::StreamExt;
-        use httpmock::Method::GET;
-        use httpmock::MockServer;
+        use httpmock::{Method::GET, MockServer};
 
-        use crate::Client;
-        use crate::{Customer, ListCustomers};
+        use crate::{Client, Customer, ListCustomers};
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;

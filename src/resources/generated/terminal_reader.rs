@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::TerminalReaderId;
-use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Currency, PaymentIntent, SetupIntent, TerminalLocation};
+use crate::{
+    ids::TerminalReaderId,
+    params::{Expandable, Metadata, Object},
+    resources::{Currency, PaymentIntent, SetupIntent, TerminalLocation},
+};
 
 /// The resource representing a Stripe "TerminalReaderReader".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

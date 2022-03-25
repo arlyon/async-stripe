@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::TreasuryFinancialAccountId;
-use crate::params::{Metadata, Object, Timestamp};
-use crate::resources::TreasuryFinancialAccountFeatures;
+use crate::{
+    ids::TreasuryFinancialAccountId,
+    params::{Metadata, Object, Timestamp},
+    resources::TreasuryFinancialAccountFeatures,
+};
 
 /// The resource representing a Stripe "TreasuryFinancialAccountsResourceFinancialAccount".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

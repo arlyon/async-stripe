@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::ids::BalanceTransactionSourceId;
-use crate::params::Object;
-use crate::resources::BalanceTransactionSourceUnion;
+use crate::{
+    ids::BalanceTransactionSourceId, params::Object, resources::BalanceTransactionSourceUnion,
+};
 
 impl Object for BalanceTransactionSourceUnion {
     type Id = BalanceTransactionSourceId;

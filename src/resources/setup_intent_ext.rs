@@ -1,8 +1,10 @@
 use serde::Serialize;
 
-use crate::client::{Client, Response};
-use crate::resources::SetupIntent;
-use crate::SetupIntentId;
+use crate::{
+    client::{Client, Response},
+    resources::SetupIntent,
+    SetupIntentId,
+};
 
 #[derive(Clone, Debug, Serialize)]
 pub struct ConfirmSetupIntent {

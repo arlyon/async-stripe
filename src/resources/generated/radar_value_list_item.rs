@@ -4,8 +4,10 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::RadarValueListItemId;
-use crate::params::{Object, Timestamp};
+use crate::{
+    ids::RadarValueListItemId,
+    params::{Object, Timestamp},
+};
 
 /// The resource representing a Stripe "RadarListListItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

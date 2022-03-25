@@ -4,8 +4,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::PlatformTaxFeeId;
-use crate::params::Object;
+use crate::{ids::PlatformTaxFeeId, params::Object};
 
 /// The resource representing a Stripe "PlatformTax".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

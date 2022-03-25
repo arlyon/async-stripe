@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::TaxIdId;
-use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::Customer;
+use crate::{
+    ids::TaxIdId,
+    params::{Expandable, Object, Timestamp},
+    resources::Customer,
+};
 
 /// The resource representing a Stripe "tax_id".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

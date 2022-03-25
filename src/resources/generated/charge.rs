@@ -4,14 +4,16 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
-    ChargeSourceParams, Currency, Customer, Invoice, Mandate, PaymentIntent, PaymentMethod,
-    PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodDetailsCardPresent, RadarRadarOptions,
-    Refund, Review, Shipping, ThreeDSecureDetails, Transfer,
+use crate::{
+    client::{Client, Response},
+    ids::{ChargeId, CustomerId, PaymentIntentId},
+    params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp},
+    resources::{
+        Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
+        ChargeSourceParams, Currency, Customer, Invoice, Mandate, PaymentIntent, PaymentMethod,
+        PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodDetailsCardPresent,
+        RadarRadarOptions, Refund, Review, Shipping, ThreeDSecureDetails, Transfer,
+    },
 };
 
 /// The resource representing a Stripe "Charge".

@@ -4,12 +4,14 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{SetupAttemptId, SetupIntentId};
-use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, ApiErrors, Application, Customer, Mandate, PaymentMethod, SetupIntent,
-    ThreeDSecureDetails,
+use crate::{
+    client::{Client, Response},
+    ids::{SetupAttemptId, SetupIntentId},
+    params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp},
+    resources::{
+        Account, ApiErrors, Application, Customer, Mandate, PaymentMethod, SetupIntent,
+        ThreeDSecureDetails,
+    },
 };
 
 /// The resource representing a Stripe "PaymentFlowsSetupIntentSetupAttempt".

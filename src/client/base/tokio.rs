@@ -1,14 +1,17 @@
-use std::future::{self, Future};
-use std::pin::Pin;
+use std::{
+    future::{self, Future},
+    pin::Pin,
+};
 
 use http_types::{Request, StatusCode};
-use hyper::http;
-use hyper::{client::HttpConnector, Body};
+use hyper::{client::HttpConnector, http, Body};
 use serde::de::DeserializeOwned;
 use tokio::time::sleep;
 
-use crate::client::request_strategy::{Outcome, RequestStrategy};
-use crate::error::{ErrorResponse, StripeError};
+use crate::{
+    client::request_strategy::{Outcome, RequestStrategy},
+    error::{ErrorResponse, StripeError},
+};
 
 #[cfg(feature = "hyper-rustls")]
 mod connector {
@@ -162,10 +165,8 @@ mod tests {
     use httpmock::prelude::*;
     use hyper::{body::to_bytes, Body, Request as HyperRequest};
 
-    use super::convert_request;
-    use super::TokioClient;
-    use crate::client::request_strategy::RequestStrategy;
-    use crate::StripeError;
+    use super::{convert_request, TokioClient};
+    use crate::{client::request_strategy::RequestStrategy, StripeError};
 
     const TEST_URL: &str = "https://api.stripe.com/v1/";
 

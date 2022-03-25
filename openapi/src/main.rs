@@ -6,10 +6,13 @@ use std::{
 use anyhow::{Context, Result};
 use structopt::StructOpt;
 
-use crate::spec_fetch::fetch_spec;
-use crate::{metadata::Metadata, url_finder::UrlFinder};
+use crate::{
+    crate_generator::CrateGenerator, metadata::Metadata, spec_fetch::fetch_spec,
+    url_finder::UrlFinder,
+};
 
 mod codegen;
+mod crate_generator;
 mod file_generator;
 mod mappings;
 mod metadata;
@@ -53,13 +56,15 @@ fn main() -> Result<()> {
     let meta = Metadata::from_spec(&spec);
     let url_finder = UrlFinder::new().context("couldn't initialize url finder")?;
 
+    let crate_state = CrateGenerator { crate_name: "stripe".to_string() };
+
     meta.write_placeholders(&out_path);
 
     // write files and get those files referenced
     let shared_objects = meta
         .get_files()
         .into_iter()
-        .flat_map(|mut f| f.write(&out_path, &meta, &url_finder))
+        .flat_map(|mut f| f.write(&out_path, &meta, &crate_state, &url_finder))
         .flatten();
 
     // println!(
@@ -83,7 +88,7 @@ fn main() -> Result<()> {
 
     // write out the 'indirect' files
     let extra_objects = shared_objects
-        .flat_map(|mut f| f.write(&out_path, &meta, &url_finder))
+        .flat_map(|mut f| f.write(&out_path, &meta, &crate_state, &url_finder))
         .flatten()
         .collect::<BTreeSet<_>>();
 

@@ -4,10 +4,10 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::FinancialConnectionsAccountId;
-use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{
-    BankConnectionsResourceAccountholder, FinancialConnectionsAccountOwnership,
+use crate::{
+    ids::FinancialConnectionsAccountId,
+    params::{Expandable, Object, Timestamp},
+    resources::{BankConnectionsResourceAccountholder, FinancialConnectionsAccountOwnership},
 };
 
 /// The resource representing a Stripe "BankConnectionsResourceLinkedAccount".

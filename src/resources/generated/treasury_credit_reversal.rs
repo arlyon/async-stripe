@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::TreasuryCreditReversalId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Currency, TreasuryTransaction};
+use crate::{
+    ids::TreasuryCreditReversalId,
+    params::{Expandable, Metadata, Object, Timestamp},
+    resources::{Currency, TreasuryTransaction},
+};
 
 /// The resource representing a Stripe "TreasuryReceivedCreditsResourceCreditReversal".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

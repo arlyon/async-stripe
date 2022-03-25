@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::AccountId;
-use crate::params::{Expand, Object, Timestamp};
+use crate::{
+    client::{Client, Response},
+    ids::AccountId,
+    params::{Expand, Object, Timestamp},
+};
 
 /// The resource representing a Stripe "AccountLink".
 ///

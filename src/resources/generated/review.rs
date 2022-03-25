@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::ReviewId;
-use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{Charge, PaymentIntent, ReviewReason};
+use crate::{
+    client::{Client, Response},
+    ids::ReviewId,
+    params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp},
+    resources::{Charge, PaymentIntent, ReviewReason},
+};
 
 /// The resource representing a Stripe "RadarReview".
 ///

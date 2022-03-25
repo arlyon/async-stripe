@@ -4,10 +4,12 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::client::{Client, Response};
-use crate::ids::{BillingPortalSessionId, CustomerId};
-use crate::params::{Expand, Expandable, Object, Timestamp};
-use crate::resources::BillingPortalConfiguration;
+use crate::{
+    client::{Client, Response},
+    ids::{BillingPortalSessionId, CustomerId},
+    params::{Expand, Expandable, Object, Timestamp},
+    resources::BillingPortalConfiguration,
+};
 
 /// The resource representing a Stripe "PortalSession".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

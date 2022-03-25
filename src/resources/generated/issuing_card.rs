@@ -4,11 +4,13 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::IssuingCardId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
-    Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType,
-    IssuingCardType, IssuingCardholder, MerchantCategory,
+use crate::{
+    ids::IssuingCardId,
+    params::{Expandable, Metadata, Object, Timestamp},
+    resources::{
+        Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType,
+        IssuingCardType, IssuingCardholder, MerchantCategory,
+    },
 };
 
 /// The resource representing a Stripe "IssuingCard".

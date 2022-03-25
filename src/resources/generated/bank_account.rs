@@ -4,9 +4,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::BankAccountId;
-use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Account, BankAccountStatus, Currency, Customer};
+use crate::{
+    ids::BankAccountId,
+    params::{Expandable, Metadata, Object},
+    resources::{Account, BankAccountStatus, Currency, Customer},
+};
 
 /// The resource representing a Stripe "BankAccount".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

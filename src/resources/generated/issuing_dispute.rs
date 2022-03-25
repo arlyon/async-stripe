@@ -4,10 +4,10 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::IssuingDisputeId;
-use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
-    BalanceTransaction, Currency, File, IssuingDisputeStatus, IssuingTransaction,
+use crate::{
+    ids::IssuingDisputeId,
+    params::{Expandable, Metadata, Object, Timestamp},
+    resources::{BalanceTransaction, Currency, File, IssuingDisputeStatus, IssuingTransaction},
 };
 
 /// The resource representing a Stripe "IssuingDispute".
