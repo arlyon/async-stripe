@@ -192,6 +192,12 @@ pub struct SetupIntentNextActionVerifyWithMicrodeposits {
 
     /// The URL for the hosted verification page, which allows customers to verify their bank account.
     pub hosted_verification_url: String,
+
+    /// The type of the microdeposit sent to the customer.
+    ///
+    /// Used to distinguish between different verification methods.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub microdeposit_type: Option<SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -204,6 +210,9 @@ pub struct SetupIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<SetupIntentPaymentMethodOptionsSepaDebitUnion>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<SetupIntentPaymentMethodOptionsUsBankAccountUnion>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -329,7 +338,19 @@ pub struct SetupIntentPaymentMethodOptionsSepaDebit {
 pub struct SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct SetupIntentTypeSpecificPaymentMethodOptionsClient {}
+pub struct SetupIntentPaymentMethodOptionsUsBankAccount {
+    /// Bank account verification method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupIntentTypeSpecificPaymentMethodOptionsClient {
+    /// Bank account verification method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method:
+        Option<SetupIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod>,
+}
 
 /// The parameters for `SetupIntent::create`.
 #[derive(Clone, Debug, Serialize, Default)]
@@ -553,6 +574,9 @@ pub struct CreateSetupIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateSetupIntentPaymentMethodOptionsSepaDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<CreateSetupIntentPaymentMethodOptionsUsBankAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -572,6 +596,9 @@ pub struct UpdateSetupIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdateSetupIntentPaymentMethodOptionsSepaDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -619,6 +646,13 @@ pub struct CreateSetupIntentPaymentMethodOptionsSepaDebit {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method:
+        Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
@@ -645,6 +679,13 @@ pub struct UpdateSetupIntentPaymentMethodOptionsCard {
 pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method:
+        Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -788,6 +829,21 @@ pub enum SetupIntentPaymentMethodOptionsSepaDebitUnion {
 impl std::default::Default for SetupIntentPaymentMethodOptionsSepaDebitUnion {
     fn default() -> Self {
         Self::SetupIntentPaymentMethodOptionsSepaDebit(Default::default())
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum SetupIntentPaymentMethodOptionsUsBankAccountUnion {
+    SetupIntentPaymentMethodOptionsUsBankAccount(SetupIntentPaymentMethodOptionsUsBankAccount),
+    #[serde(rename = "SetupIntentTypeSpecificPaymentMethodOptionsClient")]
+    SetupIntentTypeSpecificPaymentMethodOptionsClient(
+        SetupIntentTypeSpecificPaymentMethodOptionsClient,
+    ),
+}
+impl std::default::Default for SetupIntentPaymentMethodOptionsUsBankAccountUnion {
+    fn default() -> Self {
+        Self::SetupIntentPaymentMethodOptionsUsBankAccount(Default::default())
     }
 }
 
@@ -1121,6 +1177,50 @@ impl std::default::Default for CreateSetupIntentPaymentMethodOptionsCardRequestT
     }
 }
 
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodOptionsUsBankAccount`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => {
+                "automatic"
+            }
+            CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => {
+                "instant"
+            }
+            CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
+
 /// An enum representing the possible values of an `SetupIntent`'s `cancellation_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1154,6 +1254,42 @@ impl std::fmt::Display for SetupIntentCancellationReason {
 impl std::default::Default for SetupIntentCancellationReason {
     fn default() -> Self {
         Self::Abandoned
+    }
+}
+
+/// An enum representing the possible values of an `SetupIntentNextActionVerifyWithMicrodeposits`'s `microdeposit_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
+    Amounts,
+    DescriptorCode,
+}
+
+impl SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType::Amounts => "amounts",
+            SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType::DescriptorCode => {
+                "descriptor_code"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
+    fn default() -> Self {
+        Self::Amounts
     }
 }
 
@@ -1459,6 +1595,46 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `SetupIntentPaymentMethodOptionsUsBankAccount`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => {
+                "automatic"
+            }
+            SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
+            SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
+
 /// An enum representing the possible values of an `SetupIntent`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1498,6 +1674,48 @@ impl std::fmt::Display for SetupIntentStatus {
 impl std::default::Default for SetupIntentStatus {
     fn default() -> Self {
         Self::Canceled
+    }
+}
+
+/// An enum representing the possible values of an `SetupIntentTypeSpecificPaymentMethodOptionsClient`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SetupIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl SetupIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SetupIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod::Automatic => {
+                "automatic"
+            }
+            SetupIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod::Instant => {
+                "instant"
+            }
+            SetupIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for SetupIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SetupIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SetupIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
+    fn default() -> Self {
+        Self::Automatic
     }
 }
 
@@ -1794,5 +2012,49 @@ impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsCardRequestThree
 impl std::default::Default for UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn default() -> Self {
         Self::Any
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodOptionsUsBankAccount`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => {
+                "automatic"
+            }
+            UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => {
+                "instant"
+            }
+            UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn default() -> Self {
+        Self::Automatic
     }
 }
