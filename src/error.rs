@@ -29,6 +29,13 @@ impl From<hyper::Error> for StripeError {
     }
 }
 
+#[cfg(feature = "reqwest")]
+impl From<reqwest::Error> for StripeError {
+    fn from(err: reqwest::Error) -> StripeError {
+        StripeError::ClientError(err.to_string())
+    }
+}
+
 impl From<http_types::Error> for StripeError {
     fn from(err: http_types::Error) -> StripeError {
         StripeError::ClientError(err.to_string())

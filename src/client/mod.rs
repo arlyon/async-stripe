@@ -10,6 +10,9 @@ mod base {
     ))]
     pub mod tokio;
 
+    #[cfg(feature = "runtime-wasm")]
+    pub mod reqwest;
+
     #[cfg(feature = "runtime-async-std-surf")]
     pub mod async_std;
 
@@ -27,6 +30,12 @@ pub(crate) mod config {
 pub(crate) mod config {
     pub(crate) use super::base::tokio::{err, ok};
     pub use super::base::tokio::{Response, TokioClient as BaseClient};
+}
+
+#[cfg(feature = "runtime-wasm")]
+pub(crate) mod config {
+    pub(crate) use super::base::reqwest::{err, ok};
+    pub use super::base::reqwest::{ReqwestClient as BaseClient, Response};
 }
 
 #[cfg(feature = "runtime-async-std-surf")]
