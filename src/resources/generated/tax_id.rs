@@ -36,7 +36,7 @@ pub struct TaxId {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub livemode: Option<bool>,
 
-    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `es_cif`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `th_vat`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
+    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `es_cif`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
     ///
     /// Note that some legacy tax IDs have type `unknown`.
     #[serde(rename = "type")]
@@ -83,6 +83,7 @@ pub enum TaxIdType {
     AeTrn,
     AuAbn,
     AuArn,
+    BgUic,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -98,6 +99,7 @@ pub enum TaxIdType {
     GbVat,
     GeVat,
     HkBr,
+    HuTin,
     IdNpwp,
     IlVat,
     InGst,
@@ -117,6 +119,7 @@ pub enum TaxIdType {
     SaVat,
     SgGst,
     SgUen,
+    SiTin,
     ThVat,
     TwVat,
     UaVat,
@@ -131,6 +134,7 @@ impl TaxIdType {
             TaxIdType::AeTrn => "ae_trn",
             TaxIdType::AuAbn => "au_abn",
             TaxIdType::AuArn => "au_arn",
+            TaxIdType::BgUic => "bg_uic",
             TaxIdType::BrCnpj => "br_cnpj",
             TaxIdType::BrCpf => "br_cpf",
             TaxIdType::CaBn => "ca_bn",
@@ -146,6 +150,7 @@ impl TaxIdType {
             TaxIdType::GbVat => "gb_vat",
             TaxIdType::GeVat => "ge_vat",
             TaxIdType::HkBr => "hk_br",
+            TaxIdType::HuTin => "hu_tin",
             TaxIdType::IdNpwp => "id_npwp",
             TaxIdType::IlVat => "il_vat",
             TaxIdType::InGst => "in_gst",
@@ -165,6 +170,7 @@ impl TaxIdType {
             TaxIdType::SaVat => "sa_vat",
             TaxIdType::SgGst => "sg_gst",
             TaxIdType::SgUen => "sg_uen",
+            TaxIdType::SiTin => "si_tin",
             TaxIdType::ThVat => "th_vat",
             TaxIdType::TwVat => "tw_vat",
             TaxIdType::UaVat => "ua_vat",

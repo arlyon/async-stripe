@@ -608,6 +608,16 @@ pub enum EventFilter {
     TaxRateCreated,
     #[serde(rename = "tax_rate.updated")]
     TaxRateUpdated,
+    #[serde(rename = "test_helpers.test_clock.advancing")]
+    TestHelpersTestClockAdvancing,
+    #[serde(rename = "test_helpers.test_clock.created")]
+    TestHelpersTestClockCreated,
+    #[serde(rename = "test_helpers.test_clock.deleted")]
+    TestHelpersTestClockDeleted,
+    #[serde(rename = "test_helpers.test_clock.internal_failure")]
+    TestHelpersTestClockInternalFailure,
+    #[serde(rename = "test_helpers.test_clock.ready")]
+    TestHelpersTestClockReady,
     #[serde(rename = "topup.canceled")]
     TopupCanceled,
     #[serde(rename = "topup.created")]
@@ -831,6 +841,13 @@ impl EventFilter {
             EventFilter::SubscriptionScheduleUpdated => "subscription_schedule.updated",
             EventFilter::TaxRateCreated => "tax_rate.created",
             EventFilter::TaxRateUpdated => "tax_rate.updated",
+            EventFilter::TestHelpersTestClockAdvancing => "test_helpers.test_clock.advancing",
+            EventFilter::TestHelpersTestClockCreated => "test_helpers.test_clock.created",
+            EventFilter::TestHelpersTestClockDeleted => "test_helpers.test_clock.deleted",
+            EventFilter::TestHelpersTestClockInternalFailure => {
+                "test_helpers.test_clock.internal_failure"
+            }
+            EventFilter::TestHelpersTestClockReady => "test_helpers.test_clock.ready",
             EventFilter::TopupCanceled => "topup.canceled",
             EventFilter::TopupCreated => "topup.created",
             EventFilter::TopupFailed => "topup.failed",

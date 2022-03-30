@@ -233,6 +233,9 @@ pub struct CheckoutSessionPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<CheckoutOxxoPaymentMethodOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<CheckoutUsBankAccountPaymentMethodOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -301,6 +304,13 @@ pub struct CheckoutOxxoPaymentMethodOptions {
     ///
     /// For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
     pub expires_after_days: u32,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CheckoutUsBankAccountPaymentMethodOptions {
+    /// Bank account verification method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -407,7 +417,7 @@ pub struct PaymentPagesCheckoutSessionShippingOption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
 
@@ -834,6 +844,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     pub oxxo: Option<CreateCheckoutSessionPaymentMethodOptionsOxxo>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccount>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<CreateCheckoutSessionPaymentMethodOptionsWechatPay>,
 }
 
@@ -992,6 +1005,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKonbini {
 pub struct CreateCheckoutSessionPaymentMethodOptionsOxxo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method:
+        Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1618,6 +1638,40 @@ impl std::default::Default for CheckoutSessionSubmitType {
     }
 }
 
+/// An enum representing the possible values of an `CheckoutUsBankAccountPaymentMethodOptions`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
+    Automatic,
+    Instant,
+}
+
+impl CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod::Automatic => "automatic",
+            CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod::Instant => "instant",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod {
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
+
 /// An enum representing the possible values of an `CreateCheckoutSessionConsentCollection`'s `promotions` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2058,6 +2112,48 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsUsBankAccount`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod {
+    Automatic,
+    Instant,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => {
+                "automatic"
+            }
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => {
+                "instant"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod
+{
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
+
 /// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsWechatPay`'s `client` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2115,8 +2211,10 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Konbini,
     Oxxo,
     P24,
+    Paynow,
     SepaDebit,
     Sofort,
+    UsBankAccount,
     WechatPay,
 }
 
@@ -2140,8 +2238,10 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             CreateCheckoutSessionPaymentMethodTypes::Konbini => "konbini",
             CreateCheckoutSessionPaymentMethodTypes::Oxxo => "oxxo",
             CreateCheckoutSessionPaymentMethodTypes::P24 => "p24",
+            CreateCheckoutSessionPaymentMethodTypes::Paynow => "paynow",
             CreateCheckoutSessionPaymentMethodTypes::SepaDebit => "sepa_debit",
             CreateCheckoutSessionPaymentMethodTypes::Sofort => "sofort",
+            CreateCheckoutSessionPaymentMethodTypes::UsBankAccount => "us_bank_account",
             CreateCheckoutSessionPaymentMethodTypes::WechatPay => "wechat_pay",
         }
     }
@@ -3961,6 +4061,7 @@ pub enum PaymentPagesCheckoutSessionTaxIdType {
     AeTrn,
     AuAbn,
     AuArn,
+    BgUic,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -3976,6 +4077,7 @@ pub enum PaymentPagesCheckoutSessionTaxIdType {
     GbVat,
     GeVat,
     HkBr,
+    HuTin,
     IdNpwp,
     IlVat,
     InGst,
@@ -3995,6 +4097,7 @@ pub enum PaymentPagesCheckoutSessionTaxIdType {
     SaVat,
     SgGst,
     SgUen,
+    SiTin,
     ThVat,
     TwVat,
     UaVat,
@@ -4009,6 +4112,7 @@ impl PaymentPagesCheckoutSessionTaxIdType {
             PaymentPagesCheckoutSessionTaxIdType::AeTrn => "ae_trn",
             PaymentPagesCheckoutSessionTaxIdType::AuAbn => "au_abn",
             PaymentPagesCheckoutSessionTaxIdType::AuArn => "au_arn",
+            PaymentPagesCheckoutSessionTaxIdType::BgUic => "bg_uic",
             PaymentPagesCheckoutSessionTaxIdType::BrCnpj => "br_cnpj",
             PaymentPagesCheckoutSessionTaxIdType::BrCpf => "br_cpf",
             PaymentPagesCheckoutSessionTaxIdType::CaBn => "ca_bn",
@@ -4024,6 +4128,7 @@ impl PaymentPagesCheckoutSessionTaxIdType {
             PaymentPagesCheckoutSessionTaxIdType::GbVat => "gb_vat",
             PaymentPagesCheckoutSessionTaxIdType::GeVat => "ge_vat",
             PaymentPagesCheckoutSessionTaxIdType::HkBr => "hk_br",
+            PaymentPagesCheckoutSessionTaxIdType::HuTin => "hu_tin",
             PaymentPagesCheckoutSessionTaxIdType::IdNpwp => "id_npwp",
             PaymentPagesCheckoutSessionTaxIdType::IlVat => "il_vat",
             PaymentPagesCheckoutSessionTaxIdType::InGst => "in_gst",
@@ -4043,6 +4148,7 @@ impl PaymentPagesCheckoutSessionTaxIdType {
             PaymentPagesCheckoutSessionTaxIdType::SaVat => "sa_vat",
             PaymentPagesCheckoutSessionTaxIdType::SgGst => "sg_gst",
             PaymentPagesCheckoutSessionTaxIdType::SgUen => "sg_uen",
+            PaymentPagesCheckoutSessionTaxIdType::SiTin => "si_tin",
             PaymentPagesCheckoutSessionTaxIdType::ThVat => "th_vat",
             PaymentPagesCheckoutSessionTaxIdType::TwVat => "tw_vat",
             PaymentPagesCheckoutSessionTaxIdType::UaVat => "ua_vat",

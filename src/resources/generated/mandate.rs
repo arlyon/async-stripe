@@ -103,6 +103,9 @@ pub struct MandatePaymentMethodDetails {
     /// It contains mandate information specific to the payment method.
     #[serde(rename = "type")]
     pub type_: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<MandateUsBankAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -168,6 +171,9 @@ pub struct MandateSingleUse {
     /// On a single use mandate, the currency of the payment.
     pub currency: Currency,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct MandateUsBankAccount {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OfflineAcceptance {}
