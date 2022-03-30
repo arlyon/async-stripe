@@ -266,6 +266,43 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn nice_serde_error() {
+        use serde::Deserialize;
+
+        #[derive(Debug, Deserialize)]
+        struct DataType {
+            id: String,
+            name: String,
+        }
+
+        let client = TokioClient::new();
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        let mock = server.mock(|when, then| {
+            when.method(GET).path("/v1/odd_data");
+            then.status(200).body(
+                "{
+                \"id\": \"test\",
+                \"name\": 10
+              }
+              ",
+            );
+        });
+
+        let req = Request::get(Url::parse(&server.url("/v1/odd_data")).unwrap());
+        let res = client.execute::<DataType>(req, &RequestStrategy::Retry(3)).await;
+
+        mock.assert_hits_async(1).await;
+
+        match res {
+            Err(StripeError::JSONSerialize(x)) => println!("{:?}", x),
+            _ => panic!("Expected stripe error {:?}", res),
+        }
+    }
+
+    #[tokio::test]
     async fn retry_header() {
         let client = TokioClient::new();
 
