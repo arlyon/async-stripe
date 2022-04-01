@@ -9,10 +9,11 @@ use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId}
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     CollectionMethod, Currency, Customer, Discount, Invoice, InvoicePaymentMethodOptionsAcssDebit,
-    InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsKonbini,
-    InvoicePaymentMethodOptionsUsBankAccount, PaymentMethod, PaymentSource, Scheduled, SetupIntent,
-    SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds,
-    SubscriptionSchedule, SubscriptionTransferData, TaxRate, TestHelpersTestClock,
+    InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsCustomerBalance,
+    InvoicePaymentMethodOptionsKonbini, InvoicePaymentMethodOptionsUsBankAccount, PaymentMethod,
+    PaymentSource, Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
+    SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Subscription".
@@ -313,6 +314,10 @@ pub struct SubscriptionsResourcePaymentMethodOptions {
     /// This sub-hash contains details about the Card payment method options to pass to invoices created by the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<SubscriptionPaymentMethodOptionsCard>,
+
+    /// This sub-hash contains details about the Bank transfer payment method options to pass to invoices created by the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<InvoicePaymentMethodOptionsCustomerBalance>,
 
     /// This sub-hash contains details about the Konbini payment method options to pass to invoices created by the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -659,6 +664,12 @@ pub struct ListSubscriptions<'a> {
     /// If no value is supplied, all subscriptions that have not been canceled are returned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<SubscriptionStatusFilter>,
+
+    /// Filter for subscriptions that are associated with the specified test clock.
+    ///
+    /// The response will not include subscriptions with test clocks if this and the customer parameter is not set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<&'a str>,
 }
 
 impl<'a> ListSubscriptions<'a> {
@@ -675,6 +686,7 @@ impl<'a> ListSubscriptions<'a> {
             price: Default::default(),
             starting_after: Default::default(),
             status: Default::default(),
+            test_clock: Default::default(),
         }
     }
 }
@@ -1046,6 +1058,10 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     pub card: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance:
+        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalance>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsKonbini>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1098,6 +1114,10 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
     pub card: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance:
+        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalance>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsKonbini>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1131,6 +1151,16 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer:
+        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding_type: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1182,6 +1212,16 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer:
+        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding_type: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsKonbini {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1214,6 +1254,17 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptio
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type: Option<
@@ -1232,6 +1283,29 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptio
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer
+{
+    pub country: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer
+{
+    pub country: String,
 }
 
 /// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
@@ -1493,6 +1567,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    CustomerBalance,
     Fpx,
     Giropay,
     Grabpay,
@@ -1518,6 +1593,9 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Card => "card",
+            CreateSubscriptionPaymentSettingsPaymentMethodTypes::CustomerBalance => {
+                "customer_balance"
+            }
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Fpx => "fpx",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Giropay => "giropay",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
@@ -1975,6 +2053,7 @@ pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    CustomerBalance,
     Fpx,
     Giropay,
     Grabpay,
@@ -2000,6 +2079,9 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Card => "card",
+            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::CustomerBalance => {
+                "customer_balance"
+            }
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Fpx => "fpx",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Giropay => "giropay",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
@@ -2328,6 +2410,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    CustomerBalance,
     Fpx,
     Giropay,
     Grabpay,
@@ -2353,6 +2436,9 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Card => "card",
+            UpdateSubscriptionPaymentSettingsPaymentMethodTypes::CustomerBalance => {
+                "customer_balance"
+            }
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Fpx => "fpx",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Giropay => "giropay",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",

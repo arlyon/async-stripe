@@ -472,6 +472,8 @@ pub enum EventFilter {
     PaymentIntentCanceled,
     #[serde(rename = "payment_intent.created")]
     PaymentIntentCreated,
+    #[serde(rename = "payment_intent.partially_funded")]
+    PaymentIntentPartiallyFunded,
     #[serde(rename = "payment_intent.payment_failed")]
     PaymentIntentPaymentFailed,
     #[serde(rename = "payment_intent.processing")]
@@ -608,6 +610,10 @@ pub enum EventFilter {
     TaxRateCreated,
     #[serde(rename = "tax_rate.updated")]
     TaxRateUpdated,
+    #[serde(rename = "terminal.reader.action_failed")]
+    TerminalReaderActionFailed,
+    #[serde(rename = "terminal.reader.action_succeeded")]
+    TerminalReaderActionSucceeded,
     #[serde(rename = "test_helpers.test_clock.advancing")]
     TestHelpersTestClockAdvancing,
     #[serde(rename = "test_helpers.test_clock.created")]
@@ -771,6 +777,7 @@ impl EventFilter {
             }
             EventFilter::PaymentIntentCanceled => "payment_intent.canceled",
             EventFilter::PaymentIntentCreated => "payment_intent.created",
+            EventFilter::PaymentIntentPartiallyFunded => "payment_intent.partially_funded",
             EventFilter::PaymentIntentPaymentFailed => "payment_intent.payment_failed",
             EventFilter::PaymentIntentProcessing => "payment_intent.processing",
             EventFilter::PaymentIntentRequiresAction => "payment_intent.requires_action",
@@ -841,6 +848,8 @@ impl EventFilter {
             EventFilter::SubscriptionScheduleUpdated => "subscription_schedule.updated",
             EventFilter::TaxRateCreated => "tax_rate.created",
             EventFilter::TaxRateUpdated => "tax_rate.updated",
+            EventFilter::TerminalReaderActionFailed => "terminal.reader.action_failed",
+            EventFilter::TerminalReaderActionSucceeded => "terminal.reader.action_succeeded",
             EventFilter::TestHelpersTestClockAdvancing => "test_helpers.test_clock.advancing",
             EventFilter::TestHelpersTestClockCreated => "test_helpers.test_clock.created",
             EventFilter::TestHelpersTestClockDeleted => "test_helpers.test_clock.deleted",

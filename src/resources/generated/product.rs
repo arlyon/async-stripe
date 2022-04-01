@@ -52,8 +52,6 @@ pub struct Product {
     pub metadata: Metadata,
 
     /// The product's name, meant to be displayable to the customer.
-    ///
-    /// Whenever this product is sold via a subscription, name will show up on associated invoice line item descriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
@@ -176,8 +174,6 @@ pub struct CreateProduct<'a> {
     pub metadata: Option<Metadata>,
 
     /// The product's name, meant to be displayable to the customer.
-    ///
-    /// Whenever this product is sold via a subscription, name will show up on associated invoice line item descriptions.
     pub name: &'a str,
 
     /// The dimensions of this product for shipping purposes.
@@ -325,8 +321,6 @@ pub struct UpdateProduct<'a> {
     pub metadata: Option<Metadata>,
 
     /// The product's name, meant to be displayable to the customer.
-    ///
-    /// Whenever this product is sold via a subscription, name will show up on associated invoice line item descriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<&'a str>,
 

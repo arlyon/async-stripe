@@ -227,6 +227,8 @@ pub struct CreateInvoiceItem<'a> {
     pub metadata: Option<Metadata>,
 
     /// The period associated with this invoice item.
+    ///
+    /// When set to different values, the period will be rendered on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
 
@@ -404,6 +406,8 @@ pub struct UpdateInvoiceItem<'a> {
     pub metadata: Option<Metadata>,
 
     /// The period associated with this invoice item.
+    ///
+    /// When set to different values, the period will be rendered on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
 
