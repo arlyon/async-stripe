@@ -31,7 +31,15 @@ jobs:
         uses: arlyon/cargo@v1.0.4
         with:
           command: make
-          args: verify --loglevel error
+          args: verify
+      - name: duplicates
+        id: duplicates
+        # currently waiting for https://github.com/actions-rs/cargo/pull/206
+        # so we use this in the mean time
+        uses: arlyon/cargo@v1.0.4
+        with:
+          command: make
+          args: duplicates
       - name: create pull request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -45,6 +53,12 @@ jobs:
 
             ```
             ${{ steps.verify.outputs.stdout }}
+            ```
+
+            Here are the duplicate exports:
+
+            ```
+            ${{ steps.duplicates.outputs.stdout }}
             ```
           branch: openapi
           branch-suffix: timestamp
