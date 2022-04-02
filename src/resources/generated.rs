@@ -70,6 +70,7 @@ pub mod billing {
     pub mod invoice_payment_method_options_acss_debit;
     pub mod invoice_payment_method_options_bancontact;
     pub mod invoice_payment_method_options_card;
+    pub mod invoice_payment_method_options_customer_balance;
     pub mod invoice_payment_method_options_konbini;
     pub mod invoice_payment_method_options_us_bank_account;
     pub mod invoiceitem;
