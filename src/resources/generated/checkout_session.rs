@@ -8,8 +8,8 @@ use crate::client::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentLink, SetupIntent,
-    Shipping, ShippingRate, Subscription, TaxRate,
+    Address, CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentLink,
+    SetupIntent, Shipping, ShippingRate, Subscription, TaxRate,
 };
 
 /// The resource representing a Stripe "Session".
@@ -372,10 +372,22 @@ pub struct PaymentPagesCheckoutSessionConsentCollection {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomerDetails {
+    /// The customer's address at the time of checkout.
+    ///
+    /// Note: This property is populated only for sessions on or after March 30, 2022.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<Address>,
+
     /// The email associated with the Customer, if one exists, on the Checkout Session at the time of checkout or at time of session expiry.
     /// Otherwise, if the customer has consented to promotional content, this value is the most recent valid email provided by the customer on the Checkout form.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
+
+    /// The customer's name at the time of checkout.
+    ///
+    /// Note: This property is populated only for sessions on or after March 30, 2022.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 
     /// The customer's phone number at the time of checkout.
     #[serde(skip_serializing_if = "Option::is_none")]

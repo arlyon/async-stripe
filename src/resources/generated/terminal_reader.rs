@@ -6,13 +6,17 @@ use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::TerminalReaderId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::TerminalLocation;
+use crate::resources::{Currency, PaymentIntent, SetupIntent, TerminalLocation};
 
 /// The resource representing a Stripe "TerminalReaderReader".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReader {
     /// Unique identifier for the object.
     pub id: TerminalReaderId,
+
+    /// The most recent action performed by the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub action: Option<TerminalReaderReaderResourceReaderAction>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -67,6 +71,95 @@ impl Object for TerminalReader {
     }
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceReaderAction {
+    /// Failure code, only set if status is `failed`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failure_code: Option<String>,
+
+    /// Detailed failure message, only set if status is `failed`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failure_message: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub process_payment_intent: Option<TerminalReaderReaderResourceProcessPaymentIntentAction>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub process_setup_intent: Option<TerminalReaderReaderResourceProcessSetupIntentAction>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub set_reader_display: Option<TerminalReaderReaderResourceSetReaderDisplayAction>,
+
+    /// Status of the action performed by the reader.
+    pub status: TerminalReaderReaderResourceReaderActionStatus,
+
+    /// Type of action performed by the reader.
+    #[serde(rename = "type")]
+    pub type_: TerminalReaderReaderResourceReaderActionType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceProcessPaymentIntentAction {
+    /// Most recent PaymentIntent processed by the reader.
+    pub payment_intent: Expandable<PaymentIntent>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub generated_card: Option<String>,
+
+    /// Most recent SetupIntent processed by the reader.
+    pub setup_intent: Expandable<SetupIntent>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceSetReaderDisplayAction {
+    /// Cart object to be displayed by the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cart: Option<TerminalReaderReaderResourceCart>,
+
+    /// Type of information to be displayed by the reader.
+    #[serde(rename = "type")]
+    pub type_: TerminalReaderReaderResourceSetReaderDisplayActionType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceCart {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
+
+    /// List of line items in the cart.
+    pub line_items: Vec<TerminalReaderReaderResourceLineItem>,
+
+    /// Tax amount for the entire cart.
+    ///
+    /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<i64>,
+
+    /// Total amount for the entire cart, including tax.
+    ///
+    /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    pub total: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceLineItem {
+    /// The amount of the line item.
+    ///
+    /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    pub amount: i64,
+
+    /// Description of the line item.
+    pub description: String,
+
+    /// The quantity of the line item.
+    pub quantity: u64,
+}
+
 /// An enum representing the possible values of an `TerminalReader`'s `device_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -105,5 +198,113 @@ impl std::fmt::Display for TerminalReaderDeviceType {
 impl std::default::Default for TerminalReaderDeviceType {
     fn default() -> Self {
         Self::BbposChipper2x
+    }
+}
+
+/// An enum representing the possible values of an `TerminalReaderReaderResourceReaderAction`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TerminalReaderReaderResourceReaderActionStatus {
+    Failed,
+    InProgress,
+    Succeeded,
+}
+
+impl TerminalReaderReaderResourceReaderActionStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TerminalReaderReaderResourceReaderActionStatus::Failed => "failed",
+            TerminalReaderReaderResourceReaderActionStatus::InProgress => "in_progress",
+            TerminalReaderReaderResourceReaderActionStatus::Succeeded => "succeeded",
+        }
+    }
+}
+
+impl AsRef<str> for TerminalReaderReaderResourceReaderActionStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TerminalReaderReaderResourceReaderActionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TerminalReaderReaderResourceReaderActionStatus {
+    fn default() -> Self {
+        Self::Failed
+    }
+}
+
+/// An enum representing the possible values of an `TerminalReaderReaderResourceReaderAction`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TerminalReaderReaderResourceReaderActionType {
+    ProcessPaymentIntent,
+    ProcessSetupIntent,
+    SetReaderDisplay,
+}
+
+impl TerminalReaderReaderResourceReaderActionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TerminalReaderReaderResourceReaderActionType::ProcessPaymentIntent => {
+                "process_payment_intent"
+            }
+            TerminalReaderReaderResourceReaderActionType::ProcessSetupIntent => {
+                "process_setup_intent"
+            }
+            TerminalReaderReaderResourceReaderActionType::SetReaderDisplay => "set_reader_display",
+        }
+    }
+}
+
+impl AsRef<str> for TerminalReaderReaderResourceReaderActionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TerminalReaderReaderResourceReaderActionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TerminalReaderReaderResourceReaderActionType {
+    fn default() -> Self {
+        Self::ProcessPaymentIntent
+    }
+}
+
+/// An enum representing the possible values of an `TerminalReaderReaderResourceSetReaderDisplayAction`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TerminalReaderReaderResourceSetReaderDisplayActionType {
+    Cart,
+}
+
+impl TerminalReaderReaderResourceSetReaderDisplayActionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TerminalReaderReaderResourceSetReaderDisplayActionType::Cart => "cart",
+        }
+    }
+}
+
+impl AsRef<str> for TerminalReaderReaderResourceSetReaderDisplayActionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TerminalReaderReaderResourceSetReaderDisplayActionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TerminalReaderReaderResourceSetReaderDisplayActionType {
+    fn default() -> Self {
+        Self::Cart
     }
 }

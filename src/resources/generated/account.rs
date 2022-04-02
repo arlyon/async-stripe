@@ -45,7 +45,7 @@ pub struct Account {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
-    /// Time at which the object was created.
+    /// Time at which the account was connected.
     ///
     /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -222,6 +222,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact_payments: Option<AccountCapabilitiesBancontactPayments>,
 
+    /// The status of the customer_balance payments capability of the account, or whether the account can directly process customer_balance charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer_payments: Option<AccountCapabilitiesBankTransferPayments>,
+
     /// The status of the boleto payments capability of the account, or whether the account can directly process boleto charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto_payments: Option<AccountCapabilitiesBoletoPayments>,
@@ -305,6 +309,10 @@ pub struct AccountCapabilities {
     /// The status of the transfers capability of the account, or whether your platform can transfer funds to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfers: Option<CapabilityStatus>,
+
+    /// The status of the US bank account ACH payments capability of the account, or whether the account can directly process US bank account charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account_ach_payments: Option<AccountCapabilitiesUsBankAccountAchPayments>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1123,6 +1131,9 @@ pub struct CreateAccountCapabilities {
     pub bancontact_payments: Option<CreateAccountCapabilitiesBancontactPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer_payments: Option<CreateAccountCapabilitiesBankTransferPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto_payments: Option<CreateAccountCapabilitiesBoletoPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1184,6 +1195,9 @@ pub struct CreateAccountCapabilities {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfers: Option<CreateAccountCapabilitiesTransfers>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account_ach_payments: Option<CreateAccountCapabilitiesUsBankAccountAchPayments>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1294,6 +1308,9 @@ pub struct UpdateAccountCapabilities {
     pub bancontact_payments: Option<UpdateAccountCapabilitiesBancontactPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer_payments: Option<UpdateAccountCapabilitiesBankTransferPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto_payments: Option<UpdateAccountCapabilitiesBoletoPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1355,6 +1372,9 @@ pub struct UpdateAccountCapabilities {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfers: Option<UpdateAccountCapabilitiesTransfers>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account_ach_payments: Option<UpdateAccountCapabilitiesUsBankAccountAchPayments>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1458,6 +1478,12 @@ pub struct CreateAccountCapabilitiesBacsDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesBancontactPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesBankTransferPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -1589,6 +1615,12 @@ pub struct CreateAccountCapabilitiesTransfers {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesUsBankAccountAchPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountDocumentsBankAccountOwnershipVerification {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
@@ -1689,6 +1721,12 @@ pub struct UpdateAccountCapabilitiesBacsDebitPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesBancontactPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesBankTransferPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -1815,6 +1853,12 @@ pub struct UpdateAccountCapabilitiesTaxReportingUs1099Misc {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesTransfers {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesUsBankAccountAchPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -2086,6 +2130,42 @@ impl std::fmt::Display for AccountCapabilitiesBancontactPayments {
     }
 }
 impl std::default::Default for AccountCapabilitiesBancontactPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `bank_transfer_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesBankTransferPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesBankTransferPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesBankTransferPayments::Active => "active",
+            AccountCapabilitiesBankTransferPayments::Inactive => "inactive",
+            AccountCapabilitiesBankTransferPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesBankTransferPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesBankTransferPayments {
     fn default() -> Self {
         Self::Active
     }
@@ -2590,6 +2670,42 @@ impl std::fmt::Display for AccountCapabilitiesSofortPayments {
     }
 }
 impl std::default::Default for AccountCapabilitiesSofortPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `us_bank_account_ach_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesUsBankAccountAchPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesUsBankAccountAchPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesUsBankAccountAchPayments::Active => "active",
+            AccountCapabilitiesUsBankAccountAchPayments::Inactive => "inactive",
+            AccountCapabilitiesUsBankAccountAchPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesUsBankAccountAchPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesUsBankAccountAchPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesUsBankAccountAchPayments {
     fn default() -> Self {
         Self::Active
     }

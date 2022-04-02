@@ -10,9 +10,9 @@ use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQu
 use crate::resources::{
     Account, Address, ApiErrors, Charge, Currency, Customer, Discount, InvoiceLineItem,
     InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
-    InvoicePaymentMethodOptionsKonbini, InvoicePaymentMethodOptionsUsBankAccount, PaymentIntent,
-    PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
-    TestHelpersTestClock,
+    InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
+    InvoicePaymentMethodOptionsUsBankAccount, PaymentIntent, PaymentMethod, PaymentSource, Quote,
+    Shipping, Subscription, TaxId, TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Invoice".
@@ -539,6 +539,10 @@ pub struct InvoicesPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<InvoicePaymentMethodOptionsCard>,
 
+    /// If paying by `customer_balance`, this sub-hash contains details about the Bank transfer payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<InvoicePaymentMethodOptionsCustomerBalance>,
+
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<InvoicePaymentMethodOptionsKonbini>,
@@ -882,6 +886,9 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     pub card: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalance>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsKonbini>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -914,6 +921,16 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer:
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding_type: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsKonbini {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -929,6 +946,24 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptio
     pub transaction_type: Option<
         CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType,
     >,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<
+        CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer,
+    >,
+
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer
+{
+    pub country: String,
 }
 
 /// An enum representing the possible values of an `AutomaticTax`'s `status` field.
@@ -1215,6 +1250,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    CustomerBalance,
     Fpx,
     Giropay,
     Grabpay,
@@ -1240,6 +1276,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             CreateInvoicePaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Card => "card",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::CustomerBalance => "customer_balance",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Fpx => "fpx",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Giropay => "giropay",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
@@ -1521,6 +1558,7 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    CustomerBalance,
     Fpx,
     Giropay,
     Grabpay,
@@ -1544,6 +1582,7 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             InvoicesPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             InvoicesPaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             InvoicesPaymentSettingsPaymentMethodTypes::Card => "card",
+            InvoicesPaymentSettingsPaymentMethodTypes::CustomerBalance => "customer_balance",
             InvoicesPaymentSettingsPaymentMethodTypes::Fpx => "fpx",
             InvoicesPaymentSettingsPaymentMethodTypes::Giropay => "giropay",
             InvoicesPaymentSettingsPaymentMethodTypes::Grabpay => "grabpay",
