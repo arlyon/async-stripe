@@ -2,10 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{
+    ids::InvoiceLineItemId,
+    params::{Expandable, Object},
+};
 use serde::{Deserialize, Serialize};
 use stripe::{
-    ids::InvoiceLineItemId,
-    params::{Expandable, Metadata, Object},
+    params::Metadata,
     resources::{Currency, Discount, Period, Price, TaxRate},
 };
 

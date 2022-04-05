@@ -62,7 +62,15 @@ impl CrateGenerator {
         write(
             &cargo,
             format!(
-                "[package]\nname = \"stripe-{}\"\nversion = \"0.1.0\"\nedition = \"2018\"\n\n[dependencies]\nserde = {{ version = \"1.0\", features = [\"derive\"] }}\n",
+                r#"[package]
+name = "stripe-{}"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+serde = {{ version = "1.0", features = ["derive"] }}
+async-stripe-client = {{ path = "../../async_stripe_client" }}
+"#,
                 &self.crate_name
             ),
         )?;

@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     params::{Expandable, Object},
-    resources::{Currency, Sku},
+    resources::Currency,
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::Sku;
 
 /// The resource representing a Stripe "OrderItem".
 ///

@@ -2,12 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::CapabilityId,
     params::{Expandable, Object, Timestamp},
-    resources::Account,
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::Account;
 
 /// The resource representing a Stripe "AccountCapability".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

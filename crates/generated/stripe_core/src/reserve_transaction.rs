@@ -2,8 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{ids::ReserveTransactionId, params::Object};
 use serde::{Deserialize, Serialize};
-use stripe::{ids::ReserveTransactionId, params::Object, resources::Currency};
+use stripe::resources::Currency;
 
 /// The resource representing a Stripe "ReserveTransaction".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

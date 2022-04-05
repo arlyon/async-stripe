@@ -2,11 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{ids::ApplePayDomainId, params::Object};
 use serde::{Deserialize, Serialize};
-use stripe::{
-    ids::ApplePayDomainId,
-    params::{Object, Timestamp},
-};
+use stripe::params::Timestamp;
 
 /// The resource representing a Stripe "ApplePayDomain".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

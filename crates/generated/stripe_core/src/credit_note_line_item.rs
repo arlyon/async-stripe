@@ -2,12 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::CreditNoteLineItemId,
     params::{Expandable, Object},
-    resources::{Discount, TaxRate},
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::{Discount, TaxRate};
 
 /// The resource representing a Stripe "CreditNoteLineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

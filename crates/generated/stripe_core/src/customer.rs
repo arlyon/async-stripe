@@ -2,16 +2,17 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{
         AlipayAccountId, BankAccountId, CardId, CouponId, CustomerId, PaymentMethodId,
         PaymentSourceId, PromotionCodeId,
     },
-    params::{
-        Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-    },
+    params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp},
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable, Timestamp},
     resources::{
         Address, CashBalance, Currency, Discount, InvoiceSettingRenderingOptions, PaymentMethod,
         PaymentSource, PaymentSourceParams, Shipping, Subscription, TaxId, TestHelpersTestClock,

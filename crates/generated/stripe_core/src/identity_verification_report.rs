@@ -2,12 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{ids::IdentityVerificationReportId, params::Object};
 use serde::{Deserialize, Serialize};
-use stripe::{
-    ids::IdentityVerificationReportId,
-    params::{Object, Timestamp},
-    resources::Address,
-};
+use stripe::{params::Timestamp, resources::Address};
 
 /// The resource representing a Stripe "GelatoVerificationReport".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

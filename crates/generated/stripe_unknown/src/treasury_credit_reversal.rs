@@ -2,10 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{
+    ids::TreasuryCreditReversalId,
+    params::{Expandable, Object, Timestamp},
+};
 use serde::{Deserialize, Serialize};
 use stripe::{
-    ids::TreasuryCreditReversalId,
-    params::{Expandable, Metadata, Object, Timestamp},
+    params::Metadata,
     resources::{Currency, TreasuryTransaction},
 };
 

@@ -2,10 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{
+    ids::TerminalReaderId,
+    params::{Expandable, Object},
+};
 use serde::{Deserialize, Serialize};
 use stripe::{
-    ids::TerminalReaderId,
-    params::{Expandable, Metadata, Object},
+    params::Metadata,
     resources::{Currency, PaymentIntent, SetupIntent, TerminalLocation},
 };
 

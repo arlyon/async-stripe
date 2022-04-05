@@ -2,12 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::FinancialConnectionsAccountOwnershipId,
-    params::{List, Object, Timestamp},
-    resources::FinancialConnectionsAccountOwner,
+    params::{List, Object},
 };
+use serde::{Deserialize, Serialize};
+use stripe::{params::Timestamp, resources::FinancialConnectionsAccountOwner};
 
 /// The resource representing a Stripe "BankConnectionsResourceOwnership".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

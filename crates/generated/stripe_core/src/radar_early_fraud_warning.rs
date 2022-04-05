@@ -2,10 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{
+    ids::RadarEarlyFraudWarningId,
+    params::{Expandable, Object},
+};
 use serde::{Deserialize, Serialize};
 use stripe::{
-    ids::RadarEarlyFraudWarningId,
-    params::{Expandable, Object, Timestamp},
+    params::Timestamp,
     resources::{Charge, PaymentIntent},
 };
 

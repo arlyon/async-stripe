@@ -2,13 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::MandateId,
     params::{Expand, Expandable, Object, Timestamp},
-    resources::{Currency, MandateOptionsOffSessionDetailsBlik, PaymentMethod},
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::{Currency, MandateOptionsOffSessionDetailsBlik, PaymentMethod};
 
 /// The resource representing a Stripe "Mandate".
 ///

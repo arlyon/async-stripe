@@ -2,13 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{BillingPortalSessionId, CustomerId},
-    params::{Expand, Expandable, Object, Timestamp},
-    resources::BillingPortalConfiguration,
+    params::{Expand, Expandable, Object},
 };
+use serde::{Deserialize, Serialize};
+use stripe::{params::Timestamp, resources::BillingPortalConfiguration};
 
 /// The resource representing a Stripe "PortalSession".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

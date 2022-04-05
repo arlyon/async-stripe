@@ -2,12 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::AccountId,
     params::{Expand, Object, Timestamp},
 };
+use serde::{Deserialize, Serialize};
+use stripe::params::Timestamp;
 
 /// The resource representing a Stripe "AccountLink".
 ///

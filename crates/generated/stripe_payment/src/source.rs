@@ -2,11 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{CustomerId, SourceId, TokenId},
-    params::{Expand, List, Metadata, Object, Paginable, Timestamp},
+    params::{Expand, List, Metadata, Object, Timestamp},
+    resources::Currency,
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable, Timestamp},
     resources::{
         Address, BillingDetails, Currency, Shipping, SourceRedirectFlowFailureReason,
         SourceRedirectFlowStatus, SourceStatus, SourceUsage,

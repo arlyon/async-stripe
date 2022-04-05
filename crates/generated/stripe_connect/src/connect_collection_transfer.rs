@@ -2,12 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::ConnectCollectionTransferId,
     params::{Expandable, Object},
-    resources::{Account, Currency},
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::{Account, Currency};
 
 /// The resource representing a Stripe "ConnectCollectionTransfer".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

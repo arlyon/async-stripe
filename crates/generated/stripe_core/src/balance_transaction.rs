@@ -2,11 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{BalanceTransactionId, PayoutId, SourceId},
-    params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp},
+    params::{Expand, Expandable, List, Object, RangeQuery, Timestamp},
+    resources::Currency,
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Paginable, Timestamp},
     resources::{
         ApplicationFee, ApplicationFeeRefund, BalanceTransactionStatus, Charge,
         ConnectCollectionTransfer, Currency, Dispute, FeeType, IssuingAuthorization,

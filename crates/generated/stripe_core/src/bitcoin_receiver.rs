@@ -2,12 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::BitcoinReceiverId,
     params::{List, Metadata, Object, Timestamp},
-    resources::{BitcoinTransaction, Currency},
+    resources::Currency,
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::BitcoinTransaction;
 
 /// The resource representing a Stripe "BitcoinReceiver".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

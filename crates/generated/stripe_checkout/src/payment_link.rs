@@ -2,11 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::PaymentLinkId,
-    params::{Expand, Expandable, List, Metadata, Object, Paginable},
+    params::{Expand, Expandable, List, Metadata, Object},
+    resources::Currency,
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable},
     resources::{Account, CheckoutSessionItem, Currency, ShippingRate},
 };
 

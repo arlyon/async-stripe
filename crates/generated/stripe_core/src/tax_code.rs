@@ -2,12 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::TaxCodeId,
-    params::{Expand, List, Object, Paginable},
+    params::{Expand, List, Object},
 };
+use serde::{Deserialize, Serialize};
+use stripe::params::Paginable;
 
 /// The resource representing a Stripe "TaxProductResourceTaxCode".
 ///

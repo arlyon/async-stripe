@@ -2,13 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::CountrySpecId,
-    params::{Expand, List, Object, Paginable},
-    resources::Currency,
+    params::{Expand, List, Object},
 };
+use serde::{Deserialize, Serialize};
+use stripe::{params::Paginable, resources::Currency};
 
 /// The resource representing a Stripe "CountrySpec".
 ///

@@ -2,11 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{CustomerId, TokenId},
-    params::{Expand, Metadata, Object, Timestamp},
+    params::{Expand, Object},
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Timestamp},
     resources::{Address, BankAccount, Card, CompanyParams, PersonParams, TokenType},
 };
 

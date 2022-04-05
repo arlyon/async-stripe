@@ -2,11 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{CreditNoteId, CustomerId, InvoiceId, RefundId},
-    params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp},
+    params::{Expand, Expandable, List, Metadata, Object, Timestamp},
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable, Timestamp},
     resources::{
         CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice,
         Refund, TaxRate,

@@ -2,12 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::AlipayAccountId,
     params::{Expandable, Metadata, Object, Timestamp},
-    resources::{Currency, Customer},
+    resources::Currency,
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::Customer;
 
 /// The resource representing a Stripe "AlipayAccount".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

@@ -2,16 +2,19 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::PlanId,
     params::{
-        Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery,
-        Timestamp,
+        Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
     },
-    resources::{CreateProduct, Currency, Product},
 };
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable, Timestamp},
+    resources::{Currency, Product},
+};
+use stripe_core::resources::CreateProduct;
 
 /// The resource representing a Stripe "Plan".
 ///

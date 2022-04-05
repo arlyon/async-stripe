@@ -2,15 +2,18 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::SkuId,
-    params::{
-        Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, Timestamp,
-    },
-    resources::{CreateProduct, Currency, PackageDimensions, Product},
+    params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Timestamp},
+    resources::Currency,
 };
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable, Timestamp},
+    resources::{Currency, PackageDimensions, Product},
+};
+use stripe_core::resources::CreateProduct;
 
 /// The resource representing a Stripe "Sku".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

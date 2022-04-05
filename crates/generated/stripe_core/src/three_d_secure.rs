@@ -2,12 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::ThreeDSecureId,
     params::{Object, Timestamp},
-    resources::{Card, Currency},
+    resources::Currency,
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::Card;
 
 /// The resource representing a Stripe "ThreeDSecure".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

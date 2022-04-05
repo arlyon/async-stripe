@@ -2,10 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::TreasuryTransactionEntryId,
     params::{Expandable, Object, Timestamp},
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::Timestamp,
     resources::{
         Currency, TreasuryTransaction, TreasuryTransactionsResourceBalanceImpact,
         TreasuryTransactionsResourceFlowDetails,

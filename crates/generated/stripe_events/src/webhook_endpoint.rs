@@ -2,11 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::WebhookEndpointId,
-    params::{Deleted, Expand, List, Metadata, Object, Paginable, Timestamp},
+    params::{Deleted, Expand, List, Metadata, Object},
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable, Timestamp},
     resources::{ApiVersion, WebhookEndpointStatus},
 };
 

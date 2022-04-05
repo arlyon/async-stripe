@@ -2,13 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{ChargeId, IssuerFraudRecordId},
     params::{Expand, Expandable, List, Object, Timestamp},
-    resources::Charge,
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::Charge;
 
 /// The resource representing a Stripe "IssuerFraudRecord".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

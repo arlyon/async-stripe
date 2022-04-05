@@ -2,10 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{
+    ids::IssuingSettlementId,
+    params::{Object, Timestamp},
+};
 use serde::{Deserialize, Serialize};
 use stripe::{
-    ids::IssuingSettlementId,
-    params::{Metadata, Object, Timestamp},
+    params::{Metadata, Timestamp},
     resources::Currency,
 };
 

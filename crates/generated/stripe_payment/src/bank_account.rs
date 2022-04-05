@@ -2,10 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{
+    ids::BankAccountId,
+    params::{Expandable, Object},
+};
 use serde::{Deserialize, Serialize};
 use stripe::{
-    ids::BankAccountId,
-    params::{Expandable, Metadata, Object},
+    params::Metadata,
     resources::{Account, BankAccountStatus, Currency, Customer},
 };
 

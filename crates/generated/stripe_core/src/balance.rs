@@ -2,13 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{PayoutId, SourceId},
     params::{Expand, List, Object, RangeQuery, Timestamp},
     resources::Currency,
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::Currency;
 
 /// The resource representing a Stripe "Balance".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

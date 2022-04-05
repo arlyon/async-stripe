@@ -2,10 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{
+    ids::IssuingDisputeId,
+    params::{Expandable, Object, Timestamp},
+};
 use serde::{Deserialize, Serialize};
 use stripe::{
-    ids::IssuingDisputeId,
-    params::{Expandable, Metadata, Object, Timestamp},
+    params::{Metadata, Timestamp},
     resources::{BalanceTransaction, Currency, File, IssuingDisputeStatus, IssuingTransaction},
 };
 

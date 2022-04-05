@@ -2,11 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{CustomerId, SubscriptionScheduleId},
-    params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp},
+    params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp},
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable, Timestamp},
     resources::{
         Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled,
         Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds,

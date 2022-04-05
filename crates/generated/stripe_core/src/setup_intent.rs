@@ -2,11 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{CustomerId, PaymentMethodId, SetupIntentId},
-    params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp},
+    params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp},
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable, Timestamp},
     resources::{
         Account, ApiErrors, Application, Currency, Customer, LinkedAccountOptionsUsBankAccount,
         Mandate, MandateOptionsOffSessionDetailsBlik, PaymentMethod, SetupAttempt,

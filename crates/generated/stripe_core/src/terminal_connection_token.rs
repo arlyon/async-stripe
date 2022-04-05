@@ -2,8 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::params::Object;
 use serde::{Deserialize, Serialize};
-use stripe::params::Object;
 
 /// The resource representing a Stripe "TerminalConnectionToken".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

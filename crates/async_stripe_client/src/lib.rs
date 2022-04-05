@@ -36,11 +36,11 @@
 #![warn(clippy::unwrap_used, clippy::missing_errors_doc, clippy::missing_panics_doc)]
 #![forbid(unsafe_code)]
 
-mod client;
-mod error;
-mod ids;
-mod params;
-mod resources;
+pub mod client;
+pub mod error;
+pub mod ids;
+pub mod params;
+pub mod resources;
 
 // N.B. Ideally we would support both a blocking client and
 //      an async client without a feature flag, but the originally

@@ -2,12 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{ids::TerminalLocationId, params::Object};
 use serde::{Deserialize, Serialize};
-use stripe::{
-    ids::TerminalLocationId,
-    params::{Metadata, Object},
-    resources::Address,
-};
+use stripe::{params::Metadata, resources::Address};
 
 /// The resource representing a Stripe "TerminalLocationLocation".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

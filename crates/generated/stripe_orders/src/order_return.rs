@@ -2,13 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{OrderId, OrderReturnId},
     params::{Expand, Expandable, List, Object, RangeQuery, Timestamp},
-    resources::{Currency, Order, OrderItem, Refund},
+    resources::Currency,
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::{Order, OrderItem, Refund};
 
 /// The resource representing a Stripe "OrderReturn".
 ///

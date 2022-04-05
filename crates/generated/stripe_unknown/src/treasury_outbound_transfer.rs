@@ -2,10 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{
+    ids::TreasuryOutboundTransferId,
+    params::{Expandable, Object, Timestamp},
+};
 use serde::{Deserialize, Serialize};
 use stripe::{
-    ids::TreasuryOutboundTransferId,
-    params::{Expandable, Metadata, Object, Timestamp},
+    params::{Metadata, Timestamp},
     resources::{Currency, TreasurySharedResourceBillingDetails, TreasuryTransaction},
 };
 

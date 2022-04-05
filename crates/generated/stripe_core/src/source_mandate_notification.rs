@@ -2,12 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{ids::SourceMandateNotificationId, params::Object};
 use serde::{Deserialize, Serialize};
-use stripe::{
-    ids::SourceMandateNotificationId,
-    params::{Object, Timestamp},
-    resources::Source,
-};
+use stripe::{params::Timestamp, resources::Source};
 
 /// The resource representing a Stripe "SourceMandateNotification".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

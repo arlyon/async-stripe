@@ -2,13 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{ProductId, TaxCodeId},
-    params::{
-        Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-    },
+    params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp},
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable, Timestamp},
     resources::{Currency, PackageDimensions, Price, TaxCode, UpTo},
 };
 

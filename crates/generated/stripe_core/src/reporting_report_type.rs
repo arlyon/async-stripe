@@ -2,11 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::ReportingReportTypeId,
     params::{Object, Timestamp},
 };
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "reporting_report_type".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

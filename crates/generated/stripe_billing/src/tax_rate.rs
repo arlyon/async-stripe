@@ -2,12 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::TaxRateId,
-    params::{Expand, List, Metadata, Object, Paginable, RangeQuery, Timestamp},
+    params::{Expand, List, Metadata, Object, RangeQuery, Timestamp},
 };
+use serde::{Deserialize, Serialize};
+use stripe::params::{Metadata, Paginable, Timestamp};
 
 /// The resource representing a Stripe "TaxRate".
 ///

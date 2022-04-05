@@ -2,8 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::params::Object;
 use serde::{Deserialize, Serialize};
-use stripe::{params::Object, resources::TreasuryFinancialAccountsResourceToggleSettings};
+use stripe::resources::TreasuryFinancialAccountsResourceToggleSettings;
 
 /// The resource representing a Stripe "TreasuryFinancialAccountsResourceFinancialAccountFeatures".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

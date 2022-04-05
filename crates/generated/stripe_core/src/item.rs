@@ -2,12 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::CheckoutSessionItemId,
     params::{Expandable, Object},
-    resources::{Currency, Discount, Price, Product, TaxRate},
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::{Currency, Discount, Price, Product, TaxRate};
 
 /// The resource representing a Stripe "LineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

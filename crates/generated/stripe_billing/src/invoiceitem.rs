@@ -2,13 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId},
-    params::{
-        Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-    },
+    params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp},
+    resources::Currency,
+};
+use serde::{Deserialize, Serialize};
+use stripe::{
+    params::{Metadata, Paginable},
     resources::{
         Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
         TestHelpersTestClock,

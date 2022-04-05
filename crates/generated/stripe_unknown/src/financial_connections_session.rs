@@ -2,13 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     client::{Client, Response},
     ids::FinancialConnectionsSessionId,
     params::{Expand, List, Object},
-    resources::{BankConnectionsResourceAccountholder, FinancialConnectionsAccount},
 };
+use serde::{Deserialize, Serialize};
+use stripe::resources::{BankConnectionsResourceAccountholder, FinancialConnectionsAccount};
 
 /// The resource representing a Stripe "BankConnectionsResourceLinkAccountSession".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

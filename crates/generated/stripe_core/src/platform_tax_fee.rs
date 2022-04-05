@@ -2,8 +2,8 @@
 // This file was automatically generated.
 // ======================================
 
+use async_stripe_client::{ids::PlatformTaxFeeId, params::Object};
 use serde::{Deserialize, Serialize};
-use stripe::{ids::PlatformTaxFeeId, params::Object};
 
 /// The resource representing a Stripe "PlatformTax".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

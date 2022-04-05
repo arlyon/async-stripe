@@ -2,12 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-use stripe::{
+use async_stripe_client::{
     ids::TaxIdId,
-    params::{Expandable, Object, Timestamp},
-    resources::Customer,
+    params::{Expandable, Object},
 };
+use serde::{Deserialize, Serialize};
+use stripe::{params::Timestamp, resources::Customer};
 
 /// The resource representing a Stripe "tax_id".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
