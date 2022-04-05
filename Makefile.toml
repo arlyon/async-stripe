@@ -43,7 +43,8 @@ dependencies = ["openapi-delete"]
 [tasks.openapi-copy]
 cwd = "openapi"
 command = "cp"
-args = ["-a", "out/.", "../src/resources/generated"]
+args = ["-a", "out/.", "../crates/generated/"]
+dependencies = ["openapi-generate"]
 
 [tasks.fmt]
 command = "cargo"

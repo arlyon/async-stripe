@@ -1,0 +1,59 @@
+
+[package]
+authors = [
+  "Anna Baldwin <abaldwin@developers.wyyerd.com>",
+  "Kevin Stenerson <kestred@users.noreply.github.com>",
+  "Alexander Lyon <arlyon@me.com>",
+]
+categories = ["api-bindings"]
+description = "API bindings for the Stripe HTTP API"
+documentation = "https://docs.rs/async-stripe"
+edition = "2018"
+homepage = "https://github.com/arlyon/async-stripe"
+keywords = ["stripe", "v1", "api", "async"]
+license = "MIT OR Apache-2.0"
+name = "async-stripe"
+readme = "README.md"
+repository = "https://github.com/arlyon/async-stripe"
+rust-version = "1.54.0"
+version = "0.14.0"
+
+[package.metadata.docs.rs]
+cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples=examples"]
+features = ["runtime-tokio-hyper"]
+
+[lib]
+name = "stripe"
+
+[features]
+# runtimes
+runtime-async-std-surf = ["async-stripe-client/runtime-async-std-surf"]
+runtime-blocking = ["async-stripe-client/runtime-blocking"]
+runtime-blocking-rustls = ["async-stripe-client/runtime-blocking-rustls"]
+runtime-tokio-hyper = ["async-stripe-client/runtime-tokio-hyper"]
+runtime-tokio-hyper-rustls = ["async-stripe-client/runtime-tokio-hyper-rustls"]
+
+# features
+billing = ["stripe-billing"]
+checkout = ["stripe-checkout"]
+connect = ["stripe-connect"]
+core = ["stripe-core"]
+events = ["stripe-events"]
+fraud = ["stripe-fraud"]
+issuing = ["stripe-issuing"]
+orders = ["stripe-orders"]
+payment = ["stripe-payment"]
+sigma = ["stripe-sigma"]
+
+[dependencies]
+async-stripe-client = {path = "../async_stripe_client"}
+stripe-billing = {path = "../generated/stripe_billing", optional = true}
+stripe-checkout = {path = "../generated/stripe_checkout", optional = true}
+stripe-connect = {path = "../generated/stripe_connect", optional = true}
+stripe-core = {path = "../generated/stripe_core", optional = true}
+stripe-events = {path = "../generated/stripe_events", optional = true}
+stripe-fraud = {path = "../generated/stripe_fraud", optional = true}
+stripe-issuing = {path = "../generated/stripe_issuing", optional = true}
+stripe-orders = {path = "../generated/stripe_orders", optional = true}
+stripe-payment = {path = "../generated/stripe_payment", optional = true}
+stripe-sigma = {path = "../generated/stripe_sigma", optional = true}

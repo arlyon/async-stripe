@@ -1,0 +1,70 @@
+
+[package]
+authors = [
+  "Anna Baldwin <abaldwin@developers.wyyerd.com>",
+  "Kevin Stenerson <kestred@users.noreply.github.com>",
+  "Alexander Lyon <arlyon@me.com>",
+]
+categories = ["api-bindings"]
+description = "API bindings for the Stripe HTTP API"
+documentation = "https://docs.rs/async-stripe"
+edition = "2018"
+homepage = "https://github.com/arlyon/async-stripe"
+keywords = ["stripe", "v1", "api", "async"]
+license = "MIT OR Apache-2.0"
+name = "async-stripe-client"
+readme = "README.md"
+repository = "https://github.com/arlyon/async-stripe"
+rust-version = "1.54.0"
+version = "0.14.0"
+
+[package.metadata.docs.rs]
+cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples=examples"]
+features = ["runtime-tokio-hyper"]
+
+[features]
+default = ["webhook-events", "uuid"]
+
+# deserialize events from webhooks
+webhook-events = ["hmac", "sha2", "chrono", "hex"]
+
+# runtimes
+async = []
+blocking = []
+
+runtime-async-std-surf = ["async-std", "surf", "async"]
+runtime-blocking = ["tokio", "tokio/rt", "hyper-client", "hyper-tls", "blocking"]
+runtime-blocking-rustls = [
+  "tokio",
+  "tokio/rt",
+  "hyper-client",
+  "hyper-rustls",
+  "blocking",
+]
+runtime-tokio-hyper = ["tokio", "hyper-client", "hyper-tls", "async"]
+runtime-tokio-hyper-rustls = ["tokio", "hyper-client", "hyper-rustls", "async"]
+
+# we need the compat crate if using hyper
+hyper-client = ["hyper", "http-types/hyperium_http"]
+
+[dependencies]
+async-std = {version = "1.9", optional = true}
+chrono = {version = "0.4", features = ["serde"], optional = true}
+http-types = {version = "2.12.0", default-features = false}
+hyper = {version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true}
+hyper-rustls = {version = "0.22", optional = true}
+hyper-tls = {version = "0.5", optional = true}
+serde = {version = ">=1.0.79", features = ["derive"]}# we use `serde(other)` which was introduced in 1.0.79
+serde_json = "1.0"
+serde_qs = "0.9"
+smart-default = "0.6.0"
+smol_str = "0.1"
+surf = {version = "2.1", optional = true}
+thiserror = "1.0.24"
+tokio = {version = "1.2", optional = true}
+uuid = {version = "0.8", optional = true, features = ["v4"]}
+
+# webhook support
+hex = {version = "0.4", optional = true}
+hmac = {version = "0.12", optional = true}
+sha2 = {version = "0.10", optional = true}

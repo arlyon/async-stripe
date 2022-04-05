@@ -30,7 +30,7 @@ pub struct FileGenerator {
     pub generated: Generated,
 }
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct Imported {
     /// The ids that must be imported in this file.
     pub ids: BTreeSet<(&'static str, String)>,
@@ -119,16 +119,16 @@ impl FileGenerator {
         meta: &Metadata,
         crate_state: &CrateGenerator,
         url_finder: &UrlFinder,
-    ) -> Result<(String, BTreeSet<FileGenerator>)>
+    ) -> Result<(String, BTreeSet<FileGenerator>, Imported)>
     where
         T: AsRef<Path> + std::fmt::Debug,
     {
         let path = self.get_path();
-        let (out, additional) = self.generate(meta, crate_state, url_finder)?;
+        let (out, additional, imports) = self.generate(meta, crate_state, url_finder)?;
         let pathbuf = base.as_ref().join(path);
         log::debug!("writing object {} to {:?}", self.name, pathbuf);
         write(&pathbuf, out.as_bytes())?;
-        Ok((self.get_module(), additional))
+        Ok((self.get_module(), additional, imports))
     }
 
     /// Generates this file, returning a set of FileGenerators
@@ -139,7 +139,7 @@ impl FileGenerator {
         meta: &Metadata,
         crate_state: &CrateGenerator,
         url_finder: &UrlFinder,
-    ) -> Result<(String, BTreeSet<FileGenerator>)> {
+    ) -> Result<(String, BTreeSet<FileGenerator>, Imported)> {
         let mut out = String::new();
         let mut shared_objects = BTreeSet::<FileGenerator>::new();
 
@@ -168,7 +168,7 @@ impl FileGenerator {
 
         gen_objects(&mut out, self);
 
-        Ok((gen_prelude(self, crate_state, meta) + &out, shared_objects))
+        Ok((gen_prelude(self, crate_state, meta) + &out, shared_objects, self.imported.clone()))
     }
 
     fn gen_object_trait(

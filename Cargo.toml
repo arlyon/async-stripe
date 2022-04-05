@@ -1,164 +1,49 @@
 [workspace]
 members = [
-  ".",
   "openapi",
-  "bench/binary_size"
+  "bench/binary_size",
+  "crates/async_stripe",
+  "crates/async_stripe_client",
+  "crates/generated/*",
 ]
 
-[package]
-name = "async-stripe"
-version = "0.15.0"
-description = "API bindings for the Stripe HTTP API"
-rust-version = "1.54.0"
-authors = [
-  "Anna Baldwin <abaldwin@developers.wyyerd.com>",
-  "Kevin Stenerson <kestred@users.noreply.github.com>",
-  "Alexander Lyon <arlyon@me.com>",
-]
-license = "MIT OR Apache-2.0"
-readme = "README.md"
-homepage = "https://github.com/arlyon/async-stripe"
-repository = "https://github.com/arlyon/async-stripe"
-documentation = "https://docs.rs/async-stripe"
-keywords = ["stripe", "v1", "api", "async"]
-categories = ["api-bindings"]
-edition = "2018"
+# [dev-dependencies]
+# actix-web = "4.0.1"
+# anyhow = "1.0.38"
+# async-std = {version = "1.10.0", features = ["attributes"]}
+# axum = "0.4.8"
+# httpmock = "0.6.6"
+# lazy_static = "1.4"
+# tokio = {version = "1.2", features = ["rt", "macros"]}
 
-[package.metadata.docs.rs]
-features = ["runtime-tokio-hyper"]
-cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples=examples"]
+# [[example]]
+# name = "checkout"
+# required-features = ["runtime-tokio-hyper"]
 
-[lib]
-name = "stripe"
+# [[example]]
+# name = "connect"
+# required-features = ["runtime-tokio-hyper"]
 
-[features]
-default = ["full", "webhook-events", "uuid", "stream"]
-full = [
-  "checkout",
-  "billing",
-  "connect",
-  "fraud",
-  "issuing",
-  "orders",
-  "sigma",
-  "terminal",
-  "webhook-endpoints",
-]
+# [[example]]
+# name = "customer"
+# required-features = ["runtime-tokio-hyper"]
 
-stream = []
+# [[example]]
+# name = "payment-intent"
+# required-features = ["runtime-tokio-hyper"]
 
-# stripe feature groups
-checkout = ["billing"]
-billing = []
-connect = []
-fraud = []
-issuing = []
-orders = []
-sigma = []
-terminal = []
-webhook-endpoints = []
+# [[example]]
+# name = "payment-link"
+# required-features = ["runtime-tokio-hyper"]
 
-# deserialize events from webhooks
-webhook-events = ["events", "hmac", "sha2", "chrono", "hex"]
-events = []
+# [[example]]
+# name = "subscriptions"
+# required-features = ["runtime-tokio-hyper"]
 
-# runtimes
-async = ["futures-util"]
-blocking = []
+# [[example]]
+# name = "webhook-axum"
+# required-features = ["runtime-tokio-hyper"]
 
-runtime-tokio-hyper = ["tokio", "hyper-client", "hyper-tls", "async"]
-runtime-tokio-hyper-rustls = ["tokio", "hyper-client", "hyper-rustls", "async"]
-runtime-blocking = ["tokio", "tokio/rt", "hyper-client", "hyper-tls", "blocking"]
-runtime-blocking-rustls = [
-  "tokio",
-  "tokio/rt",
-  "hyper-client",
-  "hyper-rustls",
-  "blocking",
-]
-runtime-async-std-surf = ["async-std", "surf", "async"]
-
-# we need the compat crate if using hyper
-hyper-client = ["hyper", "http-types/hyperium_http"]
-
-[dependencies]
-async-std = {version = "1.8,<1.11", optional = true}
-async-global-executor = {version = "2.0, <2.1", optional = true}
-
-chrono = { version = "0.4", default-features = false, features = ["serde", "clock"], optional = true }
-thiserror = "1.0.24"
-http-types = { version = "2.12.0", default-features = false }
-hyper = { version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true }
-hyper-tls = { version = "0.5", optional = true }
-hyper-rustls = { version = "0.22", optional = true }
-serde = {version = ">=1.0.79", features = ["derive"] } # we use `serde(other)` which was introduced in 1.0.79
-serde_json = "1.0"
-serde_qs = "0.10.1"
-serde_path_to_error = "0.1.8"
-smol_str = "0.1"
-surf = { version = "2.1", optional = true }
-tokio = { version = "1.2", optional = true }
-smart-default = "0.6.0"
-uuid = { version = "0.8", optional=true, features=["v4"] }
-
-# stream for lists
-futures-util = { version = "0.3.21", optional = true }
-
-# webhook support
-hmac = { version = "0.12", optional = true }
-sha2 = { version = "0.10", optional = true }
-hex = { version = "0.4", optional = true }
-
-# pinned deps to prevent msrv breakage
-indexmap = {version = "1.0,<1.9.0", optional = true}
-time = {version = "0.3,<0.3.10", optional = true}
-# >=2.7.0 requires 2021 edition
-security-framework = {version = "~2.6.0", optional = true}
-# >=3.11.0 requires 2021 edition
-bumpalo = {version = "~3.10.0", optional = true}
-
-[dev-dependencies]
-anyhow = "1.0.38"
-async-std = { version = "1.10.0", features = ["attributes"] }
-httpmock = "0.6.6"
-lazy_static = "1.4"
-tokio = { version = "1.2", features = ["rt", "macros"] }
-axum = "0.4.8"
-actix-web = "4.0.1"
-tokio-test = "0.4.2"
-
-[[example]]
-name = "checkout"
-required-features = ["async"]
-
-[[example]]
-name = "connect"
-required-features = ["async"]
-
-[[example]]
-name = "customer"
-required-features = ["async"]
-
-[[example]]
-name = "payment-intent"
-required-features = ["async"]
-
-[[example]]
-name = "payment-link"
-required-features = ["async"]
-
-[[example]]
-name = "strategy"
-required-features = ["async"]
-
-[[example]]
-name = "subscriptions"
-required-features = ["async"]
-
-[[example]]
-name = "webhook-axum"
-required-features = ["async"]
-
-[[example]]
-name = "webhook-actix"
-required-features = ["async"]
+# [[example]]
+# name = "webhook-actix"
+# required-features = ["runtime-tokio-hyper"]

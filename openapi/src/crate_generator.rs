@@ -1,4 +1,4 @@
-use std::{collections::BTreeSet, fs::write, path::Path};
+use std::{collections::BTreeSet, fs::write, iter, path::Path};
 
 use anyhow::Result;
 use itertools::Itertools;
@@ -28,20 +28,22 @@ impl CrateGenerator {
 
         println!("objects in crate {}: {:#?}", self.crate_name, self.objects);
 
-        let (file_names, shared_objects): (Vec<_>, Vec<_>) = self
+        let (file_names, (shared_objects, imports)): (Vec<_>, (Vec<_>, Vec<_>)) = self
             .get_files()
             .into_iter()
             .flat_map(|mut f| f.write(&src, &meta, &self, &url_finder))
+            .map(|(a, b, c)| (a, (b, c)))
             .unzip();
 
-        let (extra_file_names, extra_objects): (Vec<_>, Vec<_>) = shared_objects
-            .into_iter()
-            .flatten()
-            .flat_map(|mut f| f.write(&src, &meta, &self, &url_finder))
-            .unzip();
+        // let (extra_file_names, extra_objects): (Vec<_>, Vec<_>) = shared_objects
+        //     .into_iter()
+        //     .flatten()
+        //     .flat_map(|mut f| f.write(&src, &meta, &self, &url_finder))
+        //     .unzip();
 
         // todo(arlyon): understand the implications of this
-        log::warn!("leftover objects: {:#?}", extra_objects);
+        log::warn!("leftover files: {:#?}", shared_objects);
+        log::warn!("import: {:#?}", imports);
 
         let lib = pathbuf.join("src/lib.rs");
 
@@ -49,7 +51,8 @@ impl CrateGenerator {
             &lib,
             file_names
                 .into_iter()
-                .chain(extra_file_names)
+                // .chain(extra_file_names)
+                .chain(iter::empty())
                 .map(|n| format!("pub mod {};", n))
                 .join("\n"),
         )?;
@@ -59,10 +62,11 @@ impl CrateGenerator {
         write(
             &cargo,
             format!(
-                "[package]\nname = \"{}\"\nversion = \"0.1.0\"\nedition = \"2018\"\n\n[dependencies]\nserde = {{ version = \"1.0\", features = [\"derive\"] }}\n",
+                "[package]\nname = \"stripe-{}\"\nversion = \"0.1.0\"\nedition = \"2018\"\n\n[dependencies]\nserde = {{ version = \"1.0\", features = [\"derive\"] }}\n",
                 &self.crate_name
             ),
         )?;
+
         Ok(())
     }
 
