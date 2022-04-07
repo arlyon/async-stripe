@@ -5,7 +5,7 @@
 //!
 //! This example shows how to create and list customers.
 
-use stripe::{Client, CreateCustomer, Customer};
+use stripe::{Client, CreateCustomer, Customer, ListCustomers};
 
 #[tokio::main]
 async fn main() {
@@ -32,10 +32,40 @@ async fn main() {
 
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 
-    let all_customers = Customer::list(&client, Default::default()).await.unwrap();
+    let customer = Customer::create(
+        &client,
+        CreateCustomer {
+            name: Some("Someone Else"),
+            email: Some("test@async-stripe.com"),
+            description: Some(
+                "A fake customer that is used to illustrate the examples in async-stripe.",
+            ),
+            metadata: Some(
+                [("async-stripe".to_string(), "true".to_string())].iter().cloned().collect(),
+            ),
+
+            ..Default::default()
+        },
+    )
+    .await
+    .unwrap();
+
+    println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
+
+    let first_page =
+        Customer::list(&client, ListCustomers { limit: Some(1), ..Default::default() })
+            .await
+            .unwrap();
 
     println!(
-        "customers: {:#?}",
-        all_customers.data.iter().map(|c| c.name.as_ref().unwrap()).collect::<Vec<_>>()
+        "first page of customers: {:#?}",
+        first_page.data.iter().map(|c| c.name.as_ref().unwrap()).collect::<Vec<_>>()
+    );
+
+    let second_page = first_page.next(&client).await.unwrap();
+
+    println!(
+        "second page of customers: {:#?}",
+        second_page.data.iter().map(|c| c.name.as_ref().unwrap()).collect::<Vec<_>>()
     );
 }

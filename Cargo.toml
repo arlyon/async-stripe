@@ -112,32 +112,32 @@ actix-web = "4.0.1"
 
 [[example]]
 name = "checkout"
-required-features = ["runtime-tokio-hyper"]
+required-features = ["async"]
 
 [[example]]
 name = "connect"
-required-features = ["runtime-tokio-hyper"]
+required-features = ["async"]
 
 [[example]]
 name = "customer"
-required-features = ["runtime-tokio-hyper"]
+required-features = ["async"]
 
 [[example]]
 name = "payment-intent"
-required-features = ["runtime-tokio-hyper"]
+required-features = ["async"]
 
 [[example]]
 name = "payment-link"
-required-features = ["runtime-tokio-hyper"]
+required-features = ["async"]
 
 [[example]]
 name = "subscriptions"
-required-features = ["runtime-tokio-hyper"]
+required-features = ["async"]
 
 [[example]]
 name = "webhook-axum"
-required-features = ["runtime-tokio-hyper"]
+required-features = ["async"]
 
 [[example]]
 name = "webhook-actix"
-required-features = ["runtime-tokio-hyper"]
+required-features = ["async"]
