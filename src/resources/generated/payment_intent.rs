@@ -934,7 +934,11 @@ pub struct PaymentMethodOptionsCardMandateOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentMethodOptionsCardPresent {}
+pub struct PaymentMethodOptionsCardPresent {
+    /// Request ability to capture this payment beyond the standard [authorization validity window](https://stripe.com/docs/terminal/features/extended-authorizations#authorization-validity).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_extended_authorization: Option<bool>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsFpx {
@@ -2128,7 +2132,10 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {}
+pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_extended_authorization: Option<bool>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsEps {
@@ -2504,7 +2511,10 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {}
+pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_extended_authorization: Option<bool>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsEps {

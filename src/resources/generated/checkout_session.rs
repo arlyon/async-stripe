@@ -191,6 +191,10 @@ pub struct CheckoutSession {
     pub total_details: Option<PaymentPagesCheckoutSessionTotalDetails>,
 
     /// The URL to the Checkout Session.
+    ///
+    /// Redirect customers to this URL to take them to Checkout.
+    /// If you’re using [Custom Domains](https://stripe.com/docs/payments/checkout/custom-domains), the URL will use your subdomain.
+    /// Otherwise, it’ll use `checkout.stripe.com.`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -446,14 +450,14 @@ pub struct PaymentPagesCheckoutSessionTaxIdCollection {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTotalDetails {
-    /// This is the sum of all the line item discounts.
+    /// This is the sum of all the discounts.
     pub amount_discount: i64,
 
-    /// This is the sum of all the line item shipping amounts.
+    /// This is the sum of all the shipping amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_shipping: Option<i64>,
 
-    /// This is the sum of all the line item tax amounts.
+    /// This is the sum of all the tax amounts.
     pub amount_tax: i64,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -462,10 +466,10 @@ pub struct PaymentPagesCheckoutSessionTotalDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTotalDetailsResourceBreakdown {
-    /// The aggregated line item discounts.
+    /// The aggregated discounts.
     pub discounts: Vec<LineItemsDiscountAmount>,
 
-    /// The aggregated line item tax amounts by rate.
+    /// The aggregated tax amounts by rate.
     pub taxes: Vec<LineItemsTaxAmount>,
 }
 
