@@ -4,6 +4,8 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+use crate::params::Timestamp;
+
 /// The resource representing a Stripe "payment_method_details_card_present".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardPresent {
@@ -16,6 +18,10 @@ pub struct PaymentMethodDetailsCardPresent {
     /// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub brand: Option<String>,
+
+    /// When using manual capture, a future timestamp after which the charge will be automatically refunded if uncaptured.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_before: Option<Timestamp>,
 
     /// The cardholder name as read from the card, in [ISO 7813](https://en.wikipedia.org/wiki/ISO/IEC_7813) format.
     ///

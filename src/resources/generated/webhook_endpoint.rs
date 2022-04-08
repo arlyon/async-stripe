@@ -296,6 +296,8 @@ pub enum EventFilter {
     BillingPortalConfigurationUpdated,
     #[serde(rename = "capability.updated")]
     CapabilityUpdated,
+    #[serde(rename = "cash_balance.funds_available")]
+    CashBalanceFundsAvailable,
     #[serde(rename = "charge.captured")]
     ChargeCaptured,
     #[serde(rename = "charge.dispute.closed")]
@@ -667,6 +669,7 @@ impl EventFilter {
                 "billing_portal.configuration.updated"
             }
             EventFilter::CapabilityUpdated => "capability.updated",
+            EventFilter::CashBalanceFundsAvailable => "cash_balance.funds_available",
             EventFilter::ChargeCaptured => "charge.captured",
             EventFilter::ChargeDisputeClosed => "charge.dispute.closed",
             EventFilter::ChargeDisputeCreated => "charge.dispute.created",
