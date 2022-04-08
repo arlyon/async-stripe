@@ -1,4 +1,4 @@
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::params::{Expandable, Metadata};

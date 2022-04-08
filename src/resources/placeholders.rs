@@ -1,7 +1,7 @@
 //! Structs of unknown origin that aren't picked
 //! up by the codegen.
 
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CountrySpecSupportedBankAccountCurrencies {}

@@ -1,6 +1,6 @@
 use std::num::ParseIntError;
 
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::params::to_snakecase;

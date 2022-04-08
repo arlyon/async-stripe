@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use serde::de::DeserializeOwned;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use crate::error::StripeError;
 use crate::resources::ApiVersion;

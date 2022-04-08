@@ -285,7 +285,7 @@ pub use generated::placeholders::*;
 /// if there are more features that requires a fully fledged CompanyParams
 /// we probably need to update the code generation and move to a shared place
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, serde_derive::Deserialize, serde_derive::Serialize)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub struct CompanyParams {
     #[serde(default)]
     pub metadata: crate::params::Metadata,
@@ -296,7 +296,7 @@ pub struct CompanyParams {
 /// if there are more features that requires a fully fledged PersonParams
 /// we probably need to update the code generation and move to a shared place
 #[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, serde_derive::Deserialize, serde_derive::Serialize)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub struct PersonParams {
     #[serde(default)]
     pub metadata: crate::params::Metadata,

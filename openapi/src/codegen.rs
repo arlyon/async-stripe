@@ -167,7 +167,7 @@ pub fn gen_prelude(state: &FileGenerator, meta: &Metadata) -> String {
         }
         prelude.push_str("};\n");
     }
-    prelude.push_str("use serde_derive::{Deserialize, Serialize};\n");
+    prelude.push_str("use serde::{Deserialize, Serialize};\n");
     prelude.push('\n');
     prelude
 }

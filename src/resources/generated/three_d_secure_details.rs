@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "three_d_secure_details".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
