@@ -60,6 +60,9 @@ pub struct PaymentMethod {
     pub customer: Option<Expandable<Customer>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<PaymentMethodCustomerBalance>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<PaymentMethodEps>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -460,6 +463,9 @@ pub struct WalletVisaCheckout {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodCustomerBalance {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodEps {
     /// The customer's bank.
     ///
@@ -670,6 +676,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
 
+    /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<CreatePaymentMethodCustomerBalance>,
+
     /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CreatePaymentMethodEps>,
@@ -768,6 +778,7 @@ impl<'a> CreatePaymentMethod<'a> {
             boleto: Default::default(),
             card: Default::default(),
             customer: Default::default(),
+            customer_balance: Default::default(),
             eps: Default::default(),
             expand: Default::default(),
             fpx: Default::default(),
@@ -920,6 +931,9 @@ pub struct CreatePaymentMethodBancontact {}
 pub struct CreatePaymentMethodBoleto {
     pub tax_id: String,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodCustomerBalance {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodEps {
@@ -1817,6 +1831,7 @@ pub enum PaymentMethodType {
     Boleto,
     Card,
     CardPresent,
+    CustomerBalance,
     Eps,
     Fpx,
     Giropay,
@@ -1846,6 +1861,7 @@ impl PaymentMethodType {
             PaymentMethodType::Boleto => "boleto",
             PaymentMethodType::Card => "card",
             PaymentMethodType::CardPresent => "card_present",
+            PaymentMethodType::CustomerBalance => "customer_balance",
             PaymentMethodType::Eps => "eps",
             PaymentMethodType::Fpx => "fpx",
             PaymentMethodType::Giropay => "giropay",
@@ -1894,6 +1910,7 @@ pub enum PaymentMethodTypeFilter {
     Bancontact,
     Boleto,
     Card,
+    CustomerBalance,
     Eps,
     Fpx,
     Giropay,
@@ -1921,6 +1938,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Bancontact => "bancontact",
             PaymentMethodTypeFilter::Boleto => "boleto",
             PaymentMethodTypeFilter::Card => "card",
+            PaymentMethodTypeFilter::CustomerBalance => "customer_balance",
             PaymentMethodTypeFilter::Eps => "eps",
             PaymentMethodTypeFilter::Fpx => "fpx",
             PaymentMethodTypeFilter::Giropay => "giropay",
