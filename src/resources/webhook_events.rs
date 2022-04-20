@@ -5,9 +5,9 @@ use serde_derive::{Deserialize, Serialize};
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
 
-use crate::params::Timestamp;
 use crate::error::WebhookError;
 use crate::ids::EventId;
+use crate::params::Timestamp;
 use crate::resources::*;
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
@@ -445,7 +445,7 @@ mod tests {
             .do_construct_event(payload, &signature, &secret)
             .expect("Failed to construct event");
 
-        assert_eq!(event.event_type, super::EventType::InvoiceItemCreated);
+        assert_eq!(event.type_, super::EventType::InvoiceItemCreated);
         assert_eq!(event.id.to_string(), "evt_123");
     }
 }
