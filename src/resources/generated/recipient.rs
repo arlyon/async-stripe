@@ -4,20 +4,20 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::RecipientId;
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{Account, BankAccount, Card};
 
 /// The resource representing a Stripe "TransferRecipient".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Recipient {
     /// Unique identifier for the object.
     pub id: RecipientId,
 
     /// Hash describing the current account on the recipient, if there is one.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub active_account: Option<Box<BankAccount>>,
+    pub active_account: Option<BankAccount>,
 
     #[serde(default)]
     pub cards: List<Card>,
@@ -30,7 +30,7 @@ pub struct Recipient {
 
     /// The default card to use for creating transfers to this recipient.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_card: Option<Box<Expandable<Card>>>,
+    pub default_card: Option<Expandable<Card>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -40,14 +40,14 @@ pub struct Recipient {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub email: Option<Box<String>>,
+    pub email: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -59,14 +59,14 @@ pub struct Recipient {
     ///
     /// If set, the recipient can no longer be updated, nor can transfers be made to it: use the Custom account instead.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub migrated_to: Option<Box<Expandable<Account>>>,
+    pub migrated_to: Option<Expandable<Account>>,
 
     /// Full, legal name of the recipient.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<Box<String>>,
+    pub name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub rolled_back_from: Option<Box<Expandable<Account>>>,
+    pub rolled_back_from: Option<Expandable<Account>>,
 
     /// Type of the recipient, one of `individual` or `corporation`.
     #[serde(rename = "type")]
@@ -343,5 +343,10 @@ impl AsRef<str> for RecipientType {
 impl std::fmt::Display for RecipientType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for RecipientType {
+    fn default() -> Self {
+        Self::Corporation
     }
 }

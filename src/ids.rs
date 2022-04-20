@@ -1,3 +1,5 @@
+use smart_default::SmartDefault;
+
 macro_rules! def_id_serde_impls {
     ($struct_name:ident) => {
         impl serde::Serialize for $struct_name {
@@ -24,7 +26,7 @@ macro_rules! def_id_serde_impls {
 
 macro_rules! def_id {
     ($struct_name:ident: String) => {
-        #[derive(Clone, Debug, Eq, PartialEq, Hash)]
+        #[derive(Clone, Debug, Default, Eq, PartialEq, Hash)]
         pub struct $struct_name(smol_str::SmolStr);
 
         impl $struct_name {
@@ -117,7 +119,7 @@ macro_rules! def_id {
         ///
         /// This type _typically_ will not allocate and
         /// therefore is usually cheaply clonable.
-        #[derive(Clone, Debug, Eq, PartialEq, Hash)]
+        #[derive(Clone, Debug, Default, Eq, PartialEq, Hash)]
         pub struct $struct_name(smol_str::SmolStr);
 
         impl $struct_name {
@@ -193,9 +195,8 @@ macro_rules! def_id {
                 if !s.starts_with($prefix) $(
                     && !s.starts_with($alt_prefix)
                 )* {
-
                     // N.B. For debugging
-                    eprintln!("bad id is: {} (expected: {:?})", s, $prefix);
+                    eprintln!("bad id is: {} (expected: {:?}) for {}", s, $prefix, stringify!($struct_name));
 
                     Err(ParseIdError {
                         typename: stringify!($struct_name),
@@ -268,6 +269,12 @@ macro_rules! def_id {
             }
         }
 
+        impl std::default::Default for $enum_name {
+            fn default() -> Self {
+                $enum_name::None
+            }
+        }
+
         impl std::str::FromStr for $enum_name {
             type Err = ParseIdError;
 
@@ -318,10 +325,11 @@ macro_rules! def_id {
             }
         )*
     };
-    (enum $enum_name:ident { $( $variant_name:ident($($variant_type:tt)*) ),* $(,)* }) => {
+    (enum $enum_name:ident { $( $(#[$test:meta])? $variant_name:ident($($variant_type:tt)*) ),+ $(,)? }) => {
         #[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+        #[derive(SmartDefault)]
         pub enum $enum_name {
-            $( $variant_name($($variant_type)*), )*
+            $( $(#[$test])* $variant_name($($variant_type)*), )*
         }
 
         impl $enum_name {
@@ -447,9 +455,12 @@ impl std::error::Error for ParseIdError {
 def_id!(AccountId, "acct_");
 def_id!(AlipayAccountId, "aliacc_");
 def_id!(ApplicationFeeId, "fee_");
+def_id!(ApplicationId, "ca_");
 def_id!(ApplicationFeeRefundId, "fr_");
 def_id!(BalanceTransactionId, "txn_");
-def_id!(BankAccountId, "ba_");
+def_id!(BankAccountId, "ba_" | "card_");
+def_id!(BillingPortalSessionId, "bps_");
+def_id!(BillingPortalConfigurationId, "bpc_");
 def_id!(BankTokenId, "btok_");
 def_id!(
     #[optional]
@@ -473,6 +484,7 @@ def_id!(CardTokenId, "tok_");
 def_id!(ChargeId, "ch_" | "py_"); // TODO: Understand (and then document) why "py_" is a valid charge id
 def_id!(CheckoutSessionId, "cs_");
 def_id!(CheckoutSessionItemId: String); // TODO: Figure out what prefix this id has
+def_id!(ConnectCollectionTransferId: String);
 def_id!(CouponId: String); // N.B. A coupon id can be user-provided so can be any arbitrary string
 def_id!(CustomerId, "cus_");
 def_id!(DiscountId, "di_");
@@ -487,6 +499,7 @@ def_id!(InvoiceLineItemIdWebhook, "il_");
 
 def_id!(
     enum InvoiceLineItemId {
+        #[default]
         Item(InvoiceItemId),
         Subscription(SubscriptionLineId),
         InvoiceLineItemIdWebhook(InvoiceLineItemIdWebhook),
@@ -505,6 +518,7 @@ def_id!(PaymentLinkId: String);
 def_id!(PaymentMethodId, "pm_" | "card_" | "src_" | "ba_");
 def_id!(
     enum PaymentSourceId {
+        #[default]
         Account(AccountId),
         AlipayAccount(AlipayAccountId),
         BankAccount(BankAccountId),
@@ -515,18 +529,21 @@ def_id!(
 def_id!(PayoutId, "po_");
 def_id!(
     enum PayoutDestinationId {
+        #[default]
         BankAccount(BankAccountId),
         Card(CardId),
     }
 );
 def_id!(PersonId, "person_");
 def_id!(PlanId: String); // N.B. A plan id can be user-provided so can be any arbitrary string
+def_id!(PlatformTaxFeeId: String);
 def_id!(PriceId: String); // TODO: Figure out what prefix this id has
 def_id!(ProductId: String); // N.B. A product id can be user-provided so can be any arbitrary string
 def_id!(PromotionCodeId, "promo_"); // N.B. A product id can be user-provided so can be any arbitrary string
 def_id!(QuoteId, "qt_");
 def_id!(RecipientId: String); // FIXME: This doesn't seem to be documented yet
 def_id!(RefundId, "re_");
+def_id!(ReserveTransactionId: String);
 def_id!(ReviewId, "prv_");
 def_id!(ScheduledQueryRunId, "sqr_");
 def_id!(SetupAttemptId, "setatt_");
@@ -540,9 +557,12 @@ def_id!(SubscriptionLineId, "sli_");
 def_id!(SubscriptionScheduleId, "sub_sched_");
 def_id!(TaxIdId, "txi_");
 def_id!(TaxCodeId, "txcd_");
+def_id!(TaxDeductedAtSourceId: String);
 def_id!(TaxRateId, "txr_");
+def_id!(TestHelpersTestClockId, "clock_");
 def_id!(
     enum TokenId {
+        #[default]
         Card(CardTokenId),
         Bank(BankTokenId),
     }

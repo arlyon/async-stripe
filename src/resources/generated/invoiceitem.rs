@@ -4,17 +4,18 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "InvoiceItem".
 ///
 /// For more details see <https://stripe.com/docs/api/invoiceitems/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceItem {
     /// Unique identifier for the object.
     pub id: InvoiceItemId,
@@ -23,7 +24,7 @@ pub struct InvoiceItem {
     ///
     /// This should always be equal to `unit_amount * quantity`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<Box<i64>>,
+    pub amount: Option<i64>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -33,13 +34,13 @@ pub struct InvoiceItem {
 
     /// The ID of the customer who will be billed when this invoice item is billed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Box<Expandable<Customer>>>,
+    pub customer: Option<Expandable<Customer>>,
 
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub date: Option<Box<Timestamp>>,
+    pub date: Option<Timestamp>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -49,28 +50,28 @@ pub struct InvoiceItem {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// If true, discounts will apply to this invoice item.
     ///
     /// Always false for prorations.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discountable: Option<Box<bool>>,
+    pub discountable: Option<bool>,
 
     /// The discounts which apply to the invoice item.
     ///
     /// Item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Box<Vec<Expandable<Discount>>>>,
+    pub discounts: Option<Vec<Expandable<Discount>>>,
 
     /// The ID of the invoice this invoice item belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice: Option<Box<Expandable<Invoice>>>,
+    pub invoice: Option<Expandable<Invoice>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -83,39 +84,43 @@ pub struct InvoiceItem {
 
     /// The price of the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<Box<Price>>,
+    pub price: Option<Price>,
 
     /// Whether the invoice item was created automatically as a proration adjustment when the customer switched plans.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub proration: Option<Box<bool>>,
+    pub proration: Option<bool>,
 
     /// Quantity of units for the invoice item.
     ///
     /// If the invoice item is a proration, the quantity of the subscription that the proration was computed for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
+    pub quantity: Option<u64>,
 
     /// The subscription that this invoice item has been created for, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<Box<Expandable<Subscription>>>,
+    pub subscription: Option<Expandable<Subscription>>,
 
     /// The subscription item that this invoice item has been created for, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_item: Option<Box<String>>,
+    pub subscription_item: Option<String>,
 
     /// The tax rates which apply to the invoice item.
     ///
     /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<TaxRate>>>,
+    pub tax_rates: Option<Vec<TaxRate>>,
+
+    /// ID of the test clock this invoice item belongs to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<Expandable<TestHelpersTestClock>>,
 
     /// Unit amount (in the `currency` specified) of the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<Box<i64>>,
+    pub unit_amount: Option<i64>,
 
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<Box<String>>,
+    pub unit_amount_decimal: Option<String>,
 }
 
 impl InvoiceItem {
@@ -199,7 +204,7 @@ pub struct CreateInvoiceItem<'a> {
 
     /// The coupons to redeem into discounts for the invoice item or invoice line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Box<Vec<CreateInvoiceItemDiscounts>>>,
+    pub discounts: Option<Vec<CreateInvoiceItemDiscounts>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -222,6 +227,8 @@ pub struct CreateInvoiceItem<'a> {
     pub metadata: Option<Metadata>,
 
     /// The period associated with this invoice item.
+    ///
+    /// When set to different values, the period will be rendered on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
 
@@ -231,7 +238,7 @@ pub struct CreateInvoiceItem<'a> {
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<Box<InvoiceItemPriceData>>,
+    pub price_data: Option<InvoiceItemPriceData>,
 
     /// Non-negative integer.
     ///
@@ -251,7 +258,7 @@ pub struct CreateInvoiceItem<'a> {
     ///
     /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<String>>>,
+    pub tax_rates: Option<Vec<String>>,
 
     /// The integer unit amount in %s of the charge to be applied to the upcoming invoice.
     ///
@@ -384,7 +391,7 @@ pub struct UpdateInvoiceItem<'a> {
     /// Item discounts are applied before invoice discounts.
     /// Pass an empty string to remove previously-defined discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Box<Vec<UpdateInvoiceItemDiscounts>>>,
+    pub discounts: Option<Vec<UpdateInvoiceItemDiscounts>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -399,6 +406,8 @@ pub struct UpdateInvoiceItem<'a> {
     pub metadata: Option<Metadata>,
 
     /// The period associated with this invoice item.
+    ///
+    /// When set to different values, the period will be rendered on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
 
@@ -408,7 +417,7 @@ pub struct UpdateInvoiceItem<'a> {
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<Box<InvoiceItemPriceData>>,
+    pub price_data: Option<InvoiceItemPriceData>,
 
     /// Non-negative integer.
     ///
@@ -421,7 +430,7 @@ pub struct UpdateInvoiceItem<'a> {
     /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
     /// Pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<String>>>,
+    pub tax_rates: Option<Vec<String>>,
 
     /// The integer unit amount in %s of the charge to be applied to the upcoming invoice.
     ///
@@ -457,38 +466,38 @@ impl<'a> UpdateInvoiceItem<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceItemDiscounts {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<Box<String>>,
+    pub coupon: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<Box<String>>,
+    pub discount: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
     pub currency: Currency,
 
     pub product: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<Box<InvoiceItemPriceDataTaxBehavior>>,
+    pub tax_behavior: Option<InvoiceItemPriceDataTaxBehavior>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<Box<i64>>,
+    pub unit_amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<Box<String>>,
+    pub unit_amount_decimal: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateInvoiceItemDiscounts {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<Box<String>>,
+    pub coupon: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<Box<String>>,
+    pub discount: Option<String>,
 }
 
 /// An enum representing the possible values of an `InvoiceItemPriceData`'s `tax_behavior` field.
@@ -519,5 +528,10 @@ impl AsRef<str> for InvoiceItemPriceDataTaxBehavior {
 impl std::fmt::Display for InvoiceItemPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for InvoiceItemPriceDataTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
     }
 }

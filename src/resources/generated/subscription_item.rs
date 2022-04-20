@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};
@@ -12,14 +12,14 @@ use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRa
 /// The resource representing a Stripe "SubscriptionItem".
 ///
 /// For more details see <https://stripe.com/docs/api/subscription_items/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItem {
     /// Unique identifier for the object.
     pub id: SubscriptionItemId,
 
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_thresholds: Option<Box<SubscriptionItemBillingThresholds>>,
+    pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
 
     /// Time at which the object was created.
     ///
@@ -38,21 +38,21 @@ pub struct SubscriptionItem {
     pub metadata: Metadata,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<Box<Price>>,
+    pub price: Option<Price>,
 
     /// The [quantity](https://stripe.com/docs/subscriptions/quantities) of the plan to which the customer should be subscribed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
+    pub quantity: Option<u64>,
 
     /// The `subscription` this `subscription_item` belongs to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<Box<String>>,
+    pub subscription: Option<String>,
 
     /// The tax rates which apply to this `subscription_item`.
     ///
     /// When set, the `default_tax_rates` on the subscription do not apply to this `subscription_item`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<TaxRate>>>,
+    pub tax_rates: Option<Vec<TaxRate>>,
 }
 
 impl SubscriptionItem {
@@ -155,7 +155,7 @@ pub struct CreateSubscriptionItem<'a> {
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<Box<SubscriptionItemPriceData>>,
+    pub price_data: Option<SubscriptionItemPriceData>,
 
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     ///
@@ -183,7 +183,7 @@ pub struct CreateSubscriptionItem<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<String>>>,
+    pub tax_rates: Option<Vec<String>>,
 }
 
 impl<'a> CreateSubscriptionItem<'a> {
@@ -295,7 +295,7 @@ pub struct UpdateSubscriptionItem<'a> {
 
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price_data: Option<Box<SubscriptionItemPriceData>>,
+    pub price_data: Option<SubscriptionItemPriceData>,
 
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     ///
@@ -320,7 +320,7 @@ pub struct UpdateSubscriptionItem<'a> {
     /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Box<Vec<String>>>,
+    pub tax_rates: Option<Vec<String>>,
 }
 
 impl<'a> UpdateSubscriptionItem<'a> {
@@ -341,7 +341,7 @@ impl<'a> UpdateSubscriptionItem<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceData {
     pub currency: Currency,
 
@@ -350,21 +350,21 @@ pub struct SubscriptionItemPriceData {
     pub recurring: SubscriptionItemPriceDataRecurring,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<Box<SubscriptionItemPriceDataTaxBehavior>>,
+    pub tax_behavior: Option<SubscriptionItemPriceDataTaxBehavior>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<Box<i64>>,
+    pub unit_amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<Box<String>>,
+    pub unit_amount_decimal: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceDataRecurring {
     pub interval: PlanInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<Box<u64>>,
+    pub interval_count: Option<u64>,
 }
 
 /// An enum representing the possible values of an `SubscriptionItemPriceDataRecurring`'s `interval` field.
@@ -399,6 +399,11 @@ impl std::fmt::Display for PlanInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PlanInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `SubscriptionItemPriceData`'s `tax_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -428,6 +433,11 @@ impl AsRef<str> for SubscriptionItemPriceDataTaxBehavior {
 impl std::fmt::Display for SubscriptionItemPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionItemPriceDataTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
     }
 }
 
@@ -463,6 +473,11 @@ impl std::fmt::Display for SubscriptionPaymentBehavior {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for SubscriptionPaymentBehavior {
+    fn default() -> Self {
+        Self::AllowIncomplete
+    }
+}
 
 /// An enum representing the possible values of an `CreateSubscriptionItem`'s `proration_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -492,5 +507,10 @@ impl AsRef<str> for SubscriptionProrationBehavior {
 impl std::fmt::Display for SubscriptionProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionProrationBehavior {
+    fn default() -> Self {
+        Self::AlwaysInvoice
     }
 }

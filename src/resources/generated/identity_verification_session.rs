@@ -9,7 +9,7 @@ use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, IdentityVerificationReport};
 
 /// The resource representing a Stripe "GelatoVerificationSession".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IdentityVerificationSession {
     /// Unique identifier for the object.
     pub id: IdentityVerificationSessionId,
@@ -21,7 +21,7 @@ pub struct IdentityVerificationSession {
     /// Make sure that you have TLS enabled on any page that includes the client secret.
     /// Refer to our docs on [passing the client secret to the frontend](https://stripe.com/docs/identity/verification-sessions#client-secret) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub client_secret: Option<Box<String>>,
+    pub client_secret: Option<String>,
 
     /// Time at which the object was created.
     ///
@@ -30,13 +30,13 @@ pub struct IdentityVerificationSession {
 
     /// If present, this property tells you the last error encountered when processing the verification.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_error: Option<Box<GelatoSessionLastError>>,
+    pub last_error: Option<GelatoSessionLastError>,
 
     /// ID of the most recent VerificationReport.
     ///
     /// [Learn more about accessing detailed verification results.](https://stripe.com/docs/identity/verification-sessions#results).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_verification_report: Option<Box<Expandable<IdentityVerificationReport>>>,
+    pub last_verification_report: Option<Expandable<IdentityVerificationReport>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -52,7 +52,7 @@ pub struct IdentityVerificationSession {
     ///
     /// If the VerificationSession is not redacted, this field will be null.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub redaction: Option<Box<VerificationSessionRedaction>>,
+    pub redaction: Option<VerificationSessionRedaction>,
 
     /// Status of this VerificationSession.
     ///
@@ -69,11 +69,11 @@ pub struct IdentityVerificationSession {
     /// Don’t store it, log it, send it in emails or expose it to anyone other than the user.
     /// Refer to our docs on [verifying identity documents](https://stripe.com/docs/identity/verify-identity-documents?platform=web&type=redirect) to learn how to redirect users to Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<Box<String>>,
+    pub url: Option<String>,
 
     /// The user’s verified data.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified_outputs: Option<Box<GelatoVerifiedOutputs>>,
+    pub verified_outputs: Option<GelatoVerifiedOutputs>,
 }
 
 impl Object for IdentityVerificationSession {
@@ -86,95 +86,95 @@ impl Object for IdentityVerificationSession {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSessionLastError {
     /// A short machine-readable string giving the reason for the verification or user-session failure.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub code: Option<Box<GelatoSessionLastErrorCode>>,
+    pub code: Option<GelatoSessionLastErrorCode>,
 
     /// A message that explains the reason for verification or user-session failure.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub reason: Option<Box<String>>,
+    pub reason: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoVerificationSessionOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub document: Option<Box<GelatoSessionDocumentOptions>>,
+    pub document: Option<GelatoSessionDocumentOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id_number: Option<Box<GelatoSessionIdNumberOptions>>,
+    pub id_number: Option<GelatoSessionIdNumberOptions>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSessionDocumentOptions {
     /// Array of strings of allowed identity document types.
     ///
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub allowed_types: Option<Box<Vec<GelatoSessionDocumentOptionsAllowedTypes>>>,
+    pub allowed_types: Option<Vec<GelatoSessionDocumentOptionsAllowedTypes>>,
 
     /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_id_number: Option<Box<bool>>,
+    pub require_id_number: Option<bool>,
 
     /// Disable image uploads, identity document images have to be captured using the device’s camera.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_live_capture: Option<Box<bool>>,
+    pub require_live_capture: Option<bool>,
 
     /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
     ///
     /// [Learn more](https://stripe.com/docs/identity/selfie).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub require_matching_selfie: Option<Box<bool>>,
+    pub require_matching_selfie: Option<bool>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSessionIdNumberOptions {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoVerifiedOutputs {
     /// The user's verified address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub address: Option<Box<Address>>,
+    pub address: Option<Address>,
 
     /// The user’s verified date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub dob: Option<Box<GelatoDataVerifiedOutputsDate>>,
+    pub dob: Option<GelatoDataVerifiedOutputsDate>,
 
     /// The user's verified first name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub first_name: Option<Box<String>>,
+    pub first_name: Option<String>,
 
     /// The user's verified id number.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id_number: Option<Box<String>>,
+    pub id_number: Option<String>,
 
     /// The user's verified id number type.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id_number_type: Option<Box<GelatoVerifiedOutputsIdNumberType>>,
+    pub id_number_type: Option<GelatoVerifiedOutputsIdNumberType>,
 
     /// The user's verified last name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub last_name: Option<Box<String>>,
+    pub last_name: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoDataVerifiedOutputsDate {
     /// Numerical day between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub day: Option<Box<i64>>,
+    pub day: Option<i64>,
 
     /// Numerical month between 1 and 12.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub month: Option<Box<i64>>,
+    pub month: Option<i64>,
 
     /// The four-digit year.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub year: Option<Box<i64>>,
+    pub year: Option<i64>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct VerificationSessionRedaction {
     /// Indicates whether this object and its related objects have been redacted or not.
     pub status: VerificationSessionRedactionStatus,
@@ -208,6 +208,11 @@ impl AsRef<str> for GelatoSessionDocumentOptionsAllowedTypes {
 impl std::fmt::Display for GelatoSessionDocumentOptionsAllowedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for GelatoSessionDocumentOptionsAllowedTypes {
+    fn default() -> Self {
+        Self::DrivingLicense
     }
 }
 
@@ -269,6 +274,11 @@ impl std::fmt::Display for GelatoSessionLastErrorCode {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for GelatoSessionLastErrorCode {
+    fn default() -> Self {
+        Self::Abandoned
+    }
+}
 
 /// An enum representing the possible values of an `GelatoVerifiedOutputs`'s `id_number_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -298,6 +308,11 @@ impl AsRef<str> for GelatoVerifiedOutputsIdNumberType {
 impl std::fmt::Display for GelatoVerifiedOutputsIdNumberType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for GelatoVerifiedOutputsIdNumberType {
+    fn default() -> Self {
+        Self::BrCpf
     }
 }
 
@@ -333,6 +348,11 @@ impl std::fmt::Display for IdentityVerificationSessionStatus {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IdentityVerificationSessionStatus {
+    fn default() -> Self {
+        Self::Canceled
+    }
+}
 
 /// An enum representing the possible values of an `IdentityVerificationSession`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -362,6 +382,11 @@ impl std::fmt::Display for IdentityVerificationSessionType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for IdentityVerificationSessionType {
+    fn default() -> Self {
+        Self::Document
+    }
+}
 
 /// An enum representing the possible values of an `VerificationSessionRedaction`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -389,5 +414,10 @@ impl AsRef<str> for VerificationSessionRedactionStatus {
 impl std::fmt::Display for VerificationSessionRedactionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for VerificationSessionRedactionStatus {
+    fn default() -> Self {
+        Self::Processing
     }
 }

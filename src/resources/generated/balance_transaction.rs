@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{BalanceTransactionId, PayoutId, SourceId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use crate::resources::{
@@ -17,7 +17,7 @@ use crate::resources::{
 /// The resource representing a Stripe "BalanceTransaction".
 ///
 /// For more details see <https://stripe.com/docs/api/balance_transactions/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BalanceTransaction {
     /// Unique identifier for the object.
     pub id: BalanceTransactionId,
@@ -42,7 +42,7 @@ pub struct BalanceTransaction {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// The exchange rate used, if applicable, for this transaction.
     ///
@@ -52,7 +52,7 @@ pub struct BalanceTransaction {
     /// Suppose this was converted into 12.34 USD in your Stripe account.
     /// Then the BalanceTransaction's `amount` would be `1234`, `currency` would be `usd`, and `exchange_rate` would be `1.234`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub exchange_rate: Option<Box<f64>>,
+    pub exchange_rate: Option<f64>,
 
     /// Fees (in %s) paid for this transaction.
     pub fee: i64,
@@ -68,7 +68,7 @@ pub struct BalanceTransaction {
 
     /// The Stripe object to which this transaction is related.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<Box<Expandable<BalanceTransactionSourceUnion>>>,
+    pub source: Option<Expandable<BalanceTransactionSourceUnion>>,
 
     /// If the transaction's net funds are available in the Stripe balance yet.
     ///
@@ -116,14 +116,14 @@ impl Object for BalanceTransaction {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Fee {
     /// Amount of the fee, in cents.
     pub amount: i64,
 
     /// ID of the Connect application that earned the fee.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<Box<String>>,
+    pub application: Option<String>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -134,7 +134,7 @@ pub struct Fee {
     ///
     /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// Type of the fee, one of: `application_fee`, `stripe_fee` or `tax`.
     #[serde(rename = "type")]
@@ -234,6 +234,11 @@ pub enum BalanceTransactionSourceUnion {
     Transfer(Transfer),
     TransferReversal(TransferReversal),
 }
+impl std::default::Default for BalanceTransactionSourceUnion {
+    fn default() -> Self {
+        Self::ApplicationFee(Default::default())
+    }
+}
 
 /// An enum representing the possible values of an `BalanceTransaction`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -321,5 +326,10 @@ impl AsRef<str> for BalanceTransactionType {
 impl std::fmt::Display for BalanceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for BalanceTransactionType {
+    fn default() -> Self {
+        Self::Adjustment
     }
 }

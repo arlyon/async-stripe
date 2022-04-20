@@ -4,11 +4,15 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+use crate::ids::PlatformTaxFeeId;
 use crate::params::Object;
 
 /// The resource representing a Stripe "PlatformTax".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PlatformTaxFee {
+    /// Unique identifier for the object.
+    pub id: PlatformTaxFeeId,
+
     /// The Connected account that incurred this charge.
     pub account: String,
 
@@ -21,8 +25,10 @@ pub struct PlatformTaxFee {
 }
 
 impl Object for PlatformTaxFee {
-    type Id = ();
-    fn id(&self) -> Self::Id {}
+    type Id = PlatformTaxFeeId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
     fn object(&self) -> &'static str {
         "platform_tax_fee"
     }

@@ -9,7 +9,7 @@ use crate::params::Object;
 use crate::resources::{Currency, Discount, Price, TaxRate};
 
 /// The resource representing a Stripe "LineItem".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CheckoutSessionItem {
     /// Unique identifier for the object.
     pub id: CheckoutSessionItemId,
@@ -33,19 +33,19 @@ pub struct CheckoutSessionItem {
 
     /// The discounts applied to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Box<Vec<LineItemsDiscountAmount>>>,
+    pub discounts: Option<Vec<LineItemsDiscountAmount>>,
 
     /// The price used to generate the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub price: Option<Box<Price>>,
+    pub price: Option<Price>,
 
     /// The quantity of products being purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
+    pub quantity: Option<u64>,
 
     /// The taxes applied to the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub taxes: Option<Box<Vec<LineItemsTaxAmount>>>,
+    pub taxes: Option<Vec<LineItemsTaxAmount>>,
 }
 
 impl Object for CheckoutSessionItem {
@@ -58,7 +58,7 @@ impl Object for CheckoutSessionItem {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LineItemsDiscountAmount {
     /// The amount discounted.
     pub amount: i64,
@@ -66,7 +66,7 @@ pub struct LineItemsDiscountAmount {
     pub discount: Discount,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LineItemsTaxAmount {
     /// Amount of tax applied for this rate.
     pub amount: i64,

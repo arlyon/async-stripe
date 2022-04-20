@@ -4,18 +4,18 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{CustomerId, QuoteId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
     Account, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
-    QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate,
+    QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Quote".
 ///
 /// For more details see <https://stripe.com/docs/api/quotes/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Quote {
     /// Unique identifier for the object.
     pub id: QuoteId,
@@ -30,14 +30,14 @@ pub struct Quote {
     ///
     /// Only applicable if there are no line items with recurring prices on the quote.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_amount: Option<Box<i64>>,
+    pub application_fee_amount: Option<i64>,
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
     /// Only applicable if there are line items with recurring prices on the quote.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_percent: Option<Box<f64>>,
+    pub application_fee_percent: Option<f64>,
 
     pub automatic_tax: QuotesResourceAutomaticTax,
 
@@ -66,15 +66,15 @@ pub struct Quote {
     /// A customer is required before finalizing the quote.
     /// Once specified, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Box<Expandable<Customer>>>,
+    pub customer: Option<Expandable<Customer>>,
 
     /// The tax rates applied to this quote.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_tax_rates: Option<Box<Vec<Expandable<TaxRate>>>>,
+    pub default_tax_rates: Option<Vec<Expandable<TaxRate>>>,
 
     /// A description that will be displayed on the quote PDF.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// The discounts applied to this quote.
     pub discounts: Vec<Expandable<Discount>>,
@@ -86,25 +86,25 @@ pub struct Quote {
 
     /// A footer that will be displayed on the quote PDF.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub footer: Option<Box<String>>,
+    pub footer: Option<String>,
 
     /// Details of the quote that was cloned.
     ///
     /// See the [cloning documentation](https://stripe.com/docs/quotes/clone) for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub from_quote: Option<Box<QuotesResourceFromQuote>>,
+    pub from_quote: Option<QuotesResourceFromQuote>,
 
     /// A header that will be displayed on the quote PDF.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub header: Option<Box<String>>,
+    pub header: Option<String>,
 
     /// The invoice that was created from this quote.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice: Option<Box<Expandable<Invoice>>>,
+    pub invoice: Option<Expandable<Invoice>>,
 
     /// All invoices will be billed using the specified settings.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_settings: Option<Box<InvoiceSettingQuoteSetting>>,
+    pub invoice_settings: Option<InvoiceSettingQuoteSetting>,
 
     /// A list of items the customer is being quoted for.
     #[serde(default)]
@@ -122,13 +122,13 @@ pub struct Quote {
     ///
     /// This number is assigned once the quote is [finalized](https://stripe.com/docs/quotes/overview#finalize).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub number: Option<Box<String>>,
+    pub number: Option<String>,
 
     /// The account on behalf of which to charge.
     ///
     /// See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<Box<Expandable<Account>>>,
+    pub on_behalf_of: Option<Expandable<Account>>,
 
     /// The status of the quote.
     pub status: QuoteStatus,
@@ -137,19 +137,23 @@ pub struct Quote {
 
     /// The subscription that was created or updated from this quote.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription: Option<Box<Expandable<Subscription>>>,
+    pub subscription: Option<Expandable<Subscription>>,
 
     pub subscription_data: QuotesResourceSubscriptionData,
 
     /// The subscription schedule that was created or updated from this quote.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_schedule: Option<Box<Expandable<SubscriptionSchedule>>>,
+    pub subscription_schedule: Option<Expandable<SubscriptionSchedule>>,
+
+    /// ID of the test clock this quote belongs to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<Expandable<TestHelpersTestClock>>,
 
     pub total_details: QuotesResourceTotalDetails,
 
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<Box<QuotesResourceTransferData>>,
+    pub transfer_data: Option<QuotesResourceTransferData>,
 }
 
 impl Quote {
@@ -174,38 +178,38 @@ impl Object for Quote {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceSettingQuoteSetting {
     /// Number of days within which a customer must pay invoices generated by this quote.
     ///
     /// This value will be `null` for quotes where `collection_method=charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub days_until_due: Option<Box<u32>>,
+    pub days_until_due: Option<u32>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceAutomaticTax {
     /// Automatically calculate taxes.
     pub enabled: bool,
 
     /// The status of the most recent automated tax calculation for this quote.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<Box<QuotesResourceAutomaticTaxStatus>>,
+    pub status: Option<QuotesResourceAutomaticTaxStatus>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceComputed {
     /// The definitive totals and line items the customer will be charged on a recurring basis.
     ///
     /// Takes into account the line items with recurring prices and discounts with `duration=forever` coupons only.
     /// Defaults to `null` if no inputted line items with recurring prices.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub recurring: Option<Box<QuotesResourceRecurring>>,
+    pub recurring: Option<QuotesResourceRecurring>,
 
     pub upfront: QuotesResourceUpfront,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceFromQuote {
     /// Whether this quote is a revision of a different quote.
     pub is_revision: bool,
@@ -214,7 +218,7 @@ pub struct QuotesResourceFromQuote {
     pub quote: Expandable<Quote>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceRecurring {
     /// Total before any discounts or taxes are applied.
     pub amount_subtotal: i64,
@@ -235,61 +239,61 @@ pub struct QuotesResourceRecurring {
     pub total_details: QuotesResourceTotalDetails,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceStatusTransitions {
     /// The time that the quote was accepted.
     ///
     /// Measured in seconds since Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub accepted_at: Option<Box<Timestamp>>,
+    pub accepted_at: Option<Timestamp>,
 
     /// The time that the quote was canceled.
     ///
     /// Measured in seconds since Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub canceled_at: Option<Box<Timestamp>>,
+    pub canceled_at: Option<Timestamp>,
 
     /// The time that the quote was finalized.
     ///
     /// Measured in seconds since Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub finalized_at: Option<Box<Timestamp>>,
+    pub finalized_at: Option<Timestamp>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceSubscriptionData {
     /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
     ///
     /// This date is ignored if it is in the past when the quote is accepted.
     /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub effective_date: Option<Box<Timestamp>>,
+    pub effective_date: Option<Timestamp>,
 
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_period_days: Option<Box<u32>>,
+    pub trial_period_days: Option<u32>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceTransferData {
     /// The amount in %s that will be transferred to the destination account when the invoice is paid.
     ///
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<Box<i64>>,
+    pub amount: Option<i64>,
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
     /// By default, the entire amount will be transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_percent: Option<Box<f64>>,
+    pub amount_percent: Option<f64>,
 
     /// The account where funds from the payment will be transferred to upon payment success.
     pub destination: Expandable<Account>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceUpfront {
     /// Total before any discounts or taxes are applied.
     pub amount_subtotal: i64,
@@ -340,6 +344,12 @@ pub struct ListQuotes<'a> {
     /// The status of the quote.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<QuoteStatus>,
+
+    /// Provides a list of quotes that are associated with the specified test clock.
+    ///
+    /// The response will not include quotes with test clocks if this and the customer parameter is not set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub test_clock: Option<&'a str>,
 }
 
 impl<'a> ListQuotes<'a> {
@@ -351,6 +361,7 @@ impl<'a> ListQuotes<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
             status: Default::default(),
+            test_clock: Default::default(),
         }
     }
 }
@@ -381,6 +392,11 @@ impl AsRef<str> for QuoteCollectionMethod {
 impl std::fmt::Display for QuoteCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for QuoteCollectionMethod {
+    fn default() -> Self {
+        Self::ChargeAutomatically
     }
 }
 
@@ -416,6 +432,11 @@ impl std::fmt::Display for QuoteStatus {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for QuoteStatus {
+    fn default() -> Self {
+        Self::Accepted
+    }
+}
 
 /// An enum representing the possible values of an `QuotesResourceAutomaticTax`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -445,6 +466,11 @@ impl AsRef<str> for QuotesResourceAutomaticTaxStatus {
 impl std::fmt::Display for QuotesResourceAutomaticTaxStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for QuotesResourceAutomaticTaxStatus {
+    fn default() -> Self {
+        Self::Complete
     }
 }
 
@@ -478,5 +504,10 @@ impl AsRef<str> for QuotesResourceRecurringInterval {
 impl std::fmt::Display for QuotesResourceRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for QuotesResourceRecurringInterval {
+    fn default() -> Self {
+        Self::Day
     }
 }

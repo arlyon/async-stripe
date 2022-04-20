@@ -4,13 +4,13 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{PayoutId, SourceId};
 use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
 use crate::resources::Currency;
 
 /// The resource representing a Stripe "Balance".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Balance {
     /// Funds that are available to be transferred or paid out, whether automatically by Stripe or explicitly via the [Transfers API](https://stripe.com/docs/api#transfers) or [Payouts API](https://stripe.com/docs/api#payouts).
     ///
@@ -21,14 +21,14 @@ pub struct Balance {
     ///
     /// The connect reserve balance for each currency and payment type can be found in the `source_types` property.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub connect_reserved: Option<Box<Vec<BalanceAmount>>>,
+    pub connect_reserved: Option<Vec<BalanceAmount>>,
 
     /// Funds that can be paid out using Instant Payouts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub instant_available: Option<Box<Vec<BalanceAmount>>>,
+    pub instant_available: Option<Vec<BalanceAmount>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuing: Option<Box<BalanceDetail>>,
+    pub issuing: Option<BalanceDetail>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -56,7 +56,7 @@ impl Object for Balance {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BalanceAmount {
     /// Balance amount.
     pub amount: i64,
@@ -67,25 +67,25 @@ pub struct BalanceAmount {
     pub currency: Currency,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_types: Option<Box<BalanceAmountBySourceType>>,
+    pub source_types: Option<BalanceAmountBySourceType>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BalanceAmountBySourceType {
     /// Amount for bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account: Option<Box<i64>>,
+    pub bank_account: Option<i64>,
 
     /// Amount for card.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<Box<i64>>,
+    pub card: Option<i64>,
 
     /// Amount for FPX.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx: Option<Box<i64>>,
+    pub fpx: Option<i64>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BalanceDetail {
     /// Funds that are available for use.
     pub available: Vec<BalanceAmount>,

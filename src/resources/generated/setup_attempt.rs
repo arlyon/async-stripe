@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{SetupAttemptId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use crate::resources::{
@@ -15,14 +15,14 @@ use crate::resources::{
 /// The resource representing a Stripe "PaymentFlowsSetupIntentSetupAttempt".
 ///
 /// For more details see <https://stripe.com/docs/api/setup_attempts/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttempt {
     /// Unique identifier for the object.
     pub id: SetupAttemptId,
 
     /// The value of [application](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-application) on the SetupIntent at the time of this confirmation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<Box<Expandable<Application>>>,
+    pub application: Option<Expandable<Application>>,
 
     /// Time at which the object was created.
     ///
@@ -31,14 +31,14 @@ pub struct SetupAttempt {
 
     /// The value of [customer](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-customer) on the SetupIntent at the time of this confirmation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Box<Expandable<Customer>>>,
+    pub customer: Option<Expandable<Customer>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
     /// The value of [on_behalf_of](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-on_behalf_of) on the SetupIntent at the time of this confirmation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<Box<Expandable<Account>>>,
+    pub on_behalf_of: Option<Expandable<Account>>,
 
     /// ID of the payment method used with this SetupAttempt.
     pub payment_method: Expandable<PaymentMethod>,
@@ -76,37 +76,37 @@ impl Object for SetupAttempt {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit: Option<Box<SetupAttemptPaymentMethodDetailsAcssDebit>>,
+    pub acss_debit: Option<SetupAttemptPaymentMethodDetailsAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit: Option<Box<SetupAttemptPaymentMethodDetailsAuBecsDebit>>,
+    pub au_becs_debit: Option<SetupAttemptPaymentMethodDetailsAuBecsDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit: Option<Box<SetupAttemptPaymentMethodDetailsBacsDebit>>,
+    pub bacs_debit: Option<SetupAttemptPaymentMethodDetailsBacsDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact: Option<Box<SetupAttemptPaymentMethodDetailsBancontact>>,
+    pub bancontact: Option<SetupAttemptPaymentMethodDetailsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto: Option<Box<SetupAttemptPaymentMethodDetailsBoleto>>,
+    pub boleto: Option<SetupAttemptPaymentMethodDetailsBoleto>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<Box<SetupAttemptPaymentMethodDetailsCard>>,
+    pub card: Option<SetupAttemptPaymentMethodDetailsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_present: Option<Box<SetupAttemptPaymentMethodDetailsCardPresent>>,
+    pub card_present: Option<SetupAttemptPaymentMethodDetailsCardPresent>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ideal: Option<Box<SetupAttemptPaymentMethodDetailsIdeal>>,
+    pub ideal: Option<SetupAttemptPaymentMethodDetailsIdeal>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit: Option<Box<SetupAttemptPaymentMethodDetailsSepaDebit>>,
+    pub sepa_debit: Option<SetupAttemptPaymentMethodDetailsSepaDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sofort: Option<Box<SetupAttemptPaymentMethodDetailsSofort>>,
+    pub sofort: Option<SetupAttemptPaymentMethodDetailsSofort>,
 
     /// The type of the payment method used in the SetupIntent (e.g., `card`).
     ///
@@ -114,147 +114,152 @@ pub struct SetupAttemptPaymentMethodDetails {
     /// It contains confirmation-specific information for the payment method.
     #[serde(rename = "type")]
     pub type_: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<SetupAttemptPaymentMethodDetailsUsBankAccount>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsAcssDebit {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsAuBecsDebit {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsBacsDebit {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsBancontact {
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_code: Option<Box<String>>,
+    pub bank_code: Option<String>,
 
     /// Name of the bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_name: Option<Box<String>>,
+    pub bank_name: Option<String>,
 
     /// Bank Identifier Code of the bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bic: Option<Box<String>>,
+    pub bic: Option<String>,
 
     /// The ID of the SEPA Direct Debit PaymentMethod which was generated by this SetupAttempt.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub generated_sepa_debit: Option<Box<Expandable<PaymentMethod>>>,
+    pub generated_sepa_debit: Option<Expandable<PaymentMethod>>,
 
     /// The mandate for the SEPA Direct Debit PaymentMethod which was generated by this SetupAttempt.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub generated_sepa_debit_mandate: Option<Box<Expandable<Mandate>>>,
+    pub generated_sepa_debit_mandate: Option<Expandable<Mandate>>,
 
     /// Last four characters of the IBAN.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub iban_last4: Option<Box<String>>,
+    pub iban_last4: Option<String>,
 
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     /// Can be one of `en`, `de`, `fr`, or `nl`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language:
-        Option<Box<SetupAttemptPaymentMethodDetailsBancontactPreferredLanguage>>,
+    pub preferred_language: Option<SetupAttemptPaymentMethodDetailsBancontactPreferredLanguage>,
 
     /// Owner's verified full name.
     ///
     /// Values are verified or provided by Bancontact directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified_name: Option<Box<String>>,
+    pub verified_name: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsBoleto {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsCard {
     /// Populated if this authorization used 3D Secure authentication.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub three_d_secure: Option<Box<ThreeDSecureDetails>>,
+    pub three_d_secure: Option<ThreeDSecureDetails>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsCardPresent {
     /// The ID of the Card PaymentMethod which was generated by this SetupAttempt.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub generated_card: Option<Box<Expandable<PaymentMethod>>>,
+    pub generated_card: Option<Expandable<PaymentMethod>>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsIdeal {
     /// The customer's bank.
     ///
     /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank: Option<Box<SetupAttemptPaymentMethodDetailsIdealBank>>,
+    pub bank: Option<SetupAttemptPaymentMethodDetailsIdealBank>,
 
     /// The Bank Identifier Code of the customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bic: Option<Box<SetupAttemptPaymentMethodDetailsIdealBic>>,
+    pub bic: Option<SetupAttemptPaymentMethodDetailsIdealBic>,
 
     /// The ID of the SEPA Direct Debit PaymentMethod which was generated by this SetupAttempt.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub generated_sepa_debit: Option<Box<Expandable<PaymentMethod>>>,
+    pub generated_sepa_debit: Option<Expandable<PaymentMethod>>,
 
     /// The mandate for the SEPA Direct Debit PaymentMethod which was generated by this SetupAttempt.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub generated_sepa_debit_mandate: Option<Box<Expandable<Mandate>>>,
+    pub generated_sepa_debit_mandate: Option<Expandable<Mandate>>,
 
     /// Last four characters of the IBAN.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub iban_last4: Option<Box<String>>,
+    pub iban_last4: Option<String>,
 
     /// Owner's verified full name.
     ///
     /// Values are verified or provided by iDEAL directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified_name: Option<Box<String>>,
+    pub verified_name: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsSepaDebit {}
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsSofort {
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_code: Option<Box<String>>,
+    pub bank_code: Option<String>,
 
     /// Name of the bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_name: Option<Box<String>>,
+    pub bank_name: Option<String>,
 
     /// Bank Identifier Code of the bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bic: Option<Box<String>>,
+    pub bic: Option<String>,
 
     /// The ID of the SEPA Direct Debit PaymentMethod which was generated by this SetupAttempt.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub generated_sepa_debit: Option<Box<Expandable<PaymentMethod>>>,
+    pub generated_sepa_debit: Option<Expandable<PaymentMethod>>,
 
     /// The mandate for the SEPA Direct Debit PaymentMethod which was generated by this SetupAttempt.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub generated_sepa_debit_mandate: Option<Box<Expandable<Mandate>>>,
+    pub generated_sepa_debit_mandate: Option<Expandable<Mandate>>,
 
     /// Last four characters of the IBAN.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub iban_last4: Option<Box<String>>,
+    pub iban_last4: Option<String>,
 
     /// Preferred language of the Sofort authorization page that the customer is redirected to.
     /// Can be one of `en`, `de`, `fr`, or `nl`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_language: Option<Box<SetupAttemptPaymentMethodDetailsSofortPreferredLanguage>>,
+    pub preferred_language: Option<SetupAttemptPaymentMethodDetailsSofortPreferredLanguage>,
 
     /// Owner's verified full name.
     ///
     /// Values are verified or provided by Sofort directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified_name: Option<Box<String>>,
+    pub verified_name: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsUsBankAccount {}
 
 /// The parameters for `SetupAttempt::list`.
 #[derive(Clone, Debug, Serialize)]
@@ -339,6 +344,11 @@ impl std::fmt::Display for SetupAttemptPaymentMethodDetailsBancontactPreferredLa
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for SetupAttemptPaymentMethodDetailsBancontactPreferredLanguage {
+    fn default() -> Self {
+        Self::De
+    }
+}
 
 /// An enum representing the possible values of an `SetupAttemptPaymentMethodDetailsIdeal`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -388,6 +398,11 @@ impl AsRef<str> for SetupAttemptPaymentMethodDetailsIdealBank {
 impl std::fmt::Display for SetupAttemptPaymentMethodDetailsIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SetupAttemptPaymentMethodDetailsIdealBank {
+    fn default() -> Self {
+        Self::AbnAmro
     }
 }
 
@@ -454,6 +469,11 @@ impl std::fmt::Display for SetupAttemptPaymentMethodDetailsIdealBic {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for SetupAttemptPaymentMethodDetailsIdealBic {
+    fn default() -> Self {
+        Self::Abnanl2a
+    }
+}
 
 /// An enum representing the possible values of an `SetupAttemptPaymentMethodDetailsSofort`'s `preferred_language` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -485,5 +505,10 @@ impl AsRef<str> for SetupAttemptPaymentMethodDetailsSofortPreferredLanguage {
 impl std::fmt::Display for SetupAttemptPaymentMethodDetailsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SetupAttemptPaymentMethodDetailsSofortPreferredLanguage {
+    fn default() -> Self {
+        Self::De
     }
 }

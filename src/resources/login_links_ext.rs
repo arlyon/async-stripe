@@ -1,15 +1,9 @@
 use serde_derive::Serialize;
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::params::Expand;
 use crate::resources::LoginLink;
 use crate::AccountId;
-
-pub trait CreateLoginLinkExt {
-    fn create(client: &Client, id: &AccountId, redirect_url: &str) -> Response<Self>
-    where
-        Self: Sized;
-}
 
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateLoginLink<'a> {
@@ -22,8 +16,8 @@ pub struct CreateLoginLink<'a> {
     pub redirect_url: Option<String>,
 }
 
-impl CreateLoginLinkExt for LoginLink {
-    fn create(client: &Client, id: &AccountId, redirect_url: &str) -> Response<Self> {
+impl LoginLink {
+    pub fn create(client: &Client, id: &AccountId, redirect_url: &str) -> Response<Self> {
         let create_login_link =
             CreateLoginLink { expand: &[], redirect_url: Some(redirect_url.to_string()) };
 

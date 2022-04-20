@@ -9,7 +9,7 @@ use crate::params::{Object, Timestamp};
 use crate::resources::Currency;
 
 /// The resource representing a Stripe "BitcoinTransaction".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BitcoinTransaction {
     /// Unique identifier for the object.
     pub id: BitcoinTransactionId,

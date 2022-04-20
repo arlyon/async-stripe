@@ -4,12 +4,12 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{CustomerId, EphemeralKeyId, IssuingCardId};
 use crate::params::{Deleted, Expand, Object, Timestamp};
 
 /// The resource representing a Stripe "EphemeralKey".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct EphemeralKey {
     /// Unique identifier for the object.
     pub id: EphemeralKeyId,
@@ -31,7 +31,7 @@ pub struct EphemeralKey {
     ///
     /// You can use this value to make authorized requests to the Stripe API.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub secret: Option<Box<String>>,
+    pub secret: Option<String>,
 }
 
 impl EphemeralKey {

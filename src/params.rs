@@ -3,9 +3,15 @@ use std::collections::HashMap;
 use serde::de::DeserializeOwned;
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{err, ok, Client, Response};
 use crate::error::StripeError;
 use crate::resources::ApiVersion;
+use crate::{
+    client::{
+        config::{err, ok},
+        Client, Response,
+    },
+    AccountId, ApplicationId,
+};
 
 #[derive(Clone, Default)]
 pub struct AppInfo {
@@ -14,12 +20,38 @@ pub struct AppInfo {
     pub version: Option<String>,
 }
 
-#[derive(Clone, Default)]
+impl ToString for AppInfo {
+    /// Formats a plugin's 'App Info' into a string that can be added to the end of an User-Agent string.
+    ///
+    /// This formatting matches that of other libraries, and if changed then it should be changed everywhere.
+    fn to_string(&self) -> String {
+        match (&self.version, &self.url) {
+            (Some(a), Some(b)) => format!("{}/{} ({})", &self.name, a, b),
+            (Some(a), None) => format!("{}/{}", &self.name, a),
+            (None, Some(b)) => format!("{} ({})", &self.name, b),
+            _ => self.name.to_string(),
+        }
+    }
+}
+
+#[derive(Clone)]
 pub struct Headers {
-    pub client_id: Option<String>,
-    pub stripe_version: Option<ApiVersion>,
-    pub stripe_account: Option<String>,
-    pub user_agent: Option<String>,
+    pub stripe_version: ApiVersion,
+    pub user_agent: String,
+
+    pub client_id: Option<ApplicationId>,
+    pub stripe_account: Option<AccountId>,
+}
+
+impl Headers {
+    pub fn to_array<'a>(&'a self) -> [(&'a str, Option<&'a str>); 4] {
+        [
+            ("Client-Id", self.client_id.as_deref()),
+            ("Stripe-Account", self.stripe_account.as_deref()),
+            ("Stripe-Version", Some(self.stripe_version.as_str())),
+            ("User-Agent", Some(&self.user_agent)),
+        ]
+    }
 }
 
 /// Implemented by types which represent stripe objects.
@@ -76,13 +108,22 @@ pub enum Expandable<T: Object> {
 impl<T> Expandable<T>
 where
     T: Object,
-    T::Id: Clone,
+    T::Id: Clone + Default,
 {
     pub fn id(&self) -> T::Id {
         match self {
             Expandable::Id(id) => id.clone(),
             Expandable::Object(obj) => obj.id(),
         }
+    }
+}
+
+impl<T: Object> Default for Expandable<T>
+where
+    T::Id: Default,
+{
+    fn default() -> Self {
+        Expandable::Id(Default::default())
     }
 }
 
@@ -176,14 +217,11 @@ impl<T: DeserializeOwned + Send + 'static> List<T> {
     /// Prefer `List::next` when possible
     pub fn get_next(client: &Client, url: &str, last_id: &str) -> Response<List<T>> {
         if url.starts_with("/v1/") {
-            // TODO: Maybe parse the URL?  Perhaps `List` should always parse its `url` field.
-            let mut url = url.trim_start_matches("/v1/").to_string();
-            if url.contains('?') {
-                url.push_str(&format!("&starting_after={}", last_id));
-            } else {
-                url.push_str(&format!("?starting_after={}", last_id));
-            }
-            client.get(&url)
+            let path = url.trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
+            client.get_query(
+                &path,
+                [("starting_after", last_id)].iter().cloned().collect::<HashMap<_, _>>(),
+            )
         } else {
             err(StripeError::UnsupportedVersion)
         }
@@ -321,5 +359,72 @@ mod tests {
         assert_eq!(to_snakecase("XMLHttpRequest").as_str(), "xml_http_request");
         assert_eq!(to_snakecase("UPPER").as_str(), "upper");
         assert_eq!(to_snakecase("lower").as_str(), "lower");
+    }
+
+    #[cfg(feature = "async")]
+    #[tokio::test]
+    async fn list() {
+        use httpmock::Method::GET;
+        use httpmock::MockServer;
+
+        use crate::Client;
+        use crate::{Customer, ListCustomers};
+
+        // Start a lightweight mock server.
+        let server = MockServer::start_async().await;
+
+        let client = Client::from_url(&*server.url("/"), "fake_key");
+
+        let next_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers").query_param("starting_after", "cus_1");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_2",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316731,
+                "currency": "gbp",
+                "delinquent": false,
+                "email": null,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let first_item = server.mock(|when, then| {
+            when.method(GET).path("/v1/customers");
+            then.status(200).body(
+                r#"{"object": "list", "data": [{
+                "id": "cus_1",
+                "object": "customer",
+                "balance": 0,
+                "created": 1649316731,
+                "currency": "gbp",
+                "delinquent": false,
+                "invoice_prefix": "4AF7482",
+                "invoice_settings": {},
+                "livemode": false,
+                "metadata": {},
+                "preferred_locales": [],
+                "tax_exempt": "none"
+              }], "has_more": true, "url": "/v1/customers"}"#,
+            );
+        });
+
+        let res = Customer::list(&client, ListCustomers::new()).await.unwrap();
+
+        println!("{:?}", res);
+
+        let res2 = res.next(&client).await.unwrap();
+
+        println!("{:?}", res2);
+
+        first_item.assert_hits_async(1).await;
+        next_item.assert_hits_async(1).await;
     }
 }

@@ -8,7 +8,7 @@ use crate::ids::ApplePayDomainId;
 use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "ApplePayDomain".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ApplePayDomain {
     /// Unique identifier for the object.
     pub id: ApplePayDomainId,
@@ -24,11 +24,11 @@ pub struct ApplePayDomain {
     pub deleted: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub domain_name: Option<Box<String>>,
+    pub domain_name: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 }
 
 impl Object for ApplePayDomain {

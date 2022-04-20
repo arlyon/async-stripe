@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::WebhookEndpointId;
 use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
 use crate::resources::{ApiVersion, WebhookEndpointStatus};
@@ -12,7 +12,7 @@ use crate::resources::{ApiVersion, WebhookEndpointStatus};
 /// The resource representing a Stripe "NotificationWebhookEndpoint".
 ///
 /// For more details see <https://stripe.com/docs/api/webhook_endpoints/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WebhookEndpoint {
     /// Unique identifier for the object.
     pub id: WebhookEndpointId,
@@ -23,7 +23,7 @@ pub struct WebhookEndpoint {
 
     /// The ID of the associated Connect application.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<Box<String>>,
+    pub application: Option<String>,
 
     /// Time at which the object was created.
     ///
@@ -37,7 +37,7 @@ pub struct WebhookEndpoint {
 
     /// An optional description of what the webhook is used for.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<Box<String>>,
+    pub description: Option<String>,
 
     /// The list of events to enable for this endpoint.
     ///
@@ -47,7 +47,7 @@ pub struct WebhookEndpoint {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -59,7 +59,7 @@ pub struct WebhookEndpoint {
     ///
     /// Only returned at creation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub secret: Option<Box<String>>,
+    pub secret: Option<String>,
 
     /// The status of the webhook.
     ///
@@ -69,7 +69,7 @@ pub struct WebhookEndpoint {
 
     /// The URL of the webhook endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<Box<String>>,
+    pub url: Option<String>,
 }
 
 impl WebhookEndpoint {
@@ -232,7 +232,7 @@ pub struct UpdateWebhookEndpoint<'a> {
     ///
     /// You may specify `['*']` to enable all events, except those that require explicit selection.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub enabled_events: Option<Box<Vec<EventFilter>>>,
+    pub enabled_events: Option<Vec<EventFilter>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -296,6 +296,8 @@ pub enum EventFilter {
     BillingPortalConfigurationUpdated,
     #[serde(rename = "capability.updated")]
     CapabilityUpdated,
+    #[serde(rename = "cash_balance.funds_available")]
+    CashBalanceFundsAvailable,
     #[serde(rename = "charge.captured")]
     ChargeCaptured,
     #[serde(rename = "charge.dispute.closed")]
@@ -472,6 +474,8 @@ pub enum EventFilter {
     PaymentIntentCanceled,
     #[serde(rename = "payment_intent.created")]
     PaymentIntentCreated,
+    #[serde(rename = "payment_intent.partially_funded")]
+    PaymentIntentPartiallyFunded,
     #[serde(rename = "payment_intent.payment_failed")]
     PaymentIntentPaymentFailed,
     #[serde(rename = "payment_intent.processing")]
@@ -608,6 +612,20 @@ pub enum EventFilter {
     TaxRateCreated,
     #[serde(rename = "tax_rate.updated")]
     TaxRateUpdated,
+    #[serde(rename = "terminal.reader.action_failed")]
+    TerminalReaderActionFailed,
+    #[serde(rename = "terminal.reader.action_succeeded")]
+    TerminalReaderActionSucceeded,
+    #[serde(rename = "test_helpers.test_clock.advancing")]
+    TestHelpersTestClockAdvancing,
+    #[serde(rename = "test_helpers.test_clock.created")]
+    TestHelpersTestClockCreated,
+    #[serde(rename = "test_helpers.test_clock.deleted")]
+    TestHelpersTestClockDeleted,
+    #[serde(rename = "test_helpers.test_clock.internal_failure")]
+    TestHelpersTestClockInternalFailure,
+    #[serde(rename = "test_helpers.test_clock.ready")]
+    TestHelpersTestClockReady,
     #[serde(rename = "topup.canceled")]
     TopupCanceled,
     #[serde(rename = "topup.created")]
@@ -651,6 +669,7 @@ impl EventFilter {
                 "billing_portal.configuration.updated"
             }
             EventFilter::CapabilityUpdated => "capability.updated",
+            EventFilter::CashBalanceFundsAvailable => "cash_balance.funds_available",
             EventFilter::ChargeCaptured => "charge.captured",
             EventFilter::ChargeDisputeClosed => "charge.dispute.closed",
             EventFilter::ChargeDisputeCreated => "charge.dispute.created",
@@ -761,6 +780,7 @@ impl EventFilter {
             }
             EventFilter::PaymentIntentCanceled => "payment_intent.canceled",
             EventFilter::PaymentIntentCreated => "payment_intent.created",
+            EventFilter::PaymentIntentPartiallyFunded => "payment_intent.partially_funded",
             EventFilter::PaymentIntentPaymentFailed => "payment_intent.payment_failed",
             EventFilter::PaymentIntentProcessing => "payment_intent.processing",
             EventFilter::PaymentIntentRequiresAction => "payment_intent.requires_action",
@@ -831,6 +851,15 @@ impl EventFilter {
             EventFilter::SubscriptionScheduleUpdated => "subscription_schedule.updated",
             EventFilter::TaxRateCreated => "tax_rate.created",
             EventFilter::TaxRateUpdated => "tax_rate.updated",
+            EventFilter::TerminalReaderActionFailed => "terminal.reader.action_failed",
+            EventFilter::TerminalReaderActionSucceeded => "terminal.reader.action_succeeded",
+            EventFilter::TestHelpersTestClockAdvancing => "test_helpers.test_clock.advancing",
+            EventFilter::TestHelpersTestClockCreated => "test_helpers.test_clock.created",
+            EventFilter::TestHelpersTestClockDeleted => "test_helpers.test_clock.deleted",
+            EventFilter::TestHelpersTestClockInternalFailure => {
+                "test_helpers.test_clock.internal_failure"
+            }
+            EventFilter::TestHelpersTestClockReady => "test_helpers.test_clock.ready",
             EventFilter::TopupCanceled => "topup.canceled",
             EventFilter::TopupCreated => "topup.created",
             EventFilter::TopupFailed => "topup.failed",
@@ -854,5 +883,10 @@ impl AsRef<str> for EventFilter {
 impl std::fmt::Display for EventFilter {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for EventFilter {
+    fn default() -> Self {
+        Self::All
     }
 }

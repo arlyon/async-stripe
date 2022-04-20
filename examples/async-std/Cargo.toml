@@ -1,9 +1,0 @@
-[package]
-name = "example-async-std"
-version = "0.1.0"
-authors = ["Alexander Lyon <arlyon@me.com>"]
-edition = "2018"
-
-[dependencies]
-async-std = { version = "1.7.0", features = ["attributes"] }
-async-stripe = { path = "../../", features = ["runtime-async-std-surf"] }

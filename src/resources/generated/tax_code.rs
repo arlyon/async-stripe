@@ -4,14 +4,14 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::TaxCodeId;
 use crate::params::{Expand, List, Object};
 
 /// The resource representing a Stripe "TaxProductResourceTaxCode".
 ///
 /// For more details see <https://stripe.com/docs/api/tax_codes/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxCode {
     /// Unique identifier for the object.
     pub id: TaxCodeId,

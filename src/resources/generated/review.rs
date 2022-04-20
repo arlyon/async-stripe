@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::ReviewId;
 use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
 use crate::resources::{Charge, PaymentIntent, ReviewReason};
@@ -12,24 +12,24 @@ use crate::resources::{Charge, PaymentIntent, ReviewReason};
 /// The resource representing a Stripe "RadarReview".
 ///
 /// For more details see <https://stripe.com/docs/api/reviews/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Review {
     /// Unique identifier for the object.
     pub id: ReviewId,
 
     /// The ZIP or postal code of the card used, if applicable.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_zip: Option<Box<String>>,
+    pub billing_zip: Option<String>,
 
     /// The charge associated with this review.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub charge: Option<Box<Expandable<Charge>>>,
+    pub charge: Option<Expandable<Charge>>,
 
     /// The reason the review was closed, or null if it has not yet been closed.
     ///
     /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, or `redacted`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub closed_reason: Option<Box<ReviewClosedReason>>,
+    pub closed_reason: Option<ReviewClosedReason>,
 
     /// Time at which the object was created.
     ///
@@ -38,13 +38,13 @@ pub struct Review {
 
     /// The IP address where the payment originated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address: Option<Box<String>>,
+    pub ip_address: Option<String>,
 
     /// Information related to the location of the payment.
     ///
     /// Note that this information is an approximation and attempts to locate the nearest population center - it should not be used to determine a specific address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ip_address_location: Option<Box<RadarReviewResourceLocation>>,
+    pub ip_address_location: Option<RadarReviewResourceLocation>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -59,7 +59,7 @@ pub struct Review {
 
     /// The PaymentIntent ID associated with this review, if one exists.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_intent: Option<Box<Expandable<PaymentIntent>>>,
+    pub payment_intent: Option<Expandable<PaymentIntent>>,
 
     /// The reason the review is currently open or closed.
     ///
@@ -68,7 +68,7 @@ pub struct Review {
 
     /// Information related to the browsing session of the user who initiated the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub session: Option<Box<RadarReviewResourceSession>>,
+    pub session: Option<RadarReviewResourceSession>,
 }
 
 impl Review {
@@ -95,46 +95,46 @@ impl Object for Review {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RadarReviewResourceLocation {
     /// The city where the payment originated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<Box<String>>,
+    pub city: Option<String>,
 
     /// Two-letter ISO code representing the country where the payment originated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<Box<String>>,
+    pub country: Option<String>,
 
     /// The geographic latitude where the payment originated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub latitude: Option<Box<f64>>,
+    pub latitude: Option<f64>,
 
     /// The geographic longitude where the payment originated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub longitude: Option<Box<f64>>,
+    pub longitude: Option<f64>,
 
     /// The state/county/province/region where the payment originated.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub region: Option<Box<String>>,
+    pub region: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RadarReviewResourceSession {
     /// The browser used in this browser session (e.g., `Chrome`).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub browser: Option<Box<String>>,
+    pub browser: Option<String>,
 
     /// Information about the device used for the browser session (e.g., `Samsung SM-G930T`).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub device: Option<Box<String>>,
+    pub device: Option<String>,
 
     /// The platform for the browser session (e.g., `Macintosh`).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub platform: Option<Box<String>>,
+    pub platform: Option<String>,
 
     /// The version for the browser session (e.g., `61.0.3163.100`).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub version: Option<Box<String>>,
+    pub version: Option<String>,
 }
 
 /// The parameters for `Review::list`.
@@ -214,6 +214,11 @@ impl std::fmt::Display for ReviewClosedReason {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for ReviewClosedReason {
+    fn default() -> Self {
+        Self::Approved
+    }
+}
 
 /// An enum representing the possible values of an `Review`'s `opened_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -241,5 +246,10 @@ impl AsRef<str> for ReviewOpenedReason {
 impl std::fmt::Display for ReviewOpenedReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ReviewOpenedReason {
+    fn default() -> Self {
+        Self::Manual
     }
 }

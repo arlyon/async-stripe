@@ -4,13 +4,13 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{ChargeId, IssuerFraudRecordId};
 use crate::params::{Expand, Expandable, List, Object, Timestamp};
 use crate::resources::Charge;
 
 /// The resource representing a Stripe "IssuerFraudRecord".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuerFraudRecord {
     /// Unique identifier for the object.
     pub id: IssuerFraudRecordId,

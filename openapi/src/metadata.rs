@@ -1,4 +1,208 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
+use std::fs::write;
+use std::path::Path;
+
+use heck::{CamelCase, SnakeCase};
+use serde_json::Value;
+
+use crate::{
+    file_generator::FileGenerator,
+    mappings::{self, FieldMap, ObjectMap},
+    metadata,
+    types::CopyOrClone,
+};
+
+/// Global metadata for the entire codegen process.
+#[derive(Debug)]
+pub struct Metadata<'a> {
+    pub spec: &'a Value,
+    /// A map of `objects` to their rust id type
+    pub id_mappings: BTreeMap<String, (String, CopyOrClone)>,
+
+    pub feature_groups: BTreeMap<&'a str, &'a str>,
+
+    /// The set of schemas which should implement `Object`.
+    /// These have both an `id` property and on `object` property.
+    pub objects: BTreeSet<&'a str>,
+    /// A one to many map of schema to depending types.
+    pub dependents: BTreeMap<&'a str, BTreeSet<&'a str>>,
+    /// How a particular schema should be renamed.
+    pub object_mappings: ObjectMap,
+    /// An override for the rust-type of a particular object/field pair.
+    pub field_mappings: FieldMap,
+    /// A one to many map of _objects_ to requests which should be
+    /// implemented for that object.
+    ///
+    /// This is typically determined by the first segment in the path.
+    pub requests: BTreeMap<String, BTreeSet<&'a str>>,
+}
+
+impl<'a> Metadata<'a> {
+    pub fn from_spec(spec: &'a Value) -> Self {
+        let id_renames = mappings::id_renames();
+        let object_mappings = mappings::object_mappings();
+        let field_mappings = mappings::field_mappings();
+        let feature_groups = metadata::feature_groups();
+
+        let mut objects = BTreeSet::new();
+        let mut dependents: BTreeMap<_, BTreeSet<_>> = BTreeMap::new();
+        let mut id_mappings = BTreeMap::new();
+
+        for (key, schema) in spec["components"]["schemas"].as_object().unwrap() {
+            let schema_name = key.as_str();
+            let fields = match schema["properties"].as_object() {
+                Some(some) => some,
+                None => continue,
+            };
+            if fields.contains_key("object") {
+                objects.insert(schema_name);
+                if !schema["properties"]["id"].is_null() {
+                    let id_type = id_renames
+                        .get(&schema_name)
+                        .unwrap_or(&schema_name)
+                        .replace('.', "_")
+                        .to_camel_case()
+                        + "Id";
+
+                    id_mappings.insert(
+                        schema_name.replace('.', "_").to_owned(),
+                        (id_type, CopyOrClone::Clone),
+                    );
+                }
+            }
+            for (_, field) in fields {
+                if let Some(path) = field["$ref"].as_str() {
+                    let dep = path.trim_start_matches("#/components/schemas/");
+                    dependents.entry(dep).or_default().insert(schema_name);
+                }
+                if let Some(any_of) = field["anyOf"].as_array() {
+                    for ty in any_of {
+                        if let Some(path) = ty["$ref"].as_str() {
+                            let dep = path.trim_start_matches("#/components/schemas/");
+                            dependents.entry(dep).or_default().insert(schema_name);
+                        }
+                    }
+                }
+            }
+        }
+
+        Self {
+            spec,
+            requests: metadata_requests(spec, &objects),
+            objects,
+            dependents,
+            id_mappings,
+            object_mappings,
+            field_mappings,
+            feature_groups,
+        }
+    }
+
+    /// generate placeholder types with stubs for potentially missing features
+    pub fn write_placeholders<T>(&self, out_path: T)
+    where
+        T: AsRef<Path>,
+    {
+        let mut out = String::new();
+        out.push_str("use crate::ids::*;\n");
+        out.push_str("use crate::params::Object;\n");
+        out.push_str("use serde_derive::{Deserialize, Serialize};\n");
+
+        for (schema, feature) in self.feature_groups.iter() {
+            out.push('\n');
+            let (id_type, c_c) =
+                self.schema_to_id_type(schema).unwrap_or_else(|| ("()".into(), CopyOrClone::Copy));
+            let struct_type = self.schema_to_rust_type(schema);
+            out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
+            out.push_str("#[derive(Clone, Debug, Default, Deserialize, Serialize)]\n");
+            out.push_str(&format!("pub struct {} {{\n", struct_type));
+            out.push_str(&format!("\tpub id: {},\n", id_type));
+            out.push_str("}\n\n");
+            out.push_str(&format!("#[cfg(not(feature = \"{}\"))]\n", feature));
+            out.push_str(&format!("impl Object for {} {{\n", struct_type));
+            out.push_str(&format!("\ttype Id = {};\n", id_type));
+            out.push_str(&format!(
+                "\tfn id(&self) -> Self::Id {{ self.id{} }}\n",
+                match c_c {
+                    CopyOrClone::Clone => ".clone()",
+                    CopyOrClone::Copy => "",
+                }
+            ));
+            out.push_str(&format!("\tfn object(&self) -> &'static str {{ \"{}\" }}\n", schema));
+            out.push_str("}\n");
+        }
+
+        write(&out_path.as_ref().join("placeholders.rs"), out.as_bytes()).unwrap();
+    }
+
+    #[tracing::instrument(skip_all)]
+    pub fn get_files(&self) -> Vec<FileGenerator> {
+        self.objects
+            .iter()
+            .filter(|o| !o.starts_with("deleted_"))
+            .map(|o| FileGenerator::new(o.to_string()))
+            .collect()
+    }
+
+    pub fn schema_to_id_type(&self, schema: &str) -> Option<(String, CopyOrClone)> {
+        let schema = schema.replace('.', "_");
+        self.id_mappings.get(schema.as_str()).map(ToOwned::to_owned)
+    }
+
+    pub fn schema_to_rust_type(&self, schema: &str) -> String {
+        let schema = schema.replace('.', "_");
+        if let Some(rename) = self.object_mappings.get(schema.as_str()) {
+            rename.to_camel_case()
+        } else {
+            schema.to_camel_case()
+        }
+    }
+
+    pub fn field_to_rust_type(
+        &self,
+        schema: &str,
+        field: &str,
+    ) -> Option<(&'static str, &'static str)> {
+        let schema = schema.replace('.', "_");
+        self.field_mappings.get(&(schema.as_str(), field)).copied()
+    }
+
+    pub fn schema_field(&self, parent: &str, field: &str) -> String {
+        let parent_type = self.schema_to_rust_type(parent);
+        format!("{}_{}", parent_type, field).to_snake_case()
+    }
+}
+
+/// given a spec and a set of objects in that spec, metadatas a
+/// map with the requests to implement for each of the types in the spec
+pub fn metadata_requests<'a>(
+    spec: &'a Value,
+    objects: &BTreeSet<&'a str>,
+) -> BTreeMap<String, BTreeSet<&'a str>> {
+    let mut requests = BTreeMap::<String, BTreeSet<_>>::new();
+    for (path, _) in spec["paths"].as_object().unwrap() {
+        let mut seg_iterator = path.trim_start_matches("/v1/").split('/');
+        let object = match (seg_iterator.next(), seg_iterator.next()) {
+            // handle special case for sessions
+            (Some(x), Some("sessions")) => format!("{}.session", x),
+            (Some(x), _) => x.to_string(),
+            _ => continue,
+        };
+
+        // This isn't documented in the API reference so let's skip it
+        if object == "account" {
+            continue;
+        }
+
+        let seg_like = &object[0..object.len() - 1];
+        if objects.contains(object.as_str()) {
+            requests.entry(object).or_default().insert(path.as_str());
+        } else if object.ends_with('s') && objects.contains(seg_like) {
+            requests.entry(seg_like.to_string()).or_default().insert(path.as_str());
+        }
+    }
+    requests
+}
 
 #[rustfmt::skip]
 pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {

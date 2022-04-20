@@ -11,7 +11,7 @@ use crate::resources::{ApplicationFee, BalanceTransaction, Currency};
 /// The resource representing a Stripe "FeeRefund".
 ///
 /// For more details see <https://stripe.com/docs/api/fee_refunds/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ApplicationFeeRefund {
     /// Unique identifier for the object.
     pub id: ApplicationFeeRefundId,
@@ -21,7 +21,7 @@ pub struct ApplicationFeeRefund {
 
     /// Balance transaction that describes the impact on your account balance.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance_transaction: Option<Box<Expandable<BalanceTransaction>>>,
+    pub balance_transaction: Option<Expandable<BalanceTransaction>>,
 
     /// Time at which the object was created.
     ///

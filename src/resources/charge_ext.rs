@@ -1,6 +1,6 @@
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{AccountId, BankAccountId, CardId, ChargeId, SourceId, TokenId};
 use crate::params::Object;
 use crate::resources::{Charge, Rule};

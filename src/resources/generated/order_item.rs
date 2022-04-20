@@ -10,7 +10,7 @@ use crate::resources::{Currency, Sku};
 /// The resource representing a Stripe "OrderItem".
 ///
 /// For more details see <https://stripe.com/docs/api/order_items/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OrderItem {
     /// A positive integer in the smallest currency unit (that is, 100 cents for $1.00, or 1 for ¥1, Japanese Yen being a zero-decimal currency) representing the total amount for the line item.
     pub amount: i64,
@@ -27,13 +27,13 @@ pub struct OrderItem {
     ///
     /// Expandable if not null (e.g., expandable to a SKU).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub parent: Option<Box<Expandable<Sku>>>,
+    pub parent: Option<Expandable<Sku>>,
 
     /// A positive integer representing the number of instances of `parent` that are included in this order item.
     ///
     /// Applicable/present only if `type` is `sku`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
+    pub quantity: Option<u64>,
 
     /// The type of line item.
     ///

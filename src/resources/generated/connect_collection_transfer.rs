@@ -4,12 +4,16 @@
 
 use serde_derive::{Deserialize, Serialize};
 
+use crate::ids::ConnectCollectionTransferId;
 use crate::params::{Expandable, Object};
 use crate::resources::{Account, Currency};
 
 /// The resource representing a Stripe "ConnectCollectionTransfer".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ConnectCollectionTransfer {
+    /// Unique identifier for the object.
+    pub id: ConnectCollectionTransferId,
+
     /// Amount transferred, in %s.
     pub amount: i64,
 
@@ -26,8 +30,10 @@ pub struct ConnectCollectionTransfer {
 }
 
 impl Object for ConnectCollectionTransfer {
-    type Id = ();
-    fn id(&self) -> Self::Id {}
+    type Id = ConnectCollectionTransferId;
+    fn id(&self) -> Self::Id {
+        self.id.clone()
+    }
     fn object(&self) -> &'static str {
         "connect_collection_transfer"
     }

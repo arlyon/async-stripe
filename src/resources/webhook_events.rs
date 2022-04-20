@@ -288,6 +288,12 @@ pub struct Webhook {
 
 #[cfg(feature = "webhook-events")]
 impl Webhook {
+    /// # Errors
+    ///
+    /// This function will return a WebhookError if:
+    ///  - the provided signature is invalid
+    ///  - the provided secret is invalid
+    ///  - the signature timestamp is older than 5 minutes
     pub fn construct_event(
         payload: &str,
         sig: &str,

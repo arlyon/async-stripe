@@ -21,6 +21,13 @@ for filename in src/resources/generated/*.rs ; do
 done
 '''
 
+[tasks.duplicates]
+script = '''
+rg -N --no-filename -i '^pub (struct|enum) ([A-Z][a-zA-z0-9]+).*?$'  src/resources/generated -g '!placeholders.rs'  -r '$2'\
+ | sort\
+ | uniq -cd
+'''
+
 [tasks.openapi-fetch]
 cwd = "openapi"
 command = "wget"

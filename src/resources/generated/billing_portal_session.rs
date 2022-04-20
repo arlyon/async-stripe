@@ -4,13 +4,13 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{BillingPortalSessionId, CustomerId};
 use crate::params::{Expand, Expandable, Object, Timestamp};
 use crate::resources::BillingPortalConfiguration;
 
 /// The resource representing a Stripe "PortalSession".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BillingPortalSession {
     /// Unique identifier for the object.
     pub id: BillingPortalSessionId,
@@ -33,7 +33,7 @@ pub struct BillingPortalSession {
     ///
     /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub locale: Option<Box<BillingPortalSessionLocale>>,
+    pub locale: Option<BillingPortalSessionLocale>,
 
     /// The account for which the session was created on behalf of.
     ///
@@ -41,7 +41,7 @@ pub struct BillingPortalSession {
     /// For more information, see the [docs](https://stripe.com/docs/connect/charges-transfers#on-behalf-of).
     /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<Box<String>>,
+    pub on_behalf_of: Option<String>,
 
     /// The URL to redirect customers to when they click on the portal's link to return to your website.
     pub return_url: String,
@@ -246,5 +246,10 @@ impl AsRef<str> for BillingPortalSessionLocale {
 impl std::fmt::Display for BillingPortalSessionLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for BillingPortalSessionLocale {
+    fn default() -> Self {
+        Self::Auto
     }
 }

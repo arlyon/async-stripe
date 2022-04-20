@@ -9,14 +9,14 @@ use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::Customer;
 
 /// The resource representing a Stripe "tax_id".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxId {
     /// Unique identifier for the object.
     pub id: TaxIdId,
 
     /// Two-letter ISO code representing the country of the tax ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub country: Option<Box<String>>,
+    pub country: Option<String>,
 
     /// Time at which the object was created.
     ///
@@ -26,7 +26,7 @@ pub struct TaxId {
 
     /// ID of the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub customer: Option<Box<Expandable<Customer>>>,
+    pub customer: Option<Expandable<Customer>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -34,22 +34,22 @@ pub struct TaxId {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
-    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `es_cif`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `th_vat`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
+    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `es_cif`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
     ///
     /// Note that some legacy tax IDs have type `unknown`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<Box<TaxIdType>>,
+    pub type_: Option<TaxIdType>,
 
     /// Value of the tax ID.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<Box<String>>,
+    pub value: Option<String>,
 
     /// Tax ID verification information.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verification: Option<Box<TaxIdVerification>>,
+    pub verification: Option<TaxIdVerification>,
 }
 
 impl Object for TaxId {
@@ -62,18 +62,18 @@ impl Object for TaxId {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIdVerification {
     /// Verification status, one of `pending`, `verified`, `unverified`, or `unavailable`.
     pub status: TaxIdVerificationStatus,
 
     /// Verified address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified_address: Option<Box<String>>,
+    pub verified_address: Option<String>,
 
     /// Verified name.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub verified_name: Option<Box<String>>,
+    pub verified_name: Option<String>,
 }
 
 /// An enum representing the possible values of an `TaxId`'s `type` field.
@@ -83,6 +83,7 @@ pub enum TaxIdType {
     AeTrn,
     AuAbn,
     AuArn,
+    BgUic,
     BrCnpj,
     BrCpf,
     CaBn,
@@ -98,6 +99,7 @@ pub enum TaxIdType {
     GbVat,
     GeVat,
     HkBr,
+    HuTin,
     IdNpwp,
     IlVat,
     InGst,
@@ -117,6 +119,7 @@ pub enum TaxIdType {
     SaVat,
     SgGst,
     SgUen,
+    SiTin,
     ThVat,
     TwVat,
     UaVat,
@@ -131,6 +134,7 @@ impl TaxIdType {
             TaxIdType::AeTrn => "ae_trn",
             TaxIdType::AuAbn => "au_abn",
             TaxIdType::AuArn => "au_arn",
+            TaxIdType::BgUic => "bg_uic",
             TaxIdType::BrCnpj => "br_cnpj",
             TaxIdType::BrCpf => "br_cpf",
             TaxIdType::CaBn => "ca_bn",
@@ -146,6 +150,7 @@ impl TaxIdType {
             TaxIdType::GbVat => "gb_vat",
             TaxIdType::GeVat => "ge_vat",
             TaxIdType::HkBr => "hk_br",
+            TaxIdType::HuTin => "hu_tin",
             TaxIdType::IdNpwp => "id_npwp",
             TaxIdType::IlVat => "il_vat",
             TaxIdType::InGst => "in_gst",
@@ -165,6 +170,7 @@ impl TaxIdType {
             TaxIdType::SaVat => "sa_vat",
             TaxIdType::SgGst => "sg_gst",
             TaxIdType::SgUen => "sg_uen",
+            TaxIdType::SiTin => "si_tin",
             TaxIdType::ThVat => "th_vat",
             TaxIdType::TwVat => "tw_vat",
             TaxIdType::UaVat => "ua_vat",
@@ -184,6 +190,11 @@ impl AsRef<str> for TaxIdType {
 impl std::fmt::Display for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TaxIdType {
+    fn default() -> Self {
+        Self::AeTrn
     }
 }
 
@@ -217,5 +228,10 @@ impl AsRef<str> for TaxIdVerificationStatus {
 impl std::fmt::Display for TaxIdVerificationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TaxIdVerificationStatus {
+    fn default() -> Self {
+        Self::Pending
     }
 }

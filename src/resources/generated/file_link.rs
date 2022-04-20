@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::{FileId, FileLinkId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{File, Scheduled};
@@ -12,7 +12,7 @@ use crate::resources::{File, Scheduled};
 /// The resource representing a Stripe "FileLink".
 ///
 /// For more details see <https://stripe.com/docs/api/file_links/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FileLink {
     /// Unique identifier for the object.
     pub id: FileLinkId,
@@ -27,7 +27,7 @@ pub struct FileLink {
 
     /// Time at which the link expires.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub expires_at: Option<Box<Timestamp>>,
+    pub expires_at: Option<Timestamp>,
 
     /// The file object this link points to.
     pub file: Expandable<File>,
@@ -42,7 +42,7 @@ pub struct FileLink {
 
     /// The publicly accessible URL to download the file.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub url: Option<Box<String>>,
+    pub url: Option<String>,
 }
 
 impl FileLink {

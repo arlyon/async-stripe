@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::PriceId;
 use crate::params::{
     Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
@@ -14,14 +14,14 @@ use crate::resources::{CreateProduct, Currency, Product, UpTo};
 /// The resource representing a Stripe "Price".
 ///
 /// For more details see <https://stripe.com/docs/api/prices/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Price {
     /// Unique identifier for the object.
     pub id: PriceId,
 
     /// Whether the price can be used for new purchases.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub active: Option<Box<bool>>,
+    pub active: Option<bool>,
 
     /// Describes how to compute the price per period.
     ///
@@ -29,7 +29,7 @@ pub struct Price {
     /// `per_unit` indicates that the fixed amount (specified in `unit_amount` or `unit_amount_decimal`) will be charged per unit in `quantity` (for prices with `usage_type=licensed`), or per unit of total usage (for prices with `usage_type=metered`).
     /// `tiered` indicates that the unit pricing will be computed using a tiering strategy as defined using the `tiers` and `tiers_mode` attributes.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_scheme: Option<Box<PriceBillingScheme>>,
+    pub billing_scheme: Option<PriceBillingScheme>,
 
     /// Time at which the object was created.
     ///
@@ -49,13 +49,13 @@ pub struct Price {
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub livemode: Option<Box<bool>>,
+    pub livemode: Option<bool>,
 
     /// A lookup key used to retrieve prices dynamically from a static string.
     ///
     /// This may be up to 200 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub lookup_key: Option<Box<String>>,
+    pub lookup_key: Option<String>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -65,59 +65,59 @@ pub struct Price {
 
     /// A brief description of the price, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub nickname: Option<Box<String>>,
+    pub nickname: Option<String>,
 
     /// The ID of the product this price is associated with.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product: Option<Box<Expandable<Product>>>,
+    pub product: Option<Expandable<Product>>,
 
     /// The recurring components of a price such as `interval` and `usage_type`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub recurring: Option<Box<Recurring>>,
+    pub recurring: Option<Recurring>,
 
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_behavior: Option<Box<PriceTaxBehavior>>,
+    pub tax_behavior: Option<PriceTaxBehavior>,
 
     /// Each element represents a pricing tier.
     ///
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers: Option<Box<Vec<PriceTier>>>,
+    pub tiers: Option<Vec<PriceTier>>,
 
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
     /// In `volume`-based tiering, the maximum quantity within a period determines the per unit price.
     /// In `graduated` tiering, pricing can change as the quantity grows.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers_mode: Option<Box<PriceTiersMode>>,
+    pub tiers_mode: Option<PriceTiersMode>,
 
     /// Apply a transformation to the reported usage or set quantity before computing the amount billed.
     ///
     /// Cannot be combined with `tiers`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transform_quantity: Option<Box<TransformQuantity>>,
+    pub transform_quantity: Option<TransformQuantity>,
 
     /// One of `one_time` or `recurring` depending on whether the price is for a one-time purchase or a recurring (subscription) purchase.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<Box<PriceType>>,
+    pub type_: Option<PriceType>,
 
     /// The unit amount in %s to be charged, represented as a whole integer if possible.
     ///
     /// Only set if `billing_scheme=per_unit`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<Box<i64>>,
+    pub unit_amount: Option<i64>,
 
     /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
     ///
     /// Only set if `billing_scheme=per_unit`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<Box<String>>,
+    pub unit_amount_decimal: Option<String>,
 }
 
 impl Price {
@@ -156,37 +156,37 @@ impl Object for Price {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PriceTier {
     /// Price for the entire tier.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flat_amount: Option<Box<i64>>,
+    pub flat_amount: Option<i64>,
 
     /// Same as `flat_amount`, but contains a decimal value with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flat_amount_decimal: Option<Box<String>>,
+    pub flat_amount_decimal: Option<String>,
 
     /// Per unit price for units relevant to the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<Box<i64>>,
+    pub unit_amount: Option<i64>,
 
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<Box<String>>,
+    pub unit_amount_decimal: Option<String>,
 
     /// Up to and including to this quantity will be contained in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub up_to: Option<Box<i64>>,
+    pub up_to: Option<i64>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Recurring {
     /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
     ///
     /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
     /// Defaults to `sum`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub aggregate_usage: Option<Box<RecurringAggregateUsage>>,
+    pub aggregate_usage: Option<RecurringAggregateUsage>,
 
     /// The frequency at which a subscription is billed.
     ///
@@ -207,7 +207,7 @@ pub struct Recurring {
     pub usage_type: RecurringUsageType,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransformQuantity {
     /// Divide usage by this number.
     pub divide_by: i64,
@@ -266,11 +266,11 @@ pub struct CreatePrice<'a> {
 
     /// These fields can be used to create a new product that this price will belong to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub product_data: Option<Box<CreatePriceProductData>>,
+    pub product_data: Option<CreatePriceProductData>,
 
     /// The recurring components of a price such as `interval` and `usage_type`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub recurring: Option<Box<CreatePriceRecurring>>,
+    pub recurring: Option<CreatePriceRecurring>,
 
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     ///
@@ -284,7 +284,7 @@ pub struct CreatePrice<'a> {
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers: Option<Box<Vec<CreatePriceTiers>>>,
+    pub tiers: Option<Vec<CreatePriceTiers>>,
 
     /// Defines if the tiering price should be `graduated` or `volume` based.
     ///
@@ -300,7 +300,7 @@ pub struct CreatePrice<'a> {
     ///
     /// Cannot be combined with `tiers`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transform_quantity: Option<Box<CreatePriceTransformQuantity>>,
+    pub transform_quantity: Option<CreatePriceTransformQuantity>,
 
     /// A positive integer in %s (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -373,7 +373,7 @@ pub struct ListPrices<'a> {
 
     /// Only return the price with these lookup_keys, if any exist.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub lookup_keys: Option<Box<Vec<String>>>,
+    pub lookup_keys: Option<Vec<String>>,
 
     /// Only return prices for the given product.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -381,7 +381,7 @@ pub struct ListPrices<'a> {
 
     /// Only return prices with these recurring fields.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub recurring: Option<Box<ListPricesRecurring>>,
+    pub recurring: Option<ListPricesRecurring>,
 
     /// A cursor for use in pagination.
     ///
@@ -471,13 +471,13 @@ impl<'a> UpdatePrice<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceProductData {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub active: Option<Box<bool>>,
+    pub active: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<Box<String>>,
+    pub id: Option<String>,
 
     #[serde(default)]
     pub metadata: Metadata,
@@ -485,60 +485,60 @@ pub struct CreatePriceProductData {
     pub name: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub statement_descriptor: Option<Box<String>>,
+    pub statement_descriptor: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_code: Option<Box<String>>,
+    pub tax_code: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_label: Option<Box<String>>,
+    pub unit_label: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceRecurring {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub aggregate_usage: Option<Box<CreatePriceRecurringAggregateUsage>>,
+    pub aggregate_usage: Option<CreatePriceRecurringAggregateUsage>,
 
     pub interval: CreatePriceRecurringInterval,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval_count: Option<Box<u64>>,
+    pub interval_count: Option<u64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage_type: Option<Box<CreatePriceRecurringUsageType>>,
+    pub usage_type: Option<CreatePriceRecurringUsageType>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceTiers {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flat_amount: Option<Box<i64>>,
+    pub flat_amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flat_amount_decimal: Option<Box<String>>,
+    pub flat_amount_decimal: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount: Option<Box<i64>>,
+    pub unit_amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<Box<String>>,
+    pub unit_amount_decimal: Option<String>,
 
     pub up_to: Option<UpTo>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceTransformQuantity {
     pub divide_by: i64,
 
     pub round: CreatePriceTransformQuantityRound,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ListPricesRecurring {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub interval: Option<Box<ListPricesRecurringInterval>>,
+    pub interval: Option<ListPricesRecurringInterval>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub usage_type: Option<Box<ListPricesRecurringUsageType>>,
+    pub usage_type: Option<ListPricesRecurringUsageType>,
 }
 
 /// An enum representing the possible values of an `CreatePriceRecurring`'s `aggregate_usage` field.
@@ -571,6 +571,11 @@ impl AsRef<str> for CreatePriceRecurringAggregateUsage {
 impl std::fmt::Display for CreatePriceRecurringAggregateUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePriceRecurringAggregateUsage {
+    fn default() -> Self {
+        Self::LastDuringPeriod
     }
 }
 
@@ -606,6 +611,11 @@ impl std::fmt::Display for CreatePriceRecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreatePriceRecurringInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `CreatePriceRecurring`'s `usage_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -635,6 +645,11 @@ impl std::fmt::Display for CreatePriceRecurringUsageType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreatePriceRecurringUsageType {
+    fn default() -> Self {
+        Self::Licensed
+    }
+}
 
 /// An enum representing the possible values of an `CreatePriceTransformQuantity`'s `round` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -662,6 +677,11 @@ impl AsRef<str> for CreatePriceTransformQuantityRound {
 impl std::fmt::Display for CreatePriceTransformQuantityRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePriceTransformQuantityRound {
+    fn default() -> Self {
+        Self::Down
     }
 }
 
@@ -697,6 +717,11 @@ impl std::fmt::Display for ListPricesRecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for ListPricesRecurringInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `ListPricesRecurring`'s `usage_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -726,6 +751,11 @@ impl std::fmt::Display for ListPricesRecurringUsageType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for ListPricesRecurringUsageType {
+    fn default() -> Self {
+        Self::Licensed
+    }
+}
 
 /// An enum representing the possible values of an `Price`'s `billing_scheme` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -753,6 +783,11 @@ impl AsRef<str> for PriceBillingScheme {
 impl std::fmt::Display for PriceBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PriceBillingScheme {
+    fn default() -> Self {
+        Self::PerUnit
     }
 }
 
@@ -786,6 +821,11 @@ impl std::fmt::Display for PriceTaxBehavior {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PriceTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
+    }
+}
 
 /// An enum representing the possible values of an `Price`'s `tiers_mode` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -815,6 +855,11 @@ impl std::fmt::Display for PriceTiersMode {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PriceTiersMode {
+    fn default() -> Self {
+        Self::Graduated
+    }
+}
 
 /// An enum representing the possible values of an `Price`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -842,6 +887,11 @@ impl AsRef<str> for PriceType {
 impl std::fmt::Display for PriceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PriceType {
+    fn default() -> Self {
+        Self::OneTime
     }
 }
 
@@ -877,6 +927,11 @@ impl std::fmt::Display for RecurringAggregateUsage {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for RecurringAggregateUsage {
+    fn default() -> Self {
+        Self::LastDuringPeriod
+    }
+}
 
 /// An enum representing the possible values of an `Recurring`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -910,6 +965,11 @@ impl std::fmt::Display for RecurringInterval {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for RecurringInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
 
 /// An enum representing the possible values of an `Recurring`'s `usage_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -939,6 +999,11 @@ impl std::fmt::Display for RecurringUsageType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for RecurringUsageType {
+    fn default() -> Self {
+        Self::Licensed
+    }
+}
 
 /// An enum representing the possible values of an `TransformQuantity`'s `round` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -966,5 +1031,10 @@ impl AsRef<str> for TransformQuantityRound {
 impl std::fmt::Display for TransformQuantityRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TransformQuantityRound {
+    fn default() -> Self {
+        Self::Down
     }
 }

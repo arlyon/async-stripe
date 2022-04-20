@@ -5,7 +5,7 @@
 use serde_derive::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PackageDimensions".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PackageDimensions {
     /// Height, in inches.
     pub height: f64,

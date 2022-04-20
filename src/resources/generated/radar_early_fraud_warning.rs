@@ -9,7 +9,7 @@ use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{Charge, PaymentIntent};
 
 /// The resource representing a Stripe "RadarEarlyFraudWarning".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct RadarEarlyFraudWarning {
     /// Unique identifier for the object.
     pub id: RadarEarlyFraudWarningId,
@@ -37,7 +37,7 @@ pub struct RadarEarlyFraudWarning {
 
     /// ID of the Payment Intent this early fraud warning is for, optionally expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_intent: Option<Box<Expandable<PaymentIntent>>>,
+    pub payment_intent: Option<Expandable<PaymentIntent>>,
 }
 
 impl Object for RadarEarlyFraudWarning {

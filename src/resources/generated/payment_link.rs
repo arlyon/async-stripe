@@ -4,7 +4,7 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::PaymentLinkId;
 use crate::params::{Expand, Expandable, List, Metadata, Object};
 use crate::resources::{Account, CheckoutSessionItem};
@@ -12,7 +12,7 @@ use crate::resources::{Account, CheckoutSessionItem};
 /// The resource representing a Stripe "PaymentLink".
 ///
 /// For more details see <https://stripe.com/docs/api/payment_links/object>
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLink {
     /// Unique identifier for the object.
     pub id: PaymentLinkId,
@@ -29,11 +29,11 @@ pub struct PaymentLink {
 
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_amount: Option<Box<i64>>,
+    pub application_fee_amount: Option<i64>,
 
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application_fee_percent: Option<Box<f64>>,
+    pub application_fee_percent: Option<f64>,
 
     pub automatic_tax: PaymentLinksResourceAutomaticTax,
 
@@ -56,29 +56,29 @@ pub struct PaymentLink {
     ///
     /// See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub on_behalf_of: Option<Box<Expandable<Account>>>,
+    pub on_behalf_of: Option<Expandable<Account>>,
 
     /// The list of payment method types that customers can use.
     ///
     /// When `null`, Stripe will dynamically show relevant payment methods you've enabled in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<Box<Vec<PaymentLinkPaymentMethodTypes>>>,
+    pub payment_method_types: Option<Vec<PaymentLinkPaymentMethodTypes>>,
 
     pub phone_number_collection: PaymentLinksResourcePhoneNumberCollection,
 
     /// Configuration for collecting the customer's shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_address_collection: Option<Box<PaymentLinksResourceShippingAddressCollection>>,
+    pub shipping_address_collection: Option<PaymentLinksResourceShippingAddressCollection>,
 
     /// When creating a subscription, the specified configuration data will be used.
     ///
     /// There must be at least one line item with a recurring price to use `subscription_data`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_data: Option<Box<PaymentLinksResourceSubscriptionData>>,
+    pub subscription_data: Option<PaymentLinksResourceSubscriptionData>,
 
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<Box<PaymentLinksResourceTransferData>>,
+    pub transfer_data: Option<PaymentLinksResourceTransferData>,
 
     /// The public URL that can be shared with customers.
     pub url: String,
@@ -120,45 +120,45 @@ impl Object for PaymentLink {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceAfterCompletion {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_confirmation: Option<Box<PaymentLinksResourceCompletionBehaviorConfirmationPage>>,
+    pub hosted_confirmation: Option<PaymentLinksResourceCompletionBehaviorConfirmationPage>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub redirect: Option<Box<PaymentLinksResourceCompletionBehaviorRedirect>>,
+    pub redirect: Option<PaymentLinksResourceCompletionBehaviorRedirect>,
 
     /// The specified behavior after the purchase is complete.
     #[serde(rename = "type")]
     pub type_: PaymentLinksResourceAfterCompletionType,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceAutomaticTax {
     /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCompletionBehaviorConfirmationPage {
     /// The custom message that is displayed to the customer after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_message: Option<Box<String>>,
+    pub custom_message: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCompletionBehaviorRedirect {
     /// The URL the customer will be redirected to after the purchase is complete.
     pub url: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourcePhoneNumberCollection {
     /// If `true`, a phone number will be collected during checkout.
     pub enabled: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for shipping locations.
     ///
@@ -166,31 +166,31 @@ pub struct PaymentLinksResourceShippingAddressCollection {
     pub allowed_countries: Vec<PaymentLinksResourceShippingAddressCollectionAllowedCountries>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceSubscriptionData {
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_period_days: Option<Box<u32>>,
+    pub trial_period_days: Option<u32>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceTransferData {
     /// The amount in %s that will be transferred to the destination account.
     ///
     /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<Box<i64>>,
+    pub amount: Option<i64>,
 
     /// The connected account receiving the transfer.
     pub destination: Expandable<Account>,
 }
 
 /// The parameters for `PaymentLink::create`.
-#[derive(Clone, Debug, Serialize, Default)]
+#[derive(Clone, Debug, Serialize)]
 pub struct CreatePaymentLink<'a> {
     /// Behavior after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub after_completion: Option<Box<CreatePaymentLinkAfterCompletion>>,
+    pub after_completion: Option<CreatePaymentLinkAfterCompletion>,
 
     /// Enables user redeemable promotion codes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -211,7 +211,7 @@ pub struct CreatePaymentLink<'a> {
 
     /// Configuration for automatic tax collection.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<Box<CreatePaymentLinkAutomaticTax>>,
+    pub automatic_tax: Option<CreatePaymentLinkAutomaticTax>,
 
     /// Configuration for collecting the customer's billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -225,8 +225,7 @@ pub struct CreatePaymentLink<'a> {
     ///
     /// Each line item represents an item being sold.
     /// Up to 20 line items are supported.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub line_items: Option<Box<Vec<CreatePaymentLinkLineItems>>>,
+    pub line_items: Vec<CreatePaymentLinkLineItems>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -246,31 +245,31 @@ pub struct CreatePaymentLink<'a> {
     /// Only `card` is supported.
     /// If no value is passed, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods) (20+ payment methods [supported](https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support)).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<Box<Vec<CreatePaymentLinkPaymentMethodTypes>>>,
+    pub payment_method_types: Option<Vec<CreatePaymentLinkPaymentMethodTypes>>,
 
     /// Controls phone number collection settings during checkout.
     ///
     /// We recommend that you review your privacy policy and check with your legal contacts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub phone_number_collection: Option<Box<CreatePaymentLinkPhoneNumberCollection>>,
+    pub phone_number_collection: Option<CreatePaymentLinkPhoneNumberCollection>,
 
     /// Configuration for collecting the customer's shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_address_collection: Option<Box<CreatePaymentLinkShippingAddressCollection>>,
+    pub shipping_address_collection: Option<CreatePaymentLinkShippingAddressCollection>,
 
     /// When creating a subscription, the specified configuration data will be used.
     ///
     /// There must be at least one line item with a recurring price to use `subscription_data`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_data: Option<Box<CreatePaymentLinkSubscriptionData>>,
+    pub subscription_data: Option<CreatePaymentLinkSubscriptionData>,
 
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfer_data: Option<Box<CreatePaymentLinkTransferData>>,
+    pub transfer_data: Option<CreatePaymentLinkTransferData>,
 }
 
 impl<'a> CreatePaymentLink<'a> {
-    pub fn new() -> Self {
+    pub fn new(line_items: Vec<CreatePaymentLinkLineItems>) -> Self {
         CreatePaymentLink {
             after_completion: Default::default(),
             allow_promotion_codes: Default::default(),
@@ -279,7 +278,7 @@ impl<'a> CreatePaymentLink<'a> {
             automatic_tax: Default::default(),
             billing_address_collection: Default::default(),
             expand: Default::default(),
-            line_items: Default::default(),
+            line_items,
             metadata: Default::default(),
             on_behalf_of: Default::default(),
             payment_method_types: Default::default(),
@@ -346,7 +345,7 @@ pub struct UpdatePaymentLink<'a> {
 
     /// Behavior after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub after_completion: Option<Box<UpdatePaymentLinkAfterCompletion>>,
+    pub after_completion: Option<UpdatePaymentLinkAfterCompletion>,
 
     /// Enables user redeemable promotion codes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -354,7 +353,7 @@ pub struct UpdatePaymentLink<'a> {
 
     /// Configuration for automatic tax collection.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub automatic_tax: Option<Box<UpdatePaymentLinkAutomaticTax>>,
+    pub automatic_tax: Option<UpdatePaymentLinkAutomaticTax>,
 
     /// Configuration for collecting the customer's billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -369,7 +368,7 @@ pub struct UpdatePaymentLink<'a> {
     /// Each line item represents an item being sold.
     /// Up to 20 line items are supported.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub line_items: Option<Box<Vec<UpdatePaymentLinkLineItems>>>,
+    pub line_items: Option<Vec<UpdatePaymentLinkLineItems>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -385,11 +384,11 @@ pub struct UpdatePaymentLink<'a> {
     /// Only `card` is supported.
     /// Pass an empty string to enable automatic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_types: Option<Box<Vec<UpdatePaymentLinkPaymentMethodTypes>>>,
+    pub payment_method_types: Option<Vec<UpdatePaymentLinkPaymentMethodTypes>>,
 
     /// Configuration for collecting the customer's shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_address_collection: Option<Box<UpdatePaymentLinkShippingAddressCollection>>,
+    pub shipping_address_collection: Option<UpdatePaymentLinkShippingAddressCollection>,
 }
 
 impl<'a> UpdatePaymentLink<'a> {
@@ -409,132 +408,132 @@ impl<'a> UpdatePaymentLink<'a> {
     }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletion {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_confirmation: Option<Box<CreatePaymentLinkAfterCompletionHostedConfirmation>>,
+    pub hosted_confirmation: Option<CreatePaymentLinkAfterCompletionHostedConfirmation>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub redirect: Option<Box<CreatePaymentLinkAfterCompletionRedirect>>,
+    pub redirect: Option<CreatePaymentLinkAfterCompletionRedirect>,
 
     #[serde(rename = "type")]
     pub type_: CreatePaymentLinkAfterCompletionType,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAutomaticTax {
     pub enabled: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub adjustable_quantity: Option<Box<CreatePaymentLinkLineItemsAdjustableQuantity>>,
+    pub adjustable_quantity: Option<CreatePaymentLinkLineItemsAdjustableQuantity>,
 
     pub price: String,
 
     pub quantity: u64,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkPhoneNumberCollection {
     pub enabled: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkShippingAddressCollection {
     pub allowed_countries: Vec<CreatePaymentLinkShippingAddressCollectionAllowedCountries>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_period_days: Option<Box<u32>>,
+    pub trial_period_days: Option<u32>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkTransferData {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<Box<i64>>,
+    pub amount: Option<i64>,
 
     pub destination: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletion {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub hosted_confirmation: Option<Box<UpdatePaymentLinkAfterCompletionHostedConfirmation>>,
+    pub hosted_confirmation: Option<UpdatePaymentLinkAfterCompletionHostedConfirmation>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub redirect: Option<Box<UpdatePaymentLinkAfterCompletionRedirect>>,
+    pub redirect: Option<UpdatePaymentLinkAfterCompletionRedirect>,
 
     #[serde(rename = "type")]
     pub type_: UpdatePaymentLinkAfterCompletionType,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAutomaticTax {
     pub enabled: bool,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub adjustable_quantity: Option<Box<UpdatePaymentLinkLineItemsAdjustableQuantity>>,
+    pub adjustable_quantity: Option<UpdatePaymentLinkLineItemsAdjustableQuantity>,
 
     pub id: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<Box<u64>>,
+    pub quantity: Option<u64>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkShippingAddressCollection {
     pub allowed_countries: Vec<UpdatePaymentLinkShippingAddressCollectionAllowedCountries>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletionHostedConfirmation {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_message: Option<Box<String>>,
+    pub custom_message: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletionRedirect {
     pub url: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItemsAdjustableQuantity {
     pub enabled: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<Box<i64>>,
+    pub maximum: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<Box<i64>>,
+    pub minimum: Option<i64>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletionHostedConfirmation {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub custom_message: Option<Box<String>>,
+    pub custom_message: Option<String>,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletionRedirect {
     pub url: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
     pub enabled: bool,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<Box<i64>>,
+    pub maximum: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<Box<i64>>,
+    pub minimum: Option<i64>,
 }
 
 /// An enum representing the possible values of an `CreatePaymentLinkAfterCompletion`'s `type` field.
@@ -565,6 +564,11 @@ impl std::fmt::Display for CreatePaymentLinkAfterCompletionType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreatePaymentLinkAfterCompletionType {
+    fn default() -> Self {
+        Self::HostedConfirmation
+    }
+}
 
 /// An enum representing the possible values of an `CreatePaymentLink`'s `payment_method_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -590,6 +594,11 @@ impl AsRef<str> for CreatePaymentLinkPaymentMethodTypes {
 impl std::fmt::Display for CreatePaymentLinkPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkPaymentMethodTypes {
+    fn default() -> Self {
+        Self::Card
     }
 }
 
@@ -1328,6 +1337,11 @@ impl std::fmt::Display for CreatePaymentLinkShippingAddressCollectionAllowedCoun
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
+    fn default() -> Self {
+        Self::Ac
+    }
+}
 
 /// An enum representing the possible values of an `PaymentLink`'s `billing_address_collection` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1357,6 +1371,11 @@ impl std::fmt::Display for PaymentLinkBillingAddressCollection {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PaymentLinkBillingAddressCollection {
+    fn default() -> Self {
+        Self::Auto
+    }
+}
 
 /// An enum representing the possible values of an `PaymentLink`'s `payment_method_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -1382,6 +1401,11 @@ impl AsRef<str> for PaymentLinkPaymentMethodTypes {
 impl std::fmt::Display for PaymentLinkPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinkPaymentMethodTypes {
+    fn default() -> Self {
+        Self::Card
     }
 }
 
@@ -1411,6 +1435,11 @@ impl AsRef<str> for PaymentLinksResourceAfterCompletionType {
 impl std::fmt::Display for PaymentLinksResourceAfterCompletionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinksResourceAfterCompletionType {
+    fn default() -> Self {
+        Self::HostedConfirmation
     }
 }
 
@@ -2149,6 +2178,11 @@ impl std::fmt::Display for PaymentLinksResourceShippingAddressCollectionAllowedC
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for PaymentLinksResourceShippingAddressCollectionAllowedCountries {
+    fn default() -> Self {
+        Self::Ac
+    }
+}
 
 /// An enum representing the possible values of an `UpdatePaymentLinkAfterCompletion`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -2178,6 +2212,11 @@ impl std::fmt::Display for UpdatePaymentLinkAfterCompletionType {
         self.as_str().fmt(f)
     }
 }
+impl std::default::Default for UpdatePaymentLinkAfterCompletionType {
+    fn default() -> Self {
+        Self::HostedConfirmation
+    }
+}
 
 /// An enum representing the possible values of an `UpdatePaymentLink`'s `payment_method_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -2203,6 +2242,11 @@ impl AsRef<str> for UpdatePaymentLinkPaymentMethodTypes {
 impl std::fmt::Display for UpdatePaymentLinkPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkPaymentMethodTypes {
+    fn default() -> Self {
+        Self::Card
     }
 }
 
@@ -2939,5 +2983,10 @@ impl AsRef<str> for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
 impl std::fmt::Display for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
+    fn default() -> Self {
+        Self::Ac
     }
 }

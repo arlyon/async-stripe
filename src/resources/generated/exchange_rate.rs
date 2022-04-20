@@ -4,12 +4,12 @@
 
 use serde_derive::{Deserialize, Serialize};
 
-use crate::config::{Client, Response};
+use crate::client::{Client, Response};
 use crate::ids::ExchangeRateId;
 use crate::params::{Expand, List, Object};
 
 /// The resource representing a Stripe "ExchangeRate".
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ExchangeRate {
     /// Unique identifier for the object.
     ///

@@ -7,7 +7,7 @@ fn customer_create_and_delete(client: &stripe::Client) {
     let result = stripe::Customer::delete(client, &customer.id);
     match result {
         Ok(deleted) => assert!(deleted.deleted, "customer wasn't deleted"),
-        Err(err) => assert!(false, "{}", err),
+        Err(err) => panic!("{}", err),
     }
 }
 
@@ -23,12 +23,10 @@ fn customer_create_and_delete_without_account() {
 #[cfg(feature = "blocking")]
 fn customer_create_and_delete_with_account() {
     mock::with_client(|client| {
-        let client = client.with_headers(stripe::Headers {
-            stripe_account: Some("TEST".into()),
-            client_id: Some("ca_123".into()),
-            stripe_version: Some(stripe::ApiVersion::V2019_03_14),
-            user_agent: None,
-        });
+        let client = client
+            .to_owned()
+            .with_client_id("ca_123".parse().unwrap())
+            .with_stripe_account("acct_123".parse().unwrap());
         customer_create_and_delete(&client);
     });
 }

@@ -32,3 +32,9 @@ impl std::fmt::Display for TokenType {
         self.as_str().fmt(f)
     }
 }
+
+impl std::default::Default for TokenType {
+    fn default() -> Self {
+        Self::Account
+    }
+}
