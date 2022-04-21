@@ -440,7 +440,7 @@ pub fn gen_inferred_params(
                         print_doc(out);
                         initializers.push((param_rename.into(), rust_type.to_string(), required));
                         match use_path {
-                            "" | "String" => (),
+                            "" | "String" => {}
                             "Metadata" => {
                                 state.use_params.insert("Metadata");
                             }
@@ -1471,13 +1471,14 @@ pub fn gen_impl_requests(
                 .map(|a| a.len())
                 .unwrap_or_default();
 
-            if !methods.contains_key(&MethodTypes::Create)
-                && parameter_count == 0
-                && (doc_comment.contains("Create")
-                    || doc_comment.contains("create")
-                    || doc_comment.contains("Adds")
-                    || doc_comment.contains("adds"))
-            {
+            let create = (doc_comment.contains("Create")
+                || doc_comment.contains("create")
+                || doc_comment.contains("Adds")
+                || doc_comment.contains("adds"));
+
+            let update = (doc_comment.contains("Update") || doc_comment.contains("update"));
+
+            if !methods.contains_key(&MethodTypes::Create) && parameter_count == 0 && create {
                 // Just make sure I don't miss anything unexpected
                 let query_params: &[_] = post_request
                     .get("parameters")
@@ -1522,9 +1523,7 @@ pub fn gen_impl_requests(
                 out.push_str("\", &params)\n");
                 out.push_str("    }");
                 methods.insert(MethodTypes::Create, out);
-            } else if !methods.contains_key(&MethodTypes::Update)
-                && parameter_count == 1
-                && (doc_comment.contains("Update") || doc_comment.contains("update"))
+            } else if !methods.contains_key(&MethodTypes::Update) && parameter_count == 1 && update
             {
                 // Get the id parameter
                 let id_param = post_request["parameters"]
@@ -1579,6 +1578,16 @@ pub fn gen_impl_requests(
                     out.push_str("    }");
                     methods.insert(MethodTypes::Update, out);
                 }
+            } else {
+                log::warn!(
+                    "unhandled {} for {rust_struct}: POST {path} (already have {:?})",
+                    match (create, update) {
+                        (true, _) => "CREATE",
+                        (_, true) => "UPDATE",
+                        _ => "UNKNOWN",
+                    },
+                    methods.keys()
+                );
             }
         }
 
@@ -1621,6 +1630,8 @@ pub fn gen_impl_requests(
                     out.push_str("    }");
                     methods.insert(MethodTypes::Delete, out);
                 }
+            } else {
+                log::warn!("unhandled DELETE for {rust_struct}: {path}");
             }
         }
     }

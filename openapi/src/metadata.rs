@@ -182,11 +182,19 @@ pub fn metadata_requests<'a>(
     let mut requests = BTreeMap::<String, BTreeSet<_>>::new();
     for (path, _) in spec["paths"].as_object().unwrap() {
         let mut seg_iterator = path.trim_start_matches("/v1/").split('/');
-        let object = match (seg_iterator.next(), seg_iterator.next()) {
+        let object = match (seg_iterator.next(), seg_iterator.next(), seg_iterator.next()) {
             // handle special case for sessions
-            (Some(x), Some("sessions")) => format!("{}.session", x),
-            (Some(x), _) => x.to_string(),
-            _ => continue,
+            (Some(x), Some("sessions"), _) => format!("{}.session", x),
+
+            // special case for usage_records
+            (_, _, Some("usage_records")) => "usage_records".to_string(),
+
+            (Some(x), _, _) => x.to_string(),
+            _ => {
+                // this should never happen
+                log::error!("path ignored: {path}");
+                continue;
+            }
         };
 
         // This isn't documented in the API reference so let's skip it
