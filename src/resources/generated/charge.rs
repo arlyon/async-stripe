@@ -376,6 +376,9 @@ pub struct PaymentMethodDetails {
     pub card_present: Option<PaymentMethodDetailsCardPresent>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<PaymentMethodDetailsCustomerBalance>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<PaymentMethodDetailsEps>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -823,6 +826,9 @@ pub struct PaymentMethodDetailsCardWalletVisaCheckout {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<Address>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsCustomerBalance {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsEps {

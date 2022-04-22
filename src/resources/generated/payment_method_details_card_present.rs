@@ -66,6 +66,12 @@ pub struct PaymentMethodDetailsCardPresent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub generated_card: Option<String>,
 
+    /// Whether this [PaymentIntent](https://stripe.com/docs/api/payment_intents) is eligible for incremental authorizations.
+    ///
+    /// Request support using [request_incremental_authorization_support](https://stripe.com/docs/api/payment_intents/create#create_payment_intent-payment_method_options-card_present-request_incremental_authorization_support).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub incremental_authorization_supported: Option<bool>,
+
     /// The last four digits of the card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,

@@ -30,7 +30,7 @@ pub struct SetupIntent {
     /// The client secret of this SetupIntent.
     ///
     /// Used for client-side retrieval using a publishable key.  The client secret can be used to complete payment setup from your frontend.
-    /// It should not be stored, logged, embedded in URLs, or exposed to anyone other than the customer.
+    /// It should not be stored, logged, or exposed to anyone other than the customer.
     /// Make sure that you have TLS enabled on any page that includes the client secret.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<String>,

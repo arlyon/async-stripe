@@ -24,7 +24,7 @@ pub struct TaxCode {
 }
 
 impl TaxCode {
-    /// A list of [all tax codes available](https://stripe.com/docs/tax/tax-codes) to add to Products in order to allow specific tax calculations.
+    /// A list of [all tax codes available](https://stripe.com/docs/tax/tax-categories) to add to Products in order to allow specific tax calculations.
     pub fn list(client: &Client, params: ListTaxCodes<'_>) -> Response<List<TaxCode>> {
         client.get_query("/tax_codes", &params)
     }

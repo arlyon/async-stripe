@@ -31,6 +31,9 @@ pub struct PaymentIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_capturable: Option<i64>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_details: Option<PaymentFlowsAmountDetails>,
+
     /// Amount that was collected by this PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_received: Option<i64>,
@@ -71,8 +74,8 @@ pub struct PaymentIntent {
     ///
     /// Used for client-side retrieval using a publishable key.
     /// The client secret can be used to complete a payment from your frontend.
-    /// It should not be stored, logged, embedded in URLs, or exposed to anyone other than the customer.
-    /// Make sure that you have TLS enabled on any page that includes the client secret.  Refer to our docs to [accept a payment](https://stripe.com/docs/payments/accept-a-payment?integration=elements) and learn about how `client_secret` should be handled.
+    /// It should not be stored, logged, or exposed to anyone other than the customer.
+    /// Make sure that you have TLS enabled on any page that includes the client secret.  Refer to our docs to [accept a payment](https://stripe.com/docs/payments/accept-a-payment?ui=elements) and learn about how `client_secret` should be handled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<String>,
 
@@ -259,6 +262,19 @@ impl Object for PaymentIntent {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentFlowsAmountDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tip: Option<PaymentFlowsAmountDetailsResourceTip>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentFlowsAmountDetailsResourceTip {
+    /// Portion of the amount that corresponds to a tip.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentFlowsAutomaticPaymentMethodsPaymentIntent {
     /// Automatically calculates compatible payment methods.
     pub enabled: bool,
@@ -274,6 +290,10 @@ pub struct PaymentIntentNextAction {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_await_notification: Option<PaymentIntentNextActionCardAwaitNotification>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_bank_transfer_instructions:
+        Option<PaymentIntentNextActionDisplayBankTransferInstructions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini_display_details: Option<PaymentIntentNextActionKonbini>,
@@ -363,6 +383,51 @@ pub struct PaymentIntentNextActionCardAwaitNotification {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_approval_required: Option<bool>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionDisplayBankTransferInstructions {
+    /// The remaining amount that needs to be transferred to complete the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_remaining: Option<i64>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    /// A list of financial addresses that can be used to fund the customer balance.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_addresses: Option<Vec<FundingInstructionsBankTransferFinancialAddress>>,
+
+    /// A string identifying this payment.
+    ///
+    /// Instruct your customer to include this code in the reference or memo field of their bank transfer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+
+    /// Type of bank transfer.
+    #[serde(rename = "type")]
+    pub type_: PaymentIntentNextActionDisplayBankTransferInstructionsType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct FundingInstructionsBankTransferFinancialAddress {
+    /// The payment networks supported by this FinancialAddress.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supported_networks:
+        Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
+
+    /// The type of financial address.
+    #[serde(rename = "type")]
+    pub type_: FundingInstructionsBankTransferFinancialAddressType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zengin: Option<FundingInstructionsBankTransferZenginRecord>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct FundingInstructionsBankTransferZenginRecord {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionDisplayOxxoDetails {
@@ -561,6 +626,9 @@ pub struct PaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_present: Option<PaymentIntentPaymentMethodOptionsCardPresentUnion>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<PaymentIntentPaymentMethodOptionsCustomerBalanceUnion>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<PaymentIntentPaymentMethodOptionsEpsUnion>,
@@ -938,6 +1006,49 @@ pub struct PaymentMethodOptionsCardPresent {
     /// Request ability to capture this payment beyond the standard [authorization validity window](https://stripe.com/docs/terminal/features/extended-authorizations#authorization-validity).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_extended_authorization: Option<bool>,
+
+    /// Request ability to [increment](https://stripe.com/docs/terminal/features/incremental-authorizations) this PaymentIntent if the combination of MCC and card brand is eligible.
+    ///
+    /// Check [incremental_authorization_supported](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details-card_present-incremental_authorization_supported) in the [Confirm](https://stripe.com/docs/api/payment_intents/confirm) response to verify support.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_incremental_authorization_support: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsCustomerBalance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer: Option<PaymentMethodOptionsCustomerBalanceBankTransfer>,
+
+    /// The funding method type to be used when there are not enough funds in the customer balance.
+    ///
+    /// Permitted values include: `bank_transfer`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding_type: Option<PaymentMethodOptionsCustomerBalanceFundingType>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsCustomerBalanceBankTransfer {
+    /// List of address types that should be returned in the financial_addresses response.
+    ///
+    /// If not specified, all valid types will be returned.  Permitted values include: `zengin`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested_address_types:
+        Option<Vec<PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
+
+    /// The bank transfer type that this PaymentIntent is allowed to use for funding.
+    ///
+    /// Permitted values include: `us_bank_account`, `eu_bank_account`, `id_bank_account`, `gb_bank_account`, `jp_bank_account`, `mx_bank_account`, `eu_bank_transfer`, `gb_bank_transfer`, `id_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<PaymentMethodOptionsCustomerBalanceBankTransferType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1568,6 +1679,9 @@ pub struct CreatePaymentIntentPaymentMethodData {
     pub boleto: Option<CreatePaymentIntentPaymentMethodDataBoleto>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<CreatePaymentIntentPaymentMethodDataCustomerBalance>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CreatePaymentIntentPaymentMethodDataEps>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1647,6 +1761,9 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_present: Option<CreatePaymentIntentPaymentMethodOptionsCardPresent>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalance>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CreatePaymentIntentPaymentMethodOptionsEps>,
@@ -1745,6 +1862,9 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     pub boleto: Option<UpdatePaymentIntentPaymentMethodDataBoleto>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<UpdatePaymentIntentPaymentMethodDataCustomerBalance>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<UpdatePaymentIntentPaymentMethodDataEps>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1824,6 +1944,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_present: Option<UpdatePaymentIntentPaymentMethodOptionsCardPresent>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalance>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<UpdatePaymentIntentPaymentMethodOptionsEps>,
@@ -1961,6 +2084,9 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetails {
 pub struct CreatePaymentIntentPaymentMethodDataBoleto {
     pub tax_id: String,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataCustomerBalance {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataEps {
@@ -2135,6 +2261,22 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
 pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_extended_authorization: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_incremental_authorization_support: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer: Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding_type: Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2342,6 +2484,9 @@ pub struct UpdatePaymentIntentPaymentMethodDataBoleto {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataCustomerBalance {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataEps {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<UpdatePaymentIntentPaymentMethodDataEpsBank>,
@@ -2514,6 +2659,22 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_extended_authorization: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_incremental_authorization_support: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer: Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding_type: Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2759,6 +2920,19 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardMandateOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested_address_types: Option<
+        Vec<
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes,
+        >,
+    >,
+
+    #[serde(rename = "type")]
+    pub type_: CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2841,6 +3015,19 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supported_types:
         Option<Vec<UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested_address_types: Option<
+        Vec<
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes,
+        >,
+    >,
+
+    #[serde(rename = "type")]
+    pub type_: UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2998,6 +3185,21 @@ pub enum PaymentIntentPaymentMethodOptionsCardUnion {
 impl std::default::Default for PaymentIntentPaymentMethodOptionsCardUnion {
     fn default() -> Self {
         Self::PaymentIntentPaymentMethodOptionsCard(Default::default())
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsCustomerBalanceUnion {
+    PaymentMethodOptionsCustomerBalance(PaymentMethodOptionsCustomerBalance),
+    #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
+    PaymentIntentTypeSpecificPaymentMethodOptionsClient(
+        PaymentIntentTypeSpecificPaymentMethodOptionsClient,
+    ),
+}
+impl std::default::Default for PaymentIntentPaymentMethodOptionsCustomerBalanceUnion {
+    fn default() -> Self {
+        Self::PaymentMethodOptionsCustomerBalance(Default::default())
     }
 }
 
@@ -3645,6 +3847,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
     BacsDebit,
     Bancontact,
     Boleto,
+    CustomerBalance,
     Eps,
     Fpx,
     Giropay,
@@ -3671,6 +3874,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
             CreatePaymentIntentPaymentMethodDataType::BacsDebit => "bacs_debit",
             CreatePaymentIntentPaymentMethodDataType::Bancontact => "bancontact",
             CreatePaymentIntentPaymentMethodDataType::Boleto => "boleto",
+            CreatePaymentIntentPaymentMethodDataType::CustomerBalance => "customer_balance",
             CreatePaymentIntentPaymentMethodDataType::Eps => "eps",
             CreatePaymentIntentPaymentMethodDataType::Fpx => "fpx",
             CreatePaymentIntentPaymentMethodDataType::Giropay => "giropay",
@@ -4576,6 +4780,146 @@ impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCardSetupF
     }
 }
 
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer`'s `requested_address_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Zengin,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn default() -> Self {
+        Self::Zengin
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    JpBankTransfer,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType
+{
+    fn default() -> Self {
+        Self::JpBankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsCustomerBalance`'s `funding_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    BankTransfer,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType::BankTransfer => {
+                "bank_transfer"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn default() -> Self {
+        Self::BankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsCustomerBalance`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    None,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+{
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsEps`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -5314,6 +5658,74 @@ impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsWechatPayS
     }
 }
 
+/// An enum representing the possible values of an `FundingInstructionsBankTransferFinancialAddress`'s `supported_networks` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+    Sepa,
+    Zengin,
+}
+
+impl FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Sepa => "sepa",
+            FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Zengin => "zengin",
+        }
+    }
+}
+
+impl AsRef<str> for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+    fn default() -> Self {
+        Self::Sepa
+    }
+}
+
+/// An enum representing the possible values of an `FundingInstructionsBankTransferFinancialAddress`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum FundingInstructionsBankTransferFinancialAddressType {
+    Iban,
+    Zengin,
+}
+
+impl FundingInstructionsBankTransferFinancialAddressType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            FundingInstructionsBankTransferFinancialAddressType::Iban => "iban",
+            FundingInstructionsBankTransferFinancialAddressType::Zengin => "zengin",
+        }
+    }
+}
+
+impl AsRef<str> for FundingInstructionsBankTransferFinancialAddressType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for FundingInstructionsBankTransferFinancialAddressType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for FundingInstructionsBankTransferFinancialAddressType {
+    fn default() -> Self {
+        Self::Iban
+    }
+}
+
 /// An enum representing the possible values of an `PaymentIntent`'s `cancellation_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -5423,6 +5835,40 @@ impl std::fmt::Display for PaymentIntentConfirmationMethod {
 impl std::default::Default for PaymentIntentConfirmationMethod {
     fn default() -> Self {
         Self::Automatic
+    }
+}
+
+/// An enum representing the possible values of an `PaymentIntentNextActionDisplayBankTransferInstructions`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentNextActionDisplayBankTransferInstructionsType {
+    JpBankTransfer,
+}
+
+impl PaymentIntentNextActionDisplayBankTransferInstructionsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentNextActionDisplayBankTransferInstructionsType::JpBankTransfer => {
+                "jp_bank_transfer"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentNextActionDisplayBankTransferInstructionsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentNextActionDisplayBankTransferInstructionsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentIntentNextActionDisplayBankTransferInstructionsType {
+    fn default() -> Self {
+        Self::JpBankTransfer
     }
 }
 
@@ -6564,6 +7010,172 @@ impl std::default::Default for PaymentMethodOptionsCardMandateOptionsSupportedTy
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodOptionsCustomerBalanceBankTransfer`'s `requested_address_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Zengin,
+}
+
+impl PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => {
+                "zengin"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn default() -> Self {
+        Self::Zengin
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsCustomerBalanceBankTransfer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCustomerBalanceBankTransferType {
+    EuBankAccount,
+    EuBankTransfer,
+    GbBankAccount,
+    GbBankTransfer,
+    IdBankAccount,
+    IdBankTransfer,
+    JpBankAccount,
+    JpBankTransfer,
+    MxBankAccount,
+    MxBankTransfer,
+    UsBankAccount,
+    UsBankTransfer,
+}
+
+impl PaymentMethodOptionsCustomerBalanceBankTransferType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCustomerBalanceBankTransferType::EuBankAccount => "eu_bank_account",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => {
+                "eu_bank_transfer"
+            }
+            PaymentMethodOptionsCustomerBalanceBankTransferType::GbBankAccount => "gb_bank_account",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => {
+                "gb_bank_transfer"
+            }
+            PaymentMethodOptionsCustomerBalanceBankTransferType::IdBankAccount => "id_bank_account",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::IdBankTransfer => {
+                "id_bank_transfer"
+            }
+            PaymentMethodOptionsCustomerBalanceBankTransferType::JpBankAccount => "jp_bank_account",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => {
+                "jp_bank_transfer"
+            }
+            PaymentMethodOptionsCustomerBalanceBankTransferType::MxBankAccount => "mx_bank_account",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => {
+                "mx_bank_transfer"
+            }
+            PaymentMethodOptionsCustomerBalanceBankTransferType::UsBankAccount => "us_bank_account",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::UsBankTransfer => {
+                "us_bank_transfer"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn default() -> Self {
+        Self::EuBankAccount
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsCustomerBalance`'s `funding_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCustomerBalanceFundingType {
+    BankTransfer,
+}
+
+impl PaymentMethodOptionsCustomerBalanceFundingType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCustomerBalanceFundingType::BankTransfer => "bank_transfer",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCustomerBalanceFundingType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCustomerBalanceFundingType {
+    fn default() -> Self {
+        Self::BankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsCustomerBalance`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    None,
+}
+
+impl PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCustomerBalanceSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `PaymentMethodOptionsFpx`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -7417,6 +8029,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
     BacsDebit,
     Bancontact,
     Boleto,
+    CustomerBalance,
     Eps,
     Fpx,
     Giropay,
@@ -7443,6 +8056,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
             UpdatePaymentIntentPaymentMethodDataType::BacsDebit => "bacs_debit",
             UpdatePaymentIntentPaymentMethodDataType::Bancontact => "bancontact",
             UpdatePaymentIntentPaymentMethodDataType::Boleto => "boleto",
+            UpdatePaymentIntentPaymentMethodDataType::CustomerBalance => "customer_balance",
             UpdatePaymentIntentPaymentMethodDataType::Eps => "eps",
             UpdatePaymentIntentPaymentMethodDataType::Fpx => "fpx",
             UpdatePaymentIntentPaymentMethodDataType::Giropay => "giropay",
@@ -8343,6 +8957,146 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutur
     }
 }
 impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer`'s `requested_address_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Zengin,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn default() -> Self {
+        Self::Zengin
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    JpBankTransfer,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType
+{
+    fn default() -> Self {
+        Self::JpBankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsCustomerBalance`'s `funding_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    BankTransfer,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType::BankTransfer => {
+                "bank_transfer"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn default() -> Self {
+        Self::BankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsCustomerBalance`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    None,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+{
     fn default() -> Self {
         Self::None
     }

@@ -56,7 +56,7 @@ pub struct ShippingRate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<ShippingRateTaxBehavior>,
 
-    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     ///
     /// The Shipping tax code is `txcd_92010001`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -182,7 +182,7 @@ pub struct CreateShippingRate<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<ShippingRateTaxBehavior>,
 
-    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     ///
     /// The Shipping tax code is `txcd_92010001`.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -5,7 +5,8 @@
 use serde_derive::{Deserialize, Serialize};
 
 use crate::ids::BillingPortalConfigurationId;
-use crate::params::{Metadata, Object, Timestamp};
+use crate::params::{Expandable, Metadata, Object, Timestamp};
+use crate::resources::Application;
 
 /// The resource representing a Stripe "PortalConfiguration".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -18,7 +19,7 @@ pub struct BillingPortalConfiguration {
 
     /// ID of the Connect Application that created the configuration.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub application: Option<String>,
+    pub application: Option<Expandable<Application>>,
 
     pub business_profile: PortalBusinessProfile,
 
