@@ -200,6 +200,7 @@ pub use {
         subscription_item_billing_thresholds::*,
         tax_id::*,
         tax_rate::*,
+        usage_record::*,
         usage_record_summary::*,
     },
 };
