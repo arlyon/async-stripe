@@ -404,7 +404,7 @@ pub struct WebhookEvent {
 
     /// The connected account that originated the event.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<String>,
+    pub account: Option<AccountId>,
 
     /// The Stripe API version used to render `data`.
     ///
