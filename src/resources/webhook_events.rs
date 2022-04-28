@@ -395,7 +395,7 @@ pub struct WebhookEvent {
     #[serde(rename = "type")]
     pub event_type: EventType,
     pub data: EventData,
-    pub account: AccountId,
+    pub account: Option<AccountId>,
     pub created: Timestamp,
     pub livemode: bool,
     // ...
