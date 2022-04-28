@@ -13,6 +13,8 @@ use crate::resources::*;
 pub enum EventType {
     #[serde(rename = "account.updated")]
     AccountUpdated,
+    #[serde(rename = "account.application.authorized")]
+    AccountApplicationAuthorized,
     #[serde(rename = "account.application.deauthorized")]
     AccountApplicationDeauthorized,
     #[serde(rename = "account.external_account.created")]
@@ -222,6 +224,7 @@ pub struct EventData {
 #[serde(tag = "object", rename_all = "snake_case")]
 pub enum EventObject {
     Account(Account),
+    Application(Application),
     ApplicationFee(ApplicationFee),
     #[serde(rename = "fee_refund")]
     ApplicationFeeRefund(ApplicationFeeRefund),
