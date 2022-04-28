@@ -7,7 +7,7 @@ use sha2::Sha256;
 
 use crate::error::WebhookError;
 use crate::ids::EventId;
-use crate::resources::*;
+use crate::{resources::*, AccountId, Timestamp};
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
 pub enum EventType {
@@ -395,6 +395,9 @@ pub struct WebhookEvent {
     #[serde(rename = "type")]
     pub event_type: EventType,
     pub data: EventData,
+    pub account: AccountId,
+    pub created: Timestamp,
+    pub livemode: bool,
     // ...
 }
 
@@ -632,5 +635,7 @@ mod tests {
 
         assert_eq!(event.event_type, super::EventType::InvoiceItemCreated);
         assert_eq!(event.id.to_string(), "evt_123");
+        assert_eq!(event.account.to_string(), "acct_123");
+        assert_eq!(event.created, 1533204620);
     }
 }
