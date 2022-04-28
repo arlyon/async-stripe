@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TerminalConfigurationId};
-use crate::params::{Expandable, Object};
-use crate::resources::{File};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::ids::TerminalConfigurationId;
+use crate::params::{Expandable, Object};
+use crate::resources::File;
 
 /// The resource representing a Stripe "TerminalConfigurationConfiguration".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -47,7 +48,6 @@ impl Object for TerminalConfiguration {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig {
-
     /// A File ID representing an image you would like displayed on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<Expandable<File>>,
@@ -55,7 +55,6 @@ pub struct TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalConfigurationConfigurationResourceTipping {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aud: Option<TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
 
@@ -98,7 +97,6 @@ pub struct TerminalConfigurationConfigurationResourceTipping {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalConfigurationConfigurationResourceCurrencySpecificConfig {
-
     /// Fixed amounts displayed when collecting a tip.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amounts: Option<Vec<i64>>,

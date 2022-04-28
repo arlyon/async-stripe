@@ -2,14 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::params::{Object};
-use crate::resources::{Currency};
 use serde_derive::{Deserialize, Serialize};
+
+use crate::params::Object;
+use crate::resources::Currency;
 
 /// The resource representing a Stripe "CustomerBalanceFundingInstructionsCustomerBalanceFundingInstructions".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructions {
-
     pub bank_transfer: FundingInstructionsBankTransfer,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -34,7 +34,6 @@ impl Object for FundingInstructions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransfer {
-
     /// The country of the bank account to fund.
     pub country: String,
 
@@ -48,10 +47,10 @@ pub struct FundingInstructionsBankTransfer {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferFinancialAddress {
-
     /// The payment networks supported by this FinancialAddress.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub supported_networks: Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
+    pub supported_networks:
+        Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
 
     /// The type of financial address.
     #[serde(rename = "type")]
@@ -62,8 +61,7 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct FundingInstructionsBankTransferZenginRecord {
-}
+pub struct FundingInstructionsBankTransferZenginRecord {}
 
 /// An enum representing the possible values of an `FundingInstructionsBankTransferFinancialAddress`'s `supported_networks` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
