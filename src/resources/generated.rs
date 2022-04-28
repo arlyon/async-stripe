@@ -46,8 +46,6 @@ pub mod payment {
     pub mod bank_account;
     pub mod card;
     pub mod payment_method;
-    pub mod payment_method_options_boleto;
-    pub mod payment_method_options_oxxo;
     pub mod source;
 }
 
@@ -69,7 +67,6 @@ pub mod billing {
     pub mod invoice;
     pub mod invoice_payment_method_options_acss_debit;
     pub mod invoice_payment_method_options_bancontact;
-    pub mod invoice_payment_method_options_card;
     pub mod invoice_payment_method_options_customer_balance;
     pub mod invoice_payment_method_options_konbini;
     pub mod invoice_payment_method_options_us_bank_account;

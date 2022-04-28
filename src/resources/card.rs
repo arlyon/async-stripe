@@ -1,4 +1,4 @@
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 pub enum CardBrand {

@@ -1,4 +1,4 @@
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingAuthorizationMerchantData".
 #[derive(Clone, Debug, Deserialize, Default, Serialize)]

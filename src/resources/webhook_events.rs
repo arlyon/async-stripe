@@ -1,7 +1,7 @@
 use chrono::Utc;
 #[cfg(feature = "webhook-events")]
 use hmac::{Hmac, Mac};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
 

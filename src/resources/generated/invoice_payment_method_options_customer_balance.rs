@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "invoice_payment_method_options_customer_balance".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

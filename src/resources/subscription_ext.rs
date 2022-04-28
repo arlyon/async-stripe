@@ -1,4 +1,4 @@
-use serde_derive::Serialize;
+use serde::Serialize;
 
 use crate::client::{Client, Response};
 use crate::ids::SubscriptionId;

@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "NotificationEventData".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

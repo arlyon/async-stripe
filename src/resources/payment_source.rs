@@ -1,5 +1,5 @@
 use serde::ser::SerializeStruct;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use crate::ids::{PaymentSourceId, SourceId, TokenId};
 use crate::params::Object;

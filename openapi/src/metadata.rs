@@ -106,7 +106,7 @@ impl<'a> Metadata<'a> {
         let mut out = String::new();
         out.push_str("use crate::ids::*;\n");
         out.push_str("use crate::params::Object;\n");
-        out.push_str("use serde_derive::{Deserialize, Serialize};\n");
+        out.push_str("use serde::{Deserialize, Serialize};\n");
 
         for (schema, feature) in self.feature_groups.iter() {
             out.push('\n');

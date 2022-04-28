@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use crate::ids::TaxDeductedAtSourceId;
 use crate::params::{Object, Timestamp};
