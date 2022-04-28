@@ -258,6 +258,10 @@ pub struct CreateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<i64>,
 
+    /// Balance information and default balance settings for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cash_balance: Option<CreateCustomerCashBalance>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
 
@@ -357,6 +361,7 @@ impl<'a> CreateCustomer<'a> {
         CreateCustomer {
             address: Default::default(),
             balance: Default::default(),
+            cash_balance: Default::default(),
             coupon: Default::default(),
             description: Default::default(),
             email: Default::default(),
@@ -453,6 +458,10 @@ pub struct UpdateCustomer<'a> {
     /// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateCustomerCardUnion>,
+
+    /// Balance information and default balance settings for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cash_balance: Option<UpdateCustomerCashBalance>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
@@ -572,6 +581,7 @@ impl<'a> UpdateCustomer<'a> {
             address: Default::default(),
             balance: Default::default(),
             card: Default::default(),
+            cash_balance: Default::default(),
             coupon: Default::default(),
             default_alipay_account: Default::default(),
             default_bank_account: Default::default(),
@@ -595,6 +605,12 @@ impl<'a> UpdateCustomer<'a> {
             trial_end: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCustomerCashBalance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub settings: Option<CreateCustomerCashBalanceSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -634,6 +650,12 @@ pub struct TaxIdData {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateCustomerCashBalance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub settings: Option<UpdateCustomerCashBalanceSettings>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerShipping {
     pub address: UpdateCustomerShippingAddress,
 
@@ -647,6 +669,12 @@ pub struct UpdateCustomerShipping {
 pub struct UpdateCustomerTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCustomerCashBalanceSettings {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reconciliation_mode: Option<CreateCustomerCashBalanceSettingsReconciliationMode>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -678,6 +706,12 @@ pub struct CustomerInvoiceSettingsCustomFields {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateCustomerCashBalanceSettings {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reconciliation_mode: Option<UpdateCustomerCashBalanceSettingsReconciliationMode>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
@@ -696,6 +730,40 @@ pub struct UpdateCustomerShippingAddress {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+
+/// An enum representing the possible values of an `CreateCustomerCashBalanceSettings`'s `reconciliation_mode` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCustomerCashBalanceSettingsReconciliationMode {
+    Automatic,
+    Manual,
+}
+
+impl CreateCustomerCashBalanceSettingsReconciliationMode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCustomerCashBalanceSettingsReconciliationMode::Automatic => "automatic",
+            CreateCustomerCashBalanceSettingsReconciliationMode::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCustomerCashBalanceSettingsReconciliationMode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCustomerCashBalanceSettingsReconciliationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCustomerCashBalanceSettingsReconciliationMode {
+    fn default() -> Self {
+        Self::Automatic
+    }
 }
 
 /// An enum representing the possible values of an `CustomerTax`'s `automatic_tax` field.
@@ -963,6 +1031,40 @@ impl std::fmt::Display for TaxIdType {
 impl std::default::Default for TaxIdType {
     fn default() -> Self {
         Self::AeTrn
+    }
+}
+
+/// An enum representing the possible values of an `UpdateCustomerCashBalanceSettings`'s `reconciliation_mode` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateCustomerCashBalanceSettingsReconciliationMode {
+    Automatic,
+    Manual,
+}
+
+impl UpdateCustomerCashBalanceSettingsReconciliationMode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateCustomerCashBalanceSettingsReconciliationMode::Automatic => "automatic",
+            UpdateCustomerCashBalanceSettingsReconciliationMode::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateCustomerCashBalanceSettingsReconciliationMode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateCustomerCashBalanceSettingsReconciliationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateCustomerCashBalanceSettingsReconciliationMode {
+    fn default() -> Self {
+        Self::Automatic
     }
 }
 

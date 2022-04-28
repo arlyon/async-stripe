@@ -69,7 +69,7 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
-    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<Expandable<TaxCode>>,
 
@@ -192,7 +192,7 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 
-    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<TaxCodeId>,
 
@@ -341,7 +341,7 @@ pub struct UpdateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<&'a str>,
 
-    /// A [tax code](https://stripe.com/docs/tax/tax-codes) ID.
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 
