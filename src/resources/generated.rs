@@ -87,6 +87,7 @@ pub mod billing {
     pub mod subscription_schedule;
     pub mod tax_id;
     pub mod tax_rate;
+    pub mod usage_record;
     pub mod usage_record_summary;
 }
 

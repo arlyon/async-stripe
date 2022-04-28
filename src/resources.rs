@@ -41,6 +41,7 @@ mod billing {
     pub mod invoice_ext;
     pub mod line_item_ext;
     pub mod subscription_ext;
+    pub mod usage_record_ext;
 }
 
 #[path = "resources"]
@@ -163,7 +164,8 @@ pub use {
     billing::{
         invoice_ext::*,
         line_item_ext::*,
-        subscription_ext::*
+        subscription_ext::*,
+        usage_record_ext::*,
     },
     generated::billing::{
         billing_portal_session::*,
@@ -200,6 +202,7 @@ pub use {
         subscription_item_billing_thresholds::*,
         tax_id::*,
         tax_rate::*,
+        usage_record::*,
         usage_record_summary::*,
     },
 };
