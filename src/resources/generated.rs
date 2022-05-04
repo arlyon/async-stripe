@@ -133,6 +133,15 @@ pub mod orders {
 #[cfg(feature = "sigma")]
 pub mod scheduled_query_run;
 
+#[path = "generated"]
+#[cfg(feature = "terminal")]
+pub mod terminal {
+    pub mod terminal_configuration;
+    pub mod terminal_connection_token;
+    pub mod terminal_location;
+    pub mod terminal_reader;
+}
+
 #[cfg(feature = "events")]
 pub mod event;
 

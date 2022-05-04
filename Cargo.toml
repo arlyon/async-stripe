@@ -41,6 +41,7 @@ full = [
   "issuing",
   "orders",
   "sigma",
+  "terminal",
   "webhook-endpoints",
 ]
 
@@ -52,6 +53,7 @@ fraud = []
 issuing = []
 orders = []
 sigma = []
+terminal = []
 webhook-endpoints = []
 
 # deserialize events from webhooks
