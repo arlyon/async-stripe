@@ -271,6 +271,17 @@ pub use {
 };
 
 #[rustfmt::skip]
+#[cfg(feature = "terminal")]
+pub use {
+    generated::terminal::{
+        terminal_configuration::*,
+        terminal_connection_token::*,
+        terminal_location::*,
+        terminal_reader::*,
+    },
+};
+
+#[rustfmt::skip]
 #[cfg(feature = "webhook-endpoints")]
 pub use {
     webhook_endpoints::webhook_endpoint_ext::*,

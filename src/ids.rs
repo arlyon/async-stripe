@@ -559,6 +559,9 @@ def_id!(TaxIdId, "txi_");
 def_id!(TaxCodeId, "txcd_");
 def_id!(TaxDeductedAtSourceId: String);
 def_id!(TaxRateId, "txr_");
+def_id!(TerminalConfigurationId, "tmc_");
+def_id!(TerminalLocationId, "tml_");
+def_id!(TerminalReaderId, "tmr_");
 def_id!(TestHelpersTestClockId, "clock_");
 def_id!(
     enum TokenId {
