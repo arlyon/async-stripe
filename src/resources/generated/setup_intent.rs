@@ -8,7 +8,8 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, PaymentMethodId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Account, ApiErrors, Application, Currency, Customer, Mandate, PaymentMethod, SetupAttempt,
+    Account, ApiErrors, Application, Currency, Customer, LinkedAccountOptionsUsBankAccount,
+    Mandate, PaymentMethod, SetupAttempt,
 };
 
 /// The resource representing a Stripe "SetupIntent".
@@ -339,6 +340,9 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupIntentPaymentMethodOptionsUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections: Option<LinkedAccountOptionsUsBankAccount>,
+
     /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method: Option<SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -402,6 +406,11 @@ pub struct CreateSetupIntent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<PaymentMethodId>,
 
+    /// When included, this hash creates a PaymentMethod that is set as the [`payment_method`](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-payment_method)
+    /// value in the SetupIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_data: Option<CreateSetupIntentPaymentMethodData>,
+
     /// Payment-method-specific configuration for this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<CreateSetupIntentPaymentMethodOptions>,
@@ -436,6 +445,7 @@ impl<'a> CreateSetupIntent<'a> {
             metadata: Default::default(),
             on_behalf_of: Default::default(),
             payment_method: Default::default(),
+            payment_method_data: Default::default(),
             payment_method_options: Default::default(),
             payment_method_types: Default::default(),
             return_url: Default::default(),
@@ -533,6 +543,11 @@ pub struct UpdateSetupIntent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<PaymentMethodId>,
 
+    /// When included, this hash creates a PaymentMethod that is set as the [`payment_method`](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-payment_method)
+    /// value in the SetupIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_data: Option<UpdateSetupIntentPaymentMethodData>,
+
     /// Payment-method-specific configuration for this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<UpdateSetupIntentPaymentMethodOptions>,
@@ -553,6 +568,7 @@ impl<'a> UpdateSetupIntent<'a> {
             expand: Default::default(),
             metadata: Default::default(),
             payment_method: Default::default(),
+            payment_method_data: Default::default(),
             payment_method_options: Default::default(),
             payment_method_types: Default::default(),
         }
@@ -562,6 +578,87 @@ impl<'a> UpdateSetupIntent<'a> {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateData {
     pub customer_acceptance: CreateSetupIntentMandateDataCustomerAcceptance,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<CreateSetupIntentPaymentMethodDataAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay: Option<CreateSetupIntentPaymentMethodDataAfterpayClearpay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alipay: Option<CreateSetupIntentPaymentMethodDataAlipay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_becs_debit: Option<CreateSetupIntentPaymentMethodDataAuBecsDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit: Option<CreateSetupIntentPaymentMethodDataBacsDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact: Option<CreateSetupIntentPaymentMethodDataBancontact>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_details: Option<CreateSetupIntentPaymentMethodDataBillingDetails>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<CreateSetupIntentPaymentMethodDataBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<CreateSetupIntentPaymentMethodDataCustomerBalance>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eps: Option<CreateSetupIntentPaymentMethodDataEps>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx: Option<CreateSetupIntentPaymentMethodDataFpx>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub giropay: Option<CreateSetupIntentPaymentMethodDataGiropay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay: Option<CreateSetupIntentPaymentMethodDataGrabpay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal: Option<CreateSetupIntentPaymentMethodDataIdeal>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interac_present: Option<CreateSetupIntentPaymentMethodDataInteracPresent>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<CreateSetupIntentPaymentMethodDataKlarna>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub konbini: Option<CreateSetupIntentPaymentMethodDataKonbini>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo: Option<CreateSetupIntentPaymentMethodDataOxxo>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub p24: Option<CreateSetupIntentPaymentMethodDataP24>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow: Option<CreateSetupIntentPaymentMethodDataPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit: Option<CreateSetupIntentPaymentMethodDataSepaDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sofort: Option<CreateSetupIntentPaymentMethodDataSofort>,
+
+    #[serde(rename = "type")]
+    pub type_: CreateSetupIntentPaymentMethodDataType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<CreateSetupIntentPaymentMethodDataUsBankAccount>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<CreateSetupIntentPaymentMethodDataWechatPay>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -584,6 +681,87 @@ pub struct CreateSetupIntentSingleUse {
     pub amount: i64,
 
     pub currency: Currency,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit: Option<UpdateSetupIntentPaymentMethodDataAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay: Option<UpdateSetupIntentPaymentMethodDataAfterpayClearpay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alipay: Option<UpdateSetupIntentPaymentMethodDataAlipay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_becs_debit: Option<UpdateSetupIntentPaymentMethodDataAuBecsDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit: Option<UpdateSetupIntentPaymentMethodDataBacsDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact: Option<UpdateSetupIntentPaymentMethodDataBancontact>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_details: Option<UpdateSetupIntentPaymentMethodDataBillingDetails>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto: Option<UpdateSetupIntentPaymentMethodDataBoleto>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<UpdateSetupIntentPaymentMethodDataCustomerBalance>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eps: Option<UpdateSetupIntentPaymentMethodDataEps>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx: Option<UpdateSetupIntentPaymentMethodDataFpx>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub giropay: Option<UpdateSetupIntentPaymentMethodDataGiropay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay: Option<UpdateSetupIntentPaymentMethodDataGrabpay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal: Option<UpdateSetupIntentPaymentMethodDataIdeal>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interac_present: Option<UpdateSetupIntentPaymentMethodDataInteracPresent>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna: Option<UpdateSetupIntentPaymentMethodDataKlarna>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub konbini: Option<UpdateSetupIntentPaymentMethodDataKonbini>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo: Option<UpdateSetupIntentPaymentMethodDataOxxo>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub p24: Option<UpdateSetupIntentPaymentMethodDataP24>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow: Option<UpdateSetupIntentPaymentMethodDataPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit: Option<UpdateSetupIntentPaymentMethodDataSepaDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sofort: Option<UpdateSetupIntentPaymentMethodDataSofort>,
+
+    #[serde(rename = "type")]
+    pub type_: UpdateSetupIntentPaymentMethodDataType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<UpdateSetupIntentPaymentMethodDataUsBankAccount>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub wechat_pay: Option<UpdateSetupIntentPaymentMethodDataWechatPay>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -617,6 +795,142 @@ pub struct CreateSetupIntentMandateDataCustomerAcceptance {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataAcssDebit {
+    pub account_number: String,
+
+    pub institution_number: String,
+
+    pub transit_number: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataAfterpayClearpay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataAlipay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataAuBecsDebit {
+    pub account_number: String,
+
+    pub bsb_number: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataBacsDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_number: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sort_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataBancontact {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataBillingDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<CreateSetupIntentPaymentMethodDataBillingDetailsAddress>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataBoleto {
+    pub tax_id: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataCustomerBalance {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataEps {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<CreateSetupIntentPaymentMethodDataEpsBank>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataFpx {
+    pub bank: CreateSetupIntentPaymentMethodDataFpxBank,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataGiropay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataGrabpay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataIdeal {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<CreateSetupIntentPaymentMethodDataIdealBank>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataInteracPresent {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataKlarna {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<CreateSetupIntentPaymentMethodDataKlarnaDob>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataKonbini {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataOxxo {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataP24 {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<CreateSetupIntentPaymentMethodDataP24Bank>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataSepaDebit {
+    pub iban: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataSofort {
+    pub country: CreateSetupIntentPaymentMethodDataSofortCountry,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_type:
+        Option<CreateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_number: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_type: Option<CreateSetupIntentPaymentMethodDataUsBankAccountAccountType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections_account: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub routing_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataWechatPay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
@@ -648,9 +962,149 @@ pub struct CreateSetupIntentPaymentMethodOptionsSepaDebit {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections:
+        Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataAcssDebit {
+    pub account_number: String,
+
+    pub institution_number: String,
+
+    pub transit_number: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataAfterpayClearpay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataAlipay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataAuBecsDebit {
+    pub account_number: String,
+
+    pub bsb_number: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataBacsDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_number: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sort_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataBancontact {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataBillingDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub address: Option<UpdateSetupIntentPaymentMethodDataBillingDetailsAddress>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataBoleto {
+    pub tax_id: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataCustomerBalance {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataEps {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<UpdateSetupIntentPaymentMethodDataEpsBank>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataFpx {
+    pub bank: UpdateSetupIntentPaymentMethodDataFpxBank,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataGiropay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataGrabpay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataIdeal {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<UpdateSetupIntentPaymentMethodDataIdealBank>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataInteracPresent {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataKlarna {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dob: Option<UpdateSetupIntentPaymentMethodDataKlarnaDob>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataKonbini {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataOxxo {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataP24 {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<UpdateSetupIntentPaymentMethodDataP24Bank>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataSepaDebit {
+    pub iban: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataSofort {
+    pub country: UpdateSetupIntentPaymentMethodDataSofortCountry,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_type:
+        Option<UpdateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_number: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_type: Option<UpdateSetupIntentPaymentMethodDataUsBankAccountAccountType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections_account: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub routing_number: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataWechatPay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
@@ -684,6 +1138,10 @@ pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebit {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections:
+        Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<UpdateSetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
@@ -696,6 +1154,36 @@ pub struct CreateSetupIntentMandateDataCustomerAcceptanceOnline {
     pub ip_address: String,
 
     pub user_agent: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataBillingDetailsAddress {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataKlarnaDob {
+    pub day: i64,
+
+    pub month: i64,
+
+    pub year: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -751,6 +1239,47 @@ pub struct CreateSetupIntentPaymentMethodOptionsCardMandateOptions {
 pub struct CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions: Option<
+        Vec<CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>,
+    >,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_url: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataBillingDetailsAddress {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataKlarnaDob {
+    pub day: i64,
+
+    pub month: i64,
+
+    pub year: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
@@ -801,6 +1330,17 @@ pub struct UpdateSetupIntentPaymentMethodOptionsCardMandateOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions: Option<
+        Vec<UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>,
+    >,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_url: Option<String>,
+}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "snake_case")]
@@ -878,6 +1418,520 @@ impl std::fmt::Display for CreateSetupIntentMandateDataCustomerAcceptanceType {
 impl std::default::Default for CreateSetupIntentMandateDataCustomerAcceptanceType {
     fn default() -> Self {
         Self::Offline
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodDataEps`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodDataEpsBank {
+    ArzteUndApothekerBank,
+    AustrianAnadiBankAg,
+    BankAustria,
+    BankhausCarlSpangler,
+    BankhausSchelhammerUndSchatteraAg,
+    BawagPskAg,
+    BksBankAg,
+    BrullKallmusBankAg,
+    BtvVierLanderBank,
+    CapitalBankGraweGruppeAg,
+    Dolomitenbank,
+    EasybankAg,
+    ErsteBankUndSparkassen,
+    HypoAlpeadriabankInternationalAg,
+    HypoBankBurgenlandAktiengesellschaft,
+    HypoNoeLbFurNiederosterreichUWien,
+    HypoOberosterreichSalzburgSteiermark,
+    HypoTirolBankAg,
+    HypoVorarlbergBankAg,
+    MarchfelderBank,
+    OberbankAg,
+    RaiffeisenBankengruppeOsterreich,
+    SchoellerbankAg,
+    SpardaBankWien,
+    VolksbankGruppe,
+    VolkskreditbankAg,
+    VrBankBraunau,
+}
+
+impl CreateSetupIntentPaymentMethodDataEpsBank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodDataEpsBank::ArzteUndApothekerBank => {
+                "arzte_und_apotheker_bank"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::AustrianAnadiBankAg => {
+                "austrian_anadi_bank_ag"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::BankAustria => "bank_austria",
+            CreateSetupIntentPaymentMethodDataEpsBank::BankhausCarlSpangler => {
+                "bankhaus_carl_spangler"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::BankhausSchelhammerUndSchatteraAg => {
+                "bankhaus_schelhammer_und_schattera_ag"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::BawagPskAg => "bawag_psk_ag",
+            CreateSetupIntentPaymentMethodDataEpsBank::BksBankAg => "bks_bank_ag",
+            CreateSetupIntentPaymentMethodDataEpsBank::BrullKallmusBankAg => {
+                "brull_kallmus_bank_ag"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::BtvVierLanderBank => "btv_vier_lander_bank",
+            CreateSetupIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => {
+                "capital_bank_grawe_gruppe_ag"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::Dolomitenbank => "dolomitenbank",
+            CreateSetupIntentPaymentMethodDataEpsBank::EasybankAg => "easybank_ag",
+            CreateSetupIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => {
+                "erste_bank_und_sparkassen"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::HypoAlpeadriabankInternationalAg => {
+                "hypo_alpeadriabank_international_ag"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::HypoBankBurgenlandAktiengesellschaft => {
+                "hypo_bank_burgenland_aktiengesellschaft"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::HypoNoeLbFurNiederosterreichUWien => {
+                "hypo_noe_lb_fur_niederosterreich_u_wien"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::HypoOberosterreichSalzburgSteiermark => {
+                "hypo_oberosterreich_salzburg_steiermark"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::HypoTirolBankAg => "hypo_tirol_bank_ag",
+            CreateSetupIntentPaymentMethodDataEpsBank::HypoVorarlbergBankAg => {
+                "hypo_vorarlberg_bank_ag"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::MarchfelderBank => "marchfelder_bank",
+            CreateSetupIntentPaymentMethodDataEpsBank::OberbankAg => "oberbank_ag",
+            CreateSetupIntentPaymentMethodDataEpsBank::RaiffeisenBankengruppeOsterreich => {
+                "raiffeisen_bankengruppe_osterreich"
+            }
+            CreateSetupIntentPaymentMethodDataEpsBank::SchoellerbankAg => "schoellerbank_ag",
+            CreateSetupIntentPaymentMethodDataEpsBank::SpardaBankWien => "sparda_bank_wien",
+            CreateSetupIntentPaymentMethodDataEpsBank::VolksbankGruppe => "volksbank_gruppe",
+            CreateSetupIntentPaymentMethodDataEpsBank::VolkskreditbankAg => "volkskreditbank_ag",
+            CreateSetupIntentPaymentMethodDataEpsBank::VrBankBraunau => "vr_bank_braunau",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodDataEpsBank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentPaymentMethodDataEpsBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSetupIntentPaymentMethodDataEpsBank {
+    fn default() -> Self {
+        Self::ArzteUndApothekerBank
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodDataFpx`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodDataFpxBank {
+    AffinBank,
+    Agrobank,
+    AllianceBank,
+    Ambank,
+    BankIslam,
+    BankMuamalat,
+    BankRakyat,
+    Bsn,
+    Cimb,
+    DeutscheBank,
+    HongLeongBank,
+    Hsbc,
+    Kfh,
+    Maybank2e,
+    Maybank2u,
+    Ocbc,
+    PbEnterprise,
+    PublicBank,
+    Rhb,
+    StandardChartered,
+    Uob,
+}
+
+impl CreateSetupIntentPaymentMethodDataFpxBank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodDataFpxBank::AffinBank => "affin_bank",
+            CreateSetupIntentPaymentMethodDataFpxBank::Agrobank => "agrobank",
+            CreateSetupIntentPaymentMethodDataFpxBank::AllianceBank => "alliance_bank",
+            CreateSetupIntentPaymentMethodDataFpxBank::Ambank => "ambank",
+            CreateSetupIntentPaymentMethodDataFpxBank::BankIslam => "bank_islam",
+            CreateSetupIntentPaymentMethodDataFpxBank::BankMuamalat => "bank_muamalat",
+            CreateSetupIntentPaymentMethodDataFpxBank::BankRakyat => "bank_rakyat",
+            CreateSetupIntentPaymentMethodDataFpxBank::Bsn => "bsn",
+            CreateSetupIntentPaymentMethodDataFpxBank::Cimb => "cimb",
+            CreateSetupIntentPaymentMethodDataFpxBank::DeutscheBank => "deutsche_bank",
+            CreateSetupIntentPaymentMethodDataFpxBank::HongLeongBank => "hong_leong_bank",
+            CreateSetupIntentPaymentMethodDataFpxBank::Hsbc => "hsbc",
+            CreateSetupIntentPaymentMethodDataFpxBank::Kfh => "kfh",
+            CreateSetupIntentPaymentMethodDataFpxBank::Maybank2e => "maybank2e",
+            CreateSetupIntentPaymentMethodDataFpxBank::Maybank2u => "maybank2u",
+            CreateSetupIntentPaymentMethodDataFpxBank::Ocbc => "ocbc",
+            CreateSetupIntentPaymentMethodDataFpxBank::PbEnterprise => "pb_enterprise",
+            CreateSetupIntentPaymentMethodDataFpxBank::PublicBank => "public_bank",
+            CreateSetupIntentPaymentMethodDataFpxBank::Rhb => "rhb",
+            CreateSetupIntentPaymentMethodDataFpxBank::StandardChartered => "standard_chartered",
+            CreateSetupIntentPaymentMethodDataFpxBank::Uob => "uob",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodDataFpxBank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSetupIntentPaymentMethodDataFpxBank {
+    fn default() -> Self {
+        Self::AffinBank
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodDataIdeal`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodDataIdealBank {
+    AbnAmro,
+    AsnBank,
+    Bunq,
+    Handelsbanken,
+    Ing,
+    Knab,
+    Moneyou,
+    Rabobank,
+    Regiobank,
+    Revolut,
+    SnsBank,
+    TriodosBank,
+    VanLanschot,
+}
+
+impl CreateSetupIntentPaymentMethodDataIdealBank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodDataIdealBank::AbnAmro => "abn_amro",
+            CreateSetupIntentPaymentMethodDataIdealBank::AsnBank => "asn_bank",
+            CreateSetupIntentPaymentMethodDataIdealBank::Bunq => "bunq",
+            CreateSetupIntentPaymentMethodDataIdealBank::Handelsbanken => "handelsbanken",
+            CreateSetupIntentPaymentMethodDataIdealBank::Ing => "ing",
+            CreateSetupIntentPaymentMethodDataIdealBank::Knab => "knab",
+            CreateSetupIntentPaymentMethodDataIdealBank::Moneyou => "moneyou",
+            CreateSetupIntentPaymentMethodDataIdealBank::Rabobank => "rabobank",
+            CreateSetupIntentPaymentMethodDataIdealBank::Regiobank => "regiobank",
+            CreateSetupIntentPaymentMethodDataIdealBank::Revolut => "revolut",
+            CreateSetupIntentPaymentMethodDataIdealBank::SnsBank => "sns_bank",
+            CreateSetupIntentPaymentMethodDataIdealBank::TriodosBank => "triodos_bank",
+            CreateSetupIntentPaymentMethodDataIdealBank::VanLanschot => "van_lanschot",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodDataIdealBank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSetupIntentPaymentMethodDataIdealBank {
+    fn default() -> Self {
+        Self::AbnAmro
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodDataP24`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodDataP24Bank {
+    AliorBank,
+    BankMillennium,
+    BankNowyBfgSa,
+    BankPekaoSa,
+    BankiSpbdzielcze,
+    Blik,
+    BnpParibas,
+    Boz,
+    CitiHandlowy,
+    CreditAgricole,
+    Envelobank,
+    EtransferPocztowy24,
+    GetinBank,
+    Ideabank,
+    Ing,
+    Inteligo,
+    MbankMtransfer,
+    NestPrzelew,
+    NoblePay,
+    PbacZIpko,
+    PlusBank,
+    SantanderPrzelew24,
+    TmobileUsbugiBankowe,
+    ToyotaBank,
+    VolkswagenBank,
+}
+
+impl CreateSetupIntentPaymentMethodDataP24Bank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodDataP24Bank::AliorBank => "alior_bank",
+            CreateSetupIntentPaymentMethodDataP24Bank::BankMillennium => "bank_millennium",
+            CreateSetupIntentPaymentMethodDataP24Bank::BankNowyBfgSa => "bank_nowy_bfg_sa",
+            CreateSetupIntentPaymentMethodDataP24Bank::BankPekaoSa => "bank_pekao_sa",
+            CreateSetupIntentPaymentMethodDataP24Bank::BankiSpbdzielcze => "banki_spbdzielcze",
+            CreateSetupIntentPaymentMethodDataP24Bank::Blik => "blik",
+            CreateSetupIntentPaymentMethodDataP24Bank::BnpParibas => "bnp_paribas",
+            CreateSetupIntentPaymentMethodDataP24Bank::Boz => "boz",
+            CreateSetupIntentPaymentMethodDataP24Bank::CitiHandlowy => "citi_handlowy",
+            CreateSetupIntentPaymentMethodDataP24Bank::CreditAgricole => "credit_agricole",
+            CreateSetupIntentPaymentMethodDataP24Bank::Envelobank => "envelobank",
+            CreateSetupIntentPaymentMethodDataP24Bank::EtransferPocztowy24 => {
+                "etransfer_pocztowy24"
+            }
+            CreateSetupIntentPaymentMethodDataP24Bank::GetinBank => "getin_bank",
+            CreateSetupIntentPaymentMethodDataP24Bank::Ideabank => "ideabank",
+            CreateSetupIntentPaymentMethodDataP24Bank::Ing => "ing",
+            CreateSetupIntentPaymentMethodDataP24Bank::Inteligo => "inteligo",
+            CreateSetupIntentPaymentMethodDataP24Bank::MbankMtransfer => "mbank_mtransfer",
+            CreateSetupIntentPaymentMethodDataP24Bank::NestPrzelew => "nest_przelew",
+            CreateSetupIntentPaymentMethodDataP24Bank::NoblePay => "noble_pay",
+            CreateSetupIntentPaymentMethodDataP24Bank::PbacZIpko => "pbac_z_ipko",
+            CreateSetupIntentPaymentMethodDataP24Bank::PlusBank => "plus_bank",
+            CreateSetupIntentPaymentMethodDataP24Bank::SantanderPrzelew24 => "santander_przelew24",
+            CreateSetupIntentPaymentMethodDataP24Bank::TmobileUsbugiBankowe => {
+                "tmobile_usbugi_bankowe"
+            }
+            CreateSetupIntentPaymentMethodDataP24Bank::ToyotaBank => "toyota_bank",
+            CreateSetupIntentPaymentMethodDataP24Bank::VolkswagenBank => "volkswagen_bank",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodDataP24Bank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSetupIntentPaymentMethodDataP24Bank {
+    fn default() -> Self {
+        Self::AliorBank
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodDataSofort`'s `country` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodDataSofortCountry {
+    #[serde(rename = "AT")]
+    At,
+    #[serde(rename = "BE")]
+    Be,
+    #[serde(rename = "DE")]
+    De,
+    #[serde(rename = "ES")]
+    Es,
+    #[serde(rename = "IT")]
+    It,
+    #[serde(rename = "NL")]
+    Nl,
+}
+
+impl CreateSetupIntentPaymentMethodDataSofortCountry {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodDataSofortCountry::At => "AT",
+            CreateSetupIntentPaymentMethodDataSofortCountry::Be => "BE",
+            CreateSetupIntentPaymentMethodDataSofortCountry::De => "DE",
+            CreateSetupIntentPaymentMethodDataSofortCountry::Es => "ES",
+            CreateSetupIntentPaymentMethodDataSofortCountry::It => "IT",
+            CreateSetupIntentPaymentMethodDataSofortCountry::Nl => "NL",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodDataSofortCountry {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentPaymentMethodDataSofortCountry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSetupIntentPaymentMethodDataSofortCountry {
+    fn default() -> Self {
+        Self::At
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodData`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodDataType {
+    AcssDebit,
+    AfterpayClearpay,
+    Alipay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Boleto,
+    CustomerBalance,
+    Eps,
+    Fpx,
+    Giropay,
+    Grabpay,
+    Ideal,
+    Klarna,
+    Konbini,
+    Oxxo,
+    P24,
+    Paynow,
+    SepaDebit,
+    Sofort,
+    UsBankAccount,
+    WechatPay,
+}
+
+impl CreateSetupIntentPaymentMethodDataType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodDataType::AcssDebit => "acss_debit",
+            CreateSetupIntentPaymentMethodDataType::AfterpayClearpay => "afterpay_clearpay",
+            CreateSetupIntentPaymentMethodDataType::Alipay => "alipay",
+            CreateSetupIntentPaymentMethodDataType::AuBecsDebit => "au_becs_debit",
+            CreateSetupIntentPaymentMethodDataType::BacsDebit => "bacs_debit",
+            CreateSetupIntentPaymentMethodDataType::Bancontact => "bancontact",
+            CreateSetupIntentPaymentMethodDataType::Boleto => "boleto",
+            CreateSetupIntentPaymentMethodDataType::CustomerBalance => "customer_balance",
+            CreateSetupIntentPaymentMethodDataType::Eps => "eps",
+            CreateSetupIntentPaymentMethodDataType::Fpx => "fpx",
+            CreateSetupIntentPaymentMethodDataType::Giropay => "giropay",
+            CreateSetupIntentPaymentMethodDataType::Grabpay => "grabpay",
+            CreateSetupIntentPaymentMethodDataType::Ideal => "ideal",
+            CreateSetupIntentPaymentMethodDataType::Klarna => "klarna",
+            CreateSetupIntentPaymentMethodDataType::Konbini => "konbini",
+            CreateSetupIntentPaymentMethodDataType::Oxxo => "oxxo",
+            CreateSetupIntentPaymentMethodDataType::P24 => "p24",
+            CreateSetupIntentPaymentMethodDataType::Paynow => "paynow",
+            CreateSetupIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
+            CreateSetupIntentPaymentMethodDataType::Sofort => "sofort",
+            CreateSetupIntentPaymentMethodDataType::UsBankAccount => "us_bank_account",
+            CreateSetupIntentPaymentMethodDataType::WechatPay => "wechat_pay",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodDataType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSetupIntentPaymentMethodDataType {
+    fn default() -> Self {
+        Self::AcssDebit
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodDataUsBankAccount`'s `account_holder_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl CreateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType::Company => "company",
+            CreateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType::Individual => {
+                "individual"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn default() -> Self {
+        Self::Company
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodDataUsBankAccount`'s `account_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodDataUsBankAccountAccountType {
+    Checking,
+    Savings,
+}
+
+impl CreateSetupIntentPaymentMethodDataUsBankAccountAccountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodDataUsBankAccountAccountType::Checking => "checking",
+            CreateSetupIntentPaymentMethodDataUsBankAccountAccountType::Savings => "savings",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentPaymentMethodDataUsBankAccountAccountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentPaymentMethodDataUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSetupIntentPaymentMethodDataUsBankAccountAccountType {
+    fn default() -> Self {
+        Self::Checking
     }
 }
 
@@ -1174,6 +2228,50 @@ impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsCardRequestThree
 impl std::default::Default for CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn default() -> Self {
         Self::Any
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections`'s `permissions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    Balances,
+    Ownership,
+    PaymentMethod,
+    Transactions,
+}
+
+impl CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+            CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+            CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+            CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn default() -> Self {
+        Self::Balances
     }
 }
 
@@ -1719,6 +2817,520 @@ impl std::default::Default for SetupIntentTypeSpecificPaymentMethodOptionsClient
     }
 }
 
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodDataEps`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodDataEpsBank {
+    ArzteUndApothekerBank,
+    AustrianAnadiBankAg,
+    BankAustria,
+    BankhausCarlSpangler,
+    BankhausSchelhammerUndSchatteraAg,
+    BawagPskAg,
+    BksBankAg,
+    BrullKallmusBankAg,
+    BtvVierLanderBank,
+    CapitalBankGraweGruppeAg,
+    Dolomitenbank,
+    EasybankAg,
+    ErsteBankUndSparkassen,
+    HypoAlpeadriabankInternationalAg,
+    HypoBankBurgenlandAktiengesellschaft,
+    HypoNoeLbFurNiederosterreichUWien,
+    HypoOberosterreichSalzburgSteiermark,
+    HypoTirolBankAg,
+    HypoVorarlbergBankAg,
+    MarchfelderBank,
+    OberbankAg,
+    RaiffeisenBankengruppeOsterreich,
+    SchoellerbankAg,
+    SpardaBankWien,
+    VolksbankGruppe,
+    VolkskreditbankAg,
+    VrBankBraunau,
+}
+
+impl UpdateSetupIntentPaymentMethodDataEpsBank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodDataEpsBank::ArzteUndApothekerBank => {
+                "arzte_und_apotheker_bank"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::AustrianAnadiBankAg => {
+                "austrian_anadi_bank_ag"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::BankAustria => "bank_austria",
+            UpdateSetupIntentPaymentMethodDataEpsBank::BankhausCarlSpangler => {
+                "bankhaus_carl_spangler"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::BankhausSchelhammerUndSchatteraAg => {
+                "bankhaus_schelhammer_und_schattera_ag"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::BawagPskAg => "bawag_psk_ag",
+            UpdateSetupIntentPaymentMethodDataEpsBank::BksBankAg => "bks_bank_ag",
+            UpdateSetupIntentPaymentMethodDataEpsBank::BrullKallmusBankAg => {
+                "brull_kallmus_bank_ag"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::BtvVierLanderBank => "btv_vier_lander_bank",
+            UpdateSetupIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => {
+                "capital_bank_grawe_gruppe_ag"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::Dolomitenbank => "dolomitenbank",
+            UpdateSetupIntentPaymentMethodDataEpsBank::EasybankAg => "easybank_ag",
+            UpdateSetupIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => {
+                "erste_bank_und_sparkassen"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::HypoAlpeadriabankInternationalAg => {
+                "hypo_alpeadriabank_international_ag"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::HypoBankBurgenlandAktiengesellschaft => {
+                "hypo_bank_burgenland_aktiengesellschaft"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::HypoNoeLbFurNiederosterreichUWien => {
+                "hypo_noe_lb_fur_niederosterreich_u_wien"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::HypoOberosterreichSalzburgSteiermark => {
+                "hypo_oberosterreich_salzburg_steiermark"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::HypoTirolBankAg => "hypo_tirol_bank_ag",
+            UpdateSetupIntentPaymentMethodDataEpsBank::HypoVorarlbergBankAg => {
+                "hypo_vorarlberg_bank_ag"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::MarchfelderBank => "marchfelder_bank",
+            UpdateSetupIntentPaymentMethodDataEpsBank::OberbankAg => "oberbank_ag",
+            UpdateSetupIntentPaymentMethodDataEpsBank::RaiffeisenBankengruppeOsterreich => {
+                "raiffeisen_bankengruppe_osterreich"
+            }
+            UpdateSetupIntentPaymentMethodDataEpsBank::SchoellerbankAg => "schoellerbank_ag",
+            UpdateSetupIntentPaymentMethodDataEpsBank::SpardaBankWien => "sparda_bank_wien",
+            UpdateSetupIntentPaymentMethodDataEpsBank::VolksbankGruppe => "volksbank_gruppe",
+            UpdateSetupIntentPaymentMethodDataEpsBank::VolkskreditbankAg => "volkskreditbank_ag",
+            UpdateSetupIntentPaymentMethodDataEpsBank::VrBankBraunau => "vr_bank_braunau",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodDataEpsBank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataEpsBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSetupIntentPaymentMethodDataEpsBank {
+    fn default() -> Self {
+        Self::ArzteUndApothekerBank
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodDataFpx`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodDataFpxBank {
+    AffinBank,
+    Agrobank,
+    AllianceBank,
+    Ambank,
+    BankIslam,
+    BankMuamalat,
+    BankRakyat,
+    Bsn,
+    Cimb,
+    DeutscheBank,
+    HongLeongBank,
+    Hsbc,
+    Kfh,
+    Maybank2e,
+    Maybank2u,
+    Ocbc,
+    PbEnterprise,
+    PublicBank,
+    Rhb,
+    StandardChartered,
+    Uob,
+}
+
+impl UpdateSetupIntentPaymentMethodDataFpxBank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodDataFpxBank::AffinBank => "affin_bank",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Agrobank => "agrobank",
+            UpdateSetupIntentPaymentMethodDataFpxBank::AllianceBank => "alliance_bank",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Ambank => "ambank",
+            UpdateSetupIntentPaymentMethodDataFpxBank::BankIslam => "bank_islam",
+            UpdateSetupIntentPaymentMethodDataFpxBank::BankMuamalat => "bank_muamalat",
+            UpdateSetupIntentPaymentMethodDataFpxBank::BankRakyat => "bank_rakyat",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Bsn => "bsn",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Cimb => "cimb",
+            UpdateSetupIntentPaymentMethodDataFpxBank::DeutscheBank => "deutsche_bank",
+            UpdateSetupIntentPaymentMethodDataFpxBank::HongLeongBank => "hong_leong_bank",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Hsbc => "hsbc",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Kfh => "kfh",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Maybank2e => "maybank2e",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Maybank2u => "maybank2u",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Ocbc => "ocbc",
+            UpdateSetupIntentPaymentMethodDataFpxBank::PbEnterprise => "pb_enterprise",
+            UpdateSetupIntentPaymentMethodDataFpxBank::PublicBank => "public_bank",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Rhb => "rhb",
+            UpdateSetupIntentPaymentMethodDataFpxBank::StandardChartered => "standard_chartered",
+            UpdateSetupIntentPaymentMethodDataFpxBank::Uob => "uob",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodDataFpxBank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSetupIntentPaymentMethodDataFpxBank {
+    fn default() -> Self {
+        Self::AffinBank
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodDataIdeal`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodDataIdealBank {
+    AbnAmro,
+    AsnBank,
+    Bunq,
+    Handelsbanken,
+    Ing,
+    Knab,
+    Moneyou,
+    Rabobank,
+    Regiobank,
+    Revolut,
+    SnsBank,
+    TriodosBank,
+    VanLanschot,
+}
+
+impl UpdateSetupIntentPaymentMethodDataIdealBank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodDataIdealBank::AbnAmro => "abn_amro",
+            UpdateSetupIntentPaymentMethodDataIdealBank::AsnBank => "asn_bank",
+            UpdateSetupIntentPaymentMethodDataIdealBank::Bunq => "bunq",
+            UpdateSetupIntentPaymentMethodDataIdealBank::Handelsbanken => "handelsbanken",
+            UpdateSetupIntentPaymentMethodDataIdealBank::Ing => "ing",
+            UpdateSetupIntentPaymentMethodDataIdealBank::Knab => "knab",
+            UpdateSetupIntentPaymentMethodDataIdealBank::Moneyou => "moneyou",
+            UpdateSetupIntentPaymentMethodDataIdealBank::Rabobank => "rabobank",
+            UpdateSetupIntentPaymentMethodDataIdealBank::Regiobank => "regiobank",
+            UpdateSetupIntentPaymentMethodDataIdealBank::Revolut => "revolut",
+            UpdateSetupIntentPaymentMethodDataIdealBank::SnsBank => "sns_bank",
+            UpdateSetupIntentPaymentMethodDataIdealBank::TriodosBank => "triodos_bank",
+            UpdateSetupIntentPaymentMethodDataIdealBank::VanLanschot => "van_lanschot",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodDataIdealBank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSetupIntentPaymentMethodDataIdealBank {
+    fn default() -> Self {
+        Self::AbnAmro
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodDataP24`'s `bank` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodDataP24Bank {
+    AliorBank,
+    BankMillennium,
+    BankNowyBfgSa,
+    BankPekaoSa,
+    BankiSpbdzielcze,
+    Blik,
+    BnpParibas,
+    Boz,
+    CitiHandlowy,
+    CreditAgricole,
+    Envelobank,
+    EtransferPocztowy24,
+    GetinBank,
+    Ideabank,
+    Ing,
+    Inteligo,
+    MbankMtransfer,
+    NestPrzelew,
+    NoblePay,
+    PbacZIpko,
+    PlusBank,
+    SantanderPrzelew24,
+    TmobileUsbugiBankowe,
+    ToyotaBank,
+    VolkswagenBank,
+}
+
+impl UpdateSetupIntentPaymentMethodDataP24Bank {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodDataP24Bank::AliorBank => "alior_bank",
+            UpdateSetupIntentPaymentMethodDataP24Bank::BankMillennium => "bank_millennium",
+            UpdateSetupIntentPaymentMethodDataP24Bank::BankNowyBfgSa => "bank_nowy_bfg_sa",
+            UpdateSetupIntentPaymentMethodDataP24Bank::BankPekaoSa => "bank_pekao_sa",
+            UpdateSetupIntentPaymentMethodDataP24Bank::BankiSpbdzielcze => "banki_spbdzielcze",
+            UpdateSetupIntentPaymentMethodDataP24Bank::Blik => "blik",
+            UpdateSetupIntentPaymentMethodDataP24Bank::BnpParibas => "bnp_paribas",
+            UpdateSetupIntentPaymentMethodDataP24Bank::Boz => "boz",
+            UpdateSetupIntentPaymentMethodDataP24Bank::CitiHandlowy => "citi_handlowy",
+            UpdateSetupIntentPaymentMethodDataP24Bank::CreditAgricole => "credit_agricole",
+            UpdateSetupIntentPaymentMethodDataP24Bank::Envelobank => "envelobank",
+            UpdateSetupIntentPaymentMethodDataP24Bank::EtransferPocztowy24 => {
+                "etransfer_pocztowy24"
+            }
+            UpdateSetupIntentPaymentMethodDataP24Bank::GetinBank => "getin_bank",
+            UpdateSetupIntentPaymentMethodDataP24Bank::Ideabank => "ideabank",
+            UpdateSetupIntentPaymentMethodDataP24Bank::Ing => "ing",
+            UpdateSetupIntentPaymentMethodDataP24Bank::Inteligo => "inteligo",
+            UpdateSetupIntentPaymentMethodDataP24Bank::MbankMtransfer => "mbank_mtransfer",
+            UpdateSetupIntentPaymentMethodDataP24Bank::NestPrzelew => "nest_przelew",
+            UpdateSetupIntentPaymentMethodDataP24Bank::NoblePay => "noble_pay",
+            UpdateSetupIntentPaymentMethodDataP24Bank::PbacZIpko => "pbac_z_ipko",
+            UpdateSetupIntentPaymentMethodDataP24Bank::PlusBank => "plus_bank",
+            UpdateSetupIntentPaymentMethodDataP24Bank::SantanderPrzelew24 => "santander_przelew24",
+            UpdateSetupIntentPaymentMethodDataP24Bank::TmobileUsbugiBankowe => {
+                "tmobile_usbugi_bankowe"
+            }
+            UpdateSetupIntentPaymentMethodDataP24Bank::ToyotaBank => "toyota_bank",
+            UpdateSetupIntentPaymentMethodDataP24Bank::VolkswagenBank => "volkswagen_bank",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodDataP24Bank {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSetupIntentPaymentMethodDataP24Bank {
+    fn default() -> Self {
+        Self::AliorBank
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodDataSofort`'s `country` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodDataSofortCountry {
+    #[serde(rename = "AT")]
+    At,
+    #[serde(rename = "BE")]
+    Be,
+    #[serde(rename = "DE")]
+    De,
+    #[serde(rename = "ES")]
+    Es,
+    #[serde(rename = "IT")]
+    It,
+    #[serde(rename = "NL")]
+    Nl,
+}
+
+impl UpdateSetupIntentPaymentMethodDataSofortCountry {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodDataSofortCountry::At => "AT",
+            UpdateSetupIntentPaymentMethodDataSofortCountry::Be => "BE",
+            UpdateSetupIntentPaymentMethodDataSofortCountry::De => "DE",
+            UpdateSetupIntentPaymentMethodDataSofortCountry::Es => "ES",
+            UpdateSetupIntentPaymentMethodDataSofortCountry::It => "IT",
+            UpdateSetupIntentPaymentMethodDataSofortCountry::Nl => "NL",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodDataSofortCountry {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataSofortCountry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSetupIntentPaymentMethodDataSofortCountry {
+    fn default() -> Self {
+        Self::At
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodData`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodDataType {
+    AcssDebit,
+    AfterpayClearpay,
+    Alipay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Boleto,
+    CustomerBalance,
+    Eps,
+    Fpx,
+    Giropay,
+    Grabpay,
+    Ideal,
+    Klarna,
+    Konbini,
+    Oxxo,
+    P24,
+    Paynow,
+    SepaDebit,
+    Sofort,
+    UsBankAccount,
+    WechatPay,
+}
+
+impl UpdateSetupIntentPaymentMethodDataType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodDataType::AcssDebit => "acss_debit",
+            UpdateSetupIntentPaymentMethodDataType::AfterpayClearpay => "afterpay_clearpay",
+            UpdateSetupIntentPaymentMethodDataType::Alipay => "alipay",
+            UpdateSetupIntentPaymentMethodDataType::AuBecsDebit => "au_becs_debit",
+            UpdateSetupIntentPaymentMethodDataType::BacsDebit => "bacs_debit",
+            UpdateSetupIntentPaymentMethodDataType::Bancontact => "bancontact",
+            UpdateSetupIntentPaymentMethodDataType::Boleto => "boleto",
+            UpdateSetupIntentPaymentMethodDataType::CustomerBalance => "customer_balance",
+            UpdateSetupIntentPaymentMethodDataType::Eps => "eps",
+            UpdateSetupIntentPaymentMethodDataType::Fpx => "fpx",
+            UpdateSetupIntentPaymentMethodDataType::Giropay => "giropay",
+            UpdateSetupIntentPaymentMethodDataType::Grabpay => "grabpay",
+            UpdateSetupIntentPaymentMethodDataType::Ideal => "ideal",
+            UpdateSetupIntentPaymentMethodDataType::Klarna => "klarna",
+            UpdateSetupIntentPaymentMethodDataType::Konbini => "konbini",
+            UpdateSetupIntentPaymentMethodDataType::Oxxo => "oxxo",
+            UpdateSetupIntentPaymentMethodDataType::P24 => "p24",
+            UpdateSetupIntentPaymentMethodDataType::Paynow => "paynow",
+            UpdateSetupIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
+            UpdateSetupIntentPaymentMethodDataType::Sofort => "sofort",
+            UpdateSetupIntentPaymentMethodDataType::UsBankAccount => "us_bank_account",
+            UpdateSetupIntentPaymentMethodDataType::WechatPay => "wechat_pay",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodDataType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSetupIntentPaymentMethodDataType {
+    fn default() -> Self {
+        Self::AcssDebit
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodDataUsBankAccount`'s `account_holder_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    Company,
+    Individual,
+}
+
+impl UpdateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType::Company => "company",
+            UpdateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType::Individual => {
+                "individual"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSetupIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn default() -> Self {
+        Self::Company
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodDataUsBankAccount`'s `account_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodDataUsBankAccountAccountType {
+    Checking,
+    Savings,
+}
+
+impl UpdateSetupIntentPaymentMethodDataUsBankAccountAccountType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodDataUsBankAccountAccountType::Checking => "checking",
+            UpdateSetupIntentPaymentMethodDataUsBankAccountAccountType::Savings => "savings",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentPaymentMethodDataUsBankAccountAccountType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodDataUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSetupIntentPaymentMethodDataUsBankAccountAccountType {
+    fn default() -> Self {
+        Self::Checking
+    }
+}
+
 /// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptions`'s `default_for` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2012,6 +3624,50 @@ impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsCardRequestThree
 impl std::default::Default for UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn default() -> Self {
         Self::Any
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnections`'s `permissions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    Balances,
+    Ownership,
+    PaymentMethod,
+    Transactions,
+}
+
+impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+            UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+            UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+            UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+        }
+    }
+}
+
+impl AsRef<str>
+    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn default() -> Self {
+        Self::Balances
     }
 }
 

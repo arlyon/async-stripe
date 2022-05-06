@@ -55,6 +55,10 @@ pub struct Refund {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_reason: Option<String>,
 
+    /// Email to which refund instructions, if required, are sent to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instructions_email: Option<String>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -176,6 +180,9 @@ pub struct CreateRefund<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub instructions_email: Option<&'a str>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -203,6 +210,7 @@ impl<'a> CreateRefund<'a> {
             amount: Default::default(),
             charge: Default::default(),
             expand: Default::default(),
+            instructions_email: Default::default(),
             metadata: Default::default(),
             payment_intent: Default::default(),
             reason: Default::default(),

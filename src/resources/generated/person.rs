@@ -108,6 +108,9 @@ pub struct Person {
     pub political_exposure: Option<PersonPoliticalExposure>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_address: Option<Address>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub relationship: Option<PersonRelationship>,
 
     #[serde(skip_serializing_if = "Option::is_none")]

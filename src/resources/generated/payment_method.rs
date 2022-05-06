@@ -594,6 +594,10 @@ pub struct PaymentMethodUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_name: Option<String>,
 
+    /// The ID of the Financial Connections Account used to create the payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections_account: Option<String>,
+
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
@@ -1002,6 +1006,9 @@ pub struct CreatePaymentMethodUsBankAccount {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_type: Option<CreatePaymentMethodUsBankAccountAccountType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections_account: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,

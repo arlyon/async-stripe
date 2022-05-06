@@ -8,9 +8,9 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, SubscriptionScheduleId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled, Subscription,
-    SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData,
-    TaxRate, TestHelpersTestClock,
+    Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled,
+    Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds,
+    SubscriptionTransferData, TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "SubscriptionSchedule".
@@ -20,6 +20,10 @@ use crate::resources::{
 pub struct SubscriptionSchedule {
     /// Unique identifier for the object.
     pub id: SubscriptionScheduleId,
+
+    /// ID of the Connect Application that created the schedule.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application: Option<Expandable<Application>>,
 
     /// Time at which the subscription schedule was canceled.
     ///
