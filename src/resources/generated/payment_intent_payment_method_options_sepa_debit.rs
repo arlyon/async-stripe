@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "payment_intent_payment_method_options_sepa_debit".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsSepaDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit>,
 
@@ -21,8 +20,7 @@ pub struct PaymentIntentPaymentMethodOptionsSepaDebit {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit {
-}
+pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
 
 /// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsSepaDebit`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]

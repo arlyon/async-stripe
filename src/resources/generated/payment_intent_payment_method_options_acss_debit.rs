@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "payment_intent_payment_method_options_acss_debit".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsAcssDebit {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
 
@@ -26,7 +25,6 @@ pub struct PaymentIntentPaymentMethodOptionsAcssDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
-
     /// A URL for custom mandate text.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
@@ -39,11 +37,13 @@ pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
 
     /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_schedule: Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
+    pub payment_schedule:
+        Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
 
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub transaction_type: Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
+    pub transaction_type:
+        Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
 }
 
 /// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsAcssDebit`'s `setup_future_usage` field.
@@ -96,7 +96,9 @@ impl PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
         match self {
             PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
             PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+            PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
         }
     }
 }
@@ -130,9 +132,15 @@ pub enum PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
 impl PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
     pub fn as_str(self) -> &'static str {
         match self {
-            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Combined => "combined",
-            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Interval => "interval",
-            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Sporadic => "sporadic",
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Combined => {
+                "combined"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Interval => {
+                "interval"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Sporadic => {
+                "sporadic"
+            }
         }
     }
 }
@@ -148,7 +156,9 @@ impl std::fmt::Display for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDe
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+impl std::default::Default
+    for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
+{
     fn default() -> Self {
         Self::Combined
     }
@@ -165,8 +175,12 @@ pub enum PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType
 impl PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Business => "business",
-            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Personal => "personal",
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Business => {
+                "business"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Personal => {
+                "personal"
+            }
         }
     }
 }
@@ -182,7 +196,9 @@ impl std::fmt::Display for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDe
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+impl std::default::Default
+    for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType
+{
     fn default() -> Self {
         Self::Business
     }

@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "payment_method_options_customer_balance".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsCustomerBalance {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_transfer: Option<PaymentMethodOptionsCustomerBalanceBankTransfer>,
 
@@ -28,12 +27,12 @@ pub struct PaymentMethodOptionsCustomerBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsCustomerBalanceBankTransfer {
-
     /// List of address types that should be returned in the financial_addresses response.
     ///
     /// If not specified, all valid types will be returned.  Permitted values include: `zengin`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested_address_types: Option<Vec<PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
+    pub requested_address_types:
+        Option<Vec<PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
 
     /// The bank transfer type that this PaymentIntent is allowed to use for funding.
     ///
@@ -53,7 +52,9 @@ pub enum PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
 impl PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         match self {
-            PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
+            PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => {
+                "zengin"
+            }
         }
     }
 }
@@ -69,7 +70,9 @@ impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceBankTransferReques
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+impl std::default::Default
+    for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
     fn default() -> Self {
         Self::Zengin
     }
@@ -97,17 +100,29 @@ impl PaymentMethodOptionsCustomerBalanceBankTransferType {
     pub fn as_str(self) -> &'static str {
         match self {
             PaymentMethodOptionsCustomerBalanceBankTransferType::EuBankAccount => "eu_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => {
+                "eu_bank_transfer"
+            }
             PaymentMethodOptionsCustomerBalanceBankTransferType::GbBankAccount => "gb_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => {
+                "gb_bank_transfer"
+            }
             PaymentMethodOptionsCustomerBalanceBankTransferType::IdBankAccount => "id_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::IdBankTransfer => "id_bank_transfer",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::IdBankTransfer => {
+                "id_bank_transfer"
+            }
             PaymentMethodOptionsCustomerBalanceBankTransferType::JpBankAccount => "jp_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => {
+                "jp_bank_transfer"
+            }
             PaymentMethodOptionsCustomerBalanceBankTransferType::MxBankAccount => "mx_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => {
+                "mx_bank_transfer"
+            }
             PaymentMethodOptionsCustomerBalanceBankTransferType::UsBankAccount => "us_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::UsBankTransfer => "us_bank_transfer",
+            PaymentMethodOptionsCustomerBalanceBankTransferType::UsBankTransfer => {
+                "us_bank_transfer"
+            }
         }
     }
 }

@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "payment_method_options_wechat_pay".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsWechatPay {
-
     /// The app ID registered with WeChat Pay.
     ///
     /// Only required when client is ios or android.
