@@ -45,7 +45,7 @@ pub struct InferredObject {
     pub schema: Value,
 }
 
-#[derive(Eq, PartialEq, Hash, PartialOrd, Ord)]
+#[derive(Eq, PartialEq, Hash, PartialOrd, Ord, Debug)]
 pub enum MethodTypes {
     List,
     Create,
