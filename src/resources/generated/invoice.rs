@@ -8,8 +8,8 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Account, Address, ApiErrors, Charge, Currency, Customer, Discount, InvoiceLineItem,
-    InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
+    Account, Address, ApiErrors, Application, Charge, Currency, Customer, Discount,
+    InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
     InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
     InvoicePaymentMethodOptionsUsBankAccount, PaymentIntent, PaymentMethod, PaymentSource, Quote,
     Shipping, Subscription, TaxId, TaxRate, TestHelpersTestClock,
@@ -53,6 +53,10 @@ pub struct Invoice {
     /// The amount remaining, in %s, that is due.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_remaining: Option<i64>,
+
+    /// ID of the Connect Application that created the invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application: Option<Expandable<Application>>,
 
     /// The fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account when the invoice is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -564,7 +568,7 @@ pub struct InvoicePaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesResourceInvoiceTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: TaxIdType,
 
@@ -936,6 +940,10 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsKonbini {}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections:
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
@@ -953,6 +961,13 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTr
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
 }
 
 /// An enum representing the possible values of an `AutomaticTax`'s `status` field.
@@ -1182,6 +1197,51 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Any
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections`'s `permissions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    Balances,
+    Ownership,
+    PaymentMethod,
+    Transactions,
+}
+
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn default() -> Self {
+        Self::Balances
     }
 }
 
@@ -1622,6 +1682,7 @@ pub enum TaxIdType {
     ChVat,
     ClTin,
     EsCif,
+    EuOssVat,
     EuVat,
     GbVat,
     GeVat,
@@ -1673,6 +1734,7 @@ impl TaxIdType {
             TaxIdType::ChVat => "ch_vat",
             TaxIdType::ClTin => "cl_tin",
             TaxIdType::EsCif => "es_cif",
+            TaxIdType::EuOssVat => "eu_oss_vat",
             TaxIdType::EuVat => "eu_vat",
             TaxIdType::GbVat => "gb_vat",
             TaxIdType::GeVat => "ge_vat",

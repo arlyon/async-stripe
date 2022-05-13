@@ -1284,6 +1284,9 @@ pub struct PersonParams {
     pub political_exposure: Option<PersonParamsPoliticalExposure>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_address: Option<PersonParamsRegisteredAddress>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ssn_last_4: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1693,6 +1696,27 @@ pub struct PersonParamsDob {
     pub month: i64,
 
     pub year: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PersonParamsRegisteredAddress {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

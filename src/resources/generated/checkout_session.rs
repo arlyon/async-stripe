@@ -8,8 +8,8 @@ use crate::client::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    Address, CheckoutSessionItem, Currency, Customer, Discount, PaymentIntent, PaymentLink,
-    SetupIntent, Shipping, ShippingRate, Subscription, TaxRate,
+    Address, CheckoutSessionItem, Currency, Customer, Discount, LinkedAccountOptionsUsBankAccount,
+    PaymentIntent, PaymentLink, SetupIntent, Shipping, ShippingRate, Subscription, TaxRate,
 };
 
 /// The resource representing a Stripe "Session".
@@ -230,6 +230,9 @@ pub struct CheckoutSessionPaymentMethodOptions {
     pub acss_debit: Option<CheckoutAcssDebitPaymentMethodOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub alipay: Option<CheckoutAlipayPaymentMethodOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CheckoutBoletoPaymentMethodOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -286,6 +289,9 @@ pub struct CheckoutAcssDebitMandateOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CheckoutAlipayPaymentMethodOptions {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CheckoutBoletoPaymentMethodOptions {
     /// The number of calendar days before a Boleto voucher expires.
     ///
@@ -312,6 +318,9 @@ pub struct CheckoutOxxoPaymentMethodOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CheckoutUsBankAccountPaymentMethodOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections: Option<LinkedAccountOptionsUsBankAccount>,
+
     /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method: Option<CheckoutUsBankAccountPaymentMethodOptionsVerificationMethod>,
@@ -433,7 +442,7 @@ pub struct PaymentPagesCheckoutSessionShippingOption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
 
@@ -852,6 +861,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     pub acss_debit: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub alipay: Option<CreateCheckoutSessionPaymentMethodOptionsAlipay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreateCheckoutSessionPaymentMethodOptionsBoleto>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -905,6 +917,9 @@ pub struct CreateCheckoutSessionSubscriptionData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<String>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CreateCheckoutSessionSubscriptionDataItems>>,
@@ -1007,6 +1022,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsAlipay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
@@ -1026,6 +1044,10 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsOxxo {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections:
+        Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -1147,6 +1169,14 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type:
         Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions: Option<
+        Vec<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>,
+    >,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2126,6 +2156,50 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Automatic
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections`'s `permissions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    Balances,
+    Ownership,
+    PaymentMethod,
+    Transactions,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn default() -> Self {
+        Self::Balances
     }
 }
 
@@ -4090,6 +4164,7 @@ pub enum PaymentPagesCheckoutSessionTaxIdType {
     ChVat,
     ClTin,
     EsCif,
+    EuOssVat,
     EuVat,
     GbVat,
     GeVat,
@@ -4141,6 +4216,7 @@ impl PaymentPagesCheckoutSessionTaxIdType {
             PaymentPagesCheckoutSessionTaxIdType::ChVat => "ch_vat",
             PaymentPagesCheckoutSessionTaxIdType::ClTin => "cl_tin",
             PaymentPagesCheckoutSessionTaxIdType::EsCif => "es_cif",
+            PaymentPagesCheckoutSessionTaxIdType::EuOssVat => "eu_oss_vat",
             PaymentPagesCheckoutSessionTaxIdType::EuVat => "eu_vat",
             PaymentPagesCheckoutSessionTaxIdType::GbVat => "gb_vat",
             PaymentPagesCheckoutSessionTaxIdType::GeVat => "ge_vat",
