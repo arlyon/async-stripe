@@ -50,7 +50,5 @@ pub use config::BaseClient;
 /// type Response<T> = Box<dyn Future<Result<T, Error>>>;
 /// ```
 pub use config::Response;
-
 pub use request_strategy::RequestStrategy;
-
-pub use self::stripe::Client;
+pub use stripe::Client;
