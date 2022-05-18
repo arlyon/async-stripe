@@ -52,6 +52,12 @@ impl RequestStrategy {
         }
     }
 
+    #[cfg(feature = "uuid")]
+    pub fn idempotent_with_uuid() -> Self {
+        use uuid::Uuid;
+        Self::Idempotent(Uuid::new_v4().to_string())
+    }
+
     pub fn get_key(&self) -> Option<String> {
         match self {
             RequestStrategy::Once => None,

@@ -17,7 +17,7 @@ async fn main() {
     let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
     let client = Client::new(secret_key);
 
-    // create a new exmaple project
+    // create a new example project
     let product = {
         let mut create_product = CreateProduct::new("T-Shirt");
         create_product.metadata =
