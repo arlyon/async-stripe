@@ -11,8 +11,8 @@ use crate::ids::{
 };
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    Address, Currency, Discount, PaymentMethod, PaymentSource, PaymentSourceParams, Scheduled,
-    Shipping, Subscription, TaxId, TestHelpersTestClock,
+    Address, CashBalance, Currency, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
+    Scheduled, Shipping, Subscription, TaxId, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Customer".
@@ -35,6 +35,12 @@ pub struct Customer {
     /// This balance is only taken into account as invoices are finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<i64>,
+
+    /// The current funds being held by Stripe on behalf of the customer.
+    ///
+    /// These funds can be applied towards payment intents with source "cash_balance".The settings[reconciliation_mode] field describes whether these funds are applied to such payment intents manually or automatically.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cash_balance: Option<CashBalance>,
 
     /// Time at which the object was created.
     ///
@@ -933,6 +939,7 @@ pub enum TaxIdType {
     ChVat,
     ClTin,
     EsCif,
+    EuOssVat,
     EuVat,
     GbVat,
     GeVat,
@@ -983,6 +990,7 @@ impl TaxIdType {
             TaxIdType::ChVat => "ch_vat",
             TaxIdType::ClTin => "cl_tin",
             TaxIdType::EsCif => "es_cif",
+            TaxIdType::EuOssVat => "eu_oss_vat",
             TaxIdType::EuVat => "eu_vat",
             TaxIdType::GbVat => "gb_vat",
             TaxIdType::GeVat => "ge_vat",

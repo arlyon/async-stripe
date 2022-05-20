@@ -594,6 +594,10 @@ pub struct PaymentMethodUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_name: Option<String>,
 
+    /// The ID of the Financial Connections Account used to create the payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections_account: Option<String>,
+
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
@@ -603,6 +607,10 @@ pub struct PaymentMethodUsBankAccount {
     /// Last four digits of the bank account number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
+
+    /// Contains information about US bank account networks that can be used.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub networks: Option<UsBankAccountNetworks>,
 
     /// Routing number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -627,6 +635,16 @@ pub struct SepaDebitGeneratedFrom {
 pub struct ThreeDSecureUsage {
     /// Whether 3D Secure is supported on this card.
     pub supported: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UsBankAccountNetworks {
+    /// The preferred network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred: Option<String>,
+
+    /// All supported networks.
+    pub supported: Vec<UsBankAccountNetworksSupported>,
 }
 
 /// The parameters for `PaymentMethod::create`.
@@ -1002,6 +1020,9 @@ pub struct CreatePaymentMethodUsBankAccount {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_type: Option<CreatePaymentMethodUsBankAccountAccountType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections_account: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
@@ -2073,6 +2094,40 @@ impl std::fmt::Display for UpdatePaymentMethodUsBankAccountAccountHolderType {
 impl std::default::Default for UpdatePaymentMethodUsBankAccountAccountHolderType {
     fn default() -> Self {
         Self::Company
+    }
+}
+
+/// An enum representing the possible values of an `UsBankAccountNetworks`'s `supported` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UsBankAccountNetworksSupported {
+    Ach,
+    UsDomesticWire,
+}
+
+impl UsBankAccountNetworksSupported {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UsBankAccountNetworksSupported::Ach => "ach",
+            UsBankAccountNetworksSupported::UsDomesticWire => "us_domestic_wire",
+        }
+    }
+}
+
+impl AsRef<str> for UsBankAccountNetworksSupported {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UsBankAccountNetworksSupported {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UsBankAccountNetworksSupported {
+    fn default() -> Self {
+        Self::Ach
     }
 }
 

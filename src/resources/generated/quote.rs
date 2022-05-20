@@ -8,7 +8,7 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, QuoteId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    Account, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
+    Account, Application, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
     QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate, TestHelpersTestClock,
 };
 
@@ -25,6 +25,10 @@ pub struct Quote {
 
     /// Total after discounts and taxes are applied.
     pub amount_total: i64,
+
+    /// ID of the Connect Application that created the quote.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application: Option<Expandable<Application>>,
 
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     ///

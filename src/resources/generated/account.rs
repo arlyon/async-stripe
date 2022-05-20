@@ -796,6 +796,7 @@ pub struct CreateAccount<'a> {
     ///
     /// This should be an ISO 3166-1 alpha-2 country code.
     /// For example, if you are in the United States and the business for which you're creating an account is legally represented in Canada, you would use `CA` as the country for the account being created.
+    /// Available countries include [Stripe's global markets](https://stripe.com/global) as well as countries where [cross-border payouts](https://stripe.com/docs/connect/cross-border-payouts) are supported.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<&'a str>,
 
@@ -1284,6 +1285,9 @@ pub struct PersonParams {
     pub political_exposure: Option<PersonParamsPoliticalExposure>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_address: Option<PersonParamsRegisteredAddress>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub ssn_last_4: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1693,6 +1697,27 @@ pub struct PersonParamsDob {
     pub month: i64,
 
     pub year: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PersonParamsRegisteredAddress {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

@@ -65,6 +65,9 @@ pub struct TerminalConfigurationConfigurationResourceTipping {
     pub chf: Option<TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub czk: Option<TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dkk: Option<TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
 
     #[serde(skip_serializing_if = "Option::is_none")]

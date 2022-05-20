@@ -9,7 +9,7 @@ use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
-    ChargeSourceParams, Currency, Customer, Invoice, Mandate, Order, PaymentIntent, PaymentMethod,
+    ChargeSourceParams, Currency, Customer, Invoice, Mandate, PaymentIntent, PaymentMethod,
     PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodDetailsCardPresent, Refund, Review,
     Shipping, ThreeDSecureDetails, Transfer,
 };
@@ -122,10 +122,6 @@ pub struct Charge {
     /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<Expandable<Account>>,
-
-    /// ID of the order this charge is for if one exists.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub order: Option<Expandable<Order>>,
 
     /// Details about whether the payment was accepted, and why.
     ///

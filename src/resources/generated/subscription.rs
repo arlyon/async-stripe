@@ -8,12 +8,12 @@ use crate::client::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    CollectionMethod, Currency, Customer, Discount, Invoice, InvoicePaymentMethodOptionsAcssDebit,
-    InvoicePaymentMethodOptionsBancontact, InvoicePaymentMethodOptionsCustomerBalance,
-    InvoicePaymentMethodOptionsKonbini, InvoicePaymentMethodOptionsUsBankAccount, PaymentMethod,
-    PaymentSource, Scheduled, SetupIntent, SubscriptionBillingThresholds, SubscriptionItem,
-    SubscriptionItemBillingThresholds, SubscriptionSchedule, SubscriptionTransferData, TaxRate,
-    TestHelpersTestClock,
+    Application, CollectionMethod, Currency, Customer, Discount, Invoice,
+    InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
+    InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
+    InvoicePaymentMethodOptionsUsBankAccount, PaymentMethod, PaymentSource, Scheduled, SetupIntent,
+    SubscriptionBillingThresholds, SubscriptionItem, SubscriptionItemBillingThresholds,
+    SubscriptionSchedule, SubscriptionTransferData, TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Subscription".
@@ -23,6 +23,10 @@ use crate::resources::{
 pub struct Subscription {
     /// Unique identifier for the object.
     pub id: SubscriptionId,
+
+    /// ID of the Connect Application that created the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application: Option<Expandable<Application>>,
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
@@ -103,6 +107,12 @@ pub struct Subscription {
     /// Invoices created will have their `default_tax_rates` populated from the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<TaxRate>>,
+
+    /// The subscription's description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
 
     /// Describes the current discount applied to this subscription, if there is one.
     ///
@@ -299,6 +309,13 @@ pub struct SubscriptionsResourcePaymentSettings {
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<SubscriptionsResourcePaymentSettingsPaymentMethodTypes>>,
+
+    /// Either `off`, or `on_subscription`.
+    ///
+    /// With `on_subscription` Stripe updates `subscription.default_payment_method` when a subscription payment succeeds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub save_default_payment_method:
+        Option<SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -403,6 +420,8 @@ pub struct CreateSubscription<'a> {
     pub application_fee_percent: Option<f64>,
 
     /// Automatic tax settings for this subscription.
+    ///
+    /// We recommend you only include this parameter when the existing value is being changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub automatic_tax: Option<CreateSubscriptionAutomaticTax>,
 
@@ -480,6 +499,12 @@ pub struct CreateSubscription<'a> {
     /// Invoices created will have their `default_tax_rates` populated from the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<String>>,
+
+    /// The subscription's description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -589,6 +614,7 @@ impl<'a> CreateSubscription<'a> {
             default_payment_method: Default::default(),
             default_source: Default::default(),
             default_tax_rates: Default::default(),
+            description: Default::default(),
             expand: Default::default(),
             items: Default::default(),
             metadata: Default::default(),
@@ -709,6 +735,8 @@ pub struct UpdateSubscription<'a> {
     pub application_fee_percent: Option<f64>,
 
     /// Automatic tax settings for this subscription.
+    ///
+    /// We recommend you only include this parameter when the existing value is being changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub automatic_tax: Option<UpdateSubscriptionAutomaticTax>,
 
@@ -778,6 +806,12 @@ pub struct UpdateSubscription<'a> {
     /// Pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<String>>,
+
+    /// The subscription's description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<&'a str>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -889,6 +923,7 @@ impl<'a> UpdateSubscription<'a> {
             default_payment_method: Default::default(),
             default_source: Default::default(),
             default_tax_rates: Default::default(),
+            description: Default::default(),
             expand: Default::default(),
             items: Default::default(),
             metadata: Default::default(),
@@ -955,6 +990,10 @@ pub struct CreateSubscriptionPaymentSettings {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<CreateSubscriptionPaymentSettingsPaymentMethodTypes>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub save_default_payment_method:
+        Option<CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1023,6 +1062,10 @@ pub struct UpdateSubscriptionPaymentSettings {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodTypes>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub save_default_payment_method:
+        Option<UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1169,6 +1212,11 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsKonbini {}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections: Option<
+        CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections,
+    >,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method: Option<
         CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod,
     >,
@@ -1227,6 +1275,11 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsKonbini {}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections: Option<
+        UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections,
+    >,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method: Option<
         UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod,
     >,
@@ -1261,6 +1314,13 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceB
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions: Option<Vec<CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type: Option<
@@ -1286,6 +1346,13 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceB
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permissions: Option<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
 }
 
 /// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
@@ -1493,6 +1560,45 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections`'s `permissions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    Balances,
+    Ownership,
+    PaymentMethod,
+    Transactions,
+}
+
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    fn default() -> Self {
+        Self::Balances
+    }
+}
+
 /// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount`'s `verification_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1604,6 +1710,42 @@ impl std::fmt::Display for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
 impl std::default::Default for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     fn default() -> Self {
         Self::AchCreditTransfer
+    }
+}
+
+/// An enum representing the possible values of an `CreateSubscriptionPaymentSettings`'s `save_default_payment_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    Off,
+    OnSubscription,
+}
+
+impl CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod::Off => "off",
+            CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod::OnSubscription => {
+                "on_subscription"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    fn default() -> Self {
+        Self::Off
     }
 }
 
@@ -2095,6 +2237,42 @@ impl std::default::Default for SubscriptionsResourcePaymentSettingsPaymentMethod
     }
 }
 
+/// An enum representing the possible values of an `SubscriptionsResourcePaymentSettings`'s `save_default_payment_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
+    Off,
+    OnSubscription,
+}
+
+impl SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod::Off => "off",
+            SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod::OnSubscription => {
+                "on_subscription"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
+    fn default() -> Self {
+        Self::Off
+    }
+}
+
 /// An enum representing the possible values of an `UpdateSubscriptionPauseCollection`'s `behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2336,6 +2514,45 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections`'s `permissions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    Balances,
+    Ownership,
+    PaymentMethod,
+    Transactions,
+}
+
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
+    fn default() -> Self {
+        Self::Balances
+    }
+}
+
 /// An enum representing the possible values of an `UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount`'s `verification_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2447,5 +2664,41 @@ impl std::fmt::Display for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
 impl std::default::Default for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     fn default() -> Self {
         Self::AchCreditTransfer
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSubscriptionPaymentSettings`'s `save_default_payment_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    Off,
+    OnSubscription,
+}
+
+impl UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod::Off => "off",
+            UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod::OnSubscription => {
+                "on_subscription"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
+    fn default() -> Self {
+        Self::Off
     }
 }
