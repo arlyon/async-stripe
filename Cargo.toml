@@ -7,7 +7,7 @@ members = [
 
 [package]
 name = "async-stripe"
-version = "0.14.0"
+version = "0.14.1"
 description = "API bindings for the Stripe HTTP API"
 rust-version = "1.54.0"
 authors = [

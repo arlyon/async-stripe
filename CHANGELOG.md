@@ -1,3 +1,11 @@
+# Version 0.14.1 (May 20, 2022)
+
+This release is a minor patch release to fix an oversight in the API.
+
+## Fixes
+
+- Expose the request strategy API
+
 # Version 0.14.0 (March 22, 2022)
 
 This release has been focused on refining the ergonomics
