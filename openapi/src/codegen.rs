@@ -1471,12 +1471,12 @@ pub fn gen_impl_requests(
                 .map(|a| a.len())
                 .unwrap_or_default();
 
-            let create = (doc_comment.contains("Create")
+            let create = doc_comment.contains("Create")
                 || doc_comment.contains("create")
                 || doc_comment.contains("Adds")
-                || doc_comment.contains("adds"));
+                || doc_comment.contains("adds");
 
-            let update = (doc_comment.contains("Update") || doc_comment.contains("update"));
+            let update = doc_comment.contains("Update") || doc_comment.contains("update");
 
             if !methods.contains_key(&MethodTypes::Create) && parameter_count == 0 && create {
                 // Just make sure I don't miss anything unexpected

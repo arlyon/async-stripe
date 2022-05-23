@@ -18,6 +18,7 @@ pub mod core {
     pub mod billing_details;
     pub mod charge;
     pub mod customer;
+    pub mod cash_balance;
     pub mod dispute;
     pub mod ephemeral_key;
     pub mod file;
@@ -25,6 +26,18 @@ pub mod core {
     pub mod mandate;
     pub mod package_dimensions;
     pub mod payment_intent;
+    pub mod linked_account_options_us_bank_account;
+    pub mod payment_intent_payment_method_options_acss_debit;
+    pub mod payment_intent_payment_method_options_sepa_debit;
+    pub mod payment_method_options_alipay;
+    pub mod payment_method_options_bancontact;
+    pub mod payment_method_options_customer_balance;
+    pub mod payment_method_options_ideal;
+    pub mod payment_method_options_klarna;
+    pub mod payment_method_options_oxxo;
+    pub mod payment_method_options_p24;
+    pub mod payment_method_options_sofort;
+    pub mod payment_method_options_wechat_pay;
     pub mod payout;
     pub mod platform_tax_fee;
     pub mod product;
@@ -125,8 +138,6 @@ pub mod issuing {
 #[cfg(feature = "orders")]
 pub mod orders {
     pub mod order;
-    pub mod order_item;
-    pub mod order_return;
     pub mod sku;
 }
 

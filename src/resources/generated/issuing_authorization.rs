@@ -93,6 +93,10 @@ pub struct IssuingAuthorization {
     /// List of [transactions](https://stripe.com/docs/api/issuing/transactions) associated with this authorization.
     pub transactions: Vec<IssuingTransaction>,
 
+    /// [Treasury](https://stripe.com/docs/api/treasury) details related to this authorization if it was created on a [FinancialAccount](https://stripe.com/docs/api/treasury/financial_accounts).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub treasury: Option<IssuingAuthorizationTreasury>,
+
     pub verification_data: IssuingAuthorizationVerificationData,
 
     /// The digital wallet used for this authorization.
@@ -177,6 +181,19 @@ pub struct IssuingAuthorizationRequest {
 
     /// The reason for the approval or decline.
     pub reason: IssuingAuthorizationReason,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationTreasury {
+    /// The array of [ReceivedCredits](https://stripe.com/docs/api/treasury/received_credits) associated with this authorization.
+    pub received_credits: Vec<String>,
+
+    /// The array of [ReceivedDebits](https://stripe.com/docs/api/treasury/received_debits) associated with this authorization.
+    pub received_debits: Vec<String>,
+
+    /// The Treasury [Transaction](https://stripe.com/docs/api/treasury/transactions) associated with this authorization.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transaction: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

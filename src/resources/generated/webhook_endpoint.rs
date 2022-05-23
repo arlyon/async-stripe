@@ -294,6 +294,8 @@ pub enum EventFilter {
     BillingPortalConfigurationCreated,
     #[serde(rename = "billing_portal.configuration.updated")]
     BillingPortalConfigurationUpdated,
+    #[serde(rename = "billing_portal.session.created")]
+    BillingPortalSessionCreated,
     #[serde(rename = "capability.updated")]
     CapabilityUpdated,
     #[serde(rename = "cash_balance.funds_available")]
@@ -646,6 +648,64 @@ pub enum EventFilter {
     TransferReversed,
     #[serde(rename = "transfer.updated")]
     TransferUpdated,
+    #[serde(rename = "treasury.credit_reversal.created")]
+    TreasuryCreditReversalCreated,
+    #[serde(rename = "treasury.credit_reversal.posted")]
+    TreasuryCreditReversalPosted,
+    #[serde(rename = "treasury.debit_reversal.completed")]
+    TreasuryDebitReversalCompleted,
+    #[serde(rename = "treasury.debit_reversal.created")]
+    TreasuryDebitReversalCreated,
+    #[serde(rename = "treasury.debit_reversal.initial_credit_granted")]
+    TreasuryDebitReversalInitialCreditGranted,
+    #[serde(rename = "treasury.financial_account.closed")]
+    TreasuryFinancialAccountClosed,
+    #[serde(rename = "treasury.financial_account.created")]
+    TreasuryFinancialAccountCreated,
+    #[serde(rename = "treasury.financial_account.features_status_updated")]
+    TreasuryFinancialAccountFeaturesStatusUpdated,
+    #[serde(rename = "treasury.inbound_transfer.canceled")]
+    TreasuryInboundTransferCanceled,
+    #[serde(rename = "treasury.inbound_transfer.created")]
+    TreasuryInboundTransferCreated,
+    #[serde(rename = "treasury.inbound_transfer.failed")]
+    TreasuryInboundTransferFailed,
+    #[serde(rename = "treasury.inbound_transfer.succeeded")]
+    TreasuryInboundTransferSucceeded,
+    #[serde(rename = "treasury.outbound_payment.canceled")]
+    TreasuryOutboundPaymentCanceled,
+    #[serde(rename = "treasury.outbound_payment.created")]
+    TreasuryOutboundPaymentCreated,
+    #[serde(rename = "treasury.outbound_payment.expected_arrival_date_updated")]
+    TreasuryOutboundPaymentExpectedArrivalDateUpdated,
+    #[serde(rename = "treasury.outbound_payment.failed")]
+    TreasuryOutboundPaymentFailed,
+    #[serde(rename = "treasury.outbound_payment.posted")]
+    TreasuryOutboundPaymentPosted,
+    #[serde(rename = "treasury.outbound_payment.returned")]
+    TreasuryOutboundPaymentReturned,
+    #[serde(rename = "treasury.outbound_transfer.canceled")]
+    TreasuryOutboundTransferCanceled,
+    #[serde(rename = "treasury.outbound_transfer.created")]
+    TreasuryOutboundTransferCreated,
+    #[serde(rename = "treasury.outbound_transfer.expected_arrival_date_updated")]
+    TreasuryOutboundTransferExpectedArrivalDateUpdated,
+    #[serde(rename = "treasury.outbound_transfer.failed")]
+    TreasuryOutboundTransferFailed,
+    #[serde(rename = "treasury.outbound_transfer.posted")]
+    TreasuryOutboundTransferPosted,
+    #[serde(rename = "treasury.outbound_transfer.returned")]
+    TreasuryOutboundTransferReturned,
+    #[serde(rename = "treasury.received_credit.created")]
+    TreasuryReceivedCreditCreated,
+    #[serde(rename = "treasury.received_credit.failed")]
+    TreasuryReceivedCreditFailed,
+    #[serde(rename = "treasury.received_credit.reversed")]
+    TreasuryReceivedCreditReversed,
+    #[serde(rename = "treasury.received_credit.succeeded")]
+    TreasuryReceivedCreditSucceeded,
+    #[serde(rename = "treasury.received_debit.created")]
+    TreasuryReceivedDebitCreated,
 }
 
 impl EventFilter {
@@ -668,6 +728,7 @@ impl EventFilter {
             EventFilter::BillingPortalConfigurationUpdated => {
                 "billing_portal.configuration.updated"
             }
+            EventFilter::BillingPortalSessionCreated => "billing_portal.session.created",
             EventFilter::CapabilityUpdated => "capability.updated",
             EventFilter::CashBalanceFundsAvailable => "cash_balance.funds_available",
             EventFilter::ChargeCaptured => "charge.captured",
@@ -870,6 +931,43 @@ impl EventFilter {
             EventFilter::TransferPaid => "transfer.paid",
             EventFilter::TransferReversed => "transfer.reversed",
             EventFilter::TransferUpdated => "transfer.updated",
+            EventFilter::TreasuryCreditReversalCreated => "treasury.credit_reversal.created",
+            EventFilter::TreasuryCreditReversalPosted => "treasury.credit_reversal.posted",
+            EventFilter::TreasuryDebitReversalCompleted => "treasury.debit_reversal.completed",
+            EventFilter::TreasuryDebitReversalCreated => "treasury.debit_reversal.created",
+            EventFilter::TreasuryDebitReversalInitialCreditGranted => {
+                "treasury.debit_reversal.initial_credit_granted"
+            }
+            EventFilter::TreasuryFinancialAccountClosed => "treasury.financial_account.closed",
+            EventFilter::TreasuryFinancialAccountCreated => "treasury.financial_account.created",
+            EventFilter::TreasuryFinancialAccountFeaturesStatusUpdated => {
+                "treasury.financial_account.features_status_updated"
+            }
+            EventFilter::TreasuryInboundTransferCanceled => "treasury.inbound_transfer.canceled",
+            EventFilter::TreasuryInboundTransferCreated => "treasury.inbound_transfer.created",
+            EventFilter::TreasuryInboundTransferFailed => "treasury.inbound_transfer.failed",
+            EventFilter::TreasuryInboundTransferSucceeded => "treasury.inbound_transfer.succeeded",
+            EventFilter::TreasuryOutboundPaymentCanceled => "treasury.outbound_payment.canceled",
+            EventFilter::TreasuryOutboundPaymentCreated => "treasury.outbound_payment.created",
+            EventFilter::TreasuryOutboundPaymentExpectedArrivalDateUpdated => {
+                "treasury.outbound_payment.expected_arrival_date_updated"
+            }
+            EventFilter::TreasuryOutboundPaymentFailed => "treasury.outbound_payment.failed",
+            EventFilter::TreasuryOutboundPaymentPosted => "treasury.outbound_payment.posted",
+            EventFilter::TreasuryOutboundPaymentReturned => "treasury.outbound_payment.returned",
+            EventFilter::TreasuryOutboundTransferCanceled => "treasury.outbound_transfer.canceled",
+            EventFilter::TreasuryOutboundTransferCreated => "treasury.outbound_transfer.created",
+            EventFilter::TreasuryOutboundTransferExpectedArrivalDateUpdated => {
+                "treasury.outbound_transfer.expected_arrival_date_updated"
+            }
+            EventFilter::TreasuryOutboundTransferFailed => "treasury.outbound_transfer.failed",
+            EventFilter::TreasuryOutboundTransferPosted => "treasury.outbound_transfer.posted",
+            EventFilter::TreasuryOutboundTransferReturned => "treasury.outbound_transfer.returned",
+            EventFilter::TreasuryReceivedCreditCreated => "treasury.received_credit.created",
+            EventFilter::TreasuryReceivedCreditFailed => "treasury.received_credit.failed",
+            EventFilter::TreasuryReceivedCreditReversed => "treasury.received_credit.reversed",
+            EventFilter::TreasuryReceivedCreditSucceeded => "treasury.received_credit.succeeded",
+            EventFilter::TreasuryReceivedDebitCreated => "treasury.received_debit.created",
         }
     }
 }
