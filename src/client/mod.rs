@@ -51,4 +51,4 @@ pub use config::BaseClient;
 /// ```
 pub use config::Response;
 pub use request_strategy::RequestStrategy;
-pub use stripe::Client;
+pub use self::stripe::Client;
