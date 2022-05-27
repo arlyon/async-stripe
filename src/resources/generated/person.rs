@@ -73,6 +73,10 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_provided: Option<bool>,
 
+    /// Whether the person's `id_number_secondary` was provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number_secondary_provided: Option<bool>,
+
     /// The person's last name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,

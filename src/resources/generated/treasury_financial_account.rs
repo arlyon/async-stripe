@@ -76,13 +76,13 @@ impl Object for TreasuryFinancialAccount {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountServiceResourceBalance {
     /// Funds the user can spend right now.
-    pub cash: AccountServiceResourceBalanceCash,
+    pub cash: i64,
 
     /// Funds not spendable yet, but will become available at a later time.
-    pub inbound_pending: AccountServiceResourceBalanceInboundPending,
+    pub inbound_pending: i64,
 
     /// Funds in the account, but not spendable because they are being held for pending outbound flows.
-    pub outbound_pending: AccountServiceResourceBalanceOutboundPending,
+    pub outbound_pending: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

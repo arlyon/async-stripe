@@ -10,10 +10,11 @@ use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
     Account, Address, Application, CheckoutSessionItem, Currency, Customer, Discount,
     PaymentIntent, PaymentIntentPaymentMethodOptionsAcssDebit,
-    PaymentIntentPaymentMethodOptionsSepaDebit, PaymentMethodOptionsAlipay,
-    PaymentMethodOptionsBancontact, PaymentMethodOptionsCustomerBalance, PaymentMethodOptionsIdeal,
-    PaymentMethodOptionsKlarna, PaymentMethodOptionsOxxo, PaymentMethodOptionsP24,
-    PaymentMethodOptionsSofort, PaymentMethodOptionsWechatPay, ShippingRate, TaxRate,
+    PaymentIntentPaymentMethodOptionsLink, PaymentIntentPaymentMethodOptionsSepaDebit,
+    PaymentMethodOptionsAlipay, PaymentMethodOptionsBancontact,
+    PaymentMethodOptionsCustomerBalance, PaymentMethodOptionsIdeal, PaymentMethodOptionsKlarna,
+    PaymentMethodOptionsOxxo, PaymentMethodOptionsP24, PaymentMethodOptionsSofort,
+    PaymentMethodOptionsWechatPay, ShippingRate, TaxRate,
 };
 
 /// The resource representing a Stripe "OrdersV2ResourceOrder".
@@ -438,25 +439,6 @@ pub struct OrdersV2ResourceTransferData {
 
     /// ID of the Connected account receiving the transfer.
     pub destination: Expandable<Account>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentIntentPaymentMethodOptionsLink {
-    /// Controls when the funds will be captured from the customer's account.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub capture_method: Option<PaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
-
-    /// Token used for persistent Link logins.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub persistent_token: Option<String>,
-
-    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
-    ///
-    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
-    ///
-    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub setup_future_usage: Option<PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1158,6 +1140,9 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptions {
     pub klarna: Option<CreateOrderPaymentSettingsPaymentMethodOptionsKlarna>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<CreateOrderPaymentSettingsPaymentMethodOptionsLink>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<CreateOrderPaymentSettingsPaymentMethodOptionsOxxo>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1222,6 +1207,9 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsKlarna>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsLink>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsOxxo>,
@@ -1354,6 +1342,19 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsKlarna {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateOrderPaymentSettingsPaymentMethodOptionsLink {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CreateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub persistent_token: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<CreateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1515,6 +1516,19 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsKlarna {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsLink {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub persistent_token: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<UpdateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2478,6 +2492,74 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `CreateOrderPaymentSettingsPaymentMethodOptionsLink`'s `capture_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod {
+    Manual,
+}
+
+impl CreateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod {
+    fn default() -> Self {
+        Self::Manual
+    }
+}
+
+/// An enum representing the possible values of an `CreateOrderPaymentSettingsPaymentMethodOptionsLink`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage {
+    None,
+    OffSession,
+}
+
+impl CreateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage::None => "none",
+            CreateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage::OffSession => {
+                "off_session"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `CreateOrderPaymentSettingsPaymentMethodOptionsOxxo`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3120,6 +3202,46 @@ impl std::default::Default for CreateOrderTaxDetailsTaxIdsType {
     }
 }
 
+/// An enum representing the possible values of an `Order`'s `status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum OrderStatus {
+    Canceled,
+    Complete,
+    Open,
+    Processing,
+    Submitted,
+}
+
+impl OrderStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            OrderStatus::Canceled => "canceled",
+            OrderStatus::Complete => "complete",
+            OrderStatus::Open => "open",
+            OrderStatus::Processing => "processing",
+            OrderStatus::Submitted => "submitted",
+        }
+    }
+}
+
+impl AsRef<str> for OrderStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for OrderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for OrderStatus {
+    fn default() -> Self {
+        Self::Canceled
+    }
+}
+
 /// An enum representing the possible values of an `OrdersPaymentMethodOptionsAfterpayClearpay`'s `capture_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3573,72 +3695,6 @@ impl std::fmt::Display for OrdersV2ResourceTaxDetailsTaxExempt {
 impl std::default::Default for OrdersV2ResourceTaxDetailsTaxExempt {
     fn default() -> Self {
         Self::Exempt
-    }
-}
-
-/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsLink`'s `capture_method` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum PaymentIntentPaymentMethodOptionsLinkCaptureMethod {
-    Manual,
-}
-
-impl PaymentIntentPaymentMethodOptionsLinkCaptureMethod {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            PaymentIntentPaymentMethodOptionsLinkCaptureMethod::Manual => "manual",
-        }
-    }
-}
-
-impl AsRef<str> for PaymentIntentPaymentMethodOptionsLinkCaptureMethod {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PaymentIntentPaymentMethodOptionsLinkCaptureMethod {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for PaymentIntentPaymentMethodOptionsLinkCaptureMethod {
-    fn default() -> Self {
-        Self::Manual
-    }
-}
-
-/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsLink`'s `setup_future_usage` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
-    None,
-    OffSession,
-}
-
-impl PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage::None => "none",
-            PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage::OffSession => "off_session",
-        }
-    }
-}
-
-impl AsRef<str> for PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
-    fn default() -> Self {
-        Self::None
     }
 }
 
@@ -4498,6 +4554,74 @@ impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaS
 impl std::default::Default
     for UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaSetupFutureUsage
 {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `UpdateOrderPaymentSettingsPaymentMethodOptionsLink`'s `capture_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod {
+    Manual,
+}
+
+impl UpdateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod {
+    fn default() -> Self {
+        Self::Manual
+    }
+}
+
+/// An enum representing the possible values of an `UpdateOrderPaymentSettingsPaymentMethodOptionsLink`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage {
+    None,
+    OffSession,
+}
+
+impl UpdateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage::None => "none",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage::OffSession => {
+                "off_session"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for UpdateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage {
     fn default() -> Self {
         Self::None
     }

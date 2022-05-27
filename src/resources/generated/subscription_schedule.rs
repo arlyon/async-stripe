@@ -497,9 +497,9 @@ pub struct UpdateSubscriptionSchedule<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phases: Option<Vec<UpdateSubscriptionSchedulePhases>>,
 
-    /// If the update changes the current phase, indicates if the changes should be prorated.
+    /// If the update changes the current phase, indicates whether the changes should be prorated.
     ///
-    /// Possible values are `create_prorations` or `none`, and the default value is `create_prorations`.
+    /// The default value is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
 }

@@ -206,6 +206,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit_payments: Option<AccountCapabilitiesAcssDebitPayments>,
 
+    /// The status of the Affirm capability of the account, or whether the account can directly process Affirm charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm_payments: Option<AccountCapabilitiesAffirmPayments>,
+
     /// The status of the Afterpay Clearpay capability of the account, or whether the account can directly process Afterpay Clearpay charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay_payments: Option<AccountCapabilitiesAfterpayClearpayPayments>,
@@ -278,6 +282,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub legacy_payments: Option<CapabilityStatus>,
 
+    /// The status of the link_payments capability of the account, or whether the account can directly process Link charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link_payments: Option<AccountCapabilitiesLinkPayments>,
+
     /// The status of the OXXO payments capability of the account, or whether the account can directly process OXXO charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo_payments: Option<AccountCapabilitiesOxxoPayments>,
@@ -309,6 +317,10 @@ pub struct AccountCapabilities {
     /// The status of the transfers capability of the account, or whether your platform can transfer funds to the account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfers: Option<CapabilityStatus>,
+
+    /// The status of the banking capability, or whether the account can have bank accounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub treasury: Option<AccountCapabilitiesTreasury>,
 
     /// The status of the US bank account ACH payments capability of the account, or whether the account can directly process US bank account charges.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1120,6 +1132,9 @@ pub struct CreateAccountCapabilities {
     pub acss_debit_payments: Option<CreateAccountCapabilitiesAcssDebitPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm_payments: Option<CreateAccountCapabilitiesAffirmPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay_payments: Option<CreateAccountCapabilitiesAfterpayClearpayPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1174,6 +1189,9 @@ pub struct CreateAccountCapabilities {
     pub legacy_payments: Option<CreateAccountCapabilitiesLegacyPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub link_payments: Option<CreateAccountCapabilitiesLinkPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo_payments: Option<CreateAccountCapabilitiesOxxoPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1196,6 +1214,9 @@ pub struct CreateAccountCapabilities {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfers: Option<CreateAccountCapabilitiesTransfers>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub treasury: Option<CreateAccountCapabilitiesTreasury>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account_ach_payments: Option<CreateAccountCapabilitiesUsBankAccountAchPayments>,
@@ -1264,6 +1285,9 @@ pub struct PersonParams {
     pub id_number: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number_secondary: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1298,6 +1322,9 @@ pub struct PersonParams {
 pub struct UpdateAccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit_payments: Option<UpdateAccountCapabilitiesAcssDebitPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm_payments: Option<UpdateAccountCapabilitiesAffirmPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay_payments: Option<UpdateAccountCapabilitiesAfterpayClearpayPayments>,
@@ -1354,6 +1381,9 @@ pub struct UpdateAccountCapabilities {
     pub legacy_payments: Option<UpdateAccountCapabilitiesLegacyPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub link_payments: Option<UpdateAccountCapabilitiesLinkPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo_payments: Option<UpdateAccountCapabilitiesOxxoPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1376,6 +1406,9 @@ pub struct UpdateAccountCapabilities {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfers: Option<UpdateAccountCapabilitiesTransfers>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub treasury: Option<UpdateAccountCapabilitiesTreasury>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account_ach_payments: Option<UpdateAccountCapabilitiesUsBankAccountAchPayments>,
@@ -1458,6 +1491,12 @@ pub struct CompanyVerificationParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesAcssDebitPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesAffirmPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -1571,6 +1610,12 @@ pub struct CreateAccountCapabilitiesLegacyPayments {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesLinkPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesOxxoPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
@@ -1614,6 +1659,12 @@ pub struct CreateAccountCapabilitiesTaxReportingUs1099Misc {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesTransfers {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesTreasury {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -1727,6 +1778,12 @@ pub struct UpdateAccountCapabilitiesAcssDebitPayments {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesAffirmPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesAfterpayClearpayPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
@@ -1835,6 +1892,12 @@ pub struct UpdateAccountCapabilitiesLegacyPayments {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesLinkPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesOxxoPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
@@ -1878,6 +1941,12 @@ pub struct UpdateAccountCapabilitiesTaxReportingUs1099Misc {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesTransfers {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesTreasury {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -2047,6 +2116,42 @@ impl std::fmt::Display for AccountCapabilitiesAcssDebitPayments {
     }
 }
 impl std::default::Default for AccountCapabilitiesAcssDebitPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `affirm_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesAffirmPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesAffirmPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesAffirmPayments::Active => "active",
+            AccountCapabilitiesAffirmPayments::Inactive => "inactive",
+            AccountCapabilitiesAffirmPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesAffirmPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesAffirmPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesAffirmPayments {
     fn default() -> Self {
         Self::Active
     }
@@ -2520,6 +2625,42 @@ impl std::default::Default for AccountCapabilitiesKonbiniPayments {
     }
 }
 
+/// An enum representing the possible values of an `AccountCapabilities`'s `link_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesLinkPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesLinkPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesLinkPayments::Active => "active",
+            AccountCapabilitiesLinkPayments::Inactive => "inactive",
+            AccountCapabilitiesLinkPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesLinkPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesLinkPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesLinkPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
 /// An enum representing the possible values of an `AccountCapabilities`'s `oxxo_payments` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2695,6 +2836,42 @@ impl std::fmt::Display for AccountCapabilitiesSofortPayments {
     }
 }
 impl std::default::Default for AccountCapabilitiesSofortPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `treasury` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesTreasury {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesTreasury {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesTreasury::Active => "active",
+            AccountCapabilitiesTreasury::Inactive => "inactive",
+            AccountCapabilitiesTreasury::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesTreasury {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesTreasury {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesTreasury {
     fn default() -> Self {
         Self::Active
     }

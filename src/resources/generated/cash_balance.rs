@@ -13,7 +13,7 @@ pub struct CashBalance {
     ///
     /// You cannot delete a customer with any cash balances, even if the balance is 0.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub available: Option<CashBalanceAvailable>,
+    pub available: Option<i64>,
 
     /// The ID of the customer whose cash balance this object represents.
     pub customer: String,

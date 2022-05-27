@@ -227,6 +227,9 @@ pub struct SetupIntentPaymentMethodOptions {
     pub card: Option<SetupIntentPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<SetupIntentPaymentMethodOptionsLinkUnion>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<SetupIntentPaymentMethodOptionsSepaDebitUnion>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -317,6 +320,13 @@ pub struct SetupIntentPaymentMethodOptionsCardMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supported_types:
         Option<Vec<SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupIntentPaymentMethodOptionsLink {
+    /// Token used for persistent Link logins.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub persistent_token: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -603,6 +613,9 @@ pub struct CreateSetupIntentPaymentMethodData {
     pub acss_debit: Option<CreateSetupIntentPaymentMethodDataAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm: Option<CreateSetupIntentPaymentMethodDataAffirm>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<CreateSetupIntentPaymentMethodDataAfterpayClearpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -650,6 +663,9 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<CreateSetupIntentPaymentMethodDataKonbini>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<CreateSetupIntentPaymentMethodDataLink>,
+
     #[serde(default)]
     pub metadata: Metadata,
 
@@ -687,6 +703,9 @@ pub struct CreateSetupIntentPaymentMethodOptions {
     pub card: Option<CreateSetupIntentPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<CreateSetupIntentPaymentMethodOptionsLink>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateSetupIntentPaymentMethodOptionsSepaDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -704,6 +723,9 @@ pub struct CreateSetupIntentSingleUse {
 pub struct UpdateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<UpdateSetupIntentPaymentMethodDataAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm: Option<UpdateSetupIntentPaymentMethodDataAffirm>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<UpdateSetupIntentPaymentMethodDataAfterpayClearpay>,
@@ -753,6 +775,9 @@ pub struct UpdateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<UpdateSetupIntentPaymentMethodDataKonbini>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<UpdateSetupIntentPaymentMethodDataLink>,
+
     #[serde(default)]
     pub metadata: Metadata,
 
@@ -790,6 +815,9 @@ pub struct UpdateSetupIntentPaymentMethodOptions {
     pub card: Option<UpdateSetupIntentPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<UpdateSetupIntentPaymentMethodOptionsLink>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdateSetupIntentPaymentMethodOptionsSepaDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -819,6 +847,9 @@ pub struct CreateSetupIntentPaymentMethodDataAcssDebit {
 
     pub transit_number: String,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataAffirm {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataAfterpayClearpay {}
@@ -904,6 +935,9 @@ pub struct CreateSetupIntentPaymentMethodDataKlarna {
 pub struct CreateSetupIntentPaymentMethodDataKonbini {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataLink {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataOxxo {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -971,6 +1005,12 @@ pub struct CreateSetupIntentPaymentMethodOptionsCard {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsLink {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub persistent_token: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsSepaDebitMandateOptions>,
@@ -998,6 +1038,9 @@ pub struct UpdateSetupIntentPaymentMethodDataAcssDebit {
 
     pub transit_number: String,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataAffirm {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataAfterpayClearpay {}
@@ -1083,6 +1126,9 @@ pub struct UpdateSetupIntentPaymentMethodDataKlarna {
 pub struct UpdateSetupIntentPaymentMethodDataKonbini {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataLink {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataOxxo {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1147,6 +1193,12 @@ pub struct UpdateSetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<UpdateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsLink {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub persistent_token: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1389,6 +1441,21 @@ pub enum SetupIntentPaymentMethodOptionsAcssDebitUnion {
 impl std::default::Default for SetupIntentPaymentMethodOptionsAcssDebitUnion {
     fn default() -> Self {
         Self::SetupIntentPaymentMethodOptionsAcssDebit(Default::default())
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum SetupIntentPaymentMethodOptionsLinkUnion {
+    SetupIntentPaymentMethodOptionsLink(SetupIntentPaymentMethodOptionsLink),
+    #[serde(rename = "SetupIntentTypeSpecificPaymentMethodOptionsClient")]
+    SetupIntentTypeSpecificPaymentMethodOptionsClient(
+        SetupIntentTypeSpecificPaymentMethodOptionsClient,
+    ),
+}
+impl std::default::Default for SetupIntentPaymentMethodOptionsLinkUnion {
+    fn default() -> Self {
+        Self::SetupIntentPaymentMethodOptionsLink(Default::default())
     }
 }
 
@@ -1831,6 +1898,7 @@ impl std::default::Default for CreateSetupIntentPaymentMethodDataSofortCountry {
 #[serde(rename_all = "snake_case")]
 pub enum CreateSetupIntentPaymentMethodDataType {
     AcssDebit,
+    Affirm,
     AfterpayClearpay,
     Alipay,
     AuBecsDebit,
@@ -1845,6 +1913,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     Ideal,
     Klarna,
     Konbini,
+    Link,
     Oxxo,
     P24,
     Paynow,
@@ -1858,6 +1927,7 @@ impl CreateSetupIntentPaymentMethodDataType {
     pub fn as_str(self) -> &'static str {
         match self {
             CreateSetupIntentPaymentMethodDataType::AcssDebit => "acss_debit",
+            CreateSetupIntentPaymentMethodDataType::Affirm => "affirm",
             CreateSetupIntentPaymentMethodDataType::AfterpayClearpay => "afterpay_clearpay",
             CreateSetupIntentPaymentMethodDataType::Alipay => "alipay",
             CreateSetupIntentPaymentMethodDataType::AuBecsDebit => "au_becs_debit",
@@ -1872,6 +1942,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             CreateSetupIntentPaymentMethodDataType::Ideal => "ideal",
             CreateSetupIntentPaymentMethodDataType::Klarna => "klarna",
             CreateSetupIntentPaymentMethodDataType::Konbini => "konbini",
+            CreateSetupIntentPaymentMethodDataType::Link => "link",
             CreateSetupIntentPaymentMethodDataType::Oxxo => "oxxo",
             CreateSetupIntentPaymentMethodDataType::P24 => "p24",
             CreateSetupIntentPaymentMethodDataType::Paynow => "paynow",
@@ -3297,6 +3368,7 @@ impl std::default::Default for UpdateSetupIntentPaymentMethodDataSofortCountry {
 #[serde(rename_all = "snake_case")]
 pub enum UpdateSetupIntentPaymentMethodDataType {
     AcssDebit,
+    Affirm,
     AfterpayClearpay,
     Alipay,
     AuBecsDebit,
@@ -3311,6 +3383,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     Ideal,
     Klarna,
     Konbini,
+    Link,
     Oxxo,
     P24,
     Paynow,
@@ -3324,6 +3397,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
     pub fn as_str(self) -> &'static str {
         match self {
             UpdateSetupIntentPaymentMethodDataType::AcssDebit => "acss_debit",
+            UpdateSetupIntentPaymentMethodDataType::Affirm => "affirm",
             UpdateSetupIntentPaymentMethodDataType::AfterpayClearpay => "afterpay_clearpay",
             UpdateSetupIntentPaymentMethodDataType::Alipay => "alipay",
             UpdateSetupIntentPaymentMethodDataType::AuBecsDebit => "au_becs_debit",
@@ -3338,6 +3412,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             UpdateSetupIntentPaymentMethodDataType::Ideal => "ideal",
             UpdateSetupIntentPaymentMethodDataType::Klarna => "klarna",
             UpdateSetupIntentPaymentMethodDataType::Konbini => "konbini",
+            UpdateSetupIntentPaymentMethodDataType::Link => "link",
             UpdateSetupIntentPaymentMethodDataType::Oxxo => "oxxo",
             UpdateSetupIntentPaymentMethodDataType::P24 => "p24",
             UpdateSetupIntentPaymentMethodDataType::Paynow => "paynow",

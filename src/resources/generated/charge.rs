@@ -348,6 +348,9 @@ pub struct PaymentMethodDetails {
     pub acss_debit: Option<PaymentMethodDetailsAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm: Option<PaymentMethodDetailsAffirm>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<PaymentMethodDetailsAfterpayClearpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -397,6 +400,9 @@ pub struct PaymentMethodDetails {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<PaymentMethodDetailsKonbini>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<PaymentMethodDetailsLink>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub multibanco: Option<PaymentMethodDetailsMultibanco>,
@@ -532,6 +538,9 @@ pub struct PaymentMethodDetailsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transit_number: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsAffirm {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAfterpayClearpay {
@@ -1062,6 +1071,9 @@ pub struct PaymentMethodDetailsKonbiniStore {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chain: Option<PaymentMethodDetailsKonbiniStoreChain>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsLink {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsMultibanco {

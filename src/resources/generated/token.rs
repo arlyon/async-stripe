@@ -175,6 +175,9 @@ pub struct CreateTokenPerson {
     pub id_number: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number_secondary: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -120,7 +120,7 @@ pub struct BankConnectionsResourceBalance {
     ///
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
-    pub current: BankConnectionsResourceBalanceCurrent,
+    pub current: i64,
 
     /// The `type` of the balance.
     ///
@@ -137,7 +137,7 @@ pub struct BankConnectionsResourceBalanceApiResourceCashBalance {
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub available: Option<BankConnectionsResourceBalanceApiResourceCashBalanceAvailable>,
+    pub available: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -151,7 +151,7 @@ pub struct BankConnectionsResourceBalanceApiResourceCreditBalance {
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub used: Option<BankConnectionsResourceBalanceApiResourceCreditBalanceUsed>,
+    pub used: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

@@ -2348,6 +2348,7 @@ impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsWechatPa
 #[serde(rename_all = "snake_case")]
 pub enum CreateCheckoutSessionPaymentMethodTypes {
     AcssDebit,
+    Affirm,
     AfterpayClearpay,
     Alipay,
     AuBecsDebit,
@@ -2375,6 +2376,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
     pub fn as_str(self) -> &'static str {
         match self {
             CreateCheckoutSessionPaymentMethodTypes::AcssDebit => "acss_debit",
+            CreateCheckoutSessionPaymentMethodTypes::Affirm => "affirm",
             CreateCheckoutSessionPaymentMethodTypes::AfterpayClearpay => "afterpay_clearpay",
             CreateCheckoutSessionPaymentMethodTypes::Alipay => "alipay",
             CreateCheckoutSessionPaymentMethodTypes::AuBecsDebit => "au_becs_debit",

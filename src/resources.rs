@@ -112,6 +112,7 @@ pub use {
         linked_account_options_us_bank_account::*,
         payment_intent_payment_method_options_acss_debit::*,
         payment_intent_payment_method_options_sepa_debit::*,
+        payment_intent_payment_method_options_link::*,
         payment_method_options_alipay::*,
         payment_method_options_bancontact::*,
         payment_method_options_customer_balance::*,
