@@ -9,7 +9,7 @@ use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
-    ChargeSourceParams, Currency, Customer, Invoice, Mandate, Order, PaymentIntent, PaymentMethod,
+    ChargeSourceParams, Currency, Customer, Invoice, Mandate, PaymentIntent, PaymentMethod,
     PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodDetailsCardPresent, Refund, Review,
     Shipping, ThreeDSecureDetails, Transfer,
 };
@@ -122,10 +122,6 @@ pub struct Charge {
     /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<Expandable<Account>>,
-
-    /// ID of the order this charge is for if one exists.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub order: Option<Expandable<Order>>,
 
     /// Details about whether the payment was accepted, and why.
     ///
@@ -352,6 +348,9 @@ pub struct PaymentMethodDetails {
     pub acss_debit: Option<PaymentMethodDetailsAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm: Option<PaymentMethodDetailsAffirm>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<PaymentMethodDetailsAfterpayClearpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -401,6 +400,9 @@ pub struct PaymentMethodDetails {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<PaymentMethodDetailsKonbini>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<PaymentMethodDetailsLink>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub multibanco: Option<PaymentMethodDetailsMultibanco>,
@@ -536,6 +538,9 @@ pub struct PaymentMethodDetailsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transit_number: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsAffirm {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsAfterpayClearpay {
@@ -1066,6 +1071,9 @@ pub struct PaymentMethodDetailsKonbiniStore {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chain: Option<PaymentMethodDetailsKonbiniStoreChain>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsLink {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsMultibanco {

@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::PaymentLinkId;
 use crate::params::{Expand, Expandable, List, Metadata, Object};
-use crate::resources::{Account, CheckoutSessionItem};
+use crate::resources::{Account, CheckoutSessionItem, ShippingRate};
 
 /// The resource representing a Stripe "PaymentLink".
 ///
@@ -40,6 +40,13 @@ pub struct PaymentLink {
     /// Configuration for collecting the customer's billing address.
     pub billing_address_collection: PaymentLinkBillingAddressCollection,
 
+    /// When set, provides configuration to gather active consent from customers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub consent_collection: Option<PaymentLinksResourceConsentCollection>,
+
+    /// Configuration for Customer creation during checkout.
+    pub customer_creation: PaymentLinkCustomerCreation,
+
     /// The line items representing what is being sold.
     #[serde(default)]
     pub line_items: List<CheckoutSessionItem>,
@@ -58,6 +65,10 @@ pub struct PaymentLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<Expandable<Account>>,
 
+    /// Indicates the parameters to be passed to PaymentIntent creation during checkout.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent_data: Option<PaymentLinksResourcePaymentIntentData>,
+
     /// The list of payment method types that customers can use.
     ///
     /// When `null`, Stripe will dynamically show relevant payment methods you've enabled in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
@@ -70,11 +81,19 @@ pub struct PaymentLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<PaymentLinksResourceShippingAddressCollection>,
 
+    /// The shipping rate options applied to the session.
+    pub shipping_options: Vec<PaymentLinksResourceShippingOption>,
+
+    /// Indicates the type of transaction being performed which customizes relevant text on the page, such as the submit button.
+    pub submit_type: PaymentLinkSubmitType,
+
     /// When creating a subscription, the specified configuration data will be used.
     ///
     /// There must be at least one line item with a recurring price to use `subscription_data`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_data: Option<PaymentLinksResourceSubscriptionData>,
+
+    pub tax_id_collection: PaymentLinksResourceTaxIdCollection,
 
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -153,6 +172,24 @@ pub struct PaymentLinksResourceCompletionBehaviorRedirect {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceConsentCollection {
+    /// If set to `auto`, enables the collection of customer consent for promotional communications.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotions: Option<PaymentLinksResourceConsentCollectionPromotions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourcePaymentIntentData {
+    /// Indicates when the funds will be captured from the customer's account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>,
+
+    /// Indicates that you intend to make future payments with the payment method collected during checkout.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourcePhoneNumberCollection {
     /// If `true`, a phone number will be collected during checkout.
     pub enabled: bool,
@@ -167,10 +204,25 @@ pub struct PaymentLinksResourceShippingAddressCollection {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceShippingOption {
+    /// A non-negative integer in cents representing how much to charge.
+    pub shipping_amount: i64,
+
+    /// The ID of the Shipping Rate to use for this shipping option.
+    pub shipping_rate: Expandable<ShippingRate>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceSubscriptionData {
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceTaxIdCollection {
+    /// Indicates whether tax ID collection is enabled for the session.
+    pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -217,6 +269,14 @@ pub struct CreatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_address_collection: Option<PaymentLinkBillingAddressCollection>,
 
+    /// Configure fields to gather active consent from customers.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub consent_collection: Option<CreatePaymentLinkConsentCollection>,
+
+    /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_creation: Option<PaymentLinkCustomerCreation>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -240,6 +300,10 @@ pub struct CreatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<&'a str>,
 
+    /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_intent_data: Option<CreatePaymentLinkPaymentIntentData>,
+
     /// The list of payment method types that customers can use.
     ///
     /// Only `card` is supported.
@@ -257,11 +321,23 @@ pub struct CreatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<CreatePaymentLinkShippingAddressCollection>,
 
+    /// The shipping rate options to apply to [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_options: Option<Vec<CreatePaymentLinkShippingOptions>>,
+
+    /// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub submit_type: Option<PaymentLinkSubmitType>,
+
     /// When creating a subscription, the specified configuration data will be used.
     ///
     /// There must be at least one line item with a recurring price to use `subscription_data`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_data: Option<CreatePaymentLinkSubscriptionData>,
+
+    /// Controls tax ID collection during checkout.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_id_collection: Option<CreatePaymentLinkTaxIdCollection>,
 
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -277,14 +353,20 @@ impl<'a> CreatePaymentLink<'a> {
             application_fee_percent: Default::default(),
             automatic_tax: Default::default(),
             billing_address_collection: Default::default(),
+            consent_collection: Default::default(),
+            customer_creation: Default::default(),
             expand: Default::default(),
             line_items,
             metadata: Default::default(),
             on_behalf_of: Default::default(),
+            payment_intent_data: Default::default(),
             payment_method_types: Default::default(),
             phone_number_collection: Default::default(),
             shipping_address_collection: Default::default(),
+            shipping_options: Default::default(),
+            submit_type: Default::default(),
             subscription_data: Default::default(),
+            tax_id_collection: Default::default(),
             transfer_data: Default::default(),
         }
     }
@@ -359,6 +441,10 @@ pub struct UpdatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_address_collection: Option<PaymentLinkBillingAddressCollection>,
 
+    /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_creation: Option<PaymentLinkCustomerCreation>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -399,6 +485,7 @@ impl<'a> UpdatePaymentLink<'a> {
             allow_promotion_codes: Default::default(),
             automatic_tax: Default::default(),
             billing_address_collection: Default::default(),
+            customer_creation: Default::default(),
             expand: Default::default(),
             line_items: Default::default(),
             metadata: Default::default(),
@@ -426,6 +513,12 @@ pub struct CreatePaymentLinkAutomaticTax {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkConsentCollection {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotions: Option<CreatePaymentLinkConsentCollectionPromotions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<CreatePaymentLinkLineItemsAdjustableQuantity>,
@@ -433,6 +526,15 @@ pub struct CreatePaymentLinkLineItems {
     pub price: String,
 
     pub quantity: u64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkPaymentIntentData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CreatePaymentLinkPaymentIntentDataCaptureMethod>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreatePaymentLinkPaymentIntentDataSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -446,9 +548,20 @@ pub struct CreatePaymentLinkShippingAddressCollection {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkShippingOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_rate: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkTaxIdCollection {
+    pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -567,6 +680,106 @@ impl std::fmt::Display for CreatePaymentLinkAfterCompletionType {
 impl std::default::Default for CreatePaymentLinkAfterCompletionType {
     fn default() -> Self {
         Self::HostedConfirmation
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkConsentCollection`'s `promotions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkConsentCollectionPromotions {
+    Auto,
+}
+
+impl CreatePaymentLinkConsentCollectionPromotions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkConsentCollectionPromotions::Auto => "auto",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkConsentCollectionPromotions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkConsentCollectionPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkConsentCollectionPromotions {
+    fn default() -> Self {
+        Self::Auto
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkPaymentIntentData`'s `capture_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkPaymentIntentDataCaptureMethod {
+    Automatic,
+    Manual,
+}
+
+impl CreatePaymentLinkPaymentIntentDataCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkPaymentIntentDataCaptureMethod::Automatic => "automatic",
+            CreatePaymentLinkPaymentIntentDataCaptureMethod::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkPaymentIntentData`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    OffSession,
+    OnSession,
+}
+
+impl CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkPaymentIntentDataSetupFutureUsage::OffSession => "off_session",
+            CreatePaymentLinkPaymentIntentDataSetupFutureUsage::OnSession => "on_session",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn default() -> Self {
+        Self::OffSession
     }
 }
 
@@ -1377,6 +1590,40 @@ impl std::default::Default for PaymentLinkBillingAddressCollection {
     }
 }
 
+/// An enum representing the possible values of an `PaymentLink`'s `customer_creation` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinkCustomerCreation {
+    Always,
+    IfRequired,
+}
+
+impl PaymentLinkCustomerCreation {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinkCustomerCreation::Always => "always",
+            PaymentLinkCustomerCreation::IfRequired => "if_required",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinkCustomerCreation {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinkCustomerCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinkCustomerCreation {
+    fn default() -> Self {
+        Self::Always
+    }
+}
+
 /// An enum representing the possible values of an `PaymentLink`'s `payment_method_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -1406,6 +1653,44 @@ impl std::fmt::Display for PaymentLinkPaymentMethodTypes {
 impl std::default::Default for PaymentLinkPaymentMethodTypes {
     fn default() -> Self {
         Self::Card
+    }
+}
+
+/// An enum representing the possible values of an `PaymentLink`'s `submit_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinkSubmitType {
+    Auto,
+    Book,
+    Donate,
+    Pay,
+}
+
+impl PaymentLinkSubmitType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinkSubmitType::Auto => "auto",
+            PaymentLinkSubmitType::Book => "book",
+            PaymentLinkSubmitType::Donate => "donate",
+            PaymentLinkSubmitType::Pay => "pay",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinkSubmitType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinkSubmitType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinkSubmitType {
+    fn default() -> Self {
+        Self::Auto
     }
 }
 
@@ -1440,6 +1725,106 @@ impl std::fmt::Display for PaymentLinksResourceAfterCompletionType {
 impl std::default::Default for PaymentLinksResourceAfterCompletionType {
     fn default() -> Self {
         Self::HostedConfirmation
+    }
+}
+
+/// An enum representing the possible values of an `PaymentLinksResourceConsentCollection`'s `promotions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinksResourceConsentCollectionPromotions {
+    Auto,
+}
+
+impl PaymentLinksResourceConsentCollectionPromotions {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinksResourceConsentCollectionPromotions::Auto => "auto",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinksResourceConsentCollectionPromotions {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinksResourceConsentCollectionPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinksResourceConsentCollectionPromotions {
+    fn default() -> Self {
+        Self::Auto
+    }
+}
+
+/// An enum representing the possible values of an `PaymentLinksResourcePaymentIntentData`'s `capture_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinksResourcePaymentIntentDataCaptureMethod {
+    Automatic,
+    Manual,
+}
+
+impl PaymentLinksResourcePaymentIntentDataCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinksResourcePaymentIntentDataCaptureMethod::Automatic => "automatic",
+            PaymentLinksResourcePaymentIntentDataCaptureMethod::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinksResourcePaymentIntentDataCaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinksResourcePaymentIntentDataCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinksResourcePaymentIntentDataCaptureMethod {
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
+
+/// An enum representing the possible values of an `PaymentLinksResourcePaymentIntentData`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
+    OffSession,
+    OnSession,
+}
+
+impl PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinksResourcePaymentIntentDataSetupFutureUsage::OffSession => "off_session",
+            PaymentLinksResourcePaymentIntentDataSetupFutureUsage::OnSession => "on_session",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
+    fn default() -> Self {
+        Self::OffSession
     }
 }
 

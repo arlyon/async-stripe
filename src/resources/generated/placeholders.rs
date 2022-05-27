@@ -312,14 +312,14 @@ impl Object for OrderItem {
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OrderReturn {
-    pub id: OrderReturnId,
+    pub id: (),
 }
 
 #[cfg(not(feature = "orders"))]
 impl Object for OrderReturn {
-    type Id = OrderReturnId;
+    type Id = ();
     fn id(&self) -> Self::Id {
-        self.id.clone()
+        self.id
     }
     fn object(&self) -> &'static str {
         "order_return"

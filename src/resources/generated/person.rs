@@ -73,6 +73,10 @@ pub struct Person {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_provided: Option<bool>,
 
+    /// Whether the person's `id_number_secondary` was provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id_number_secondary_provided: Option<bool>,
+
     /// The person's last name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
@@ -106,6 +110,9 @@ pub struct Person {
     /// Indicates if the person or any of their representatives, family members, or other closely related persons, declares that they hold or have held an important public job or function, in any jurisdiction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub political_exposure: Option<PersonPoliticalExposure>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub registered_address: Option<Address>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub relationship: Option<PersonRelationship>,

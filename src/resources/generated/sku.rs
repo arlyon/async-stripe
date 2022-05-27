@@ -10,8 +10,6 @@ use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Obj
 use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
 
 /// The resource representing a Stripe "Sku".
-///
-/// For more details see <https://stripe.com/docs/api/skus/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Sku {
     /// Unique identifier for the object.

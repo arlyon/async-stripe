@@ -95,6 +95,9 @@ pub struct MandatePaymentMethodDetails {
     pub card: Option<CardMandatePaymentMethodDetails>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<MandateLink>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<MandateSepaDebit>,
 
     /// The type of the payment method associated with this mandate.
@@ -151,6 +154,9 @@ pub struct MandateBacsDebit {
     /// The URL that will contain the mandate that the customer has signed.
     pub url: String,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct MandateLink {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateSepaDebit {

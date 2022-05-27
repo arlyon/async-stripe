@@ -48,6 +48,10 @@ pub struct IssuingDispute {
 
     /// The transaction being disputed.
     pub transaction: Expandable<IssuingTransaction>,
+
+    /// [Treasury](https://stripe.com/docs/api/treasury) details related to this dispute if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub treasury: Option<IssuingDisputeTreasury>,
 }
 
 impl Object for IssuingDispute {
@@ -262,6 +266,16 @@ pub struct IssuingDisputeServiceNotAsDescribedEvidence {
     /// Date when the product was received.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub received_at: Option<Timestamp>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingDisputeTreasury {
+    /// The Treasury [DebitReversal](https://stripe.com/docs/api/treasury/debit_reversals) representing this Issuing dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub debit_reversal: Option<String>,
+
+    /// The Treasury [ReceivedDebit](https://stripe.com/docs/api/treasury/received_debits) that is being disputed.
+    pub received_debit: String,
 }
 
 /// An enum representing the possible values of an `IssuingDisputeCanceledEvidence`'s `product_type` field.
