@@ -27,6 +27,4 @@ async fn main() {
 }
 
 #[cfg(feature = "blocking")]
-fn main() {
-
-}
+fn main() {}
