@@ -41,6 +41,7 @@ pub mod core {
     pub mod payment_method_options_wechat_pay;
     pub mod payout;
     pub mod platform_tax_fee;
+    pub mod price;
     pub mod product;
     pub mod refund;
     pub mod reserve_transaction;
@@ -87,7 +88,6 @@ pub mod billing {
     pub mod invoiceitem;
     pub mod line_item;
     pub mod plan;
-    pub mod price;
     pub mod promotion_code;
     pub mod quote;
     pub mod quotes_resource_total_details;
