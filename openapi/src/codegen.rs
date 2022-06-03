@@ -1117,7 +1117,7 @@ pub fn gen_field(
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_field_rust_type(
+fn gen_field_type(
     state: &mut FileGenerator,
     meta: &Metadata,
     object: &str,
@@ -1127,39 +1127,6 @@ pub fn gen_field_rust_type(
     default: bool,
     shared_objects: &mut BTreeSet<FileGenerator>,
 ) -> String {
-    if let Some((use_path, rust_type)) = meta.field_to_rust_type(object, field_name) {
-        match use_path {
-            "" | "String" => (),
-            "Metadata" => {
-                state.use_params.insert("Metadata");
-            }
-            _ => {
-                state.use_resources.insert(use_path.into());
-            }
-        }
-        return rust_type.into();
-    }
-    if field_name == "metadata" {
-        state.use_params.insert("Metadata");
-        return "Metadata".into();
-    } else if (field_name == "currency" || field_name.ends_with("_currency"))
-        && field["type"].as_str() == Some("string")
-    {
-        state.use_resources.insert("Currency".into());
-        if !required || field["nullable"].as_bool() == Some(true) {
-            return "Option<Currency>".into();
-        } else {
-            return "Currency".into();
-        }
-    } else if field_name == "created" {
-        state.use_params.insert("Timestamp");
-        if !required || field["nullable"].as_bool() == Some(true) {
-            return "Option<Timestamp>".into();
-        } else {
-            return "Timestamp".into();
-        }
-    }
-
     let ty = match field["type"].as_str() {
         Some("boolean") => {
             if default {
@@ -1225,13 +1192,26 @@ pub fn gen_field_rust_type(
 
                 // N.B. return immediately; we use `Default` for list rather than `Option`
                 return format!("List<{}>", element_type);
-            } else {
-                let struct_schema = meta.schema_field(object, field_name);
-                let struct_name = meta.schema_to_rust_type(&struct_schema);
-                let struct_ = InferredStruct { field: field_name.into(), schema: field.clone() };
-                state.insert_struct(struct_name.clone(), struct_);
-                struct_name
             }
+
+            if let Some(_) = field["additionalProperties"].as_object() {
+                return gen_field_type(
+                    state,
+                    meta,
+                    object,
+                    field_name,
+                    &field["additionalProperties"],
+                    required,
+                    default,
+                    shared_objects,
+                );
+            }
+
+            let struct_schema = meta.schema_field(object, field_name);
+            let struct_name = meta.schema_to_rust_type(&struct_schema);
+            let struct_ = InferredStruct { field: field_name.into(), schema: field.clone() };
+            state.insert_struct(struct_name.clone(), struct_);
+            struct_name
         }
         _ => {
             if let Some(path) = field["$ref"].as_str() {
@@ -1333,6 +1313,64 @@ pub fn gen_field_rust_type(
             }
         }
     };
+    return ty;
+}
+
+#[tracing::instrument(skip_all)]
+pub fn gen_field_rust_type(
+    state: &mut FileGenerator,
+    meta: &Metadata,
+    object: &str,
+    field_name: &str,
+    field: &Value,
+    required: bool,
+    default: bool,
+    shared_objects: &mut BTreeSet<FileGenerator>,
+) -> String {
+    if let Some((use_path, rust_type)) = meta.field_to_rust_type(object, field_name) {
+        match use_path {
+            "" | "String" => (),
+            "Metadata" => {
+                state.use_params.insert("Metadata");
+            }
+            _ => {
+                state.use_resources.insert(use_path.into());
+            }
+        }
+        return rust_type.into();
+    }
+    if field_name == "metadata" {
+        state.use_params.insert("Metadata");
+        return "Metadata".into();
+    } else if (field_name == "currency" || field_name.ends_with("_currency"))
+        && field["type"].as_str() == Some("string")
+    {
+        state.use_resources.insert("Currency".into());
+        if !required || field["nullable"].as_bool() == Some(true) {
+            return "Option<Currency>".into();
+        } else {
+            return "Currency".into();
+        }
+    } else if field_name == "created" {
+        state.use_params.insert("Timestamp");
+        if !required || field["nullable"].as_bool() == Some(true) {
+            return "Option<Timestamp>".into();
+        } else {
+            return "Timestamp".into();
+        }
+    }
+
+    let ty =
+        gen_field_type(state, meta, object, field_name, field, required, default, shared_objects);
+    if ty == "bool" && default {
+        // N.B. return immediately; if we want to use `Default` for bool rather than `Option`
+        // Not sure why this is here, but we want to preserve it for now
+        return "bool".into();
+    }
+    if ty.contains("List<") {
+        // N.B. return immediately; we use `Default` for list rather than `Option`
+        return ty;
+    }
 
     let optional = !required || field["nullable"].as_bool() == Some(true);
     let should_box = ty.as_str() == "ApiErrors";
@@ -1471,12 +1509,12 @@ pub fn gen_impl_requests(
                 .map(|a| a.len())
                 .unwrap_or_default();
 
-            let create = (doc_comment.contains("Create")
+            let create = doc_comment.contains("Create")
                 || doc_comment.contains("create")
                 || doc_comment.contains("Adds")
-                || doc_comment.contains("adds"));
+                || doc_comment.contains("adds");
 
-            let update = (doc_comment.contains("Update") || doc_comment.contains("update"));
+            let update = doc_comment.contains("Update") || doc_comment.contains("update");
 
             if !methods.contains_key(&MethodTypes::Create) && parameter_count == 0 && create {
                 // Just make sure I don't miss anything unexpected

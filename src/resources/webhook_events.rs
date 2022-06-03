@@ -238,7 +238,10 @@ pub enum EventObject {
     #[serde(rename = "invoiceitem")]
     InvoiceItem(InvoiceItem),
     Order(Order),
-    OrderReturn(OrderReturn),
+    //The order return has currently disappeared from the
+    //openAPI.  I believe this may be an error, but for now
+    //we will disable it here
+    //OrderReturn(OrderReturn),
     PaymentMethod(PaymentMethod),
     PaymentIntent(PaymentIntent),
     Payout(Payout),

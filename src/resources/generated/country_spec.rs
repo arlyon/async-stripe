@@ -25,7 +25,7 @@ pub struct CountrySpec {
     pub default_currency: Currency,
 
     /// Currencies that can be accepted in the specific country (for transfers).
-    pub supported_bank_account_currencies: CountrySpecSupportedBankAccountCurrencies,
+    pub supported_bank_account_currencies: Vec<String>,
 
     /// Currencies that can be accepted in the specified country (for payments).
     pub supported_payment_currencies: Vec<String>,

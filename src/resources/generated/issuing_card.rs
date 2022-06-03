@@ -49,6 +49,10 @@ pub struct IssuingCard {
     /// The expiration year of the card.
     pub exp_year: i64,
 
+    /// The financial account this card is attached to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_account: Option<String>,
+
     /// The last 4 digits of the card number.
     pub last4: String,
 
@@ -172,6 +176,8 @@ pub struct IssuingCardShipping {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardSpendingLimit {
     /// Maximum amount allowed to spend per interval.
+    ///
+    /// This amount is in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
 
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.

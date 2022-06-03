@@ -13,6 +13,10 @@ pub struct Application {
     /// Unique identifier for the object.
     pub id: ApplicationId,
 
+    // Always true for a deleted object
+    #[serde(default)]
+    pub deleted: bool,
+
     /// The name of the application.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

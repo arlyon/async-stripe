@@ -8,9 +8,9 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, SubscriptionScheduleId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
 use crate::resources::{
-    CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled, Subscription,
-    SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData,
-    TaxRate, TestHelpersTestClock,
+    Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled,
+    Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds,
+    SubscriptionTransferData, TaxRate, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "SubscriptionSchedule".
@@ -20,6 +20,10 @@ use crate::resources::{
 pub struct SubscriptionSchedule {
     /// Unique identifier for the object.
     pub id: SubscriptionScheduleId,
+
+    /// ID of the Connect Application that created the schedule.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub application: Option<Expandable<Application>>,
 
     /// Time at which the subscription schedule was canceled.
     ///
@@ -205,6 +209,13 @@ pub struct SubscriptionSchedulePhaseConfiguration {
 
     /// Subscription items to configure the subscription to during this phase of the subscription schedule.
     pub items: Vec<SubscriptionScheduleConfigurationItem>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
+    ///
+    /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered.
+    /// Updating the underlying subscription's `metadata` directly will not affect the current phase's `metadata`.
+    #[serde(default)]
+    pub metadata: Metadata,
 
     /// If the subscription schedule will prorate when transitioning to this phase.
     ///
@@ -486,9 +497,9 @@ pub struct UpdateSubscriptionSchedule<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phases: Option<Vec<UpdateSubscriptionSchedulePhases>>,
 
-    /// If the update changes the current phase, indicates if the changes should be prorated.
+    /// If the update changes the current phase, indicates whether the changes should be prorated.
     ///
-    /// Possible values are `create_prorations` or `none`, and the default value is `create_prorations`.
+    /// The default value is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
 }
@@ -545,6 +556,9 @@ pub struct CreateSubscriptionSchedulePhases {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub iterations: Option<i64>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
@@ -625,6 +639,9 @@ pub struct UpdateSubscriptionSchedulePhases {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub iterations: Option<i64>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,

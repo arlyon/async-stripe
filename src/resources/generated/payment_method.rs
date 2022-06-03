@@ -23,6 +23,9 @@ pub struct PaymentMethod {
     pub acss_debit: Option<PaymentMethodAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm: Option<PaymentMethodAffirm>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<PaymentMethodAfterpayClearpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -85,6 +88,9 @@ pub struct PaymentMethod {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<PaymentMethodKonbini>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<PaymentMethodLink>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -197,6 +203,9 @@ pub struct PaymentMethodAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transit_number: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodAffirm {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodAfterpayClearpay {}
@@ -530,6 +539,17 @@ pub struct PaymentFlowsPrivatePaymentMethodsKlarnaDob {
 pub struct PaymentMethodKonbini {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodLink {
+    /// Account owner's email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>,
+
+    /// Token used for persistent Link logins.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub persistent_token: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOxxo {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -594,6 +614,10 @@ pub struct PaymentMethodUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_name: Option<String>,
 
+    /// The ID of the Financial Connections Account used to create the payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections_account: Option<String>,
+
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
@@ -603,6 +627,10 @@ pub struct PaymentMethodUsBankAccount {
     /// Last four digits of the bank account number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
+
+    /// Contains information about US bank account networks that can be used.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub networks: Option<UsBankAccountNetworks>,
 
     /// Routing number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -629,12 +657,26 @@ pub struct ThreeDSecureUsage {
     pub supported: bool,
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UsBankAccountNetworks {
+    /// The preferred network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred: Option<String>,
+
+    /// All supported networks.
+    pub supported: Vec<UsBankAccountNetworksSupported>,
+}
+
 /// The parameters for `PaymentMethod::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreatePaymentMethod<'a> {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreatePaymentMethodAcssDebit>,
+
+    /// If this is an `affirm` PaymentMethod, this hash contains details about the Affirm payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm: Option<CreatePaymentMethodAffirm>,
 
     /// If this is an `AfterpayClearpay` PaymentMethod, this hash contains details about the AfterpayClearpay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -716,6 +758,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<CreatePaymentMethodKonbini>,
 
+    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<CreatePaymentMethodLink>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -769,6 +815,7 @@ impl<'a> CreatePaymentMethod<'a> {
     pub fn new() -> Self {
         CreatePaymentMethod {
             acss_debit: Default::default(),
+            affirm: Default::default(),
             afterpay_clearpay: Default::default(),
             alipay: Default::default(),
             au_becs_debit: Default::default(),
@@ -788,6 +835,7 @@ impl<'a> CreatePaymentMethod<'a> {
             interac_present: Default::default(),
             klarna: Default::default(),
             konbini: Default::default(),
+            link: Default::default(),
             metadata: Default::default(),
             oxxo: Default::default(),
             p24: Default::default(),
@@ -868,6 +916,10 @@ pub struct UpdatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
+    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link: Option<UpdatePaymentMethodLink>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -887,6 +939,7 @@ impl<'a> UpdatePaymentMethod<'a> {
             billing_details: Default::default(),
             card: Default::default(),
             expand: Default::default(),
+            link: Default::default(),
             metadata: Default::default(),
             us_bank_account: Default::default(),
         }
@@ -901,6 +954,9 @@ pub struct CreatePaymentMethodAcssDebit {
 
     pub transit_number: String,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodAffirm {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodAfterpayClearpay {}
@@ -971,6 +1027,9 @@ pub struct CreatePaymentMethodKlarna {
 pub struct CreatePaymentMethodKonbini {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodLink {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodOxxo {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1004,11 +1063,17 @@ pub struct CreatePaymentMethodUsBankAccount {
     pub account_type: Option<CreatePaymentMethodUsBankAccountAccountType>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_connections_account: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodWechatPay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodLink {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentMethodUsBankAccount {
@@ -1823,6 +1888,7 @@ impl std::default::Default for PaymentMethodP24Bank {
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodType {
     AcssDebit,
+    Affirm,
     AfterpayClearpay,
     Alipay,
     AuBecsDebit,
@@ -1840,6 +1906,7 @@ pub enum PaymentMethodType {
     InteracPresent,
     Klarna,
     Konbini,
+    Link,
     Oxxo,
     P24,
     Paynow,
@@ -1853,6 +1920,7 @@ impl PaymentMethodType {
     pub fn as_str(self) -> &'static str {
         match self {
             PaymentMethodType::AcssDebit => "acss_debit",
+            PaymentMethodType::Affirm => "affirm",
             PaymentMethodType::AfterpayClearpay => "afterpay_clearpay",
             PaymentMethodType::Alipay => "alipay",
             PaymentMethodType::AuBecsDebit => "au_becs_debit",
@@ -1870,6 +1938,7 @@ impl PaymentMethodType {
             PaymentMethodType::InteracPresent => "interac_present",
             PaymentMethodType::Klarna => "klarna",
             PaymentMethodType::Konbini => "konbini",
+            PaymentMethodType::Link => "link",
             PaymentMethodType::Oxxo => "oxxo",
             PaymentMethodType::P24 => "p24",
             PaymentMethodType::Paynow => "paynow",
@@ -1903,6 +1972,7 @@ impl std::default::Default for PaymentMethodType {
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodTypeFilter {
     AcssDebit,
+    Affirm,
     AfterpayClearpay,
     Alipay,
     AuBecsDebit,
@@ -1918,6 +1988,7 @@ pub enum PaymentMethodTypeFilter {
     Ideal,
     Klarna,
     Konbini,
+    Link,
     Oxxo,
     P24,
     Paynow,
@@ -1931,6 +2002,7 @@ impl PaymentMethodTypeFilter {
     pub fn as_str(self) -> &'static str {
         match self {
             PaymentMethodTypeFilter::AcssDebit => "acss_debit",
+            PaymentMethodTypeFilter::Affirm => "affirm",
             PaymentMethodTypeFilter::AfterpayClearpay => "afterpay_clearpay",
             PaymentMethodTypeFilter::Alipay => "alipay",
             PaymentMethodTypeFilter::AuBecsDebit => "au_becs_debit",
@@ -1946,6 +2018,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Ideal => "ideal",
             PaymentMethodTypeFilter::Klarna => "klarna",
             PaymentMethodTypeFilter::Konbini => "konbini",
+            PaymentMethodTypeFilter::Link => "link",
             PaymentMethodTypeFilter::Oxxo => "oxxo",
             PaymentMethodTypeFilter::P24 => "p24",
             PaymentMethodTypeFilter::Paynow => "paynow",
@@ -2073,6 +2146,40 @@ impl std::fmt::Display for UpdatePaymentMethodUsBankAccountAccountHolderType {
 impl std::default::Default for UpdatePaymentMethodUsBankAccountAccountHolderType {
     fn default() -> Self {
         Self::Company
+    }
+}
+
+/// An enum representing the possible values of an `UsBankAccountNetworks`'s `supported` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UsBankAccountNetworksSupported {
+    Ach,
+    UsDomesticWire,
+}
+
+impl UsBankAccountNetworksSupported {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UsBankAccountNetworksSupported::Ach => "ach",
+            UsBankAccountNetworksSupported::UsDomesticWire => "us_domestic_wire",
+        }
+    }
+}
+
+impl AsRef<str> for UsBankAccountNetworksSupported {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UsBankAccountNetworksSupported {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UsBankAccountNetworksSupported {
+    fn default() -> Self {
+        Self::Ach
     }
 }
 

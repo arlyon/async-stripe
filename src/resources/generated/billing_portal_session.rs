@@ -44,7 +44,8 @@ pub struct BillingPortalSession {
     pub on_behalf_of: Option<String>,
 
     /// The URL to redirect customers to when they click on the portal's link to return to your website.
-    pub return_url: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub return_url: Option<String>,
 
     /// The short-lived URL of the session that gives customers access to the customer portal.
     pub url: String,

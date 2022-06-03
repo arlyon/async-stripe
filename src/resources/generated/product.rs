@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::{ProductId, TaxCodeId};
 use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
-use crate::resources::{PackageDimensions, TaxCode};
+use crate::resources::{Currency, PackageDimensions, Price, TaxCode};
 
 /// The resource representing a Stripe "Product".
 ///
@@ -26,6 +26,10 @@ pub struct Product {
     /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<Timestamp>,
+
+    /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_price: Option<Expandable<Price>>,
 
     // Always true for a deleted object
     #[serde(default)]
@@ -145,6 +149,12 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
+    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object.
+    ///
+    /// This Price will be set as the default price for this product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_price_data: Option<CreateProductDefaultPriceData>,
+
     /// The product's description, meant to be displayable to the customer.
     ///
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
@@ -211,6 +221,7 @@ impl<'a> CreateProduct<'a> {
     pub fn new(name: &'a str) -> Self {
         CreateProduct {
             active: Default::default(),
+            default_price_data: Default::default(),
             description: Default::default(),
             expand: Default::default(),
             id: Default::default(),
@@ -298,6 +309,10 @@ pub struct UpdateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
+    /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_price: Option<&'a str>,
+
     /// The product's description, meant to be displayable to the customer.
     ///
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
@@ -361,6 +376,7 @@ impl<'a> UpdateProduct<'a> {
     pub fn new() -> Self {
         UpdateProduct {
             active: Default::default(),
+            default_price: Default::default(),
             description: Default::default(),
             expand: Default::default(),
             images: Default::default(),
@@ -373,5 +389,104 @@ impl<'a> UpdateProduct<'a> {
             unit_label: Default::default(),
             url: Default::default(),
         }
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateProductDefaultPriceData {
+    pub currency: Currency,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recurring: Option<CreateProductDefaultPriceDataRecurring>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<CreateProductDefaultPriceDataTaxBehavior>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateProductDefaultPriceDataRecurring {
+    pub interval: CreateProductDefaultPriceDataRecurringInterval,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+
+/// An enum representing the possible values of an `CreateProductDefaultPriceDataRecurring`'s `interval` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateProductDefaultPriceDataRecurringInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+}
+
+impl CreateProductDefaultPriceDataRecurringInterval {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateProductDefaultPriceDataRecurringInterval::Day => "day",
+            CreateProductDefaultPriceDataRecurringInterval::Month => "month",
+            CreateProductDefaultPriceDataRecurringInterval::Week => "week",
+            CreateProductDefaultPriceDataRecurringInterval::Year => "year",
+        }
+    }
+}
+
+impl AsRef<str> for CreateProductDefaultPriceDataRecurringInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateProductDefaultPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateProductDefaultPriceDataRecurringInterval {
+    fn default() -> Self {
+        Self::Day
+    }
+}
+
+/// An enum representing the possible values of an `CreateProductDefaultPriceData`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateProductDefaultPriceDataTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl CreateProductDefaultPriceDataTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateProductDefaultPriceDataTaxBehavior::Exclusive => "exclusive",
+            CreateProductDefaultPriceDataTaxBehavior::Inclusive => "inclusive",
+            CreateProductDefaultPriceDataTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for CreateProductDefaultPriceDataTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateProductDefaultPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateProductDefaultPriceDataTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
     }
 }

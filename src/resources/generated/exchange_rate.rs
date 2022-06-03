@@ -17,7 +17,7 @@ pub struct ExchangeRate {
     pub id: ExchangeRateId,
 
     /// Hash where the keys are supported currencies and the values are the exchange rate at which the base id currency converts to the key currency.
-    pub rates: ExchangeRateRates,
+    pub rates: f64,
 }
 
 impl ExchangeRate {

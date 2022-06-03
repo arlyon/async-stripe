@@ -285,7 +285,6 @@ pub fn field_mappings() -> FieldMap {
             ("IssuingTransactionType", "IssuingTransactionType"),
         ),
         (("file", "purpose"), ("", "FilePurpose")),
-        (("order", "status"), ("", "OrderStatus")),
         (("recipient", "type"), ("", "Option<RecipientType>")),
         (("review", "reason"), ("ReviewReason", "ReviewReason")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),

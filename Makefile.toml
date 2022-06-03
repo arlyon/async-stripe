@@ -4,7 +4,7 @@ RUST_FILES = { glob = "./**/*.rs", include_files = true, include_dirs = false, i
 [tasks.openapi-delete]
 cwd = "openapi"
 command = "rm"
-args = ["-f", "spec3.json"]
+args = ["-rf", "spec3.json", "out"]
 
 # verifies if all the apis are exported, and reports which are missing
 [tasks.verify]
