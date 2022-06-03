@@ -478,7 +478,6 @@ pub enum EventObject {
     //openAPI.  I believe this may be an error, but for now
     //we will disable it here
     //OrderReturn(OrderReturn),
-    PaymentMethod(PaymentMethod),
     PaymentIntent(PaymentIntent),
     PaymentLink(PaymentLink),
     PaymentMethod(PaymentMethod),
@@ -667,8 +666,8 @@ mod tests {
             .expect("Failed to construct event");
 
         assert_eq!(event.event_type, super::EventType::InvoiceItemCreated);
-        assert_eq!(event.id.to_string(), "evt_123");
-        assert_eq!(event.account.to_string(), "acct_123");
+        assert_eq!(event.id, "evt_123".parse::<crate::EventId>().unwrap());
+        assert_eq!(event.account, "acct_123".parse().ok());
         assert_eq!(event.created, 1533204620);
     }
 }
