@@ -437,7 +437,37 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct FundingInstructionsBankTransferZenginRecord {}
+pub struct FundingInstructionsBankTransferZenginRecord {
+    /// The account holder name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_holder_name: Option<String>,
+
+    /// The account number.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_number: Option<String>,
+
+    /// The bank account type.
+    ///
+    /// In Japan, this can only be `futsu` or `toza`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_type: Option<String>,
+
+    /// The bank code of the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_code: Option<String>,
+
+    /// The bank name of the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_name: Option<String>,
+
+    /// The branch code of the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub branch_code: Option<String>,
+
+    /// The branch name of the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub branch_name: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionDisplayOxxoDetails {
@@ -1183,6 +1213,12 @@ pub struct CreatePaymentIntent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<String>>,
 
+    /// Options to configure Radar.
+    ///
+    /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub radar_options: Option<CreatePaymentIntentRadarOptions>,
+
     /// Email address that the receipt for the resulting payment will be sent to.
     ///
     /// If `receipt_email` is specified for a payment in live mode, a receipt will be sent regardless of your [email settings](https://dashboard.stripe.com/account/emails).
@@ -1260,6 +1296,7 @@ impl<'a> CreatePaymentIntent<'a> {
             payment_method_data: Default::default(),
             payment_method_options: Default::default(),
             payment_method_types: Default::default(),
+            radar_options: Default::default(),
             receipt_email: Default::default(),
             return_url: Default::default(),
             setup_future_usage: Default::default(),
@@ -1547,6 +1584,9 @@ pub struct CreatePaymentIntentPaymentMethodData {
     pub paynow: Option<CreatePaymentIntentPaymentMethodDataPaynow>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub radar_options: Option<CreatePaymentIntentPaymentMethodDataRadarOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreatePaymentIntentPaymentMethodDataSepaDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1647,6 +1687,12 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentRadarOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentShipping {
     pub address: CreatePaymentIntentShippingAddress,
 
@@ -1740,6 +1786,9 @@ pub struct UpdatePaymentIntentPaymentMethodData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<UpdatePaymentIntentPaymentMethodDataPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub radar_options: Option<UpdatePaymentIntentPaymentMethodDataRadarOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdatePaymentIntentPaymentMethodDataSepaDebit>,
@@ -1987,6 +2036,12 @@ pub struct CreatePaymentIntentPaymentMethodDataP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataRadarOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataSepaDebit {
@@ -2422,6 +2477,12 @@ pub struct UpdatePaymentIntentPaymentMethodDataP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataRadarOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataSepaDebit {
@@ -5183,6 +5244,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     DeDe,
     #[serde(rename = "en-AT")]
     EnAt,
+    #[serde(rename = "en-AU")]
+    EnAu,
     #[serde(rename = "en-BE")]
     EnBe,
     #[serde(rename = "en-DE")]
@@ -5205,6 +5268,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnNl,
     #[serde(rename = "en-NO")]
     EnNo,
+    #[serde(rename = "en-NZ")]
+    EnNz,
     #[serde(rename = "en-SE")]
     EnSe,
     #[serde(rename = "en-US")]
@@ -5240,6 +5305,7 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeAt => "de-AT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeDe => "de-DE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
@@ -5251,6 +5317,7 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnIt => "en-IT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNo => "en-NO",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNz => "en-NZ",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnSe => "en-SE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnUs => "en-US",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EsEs => "es-ES",
@@ -8871,6 +8938,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     DeDe,
     #[serde(rename = "en-AT")]
     EnAt,
+    #[serde(rename = "en-AU")]
+    EnAu,
     #[serde(rename = "en-BE")]
     EnBe,
     #[serde(rename = "en-DE")]
@@ -8893,6 +8962,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnNl,
     #[serde(rename = "en-NO")]
     EnNo,
+    #[serde(rename = "en-NZ")]
+    EnNz,
     #[serde(rename = "en-SE")]
     EnSe,
     #[serde(rename = "en-US")]
@@ -8928,6 +8999,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeAt => "de-AT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeDe => "de-DE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
@@ -8939,6 +9011,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnIt => "en-IT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNo => "en-NO",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNz => "en-NZ",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnSe => "en-SE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnUs => "en-US",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EsEs => "es-ES",

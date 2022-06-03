@@ -43,6 +43,7 @@ pub mod core {
     pub mod platform_tax_fee;
     pub mod price;
     pub mod product;
+    pub mod radar_radar_options;
     pub mod refund;
     pub mod reserve_transaction;
     pub mod setup_attempt;

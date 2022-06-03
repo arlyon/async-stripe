@@ -605,7 +605,7 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_tax_ids: Option<Vec<String>>,
 
-    /// A fee in %s that will be applied to the invoice and transferred to the application owner's Stripe account.
+    /// A fee in cents (or local equivalent) that will be applied to the invoice and transferred to the application owner's Stripe account.
     ///
     /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/billing/invoices/connect#collecting-fees).

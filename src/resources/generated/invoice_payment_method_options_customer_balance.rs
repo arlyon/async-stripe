@@ -21,7 +21,7 @@ pub struct InvoicePaymentMethodOptionsCustomerBalance {
 pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransfer {
     /// The bank transfer type that can be used for funding.
     ///
-    /// Permitted values include: `us_bank_account`, `eu_bank_account`, `id_bank_account`, `gb_bank_account`, `jp_bank_account`, `mx_bank_account`, `eu_bank_transfer`, `gb_bank_transfer`, `id_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
+    /// Permitted values include: `jp_bank_transfer`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,

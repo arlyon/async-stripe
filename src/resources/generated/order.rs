@@ -2356,6 +2356,8 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     DeDe,
     #[serde(rename = "en-AT")]
     EnAt,
+    #[serde(rename = "en-AU")]
+    EnAu,
     #[serde(rename = "en-BE")]
     EnBe,
     #[serde(rename = "en-DE")]
@@ -2378,6 +2380,8 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     EnNl,
     #[serde(rename = "en-NO")]
     EnNo,
+    #[serde(rename = "en-NZ")]
+    EnNz,
     #[serde(rename = "en-SE")]
     EnSe,
     #[serde(rename = "en-US")]
@@ -2413,6 +2417,7 @@ impl CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DeAt => "de-AT",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DeDe => "de-DE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
@@ -2424,6 +2429,7 @@ impl CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnIt => "en-IT",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNo => "en-NO",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNz => "en-NZ",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnSe => "en-SE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnUs => "en-US",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EsEs => "es-ES",
@@ -4423,6 +4429,8 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     DeDe,
     #[serde(rename = "en-AT")]
     EnAt,
+    #[serde(rename = "en-AU")]
+    EnAu,
     #[serde(rename = "en-BE")]
     EnBe,
     #[serde(rename = "en-DE")]
@@ -4445,6 +4453,8 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     EnNl,
     #[serde(rename = "en-NO")]
     EnNo,
+    #[serde(rename = "en-NZ")]
+    EnNz,
     #[serde(rename = "en-SE")]
     EnSe,
     #[serde(rename = "en-US")]
@@ -4480,6 +4490,7 @@ impl UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DeAt => "de-AT",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DeDe => "de-DE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
@@ -4491,6 +4502,7 @@ impl UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnIt => "en-IT",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNo => "en-NO",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNz => "en-NZ",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnSe => "en-SE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnUs => "en-US",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EsEs => "es-ES",

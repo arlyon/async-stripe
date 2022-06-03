@@ -174,11 +174,11 @@ pub struct DiscountsResourceDiscountAmount {
 /// The parameters for `CreditNote::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateCreditNote<'a> {
-    /// The integer amount in %s representing the total amount of the credit note.
+    /// The integer amount in cents (or local equivalent) representing the total amount of the credit note.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
-    /// The integer amount in %s representing the amount to credit the customer's balance, which will be automatically applied to their next invoice.
+    /// The integer amount in cents (or local equivalent) representing the amount to credit the customer's balance, which will be automatically applied to their next invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_amount: Option<i64>,
 
@@ -205,7 +205,7 @@ pub struct CreateCreditNote<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
-    /// The integer amount in %s representing the amount that is credited outside of Stripe.
+    /// The integer amount in cents (or local equivalent) representing the amount that is credited outside of Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub out_of_band_amount: Option<i64>,
 
@@ -217,7 +217,7 @@ pub struct CreateCreditNote<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund: Option<RefundId>,
 
-    /// The integer amount in %s representing the amount to refund.
+    /// The integer amount in cents (or local equivalent) representing the amount to refund.
     ///
     /// If set, a refund will be created for the charge associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -131,7 +131,7 @@ impl Object for Transfer {
 /// The parameters for `Transfer::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateTransfer<'a> {
-    /// A positive integer in %s representing how much to transfer.
+    /// A positive integer in cents (or local equivalent) representing how much to transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 

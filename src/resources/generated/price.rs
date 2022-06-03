@@ -302,11 +302,11 @@ pub struct CreatePrice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transform_quantity: Option<CreatePriceTransformQuantity>,
 
-    /// A positive integer in %s (or 0 for a free price) representing how much to charge.
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
-    /// Same as `unit_amount`, but accepts a decimal value in %s with at most 12 decimal places.
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     ///
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]

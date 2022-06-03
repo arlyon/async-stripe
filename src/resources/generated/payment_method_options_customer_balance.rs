@@ -34,9 +34,7 @@ pub struct PaymentMethodOptionsCustomerBalanceBankTransfer {
     pub requested_address_types:
         Option<Vec<PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
 
-    /// The bank transfer type that this PaymentIntent is allowed to use for funding.
-    ///
-    /// Permitted values include: `us_bank_account`, `eu_bank_account`, `id_bank_account`, `gb_bank_account`, `jp_bank_account`, `mx_bank_account`, `eu_bank_transfer`, `gb_bank_transfer`, `id_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
+    /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `jp_bank_transfer`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<PaymentMethodOptionsCustomerBalanceBankTransferType>,
@@ -82,46 +80,14 @@ impl std::default::Default
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodOptionsCustomerBalanceBankTransferType {
-    EuBankAccount,
-    EuBankTransfer,
-    GbBankAccount,
-    GbBankTransfer,
-    IdBankAccount,
-    IdBankTransfer,
-    JpBankAccount,
     JpBankTransfer,
-    MxBankAccount,
-    MxBankTransfer,
-    UsBankAccount,
-    UsBankTransfer,
 }
 
 impl PaymentMethodOptionsCustomerBalanceBankTransferType {
     pub fn as_str(self) -> &'static str {
         match self {
-            PaymentMethodOptionsCustomerBalanceBankTransferType::EuBankAccount => "eu_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => {
-                "eu_bank_transfer"
-            }
-            PaymentMethodOptionsCustomerBalanceBankTransferType::GbBankAccount => "gb_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => {
-                "gb_bank_transfer"
-            }
-            PaymentMethodOptionsCustomerBalanceBankTransferType::IdBankAccount => "id_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::IdBankTransfer => {
-                "id_bank_transfer"
-            }
-            PaymentMethodOptionsCustomerBalanceBankTransferType::JpBankAccount => "jp_bank_account",
             PaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => {
                 "jp_bank_transfer"
-            }
-            PaymentMethodOptionsCustomerBalanceBankTransferType::MxBankAccount => "mx_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => {
-                "mx_bank_transfer"
-            }
-            PaymentMethodOptionsCustomerBalanceBankTransferType::UsBankAccount => "us_bank_account",
-            PaymentMethodOptionsCustomerBalanceBankTransferType::UsBankTransfer => {
-                "us_bank_transfer"
             }
         }
     }
@@ -140,7 +106,7 @@ impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceBankTransferType {
 }
 impl std::default::Default for PaymentMethodOptionsCustomerBalanceBankTransferType {
     fn default() -> Self {
-        Self::EuBankAccount
+        Self::JpBankTransfer
     }
 }
 
