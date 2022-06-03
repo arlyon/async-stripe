@@ -32,7 +32,7 @@ cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples=examples"]
 name = "stripe"
 
 [features]
-default = ["full", "webhook-events", "uuid"]
+default = ["full", "webhook-events", "uuid", "stream"]
 full = [
   "checkout",
   "billing",
@@ -44,6 +44,8 @@ full = [
   "terminal",
   "webhook-endpoints",
 ]
+
+stream = ["futures-util"]
 
 # stripe feature groups
 checkout = ["billing"]
@@ -97,6 +99,9 @@ surf = { version = "2.1", optional = true }
 tokio = { version = "1.2", optional = true }
 smart-default = "0.6.0"
 uuid = { version = "0.8", optional=true, features=["v4"] }
+
+# stream for lists
+futures-util = { version = "0.3.21", optional = true }
 
 # webhook support
 hmac = { version = "0.12", optional = true }
