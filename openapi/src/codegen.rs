@@ -1449,7 +1449,7 @@ pub fn gen_impl_requests(
                 let mut out = String::new();
                 out.push('\n');
                 print_doc_comment(&mut out, doc_comment, 1);
-                out.push_str("    pub fn list(client: &Client, params: ");
+                out.push_str("    pub fn list(client: &Client, params: &");
                 out.push_str(&params_name);
                 out.push_str("<'_>) -> Response<List<");
                 out.push_str(&rust_struct);
