@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::RecipientId;
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{
+    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+};
 use crate::resources::{Account, BankAccount, Card};
 
 /// The resource representing a Stripe "TransferRecipient".
@@ -78,7 +80,7 @@ impl Recipient {
     /// Returns a list of your recipients.
     ///
     /// The recipients are returned sorted by creation date, with the most recently created recipients appearing first.
-    pub fn list(client: &Client, params: ListRecipients<'_>) -> Response<List<Recipient>> {
+    pub fn list(client: &Client, params: &ListRecipients<'_>) -> Response<List<Recipient>> {
         client.get_query("/recipients", &params)
     }
 
@@ -246,7 +248,12 @@ impl<'a> ListRecipients<'a> {
         }
     }
 }
-
+impl Paginable for ListRecipients<'_> {
+    type O = Recipient;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Recipient::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRecipient<'a> {

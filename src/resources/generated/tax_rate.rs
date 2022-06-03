@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::TaxRateId;
-use crate::params::{Expand, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 
 /// The resource representing a Stripe "TaxRate".
 ///
@@ -76,7 +76,7 @@ impl TaxRate {
     /// Returns a list of your tax rates.
     ///
     /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
-    pub fn list(client: &Client, params: ListTaxRates<'_>) -> Response<List<TaxRate>> {
+    pub fn list(client: &Client, params: &ListTaxRates<'_>) -> Response<List<TaxRate>> {
         client.get_query("/tax_rates", &params)
     }
 
@@ -235,7 +235,12 @@ impl<'a> ListTaxRates<'a> {
         }
     }
 }
-
+impl Paginable for ListTaxRates<'_> {
+    type O = TaxRate;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `TaxRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTaxRate<'a> {

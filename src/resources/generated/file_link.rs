@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{FileId, FileLinkId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{File, Scheduled};
 
 /// The resource representing a Stripe "FileLink".
@@ -47,7 +47,7 @@ pub struct FileLink {
 
 impl FileLink {
     /// Returns a list of file links.
-    pub fn list(client: &Client, params: ListFileLinks<'_>) -> Response<List<FileLink>> {
+    pub fn list(client: &Client, params: &ListFileLinks<'_>) -> Response<List<FileLink>> {
         client.get_query("/file_links", &params)
     }
 
@@ -173,7 +173,12 @@ impl<'a> ListFileLinks<'a> {
         }
     }
 }
-
+impl Paginable for ListFileLinks<'_> {
+    type O = FileLink;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `FileLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateFileLink<'a> {

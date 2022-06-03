@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{
+    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+};
 use crate::resources::{
     Account, Address, ApiErrors, Application, Charge, Currency, Customer, Discount,
     InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
@@ -408,7 +410,7 @@ impl Invoice {
     /// You can list all invoices, or list the invoices for a specific customer.
     ///
     /// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
-    pub fn list(client: &Client, params: ListInvoices<'_>) -> Response<List<Invoice>> {
+    pub fn list(client: &Client, params: &ListInvoices<'_>) -> Response<List<Invoice>> {
         client.get_query("/invoices", &params)
     }
 
@@ -839,7 +841,12 @@ impl<'a> ListInvoices<'a> {
         }
     }
 }
-
+impl Paginable for ListInvoices<'_> {
+    type O = Invoice;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceAutomaticTax {
     pub enabled: bool,

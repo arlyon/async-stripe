@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::PriceId;
 use crate::params::{
-    Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
+    Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{CreateProduct, Currency, Product, UpTo};
 
@@ -122,7 +122,7 @@ pub struct Price {
 
 impl Price {
     /// Returns a list of your prices.
-    pub fn list(client: &Client, params: ListPrices<'_>) -> Response<List<Price>> {
+    pub fn list(client: &Client, params: &ListPrices<'_>) -> Response<List<Price>> {
         client.get_query("/prices", &params)
     }
 
@@ -413,7 +413,12 @@ impl<'a> ListPrices<'a> {
         }
     }
 }
-
+impl Paginable for ListPrices<'_> {
+    type O = Price;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Price::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePrice<'a> {

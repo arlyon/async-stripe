@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, OrderId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
     Account, Address, Application, CheckoutSessionItem, Currency, Customer, Discount,
     PaymentIntent, PaymentIntentPaymentMethodOptionsAcssDebit,
@@ -124,7 +124,7 @@ impl Order {
     /// Returns a list of your orders.
     ///
     /// The orders are returned sorted by creation date, with the most recently created orders appearing first.
-    pub fn list(client: &Client, params: ListOrders<'_>) -> Response<List<Order>> {
+    pub fn list(client: &Client, params: &ListOrders<'_>) -> Response<List<Order>> {
         client.get_query("/orders", &params)
     }
 
@@ -586,7 +586,12 @@ impl<'a> ListOrders<'a> {
         }
     }
 }
-
+impl Paginable for ListOrders<'_> {
+    type O = Order;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Order::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateOrder<'a> {

@@ -10,13 +10,12 @@
 use stripe::{Client, Customer, ListCustomers, RequestStrategy};
 
 #[tokio::main]
-#[cfg(feature = "async")]
 async fn main() {
     let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
     let client = Client::new(secret_key).with_strategy(RequestStrategy::idempotent_with_uuid());
 
     let first_page =
-        Customer::list(&client, ListCustomers { limit: Some(1), ..Default::default() })
+        Customer::list(&client, &ListCustomers { limit: Some(1), ..Default::default() })
             .await
             .unwrap();
 
@@ -25,6 +24,3 @@ async fn main() {
         first_page.data.iter().map(|c| c.name.as_ref().unwrap()).collect::<Vec<_>>()
     );
 }
-
-#[cfg(feature = "blocking")]
-fn main() {}

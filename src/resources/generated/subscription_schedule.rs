@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, SubscriptionScheduleId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled,
     Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds,
@@ -97,7 +97,7 @@ impl SubscriptionSchedule {
     /// Retrieves the list of your subscription schedules.
     pub fn list(
         client: &Client,
-        params: ListSubscriptionSchedules<'_>,
+        params: &ListSubscriptionSchedules<'_>,
     ) -> Response<List<SubscriptionSchedule>> {
         client.get_query("/subscription_schedules", &params)
     }
@@ -462,7 +462,12 @@ impl<'a> ListSubscriptionSchedules<'a> {
         }
     }
 }
-
+impl Paginable for ListSubscriptionSchedules<'_> {
+    type O = SubscriptionSchedule;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `SubscriptionSchedule::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionSchedule<'a> {

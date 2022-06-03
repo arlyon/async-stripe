@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::AccountId;
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{
+    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+};
 use crate::resources::{
     Address, BankAccount, Card, Currency, DelayDays, File, Person, PersonVerificationParams,
     VerificationDocumentParams,
@@ -115,7 +117,7 @@ impl Account {
     /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
     ///
     /// If you’re not a platform, the list is empty.
-    pub fn list(client: &Client, params: ListAccounts<'_>) -> Response<List<Account>> {
+    pub fn list(client: &Client, params: &ListAccounts<'_>) -> Response<List<Account>> {
         client.get_query("/accounts", &params)
     }
 
@@ -936,7 +938,12 @@ impl<'a> ListAccounts<'a> {
         }
     }
 }
-
+impl Paginable for ListAccounts<'_> {
+    type O = Account;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Account::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateAccount<'a> {

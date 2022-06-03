@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::PayoutId;
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, BankAccount, Card, Currency};
 
 /// The resource representing a Stripe "Payout".
@@ -114,7 +114,7 @@ impl Payout {
     /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
     ///
     /// The payouts are returned in sorted order, with the most recently created payouts appearing first.
-    pub fn list(client: &Client, params: ListPayouts<'_>) -> Response<List<Payout>> {
+    pub fn list(client: &Client, params: &ListPayouts<'_>) -> Response<List<Payout>> {
         client.get_query("/payouts", &params)
     }
 
@@ -284,7 +284,12 @@ impl<'a> ListPayouts<'a> {
         }
     }
 }
-
+impl Paginable for ListPayouts<'_> {
+    type O = Payout;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Payout::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePayout<'a> {

@@ -32,7 +32,7 @@ cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples=examples"]
 name = "stripe"
 
 [features]
-default = ["full", "webhook-events", "uuid"]
+default = ["full", "webhook-events", "uuid", "stream"]
 full = [
   "checkout",
   "billing",
@@ -44,6 +44,8 @@ full = [
   "terminal",
   "webhook-endpoints",
 ]
+
+stream = []
 
 # stripe feature groups
 checkout = ["billing"]
@@ -61,7 +63,7 @@ webhook-events = ["events", "hmac", "sha2", "chrono", "hex"]
 events = []
 
 # runtimes
-async = []
+async = ["futures-util"]
 blocking = []
 
 runtime-tokio-hyper = ["tokio", "hyper-client", "hyper-tls", "async"]
@@ -98,6 +100,9 @@ tokio = { version = "1.2", optional = true }
 smart-default = "0.6.0"
 uuid = { version = "0.8", optional=true, features=["v4"] }
 
+# stream for lists
+futures-util = { version = "0.3.21", optional = true }
+
 # webhook support
 hmac = { version = "0.12", optional = true }
 sha2 = { version = "0.10", optional = true }
@@ -112,6 +117,7 @@ lazy_static = "1.4"
 tokio = { version = "1.2", features = ["rt", "macros"] }
 axum = "0.4.8"
 actix-web = "4.0.1"
+tokio-test = "0.4.2"
 
 [[example]]
 name = "checkout"
@@ -131,6 +137,10 @@ required-features = ["async"]
 
 [[example]]
 name = "payment-link"
+required-features = ["async"]
+
+[[example]]
+name = "strategy"
 required-features = ["async"]
 
 [[example]]

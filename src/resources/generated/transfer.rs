@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{ChargeId, TransferId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{Account, BalanceTransaction, Charge, Currency, TransferReversal};
 
 /// The resource representing a Stripe "Transfer".
@@ -88,7 +88,7 @@ impl Transfer {
     /// Returns a list of existing transfers sent to connected accounts.
     ///
     /// The transfers are returned in sorted order, with the most recently created transfers appearing first.
-    pub fn list(client: &Client, params: ListTransfers<'_>) -> Response<List<Transfer>> {
+    pub fn list(client: &Client, params: &ListTransfers<'_>) -> Response<List<Transfer>> {
         client.get_query("/transfers", &params)
     }
 
@@ -250,7 +250,12 @@ impl<'a> ListTransfers<'a> {
         }
     }
 }
-
+impl Paginable for ListTransfers<'_> {
+    type O = Transfer;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Transfer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTransfer<'a> {

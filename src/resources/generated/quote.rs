@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, QuoteId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
     Account, Application, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
     QuotesResourceTotalDetails, Subscription, SubscriptionSchedule, TaxRate, TestHelpersTestClock,
@@ -162,7 +162,7 @@ pub struct Quote {
 
 impl Quote {
     /// Returns a list of your quotes.
-    pub fn list(client: &Client, params: ListQuotes<'_>) -> Response<List<Quote>> {
+    pub fn list(client: &Client, params: &ListQuotes<'_>) -> Response<List<Quote>> {
         client.get_query("/quotes", &params)
     }
 
@@ -369,7 +369,12 @@ impl<'a> ListQuotes<'a> {
         }
     }
 }
-
+impl Paginable for ListQuotes<'_> {
+    type O = Quote;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// An enum representing the possible values of an `Quote`'s `collection_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

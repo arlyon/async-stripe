@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
     Address, CheckoutSessionItem, Currency, Customer, Discount, LinkedAccountOptionsUsBankAccount,
     PaymentIntent, PaymentLink, SetupIntent, Shipping, ShippingRate, Subscription, TaxRate,
@@ -203,7 +203,7 @@ impl CheckoutSession {
     /// Returns a list of Checkout Sessions.
     pub fn list(
         client: &Client,
-        params: ListCheckoutSessions<'_>,
+        params: &ListCheckoutSessions<'_>,
     ) -> Response<List<CheckoutSession>> {
         client.get_query("/checkout/sessions", &params)
     }
@@ -818,7 +818,12 @@ impl<'a> ListCheckoutSessions<'a> {
         }
     }
 }
-
+impl Paginable for ListCheckoutSessions<'_> {
+    type O = CheckoutSession;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAfterExpiration {
     #[serde(skip_serializing_if = "Option::is_none")]

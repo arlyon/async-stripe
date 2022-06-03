@@ -43,7 +43,7 @@ impl Balance {
     /// Returns a list of transactions that have contributed to the Stripe account balance (e.g., charges, transfers, and so forth).
     ///
     /// The transactions are returned in sorted order, with the most recent transactions appearing first.  Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
-    pub fn list(client: &Client, params: ListBalances<'_>) -> Response<List<Balance>> {
+    pub fn list(client: &Client, params: &ListBalances<'_>) -> Response<List<Balance>> {
         client.get_query("/balance/history", &params)
     }
 }

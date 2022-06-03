@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Charge, Currency, Customer, Invoice,
     LinkedAccountOptionsUsBankAccount, PaymentIntentOffSession,
@@ -213,7 +213,7 @@ pub struct PaymentIntent {
 
 impl PaymentIntent {
     /// Returns a list of PaymentIntents.
-    pub fn list(client: &Client, params: ListPaymentIntents<'_>) -> Response<List<PaymentIntent>> {
+    pub fn list(client: &Client, params: &ListPaymentIntents<'_>) -> Response<List<PaymentIntent>> {
         client.get_query("/payment_intents", &params)
     }
 
@@ -1360,7 +1360,12 @@ impl<'a> ListPaymentIntents<'a> {
         }
     }
 }
-
+impl Paginable for ListPaymentIntents<'_> {
+    type O = PaymentIntent;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `PaymentIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentIntent<'a> {

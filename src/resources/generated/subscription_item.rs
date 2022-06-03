@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
-use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
+use crate::params::{Deleted, Expand, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};
 
 /// The resource representing a Stripe "SubscriptionItem".
@@ -59,7 +59,7 @@ impl SubscriptionItem {
     /// Returns a list of your subscription items for a given subscription.
     pub fn list(
         client: &Client,
-        params: ListSubscriptionItems<'_>,
+        params: &ListSubscriptionItems<'_>,
     ) -> Response<List<SubscriptionItem>> {
         client.get_query("/subscription_items", &params)
     }
@@ -246,7 +246,12 @@ impl<'a> ListSubscriptionItems<'a> {
         }
     }
 }
-
+impl Paginable for ListSubscriptionItems<'_> {
+    type O = SubscriptionItem;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `SubscriptionItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionItem<'a> {

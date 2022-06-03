@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::PaymentLinkId;
-use crate::params::{Expand, Expandable, List, Metadata, Object};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable};
 use crate::resources::{Account, CheckoutSessionItem, ShippingRate};
 
 /// The resource representing a Stripe "PaymentLink".
@@ -105,7 +105,7 @@ pub struct PaymentLink {
 
 impl PaymentLink {
     /// Returns a list of your payment links.
-    pub fn list(client: &Client, params: ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {
+    pub fn list(client: &Client, params: &ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {
         client.get_query("/payment_links", &params)
     }
 
@@ -415,7 +415,12 @@ impl<'a> ListPaymentLinks<'a> {
         }
     }
 }
-
+impl Paginable for ListPaymentLinks<'_> {
+    type O = PaymentLink;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `PaymentLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentLink<'a> {

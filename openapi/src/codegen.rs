@@ -712,6 +712,24 @@ pub fn gen_inferred_params(
         out.push_str("        }\n");
         out.push_str("    }\n");
         out.push_str("}\n");
+
+        // we implement paginate on lists that have an Id
+        if let ("list", Some(_)) = (params.method.as_str(), &id_type) {
+            state.use_params.insert("Paginable");
+
+            out.push_str("impl Paginable for ");
+            out.push_str(&params.rust_type);
+            out.push_str("<'_> {\n");
+            out.push_str("    type O = ");
+            out.push_str(&struct_name);
+            out.push_str(";\n");
+            out.push_str(
+                "    fn set_last(&mut self, item: Self::O) {
+                self.starting_after = Some(item.id());
+            }",
+            );
+            out.push_str("}");
+        }
     }
 }
 
@@ -1431,7 +1449,7 @@ pub fn gen_impl_requests(
                 let mut out = String::new();
                 out.push('\n');
                 print_doc_comment(&mut out, doc_comment, 1);
-                out.push_str("    pub fn list(client: &Client, params: ");
+                out.push_str("    pub fn list(client: &Client, params: &");
                 out.push_str(&params_name);
                 out.push_str("<'_>) -> Response<List<");
                 out.push_str(&rust_struct);

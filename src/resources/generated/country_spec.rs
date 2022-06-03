@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::CountrySpecId;
-use crate::params::{Expand, List, Object};
+use crate::params::{Expand, List, Object, Paginable};
 use crate::resources::Currency;
 
 /// The resource representing a Stripe "CountrySpec".
@@ -44,7 +44,7 @@ pub struct CountrySpec {
 
 impl CountrySpec {
     /// Lists all Country Spec objects available in the API.
-    pub fn list(client: &Client, params: ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
+    pub fn list(client: &Client, params: &ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
         client.get_query("/country_specs", &params)
     }
 
@@ -116,5 +116,11 @@ impl<'a> ListCountrySpecs<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
         }
+    }
+}
+impl Paginable for ListCountrySpecs<'_> {
+    type O = CountrySpec;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }
