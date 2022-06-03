@@ -275,7 +275,7 @@ where
     ///
     /// let list = Customer::list(&client, &params).await.unwrap().paginate(params);
     /// let mut stream = list.stream(&client);
-    /// 
+    ///
     /// // take a value out from the stream
     /// if let Some(val) = stream.try_next().await? {
     ///     println!("GOT = {:?}", val);
@@ -299,9 +299,11 @@ where
     }
 
     /// unfold a single item from the stream
-    /// 
+    ///
     /// note: we define a function here rather than use a closure to ensure it is Unpin
-    async fn unfold_stream(state: Option<(Self, Client)>) -> Option<(Result<T, StripeError>, Option<(Self, Client)>)> {
+    async fn unfold_stream(
+        state: Option<(Self, Client)>,
+    ) -> Option<(Result<T, StripeError>, Option<(Self, Client)>)> {
         let (mut paginator, client) = state?; // If none, we sent the last item in the last iteration
 
         if paginator.page.data.len() > 1 {
