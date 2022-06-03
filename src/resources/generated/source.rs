@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, SourceId, TokenId};
-use crate::params::{Expand, List, Metadata, Object, Timestamp};
+use crate::params::{Expand, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
     Address, BillingDetails, Currency, Shipping, SourceRedirectFlowFailureReason,
     SourceRedirectFlowStatus, SourceStatus, SourceUsage,
@@ -164,7 +164,7 @@ pub struct Source {
 
 impl Source {
     /// List source transactions for a given source.
-    pub fn list(client: &Client, params: ListSources<'_>) -> Response<List<Source>> {
+    pub fn list(client: &Client, params: &ListSources<'_>) -> Response<List<Source>> {
         client.get_query("/sources/{source}/source_transactions", &params)
     }
 
@@ -1029,7 +1029,12 @@ impl<'a> ListSources<'a> {
         }
     }
 }
-
+impl Paginable for ListSources<'_> {
+    type O = Source;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Source::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSource<'a> {

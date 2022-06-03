@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{SetupAttemptId, SetupIntentId};
-use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Customer, Mandate, PaymentMethod, SetupIntent,
     ThreeDSecureDetails,
@@ -61,7 +61,7 @@ pub struct SetupAttempt {
 
 impl SetupAttempt {
     /// Returns a list of SetupAttempts associated with a provided SetupIntent.
-    pub fn list(client: &Client, params: ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
+    pub fn list(client: &Client, params: &ListSetupAttempts<'_>) -> Response<List<SetupAttempt>> {
         client.get_query("/setup_attempts", &params)
     }
 }
@@ -317,7 +317,12 @@ impl<'a> ListSetupAttempts<'a> {
         }
     }
 }
-
+impl Paginable for ListSetupAttempts<'_> {
+    type O = SetupAttempt;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// An enum representing the possible values of an `SetupAttemptPaymentMethodDetailsBancontact`'s `preferred_language` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

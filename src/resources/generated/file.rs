@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::FileId;
-use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, List, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::FileLink;
 
 /// The resource representing a Stripe "File".
@@ -58,7 +58,7 @@ impl File {
     /// Returns a list of the files that your account has access to.
     ///
     /// The files are returned sorted by creation date, with the most recently created files appearing first.
-    pub fn list(client: &Client, params: ListFiles<'_>) -> Response<List<File>> {
+    pub fn list(client: &Client, params: &ListFiles<'_>) -> Response<List<File>> {
         client.get_query("/files", &params)
     }
 
@@ -130,7 +130,12 @@ impl<'a> ListFiles<'a> {
         }
     }
 }
-
+impl Paginable for ListFiles<'_> {
+    type O = File;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// An enum representing the possible values of an `ListFiles`'s `purpose` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

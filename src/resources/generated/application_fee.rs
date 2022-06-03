@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{ApplicationFeeId, ChargeId};
-use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Application, ApplicationFeeRefund, BalanceTransaction, Charge, Currency,
 };
@@ -70,7 +70,7 @@ impl ApplicationFee {
     /// The application fees are returned in sorted order, with the most recent fees appearing first.
     pub fn list(
         client: &Client,
-        params: ListApplicationFees<'_>,
+        params: &ListApplicationFees<'_>,
     ) -> Response<List<ApplicationFee>> {
         client.get_query("/application_fees", &params)
     }
@@ -142,5 +142,11 @@ impl<'a> ListApplicationFees<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
         }
+    }
+}
+impl Paginable for ListApplicationFees<'_> {
+    type O = ApplicationFee;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }

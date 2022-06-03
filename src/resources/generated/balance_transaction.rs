@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{BalanceTransactionId, PayoutId, SourceId};
-use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     ApplicationFee, ApplicationFeeRefund, BalanceTransactionStatus, Charge,
     ConnectCollectionTransfer, Currency, Dispute, FeeType, IssuingAuthorization, IssuingDispute,
@@ -89,7 +89,7 @@ impl BalanceTransaction {
     /// The transactions are returned in sorted order, with the most recent transactions appearing first.  Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
     pub fn list(
         client: &Client,
-        params: ListBalanceTransactions<'_>,
+        params: &ListBalanceTransactions<'_>,
     ) -> Response<List<BalanceTransaction>> {
         client.get_query("/balance_transactions", &params)
     }
@@ -209,7 +209,12 @@ impl<'a> ListBalanceTransactions<'a> {
         }
     }
 }
-
+impl Paginable for ListBalanceTransactions<'_> {
+    type O = BalanceTransaction;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "snake_case")]
 pub enum BalanceTransactionSourceUnion {

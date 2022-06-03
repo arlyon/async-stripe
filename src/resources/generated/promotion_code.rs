@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PromotionCodeId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{Coupon, Currency, Customer};
 
 /// The resource representing a Stripe "PromotionCode".
@@ -63,7 +63,7 @@ pub struct PromotionCode {
 
 impl PromotionCode {
     /// Returns a list of your promotion codes.
-    pub fn list(client: &Client, params: ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
+    pub fn list(client: &Client, params: &ListPromotionCodes<'_>) -> Response<List<PromotionCode>> {
         client.get_query("/promotion_codes", &params)
     }
 
@@ -179,7 +179,12 @@ impl<'a> ListPromotionCodes<'a> {
         }
     }
 }
-
+impl Paginable for ListPromotionCodes<'_> {
+    type O = PromotionCode;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `PromotionCode::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePromotionCode<'a> {

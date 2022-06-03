@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CreditNoteId, CustomerId, InvoiceId, RefundId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
     CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice, Refund,
     TaxRate,
@@ -111,7 +111,7 @@ pub struct CreditNote {
 
 impl CreditNote {
     /// Returns a list of credit notes.
-    pub fn list(client: &Client, params: ListCreditNotes<'_>) -> Response<List<CreditNote>> {
+    pub fn list(client: &Client, params: &ListCreditNotes<'_>) -> Response<List<CreditNote>> {
         client.get_query("/credit_notes", &params)
     }
 
@@ -290,7 +290,12 @@ impl<'a> ListCreditNotes<'a> {
         }
     }
 }
-
+impl Paginable for ListCreditNotes<'_> {
+    type O = CreditNote;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `CreditNote::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCreditNote<'a> {

@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::SkuId;
-use crate::params::{Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Timestamp};
+use crate::params::{
+    Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, Timestamp,
+};
 use crate::resources::{CreateProduct, Currency, PackageDimensions, Product};
 
 /// The resource representing a Stripe "Sku".
@@ -83,7 +85,7 @@ impl Sku {
     /// Returns a list of your SKUs.
     ///
     /// The SKUs are returned sorted by creation date, with the most recently created SKUs appearing first.
-    pub fn list(client: &Client, params: ListSkus<'_>) -> Response<List<Sku>> {
+    pub fn list(client: &Client, params: &ListSkus<'_>) -> Response<List<Sku>> {
         client.get_query("/skus", &params)
     }
 
@@ -300,7 +302,12 @@ impl<'a> ListSkus<'a> {
         }
     }
 }
-
+impl Paginable for ListSkus<'_> {
+    type O = Sku;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Sku::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSku<'a> {

@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PriceId, PromotionCodeId, SubscriptionId};
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{
+    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+};
 use crate::resources::{
     Application, CollectionMethod, Currency, Customer, Discount, Invoice,
     InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
@@ -211,7 +213,7 @@ impl Subscription {
     /// By default, returns a list of subscriptions that have not been canceled.
     ///
     /// In order to list canceled subscriptions, specify `status=canceled`.
-    pub fn list(client: &Client, params: ListSubscriptions<'_>) -> Response<List<Subscription>> {
+    pub fn list(client: &Client, params: &ListSubscriptions<'_>) -> Response<List<Subscription>> {
         client.get_query("/subscriptions", &params)
     }
 
@@ -716,7 +718,12 @@ impl<'a> ListSubscriptions<'a> {
         }
     }
 }
-
+impl Paginable for ListSubscriptions<'_> {
+    type O = Subscription;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Subscription::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscription<'a> {

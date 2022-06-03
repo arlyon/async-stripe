@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{ChargeId, PaymentIntentId, RefundId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Charge, Currency, PaymentIntent, TransferReversal};
 
 /// The resource representing a Stripe "Refund".
@@ -107,7 +107,7 @@ impl Refund {
     ///
     /// The refunds are returned in sorted order, with the most recent refunds appearing first.
     /// For convenience, the 10 most recent refunds are always available by default on the charge object.
-    pub fn list(client: &Client, params: ListRefunds<'_>) -> Response<List<Refund>> {
+    pub fn list(client: &Client, params: &ListRefunds<'_>) -> Response<List<Refund>> {
         client.get_query("/refunds", &params)
     }
 
@@ -272,7 +272,12 @@ impl<'a> ListRefunds<'a> {
         }
     }
 }
-
+impl Paginable for ListRefunds<'_> {
+    type O = Refund;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Refund::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRefund<'a> {

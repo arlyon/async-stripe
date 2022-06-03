@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{ShippingRateId, TaxCodeId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{Currency, TaxCode};
 
 /// The resource representing a Stripe "ShippingRate".
@@ -71,7 +71,7 @@ pub struct ShippingRate {
 
 impl ShippingRate {
     /// Returns a list of your shipping rates.
-    pub fn list(client: &Client, params: ListShippingRates<'_>) -> Response<List<ShippingRate>> {
+    pub fn list(client: &Client, params: &ListShippingRates<'_>) -> Response<List<ShippingRate>> {
         client.get_query("/shipping_rates", &params)
     }
 
@@ -266,7 +266,12 @@ impl<'a> ListShippingRates<'a> {
         }
     }
 }
-
+impl Paginable for ListShippingRates<'_> {
+    type O = ShippingRate;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `ShippingRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateShippingRate<'a> {

@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::ReviewId;
-use crate::params::{Expand, Expandable, List, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{Charge, PaymentIntent, ReviewReason};
 
 /// The resource representing a Stripe "RadarReview".
@@ -75,7 +75,7 @@ impl Review {
     /// Returns a list of `Review` objects that have `open` set to `true`.
     ///
     /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-    pub fn list(client: &Client, params: ListReviews<'_>) -> Response<List<Review>> {
+    pub fn list(client: &Client, params: &ListReviews<'_>) -> Response<List<Review>> {
         client.get_query("/reviews", &params)
     }
 
@@ -179,7 +179,12 @@ impl<'a> ListReviews<'a> {
         }
     }
 }
-
+impl Paginable for ListReviews<'_> {
+    type O = Review;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// An enum representing the possible values of an `Review`'s `closed_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

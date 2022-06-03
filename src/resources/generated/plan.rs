@@ -7,7 +7,8 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::PlanId;
 use crate::params::{
-    Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, RangeQuery, Timestamp,
+    Deleted, Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery,
+    Timestamp,
 };
 use crate::resources::{CreateProduct, Currency, Product};
 
@@ -132,7 +133,7 @@ pub struct Plan {
 
 impl Plan {
     /// Returns a list of your plans.
-    pub fn list(client: &Client, params: ListPlans<'_>) -> Response<List<Plan>> {
+    pub fn list(client: &Client, params: &ListPlans<'_>) -> Response<List<Plan>> {
         client.get_query("/plans", &params)
     }
 
@@ -254,7 +255,12 @@ impl<'a> ListPlans<'a> {
         }
     }
 }
-
+impl Paginable for ListPlans<'_> {
+    type O = Plan;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Plan::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePlan<'a> {

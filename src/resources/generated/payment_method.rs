@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, PaymentMethodId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
     Address, BillingDetails, Charge, Customer, PaymentMethodDetailsCardPresent, RadarRadarOptions,
     SetupAttempt,
@@ -138,7 +138,7 @@ impl PaymentMethod {
     /// Returns a list of PaymentMethods.
     ///
     /// For listing a customer’s payment methods, you should use [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list).
-    pub fn list(client: &Client, params: ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
+    pub fn list(client: &Client, params: &ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
         client.get_query("/payment_methods", &params)
     }
 
@@ -911,7 +911,12 @@ impl<'a> ListPaymentMethods<'a> {
         }
     }
 }
-
+impl Paginable for ListPaymentMethods<'_> {
+    type O = PaymentMethod;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `PaymentMethod::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentMethod<'a> {

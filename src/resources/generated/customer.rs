@@ -9,7 +9,9 @@ use crate::ids::{
     AlipayAccountId, BankAccountId, CardId, CouponId, CustomerId, PaymentMethodId, PaymentSourceId,
     PromotionCodeId,
 };
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{
+    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+};
 use crate::resources::{
     Address, CashBalance, Currency, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
     Scheduled, Shipping, Subscription, TaxId, TestHelpersTestClock,
@@ -152,7 +154,7 @@ impl Customer {
     /// Returns a list of your customers.
     ///
     /// The customers are returned sorted by creation date, with the most recent customers appearing first.
-    pub fn list(client: &Client, params: ListCustomers<'_>) -> Response<List<Customer>> {
+    pub fn list(client: &Client, params: &ListCustomers<'_>) -> Response<List<Customer>> {
         client.get_query("/customers", &params)
     }
 
@@ -447,7 +449,12 @@ impl<'a> ListCustomers<'a> {
         }
     }
 }
-
+impl Paginable for ListCustomers<'_> {
+    type O = Customer;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Customer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCustomer<'a> {

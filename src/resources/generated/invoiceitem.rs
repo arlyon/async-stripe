@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, InvoiceItemId, PriceId, SubscriptionId};
-use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{
+    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+};
 use crate::resources::{
     Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
     TestHelpersTestClock,
@@ -127,7 +129,7 @@ impl InvoiceItem {
     /// Returns a list of your invoice items.
     ///
     /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
-    pub fn list(client: &Client, params: ListInvoiceItems<'_>) -> Response<List<InvoiceItem>> {
+    pub fn list(client: &Client, params: &ListInvoiceItems<'_>) -> Response<List<InvoiceItem>> {
         client.get_query("/invoiceitems", &params)
     }
 
@@ -363,7 +365,12 @@ impl<'a> ListInvoiceItems<'a> {
         }
     }
 }
-
+impl Paginable for ListInvoiceItems<'_> {
+    type O = InvoiceItem;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `InvoiceItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateInvoiceItem<'a> {

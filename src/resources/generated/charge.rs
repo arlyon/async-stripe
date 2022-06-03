@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{ChargeId, CustomerId, PaymentIntentId};
-use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
     ChargeSourceParams, Currency, Customer, Invoice, Mandate, PaymentIntent, PaymentMethod,
@@ -225,7 +225,7 @@ impl Charge {
     /// Returns a list of charges you’ve previously created.
     ///
     /// The charges are returned in sorted order, with the most recent charges appearing first.
-    pub fn list(client: &Client, params: ListCharges<'_>) -> Response<List<Charge>> {
+    pub fn list(client: &Client, params: &ListCharges<'_>) -> Response<List<Charge>> {
         client.get_query("/charges", &params)
     }
 
@@ -1468,7 +1468,12 @@ impl<'a> ListCharges<'a> {
         }
     }
 }
-
+impl Paginable for ListCharges<'_> {
+    type O = Charge;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Charge::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCharge<'a> {

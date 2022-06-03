@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::ExchangeRateId;
-use crate::params::{Expand, List, Object};
+use crate::params::{Expand, List, Object, Paginable};
 
 /// The resource representing a Stripe "ExchangeRate".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -24,7 +24,7 @@ impl ExchangeRate {
     /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
     ///
     /// Only shows the currencies for which Stripe supports.
-    pub fn list(client: &Client, params: ListExchangeRates<'_>) -> Response<List<ExchangeRate>> {
+    pub fn list(client: &Client, params: &ListExchangeRates<'_>) -> Response<List<ExchangeRate>> {
         client.get_query("/exchange_rates", &params)
     }
 
@@ -84,5 +84,11 @@ impl<'a> ListExchangeRates<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
         }
+    }
+}
+impl Paginable for ListExchangeRates<'_> {
+    type O = ExchangeRate;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }

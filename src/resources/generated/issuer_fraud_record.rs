@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{ChargeId, IssuerFraudRecordId};
-use crate::params::{Expand, Expandable, List, Object, Timestamp};
+use crate::params::{Expand, Expandable, List, Object, Paginable, Timestamp};
 use crate::resources::Charge;
 
 /// The resource representing a Stripe "IssuerFraudRecord".
@@ -47,7 +47,7 @@ impl IssuerFraudRecord {
     /// Returns a list of issuer fraud records.
     pub fn list(
         client: &Client,
-        params: ListIssuerFraudRecords<'_>,
+        params: &ListIssuerFraudRecords<'_>,
     ) -> Response<List<IssuerFraudRecord>> {
         client.get_query("/issuer_fraud_records", &params)
     }
@@ -115,5 +115,11 @@ impl<'a> ListIssuerFraudRecords<'a> {
             limit: Default::default(),
             starting_after: Default::default(),
         }
+    }
+}
+impl Paginable for ListIssuerFraudRecords<'_> {
+    type O = IssuerFraudRecord;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }

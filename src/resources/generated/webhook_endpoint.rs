@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::WebhookEndpointId;
-use crate::params::{Deleted, Expand, List, Metadata, Object, Timestamp};
+use crate::params::{Deleted, Expand, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{ApiVersion, WebhookEndpointStatus};
 
 /// The resource representing a Stripe "NotificationWebhookEndpoint".
@@ -76,7 +76,7 @@ impl WebhookEndpoint {
     /// Returns a list of your webhook endpoints.
     pub fn list(
         client: &Client,
-        params: ListWebhookEndpoints<'_>,
+        params: &ListWebhookEndpoints<'_>,
     ) -> Response<List<WebhookEndpoint>> {
         client.get_query("/webhook_endpoints", &params)
     }
@@ -216,7 +216,12 @@ impl<'a> ListWebhookEndpoints<'a> {
         }
     }
 }
-
+impl Paginable for ListWebhookEndpoints<'_> {
+    type O = WebhookEndpoint;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `WebhookEndpoint::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateWebhookEndpoint<'a> {

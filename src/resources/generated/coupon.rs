@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::CouponId;
-use crate::params::{Deleted, Expand, List, Metadata, Object, RangeQuery, Timestamp};
+use crate::params::{Deleted, Expand, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::Currency;
 
 /// The resource representing a Stripe "Coupon".
@@ -89,7 +89,7 @@ pub struct Coupon {
 
 impl Coupon {
     /// Returns a list of your coupons.
-    pub fn list(client: &Client, params: ListCoupons<'_>) -> Response<List<Coupon>> {
+    pub fn list(client: &Client, params: &ListCoupons<'_>) -> Response<List<Coupon>> {
         client.get_query("/coupons", &params)
     }
 
@@ -270,7 +270,12 @@ impl<'a> ListCoupons<'a> {
         }
     }
 }
-
+impl Paginable for ListCoupons<'_> {
+    type O = Coupon;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 /// The parameters for `Coupon::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCoupon<'a> {
