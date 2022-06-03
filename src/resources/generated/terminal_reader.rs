@@ -26,7 +26,7 @@ pub struct TerminalReader {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_sw_version: Option<String>,
 
-    /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, or `verifone_P400`.
+    /// Type of reader, one of `bbpos_wisepad3`, `stripe_m2`, `bbpos_chipper2x`, `bbpos_wisepos_e`, `verifone_P400`, or `simulated_wisepos_e`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub device_type: Option<TerminalReaderDeviceType>,
 
@@ -167,6 +167,7 @@ pub enum TerminalReaderDeviceType {
     BbposChipper2x,
     BbposWisepad3,
     BbposWiseposE,
+    SimulatedWiseposE,
     StripeM2,
     #[serde(rename = "verifone_P400")]
     VerifoneP400,
@@ -178,6 +179,7 @@ impl TerminalReaderDeviceType {
             TerminalReaderDeviceType::BbposChipper2x => "bbpos_chipper2x",
             TerminalReaderDeviceType::BbposWisepad3 => "bbpos_wisepad3",
             TerminalReaderDeviceType::BbposWiseposE => "bbpos_wisepos_e",
+            TerminalReaderDeviceType::SimulatedWiseposE => "simulated_wisepos_e",
             TerminalReaderDeviceType::StripeM2 => "stripe_m2",
             TerminalReaderDeviceType::VerifoneP400 => "verifone_P400",
         }

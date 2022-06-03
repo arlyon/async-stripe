@@ -258,7 +258,7 @@ pub struct CreateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
-    /// An integer amount in %s that represents the customer's current balance, which affect the customer's future invoices.
+    /// An integer amount in cents (or local equivalent) that represents the customer's current balance, which affect the customer's future invoices.
     ///
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -455,7 +455,7 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
-    /// An integer amount in %s that represents the customer's current balance, which affect the customer's future invoices.
+    /// An integer amount in cents (or local equivalent) that represents the customer's current balance, which affect the customer's future invoices.
     ///
     /// A negative amount represents a credit that decreases the amount due on an invoice; a positive amount increases the amount due on an invoice.
     #[serde(skip_serializing_if = "Option::is_none")]

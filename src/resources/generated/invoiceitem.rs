@@ -175,7 +175,7 @@ impl Object for InvoiceItem {
 /// The parameters for `InvoiceItem::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateInvoiceItem<'a> {
-    /// The integer amount in %s of the charge to be applied to the upcoming invoice.
+    /// The integer amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
     ///
     /// Passing in a negative `amount` will reduce the `amount_due` on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -260,14 +260,14 @@ pub struct CreateInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 
-    /// The integer unit amount in %s of the charge to be applied to the upcoming invoice.
+    /// The integer unit amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
     ///
     /// This `unit_amount` will be multiplied by the quantity to get the full amount.
     /// Passing in a negative `unit_amount` will reduce the `amount_due` on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
-    /// Same as `unit_amount`, but accepts a decimal value in %s with at most 12 decimal places.
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     ///
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -367,7 +367,7 @@ impl<'a> ListInvoiceItems<'a> {
 /// The parameters for `InvoiceItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateInvoiceItem<'a> {
-    /// The integer amount in %s of the charge to be applied to the upcoming invoice.
+    /// The integer amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
     ///
     /// If you want to apply a credit to the customer's account, pass a negative amount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -432,14 +432,14 @@ pub struct UpdateInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 
-    /// The integer unit amount in %s of the charge to be applied to the upcoming invoice.
+    /// The integer unit amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
     ///
     /// This unit_amount will be multiplied by the quantity to get the full amount.
     /// If you want to apply a credit to the customer's account, pass a negative unit_amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
-    /// Same as `unit_amount`, but accepts a decimal value in %s with at most 12 decimal places.
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
     ///
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]

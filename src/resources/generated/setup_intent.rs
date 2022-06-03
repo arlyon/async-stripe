@@ -256,6 +256,13 @@ pub struct SetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<SetupIntentPaymentMethodOptionsCardMandateOptions>,
 
+    /// Selected network to process this SetupIntent on.
+    ///
+    /// Depends on the available networks of the card attached to the setup intent.
+    /// Can be only set confirm-time.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network: Option<SetupIntentPaymentMethodOptionsCardNetwork>,
+
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     ///
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
@@ -679,6 +686,9 @@ pub struct CreateSetupIntentPaymentMethodData {
     pub paynow: Option<CreateSetupIntentPaymentMethodDataPaynow>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub radar_options: Option<CreateSetupIntentPaymentMethodDataRadarOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateSetupIntentPaymentMethodDataSepaDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -789,6 +799,9 @@ pub struct UpdateSetupIntentPaymentMethodData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<UpdateSetupIntentPaymentMethodDataPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub radar_options: Option<UpdateSetupIntentPaymentMethodDataRadarOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdateSetupIntentPaymentMethodDataSepaDebit>,
@@ -948,6 +961,12 @@ pub struct CreateSetupIntentPaymentMethodDataP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataRadarOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataSepaDebit {
@@ -1139,6 +1158,12 @@ pub struct UpdateSetupIntentPaymentMethodDataP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataRadarOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataSepaDebit {
@@ -2708,6 +2733,56 @@ impl std::fmt::Display for SetupIntentPaymentMethodOptionsCardMandateOptionsSupp
 impl std::default::Default for SetupIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
     fn default() -> Self {
         Self::India
+    }
+}
+
+/// An enum representing the possible values of an `SetupIntentPaymentMethodOptionsCard`'s `network` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SetupIntentPaymentMethodOptionsCardNetwork {
+    Amex,
+    CartesBancaires,
+    Diners,
+    Discover,
+    Interac,
+    Jcb,
+    Mastercard,
+    Unionpay,
+    Unknown,
+    Visa,
+}
+
+impl SetupIntentPaymentMethodOptionsCardNetwork {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SetupIntentPaymentMethodOptionsCardNetwork::Amex => "amex",
+            SetupIntentPaymentMethodOptionsCardNetwork::CartesBancaires => "cartes_bancaires",
+            SetupIntentPaymentMethodOptionsCardNetwork::Diners => "diners",
+            SetupIntentPaymentMethodOptionsCardNetwork::Discover => "discover",
+            SetupIntentPaymentMethodOptionsCardNetwork::Interac => "interac",
+            SetupIntentPaymentMethodOptionsCardNetwork::Jcb => "jcb",
+            SetupIntentPaymentMethodOptionsCardNetwork::Mastercard => "mastercard",
+            SetupIntentPaymentMethodOptionsCardNetwork::Unionpay => "unionpay",
+            SetupIntentPaymentMethodOptionsCardNetwork::Unknown => "unknown",
+            SetupIntentPaymentMethodOptionsCardNetwork::Visa => "visa",
+        }
+    }
+}
+
+impl AsRef<str> for SetupIntentPaymentMethodOptionsCardNetwork {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SetupIntentPaymentMethodOptionsCardNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SetupIntentPaymentMethodOptionsCardNetwork {
+    fn default() -> Self {
+        Self::Amex
     }
 }
 

@@ -10,8 +10,8 @@ use crate::params::{Expand, Expandable, List, Metadata, Object, RangeQuery, Time
 use crate::resources::{
     Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
     ChargeSourceParams, Currency, Customer, Invoice, Mandate, PaymentIntent, PaymentMethod,
-    PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodDetailsCardPresent, Refund, Review,
-    Shipping, ThreeDSecureDetails, Transfer,
+    PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodDetailsCardPresent, RadarRadarOptions,
+    Refund, Review, Shipping, ThreeDSecureDetails, Transfer,
 };
 
 /// The resource representing a Stripe "Charge".
@@ -143,6 +143,9 @@ pub struct Charge {
     /// Details about the payment method at the time of the transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_details: Option<PaymentMethodDetails>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub radar_options: Option<RadarRadarOptions>,
 
     /// This is the email address that the receipt for this charge was sent to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1053,7 +1056,7 @@ pub struct PaymentMethodDetailsKlarna {
     pub payment_method_category: Option<String>,
 
     /// Preferred language of the Klarna authorization page that the customer is redirected to.
-    /// Can be one of `de-AT`, `en-AT`, `nl-BE`, `fr-BE`, `en-BE`, `de-DE`, `en-DE`, `da-DK`, `en-DK`, `es-ES`, `en-ES`, `fi-FI`, `sv-FI`, `en-FI`, `en-GB`, `en-IE`, `it-IT`, `en-IT`, `nl-NL`, `en-NL`, `nb-NO`, `en-NO`, `sv-SE`, `en-SE`, `en-US`, `es-US`, `fr-FR`, or `en-FR`.
+    /// Can be one of `de-AT`, `en-AT`, `nl-BE`, `fr-BE`, `en-BE`, `de-DE`, `en-DE`, `da-DK`, `en-DK`, `es-ES`, `en-ES`, `fi-FI`, `sv-FI`, `en-FI`, `en-GB`, `en-IE`, `it-IT`, `en-IT`, `nl-NL`, `en-NL`, `nb-NO`, `en-NO`, `sv-SE`, `en-SE`, `en-US`, `es-US`, `fr-FR`, `en-FR`, `en-AU`, or `en-NZ`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locale: Option<String>,
 }
@@ -1268,7 +1271,7 @@ pub struct CreateCharge<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee: Option<i64>,
 
-    /// A fee in %s that will be applied to the charge and transferred to the application owner's Stripe account.
+    /// A fee in cents (or local equivalent) that will be applied to the charge and transferred to the application owner's Stripe account.
     ///
     /// The request must be made with an OAuth key or the `Stripe-Account` header in order to take an application fee.
     /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/direct-charges#collecting-fees).
@@ -1326,6 +1329,12 @@ pub struct CreateCharge<'a> {
     /// For details, see [Creating Separate Charges and Transfers](https://stripe.com/docs/connect/charges-transfers#on-behalf-of).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<&'a str>,
+
+    /// Options to configure Radar.
+    ///
+    /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub radar_options: Option<CreateChargeRadarOptions>,
 
     /// The email address to which this charge's [receipt](https://stripe.com/docs/dashboard/receipts) will be sent.
     ///
@@ -1390,6 +1399,7 @@ impl<'a> CreateCharge<'a> {
             expand: Default::default(),
             metadata: Default::default(),
             on_behalf_of: Default::default(),
+            radar_options: Default::default(),
             receipt_email: Default::default(),
             shipping: Default::default(),
             source: Default::default(),
@@ -1528,6 +1538,12 @@ impl<'a> UpdateCharge<'a> {
             transfer_group: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateChargeRadarOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

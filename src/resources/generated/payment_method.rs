@@ -8,7 +8,8 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Timestamp};
 use crate::resources::{
-    Address, BillingDetails, Charge, Customer, PaymentMethodDetailsCardPresent, SetupAttempt,
+    Address, BillingDetails, Charge, Customer, PaymentMethodDetailsCardPresent, RadarRadarOptions,
+    SetupAttempt,
 };
 
 /// The resource representing a Stripe "PaymentMethod".
@@ -109,6 +110,9 @@ pub struct PaymentMethod {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<PaymentMethodPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub radar_options: Option<RadarRadarOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<PaymentMethodSepaDebit>,
@@ -786,6 +790,12 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<CreatePaymentMethodPaynow>,
 
+    /// Options to configure Radar.
+    ///
+    /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub radar_options: Option<CreatePaymentMethodRadarOptions>,
+
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreatePaymentMethodSepaDebit>,
@@ -841,6 +851,7 @@ impl<'a> CreatePaymentMethod<'a> {
             p24: Default::default(),
             payment_method: Default::default(),
             paynow: Default::default(),
+            radar_options: Default::default(),
             sepa_debit: Default::default(),
             sofort: Default::default(),
             type_: Default::default(),
@@ -1040,6 +1051,12 @@ pub struct CreatePaymentMethodP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodRadarOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub session: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodSepaDebit {
