@@ -45,7 +45,7 @@ full = [
   "webhook-endpoints",
 ]
 
-stream = ["futures-util"]
+stream = []
 
 # stripe feature groups
 checkout = ["billing"]
@@ -63,7 +63,7 @@ webhook-events = ["events", "hmac", "sha2", "chrono", "hex"]
 events = []
 
 # runtimes
-async = []
+async = ["futures-util"]
 blocking = []
 
 runtime-tokio-hyper = ["tokio", "hyper-client", "hyper-tls", "async"]
