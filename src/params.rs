@@ -264,45 +264,65 @@ where
     /// the page size specified in params, or Stripe's default page size if none is specified.
     ///
     /// ```no_run
-    /// let value_stream = list.get_all(&client);
-    /// while let Some(val) = value_stream.try_next().await? {
+    /// # use stripe::{Customer, ListCustomers, StripeError, Client};
+    /// # use futures_util::TryStreamExt;
+    /// # fn main() {
+    /// # tokio_test::block_on(run());
+    /// # }
+    /// # async fn run() -> Result<(), StripeError> {
+    /// # let client = Client::new("sk_test_123");
+    /// # let params = ListCustomers { ..Default::default() };
+    ///
+    /// let list = Customer::list(&client, &params).await.unwrap().paginate(params);
+    /// let mut stream = list.stream(&client);
+    /// 
+    /// // take a value out from the stream
+    /// if let Some(val) = stream.try_next().await? {
     ///     println!("GOT = {:?}", val);
     /// }
     ///
-    /// // Alternatively, you can collect all values into a Vec
-    /// let all_values = list.get_all(&client).try_collect::<Vec<_>().await?;
+    /// // alternatively, you can use stream combinators
+    /// let all_values = stream.try_collect::<Vec<_>>().await?;
+    ///
+    /// # Ok(())
+    /// # }
     /// ```
     #[cfg(all(feature = "async", feature = "stream"))]
     pub fn stream(
         mut self,
         client: &Client,
-    ) -> impl futures_util::Stream<Item = Result<T, StripeError>> {
+    ) -> impl futures_util::Stream<Item = Result<T, StripeError>> + Unpin {
         // We are going to be popping items off the end of the list, so we need to reverse it.
         self.page.data.reverse();
 
-        futures_util::stream::unfold(Some((self, client.clone())), |state| async {
-            let (mut paginator, client) = state?; // If none, we sent the last item in the last iteration
+        Box::pin(futures_util::stream::unfold(Some((self, client.clone())), Self::unfold_stream))
+    }
 
-            if paginator.page.data.len() > 1 {
-                return Some((Ok(paginator.page.data.pop()?), Some((paginator, client))));
-                // We have more data on this page
+    /// unfold a single item from the stream
+    /// 
+    /// note: we define a function here rather than use a closure to ensure it is Unpin
+    async fn unfold_stream(state: Option<(Self, Client)>) -> Option<(Result<T, StripeError>, Option<(Self, Client)>)> {
+        let (mut paginator, client) = state?; // If none, we sent the last item in the last iteration
+
+        if paginator.page.data.len() > 1 {
+            return Some((Ok(paginator.page.data.pop()?), Some((paginator, client))));
+            // We have more data on this page
+        }
+
+        if !paginator.page.has_more {
+            return Some((Ok(paginator.page.data.pop()?), None)); // Final value of the stream, no errors
+        }
+
+        match paginator.next(&client).await {
+            Ok(mut next_paginator) => {
+                let data = paginator.page.data.pop()?;
+                next_paginator.page.data.reverse();
+
+                // Yield last value of thimuts page, the next page (and client) becomes the state
+                Some((Ok(data), Some((next_paginator, client))))
             }
-
-            if !paginator.page.has_more {
-                return Some((Ok(paginator.page.data.pop()?), None)); // Final value of the stream, no errors
-            }
-
-            match paginator.next(&client).await {
-                Ok(mut next_paginator) => {
-                    let data = paginator.page.data.pop()?;
-                    next_paginator.page.data.reverse();
-
-                    // Yield last value of thimuts page, the next page (and client) becomes the state
-                    Some((Ok(data), Some((next_paginator, client))))
-                }
-                Err(e) => Some((Err(e), None)), // We ran into an error. The last value of the stream will be the error.
-            }
-        })
+            Err(e) => Some((Err(e), None)), // We ran into an error. The last value of the stream will be the error.
+        }
     }
 
     /// Fetch an additional page of data from stripe.

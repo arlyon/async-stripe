@@ -6,6 +6,7 @@
 //! This example shows how to create and list customers.
 
 use futures_util::TryStreamExt;
+use futures_util::StreamExt;
 use stripe::{Client, CreateCustomer, Customer, ListCustomers};
 
 #[tokio::main]
@@ -55,8 +56,13 @@ async fn main() {
 
     let params = ListCustomers { ..Default::default() };
     let paginator = Customer::list(&client, &params).await.unwrap().paginate(params);
+    let mut stream = paginator.stream(&client);
 
-    let customers = paginator.stream(&client).try_collect::<Vec<_>>().await.unwrap();
+    // get the next customer
+    let _next = stream.next().await.unwrap();
+    
+    // or collect them
+    let customers = stream.try_collect::<Vec<_>>().await.unwrap();
 
     println!("fetched {} customers: {:?}", customers.len(), customers);
 }
