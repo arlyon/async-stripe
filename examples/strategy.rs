@@ -16,7 +16,7 @@ async fn main() {
     let client = Client::new(secret_key).with_strategy(RequestStrategy::idempotent_with_uuid());
 
     let first_page =
-        Customer::list(&client, ListCustomers { limit: Some(1), ..Default::default() })
+        Customer::list(&client, &ListCustomers { limit: Some(1), ..Default::default() })
             .await
             .unwrap();
 
