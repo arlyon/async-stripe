@@ -44,7 +44,7 @@ pub struct Headers {
 }
 
 impl Headers {
-    pub fn to_array<'a>(&'a self) -> [(&'a str, Option<&'a str>); 4] {
+    pub fn to_array(&self) -> [(&str, Option<&str>); 4] {
         [
             ("Client-Id", self.client_id.as_deref()),
             ("Stripe-Account", self.stripe_account.as_deref()),
