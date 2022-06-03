@@ -243,17 +243,16 @@ where
     /// Requires `feature = "blocking"`.
     #[cfg(feature = "blocking")]
     pub fn get_all(self, client: &Client) -> Response<Vec<T>> {
-        let mut data = Vec::with_capacity(self.page.total_count);
+        let mut data = Vec::with_capacity(self.page.total_count.unwrap_or(0) as usize);
         let mut paginator = self;
         loop {
-            if paginator.page.has_more {
-                let resp = paginator.next(client)?;
-                data.extend(paginator.page.data);
-                next = resp;
-            } else {
-                data.extend(next.data);
+            if !paginator.page.has_more {
+                data.extend(paginator.page.data.into_iter());
                 break;
             }
+            let next_paginator = paginator.next(client)?;
+            data.extend(paginator.page.data.into_iter());
+            paginator = next_paginator
         }
         Ok(data)
     }
@@ -301,6 +300,7 @@ where
     /// unfold a single item from the stream
     ///
     /// note: we define a function here rather than use a closure to ensure it is Unpin
+    #[cfg(all(feature = "async", feature = "stream"))]
     async fn unfold_stream(
         state: Option<(Self, Client)>,
     ) -> Option<(Result<T, StripeError>, Option<(Self, Client)>)> {
@@ -370,7 +370,7 @@ where
 
     #[cfg(feature = "blocking")]
     fn create_paginator(page: Response<List<T>>, params: P) -> Response<Self> {
-        ok(ListPaginator { page, params })
+        page.map(|page| ListPaginator { page, params })
     }
 }
 
