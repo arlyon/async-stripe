@@ -712,6 +712,24 @@ pub fn gen_inferred_params(
         out.push_str("        }\n");
         out.push_str("    }\n");
         out.push_str("}\n");
+
+        // we implement paginate on lists that have an Id
+        if let ("list", Some(_)) = (params.method.as_str(), &id_type) {
+            state.use_params.insert("Paginable");
+
+            out.push_str("impl Paginable for ");
+            out.push_str(&params.rust_type);
+            out.push_str("<'_> {\n");
+            out.push_str("    type O = ");
+            out.push_str(&struct_name);
+            out.push_str(";\n");
+            out.push_str(
+                "    fn set_last(&mut self, item: Self::O) {
+                self.starting_after = Some(item.id());
+            }",
+            );
+            out.push_str("}");
+        }
     }
 }
 
