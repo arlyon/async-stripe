@@ -7,6 +7,7 @@ use sha2::Sha256;
 
 use crate::error::WebhookError;
 use crate::ids::EventId;
+use crate::params::Timestamp;
 use crate::resources::*;
 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
@@ -135,6 +136,8 @@ pub enum EventType {
     OrderReturnUpdated,
     #[serde(rename = "payment_intent.amount_capturable_updated")]
     PaymentIntentAmountCapturableUpdated,
+    #[serde(rename = "payment_intent.canceled")]
+    PaymentIntentCanceled,
     #[serde(rename = "payment_intent.created")]
     PaymentIntentCreated,
     #[serde(rename = "payment_intent.payment_failed")]
@@ -205,11 +208,39 @@ pub enum EventType {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct WebhookEvent {
+    /// Unique identifier for the object.
     pub id: EventId,
+
+    /// Description of the event (e.g., `invoice.created` or `charge.refunded`).
     #[serde(rename = "type")]
     pub event_type: EventType,
+
+    /// The connected account that originated the event.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account: Option<String>,
+
+    /// The Stripe API version used to render `data`.
+    ///
+    /// *Note: This property is populated only for events on or after October 31, 2014*.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub api_version: Option<String>,
+
+    /// Time at which the object was created.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    pub created: Timestamp,
+
     pub data: EventData,
-    // ...
+
+    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    pub livemode: bool,
+
+    /// Number of webhooks that have yet to be successfully delivered (i.e., to return a 20x response) to the URLs you've specified.
+    pub pending_webhooks: i64,
+
+    /// Information on the API request that instigated the event.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request: Option<NotificationEventRequest>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
