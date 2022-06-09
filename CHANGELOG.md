@@ -1,3 +1,28 @@
+# Version 0.15.0 (June 9, 2022)
+
+This release comes with some improvements to list traversal as well
+as dramatic expansion of the api surface when dealing with webhooks!
+
+## Features
+
+- BREAKING: list methods now only borrow their parameters
+- Add a streaming api for lazily and ergonomically traversing lists
+- Exported the stripe terminal APIs
+- Significantly more webhook types now available
+
+## Fixes
+
+- List traversals now properly include parameters when fetching
+  later list items
+
+# Version 0.14.1 (May 20, 2022)
+
+This release is a minor patch release to fix an oversight in the API.
+
+## Fixes
+
+- Expose the request strategy API
+
 # Version 0.14.0 (March 22, 2022)
 
 This release has been focused on refining the ergonomics

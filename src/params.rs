@@ -142,17 +142,6 @@ impl<T: Object> Expandable<T> {
         }
     }
 
-    #[deprecated(
-        note = "Renamed `into_object` per rust api design guidelines (may be removed in v0.12)"
-    )]
-    #[allow(clippy::wrong_self_convention)]
-    pub fn to_object(self) -> Option<T> {
-        match self {
-            Expandable::Id(_) => None,
-            Expandable::Object(obj) => Some(*obj),
-        }
-    }
-
     pub fn into_object(self) -> Option<T> {
         match self {
             Expandable::Id(_) => None,
@@ -286,6 +275,8 @@ where
     /// # Ok(())
     /// # }
     /// ```
+    ///
+    /// Requires `feature = ["async", "stream"]`.
     #[cfg(all(feature = "async", feature = "stream"))]
     pub fn stream(
         mut self,
@@ -298,8 +289,6 @@ where
     }
 
     /// unfold a single item from the stream
-    ///
-    /// note: we define a function here rather than use a closure to ensure it is Unpin
     #[cfg(all(feature = "async", feature = "stream"))]
     async fn unfold_stream(
         state: Option<(Self, Client)>,
