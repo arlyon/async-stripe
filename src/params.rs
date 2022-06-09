@@ -275,6 +275,8 @@ where
     /// # Ok(())
     /// # }
     /// ```
+    ///
+    /// Requires `feature = ["async", "stream"]`.
     #[cfg(all(feature = "async", feature = "stream"))]
     pub fn stream(
         mut self,
@@ -287,8 +289,6 @@ where
     }
 
     /// unfold a single item from the stream
-    ///
-    /// note: we define a function here rather than use a closure to ensure it is Unpin
     #[cfg(all(feature = "async", feature = "stream"))]
     async fn unfold_stream(
         state: Option<(Self, Client)>,
