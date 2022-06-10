@@ -423,6 +423,15 @@ pub struct PaymentIntentNextActionDisplayBankTransferInstructions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferFinancialAddress {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iban: Option<FundingInstructionsBankTransferIbanRecord>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sort_code: Option<FundingInstructionsBankTransferSortCodeRecord>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub spei: Option<FundingInstructionsBankTransferSpeiRecord>,
+
     /// The payment networks supported by this FinancialAddress.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supported_networks:
@@ -434,6 +443,45 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zengin: Option<FundingInstructionsBankTransferZenginRecord>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct FundingInstructionsBankTransferIbanRecord {
+    /// The name of the person or business that owns the bank account.
+    pub account_holder_name: String,
+
+    /// The BIC/SWIFT code of the account.
+    pub bic: String,
+
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    pub country: String,
+
+    /// The IBAN of the account.
+    pub iban: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct FundingInstructionsBankTransferSortCodeRecord {
+    /// The name of the person or business that owns the bank account.
+    pub account_holder_name: String,
+
+    /// The account number.
+    pub account_number: String,
+
+    /// The six-digit sort code.
+    pub sort_code: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct FundingInstructionsBankTransferSpeiRecord {
+    /// The three-digit bank code.
+    pub bank_code: String,
+
+    /// The short banking institution name.
+    pub bank_name: String,
+
+    /// The CLABE number.
+    pub clabe: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2909,6 +2957,10 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardMandateOptions {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer:
+        Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types: Option<
         Vec<
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes,
@@ -3025,6 +3077,10 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer:
+        Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types: Option<
         Vec<
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes,
@@ -3067,6 +3123,11 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
+    pub country: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub count: u64,
 
@@ -3074,6 +3135,11 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
 
     #[serde(rename = "type")]
     pub type_: UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
+    pub country: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -4905,12 +4971,20 @@ impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCardSetupF
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Iban,
+    Sepa,
+    SortCode,
+    Spei,
     Zengin,
 }
 
 impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
@@ -4935,7 +5009,7 @@ impl std::default::Default
     for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
     fn default() -> Self {
-        Self::Zengin
+        Self::Iban
     }
 }
 
@@ -4943,13 +5017,19 @@ impl std::default::Default
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    EuBankTransfer,
+    GbBankTransfer,
     JpBankTransfer,
+    MxBankTransfer,
 }
 
 impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     pub fn as_str(self) -> &'static str {
         match self {
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
         }
     }
 }
@@ -4969,7 +5049,7 @@ impl std::default::Default
     for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType
 {
     fn default() -> Self {
-        Self::JpBankTransfer
+        Self::EuBankTransfer
     }
 }
 
@@ -5937,14 +6017,20 @@ impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsWechatPayS
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
+    Bacs,
+    Fps,
     Sepa,
+    Spei,
     Zengin,
 }
 
 impl FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
     pub fn as_str(self) -> &'static str {
         match self {
+            FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Bacs => "bacs",
+            FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Fps => "fps",
             FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Sepa => "sepa",
+            FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Spei => "spei",
             FundingInstructionsBankTransferFinancialAddressSupportedNetworks::Zengin => "zengin",
         }
     }
@@ -5963,7 +6049,7 @@ impl std::fmt::Display for FundingInstructionsBankTransferFinancialAddressSuppor
 }
 impl std::default::Default for FundingInstructionsBankTransferFinancialAddressSupportedNetworks {
     fn default() -> Self {
-        Self::Sepa
+        Self::Bacs
     }
 }
 
@@ -5972,6 +6058,8 @@ impl std::default::Default for FundingInstructionsBankTransferFinancialAddressSu
 #[serde(rename_all = "snake_case")]
 pub enum FundingInstructionsBankTransferFinancialAddressType {
     Iban,
+    SortCode,
+    Spei,
     Zengin,
 }
 
@@ -5979,6 +6067,8 @@ impl FundingInstructionsBankTransferFinancialAddressType {
     pub fn as_str(self) -> &'static str {
         match self {
             FundingInstructionsBankTransferFinancialAddressType::Iban => "iban",
+            FundingInstructionsBankTransferFinancialAddressType::SortCode => "sort_code",
+            FundingInstructionsBankTransferFinancialAddressType::Spei => "spei",
             FundingInstructionsBankTransferFinancialAddressType::Zengin => "zengin",
         }
     }
@@ -6117,14 +6207,26 @@ impl std::default::Default for PaymentIntentConfirmationMethod {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentNextActionDisplayBankTransferInstructionsType {
+    EuBankTransfer,
+    GbBankTransfer,
     JpBankTransfer,
+    MxBankTransfer,
 }
 
 impl PaymentIntentNextActionDisplayBankTransferInstructionsType {
     pub fn as_str(self) -> &'static str {
         match self {
+            PaymentIntentNextActionDisplayBankTransferInstructionsType::EuBankTransfer => {
+                "eu_bank_transfer"
+            }
+            PaymentIntentNextActionDisplayBankTransferInstructionsType::GbBankTransfer => {
+                "gb_bank_transfer"
+            }
             PaymentIntentNextActionDisplayBankTransferInstructionsType::JpBankTransfer => {
                 "jp_bank_transfer"
+            }
+            PaymentIntentNextActionDisplayBankTransferInstructionsType::MxBankTransfer => {
+                "mx_bank_transfer"
             }
         }
     }
@@ -6143,7 +6245,7 @@ impl std::fmt::Display for PaymentIntentNextActionDisplayBankTransferInstruction
 }
 impl std::default::Default for PaymentIntentNextActionDisplayBankTransferInstructionsType {
     fn default() -> Self {
-        Self::JpBankTransfer
+        Self::EuBankTransfer
     }
 }
 
@@ -8599,12 +8701,20 @@ impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCardSetupF
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Iban,
+    Sepa,
+    SortCode,
+    Spei,
     Zengin,
 }
 
 impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
@@ -8629,7 +8739,7 @@ impl std::default::Default
     for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
     fn default() -> Self {
-        Self::Zengin
+        Self::Iban
     }
 }
 
@@ -8637,13 +8747,19 @@ impl std::default::Default
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    EuBankTransfer,
+    GbBankTransfer,
     JpBankTransfer,
+    MxBankTransfer,
 }
 
 impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     pub fn as_str(self) -> &'static str {
         match self {
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
         }
     }
 }
@@ -8663,7 +8779,7 @@ impl std::default::Default
     for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType
 {
     fn default() -> Self {
-        Self::JpBankTransfer
+        Self::EuBankTransfer
     }
 }
 

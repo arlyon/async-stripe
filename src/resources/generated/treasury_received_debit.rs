@@ -84,7 +84,7 @@ pub struct ReceivedDebitsResourceTreasuryLinkedFlows {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inbound_transfer: Option<String>,
 
-    /// Set if the ReceivedCredit was created due to an [Issuing Authorization](https://stripe.com/docs/api#issuing_authorizations) object.
+    /// Set if the ReceivedDebit was created due to an [Issuing Authorization](https://stripe.com/docs/api#issuing_authorizations) object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_authorization: Option<String>,
 

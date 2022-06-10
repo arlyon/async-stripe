@@ -1627,6 +1627,9 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types: Option<Vec<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
 
     #[serde(rename = "type")]
@@ -1659,6 +1662,9 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types: Option<Vec<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
 
     #[serde(rename = "type")]
@@ -1667,6 +1673,16 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTran
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
+    pub country: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
+    pub country: String,
+}
 
 /// An enum representing the possible values of an `CreateOrderLineItemsPriceData`'s `tax_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -2141,6 +2157,10 @@ impl std::default::Default for CreateOrderPaymentSettingsPaymentMethodOptionsCar
 #[serde(rename_all = "snake_case")]
 pub enum CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
+    Iban,
+    Sepa,
+    SortCode,
+    Spei,
     Zengin,
 }
 
@@ -2149,6 +2169,10 @@ impl
 {
     pub fn as_str(self) -> &'static str {
         match self {
+            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
+            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
+            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
+            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
             CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
@@ -2167,7 +2191,7 @@ impl std::fmt::Display for CreateOrderPaymentSettingsPaymentMethodOptionsCustome
 }
 impl std::default::Default for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     fn default() -> Self {
-        Self::Zengin
+        Self::Iban
     }
 }
 
@@ -2175,13 +2199,19 @@ impl std::default::Default for CreateOrderPaymentSettingsPaymentMethodOptionsCus
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
+    EuBankTransfer,
+    GbBankTransfer,
     JpBankTransfer,
+    MxBankTransfer,
 }
 
 impl CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
     pub fn as_str(self) -> &'static str {
         match self {
+            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
+            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
             CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
         }
     }
 }
@@ -2203,7 +2233,7 @@ impl std::default::Default
     for CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType
 {
     fn default() -> Self {
-        Self::JpBankTransfer
+        Self::EuBankTransfer
     }
 }
 
@@ -4214,6 +4244,10 @@ impl std::default::Default for UpdateOrderPaymentSettingsPaymentMethodOptionsCar
 #[serde(rename_all = "snake_case")]
 pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
+    Iban,
+    Sepa,
+    SortCode,
+    Spei,
     Zengin,
 }
 
@@ -4222,6 +4256,10 @@ impl
 {
     pub fn as_str(self) -> &'static str {
         match self {
+            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
             UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
@@ -4240,7 +4278,7 @@ impl std::fmt::Display for UpdateOrderPaymentSettingsPaymentMethodOptionsCustome
 }
 impl std::default::Default for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     fn default() -> Self {
-        Self::Zengin
+        Self::Iban
     }
 }
 
@@ -4248,13 +4286,19 @@ impl std::default::Default for UpdateOrderPaymentSettingsPaymentMethodOptionsCus
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
+    EuBankTransfer,
+    GbBankTransfer,
     JpBankTransfer,
+    MxBankTransfer,
 }
 
 impl UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
     pub fn as_str(self) -> &'static str {
         match self {
+            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
             UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
         }
     }
 }
@@ -4276,7 +4320,7 @@ impl std::default::Default
     for UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType
 {
     fn default() -> Self {
-        Self::JpBankTransfer
+        Self::EuBankTransfer
     }
 }
 

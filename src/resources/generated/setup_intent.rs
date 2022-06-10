@@ -393,6 +393,14 @@ pub struct SetupIntentTypeSpecificPaymentMethodOptionsClient {
 /// The parameters for `SetupIntent::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateSetupIntent<'a> {
+    /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
+    ///
+    /// It can only be used for this Stripe Account’s own money movement flows like InboundTransfer and OutboundTransfers.
+    ///
+    /// It cannot be set to true when setting up a PaymentMethod for a Customer, and defaults to false when attaching a PaymentMethod to a Customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attach_to_self: Option<bool>,
+
     /// Set to `true` to attempt to confirm this SetupIntent immediately.
     ///
     /// This parameter defaults to `false`.
@@ -417,6 +425,15 @@ pub struct CreateSetupIntent<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// Indicates the directions of money movement for which this payment method is intended to be used.
+    ///
+    /// Include `inbound` if you intend to use the payment method as the origin to pull funds from.
+    ///
+    /// Include `outbound` if you intend to use the payment method as the destination to send funds to.
+    /// You can include both if you intend to use the payment method for both purposes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flow_directions: Option<Vec<CreateSetupIntentFlowDirections>>,
 
     /// This hash contains details about the Mandate to create.
     ///
@@ -471,10 +488,12 @@ pub struct CreateSetupIntent<'a> {
 impl<'a> CreateSetupIntent<'a> {
     pub fn new() -> Self {
         CreateSetupIntent {
+            attach_to_self: Default::default(),
             confirm: Default::default(),
             customer: Default::default(),
             description: Default::default(),
             expand: Default::default(),
+            flow_directions: Default::default(),
             mandate_data: Default::default(),
             metadata: Default::default(),
             on_behalf_of: Default::default(),
@@ -491,6 +510,14 @@ impl<'a> CreateSetupIntent<'a> {
 /// The parameters for `SetupIntent::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSetupIntents<'a> {
+    /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
+    ///
+    /// It can only be used for this Stripe Account’s own money movement flows like InboundTransfer and OutboundTransfers.
+    ///
+    /// It cannot be set to true when setting up a PaymentMethod for a Customer, and defaults to false when attaching a PaymentMethod to a Customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attach_to_self: Option<bool>,
+
     /// A filter on the list, based on the object `created` field.
     ///
     /// The value can be a string with an integer Unix timestamp, or it can be a dictionary with a number of different query options.
@@ -533,6 +560,7 @@ pub struct ListSetupIntents<'a> {
 impl<'a> ListSetupIntents<'a> {
     pub fn new() -> Self {
         ListSetupIntents {
+            attach_to_self: Default::default(),
             created: Default::default(),
             customer: Default::default(),
             ending_before: Default::default(),
@@ -552,6 +580,14 @@ impl Paginable for ListSetupIntents<'_> {
 /// The parameters for `SetupIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSetupIntent<'a> {
+    /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
+    ///
+    /// It can only be used for this Stripe Account’s own money movement flows like InboundTransfer and OutboundTransfers.
+    ///
+    /// It cannot be set to true when setting up a PaymentMethod for a Customer, and defaults to false when attaching a PaymentMethod to a Customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attach_to_self: Option<bool>,
+
     /// ID of the Customer this SetupIntent belongs to, if one exists.
     ///
     /// If present, the SetupIntent's payment method will be attached to the Customer on successful setup.
@@ -569,6 +605,15 @@ pub struct UpdateSetupIntent<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// Indicates the directions of money movement for which this payment method is intended to be used.
+    ///
+    /// Include `inbound` if you intend to use the payment method as the origin to pull funds from.
+    ///
+    /// Include `outbound` if you intend to use the payment method as the destination to send funds to.
+    /// You can include both if you intend to use the payment method for both purposes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flow_directions: Option<Vec<UpdateSetupIntentFlowDirections>>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
@@ -602,9 +647,11 @@ pub struct UpdateSetupIntent<'a> {
 impl<'a> UpdateSetupIntent<'a> {
     pub fn new() -> Self {
         UpdateSetupIntent {
+            attach_to_self: Default::default(),
             customer: Default::default(),
             description: Default::default(),
             expand: Default::default(),
+            flow_directions: Default::default(),
             metadata: Default::default(),
             payment_method: Default::default(),
             payment_method_data: Default::default(),
@@ -1516,6 +1563,40 @@ pub enum SetupIntentPaymentMethodOptionsUsBankAccountUnion {
 impl std::default::Default for SetupIntentPaymentMethodOptionsUsBankAccountUnion {
     fn default() -> Self {
         Self::SetupIntentPaymentMethodOptionsUsBankAccount(Default::default())
+    }
+}
+
+/// An enum representing the possible values of an `CreateSetupIntent`'s `flow_directions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSetupIntentFlowDirections {
+    Inbound,
+    Outbound,
+}
+
+impl CreateSetupIntentFlowDirections {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSetupIntentFlowDirections::Inbound => "inbound",
+            CreateSetupIntentFlowDirections::Outbound => "outbound",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSetupIntentFlowDirections {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSetupIntentFlowDirections {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSetupIntentFlowDirections {
+    fn default() -> Self {
+        Self::Inbound
     }
 }
 
@@ -3070,6 +3151,40 @@ impl std::fmt::Display for SetupIntentTypeSpecificPaymentMethodOptionsClientVeri
 impl std::default::Default for SetupIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod {
     fn default() -> Self {
         Self::Automatic
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSetupIntent`'s `flow_directions` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSetupIntentFlowDirections {
+    Inbound,
+    Outbound,
+}
+
+impl UpdateSetupIntentFlowDirections {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSetupIntentFlowDirections::Inbound => "inbound",
+            UpdateSetupIntentFlowDirections::Outbound => "outbound",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSetupIntentFlowDirections {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSetupIntentFlowDirections {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSetupIntentFlowDirections {
+    fn default() -> Self {
+        Self::Inbound
     }
 }
 

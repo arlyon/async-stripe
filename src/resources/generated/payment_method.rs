@@ -135,7 +135,7 @@ pub struct PaymentMethod {
 }
 
 impl PaymentMethod {
-    /// Returns a list of PaymentMethods.
+    /// Returns a list of PaymentMethods attached to the StripeAccount.
     ///
     /// For listing a customer’s payment methods, you should use [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list).
     pub fn list(client: &Client, params: &ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
@@ -149,7 +149,9 @@ impl PaymentMethod {
         client.post_form("/payment_methods", &params)
     }
 
-    /// Retrieves a PaymentMethod object.
+    /// Retrieves a PaymentMethod object attached to the StripeAccount.
+    ///
+    /// To retrieve a payment method attached to a Customer, you should use [Retrieve a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer).
     pub fn retrieve(
         client: &Client,
         id: &PaymentMethodId,
@@ -865,8 +867,6 @@ impl<'a> CreatePaymentMethod<'a> {
 #[derive(Clone, Debug, Serialize)]
 pub struct ListPaymentMethods<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
-    ///
-    /// If not provided, the response list will be empty.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
 

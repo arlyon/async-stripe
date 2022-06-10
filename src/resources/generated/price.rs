@@ -43,6 +43,10 @@ pub struct Price {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
+    /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_unit_amount: Option<CustomUnitAmount>,
+
     // Always true for a deleted object
     #[serde(default)]
     pub deleted: bool,
@@ -157,6 +161,23 @@ impl Object for Price {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CustomUnitAmount {
+    /// The maximum unit amount the customer can specify for this item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<i64>,
+
+    /// The minimum unit amount the customer can specify for this item.
+    ///
+    /// Must be at least the minimum charge amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<i64>,
+
+    /// The starting unit amount which can be updated by the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preset: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PriceTier {
     /// Price for the entire tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -237,6 +258,10 @@ pub struct CreatePrice<'a> {
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
+
+    /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_unit_amount: Option<CreatePriceCustomUnitAmount>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
@@ -319,6 +344,7 @@ impl<'a> CreatePrice<'a> {
             active: Default::default(),
             billing_scheme: Default::default(),
             currency,
+            custom_unit_amount: Default::default(),
             expand: Default::default(),
             lookup_key: Default::default(),
             metadata: Default::default(),
@@ -474,6 +500,20 @@ impl<'a> UpdatePrice<'a> {
             transfer_lookup_key: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePriceCustomUnitAmount {
+    pub enabled: bool,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preset: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

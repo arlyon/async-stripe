@@ -39,6 +39,8 @@ pub struct Subscription {
     pub automatic_tax: SubscriptionAutomaticTax,
 
     /// Determines the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
+    ///
+    /// The timestamp is in UTC format.
     pub billing_cycle_anchor: Timestamp,
 
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -381,6 +383,8 @@ pub struct InvoiceMandateOptionsCard {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionsResourcePendingUpdate {
     /// If the update is applied, determines the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
+    ///
+    /// The timestamp is in UTC format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<Timestamp>,
 
@@ -437,6 +441,7 @@ pub struct CreateSubscription<'a> {
     /// A future timestamp to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
     ///
     /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
+    /// The timestamp is in UTC format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<Timestamp>,
 
@@ -562,8 +567,6 @@ pub struct CreateSubscription<'a> {
 
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) resulting from the `billing_cycle_anchor`.
     ///
-    /// Valid values are `create_prorations` or `none`.  Passing `create_prorations` will cause proration invoice items to be created when applicable.
-    /// Prorations can be disabled by passing `none`.
     /// If no value is passed, the default is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
@@ -749,7 +752,7 @@ pub struct UpdateSubscription<'a> {
 
     /// Either `now` or `unchanged`.
     ///
-    /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time.
+    /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
     /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<SubscriptionBillingCycleAnchor>,
@@ -876,10 +879,6 @@ pub struct UpdateSubscription<'a> {
     pub promotion_code: Option<PromotionCodeId>,
 
     /// Determines how to handle [prorations](https://stripe.com/docs/subscriptions/billing-cycle#prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
-    ///
-    /// Valid values are `create_prorations`, `none`, or `always_invoice`.  Passing `create_prorations` will cause proration invoice items to be created when applicable.
-    /// These proration items will only be invoiced immediately under [certain conditions](https://stripe.com/docs/subscriptions/upgrading-downgrading#immediate-payment).
-    /// In order to always invoice immediately for prorations, pass `always_invoice`.  Prorations can be disabled by passing `none`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
 
@@ -1315,6 +1314,10 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptio
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
@@ -1350,6 +1353,10 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptio
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
@@ -1360,6 +1367,18 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFin
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer
+{
+    pub country: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer
+{
+    pub country: String,
 }
 
 /// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
