@@ -466,6 +466,9 @@ pub struct AccountSettings {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<AccountSepaDebitPaymentsSettings>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub treasury: Option<AccountTreasurySettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -603,6 +606,27 @@ pub struct TosAcceptance {
     pub service_agreement: Option<String>,
 
     /// The user agent of the browser from which the account representative accepted their service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct AccountTreasurySettings {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tos_acceptance: Option<AccountTermsOfService>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct AccountTermsOfService {
+    /// The Unix timestamp marking when the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Timestamp>,
+
+    /// The IP address from which the account representative accepted the service agreement.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+
+    /// The user agent of the browser from which the account representative accepted the service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
 }
@@ -1077,6 +1101,9 @@ pub struct AccountSettingsParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts: Option<PayoutSettingsParams>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub treasury: Option<AccountSettingsParamsTreasury>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1452,6 +1479,12 @@ pub struct UpdateAccountDocuments {
 pub struct AccountSettingsParamsCardIssuing {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_acceptance: Option<AccountSettingsParamsCardIssuingTosAcceptance>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct AccountSettingsParamsTreasury {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tos_acceptance: Option<AccountSettingsParamsTreasuryTosAcceptance>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2008,6 +2041,18 @@ pub struct UpdateAccountDocumentsProofOfRegistration {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountSettingsParamsCardIssuingTosAcceptance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Timestamp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct AccountSettingsParamsTreasuryTosAcceptance {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
 

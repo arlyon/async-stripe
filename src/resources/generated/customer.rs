@@ -652,6 +652,9 @@ pub struct CustomerInvoiceSettings {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering_options: Option<CustomerInvoiceSettingsRenderingOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -719,6 +722,12 @@ pub struct CustomerInvoiceSettingsCustomFields {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CustomerInvoiceSettingsRenderingOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_tax_display: Option<CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerCashBalanceSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<UpdateCustomerCashBalanceSettingsReconciliationMode>,
@@ -776,6 +785,42 @@ impl std::fmt::Display for CreateCustomerCashBalanceSettingsReconciliationMode {
 impl std::default::Default for CreateCustomerCashBalanceSettingsReconciliationMode {
     fn default() -> Self {
         Self::Automatic
+    }
+}
+
+/// An enum representing the possible values of an `CustomerInvoiceSettingsRenderingOptions`'s `amount_tax_display` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    ExcludeTax,
+    IncludeInclusiveTax,
+}
+
+impl CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay::ExcludeTax => "exclude_tax",
+            CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay::IncludeInclusiveTax => {
+                "include_inclusive_tax"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    fn default() -> Self {
+        Self::ExcludeTax
     }
 }
 

@@ -52,7 +52,7 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_paid: Option<i64>,
 
-    /// The amount remaining, in %s, that is due.
+    /// The difference between amount_due and amount_paid, in %s.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_remaining: Option<i64>,
 
@@ -965,6 +965,11 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptio
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<
+        CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer,
+    >,
+
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
@@ -975,6 +980,12 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancia
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer
+{
+    pub country: String,
 }
 
 /// An enum representing the possible values of an `AutomaticTax`'s `status` field.

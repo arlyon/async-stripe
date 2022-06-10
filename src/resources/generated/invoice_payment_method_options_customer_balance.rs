@@ -19,12 +19,73 @@ pub struct InvoicePaymentMethodOptionsCustomerBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransfer {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer:
+        Option<InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+
     /// The bank transfer type that can be used for funding.
     ///
-    /// Permitted values include: `jp_bank_transfer`.
+    /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
+    /// The desired country code of the bank account information.
+    ///
+    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
+    pub country: InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry,
+}
+
+/// An enum representing the possible values of an `InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer`'s `country` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
+    #[serde(rename = "DE")]
+    De,
+    #[serde(rename = "ES")]
+    Es,
+    #[serde(rename = "FR")]
+    Fr,
+    #[serde(rename = "IE")]
+    Ie,
+    #[serde(rename = "NL")]
+    Nl,
+}
+
+impl InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::De => "DE",
+            InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::Es => "ES",
+            InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::Fr => "FR",
+            InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::Ie => "IE",
+            InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::Nl => "NL",
+        }
+    }
+}
+
+impl AsRef<str> for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
+{
+    fn default() -> Self {
+        Self::De
+    }
 }
 
 /// An enum representing the possible values of an `InvoicePaymentMethodOptionsCustomerBalance`'s `funding_type` field.
