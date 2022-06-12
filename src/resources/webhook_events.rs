@@ -201,6 +201,8 @@ pub enum EventType {
     MandateUpdated,
     #[serde(rename = "order.created")]
     OrderCreated,
+    #[serde(rename = "order.completed")]
+    OrderCompleted,
     #[serde(rename = "order.payment_failed")]
     OrderPaymentFailed,
     #[serde(rename = "order.payment_succeeded")]
@@ -433,6 +435,7 @@ pub struct WebhookEvent {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct EventData {
     pub object: EventObject,
+    pub livemode: bool,
     // previous_attributes: ...
 }
 

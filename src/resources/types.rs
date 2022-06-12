@@ -188,6 +188,8 @@ pub enum ApiVersion {
     V2019_09_09,
     #[serde(rename = "2020-08-27")]
     V2020_08_27,
+    #[serde(rename = "2020-08-27;orders_beta=v2")]
+    V2020_08_27OrdersV2,
 }
 
 impl ApiVersion {
@@ -284,6 +286,7 @@ impl ApiVersion {
             ApiVersion::V2019_08_14 => "2019-08-14",
             ApiVersion::V2019_09_09 => "2019-09-09",
             ApiVersion::V2020_08_27 => "2020-08-27",
+            ApiVersion::V2020_08_27OrdersV2 => "2020-08-27;orders_beta=v2",
         }
     }
 }

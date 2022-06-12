@@ -33,7 +33,7 @@ impl Client {
             client: BaseClient::new(),
             secret_key: secret_key.into(),
             headers: Headers {
-                stripe_version: ApiVersion::V2020_08_27,
+                stripe_version: ApiVersion::V2020_08_27OrdersV2,
                 user_agent: USER_AGENT.to_string(),
                 client_id: None,
                 stripe_account: None,
