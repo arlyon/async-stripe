@@ -484,7 +484,7 @@ def_id!(CardTokenId, "tok_");
 def_id!(ChargeId, "ch_" | "py_"); // TODO: Understand (and then document) why "py_" is a valid charge id
 def_id!(CheckoutSessionId, "cs_");
 def_id!(CheckoutSessionItemId: String); // TODO: Figure out what prefix this id has
-def_id!(ConnectCollectionTransferId: "connct_");
+def_id!(ConnectCollectionTransferId, "connct_");
 def_id!(CouponId: String); // N.B. A coupon id can be user-provided so can be any arbitrary string
 def_id!(CustomerId, "cus_");
 def_id!(DiscountId, "di_");
@@ -512,9 +512,9 @@ def_id!(IssuingDisputeId, "idp_");
 def_id!(IssuingTransactionId, "ipi_");
 def_id!(OrderId, "or_");
 def_id!(OrderReturnId, "orret_");
-def_id!(MandateId: "mandate_"); 
+def_id!(MandateId, "mandate_");
 def_id!(PaymentIntentId, "pi_");
-def_id!(PaymentLinkId: "plink_");
+def_id!(PaymentLinkId, "plink_");
 def_id!(PaymentMethodId, "pm_" | "card_" | "src_" | "ba_");
 def_id!(
     enum PaymentSourceId {
@@ -537,7 +537,7 @@ def_id!(
 def_id!(PersonId, "person_");
 def_id!(PlanId: String); // N.B. A plan id can be user-provided so can be any arbitrary string
 def_id!(PlatformTaxFeeId: String);
-def_id!(PriceId: "price_");
+def_id!(PriceId, "price_");
 def_id!(ProductId: String); // N.B. A product id can be user-provided so can be any arbitrary string
 def_id!(PromotionCodeId, "promo_"); // N.B. A product id can be user-provided so can be any arbitrary string
 def_id!(QuoteId, "qt_");
