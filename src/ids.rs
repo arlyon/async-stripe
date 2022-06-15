@@ -512,7 +512,7 @@ def_id!(IssuingDisputeId, "idp_");
 def_id!(IssuingTransactionId, "ipi_");
 def_id!(OrderId, "or_");
 def_id!(OrderReturnId, "orret_");
-def_id!(MandateId: "mandate_"); 
+def_id!(MandateId: "mandate_");
 def_id!(PaymentIntentId, "pi_");
 def_id!(PaymentLinkId: "plink_");
 def_id!(PaymentMethodId, "pm_" | "card_" | "src_" | "ba_");
