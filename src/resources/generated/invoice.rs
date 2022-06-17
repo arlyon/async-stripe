@@ -13,8 +13,9 @@ use crate::resources::{
     Account, Address, ApiErrors, Application, Charge, Currency, Customer, Discount,
     InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
     InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
-    InvoicePaymentMethodOptionsUsBankAccount, PaymentIntent, PaymentMethod, PaymentSource, Quote,
-    Shipping, Subscription, TaxId, TaxRate, TestHelpersTestClock,
+    InvoicePaymentMethodOptionsUsBankAccount, InvoiceSettingRenderingOptions, PaymentIntent,
+    PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Invoice".
@@ -334,6 +335,10 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receipt_number: Option<String>,
 
+    /// Options for invoice PDF rendering.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering_options: Option<InvoiceSettingRenderingOptions>,
+
     /// Starting customer balance before the invoice is finalized.
     ///
     /// If the invoice has not been finalized yet, this will be the current customer balance.
@@ -363,7 +368,7 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_proration_date: Option<Timestamp>,
 
-    /// Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.
+    /// Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or exclusive tax is applied.
     ///
     /// Item discounts are already incorporated.
     #[serde(skip_serializing_if = "Option::is_none")]

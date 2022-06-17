@@ -30,7 +30,7 @@ pub struct TreasuryOutboundPayment {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
-    /// ID of the customer to whom an OutboundPayment is sent.
+    /// ID of the [customer](https://stripe.com/docs/api/customers) to whom an OutboundPayment is sent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
 
@@ -60,7 +60,7 @@ pub struct TreasuryOutboundPayment {
     /// The FinancialAccount that funds were pulled from.
     pub financial_account: String,
 
-    /// A hosted transaction receipt URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 

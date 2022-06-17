@@ -45,7 +45,7 @@ pub struct TreasuryInboundTransfer {
     /// The FinancialAccount that received the funds.
     pub financial_account: String,
 
-    /// A hosted transaction receipt URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
@@ -82,7 +82,8 @@ pub struct TreasuryInboundTransfer {
     /// The status changes to `failed` if the transfer fails.
     pub status: TreasuryInboundTransferStatus,
 
-    pub status_transitions: InboundTransfersResourceInboundTransferResourceStatusTransitions,
+    pub status_transitions:
+        InboundTransfersResourceTreasuryInboundTransferResourceStatusTransitions,
 
     /// The Transaction associated with this object.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -153,7 +154,14 @@ pub struct InboundTransfersResourceFailureDetails {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InboundTransfersResourceInboundTransferResourceStatusTransitions {
+pub struct InboundTransfersResourceTreasuryInboundTransferResourceLinkedFlows {
+    /// If funds for this flow were returned after the flow went to the `succeeded` state, this field contains a reference to the ReceivedDebit return.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub received_debit: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InboundTransfersResourceTreasuryInboundTransferResourceStatusTransitions {
     /// Timestamp describing when an InboundTransfer changed status to `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<Timestamp>,
@@ -165,13 +173,6 @@ pub struct InboundTransfersResourceInboundTransferResourceStatusTransitions {
     /// Timestamp describing when an InboundTransfer changed status to `succeeded`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub succeeded_at: Option<Timestamp>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InboundTransfersResourceTreasuryInboundTransferResourceLinkedFlows {
-    /// If funds for this flow were returned after the flow went to the `succeeded` state, this field contains a reference to the ReceivedDebit return.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub received_debit: Option<String>,
 }
 
 /// An enum representing the possible values of an `InboundTransfersPaymentMethodDetailsUsBankAccount`'s `account_holder_type` field.
