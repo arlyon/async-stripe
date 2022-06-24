@@ -7,17 +7,17 @@ use serde::{Deserialize, Serialize};
 use crate::ids::TreasuryTransactionEntryId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{
-    Currency, TransactionsResourceBalanceImpact, TransactionsResourceTreasuryFlowDetails,
-    TreasuryTransaction,
+    Currency, TreasuryTransaction, TreasuryTransactionsResourceBalanceImpact,
+    TreasuryTransactionsResourceFlowDetails,
 };
 
-/// The resource representing a Stripe "TransactionsResourceTreasuryTransactionEntry".
+/// The resource representing a Stripe "TreasuryTransactionsResourceTransactionEntry".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryTransactionEntry {
     /// Unique identifier for the object.
     pub id: TreasuryTransactionEntryId,
 
-    pub balance_impact: TransactionsResourceBalanceImpact,
+    pub balance_impact: TreasuryTransactionsResourceBalanceImpact,
 
     /// Time at which the object was created.
     ///
@@ -41,7 +41,7 @@ pub struct TreasuryTransactionEntry {
 
     /// Details of the flow associated with the TransactionEntry.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flow_details: Option<TransactionsResourceTreasuryFlowDetails>,
+    pub flow_details: Option<TreasuryTransactionsResourceFlowDetails>,
 
     /// Type of the flow associated with the TransactionEntry.
     pub flow_type: TreasuryTransactionEntryFlowType,

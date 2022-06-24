@@ -6,9 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::TreasuryOutboundTransferId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Currency, TreasuryTransaction, UfaResourceBillingDetails};
+use crate::resources::{Currency, TreasurySharedResourceBillingDetails, TreasuryTransaction};
 
-/// The resource representing a Stripe "OutboundTransfersResourceTreasuryOutboundTransfer".
+/// The resource representing a Stripe "TreasuryOutboundTransfersResourceOutboundTransfer".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryOutboundTransfer {
     /// Unique identifier for the object.
@@ -47,7 +47,7 @@ pub struct TreasuryOutboundTransfer {
     /// The FinancialAccount that funds were pulled from.
     pub financial_account: String,
 
-    /// A hosted transaction receipt URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
@@ -63,7 +63,7 @@ pub struct TreasuryOutboundTransfer {
     ///
     /// Only set when the status is `returned`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub returned_details: Option<OutboundTransfersResourceTreasuryReturnedDetails>,
+    pub returned_details: Option<TreasuryOutboundTransfersResourceReturnedDetails>,
 
     /// Information about the OutboundTransfer to be sent to the recipient account.
     pub statement_descriptor: String,
@@ -75,7 +75,7 @@ pub struct TreasuryOutboundTransfer {
     /// If an OutboundTransfer fails to arrive at its destination, its status will change to `returned`.
     pub status: TreasuryOutboundTransferStatus,
 
-    pub status_transitions: OutboundTransfersResourceStatusTransitions,
+    pub status_transitions: TreasuryOutboundTransfersResourceStatusTransitions,
 
     /// The Transaction associated with this object.
     pub transaction: Expandable<TreasuryTransaction>,
@@ -93,7 +93,7 @@ impl Object for TreasuryOutboundTransfer {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OutboundTransfersPaymentMethodDetails {
-    pub billing_details: UfaResourceBillingDetails,
+    pub billing_details: TreasurySharedResourceBillingDetails,
 
     /// The type of the payment method used in the OutboundTransfer.
     #[serde(rename = "type")]
@@ -139,7 +139,16 @@ pub struct OutboundTransfersPaymentMethodDetailsUsBankAccount {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct OutboundTransfersResourceStatusTransitions {
+pub struct TreasuryOutboundTransfersResourceReturnedDetails {
+    /// Reason for the return.
+    pub code: TreasuryOutboundTransfersResourceReturnedDetailsCode,
+
+    /// The Transaction associated with this object.
+    pub transaction: Expandable<TreasuryTransaction>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TreasuryOutboundTransfersResourceStatusTransitions {
     /// Timestamp describing when an OutboundTransfer changed status to `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<Timestamp>,
@@ -155,15 +164,6 @@ pub struct OutboundTransfersResourceStatusTransitions {
     /// Timestamp describing when an OutboundTransfer changed status to `returned`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<Timestamp>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct OutboundTransfersResourceTreasuryReturnedDetails {
-    /// Reason for the return.
-    pub code: OutboundTransfersResourceTreasuryReturnedDetailsCode,
-
-    /// The Transaction associated with this object.
-    pub transaction: Expandable<TreasuryTransaction>,
 }
 
 /// An enum representing the possible values of an `OutboundTransfersPaymentMethodDetails`'s `type` field.
@@ -306,66 +306,6 @@ impl std::default::Default for OutboundTransfersPaymentMethodDetailsUsBankAccoun
     }
 }
 
-/// An enum representing the possible values of an `OutboundTransfersResourceTreasuryReturnedDetails`'s `code` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum OutboundTransfersResourceTreasuryReturnedDetailsCode {
-    AccountClosed,
-    AccountFrozen,
-    BankAccountRestricted,
-    BankOwnershipChanged,
-    Declined,
-    IncorrectAccountHolderName,
-    InvalidAccountNumber,
-    InvalidCurrency,
-    NoAccount,
-    Other,
-}
-
-impl OutboundTransfersResourceTreasuryReturnedDetailsCode {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            OutboundTransfersResourceTreasuryReturnedDetailsCode::AccountClosed => "account_closed",
-            OutboundTransfersResourceTreasuryReturnedDetailsCode::AccountFrozen => "account_frozen",
-            OutboundTransfersResourceTreasuryReturnedDetailsCode::BankAccountRestricted => {
-                "bank_account_restricted"
-            }
-            OutboundTransfersResourceTreasuryReturnedDetailsCode::BankOwnershipChanged => {
-                "bank_ownership_changed"
-            }
-            OutboundTransfersResourceTreasuryReturnedDetailsCode::Declined => "declined",
-            OutboundTransfersResourceTreasuryReturnedDetailsCode::IncorrectAccountHolderName => {
-                "incorrect_account_holder_name"
-            }
-            OutboundTransfersResourceTreasuryReturnedDetailsCode::InvalidAccountNumber => {
-                "invalid_account_number"
-            }
-            OutboundTransfersResourceTreasuryReturnedDetailsCode::InvalidCurrency => {
-                "invalid_currency"
-            }
-            OutboundTransfersResourceTreasuryReturnedDetailsCode::NoAccount => "no_account",
-            OutboundTransfersResourceTreasuryReturnedDetailsCode::Other => "other",
-        }
-    }
-}
-
-impl AsRef<str> for OutboundTransfersResourceTreasuryReturnedDetailsCode {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for OutboundTransfersResourceTreasuryReturnedDetailsCode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for OutboundTransfersResourceTreasuryReturnedDetailsCode {
-    fn default() -> Self {
-        Self::AccountClosed
-    }
-}
-
 /// An enum representing the possible values of an `TreasuryOutboundTransfer`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -403,5 +343,65 @@ impl std::fmt::Display for TreasuryOutboundTransferStatus {
 impl std::default::Default for TreasuryOutboundTransferStatus {
     fn default() -> Self {
         Self::Canceled
+    }
+}
+
+/// An enum representing the possible values of an `TreasuryOutboundTransfersResourceReturnedDetails`'s `code` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TreasuryOutboundTransfersResourceReturnedDetailsCode {
+    AccountClosed,
+    AccountFrozen,
+    BankAccountRestricted,
+    BankOwnershipChanged,
+    Declined,
+    IncorrectAccountHolderName,
+    InvalidAccountNumber,
+    InvalidCurrency,
+    NoAccount,
+    Other,
+}
+
+impl TreasuryOutboundTransfersResourceReturnedDetailsCode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::AccountClosed => "account_closed",
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::AccountFrozen => "account_frozen",
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::BankAccountRestricted => {
+                "bank_account_restricted"
+            }
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::BankOwnershipChanged => {
+                "bank_ownership_changed"
+            }
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::Declined => "declined",
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::IncorrectAccountHolderName => {
+                "incorrect_account_holder_name"
+            }
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::InvalidAccountNumber => {
+                "invalid_account_number"
+            }
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::InvalidCurrency => {
+                "invalid_currency"
+            }
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::NoAccount => "no_account",
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::Other => "other",
+        }
+    }
+}
+
+impl AsRef<str> for TreasuryOutboundTransfersResourceReturnedDetailsCode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TreasuryOutboundTransfersResourceReturnedDetailsCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TreasuryOutboundTransfersResourceReturnedDetailsCode {
+    fn default() -> Self {
+        Self::AccountClosed
     }
 }

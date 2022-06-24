@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::TreasuryOutboundPaymentId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Currency, TreasuryTransaction, UfaResourceBillingDetails};
+use crate::resources::{Currency, TreasurySharedResourceBillingDetails, TreasuryTransaction};
 
 /// The resource representing a Stripe "OutboundPaymentsResourceTreasuryOutboundPayment".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -30,7 +30,7 @@ pub struct TreasuryOutboundPayment {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
-    /// ID of the customer to whom an OutboundPayment is sent.
+    /// ID of the [customer](https://stripe.com/docs/api/customers) to whom an OutboundPayment is sent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
 
@@ -52,7 +52,8 @@ pub struct TreasuryOutboundPayment {
 
     /// Details about the end user.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub end_user_details: Option<OutboundPaymentsResourceOutboundPaymentResourceEndUserDetails>,
+    pub end_user_details:
+        Option<OutboundPaymentsResourceTreasuryOutboundPaymentResourceEndUserDetails>,
 
     /// The date when funds are expected to arrive in the destination account.
     pub expected_arrival_date: Timestamp,
@@ -60,7 +61,7 @@ pub struct TreasuryOutboundPayment {
     /// The FinancialAccount that funds were pulled from.
     pub financial_account: String,
 
-    /// A hosted transaction receipt URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
@@ -88,7 +89,8 @@ pub struct TreasuryOutboundPayment {
     /// If an OutboundPayment fails to arrive at its destination, its status will change to `returned`.
     pub status: TreasuryOutboundPaymentStatus,
 
-    pub status_transitions: OutboundPaymentsResourceOutboundPaymentResourceStatusTransitions,
+    pub status_transitions:
+        OutboundPaymentsResourceTreasuryOutboundPaymentResourceStatusTransitions,
 
     /// The Transaction associated with this object.
     pub transaction: Expandable<TreasuryTransaction>,
@@ -106,7 +108,7 @@ impl Object for TreasuryOutboundPayment {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OutboundPaymentsPaymentMethodDetails {
-    pub billing_details: UfaResourceBillingDetails,
+    pub billing_details: TreasurySharedResourceBillingDetails,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_account: Option<OutboundPaymentsPaymentMethodDetailsFinancialAccount>,
@@ -164,7 +166,7 @@ pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccount {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct OutboundPaymentsResourceOutboundPaymentResourceEndUserDetails {
+pub struct OutboundPaymentsResourceTreasuryOutboundPaymentResourceEndUserDetails {
     /// IP address of the user initiating the OutboundPayment.
     ///
     /// Set if `present` is set to `true`.
@@ -180,7 +182,7 @@ pub struct OutboundPaymentsResourceOutboundPaymentResourceEndUserDetails {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct OutboundPaymentsResourceOutboundPaymentResourceStatusTransitions {
+pub struct OutboundPaymentsResourceTreasuryOutboundPaymentResourceStatusTransitions {
     /// Timestamp describing when an OutboundPayment changed status to `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<Timestamp>,

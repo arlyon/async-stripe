@@ -7,8 +7,9 @@ use serde::{Deserialize, Serialize};
 use crate::ids::TreasuryReceivedCreditId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{
-    Currency, Payout, TreasuryCreditReversal, TreasuryOutboundPayment, TreasuryTransaction,
-    UfaResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+    Currency, Payout, TreasuryCreditReversal, TreasuryOutboundPayment,
+    TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+    TreasuryTransaction,
 };
 
 /// The resource representing a Stripe "ReceivedCreditsResourceTreasuryReceivedCredit".
@@ -46,7 +47,7 @@ pub struct TreasuryReceivedCredit {
     pub financial_account: Option<String>,
 
     pub initiating_payment_method_details:
-        UfaResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+        TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
 
     pub linked_flows: ReceivedCreditsResourceTreasuryLinkedFlows,
 
@@ -55,6 +56,10 @@ pub struct TreasuryReceivedCredit {
 
     /// The rails used to send the funds.
     pub network: TreasuryReceivedCreditNetwork,
+
+    /// Details describing when a ReceivedCredit may be reversed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reversal_details: Option<ReceivedCreditsResourceReversalDetails>,
 
     /// Status of the ReceivedCredit.
     ///
@@ -75,6 +80,17 @@ impl Object for TreasuryReceivedCredit {
     fn object(&self) -> &'static str {
         "treasury.received_credit"
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct ReceivedCreditsResourceReversalDetails {
+    /// Time before which a ReceivedCredit can be reversed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deadline: Option<Timestamp>,
+
+    /// Set if a ReceivedCredit cannot be reversed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restricted_reason: Option<ReceivedCreditsResourceReversalDetailsRestrictedReason>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -121,6 +137,54 @@ pub struct ReceivedCreditsResourceTreasurySourceFlowsDetails {
     /// The type of the source flow that originated the ReceivedCredit.
     #[serde(rename = "type")]
     pub type_: ReceivedCreditsResourceTreasurySourceFlowsDetailsType,
+}
+
+/// An enum representing the possible values of an `ReceivedCreditsResourceReversalDetails`'s `restricted_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ReceivedCreditsResourceReversalDetailsRestrictedReason {
+    AlreadyReversed,
+    DeadlinePassed,
+    NetworkRestricted,
+    Other,
+    SourceFlowRestricted,
+}
+
+impl ReceivedCreditsResourceReversalDetailsRestrictedReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ReceivedCreditsResourceReversalDetailsRestrictedReason::AlreadyReversed => {
+                "already_reversed"
+            }
+            ReceivedCreditsResourceReversalDetailsRestrictedReason::DeadlinePassed => {
+                "deadline_passed"
+            }
+            ReceivedCreditsResourceReversalDetailsRestrictedReason::NetworkRestricted => {
+                "network_restricted"
+            }
+            ReceivedCreditsResourceReversalDetailsRestrictedReason::Other => "other",
+            ReceivedCreditsResourceReversalDetailsRestrictedReason::SourceFlowRestricted => {
+                "source_flow_restricted"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for ReceivedCreditsResourceReversalDetailsRestrictedReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ReceivedCreditsResourceReversalDetailsRestrictedReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ReceivedCreditsResourceReversalDetailsRestrictedReason {
+    fn default() -> Self {
+        Self::AlreadyReversed
+    }
 }
 
 /// An enum representing the possible values of an `ReceivedCreditsResourceTreasurySourceFlowsDetails`'s `type` field.

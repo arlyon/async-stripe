@@ -306,7 +306,6 @@ pub struct CreatePaymentLink<'a> {
 
     /// The list of payment method types that customers can use.
     ///
-    /// Only `card` is supported.
     /// If no value is passed, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods) (20+ payment methods [supported](https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<CreatePaymentLinkPaymentMethodTypes>>,
@@ -472,7 +471,6 @@ pub struct UpdatePaymentLink<'a> {
 
     /// The list of payment method types that customers can use.
     ///
-    /// Only `card` is supported.
     /// Pass an empty string to enable automatic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<UpdatePaymentLinkPaymentMethodTypes>>,

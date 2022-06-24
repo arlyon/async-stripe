@@ -88,14 +88,22 @@ pub struct CreditNote {
     /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
     pub status: CreditNoteStatus,
 
-    /// The integer amount in %s representing the amount of the credit note, excluding tax and invoice level discounts.
+    /// The integer amount in %s representing the amount of the credit note, excluding exclusive tax and invoice level discounts.
     pub subtotal: i64,
+
+    /// The integer amount in %s representing the amount of the credit note, excluding all tax and invoice level discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subtotal_excluding_tax: Option<i64>,
 
     /// The aggregate amounts calculated per tax rate for all line items.
     pub tax_amounts: Vec<CreditNoteTaxAmount>,
 
     /// The integer amount in %s representing the total amount of the credit note, including tax and all discount.
     pub total: i64,
+
+    /// The integer amount in %s representing the total amount of the credit note, excluding tax, but including discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_excluding_tax: Option<i64>,
 
     /// Type of this credit note, one of `pre_payment` or `post_payment`.
     ///

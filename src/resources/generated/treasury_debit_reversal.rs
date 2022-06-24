@@ -8,7 +8,7 @@ use crate::ids::TreasuryDebitReversalId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Currency, TreasuryTransaction};
 
-/// The resource representing a Stripe "ReceivedDebitsResourceTreasuryDebitReversal".
+/// The resource representing a Stripe "TreasuryReceivedDebitsResourceDebitReversal".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryDebitReversal {
     /// Unique identifier for the object.
@@ -26,13 +26,13 @@ pub struct TreasuryDebitReversal {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_account: Option<String>,
 
-    /// A hosted transaction receipt URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
     /// Other flows linked to a DebitReversal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub linked_flows: Option<ReceivedDebitsResourceDebitReversalLinkedFlows>,
+    pub linked_flows: Option<TreasuryReceivedDebitsResourceDebitReversalLinkedFlows>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -51,7 +51,7 @@ pub struct TreasuryDebitReversal {
     /// Status of the DebitReversal.
     pub status: TreasuryDebitReversalStatus,
 
-    pub status_transitions: ReceivedDebitsResourceStatusTransitions,
+    pub status_transitions: TreasuryReceivedDebitsResourceStatusTransitions,
 
     /// The Transaction associated with this object.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -69,14 +69,14 @@ impl Object for TreasuryDebitReversal {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ReceivedDebitsResourceDebitReversalLinkedFlows {
+pub struct TreasuryReceivedDebitsResourceDebitReversalLinkedFlows {
     /// Set if there is an Issuing dispute associated with the DebitReversal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_dispute: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ReceivedDebitsResourceStatusTransitions {
+pub struct TreasuryReceivedDebitsResourceStatusTransitions {
     /// Timestamp describing when the DebitReversal changed status to `completed`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub completed_at: Option<Timestamp>,

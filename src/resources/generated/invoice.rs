@@ -13,8 +13,9 @@ use crate::resources::{
     Account, Address, ApiErrors, Application, Charge, Currency, Customer, Discount,
     InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
     InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
-    InvoicePaymentMethodOptionsUsBankAccount, PaymentIntent, PaymentMethod, PaymentSource, Quote,
-    Shipping, Subscription, TaxId, TaxRate, TestHelpersTestClock,
+    InvoicePaymentMethodOptionsUsBankAccount, InvoiceSettingRenderingOptions, PaymentIntent,
+    PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Invoice".
@@ -334,6 +335,10 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receipt_number: Option<String>,
 
+    /// Options for invoice PDF rendering.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering_options: Option<InvoiceSettingRenderingOptions>,
+
     /// Starting customer balance before the invoice is finalized.
     ///
     /// If the invoice has not been finalized yet, this will be the current customer balance.
@@ -363,11 +368,17 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_proration_date: Option<Timestamp>,
 
-    /// Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or tax is applied.
+    /// Total of all subscriptions, invoice items, and prorations on the invoice before any invoice level discount or exclusive tax is applied.
     ///
     /// Item discounts are already incorporated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subtotal: Option<i64>,
+
+    /// The integer amount in %s representing the subtotal of the invoice before any invoice level discount or tax is applied.
+    ///
+    /// Item discounts are already incorporated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subtotal_excluding_tax: Option<i64>,
 
     /// The amount of tax on this invoice.
     ///
@@ -389,6 +400,10 @@ pub struct Invoice {
     /// The aggregate amounts calculated per discount across all line items.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub total_discount_amounts: Option<Vec<DiscountsResourceDiscountAmount>>,
+
+    /// The integer amount in %s representing the total amount of the invoice including all discounts but excluding all tax.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_excluding_tax: Option<i64>,
 
     /// The aggregate amounts calculated per tax rate for all line items.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -721,6 +736,10 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_invoice_items_behavior: Option<InvoicePendingInvoiceItemsBehavior>,
 
+    /// Options for invoice PDF rendering.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering_options: Option<CreateInvoiceRenderingOptions>,
+
     /// Extra information about a charge for the customer's credit card statement.
     ///
     /// It must contain at least one letter.
@@ -764,6 +783,7 @@ impl<'a> CreateInvoice<'a> {
             on_behalf_of: Default::default(),
             payment_settings: Default::default(),
             pending_invoice_items_behavior: Default::default(),
+            rendering_options: Default::default(),
             statement_descriptor: Default::default(),
             subscription: Default::default(),
             transfer_data: Default::default(),
@@ -875,6 +895,12 @@ pub struct CreateInvoicePaymentSettings {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodTypes>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceRenderingOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_tax_display: Option<CreateInvoiceRenderingOptionsAmountTaxDisplay>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1325,6 +1351,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Konbini,
     Link,
     Paynow,
+    Promptpay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -1352,6 +1379,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             CreateInvoicePaymentSettingsPaymentMethodTypes::Konbini => "konbini",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Link => "link",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Paynow => "paynow",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::Promptpay => "promptpay",
             CreateInvoicePaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Sofort => "sofort",
             CreateInvoicePaymentSettingsPaymentMethodTypes::UsBankAccount => "us_bank_account",
@@ -1374,6 +1402,42 @@ impl std::fmt::Display for CreateInvoicePaymentSettingsPaymentMethodTypes {
 impl std::default::Default for CreateInvoicePaymentSettingsPaymentMethodTypes {
     fn default() -> Self {
         Self::AchCreditTransfer
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoiceRenderingOptions`'s `amount_tax_display` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceRenderingOptionsAmountTaxDisplay {
+    ExcludeTax,
+    IncludeInclusiveTax,
+}
+
+impl CreateInvoiceRenderingOptionsAmountTaxDisplay {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceRenderingOptionsAmountTaxDisplay::ExcludeTax => "exclude_tax",
+            CreateInvoiceRenderingOptionsAmountTaxDisplay::IncludeInclusiveTax => {
+                "include_inclusive_tax"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceRenderingOptionsAmountTaxDisplay {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceRenderingOptionsAmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateInvoiceRenderingOptionsAmountTaxDisplay {
+    fn default() -> Self {
+        Self::ExcludeTax
     }
 }
 
@@ -1635,6 +1699,7 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     Konbini,
     Link,
     Paynow,
+    Promptpay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -1660,6 +1725,7 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             InvoicesPaymentSettingsPaymentMethodTypes::Konbini => "konbini",
             InvoicesPaymentSettingsPaymentMethodTypes::Link => "link",
             InvoicesPaymentSettingsPaymentMethodTypes::Paynow => "paynow",
+            InvoicesPaymentSettingsPaymentMethodTypes::Promptpay => "promptpay",
             InvoicesPaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
             InvoicesPaymentSettingsPaymentMethodTypes::Sofort => "sofort",
             InvoicesPaymentSettingsPaymentMethodTypes::UsBankAccount => "us_bank_account",
