@@ -7,11 +7,11 @@ use serde::{Deserialize, Serialize};
 use crate::ids::TreasuryTransactionId;
 use crate::params::{List, Object, Timestamp};
 use crate::resources::{
-    Currency, TransactionsResourceBalanceImpact, TransactionsResourceTreasuryFlowDetails,
-    TreasuryTransactionEntry,
+    Currency, TreasuryTransactionEntry, TreasuryTransactionsResourceBalanceImpact,
+    TreasuryTransactionsResourceFlowDetails,
 };
 
-/// The resource representing a Stripe "TransactionsResourceTreasuryTransaction".
+/// The resource representing a Stripe "TreasuryTransactionsResourceTransaction".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryTransaction {
     /// Unique identifier for the object.
@@ -20,7 +20,7 @@ pub struct TreasuryTransaction {
     /// Amount (in cents) transferred.
     pub amount: i64,
 
-    pub balance_impact: TransactionsResourceBalanceImpact,
+    pub balance_impact: TreasuryTransactionsResourceBalanceImpact,
 
     /// Time at which the object was created.
     ///
@@ -52,7 +52,7 @@ pub struct TreasuryTransaction {
 
     /// Details of the flow that created the Transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flow_details: Option<TransactionsResourceTreasuryFlowDetails>,
+    pub flow_details: Option<TreasuryTransactionsResourceFlowDetails>,
 
     /// Type of the flow that created the Transaction.
     pub flow_type: TreasuryTransactionFlowType,
@@ -63,7 +63,8 @@ pub struct TreasuryTransaction {
     /// Status of the Transaction.
     pub status: TreasuryTransactionStatus,
 
-    pub status_transitions: TransactionsResourceAbstractTransactionResourceStatusTransitions,
+    pub status_transitions:
+        TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions,
 }
 
 impl Object for TreasuryTransaction {
@@ -77,7 +78,7 @@ impl Object for TreasuryTransaction {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct TransactionsResourceAbstractTransactionResourceStatusTransitions {
+pub struct TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions {
     /// Timestamp describing when the Transaction changed status to `posted`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub posted_at: Option<Timestamp>,

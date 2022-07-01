@@ -306,7 +306,6 @@ pub struct CreatePaymentLink<'a> {
 
     /// The list of payment method types that customers can use.
     ///
-    /// Only `card` is supported.
     /// If no value is passed, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods) (20+ payment methods [supported](https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<CreatePaymentLinkPaymentMethodTypes>>,
@@ -472,7 +471,6 @@ pub struct UpdatePaymentLink<'a> {
 
     /// The list of payment method types that customers can use.
     ///
-    /// Only `card` is supported.
     /// Pass an empty string to enable automatic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<UpdatePaymentLinkPaymentMethodTypes>>,
@@ -792,13 +790,57 @@ impl std::default::Default for CreatePaymentLinkPaymentIntentDataSetupFutureUsag
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentLinkPaymentMethodTypes {
+    Affirm,
+    AfterpayClearpay,
+    Alipay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Boleto,
     Card,
+    Eps,
+    Fpx,
+    Giropay,
+    Grabpay,
+    Ideal,
+    Klarna,
+    Konbini,
+    Oxxo,
+    P24,
+    Paynow,
+    Promptpay,
+    SepaDebit,
+    Sofort,
+    UsBankAccount,
+    WechatPay,
 }
 
 impl CreatePaymentLinkPaymentMethodTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            CreatePaymentLinkPaymentMethodTypes::Affirm => "affirm",
+            CreatePaymentLinkPaymentMethodTypes::AfterpayClearpay => "afterpay_clearpay",
+            CreatePaymentLinkPaymentMethodTypes::Alipay => "alipay",
+            CreatePaymentLinkPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
+            CreatePaymentLinkPaymentMethodTypes::BacsDebit => "bacs_debit",
+            CreatePaymentLinkPaymentMethodTypes::Bancontact => "bancontact",
+            CreatePaymentLinkPaymentMethodTypes::Boleto => "boleto",
             CreatePaymentLinkPaymentMethodTypes::Card => "card",
+            CreatePaymentLinkPaymentMethodTypes::Eps => "eps",
+            CreatePaymentLinkPaymentMethodTypes::Fpx => "fpx",
+            CreatePaymentLinkPaymentMethodTypes::Giropay => "giropay",
+            CreatePaymentLinkPaymentMethodTypes::Grabpay => "grabpay",
+            CreatePaymentLinkPaymentMethodTypes::Ideal => "ideal",
+            CreatePaymentLinkPaymentMethodTypes::Klarna => "klarna",
+            CreatePaymentLinkPaymentMethodTypes::Konbini => "konbini",
+            CreatePaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
+            CreatePaymentLinkPaymentMethodTypes::P24 => "p24",
+            CreatePaymentLinkPaymentMethodTypes::Paynow => "paynow",
+            CreatePaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
+            CreatePaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
+            CreatePaymentLinkPaymentMethodTypes::Sofort => "sofort",
+            CreatePaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
+            CreatePaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
         }
     }
 }
@@ -816,7 +858,7 @@ impl std::fmt::Display for CreatePaymentLinkPaymentMethodTypes {
 }
 impl std::default::Default for CreatePaymentLinkPaymentMethodTypes {
     fn default() -> Self {
-        Self::Card
+        Self::Affirm
     }
 }
 
@@ -1633,13 +1675,57 @@ impl std::default::Default for PaymentLinkCustomerCreation {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentLinkPaymentMethodTypes {
+    Affirm,
+    AfterpayClearpay,
+    Alipay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Boleto,
     Card,
+    Eps,
+    Fpx,
+    Giropay,
+    Grabpay,
+    Ideal,
+    Klarna,
+    Konbini,
+    Oxxo,
+    P24,
+    Paynow,
+    Promptpay,
+    SepaDebit,
+    Sofort,
+    UsBankAccount,
+    WechatPay,
 }
 
 impl PaymentLinkPaymentMethodTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            PaymentLinkPaymentMethodTypes::Affirm => "affirm",
+            PaymentLinkPaymentMethodTypes::AfterpayClearpay => "afterpay_clearpay",
+            PaymentLinkPaymentMethodTypes::Alipay => "alipay",
+            PaymentLinkPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
+            PaymentLinkPaymentMethodTypes::BacsDebit => "bacs_debit",
+            PaymentLinkPaymentMethodTypes::Bancontact => "bancontact",
+            PaymentLinkPaymentMethodTypes::Boleto => "boleto",
             PaymentLinkPaymentMethodTypes::Card => "card",
+            PaymentLinkPaymentMethodTypes::Eps => "eps",
+            PaymentLinkPaymentMethodTypes::Fpx => "fpx",
+            PaymentLinkPaymentMethodTypes::Giropay => "giropay",
+            PaymentLinkPaymentMethodTypes::Grabpay => "grabpay",
+            PaymentLinkPaymentMethodTypes::Ideal => "ideal",
+            PaymentLinkPaymentMethodTypes::Klarna => "klarna",
+            PaymentLinkPaymentMethodTypes::Konbini => "konbini",
+            PaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
+            PaymentLinkPaymentMethodTypes::P24 => "p24",
+            PaymentLinkPaymentMethodTypes::Paynow => "paynow",
+            PaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
+            PaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
+            PaymentLinkPaymentMethodTypes::Sofort => "sofort",
+            PaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
+            PaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
         }
     }
 }
@@ -1657,7 +1743,7 @@ impl std::fmt::Display for PaymentLinkPaymentMethodTypes {
 }
 impl std::default::Default for PaymentLinkPaymentMethodTypes {
     fn default() -> Self {
-        Self::Card
+        Self::Affirm
     }
 }
 
@@ -2612,13 +2698,57 @@ impl std::default::Default for UpdatePaymentLinkAfterCompletionType {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentLinkPaymentMethodTypes {
+    Affirm,
+    AfterpayClearpay,
+    Alipay,
+    AuBecsDebit,
+    BacsDebit,
+    Bancontact,
+    Boleto,
     Card,
+    Eps,
+    Fpx,
+    Giropay,
+    Grabpay,
+    Ideal,
+    Klarna,
+    Konbini,
+    Oxxo,
+    P24,
+    Paynow,
+    Promptpay,
+    SepaDebit,
+    Sofort,
+    UsBankAccount,
+    WechatPay,
 }
 
 impl UpdatePaymentLinkPaymentMethodTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            UpdatePaymentLinkPaymentMethodTypes::Affirm => "affirm",
+            UpdatePaymentLinkPaymentMethodTypes::AfterpayClearpay => "afterpay_clearpay",
+            UpdatePaymentLinkPaymentMethodTypes::Alipay => "alipay",
+            UpdatePaymentLinkPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
+            UpdatePaymentLinkPaymentMethodTypes::BacsDebit => "bacs_debit",
+            UpdatePaymentLinkPaymentMethodTypes::Bancontact => "bancontact",
+            UpdatePaymentLinkPaymentMethodTypes::Boleto => "boleto",
             UpdatePaymentLinkPaymentMethodTypes::Card => "card",
+            UpdatePaymentLinkPaymentMethodTypes::Eps => "eps",
+            UpdatePaymentLinkPaymentMethodTypes::Fpx => "fpx",
+            UpdatePaymentLinkPaymentMethodTypes::Giropay => "giropay",
+            UpdatePaymentLinkPaymentMethodTypes::Grabpay => "grabpay",
+            UpdatePaymentLinkPaymentMethodTypes::Ideal => "ideal",
+            UpdatePaymentLinkPaymentMethodTypes::Klarna => "klarna",
+            UpdatePaymentLinkPaymentMethodTypes::Konbini => "konbini",
+            UpdatePaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
+            UpdatePaymentLinkPaymentMethodTypes::P24 => "p24",
+            UpdatePaymentLinkPaymentMethodTypes::Paynow => "paynow",
+            UpdatePaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
+            UpdatePaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
+            UpdatePaymentLinkPaymentMethodTypes::Sofort => "sofort",
+            UpdatePaymentLinkPaymentMethodTypes::UsBankAccount => "us_bank_account",
+            UpdatePaymentLinkPaymentMethodTypes::WechatPay => "wechat_pay",
         }
     }
 }
@@ -2636,7 +2766,7 @@ impl std::fmt::Display for UpdatePaymentLinkPaymentMethodTypes {
 }
 impl std::default::Default for UpdatePaymentLinkPaymentMethodTypes {
     fn default() -> Self {
-        Self::Card
+        Self::Affirm
     }
 }
 

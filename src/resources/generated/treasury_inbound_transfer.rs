@@ -6,9 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::TreasuryInboundTransferId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{Currency, TreasuryTransaction, UfaResourceBillingDetails};
+use crate::resources::{Currency, TreasurySharedResourceBillingDetails, TreasuryTransaction};
 
-/// The resource representing a Stripe "InboundTransfersResourceTreasuryInboundTransfer".
+/// The resource representing a Stripe "TreasuryInboundTransfersResourceInboundTransfer".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryInboundTransfer {
     /// Unique identifier for the object.
@@ -40,16 +40,16 @@ pub struct TreasuryInboundTransfer {
     ///
     /// Only set when status is `failed`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub failure_details: Option<InboundTransfersResourceFailureDetails>,
+    pub failure_details: Option<TreasuryInboundTransfersResourceFailureDetails>,
 
     /// The FinancialAccount that received the funds.
     pub financial_account: String,
 
-    /// A hosted transaction receipt URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
-    pub linked_flows: InboundTransfersResourceTreasuryInboundTransferResourceLinkedFlows,
+    pub linked_flows: TreasuryInboundTransfersResourceInboundTransferResourceLinkedFlows,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -82,7 +82,8 @@ pub struct TreasuryInboundTransfer {
     /// The status changes to `failed` if the transfer fails.
     pub status: TreasuryInboundTransferStatus,
 
-    pub status_transitions: InboundTransfersResourceInboundTransferResourceStatusTransitions,
+    pub status_transitions:
+        TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitions,
 
     /// The Transaction associated with this object.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -101,7 +102,7 @@ impl Object for TreasuryInboundTransfer {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InboundTransfers {
-    pub billing_details: UfaResourceBillingDetails,
+    pub billing_details: TreasurySharedResourceBillingDetails,
 
     /// The type of the payment method used in the InboundTransfer.
     #[serde(rename = "type")]
@@ -147,13 +148,20 @@ pub struct InboundTransfersPaymentMethodDetailsUsBankAccount {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InboundTransfersResourceFailureDetails {
+pub struct TreasuryInboundTransfersResourceFailureDetails {
     /// Reason for the failure.
-    pub code: InboundTransfersResourceFailureDetailsCode,
+    pub code: TreasuryInboundTransfersResourceFailureDetailsCode,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InboundTransfersResourceInboundTransferResourceStatusTransitions {
+pub struct TreasuryInboundTransfersResourceInboundTransferResourceLinkedFlows {
+    /// If funds for this flow were returned after the flow went to the `succeeded` state, this field contains a reference to the ReceivedDebit return.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub received_debit: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitions {
     /// Timestamp describing when an InboundTransfer changed status to `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<Timestamp>,
@@ -165,13 +173,6 @@ pub struct InboundTransfersResourceInboundTransferResourceStatusTransitions {
     /// Timestamp describing when an InboundTransfer changed status to `succeeded`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub succeeded_at: Option<Timestamp>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InboundTransfersResourceTreasuryInboundTransferResourceLinkedFlows {
-    /// If funds for this flow were returned after the flow went to the `succeeded` state, this field contains a reference to the ReceivedDebit return.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub received_debit: Option<String>,
 }
 
 /// An enum representing the possible values of an `InboundTransfersPaymentMethodDetailsUsBankAccount`'s `account_holder_type` field.
@@ -278,76 +279,6 @@ impl std::default::Default for InboundTransfersPaymentMethodDetailsUsBankAccount
     }
 }
 
-/// An enum representing the possible values of an `InboundTransfersResourceFailureDetails`'s `code` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum InboundTransfersResourceFailureDetailsCode {
-    AccountClosed,
-    AccountFrozen,
-    BankAccountRestricted,
-    BankOwnershipChanged,
-    DebitNotAuthorized,
-    IncorrectAccountHolderAddress,
-    IncorrectAccountHolderName,
-    IncorrectAccountHolderTaxId,
-    InsufficientFunds,
-    InvalidAccountNumber,
-    InvalidCurrency,
-    NoAccount,
-    Other,
-}
-
-impl InboundTransfersResourceFailureDetailsCode {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            InboundTransfersResourceFailureDetailsCode::AccountClosed => "account_closed",
-            InboundTransfersResourceFailureDetailsCode::AccountFrozen => "account_frozen",
-            InboundTransfersResourceFailureDetailsCode::BankAccountRestricted => {
-                "bank_account_restricted"
-            }
-            InboundTransfersResourceFailureDetailsCode::BankOwnershipChanged => {
-                "bank_ownership_changed"
-            }
-            InboundTransfersResourceFailureDetailsCode::DebitNotAuthorized => {
-                "debit_not_authorized"
-            }
-            InboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderAddress => {
-                "incorrect_account_holder_address"
-            }
-            InboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderName => {
-                "incorrect_account_holder_name"
-            }
-            InboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderTaxId => {
-                "incorrect_account_holder_tax_id"
-            }
-            InboundTransfersResourceFailureDetailsCode::InsufficientFunds => "insufficient_funds",
-            InboundTransfersResourceFailureDetailsCode::InvalidAccountNumber => {
-                "invalid_account_number"
-            }
-            InboundTransfersResourceFailureDetailsCode::InvalidCurrency => "invalid_currency",
-            InboundTransfersResourceFailureDetailsCode::NoAccount => "no_account",
-            InboundTransfersResourceFailureDetailsCode::Other => "other",
-        }
-    }
-}
-
-impl AsRef<str> for InboundTransfersResourceFailureDetailsCode {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for InboundTransfersResourceFailureDetailsCode {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for InboundTransfersResourceFailureDetailsCode {
-    fn default() -> Self {
-        Self::AccountClosed
-    }
-}
-
 /// An enum representing the possible values of an `InboundTransfers`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -415,5 +346,79 @@ impl std::fmt::Display for TreasuryInboundTransferStatus {
 impl std::default::Default for TreasuryInboundTransferStatus {
     fn default() -> Self {
         Self::Canceled
+    }
+}
+
+/// An enum representing the possible values of an `TreasuryInboundTransfersResourceFailureDetails`'s `code` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TreasuryInboundTransfersResourceFailureDetailsCode {
+    AccountClosed,
+    AccountFrozen,
+    BankAccountRestricted,
+    BankOwnershipChanged,
+    DebitNotAuthorized,
+    IncorrectAccountHolderAddress,
+    IncorrectAccountHolderName,
+    IncorrectAccountHolderTaxId,
+    InsufficientFunds,
+    InvalidAccountNumber,
+    InvalidCurrency,
+    NoAccount,
+    Other,
+}
+
+impl TreasuryInboundTransfersResourceFailureDetailsCode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TreasuryInboundTransfersResourceFailureDetailsCode::AccountClosed => "account_closed",
+            TreasuryInboundTransfersResourceFailureDetailsCode::AccountFrozen => "account_frozen",
+            TreasuryInboundTransfersResourceFailureDetailsCode::BankAccountRestricted => {
+                "bank_account_restricted"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::BankOwnershipChanged => {
+                "bank_ownership_changed"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::DebitNotAuthorized => {
+                "debit_not_authorized"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderAddress => {
+                "incorrect_account_holder_address"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderName => {
+                "incorrect_account_holder_name"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderTaxId => {
+                "incorrect_account_holder_tax_id"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::InsufficientFunds => {
+                "insufficient_funds"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::InvalidAccountNumber => {
+                "invalid_account_number"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::InvalidCurrency => {
+                "invalid_currency"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::NoAccount => "no_account",
+            TreasuryInboundTransfersResourceFailureDetailsCode::Other => "other",
+        }
+    }
+}
+
+impl AsRef<str> for TreasuryInboundTransfersResourceFailureDetailsCode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TreasuryInboundTransfersResourceFailureDetailsCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TreasuryInboundTransfersResourceFailureDetailsCode {
+    fn default() -> Self {
+        Self::AccountClosed
     }
 }

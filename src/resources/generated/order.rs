@@ -212,11 +212,17 @@ pub struct OrdersV2ResourcePaymentSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
 
+    /// Indicates whether order has been opted into using [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) to manage payment method types.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub automatic_payment_methods: Option<OrdersV2ResourceAutomaticPaymentMethods>,
+
     /// PaymentMethod-specific configuration to provide to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<OrdersV2ResourcePaymentMethodOptions>,
 
-    /// The list of payment method types (e.g., card) to provide to the order's PaymentIntent.
+    /// The list of [payment method types](https://stripe.com/docs/payments/payment-methods/overview) to provide to the order's PaymentIntent.
+    ///
+    /// Do not include this attribute if you prefer to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<OrdersV2ResourcePaymentSettingsPaymentMethodTypes>>,
 
@@ -240,6 +246,12 @@ pub struct OrdersV2ResourcePaymentSettings {
     /// Provides configuration for completing a transfer for the order after it is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<OrdersV2ResourceTransferData>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct OrdersV2ResourceAutomaticPaymentMethods {
+    /// Whether this Order has been opted into managing payment method types via the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
+    pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

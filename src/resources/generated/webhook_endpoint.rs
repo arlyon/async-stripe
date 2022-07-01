@@ -705,8 +705,6 @@ pub enum EventFilter {
     TreasuryReceivedCreditCreated,
     #[serde(rename = "treasury.received_credit.failed")]
     TreasuryReceivedCreditFailed,
-    #[serde(rename = "treasury.received_credit.reversed")]
-    TreasuryReceivedCreditReversed,
     #[serde(rename = "treasury.received_credit.succeeded")]
     TreasuryReceivedCreditSucceeded,
     #[serde(rename = "treasury.received_debit.created")]
@@ -970,7 +968,6 @@ impl EventFilter {
             EventFilter::TreasuryOutboundTransferReturned => "treasury.outbound_transfer.returned",
             EventFilter::TreasuryReceivedCreditCreated => "treasury.received_credit.created",
             EventFilter::TreasuryReceivedCreditFailed => "treasury.received_credit.failed",
-            EventFilter::TreasuryReceivedCreditReversed => "treasury.received_credit.reversed",
             EventFilter::TreasuryReceivedCreditSucceeded => "treasury.received_credit.succeeded",
             EventFilter::TreasuryReceivedDebitCreated => "treasury.received_debit.created",
         }
