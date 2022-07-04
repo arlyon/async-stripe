@@ -3,11 +3,11 @@ use serde::{Deserialize, Serialize};
 use crate::{Client, Response, SubscriptionItemId, Timestamp, UsageRecord};
 
 impl UsageRecord {
-    pub fn create(
-        client: &Client,
-        subscription_item_id: &SubscriptionItemId,
+    pub fn create<'a>(
+        client: &'a Client,
+        subscription_item_id: &'_ SubscriptionItemId,
         params: CreateUsageRecord,
-    ) -> Response<UsageRecord> {
+    ) -> Response<'a, UsageRecord> {
         client.post_form(
             &format!("/subscription_items/{}/usage_records", subscription_item_id),
             &params,

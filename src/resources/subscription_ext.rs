@@ -20,11 +20,11 @@ impl Subscription {
     /// Cancels a subscription.
     ///
     /// For more details see <https://stripe.com/docs/api#cancel_subscription>.
-    pub fn cancel(
-        client: &Client,
-        subscription_id: &SubscriptionId,
+    pub fn cancel<'a>(
+        client: &'a Client,
+        subscription_id: &'_ SubscriptionId,
         params: CancelSubscription,
-    ) -> Response<Subscription> {
+    ) -> Response<'a, Subscription> {
         client.delete_query(&format!("/subscriptions/{}", subscription_id), params)
     }
 }

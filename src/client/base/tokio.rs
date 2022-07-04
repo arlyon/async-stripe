@@ -35,17 +35,17 @@ compile_error!("You must enable only one TLS implementation");
 
 type HttpClient = hyper::Client<connector::HttpsConnector<HttpConnector>, Body>;
 
-pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
+pub type Response<'a, T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send + 'a>>;
 
 #[allow(dead_code)]
 #[inline(always)]
-pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
+pub(crate) fn ok<'a, T: Send + 'a>(ok: T) -> Response<'a, T> {
     Box::pin(future::ready(Ok(ok)))
 }
 
 #[allow(dead_code)]
 #[inline(always)]
-pub(crate) fn err<T: Send + 'static>(err: StripeError) -> Response<T> {
+pub(crate) fn err<'a, T: Send + 'a>(err: StripeError) -> Response<'a, T> {
     Box::pin(future::ready(Err(err)))
 }
 
@@ -61,11 +61,11 @@ impl TokioClient {
         }
     }
 
-    pub fn execute<T: DeserializeOwned + Send + 'static>(
-        &self,
+    pub fn execute<'a, T: DeserializeOwned + Send + 'a>(
+        &'a self,
         request: Request,
-        strategy: &RequestStrategy,
-    ) -> Response<T> {
+        strategy: &'a RequestStrategy,
+    ) -> Response<'a, T> {
         // need to clone here since client could be used across threads.
         // N.B. Client is send sync; cloned clients share the same pool.
         let client = self.client.clone();

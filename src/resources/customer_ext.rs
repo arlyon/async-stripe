@@ -74,11 +74,11 @@ impl Customer {
     /// Attaches a source to a customer, does not change default Source for the Customer
     ///
     /// For more details see <https://stripe.com/docs/api#attach_source>.
-    pub fn attach_source(
-        client: &Client,
-        customer_id: &CustomerId,
+    pub fn attach_source<'a>(
+        client: &'a Client,
+        customer_id: &'_ CustomerId,
         source: PaymentSourceParams,
-    ) -> Response<PaymentSource> {
+    ) -> Response<'a, PaymentSource> {
         #[derive(Serialize)]
         struct AttachSource {
             source: PaymentSourceParams,
@@ -90,32 +90,32 @@ impl Customer {
     /// Detaches a source from a customer
     ///
     /// For more details see <https://stripe.com/docs/api#detach_source>.
-    pub fn detach_source(
-        client: &Client,
-        customer_id: &CustomerId,
-        source_id: &PaymentSourceId,
-    ) -> Response<DetachedSource> {
+    pub fn detach_source<'a>(
+        client: &'a Client,
+        customer_id: &'_ CustomerId,
+        source_id: &'_ PaymentSourceId,
+    ) -> Response<'a, DetachedSource> {
         client.delete(&format!("/customers/{}/sources/{}", customer_id, source_id))
     }
 
     /// Retrieves a Card, BankAccount, or Source for a Customer
-    pub fn retrieve_source(
-        client: &Client,
-        customer_id: &CustomerId,
-        source_id: &PaymentSourceId,
-    ) -> Response<PaymentSource> {
+    pub fn retrieve_source<'a>(
+        client: &'a Client,
+        customer_id: &'_ CustomerId,
+        source_id: &'_ PaymentSourceId,
+    ) -> Response<'a, PaymentSource> {
         client.get(&format!("/customers/{}/sources/{}", customer_id, source_id))
     }
 
     /// Verifies a Bank Account for a Customer.
     ///
     /// For more details see <https://stripe.com/docs/api/customer_bank_accounts/verify>.
-    pub fn verify_bank_account(
-        client: &Client,
-        customer_id: &CustomerId,
-        bank_account_id: &BankAccountId,
-        params: VerifyBankAccount<'_>,
-    ) -> Response<BankAccount> {
+    pub fn verify_bank_account<'a>(
+        client: &'a Client,
+        customer_id: &'_ CustomerId,
+        bank_account_id: &'_ BankAccountId,
+        params: VerifyBankAccount<'a>,
+    ) -> Response<'a, BankAccount> {
         client.post_form(
             &format!("/customers/{}/sources/{}/verify", customer_id, bank_account_id),
             params,
@@ -125,11 +125,11 @@ impl Customer {
     ///Returns a list of PaymentMethods for a given Customer
     ///
     ///For more details see <https://stripe.com/docs/api/payment_methods/customer_list>
-    pub fn retrieve_payment_methods(
-        client: &Client,
-        customer_id: &CustomerId,
-        params: CustomerPaymentMethodRetrieval<'_>,
-    ) -> Response<List<PaymentMethod>> {
+    pub fn retrieve_payment_methods<'a>(
+        client: &'a Client,
+        customer_id: &'_ CustomerId,
+        params: CustomerPaymentMethodRetrieval<'a>,
+    ) -> Response<'a, List<PaymentMethod>> {
         client.get_query(&format!("/customers/{}/payment_methods", customer_id), &params)
     }
 }

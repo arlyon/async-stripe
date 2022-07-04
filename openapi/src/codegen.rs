@@ -1339,13 +1339,15 @@ pub fn gen_impl_requests(
                 let mut out = String::new();
                 out.push('\n');
                 print_doc_comment(&mut out, doc_comment, 1);
-
-                let query_path = segments.join("/");
-                writedoc!(&mut out, r#"
-                    pub fn list(client: &Client, params: &{params_name}<'_>) -> Response<List<{rust_struct}>> {{
-                       client.get_query("/{query_path}", &params)
-                    }}
-                "#).unwrap();
+                out.push_str("    pub fn list<'a>(client: &'a Client, params: &'a ");
+                out.push_str(&params_name);
+                out.push_str("<'a>) -> Response<'a, List<");
+                out.push_str(&rust_struct);
+                out.push_str(">> {\n");
+                out.push_str("        client.get_query(\"/");
+                out.push_str(&segments.join("/"));
+                out.push_str("\", &params)\n");
+                out.push_str("    }");
                 methods.insert(MethodTypes::List, out);
             } else if segments.len() == 2 && !methods.contains_key(&MethodTypes::Retrieve) {
                 let id_param = match get_id_param(&get_request.parameters) {
@@ -1360,19 +1362,19 @@ pub fn gen_impl_requests(
                     let mut out = String::new();
                     out.push('\n');
                     print_doc_comment(&mut out, doc_comment, 1);
-                    out.push_str("    pub fn retrieve(client: &Client, id: &");
+                    out.push_str("    pub fn retrieve<'a>(client: &'a Client, id: &'a ");
                     out.push_str(id_type);
                     if let Some(param) = expand_param {
                         state.use_params.insert("Expand");
                         assert!(matches!(param, Parameter::Query { .. }));
-                        out.push_str(", expand: &[&str]) -> Response<");
+                        out.push_str(", expand: &'a [&str]) -> Response<'a, ");
                         out.push_str(&rust_struct);
                         out.push_str("> {\n");
                         out.push_str("        client.get_query(");
                         out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
                         out.push_str(", &Expand { expand })\n");
                     } else {
-                        out.push_str(") -> Response<");
+                        out.push_str(") -> Response<'a,");
                         out.push_str(&rust_struct);
                         out.push_str("> {\n");
                         out.push_str("        client.get(/");
@@ -1424,9 +1426,9 @@ pub fn gen_impl_requests(
                 let mut out = String::new();
                 out.push('\n');
                 print_doc_comment(&mut out, doc_comment, 1);
-                out.push_str("    pub fn create(client: &Client, params: ");
+                out.push_str("    pub fn create<'a>(client: &'a Client, params: ");
                 out.push_str(&params_name);
-                out.push_str("<'_>) -> Response<");
+                out.push_str("<'a>) -> Response<'a, ");
                 out.push_str(&return_type);
                 out.push_str("> {\n");
                 out.push_str("        client.post_form(\"/");
@@ -1462,11 +1464,11 @@ pub fn gen_impl_requests(
                     let mut out = String::new();
                     out.push('\n');
                     print_doc_comment(&mut out, doc_comment, 1);
-                    out.push_str("    pub fn update(client: &Client, id: &");
+                    out.push_str("    pub fn update<'a>(client: &'a Client, id: &'a ");
                     out.push_str(id_type);
                     out.push_str(", params: ");
                     out.push_str(&params_name);
-                    out.push_str("<'_>) -> Response<");
+                    out.push_str("<'a>) -> Response<'a, ");
                     out.push_str(&return_type);
                     out.push_str("> {\n");
                     out.push_str("        client.post_form(");
@@ -1512,9 +1514,9 @@ pub fn gen_impl_requests(
                     let mut out = String::new();
                     out.push('\n');
                     print_doc_comment(&mut out, doc_comment, 1);
-                    out.push_str("    pub fn delete(client: &Client, id: &");
+                    out.push_str("    pub fn delete<'a>(client: &'a Client, id: &'a ");
                     out.push_str(id_type);
-                    out.push_str(") -> Response<Deleted<");
+                    out.push_str(") -> Response<'a, Deleted<");
                     out.push_str(id_type);
                     out.push_str(">> {\n");
                     out.push_str("        client.delete(");

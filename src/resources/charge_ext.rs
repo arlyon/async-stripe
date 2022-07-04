@@ -37,11 +37,11 @@ impl Charge {
     /// Capture captures a previously created charge with capture set to false.
     ///
     /// For more details see <https://stripe.com/docs/api#charge_capture>.
-    pub fn capture(
-        client: &Client,
-        charge_id: &ChargeId,
-        params: CaptureCharge<'_>,
-    ) -> Response<Charge> {
+    pub fn capture<'a>(
+        client: &'a Client,
+        charge_id: &'_ ChargeId,
+        params: CaptureCharge<'a>,
+    ) -> Response<'a, Charge> {
         client.post_form(&format!("/charges/{}/capture", charge_id), params)
     }
 }

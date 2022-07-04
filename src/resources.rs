@@ -191,6 +191,7 @@ pub use {
         invoice_payment_method_options_konbini::*,
         invoice_payment_method_options_customer_balance::*,
         invoice_payment_method_options_us_bank_account::*,
+        invoice_setting_rendering_options::*,
         invoiceitem::*,
         line_item::*,
         plan::*,

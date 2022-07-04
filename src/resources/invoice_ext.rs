@@ -12,14 +12,17 @@ impl Invoice {
     /// Retrieves the details of an upcoming invoice_id
     ///
     /// For more details see <https://stripe.com/docs/api#upcoming_invoice>.
-    pub fn upcoming(client: &Client, params: RetrieveUpcomingInvoice) -> Response<Invoice> {
+    pub fn upcoming<'a>(
+        client: &'a Client,
+        params: RetrieveUpcomingInvoice,
+    ) -> Response<'a, Invoice> {
         client.get_query("/invoices/upcoming", &params)
     }
 
     /// Pays an invoice.
     ///
     /// For more details see <https://stripe.com/docs/api#pay_invoice.>.
-    pub fn pay(client: &Client, invoice_id: &InvoiceId) -> Response<Invoice> {
+    pub fn pay<'a>(client: &'a Client, invoice_id: &'_ InvoiceId) -> Response<'a, Invoice> {
         client.post(&format!("/invoices/{}/pay", invoice_id))
     }
 }

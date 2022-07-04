@@ -9,33 +9,33 @@ impl PaymentIntent {
     /// Confirm that customer intends to pay with current or provided source. Upon confirmation, the PaymentIntent will attempt to initiate a payment.
     ///
     /// For more details see <https://stripe.com/docs/api/payment_intents/confirm>.
-    pub fn confirm(
-        client: &Client,
-        payment_intent_id: &str,
-        params: PaymentIntentConfirmParams<'_>,
-    ) -> Response<PaymentIntent> {
+    pub fn confirm<'a>(
+        client: &'a Client,
+        payment_intent_id: &'_ str,
+        params: PaymentIntentConfirmParams<'a>,
+    ) -> Response<'a, PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}/confirm", payment_intent_id), params)
     }
 
     /// Capture the funds of an existing uncaptured PaymentIntent where required_action="requires_capture".
     ///
     /// For more details see <https://stripe.com/docs/api/payment_intents/capture>.
-    pub fn capture(
-        client: &Client,
-        payment_intent_id: &str,
+    pub fn capture<'a>(
+        client: &'a Client,
+        payment_intent_id: &'_ str,
         params: CapturePaymentIntent,
-    ) -> Response<PaymentIntent> {
+    ) -> Response<'a, PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}/capture", payment_intent_id), params)
     }
 
     /// A PaymentIntent object can be canceled when it is in one of these statuses: requires_source, requires_capture, requires_confirmation, requires_source_action.
     ///
     /// For more details see <https://stripe.com/docs/api/payment_intents/cancel>.
-    pub fn cancel(
-        client: &Client,
-        payment_intent_id: &str,
+    pub fn cancel<'a>(
+        client: &'a Client,
+        payment_intent_id: &'_ str,
         params: CancelPaymentIntent,
-    ) -> Response<PaymentIntent> {
+    ) -> Response<'a, PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}/cancel", payment_intent_id), params)
     }
 }

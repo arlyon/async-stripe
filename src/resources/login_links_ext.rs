@@ -17,7 +17,11 @@ pub struct CreateLoginLink<'a> {
 }
 
 impl LoginLink {
-    pub fn create(client: &Client, id: &AccountId, redirect_url: &str) -> Response<Self> {
+    pub fn create<'a>(
+        client: &'a Client,
+        id: &'a AccountId,
+        redirect_url: &'a str,
+    ) -> Response<'a, Self> {
         let create_login_link =
             CreateLoginLink { expand: &[], redirect_url: Some(redirect_url.to_string()) };
 

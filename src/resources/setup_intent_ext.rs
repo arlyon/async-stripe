@@ -31,11 +31,11 @@ pub struct CancelSetupIntent {
 }
 
 impl SetupIntent {
-    pub fn confirm(
-        client: &Client,
-        setup_id: &SetupIntentId,
+    pub fn confirm<'a>(
+        client: &'a Client,
+        setup_id: &'_ SetupIntentId,
         params: ConfirmSetupIntent,
-    ) -> Response<SetupIntent> {
+    ) -> Response<'a, SetupIntent> {
         client.post_form(&format!("/setup_intents/{}/confirm", setup_id), &params)
     }
 

@@ -87,11 +87,11 @@ impl Client {
     }
 
     /// Make a `GET` http request with url query parameters
-    pub fn get_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
-        &self,
+    pub fn get_query<'a, T: DeserializeOwned + Send + 'a, P: Serialize>(
+        &'a self,
         path: &str,
         params: P,
-    ) -> Response<T> {
+    ) -> Response<'a, T> {
         let url = match self.url_with_params(path, params) {
             Err(e) => return err(e),
             Ok(ok) => ok,

@@ -180,7 +180,7 @@ pub trait Paginable {
 }
 
 #[derive(Debug)]
-pub struct ListPaginator<T, P> {
+pub struct ListPaginator<'a, T, P> {
     pub page: List<T>,
     pub params: P,
 }
@@ -219,12 +219,10 @@ impl<T> List<T> {
     }
 }
 
-impl<
-        T: Paginate + DeserializeOwned + Send + Sync + 'static + Clone + std::fmt::Debug,
-        P: Clone + Serialize + Send + 'static + std::fmt::Debug,
-    > ListPaginator<T, P>
+impl<'a, T, P> ListPaginator<'a, T, P>
 where
-    P: Paginable<O = T>,
+    T: 'static + Paginate + DeserializeOwned + Send + Sync + Clone + std::fmt::Debug,
+    P: Paginable<O = T> + 'static + Clone + Serialize + Send + std::fmt::Debug,
 {
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
     /// Stripe's default page size.
@@ -314,7 +312,7 @@ where
     }
 
     /// Fetch an additional page of data from stripe.
-    pub fn next(&self, client: &Client) -> Response<Self> {
+    pub fn next(&'a self, client: &'a Client) -> Response<'a, Self> {
         if let Some(last) = self.page.data.last() {
             if self.page.url.starts_with("/v1/") {
                 let path = self.page.url.trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
@@ -348,13 +346,13 @@ where
     /// Pin a new future which maps the result inside the page future into
     /// a ListPaginator
     #[cfg(feature = "async")]
-    fn create_paginator(page: Response<List<T>>, params: P) -> Response<Self> {
+    fn create_paginator(page: Response<'a, List<T>>, params: P) -> Response<'a, Self> {
         use futures_util::FutureExt;
         Box::pin(page.map(|page| page.map(|page| ListPaginator { page, params })))
     }
 
     #[cfg(feature = "blocking")]
-    fn create_paginator(page: Response<List<T>>, params: P) -> Response<Self> {
+    fn create_paginator(page: Response<'a, List<T>>, params: P) -> Response<'a, Self> {
         page.map(|page| ListPaginator { page, params })
     }
 }

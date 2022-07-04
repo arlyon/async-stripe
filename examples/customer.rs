@@ -54,7 +54,10 @@ async fn main() {
 
     println!("created a customer at https://dashboard.stripe.com/test/customers/{}", customer.id);
 
-    let params = ListCustomers { ..Default::default() };
+    let expand = vec!["test"];
+    let email = "abcd@email.com".to_string();
+
+    let params = ListCustomers { email: Some(&email), expand: &expand, ..Default::default() };
     let paginator = Customer::list(&client, &params).await.unwrap().paginate(params);
     let mut stream = paginator.stream(&client);
 

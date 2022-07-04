@@ -9,7 +9,7 @@ impl Payout {
     /// Cancels the payout.
     ///
     /// For more details see <https://stripe.com/docs/api/payouts/cancel>.
-    pub fn cancel(client: &Client, id: &PayoutId) -> Response<Payout> {
+    pub fn cancel<'a>(client: &'a Client, id: &'_ PayoutId) -> Response<'a, Payout> {
         client.post(&format!("/payouts/{}/cancel", id))
     }
 }
