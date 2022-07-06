@@ -2,13 +2,17 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::resources::{IssuingAuthorization, TreasuryCreditReversal, TreasuryDebitReversal, TreasuryInboundTransfer, TreasuryOutboundPayment, TreasuryOutboundTransfer, TreasuryReceivedCredit, TreasuryReceivedDebit};
 use serde::{Deserialize, Serialize};
+
+use crate::resources::{
+    IssuingAuthorization, TreasuryCreditReversal, TreasuryDebitReversal, TreasuryInboundTransfer,
+    TreasuryOutboundPayment, TreasuryOutboundTransfer, TreasuryReceivedCredit,
+    TreasuryReceivedDebit,
+};
 
 /// The resource representing a Stripe "TreasuryTransactionsResourceFlowDetails".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryTransactionsResourceFlowDetails {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_reversal: Option<TreasuryCreditReversal>,
 
@@ -61,7 +65,9 @@ impl TreasuryTransactionsResourceFlowDetailsType {
             TreasuryTransactionsResourceFlowDetailsType::CreditReversal => "credit_reversal",
             TreasuryTransactionsResourceFlowDetailsType::DebitReversal => "debit_reversal",
             TreasuryTransactionsResourceFlowDetailsType::InboundTransfer => "inbound_transfer",
-            TreasuryTransactionsResourceFlowDetailsType::IssuingAuthorization => "issuing_authorization",
+            TreasuryTransactionsResourceFlowDetailsType::IssuingAuthorization => {
+                "issuing_authorization"
+            }
             TreasuryTransactionsResourceFlowDetailsType::Other => "other",
             TreasuryTransactionsResourceFlowDetailsType::OutboundPayment => "outbound_payment",
             TreasuryTransactionsResourceFlowDetailsType::OutboundTransfer => "outbound_transfer",
