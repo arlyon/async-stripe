@@ -738,6 +738,9 @@ pub struct CreateSetupIntentPaymentMethodData {
     pub paynow: Option<CreateSetupIntentPaymentMethodDataPaynow>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub promptpay: Option<CreateSetupIntentPaymentMethodDataPromptpay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<CreateSetupIntentPaymentMethodDataRadarOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -851,6 +854,9 @@ pub struct UpdateSetupIntentPaymentMethodData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<UpdateSetupIntentPaymentMethodDataPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promptpay: Option<UpdateSetupIntentPaymentMethodDataPromptpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<UpdateSetupIntentPaymentMethodDataRadarOptions>,
@@ -1013,6 +1019,9 @@ pub struct CreateSetupIntentPaymentMethodDataP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataPromptpay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataRadarOptions {
@@ -1210,6 +1219,9 @@ pub struct UpdateSetupIntentPaymentMethodDataP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataPromptpay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataRadarOptions {
@@ -2028,6 +2040,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     Oxxo,
     P24,
     Paynow,
+    Promptpay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -2057,6 +2070,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             CreateSetupIntentPaymentMethodDataType::Oxxo => "oxxo",
             CreateSetupIntentPaymentMethodDataType::P24 => "p24",
             CreateSetupIntentPaymentMethodDataType::Paynow => "paynow",
+            CreateSetupIntentPaymentMethodDataType::Promptpay => "promptpay",
             CreateSetupIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
             CreateSetupIntentPaymentMethodDataType::Sofort => "sofort",
             CreateSetupIntentPaymentMethodDataType::UsBankAccount => "us_bank_account",
@@ -3582,6 +3596,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     Oxxo,
     P24,
     Paynow,
+    Promptpay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -3611,6 +3626,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             UpdateSetupIntentPaymentMethodDataType::Oxxo => "oxxo",
             UpdateSetupIntentPaymentMethodDataType::P24 => "p24",
             UpdateSetupIntentPaymentMethodDataType::Paynow => "paynow",
+            UpdateSetupIntentPaymentMethodDataType::Promptpay => "promptpay",
             UpdateSetupIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
             UpdateSetupIntentPaymentMethodDataType::Sofort => "sofort",
             UpdateSetupIntentPaymentMethodDataType::UsBankAccount => "us_bank_account",

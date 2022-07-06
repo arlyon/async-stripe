@@ -8,7 +8,7 @@ use crate::ids::TreasuryCreditReversalId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Currency, TreasuryTransaction};
 
-/// The resource representing a Stripe "ReceivedCreditsResourceTreasuryCreditReversal".
+/// The resource representing a Stripe "TreasuryReceivedCreditsResourceCreditReversal".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryCreditReversal {
     /// Unique identifier for the object.
@@ -25,7 +25,7 @@ pub struct TreasuryCreditReversal {
     /// The FinancialAccount to reverse funds from.
     pub financial_account: String,
 
-    /// A hosted transaction receipt URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
@@ -46,7 +46,7 @@ pub struct TreasuryCreditReversal {
     /// Status of the CreditReversal.
     pub status: TreasuryCreditReversalStatus,
 
-    pub status_transitions: ReceivedCreditsResourceStatusTransitions,
+    pub status_transitions: TreasuryReceivedCreditsResourceStatusTransitions,
 
     /// The Transaction associated with this object.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -64,7 +64,7 @@ impl Object for TreasuryCreditReversal {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ReceivedCreditsResourceStatusTransitions {
+pub struct TreasuryReceivedCreditsResourceStatusTransitions {
     /// Timestamp describing when the CreditReversal changed status to `posted`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub posted_at: Option<Timestamp>,

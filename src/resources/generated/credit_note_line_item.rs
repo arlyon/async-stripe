@@ -17,6 +17,10 @@ pub struct CreditNoteLineItem {
     /// The integer amount in %s representing the gross amount being credited for this line item, excluding (exclusive) tax and discounts.
     pub amount: i64,
 
+    /// The integer amount in %s representing the amount being credited for this line item, excluding all tax and discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_excluding_tax: Option<i64>,
+
     /// Description of the item being credited.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -57,6 +61,10 @@ pub struct CreditNoteLineItem {
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+
+    /// The amount in %s representing the unit amount being credited for this line item, excluding all tax and discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_excluding_tax: Option<String>,
 }
 
 impl Object for CreditNoteLineItem {
