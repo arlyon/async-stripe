@@ -106,6 +106,7 @@ pub use {
         ephemeral_key::*,
         file::*,
         file_link::*,
+        invoice_setting_rendering_options::*,
         mandate::*,
         package_dimensions::*,
         payment_intent::*,

@@ -7,11 +7,11 @@ use serde::{Deserialize, Serialize};
 use crate::ids::TreasuryReceivedDebitId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{
-    Currency, TreasuryTransaction,
-    UfaResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+    Currency, TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+    TreasuryTransaction,
 };
 
-/// The resource representing a Stripe "ReceivedDebitsResourceTreasuryReceivedDebit".
+/// The resource representing a Stripe "TreasuryReceivedDebitsResourceReceivedDebit".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryReceivedDebit {
     /// Unique identifier for the object.
@@ -45,17 +45,25 @@ pub struct TreasuryReceivedDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_account: Option<String>,
 
+    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hosted_regulatory_receipt_url: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub initiating_payment_method_details:
-        Option<UfaResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails>,
+        Option<TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails>,
 
-    pub linked_flows: ReceivedDebitsResourceTreasuryLinkedFlows,
+    pub linked_flows: TreasuryReceivedDebitsResourceLinkedFlows,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
     /// The network used for the ReceivedDebit.
     pub network: TreasuryReceivedDebitNetwork,
+
+    /// Details describing when a ReceivedDebit might be reversed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reversal_details: Option<TreasuryReceivedDebitsResourceReversalDetails>,
 
     /// Status of the ReceivedDebit.
     ///
@@ -79,7 +87,11 @@ impl Object for TreasuryReceivedDebit {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ReceivedDebitsResourceTreasuryLinkedFlows {
+pub struct TreasuryReceivedDebitsResourceLinkedFlows {
+    /// The DebitReversal created as a result of this ReceivedDebit being reversed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub debit_reversal: Option<String>,
+
     /// Set if the ReceivedDebit is associated with an InboundTransfer's return of funds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inbound_transfer: Option<String>,
@@ -91,6 +103,17 @@ pub struct ReceivedDebitsResourceTreasuryLinkedFlows {
     /// Set if the ReceivedDebit is also viewable as an [Issuing Dispute](https://stripe.com/docs/api#issuing_disputes) object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_transaction: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TreasuryReceivedDebitsResourceReversalDetails {
+    /// Time before which a ReceivedDebit can be reversed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deadline: Option<Timestamp>,
+
+    /// Set if a ReceivedDebit can't be reversed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restricted_reason: Option<TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason>,
 }
 
 /// An enum representing the possible values of an `TreasuryReceivedDebit`'s `failure_code` field.
@@ -198,5 +221,53 @@ impl std::fmt::Display for TreasuryReceivedDebitStatus {
 impl std::default::Default for TreasuryReceivedDebitStatus {
     fn default() -> Self {
         Self::Failed
+    }
+}
+
+/// An enum representing the possible values of an `TreasuryReceivedDebitsResourceReversalDetails`'s `restricted_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
+    AlreadyReversed,
+    DeadlinePassed,
+    NetworkRestricted,
+    Other,
+    SourceFlowRestricted,
+}
+
+impl TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::AlreadyReversed => {
+                "already_reversed"
+            }
+            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::DeadlinePassed => {
+                "deadline_passed"
+            }
+            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::NetworkRestricted => {
+                "network_restricted"
+            }
+            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::Other => "other",
+            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::SourceFlowRestricted => {
+                "source_flow_restricted"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
+    fn default() -> Self {
+        Self::AlreadyReversed
     }
 }

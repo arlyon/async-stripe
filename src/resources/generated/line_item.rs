@@ -17,6 +17,10 @@ pub struct InvoiceLineItem {
     /// The amount, in %s.
     pub amount: i64,
 
+    /// The integer amount in %s representing the amount for this line item, excluding all tax and discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_excluding_tax: Option<i64>,
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -95,6 +99,10 @@ pub struct InvoiceLineItem {
     /// A string identifying the type of the source of this line item, either an `invoiceitem` or a `subscription`.
     #[serde(rename = "type")]
     pub type_: InvoiceLineItemType,
+
+    /// The amount in %s representing the unit amount for this line item, excluding all tax and discounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_excluding_tax: Option<String>,
 }
 
 impl Object for InvoiceLineItem {

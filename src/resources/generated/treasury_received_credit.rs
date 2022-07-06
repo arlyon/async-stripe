@@ -7,11 +7,12 @@ use serde::{Deserialize, Serialize};
 use crate::ids::TreasuryReceivedCreditId;
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{
-    Currency, Payout, TreasuryCreditReversal, TreasuryOutboundPayment, TreasuryTransaction,
-    UfaResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+    Currency, Payout, TreasuryCreditReversal, TreasuryOutboundPayment,
+    TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+    TreasuryTransaction,
 };
 
-/// The resource representing a Stripe "ReceivedCreditsResourceTreasuryReceivedCredit".
+/// The resource representing a Stripe "TreasuryReceivedCreditsResourceReceivedCredit".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryReceivedCredit {
     /// Unique identifier for the object.
@@ -45,16 +46,24 @@ pub struct TreasuryReceivedCredit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_account: Option<String>,
 
-    pub initiating_payment_method_details:
-        UfaResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hosted_regulatory_receipt_url: Option<String>,
 
-    pub linked_flows: ReceivedCreditsResourceTreasuryLinkedFlows,
+    pub initiating_payment_method_details:
+        TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+
+    pub linked_flows: TreasuryReceivedCreditsResourceLinkedFlows,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
     /// The rails used to send the funds.
     pub network: TreasuryReceivedCreditNetwork,
+
+    /// Details describing when a ReceivedCredit may be reversed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reversal_details: Option<TreasuryReceivedCreditsResourceReversalDetails>,
 
     /// Status of the ReceivedCredit.
     ///
@@ -78,7 +87,7 @@ impl Object for TreasuryReceivedCredit {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ReceivedCreditsResourceTreasuryLinkedFlows {
+pub struct TreasuryReceivedCreditsResourceLinkedFlows {
     /// The CreditReversal created as a result of this ReceivedCredit being reversed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_reversal: Option<String>,
@@ -93,14 +102,14 @@ pub struct ReceivedCreditsResourceTreasuryLinkedFlows {
 
     /// ID of the source flow.
     ///
-    /// Set if `network` is `stripe` and the source flow is visible to the merchant.
+    /// Set if `network` is `stripe` and the source flow is visible to the user.
     /// Examples of source flows include OutboundPayments, payouts, or CreditReversals.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_flow: Option<String>,
 
     /// The expandable object of the source flow.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source_flow_details: Option<ReceivedCreditsResourceTreasurySourceFlowsDetails>,
+    pub source_flow_details: Option<TreasuryReceivedCreditsResourceSourceFlowsDetails>,
 
     /// The type of flow that originated the ReceivedCredit (for example, `outbound_payment`).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -108,7 +117,18 @@ pub struct ReceivedCreditsResourceTreasuryLinkedFlows {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ReceivedCreditsResourceTreasurySourceFlowsDetails {
+pub struct TreasuryReceivedCreditsResourceReversalDetails {
+    /// Time before which a ReceivedCredit can be reversed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deadline: Option<Timestamp>,
+
+    /// Set if a ReceivedCredit cannot be reversed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restricted_reason: Option<TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TreasuryReceivedCreditsResourceSourceFlowsDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_reversal: Option<TreasuryCreditReversal>,
 
@@ -120,49 +140,7 @@ pub struct ReceivedCreditsResourceTreasurySourceFlowsDetails {
 
     /// The type of the source flow that originated the ReceivedCredit.
     #[serde(rename = "type")]
-    pub type_: ReceivedCreditsResourceTreasurySourceFlowsDetailsType,
-}
-
-/// An enum representing the possible values of an `ReceivedCreditsResourceTreasurySourceFlowsDetails`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum ReceivedCreditsResourceTreasurySourceFlowsDetailsType {
-    CreditReversal,
-    Other,
-    OutboundPayment,
-    Payout,
-}
-
-impl ReceivedCreditsResourceTreasurySourceFlowsDetailsType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            ReceivedCreditsResourceTreasurySourceFlowsDetailsType::CreditReversal => {
-                "credit_reversal"
-            }
-            ReceivedCreditsResourceTreasurySourceFlowsDetailsType::Other => "other",
-            ReceivedCreditsResourceTreasurySourceFlowsDetailsType::OutboundPayment => {
-                "outbound_payment"
-            }
-            ReceivedCreditsResourceTreasurySourceFlowsDetailsType::Payout => "payout",
-        }
-    }
-}
-
-impl AsRef<str> for ReceivedCreditsResourceTreasurySourceFlowsDetailsType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for ReceivedCreditsResourceTreasurySourceFlowsDetailsType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for ReceivedCreditsResourceTreasurySourceFlowsDetailsType {
-    fn default() -> Self {
-        Self::CreditReversal
-    }
+    pub type_: TreasuryReceivedCreditsResourceSourceFlowsDetailsType,
 }
 
 /// An enum representing the possible values of an `TreasuryReceivedCredit`'s `failure_code` field.
@@ -270,5 +248,87 @@ impl std::fmt::Display for TreasuryReceivedCreditStatus {
 impl std::default::Default for TreasuryReceivedCreditStatus {
     fn default() -> Self {
         Self::Failed
+    }
+}
+
+/// An enum representing the possible values of an `TreasuryReceivedCreditsResourceReversalDetails`'s `restricted_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
+    AlreadyReversed,
+    DeadlinePassed,
+    NetworkRestricted,
+    Other,
+    SourceFlowRestricted,
+}
+
+impl TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason::AlreadyReversed => "already_reversed",
+            TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason::DeadlinePassed => "deadline_passed",
+            TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason::NetworkRestricted => "network_restricted",
+            TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason::Other => "other",
+            TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason::SourceFlowRestricted => "source_flow_restricted",
+        }
+    }
+}
+
+impl AsRef<str> for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason {
+    fn default() -> Self {
+        Self::AlreadyReversed
+    }
+}
+
+/// An enum representing the possible values of an `TreasuryReceivedCreditsResourceSourceFlowsDetails`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
+    CreditReversal,
+    Other,
+    OutboundPayment,
+    Payout,
+}
+
+impl TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::CreditReversal => {
+                "credit_reversal"
+            }
+            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::Other => "other",
+            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::OutboundPayment => {
+                "outbound_payment"
+            }
+            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::Payout => "payout",
+        }
+    }
+}
+
+impl AsRef<str> for TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
+    fn default() -> Self {
+        Self::CreditReversal
     }
 }

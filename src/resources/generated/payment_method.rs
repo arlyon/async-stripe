@@ -112,6 +112,9 @@ pub struct PaymentMethod {
     pub paynow: Option<PaymentMethodPaynow>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub promptpay: Option<PaymentMethodPromptpay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<RadarRadarOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -569,6 +572,9 @@ pub struct PaymentMethodP24 {
 pub struct PaymentMethodPaynow {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodPromptpay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodSepaDebit {
     /// Bank code of bank associated with the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -792,6 +798,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<CreatePaymentMethodPaynow>,
 
+    /// If this is a `promptpay` PaymentMethod, this hash contains details about the PromptPay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promptpay: Option<CreatePaymentMethodPromptpay>,
+
     /// Options to configure Radar.
     ///
     /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
@@ -853,6 +863,7 @@ impl<'a> CreatePaymentMethod<'a> {
             p24: Default::default(),
             payment_method: Default::default(),
             paynow: Default::default(),
+            promptpay: Default::default(),
             radar_options: Default::default(),
             sepa_debit: Default::default(),
             sofort: Default::default(),
@@ -1056,6 +1067,9 @@ pub struct CreatePaymentMethodP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodPromptpay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodRadarOptions {
@@ -1932,6 +1946,7 @@ pub enum PaymentMethodType {
     Oxxo,
     P24,
     Paynow,
+    Promptpay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -1964,6 +1979,7 @@ impl PaymentMethodType {
             PaymentMethodType::Oxxo => "oxxo",
             PaymentMethodType::P24 => "p24",
             PaymentMethodType::Paynow => "paynow",
+            PaymentMethodType::Promptpay => "promptpay",
             PaymentMethodType::SepaDebit => "sepa_debit",
             PaymentMethodType::Sofort => "sofort",
             PaymentMethodType::UsBankAccount => "us_bank_account",
@@ -2014,6 +2030,7 @@ pub enum PaymentMethodTypeFilter {
     Oxxo,
     P24,
     Paynow,
+    Promptpay,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -2044,6 +2061,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Oxxo => "oxxo",
             PaymentMethodTypeFilter::P24 => "p24",
             PaymentMethodTypeFilter::Paynow => "paynow",
+            PaymentMethodTypeFilter::Promptpay => "promptpay",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",
             PaymentMethodTypeFilter::Sofort => "sofort",
             PaymentMethodTypeFilter::UsBankAccount => "us_bank_account",

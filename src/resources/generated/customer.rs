@@ -13,8 +13,9 @@ use crate::params::{
     Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{
-    Address, CashBalance, Currency, Discount, PaymentMethod, PaymentSource, PaymentSourceParams,
-    Scheduled, Shipping, Subscription, TaxId, TestHelpersTestClock,
+    Address, CashBalance, Currency, Discount, InvoiceSettingRenderingOptions, PaymentMethod,
+    PaymentSource, PaymentSourceParams, Scheduled, Shipping, Subscription, TaxId,
+    TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Customer".
@@ -242,6 +243,10 @@ pub struct InvoiceSettingCustomerSetting {
     /// Default footer to be displayed on invoices for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
+
+    /// Default options for invoice PDF rendering for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering_options: Option<InvoiceSettingRenderingOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

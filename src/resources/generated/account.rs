@@ -300,6 +300,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow_payments: Option<AccountCapabilitiesPaynowPayments>,
 
+    /// The status of the promptpay payments capability of the account, or whether the account can directly process promptpay charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promptpay_payments: Option<AccountCapabilitiesPromptpayPayments>,
+
     /// The status of the SEPA Direct Debits payments capability of the account, or whether the account can directly process SEPA Direct Debits charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<AccountCapabilitiesSepaDebitPayments>,
@@ -520,6 +524,20 @@ pub struct CardPaymentsSettings {
     /// `statement_descriptor_prefix` is useful for maximizing descriptor space for the dynamic portion.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_prefix: Option<String>,
+
+    /// The Kana variation of the default text that appears on credit card statements when a charge is made (Japan only).
+    ///
+    /// This field prefixes any dynamic `statement_descriptor_suffix_kana` specified on the charge.
+    /// `statement_descriptor_prefix_kana` is useful for maximizing descriptor space for the dynamic portion.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_prefix_kana: Option<String>,
+
+    /// The Kanji variation of the default text that appears on credit card statements when a charge is made (Japan only).
+    ///
+    /// This field prefixes any dynamic `statement_descriptor_suffix_kanji` specified on the charge.
+    /// `statement_descriptor_prefix_kanji` is useful for maximizing descriptor space for the dynamic portion.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_prefix_kanji: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -565,6 +583,20 @@ pub struct PaymentsSettings {
     /// The Kanji variation of the default text that appears on credit card statements when a charge is made (Japan only).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_kanji: Option<String>,
+
+    /// The Kana variation of the default text that appears on credit card statements when a charge is made (Japan only).
+    ///
+    /// This field prefixes any dynamic `statement_descriptor_suffix_kana` specified on the charge.
+    /// `statement_descriptor_prefix_kana` is useful for maximizing descriptor space for the dynamic portion.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_prefix_kana: Option<String>,
+
+    /// The Kanji variation of the default text that appears on credit card statements when a charge is made (Japan only).
+    ///
+    /// This field prefixes any dynamic `statement_descriptor_suffix_kanji` specified on the charge.
+    /// `statement_descriptor_prefix_kanji` is useful for maximizing descriptor space for the dynamic portion.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_prefix_kanji: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1235,6 +1267,9 @@ pub struct CreateAccountCapabilities {
     pub paynow_payments: Option<CreateAccountCapabilitiesPaynowPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub promptpay_payments: Option<CreateAccountCapabilitiesPromptpayPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<CreateAccountCapabilitiesSepaDebitPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1427,6 +1462,9 @@ pub struct UpdateAccountCapabilities {
     pub paynow_payments: Option<UpdateAccountCapabilitiesPaynowPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub promptpay_payments: Option<UpdateAccountCapabilitiesPromptpayPayments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit_payments: Option<UpdateAccountCapabilitiesSepaDebitPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1509,6 +1547,12 @@ pub struct CardPaymentsSettingsParams {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_prefix: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_prefix_kana: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub statement_descriptor_prefix_kanji: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1669,6 +1713,12 @@ pub struct CreateAccountCapabilitiesP24Payments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesPaynowPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesPromptpayPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -1951,6 +2001,12 @@ pub struct UpdateAccountCapabilitiesP24Payments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesPaynowPayments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesPromptpayPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested: Option<bool>,
 }
@@ -2816,6 +2872,42 @@ impl std::fmt::Display for AccountCapabilitiesPaynowPayments {
     }
 }
 impl std::default::Default for AccountCapabilitiesPaynowPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `promptpay_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesPromptpayPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesPromptpayPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesPromptpayPayments::Active => "active",
+            AccountCapabilitiesPromptpayPayments::Inactive => "inactive",
+            AccountCapabilitiesPromptpayPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesPromptpayPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesPromptpayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesPromptpayPayments {
     fn default() -> Self {
         Self::Active
     }
