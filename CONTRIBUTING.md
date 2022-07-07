@@ -63,7 +63,7 @@ To run the tests, you will need
 to run a [`stripe-mock`](https://github.com/stripe/stripe-mock) server and select a runtime. CI runs tests against all runtimes, but it is encouraged you test your changes locally against a few runtimes first.
 
 ```sh
-docker run --rm -d -it -p 12111-12112:12111-12112 stripemock/stripe-mock:latest
+docker run --rm -d -it -p 12111-12112:12111-12112 stripe/stripe-mock:latest
 cargo test --features runtime-blocking
 ```
 
