@@ -72,7 +72,7 @@ jobs:
           ]
     services:
       stripe-mock:
-        image: stripemock/stripe-mock
+        image: stripe/stripe-mock
         ports:
           - 12111:12111
           - 12112:12112
