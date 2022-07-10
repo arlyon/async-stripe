@@ -45,6 +45,12 @@ mod billing {
 }
 
 #[path = "resources"]
+#[cfg(feature = "checkout")]
+mod checkout {
+    pub mod checkout_session_ext;
+}
+
+#[path = "resources"]
 #[cfg(feature = "connect")]
 mod connect {
     pub mod login_links_ext;
@@ -166,6 +172,7 @@ pub use {
 #[rustfmt::skip]
 #[cfg(feature = "checkout")]
 pub use {
+    checkout::checkout_session_ext::*,
     generated::checkout::{
         checkout_session::*,
         payment_link::*,

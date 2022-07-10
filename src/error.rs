@@ -8,11 +8,11 @@ use crate::params::to_snakecase;
 /// An error encountered when communicating with the Stripe API.
 #[derive(Debug, Error)]
 pub enum StripeError {
-    #[error("error reported by stripe")]
+    #[error("error reported by stripe: {0}")]
     Stripe(#[from] RequestError),
     #[error("error serializing or deserializing a querystring: {0}")]
     QueryStringSerialize(#[from] serde_qs::Error),
-    #[error("error serializing or deserializing a request")]
+    #[error("error serializing or deserializing a request: {0}")]
     JSONSerialize(#[from] serde_json::Error),
     #[error("attempted to access an unsupported version of the api")]
     UnsupportedVersion,
