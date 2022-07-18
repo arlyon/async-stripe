@@ -85,7 +85,7 @@ hyper-client = ["hyper", "http-types/hyperium_http"]
 async-std = {version = "1.8,<1.11", optional = true}
 async-global-executor = {version = "2.0, <2.1", optional = true}
 
-chrono = { version = "0.4", features = ["serde"], optional = true }
+chrono = { version = "0.4", default-features = false, features = ["serde", "clock"], optional = true }
 thiserror = "1.0.24"
 http-types = { version = "2.12.0", default-features = false }
 hyper = { version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true }
