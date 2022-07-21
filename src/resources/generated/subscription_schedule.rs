@@ -154,7 +154,7 @@ pub struct SubscriptionScheduleCurrentPhase {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionSchedulePhaseConfiguration {
-    /// A list of prices and quantities that will generate invoice items appended to the first invoice for this phase.
+    /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     pub add_invoice_items: Vec<SubscriptionScheduleAddInvoiceItem>,
 
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
@@ -188,6 +188,12 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// ID of the coupon to use during this phase of the subscription schedule.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<Expandable<Coupon>>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
 
     /// ID of the default payment method for the subscription schedule.
     ///
@@ -546,6 +552,9 @@ pub struct CreateSubscriptionSchedulePhases {
     pub coupon: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -627,6 +636,9 @@ pub struct UpdateSubscriptionSchedulePhases {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<String>,

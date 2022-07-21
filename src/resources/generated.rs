@@ -19,6 +19,7 @@ pub mod core {
     pub mod cash_balance;
     pub mod charge;
     pub mod customer;
+    pub mod custom_unit_amount;
     pub mod dispute;
     pub mod ephemeral_key;
     pub mod file;
@@ -26,6 +27,7 @@ pub mod core {
     pub mod invoice_setting_rendering_options;
     pub mod linked_account_options_us_bank_account;
     pub mod mandate;
+    pub mod mandate_options_off_session_details_blik;
     pub mod package_dimensions;
     pub mod payment_intent;
     pub mod payment_intent_payment_method_options_acss_debit;

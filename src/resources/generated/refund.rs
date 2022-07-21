@@ -5,7 +5,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
-use crate::ids::{ChargeId, PaymentIntentId, RefundId};
+use crate::ids::{ChargeId, CustomerId, PaymentIntentId, RefundId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Charge, Currency, PaymentIntent, TransferReversal};
 
@@ -170,16 +170,28 @@ pub struct EmailSent {
 /// The parameters for `Refund::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateRefund<'a> {
+    /// A positive integer representing how much to refund.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,
 
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    /// Customer whose customer balance to refund from.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer: Option<CustomerId>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
+    /// Address to send refund email, use customer email if not specified.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instructions_email: Option<&'a str>,
 
@@ -190,6 +202,10 @@ pub struct CreateRefund<'a> {
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// Origin of the refund.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<RefundOrigin>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<PaymentIntentId>,
@@ -209,9 +225,12 @@ impl<'a> CreateRefund<'a> {
         CreateRefund {
             amount: Default::default(),
             charge: Default::default(),
+            currency: Default::default(),
+            customer: Default::default(),
             expand: Default::default(),
             instructions_email: Default::default(),
             metadata: Default::default(),
+            origin: Default::default(),
             payment_intent: Default::default(),
             reason: Default::default(),
             refund_application_fee: Default::default(),
@@ -297,6 +316,38 @@ pub struct UpdateRefund<'a> {
 impl<'a> UpdateRefund<'a> {
     pub fn new() -> Self {
         UpdateRefund { expand: Default::default(), metadata: Default::default() }
+    }
+}
+
+/// An enum representing the possible values of an `CreateRefund`'s `origin` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum RefundOrigin {
+    CustomerBalance,
+}
+
+impl RefundOrigin {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            RefundOrigin::CustomerBalance => "customer_balance",
+        }
+    }
+}
+
+impl AsRef<str> for RefundOrigin {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for RefundOrigin {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for RefundOrigin {
+    fn default() -> Self {
+        Self::CustomerBalance
     }
 }
 

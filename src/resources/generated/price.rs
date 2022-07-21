@@ -9,7 +9,7 @@ use crate::ids::PriceId;
 use crate::params::{
     Expand, Expandable, IdOrCreate, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
-use crate::resources::{CreateProduct, Currency, Product, UpTo};
+use crate::resources::{CreateProduct, Currency, CustomUnitAmount, Product, UpTo};
 
 /// The resource representing a Stripe "Price".
 ///
@@ -42,6 +42,12 @@ pub struct Price {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
+
+    /// Prices defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<CurrencyOption>,
 
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -161,20 +167,36 @@ impl Object for Price {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CustomUnitAmount {
-    /// The maximum unit amount the customer can specify for this item.
+pub struct CurrencyOption {
+    /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<i64>,
+    pub custom_unit_amount: Option<CustomUnitAmount>,
 
-    /// The minimum unit amount the customer can specify for this item.
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     ///
-    /// Must be at least the minimum charge amount.
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<i64>,
+    pub tax_behavior: Option<CurrencyOptionTaxBehavior>,
 
-    /// The starting unit amount which can be updated by the customer.
+    /// Each element represents a pricing tier.
+    ///
+    /// This parameter requires `billing_scheme` to be set to `tiered`.
+    /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub preset: Option<i64>,
+    pub tiers: Option<Vec<PriceTier>>,
+
+    /// The unit amount in %s to be charged, represented as a whole integer if possible.
+    ///
+    /// Only set if `billing_scheme=per_unit`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+
+    /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
+    ///
+    /// Only set if `billing_scheme=per_unit`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -258,6 +280,12 @@ pub struct CreatePrice<'a> {
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
+
+    /// Prices defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<CreatePriceCurrencyOptions>,
 
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -344,6 +372,7 @@ impl<'a> CreatePrice<'a> {
             active: Default::default(),
             billing_scheme: Default::default(),
             currency,
+            currency_options: Default::default(),
             custom_unit_amount: Default::default(),
             expand: Default::default(),
             lookup_key: Default::default(),
@@ -454,6 +483,12 @@ pub struct UpdatePrice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
+    /// Prices defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<UpdatePriceCurrencyOptions>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -492,6 +527,7 @@ impl<'a> UpdatePrice<'a> {
     pub fn new() -> Self {
         UpdatePrice {
             active: Default::default(),
+            currency_options: Default::default(),
             expand: Default::default(),
             lookup_key: Default::default(),
             metadata: Default::default(),
@@ -500,6 +536,24 @@ impl<'a> UpdatePrice<'a> {
             transfer_lookup_key: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePriceCurrencyOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_unit_amount: Option<CreatePriceCurrencyOptionsCustomUnitAmount>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<CreatePriceCurrencyOptionsTaxBehavior>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tiers: Option<Vec<CreatePriceCurrencyOptionsTiers>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -584,6 +638,122 @@ pub struct ListPricesRecurring {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_type: Option<ListPricesRecurringUsageType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePriceCurrencyOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_unit_amount: Option<UpdatePriceCurrencyOptionsCustomUnitAmount>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<UpdatePriceCurrencyOptionsTaxBehavior>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tiers: Option<Vec<UpdatePriceCurrencyOptionsTiers>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePriceCurrencyOptionsCustomUnitAmount {
+    pub enabled: bool,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preset: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePriceCurrencyOptionsTiers {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount_decimal: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+
+    pub up_to: Option<UpTo>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePriceCurrencyOptionsCustomUnitAmount {
+    pub enabled: bool,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preset: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePriceCurrencyOptionsTiers {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount_decimal: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+
+    pub up_to: Option<UpTo>,
+}
+
+/// An enum representing the possible values of an `CreatePriceCurrencyOptions`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePriceCurrencyOptionsTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl CreatePriceCurrencyOptionsTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePriceCurrencyOptionsTaxBehavior::Exclusive => "exclusive",
+            CreatePriceCurrencyOptionsTaxBehavior::Inclusive => "inclusive",
+            CreatePriceCurrencyOptionsTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePriceCurrencyOptionsTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePriceCurrencyOptionsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePriceCurrencyOptionsTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
+    }
 }
 
 /// An enum representing the possible values of an `CreatePriceRecurring`'s `aggregate_usage` field.
@@ -727,6 +897,42 @@ impl std::fmt::Display for CreatePriceTransformQuantityRound {
 impl std::default::Default for CreatePriceTransformQuantityRound {
     fn default() -> Self {
         Self::Down
+    }
+}
+
+/// An enum representing the possible values of an `CurrencyOption`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CurrencyOptionTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl CurrencyOptionTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CurrencyOptionTaxBehavior::Exclusive => "exclusive",
+            CurrencyOptionTaxBehavior::Inclusive => "inclusive",
+            CurrencyOptionTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for CurrencyOptionTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CurrencyOptionTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CurrencyOptionTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
     }
 }
 
@@ -1081,5 +1287,41 @@ impl std::fmt::Display for TransformQuantityRound {
 impl std::default::Default for TransformQuantityRound {
     fn default() -> Self {
         Self::Down
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePriceCurrencyOptions`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePriceCurrencyOptionsTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl UpdatePriceCurrencyOptionsTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePriceCurrencyOptionsTaxBehavior::Exclusive => "exclusive",
+            UpdatePriceCurrencyOptionsTaxBehavior::Inclusive => "inclusive",
+            UpdatePriceCurrencyOptionsTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePriceCurrencyOptionsTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePriceCurrencyOptionsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePriceCurrencyOptionsTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
     }
 }

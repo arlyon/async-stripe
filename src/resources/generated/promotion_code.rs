@@ -102,6 +102,12 @@ impl Object for PromotionCode {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PromotionCodesResourceRestrictions {
+    /// Promotion code restrictions defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<PromotionCodeCurrencyOption>,
+
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
     pub first_time_transaction: bool,
 
@@ -112,6 +118,12 @@ pub struct PromotionCodesResourceRestrictions {
     /// Three-letter [ISO code](https://stripe.com/docs/currencies) for minimum_amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_amount_currency: Option<Currency>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PromotionCodeCurrencyOption {
+    /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
+    pub minimum_amount: i64,
 }
 
 /// The parameters for `PromotionCode::list`.
@@ -205,6 +217,10 @@ pub struct UpdatePromotionCode<'a> {
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
+
+    /// Settings that restrict the redemption of the promotion code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restrictions: Option<UpdatePromotionCodeRestrictions>,
 }
 
 impl<'a> UpdatePromotionCode<'a> {
@@ -213,6 +229,19 @@ impl<'a> UpdatePromotionCode<'a> {
             active: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
+            restrictions: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePromotionCodeRestrictions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<UpdatePromotionCodeRestrictionsCurrencyOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePromotionCodeRestrictionsCurrencyOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_amount: Option<i64>,
 }

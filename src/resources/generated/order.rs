@@ -1197,6 +1197,9 @@ pub struct CreateOrderShippingCostShippingRateDataFixedAmount {
     pub amount: i64,
 
     pub currency: Currency,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1266,6 +1269,9 @@ pub struct UpdateOrderShippingCostShippingRateDataFixedAmount {
     pub amount: i64,
 
     pub currency: Currency,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1443,6 +1449,15 @@ pub struct CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimum {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions {
+    pub amount: i64,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior:
+        Option<CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options:
@@ -1614,6 +1629,15 @@ pub struct UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimum {
     pub unit: UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit,
 
     pub value: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions {
+    pub amount: i64,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior:
+        Option<UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3026,6 +3050,46 @@ impl std::fmt::Display for CreateOrderShippingCostShippingRateDataDeliveryEstima
 impl std::default::Default for CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
     fn default() -> Self {
         Self::BusinessDay
+    }
+}
+
+/// An enum representing the possible values of an `CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Exclusive => "exclusive",
+            CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Inclusive => "inclusive",
+            CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
+{
+    fn default() -> Self {
+        Self::Exclusive
     }
 }
 
@@ -5113,6 +5177,46 @@ impl std::fmt::Display for UpdateOrderShippingCostShippingRateDataDeliveryEstima
 impl std::default::Default for UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
     fn default() -> Self {
         Self::BusinessDay
+    }
+}
+
+/// An enum representing the possible values of an `UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Exclusive => "exclusive",
+            UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Inclusive => "inclusive",
+            UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
+{
+    fn default() -> Self {
+        Self::Exclusive
     }
 }
 

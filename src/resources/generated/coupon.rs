@@ -34,6 +34,12 @@ pub struct Coupon {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
+    /// Coupons defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<CouponCurrencyOption>,
+
     // Always true for a deleted object
     #[serde(default)]
     pub deleted: bool,
@@ -139,6 +145,12 @@ pub struct CouponAppliesTo {
     pub products: Vec<String>,
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CouponCurrencyOption {
+    /// Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
+    pub amount_off: i64,
+}
+
 /// The parameters for `Coupon::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCoupon<'a> {
@@ -153,6 +165,12 @@ pub struct CreateCoupon<'a> {
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) of the `amount_off` parameter (required if `amount_off` is passed).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
+
+    /// Coupons defined in each available currency option (only supported if `amount_off` is passed).
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<CreateCouponCurrencyOptions>,
 
     /// Specifies how long the discount will be in effect if used on a subscription.
     ///
@@ -212,6 +230,7 @@ impl<'a> CreateCoupon<'a> {
             amount_off: Default::default(),
             applies_to: Default::default(),
             currency: Default::default(),
+            currency_options: Default::default(),
             duration: Default::default(),
             duration_in_months: Default::default(),
             expand: Default::default(),
@@ -279,6 +298,12 @@ impl Paginable for ListCoupons<'_> {
 /// The parameters for `Coupon::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCoupon<'a> {
+    /// Coupons defined in each available currency option (only supported if the coupon is amount-based).
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<UpdateCouponCurrencyOptions>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -301,6 +326,7 @@ pub struct UpdateCoupon<'a> {
 impl<'a> UpdateCoupon<'a> {
     pub fn new() -> Self {
         UpdateCoupon {
+            currency_options: Default::default(),
             expand: Default::default(),
             metadata: Default::default(),
             name: Default::default(),
@@ -312,6 +338,16 @@ impl<'a> UpdateCoupon<'a> {
 pub struct CreateCouponAppliesTo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub products: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCouponCurrencyOptions {
+    pub amount_off: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateCouponCurrencyOptions {
+    pub amount_off: i64,
 }
 
 /// An enum representing the possible values of an `Coupon`'s `duration` field.

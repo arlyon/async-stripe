@@ -33,7 +33,7 @@ pub struct IssuingCard {
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    /// Supported currencies are `usd` in the US, `eur` in the EU, and `gbp` in the UK.
     pub currency: Currency,
 
     /// The card's CVC.

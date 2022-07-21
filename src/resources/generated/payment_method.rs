@@ -44,6 +44,9 @@ pub struct PaymentMethod {
     pub billing_details: BillingDetails,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<PaymentMethodBlik>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<PaymentMethodBoleto>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -257,6 +260,9 @@ pub struct PaymentMethodBacsDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodBancontact {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodBlik {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodBoleto {
@@ -714,6 +720,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetails>,
 
+    /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<CreatePaymentMethodBlik>,
+
     /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreatePaymentMethodBoleto>,
@@ -844,6 +854,7 @@ impl<'a> CreatePaymentMethod<'a> {
             bacs_debit: Default::default(),
             bancontact: Default::default(),
             billing_details: Default::default(),
+            blik: Default::default(),
             boleto: Default::default(),
             card: Default::default(),
             customer: Default::default(),
@@ -1009,6 +1020,9 @@ pub struct CreatePaymentMethodBacsDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodBancontact {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodBlik {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodBoleto {
@@ -1930,6 +1944,7 @@ pub enum PaymentMethodType {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Blik,
     Boleto,
     Card,
     CardPresent,
@@ -1963,6 +1978,7 @@ impl PaymentMethodType {
             PaymentMethodType::AuBecsDebit => "au_becs_debit",
             PaymentMethodType::BacsDebit => "bacs_debit",
             PaymentMethodType::Bancontact => "bancontact",
+            PaymentMethodType::Blik => "blik",
             PaymentMethodType::Boleto => "boleto",
             PaymentMethodType::Card => "card",
             PaymentMethodType::CardPresent => "card_present",
@@ -2016,6 +2032,7 @@ pub enum PaymentMethodTypeFilter {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Blik,
     Boleto,
     Card,
     CustomerBalance,
@@ -2047,6 +2064,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::AuBecsDebit => "au_becs_debit",
             PaymentMethodTypeFilter::BacsDebit => "bacs_debit",
             PaymentMethodTypeFilter::Bancontact => "bancontact",
+            PaymentMethodTypeFilter::Blik => "blik",
             PaymentMethodTypeFilter::Boleto => "boleto",
             PaymentMethodTypeFilter::Card => "card",
             PaymentMethodTypeFilter::CustomerBalance => "customer_balance",

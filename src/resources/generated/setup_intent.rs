@@ -9,7 +9,7 @@ use crate::ids::{CustomerId, PaymentMethodId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Currency, Customer, LinkedAccountOptionsUsBankAccount,
-    Mandate, PaymentMethod, SetupAttempt,
+    Mandate, MandateOptionsOffSessionDetailsBlik, PaymentMethod, SetupAttempt,
 };
 
 /// The resource representing a Stripe "SetupIntent".
@@ -224,6 +224,9 @@ pub struct SetupIntentPaymentMethodOptions {
     pub acss_debit: Option<SetupIntentPaymentMethodOptionsAcssDebitUnion>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<SetupIntentPaymentMethodOptionsBlikUnion>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<SetupIntentPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -248,6 +251,12 @@ pub struct SetupIntentPaymentMethodOptionsAcssDebit {
     /// Bank account verification method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method: Option<SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupIntentPaymentMethodOptionsBlik {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<SetupIntentPaymentMethodOptionsMandateOptionsBlik>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -361,6 +370,21 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type:
         Option<SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupIntentPaymentMethodOptionsMandateOptionsBlik {
+    /// Date at which the mandate expires.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_after: Option<Timestamp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub off_session: Option<MandateOptionsOffSessionDetailsBlik>,
+
+    /// Type of the mandate.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<SetupIntentPaymentMethodOptionsMandateOptionsBlikType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -693,6 +717,9 @@ pub struct CreateSetupIntentPaymentMethodData {
     pub billing_details: Option<CreateSetupIntentPaymentMethodDataBillingDetails>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<CreateSetupIntentPaymentMethodDataBlik>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreateSetupIntentPaymentMethodDataBoleto>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -765,6 +792,9 @@ pub struct CreateSetupIntentPaymentMethodOptions {
     pub acss_debit: Option<CreateSetupIntentPaymentMethodOptionsAcssDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<CreateSetupIntentPaymentMethodOptionsBlik>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateSetupIntentPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -809,6 +839,9 @@ pub struct UpdateSetupIntentPaymentMethodData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<UpdateSetupIntentPaymentMethodDataBillingDetails>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<UpdateSetupIntentPaymentMethodDataBlik>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<UpdateSetupIntentPaymentMethodDataBoleto>,
@@ -881,6 +914,9 @@ pub struct UpdateSetupIntentPaymentMethodData {
 pub struct UpdateSetupIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<UpdateSetupIntentPaymentMethodOptionsAcssDebit>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<UpdateSetupIntentPaymentMethodOptionsBlik>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateSetupIntentPaymentMethodOptionsCard>,
@@ -961,6 +997,9 @@ pub struct CreateSetupIntentPaymentMethodDataBillingDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataBlik {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataBoleto {
@@ -1075,6 +1114,12 @@ pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsBlik {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsCardMandateOptions>,
@@ -1161,6 +1206,9 @@ pub struct UpdateSetupIntentPaymentMethodDataBillingDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataBlik {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataBoleto {
@@ -1272,6 +1320,12 @@ pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<UpdateSetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsBlik {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub code: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1530,6 +1584,21 @@ pub enum SetupIntentPaymentMethodOptionsAcssDebitUnion {
 impl std::default::Default for SetupIntentPaymentMethodOptionsAcssDebitUnion {
     fn default() -> Self {
         Self::SetupIntentPaymentMethodOptionsAcssDebit(Default::default())
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum SetupIntentPaymentMethodOptionsBlikUnion {
+    SetupIntentPaymentMethodOptionsBlik(SetupIntentPaymentMethodOptionsBlik),
+    #[serde(rename = "SetupIntentTypeSpecificPaymentMethodOptionsClient")]
+    SetupIntentTypeSpecificPaymentMethodOptionsClient(
+        SetupIntentTypeSpecificPaymentMethodOptionsClient,
+    ),
+}
+impl std::default::Default for SetupIntentPaymentMethodOptionsBlikUnion {
+    fn default() -> Self {
+        Self::SetupIntentPaymentMethodOptionsBlik(Default::default())
     }
 }
 
@@ -2027,6 +2096,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Blik,
     Boleto,
     CustomerBalance,
     Eps,
@@ -2057,6 +2127,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             CreateSetupIntentPaymentMethodDataType::AuBecsDebit => "au_becs_debit",
             CreateSetupIntentPaymentMethodDataType::BacsDebit => "bacs_debit",
             CreateSetupIntentPaymentMethodDataType::Bancontact => "bancontact",
+            CreateSetupIntentPaymentMethodDataType::Blik => "blik",
             CreateSetupIntentPaymentMethodDataType::Boleto => "boleto",
             CreateSetupIntentPaymentMethodDataType::CustomerBalance => "customer_balance",
             CreateSetupIntentPaymentMethodDataType::Eps => "eps",
@@ -3044,6 +3115,40 @@ impl std::default::Default
     }
 }
 
+/// An enum representing the possible values of an `SetupIntentPaymentMethodOptionsMandateOptionsBlik`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SetupIntentPaymentMethodOptionsMandateOptionsBlikType {
+    OffSession,
+    OnSession,
+}
+
+impl SetupIntentPaymentMethodOptionsMandateOptionsBlikType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SetupIntentPaymentMethodOptionsMandateOptionsBlikType::OffSession => "off_session",
+            SetupIntentPaymentMethodOptionsMandateOptionsBlikType::OnSession => "on_session",
+        }
+    }
+}
+
+impl AsRef<str> for SetupIntentPaymentMethodOptionsMandateOptionsBlikType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SetupIntentPaymentMethodOptionsMandateOptionsBlikType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SetupIntentPaymentMethodOptionsMandateOptionsBlikType {
+    fn default() -> Self {
+        Self::OffSession
+    }
+}
+
 /// An enum representing the possible values of an `SetupIntentPaymentMethodOptionsUsBankAccount`'s `verification_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3583,6 +3688,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Blik,
     Boleto,
     CustomerBalance,
     Eps,
@@ -3613,6 +3719,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             UpdateSetupIntentPaymentMethodDataType::AuBecsDebit => "au_becs_debit",
             UpdateSetupIntentPaymentMethodDataType::BacsDebit => "bacs_debit",
             UpdateSetupIntentPaymentMethodDataType::Bancontact => "bancontact",
+            UpdateSetupIntentPaymentMethodDataType::Blik => "blik",
             UpdateSetupIntentPaymentMethodDataType::Boleto => "boleto",
             UpdateSetupIntentPaymentMethodDataType::CustomerBalance => "customer_balance",
             UpdateSetupIntentPaymentMethodDataType::Eps => "eps",

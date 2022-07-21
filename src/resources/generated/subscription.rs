@@ -73,6 +73,12 @@ pub struct Subscription {
     /// Measured in seconds since the Unix epoch.
     pub created: Timestamp,
 
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
     /// End of the current period that the subscription has been invoiced for.
     ///
     /// At the end of this period, a new invoice will be created.
@@ -411,7 +417,7 @@ pub struct SubscriptionsResourcePendingUpdate {
 /// The parameters for `Subscription::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateSubscription<'a> {
-    /// A list of prices and quantities that will generate invoice items appended to the first invoice for this subscription.
+    /// A list of prices and quantities that will generate invoice items appended to the next invoice for this subscription.
     ///
     /// You may pass up to 20 items.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -475,6 +481,12 @@ pub struct CreateSubscription<'a> {
     /// A coupon applied to a subscription will only affect invoices created for that particular subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
 
     /// The identifier of the customer to subscribe.
     pub customer: CustomerId,
@@ -614,6 +626,7 @@ impl<'a> CreateSubscription<'a> {
             cancel_at_period_end: Default::default(),
             collection_method: Default::default(),
             coupon: Default::default(),
+            currency: Default::default(),
             customer,
             days_until_due: Default::default(),
             default_payment_method: Default::default(),
@@ -730,7 +743,7 @@ impl Paginable for ListSubscriptions<'_> {
 /// The parameters for `Subscription::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscription<'a> {
-    /// A list of prices and quantities that will generate invoice items appended to the first invoice for this subscription.
+    /// A list of prices and quantities that will generate invoice items appended to the next invoice for this subscription.
     ///
     /// You may pass up to 20 items.
     #[serde(skip_serializing_if = "Option::is_none")]
