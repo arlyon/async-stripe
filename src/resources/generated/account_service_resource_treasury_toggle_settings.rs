@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "AccountServiceResourceTreasuryToggleSettings".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountServiceResourceTreasuryToggleSettings {
-
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
 
@@ -20,7 +19,6 @@ pub struct AccountServiceResourceTreasuryToggleSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountServiceResourceTreasuryTogglesSettingStatusDetails {
-
     /// Represents the reason why the status is `pending` or `restricted`.
     pub code: AccountServiceResourceTreasuryTogglesSettingStatusDetailsCode,
 
@@ -164,8 +162,12 @@ pub enum AccountServiceResourceTreasuryTogglesSettingStatusDetailsRestriction {
 impl AccountServiceResourceTreasuryTogglesSettingStatusDetailsRestriction {
     pub fn as_str(self) -> &'static str {
         match self {
-            AccountServiceResourceTreasuryTogglesSettingStatusDetailsRestriction::InboundFlows => "inbound_flows",
-            AccountServiceResourceTreasuryTogglesSettingStatusDetailsRestriction::OutboundFlows => "outbound_flows",
+            AccountServiceResourceTreasuryTogglesSettingStatusDetailsRestriction::InboundFlows => {
+                "inbound_flows"
+            }
+            AccountServiceResourceTreasuryTogglesSettingStatusDetailsRestriction::OutboundFlows => {
+                "outbound_flows"
+            }
         }
     }
 }
@@ -181,7 +183,9 @@ impl std::fmt::Display for AccountServiceResourceTreasuryTogglesSettingStatusDet
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default for AccountServiceResourceTreasuryTogglesSettingStatusDetailsRestriction {
+impl std::default::Default
+    for AccountServiceResourceTreasuryTogglesSettingStatusDetailsRestriction
+{
     fn default() -> Self {
         Self::InboundFlows
     }

@@ -18,8 +18,8 @@ pub mod core {
     pub mod billing_details;
     pub mod cash_balance;
     pub mod charge;
-    pub mod customer;
     pub mod custom_unit_amount;
+    pub mod customer;
     pub mod dispute;
     pub mod ephemeral_key;
     pub mod file;

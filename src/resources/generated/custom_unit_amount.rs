@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "CustomUnitAmount".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomUnitAmount {
-
     /// The maximum unit amount the customer can specify for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
