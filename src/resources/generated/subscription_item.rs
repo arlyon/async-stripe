@@ -8,6 +8,7 @@ use crate::client::{Client, Response};
 use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};
+use crate::SubscriptionPaymentBehavior;
 
 /// The resource representing a Stripe "SubscriptionItem".
 ///
@@ -435,44 +436,6 @@ impl std::fmt::Display for SubscriptionItemPriceDataTaxBehavior {
 impl std::default::Default for SubscriptionItemPriceDataTaxBehavior {
     fn default() -> Self {
         Self::Exclusive
-    }
-}
-
-/// An enum representing the possible values of an `CreateSubscriptionItem`'s `payment_behavior` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum SubscriptionPaymentBehavior {
-    AllowIncomplete,
-    DefaultIncomplete,
-    ErrorIfIncomplete,
-    PendingIfIncomplete,
-}
-
-impl SubscriptionPaymentBehavior {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            SubscriptionPaymentBehavior::AllowIncomplete => "allow_incomplete",
-            SubscriptionPaymentBehavior::DefaultIncomplete => "default_incomplete",
-            SubscriptionPaymentBehavior::ErrorIfIncomplete => "error_if_incomplete",
-            SubscriptionPaymentBehavior::PendingIfIncomplete => "pending_if_incomplete",
-        }
-    }
-}
-
-impl AsRef<str> for SubscriptionPaymentBehavior {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for SubscriptionPaymentBehavior {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for SubscriptionPaymentBehavior {
-    fn default() -> Self {
-        Self::AllowIncomplete
     }
 }
 
