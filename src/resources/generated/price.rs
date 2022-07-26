@@ -356,6 +356,8 @@ pub struct CreatePrice<'a> {
     pub transform_quantity: Option<CreatePriceTransformQuantity>,
 
     /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
+    ///
+    /// One of `unit_amount` or `custom_unit_amount` is required, unless `billing_scheme=tiered`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 

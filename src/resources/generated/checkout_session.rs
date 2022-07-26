@@ -428,6 +428,9 @@ pub struct CheckoutBoletoPaymentMethodOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CheckoutCardPaymentMethodOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub installments: Option<CheckoutCardInstallmentsOptions>,
+
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -451,6 +454,13 @@ pub struct CheckoutCardPaymentMethodOptions {
     /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix_kanji: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CheckoutCardInstallmentsOptions {
+    /// Indicates if installments are enabled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1442,6 +1452,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub installments: Option<CreateCheckoutSessionPaymentMethodOptionsCardInstallments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1677,6 +1690,15 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlan>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<
@@ -1704,6 +1726,16 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options:
         Option<CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlan {
+    pub count: u64,
+
+    pub interval: CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval,
+
+    #[serde(rename = "type")]
+    pub type_: CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3697,6 +3729,74 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsBoletoSetupF
 impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFutureUsage {
     fn default() -> Self {
         Self::None
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlan`'s `interval` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval {
+    Month,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval::Month => "month",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval
+{
+    fn default() -> Self {
+        Self::Month
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlan`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType {
+    FixedCount,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType::FixedCount => {
+                "fixed_count"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType {
+    fn default() -> Self {
+        Self::FixedCount
     }
 }
 

@@ -930,6 +930,9 @@ pub struct PaymentIntentTypeSpecificPaymentMethodOptionsClient {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<PaymentIntentTypeSpecificPaymentMethodOptionsClientCaptureMethod>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub installments: Option<PaymentFlowsInstallmentOptions>,
+
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -943,6 +946,14 @@ pub struct PaymentIntentTypeSpecificPaymentMethodOptionsClient {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<PaymentIntentTypeSpecificPaymentMethodOptionsClientVerificationMethod>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentFlowsInstallmentOptions {
+    pub enabled: bool,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<PaymentMethodDetailsCardInstallmentsPlan>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
