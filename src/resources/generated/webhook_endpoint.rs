@@ -391,6 +391,16 @@ pub enum EventFilter {
     CustomerUpdated,
     #[serde(rename = "file.created")]
     FileCreated,
+    #[serde(rename = "financial_connections.account.created")]
+    FinancialConnectionsAccountCreated,
+    #[serde(rename = "financial_connections.account.deactivated")]
+    FinancialConnectionsAccountDeactivated,
+    #[serde(rename = "financial_connections.account.disconnected")]
+    FinancialConnectionsAccountDisconnected,
+    #[serde(rename = "financial_connections.account.reactivated")]
+    FinancialConnectionsAccountReactivated,
+    #[serde(rename = "financial_connections.account.refreshed_balance")]
+    FinancialConnectionsAccountRefreshedBalance,
     #[serde(rename = "identity.verification_session.canceled")]
     IdentityVerificationSessionCanceled,
     #[serde(rename = "identity.verification_session.created")]
@@ -785,6 +795,21 @@ impl EventFilter {
             EventFilter::CustomerTaxIdUpdated => "customer.tax_id.updated",
             EventFilter::CustomerUpdated => "customer.updated",
             EventFilter::FileCreated => "file.created",
+            EventFilter::FinancialConnectionsAccountCreated => {
+                "financial_connections.account.created"
+            }
+            EventFilter::FinancialConnectionsAccountDeactivated => {
+                "financial_connections.account.deactivated"
+            }
+            EventFilter::FinancialConnectionsAccountDisconnected => {
+                "financial_connections.account.disconnected"
+            }
+            EventFilter::FinancialConnectionsAccountReactivated => {
+                "financial_connections.account.reactivated"
+            }
+            EventFilter::FinancialConnectionsAccountRefreshedBalance => {
+                "financial_connections.account.refreshed_balance"
+            }
             EventFilter::IdentityVerificationSessionCanceled => {
                 "identity.verification_session.canceled"
             }

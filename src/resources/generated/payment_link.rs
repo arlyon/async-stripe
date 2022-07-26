@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::PaymentLinkId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable};
-use crate::resources::{Account, CheckoutSessionItem, ShippingRate};
+use crate::resources::{Account, CheckoutSessionItem, Currency, ShippingRate};
 
 /// The resource representing a Stripe "PaymentLink".
 ///
@@ -273,6 +273,12 @@ pub struct CreatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub consent_collection: Option<CreatePaymentLinkConsentCollection>,
 
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies) and supported by each line item's price.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
     /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_creation: Option<PaymentLinkCustomerCreation>,
@@ -325,6 +331,8 @@ pub struct CreatePaymentLink<'a> {
     pub shipping_options: Option<Vec<CreatePaymentLinkShippingOptions>>,
 
     /// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
+    ///
+    /// Changing this value will also affect the hostname in the [url](https://stripe.com/docs/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit_type: Option<PaymentLinkSubmitType>,
 
@@ -353,6 +361,7 @@ impl<'a> CreatePaymentLink<'a> {
             automatic_tax: Default::default(),
             billing_address_collection: Default::default(),
             consent_collection: Default::default(),
+            currency: Default::default(),
             customer_creation: Default::default(),
             expand: Default::default(),
             line_items,
@@ -691,12 +700,14 @@ impl std::default::Default for CreatePaymentLinkAfterCompletionType {
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentLinkConsentCollectionPromotions {
     Auto,
+    None,
 }
 
 impl CreatePaymentLinkConsentCollectionPromotions {
     pub fn as_str(self) -> &'static str {
         match self {
             CreatePaymentLinkConsentCollectionPromotions::Auto => "auto",
+            CreatePaymentLinkConsentCollectionPromotions::None => "none",
         }
     }
 }
@@ -796,6 +807,7 @@ pub enum CreatePaymentLinkPaymentMethodTypes {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Blik,
     Boleto,
     Card,
     Eps,
@@ -824,6 +836,7 @@ impl CreatePaymentLinkPaymentMethodTypes {
             CreatePaymentLinkPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             CreatePaymentLinkPaymentMethodTypes::BacsDebit => "bacs_debit",
             CreatePaymentLinkPaymentMethodTypes::Bancontact => "bancontact",
+            CreatePaymentLinkPaymentMethodTypes::Blik => "blik",
             CreatePaymentLinkPaymentMethodTypes::Boleto => "boleto",
             CreatePaymentLinkPaymentMethodTypes::Card => "card",
             CreatePaymentLinkPaymentMethodTypes::Eps => "eps",
@@ -1681,6 +1694,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Blik,
     Boleto,
     Card,
     Eps,
@@ -1709,6 +1723,7 @@ impl PaymentLinkPaymentMethodTypes {
             PaymentLinkPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             PaymentLinkPaymentMethodTypes::BacsDebit => "bacs_debit",
             PaymentLinkPaymentMethodTypes::Bancontact => "bancontact",
+            PaymentLinkPaymentMethodTypes::Blik => "blik",
             PaymentLinkPaymentMethodTypes::Boleto => "boleto",
             PaymentLinkPaymentMethodTypes::Card => "card",
             PaymentLinkPaymentMethodTypes::Eps => "eps",
@@ -1824,12 +1839,14 @@ impl std::default::Default for PaymentLinksResourceAfterCompletionType {
 #[serde(rename_all = "snake_case")]
 pub enum PaymentLinksResourceConsentCollectionPromotions {
     Auto,
+    None,
 }
 
 impl PaymentLinksResourceConsentCollectionPromotions {
     pub fn as_str(self) -> &'static str {
         match self {
             PaymentLinksResourceConsentCollectionPromotions::Auto => "auto",
+            PaymentLinksResourceConsentCollectionPromotions::None => "none",
         }
     }
 }
@@ -2704,6 +2721,7 @@ pub enum UpdatePaymentLinkPaymentMethodTypes {
     AuBecsDebit,
     BacsDebit,
     Bancontact,
+    Blik,
     Boleto,
     Card,
     Eps,
@@ -2732,6 +2750,7 @@ impl UpdatePaymentLinkPaymentMethodTypes {
             UpdatePaymentLinkPaymentMethodTypes::AuBecsDebit => "au_becs_debit",
             UpdatePaymentLinkPaymentMethodTypes::BacsDebit => "bacs_debit",
             UpdatePaymentLinkPaymentMethodTypes::Bancontact => "bancontact",
+            UpdatePaymentLinkPaymentMethodTypes::Blik => "blik",
             UpdatePaymentLinkPaymentMethodTypes::Boleto => "boleto",
             UpdatePaymentLinkPaymentMethodTypes::Card => "card",
             UpdatePaymentLinkPaymentMethodTypes::Eps => "eps",

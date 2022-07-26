@@ -9,7 +9,7 @@ use crate::ids::{ProductId, TaxCodeId};
 use crate::params::{
     Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
-use crate::resources::{Currency, PackageDimensions, Price, TaxCode};
+use crate::resources::{Currency, PackageDimensions, Price, TaxCode, UpTo};
 
 /// The resource representing a Stripe "Product".
 ///
@@ -404,10 +404,31 @@ pub struct CreateProductDefaultPriceData {
     pub currency: Currency,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options: Option<CreateProductDefaultPriceDataCurrencyOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateProductDefaultPriceDataRecurring>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateProductDefaultPriceDataTaxBehavior>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateProductDefaultPriceDataCurrencyOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_unit_amount: Option<CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tiers: Option<Vec<CreateProductDefaultPriceDataCurrencyOptionsTiers>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
@@ -422,6 +443,73 @@ pub struct CreateProductDefaultPriceDataRecurring {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
+    pub enabled: bool,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preset: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flat_amount_decimal: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unit_amount_decimal: Option<String>,
+
+    pub up_to: Option<UpTo>,
+}
+
+/// An enum representing the possible values of an `CreateProductDefaultPriceDataCurrencyOptions`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior::Exclusive => "exclusive",
+            CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior::Inclusive => "inclusive",
+            CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
+    }
 }
 
 /// An enum representing the possible values of an `CreateProductDefaultPriceDataRecurring`'s `interval` field.

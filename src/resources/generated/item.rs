@@ -17,8 +17,7 @@ pub struct CheckoutSessionItem {
     /// Total discount amount applied.
     ///
     /// If no discounts were applied, defaults to 0.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_discount: Option<i64>,
+    pub amount_discount: i64,
 
     /// Total before any discounts or taxes are applied.
     pub amount_subtotal: i64,
@@ -26,8 +25,7 @@ pub struct CheckoutSessionItem {
     /// Total tax amount applied.
     ///
     /// If no tax was applied, defaults to 0.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount_tax: Option<i64>,
+    pub amount_tax: i64,
 
     /// Total after discounts and taxes.
     pub amount_total: i64,

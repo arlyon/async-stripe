@@ -369,6 +369,9 @@ pub struct PaymentMethodDetails {
     pub bancontact: Option<PaymentMethodDetailsBancontact>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik: Option<PaymentMethodDetailsBlik>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<PaymentMethodDetailsBoleto>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -637,6 +640,9 @@ pub struct PaymentMethodDetailsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_name: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsBlik {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsBoleto {

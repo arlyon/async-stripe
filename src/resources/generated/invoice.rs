@@ -536,6 +536,12 @@ pub struct InvoiceTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesPaymentSettings {
+    /// ID of the mandate to be used for this invoice.
+    ///
+    /// It must correspond to the payment method used to pay the invoice, including the invoice's default_payment_method or default_source, if set.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_mandate: Option<String>,
+
     /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<InvoicesPaymentMethodOptions>,
@@ -648,6 +654,12 @@ pub struct CreateInvoice<'a> {
     /// Defaults to `charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<CollectionMethod>,
+
+    /// The currency to create this invoice in.
+    ///
+    /// Defaults to that of `customer` if not specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
 
     /// A list of up to 4 custom fields to be displayed on the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -770,6 +782,7 @@ impl<'a> CreateInvoice<'a> {
             auto_advance: Default::default(),
             automatic_tax: Default::default(),
             collection_method: Default::default(),
+            currency: Default::default(),
             custom_fields: Default::default(),
             customer: Default::default(),
             days_until_due: Default::default(),
@@ -892,6 +905,9 @@ pub struct CreateInvoiceDiscounts {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettings {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_mandate: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<CreateInvoicePaymentSettingsPaymentMethodOptions>,
 

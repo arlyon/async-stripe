@@ -17,7 +17,7 @@ pub struct TreasuryFinancialAccount {
     /// The array of paths to active Features in the Features hash.
     pub active_features: Vec<TreasuryFinancialAccountActiveFeatures>,
 
-    pub balance: AccountServiceResourceBalance,
+    pub balance: AccountServiceResourceTreasuryBalance,
 
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     pub country: String,
@@ -31,7 +31,7 @@ pub struct TreasuryFinancialAccount {
     pub features: Option<TreasuryFinancialAccountFeatures>,
 
     /// The set of credentials that resolve to a FinancialAccount.
-    pub financial_addresses: Vec<AccountServiceResourceFinancialAddress>,
+    pub financial_addresses: Vec<AccountServiceResourceTreasuryFinancialAddress>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -47,7 +47,7 @@ pub struct TreasuryFinancialAccount {
 
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub platform_restrictions: Option<AccountServiceResourcePlatformRestrictions>,
+    pub platform_restrictions: Option<AccountServiceResourceTreasuryPlatformRestrictions>,
 
     /// The array of paths to restricted Features in the Features hash.
     pub restricted_features: Vec<TreasuryFinancialAccountRestrictedFeatures>,
@@ -74,7 +74,7 @@ impl Object for TreasuryFinancialAccount {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct AccountServiceResourceBalance {
+pub struct AccountServiceResourceTreasuryBalance {
     /// Funds the user can spend right now.
     pub cash: i64,
 
@@ -86,21 +86,22 @@ pub struct AccountServiceResourceBalance {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct AccountServiceResourceFinancialAddress {
+pub struct AccountServiceResourceTreasuryFinancialAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub aba: Option<AccountServiceResourceAbaRecord>,
+    pub aba: Option<AccountServiceResourceTreasuryAbaRecord>,
 
     /// The list of networks that the address supports.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub supported_networks: Option<Vec<AccountServiceResourceFinancialAddressSupportedNetworks>>,
+    pub supported_networks:
+        Option<Vec<AccountServiceResourceTreasuryFinancialAddressSupportedNetworks>>,
 
     /// The type of financial address.
     #[serde(rename = "type")]
-    pub type_: AccountServiceResourceFinancialAddressType,
+    pub type_: AccountServiceResourceTreasuryFinancialAddressType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct AccountServiceResourceAbaRecord {
+pub struct AccountServiceResourceTreasuryAbaRecord {
     /// The name of the person or business that owns the bank account.
     pub account_holder_name: String,
 
@@ -119,14 +120,14 @@ pub struct AccountServiceResourceAbaRecord {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct AccountServiceResourcePlatformRestrictions {
+pub struct AccountServiceResourceTreasuryPlatformRestrictions {
     /// Restricts all inbound money movement.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub inbound_flows: Option<AccountServiceResourcePlatformRestrictionsInboundFlows>,
+    pub inbound_flows: Option<AccountServiceResourceTreasuryPlatformRestrictionsInboundFlows>,
 
     /// Restricts all outbound money movement.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub outbound_flows: Option<AccountServiceResourcePlatformRestrictionsOutboundFlows>,
+    pub outbound_flows: Option<AccountServiceResourceTreasuryPlatformRestrictionsOutboundFlows>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -140,142 +141,6 @@ pub struct AccountServiceResourceTreasuryStatusDetails {
 pub struct AccountServiceResourceTreasuryClosedStatusDetails {
     /// The array that contains reasons for a FinancialAccount closure.
     pub reasons: Vec<AccountServiceResourceTreasuryClosedStatusDetailsReasons>,
-}
-
-/// An enum representing the possible values of an `AccountServiceResourceFinancialAddress`'s `supported_networks` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum AccountServiceResourceFinancialAddressSupportedNetworks {
-    Ach,
-    UsDomesticWire,
-}
-
-impl AccountServiceResourceFinancialAddressSupportedNetworks {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            AccountServiceResourceFinancialAddressSupportedNetworks::Ach => "ach",
-            AccountServiceResourceFinancialAddressSupportedNetworks::UsDomesticWire => {
-                "us_domestic_wire"
-            }
-        }
-    }
-}
-
-impl AsRef<str> for AccountServiceResourceFinancialAddressSupportedNetworks {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for AccountServiceResourceFinancialAddressSupportedNetworks {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for AccountServiceResourceFinancialAddressSupportedNetworks {
-    fn default() -> Self {
-        Self::Ach
-    }
-}
-
-/// An enum representing the possible values of an `AccountServiceResourceFinancialAddress`'s `type` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum AccountServiceResourceFinancialAddressType {
-    Aba,
-}
-
-impl AccountServiceResourceFinancialAddressType {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            AccountServiceResourceFinancialAddressType::Aba => "aba",
-        }
-    }
-}
-
-impl AsRef<str> for AccountServiceResourceFinancialAddressType {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for AccountServiceResourceFinancialAddressType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for AccountServiceResourceFinancialAddressType {
-    fn default() -> Self {
-        Self::Aba
-    }
-}
-
-/// An enum representing the possible values of an `AccountServiceResourcePlatformRestrictions`'s `inbound_flows` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum AccountServiceResourcePlatformRestrictionsInboundFlows {
-    Restricted,
-    Unrestricted,
-}
-
-impl AccountServiceResourcePlatformRestrictionsInboundFlows {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            AccountServiceResourcePlatformRestrictionsInboundFlows::Restricted => "restricted",
-            AccountServiceResourcePlatformRestrictionsInboundFlows::Unrestricted => "unrestricted",
-        }
-    }
-}
-
-impl AsRef<str> for AccountServiceResourcePlatformRestrictionsInboundFlows {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for AccountServiceResourcePlatformRestrictionsInboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for AccountServiceResourcePlatformRestrictionsInboundFlows {
-    fn default() -> Self {
-        Self::Restricted
-    }
-}
-
-/// An enum representing the possible values of an `AccountServiceResourcePlatformRestrictions`'s `outbound_flows` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum AccountServiceResourcePlatformRestrictionsOutboundFlows {
-    Restricted,
-    Unrestricted,
-}
-
-impl AccountServiceResourcePlatformRestrictionsOutboundFlows {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            AccountServiceResourcePlatformRestrictionsOutboundFlows::Restricted => "restricted",
-            AccountServiceResourcePlatformRestrictionsOutboundFlows::Unrestricted => "unrestricted",
-        }
-    }
-}
-
-impl AsRef<str> for AccountServiceResourcePlatformRestrictionsOutboundFlows {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for AccountServiceResourcePlatformRestrictionsOutboundFlows {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for AccountServiceResourcePlatformRestrictionsOutboundFlows {
-    fn default() -> Self {
-        Self::Restricted
-    }
 }
 
 /// An enum representing the possible values of an `AccountServiceResourceTreasuryClosedStatusDetails`'s `reasons` field.
@@ -315,6 +180,150 @@ impl std::fmt::Display for AccountServiceResourceTreasuryClosedStatusDetailsReas
 impl std::default::Default for AccountServiceResourceTreasuryClosedStatusDetailsReasons {
     fn default() -> Self {
         Self::AccountRejected
+    }
+}
+
+/// An enum representing the possible values of an `AccountServiceResourceTreasuryFinancialAddress`'s `supported_networks` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountServiceResourceTreasuryFinancialAddressSupportedNetworks {
+    Ach,
+    UsDomesticWire,
+}
+
+impl AccountServiceResourceTreasuryFinancialAddressSupportedNetworks {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountServiceResourceTreasuryFinancialAddressSupportedNetworks::Ach => "ach",
+            AccountServiceResourceTreasuryFinancialAddressSupportedNetworks::UsDomesticWire => {
+                "us_domestic_wire"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for AccountServiceResourceTreasuryFinancialAddressSupportedNetworks {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountServiceResourceTreasuryFinancialAddressSupportedNetworks {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountServiceResourceTreasuryFinancialAddressSupportedNetworks {
+    fn default() -> Self {
+        Self::Ach
+    }
+}
+
+/// An enum representing the possible values of an `AccountServiceResourceTreasuryFinancialAddress`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountServiceResourceTreasuryFinancialAddressType {
+    Aba,
+}
+
+impl AccountServiceResourceTreasuryFinancialAddressType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountServiceResourceTreasuryFinancialAddressType::Aba => "aba",
+        }
+    }
+}
+
+impl AsRef<str> for AccountServiceResourceTreasuryFinancialAddressType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountServiceResourceTreasuryFinancialAddressType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountServiceResourceTreasuryFinancialAddressType {
+    fn default() -> Self {
+        Self::Aba
+    }
+}
+
+/// An enum representing the possible values of an `AccountServiceResourceTreasuryPlatformRestrictions`'s `inbound_flows` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountServiceResourceTreasuryPlatformRestrictionsInboundFlows {
+    Restricted,
+    Unrestricted,
+}
+
+impl AccountServiceResourceTreasuryPlatformRestrictionsInboundFlows {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountServiceResourceTreasuryPlatformRestrictionsInboundFlows::Restricted => {
+                "restricted"
+            }
+            AccountServiceResourceTreasuryPlatformRestrictionsInboundFlows::Unrestricted => {
+                "unrestricted"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for AccountServiceResourceTreasuryPlatformRestrictionsInboundFlows {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountServiceResourceTreasuryPlatformRestrictionsInboundFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountServiceResourceTreasuryPlatformRestrictionsInboundFlows {
+    fn default() -> Self {
+        Self::Restricted
+    }
+}
+
+/// An enum representing the possible values of an `AccountServiceResourceTreasuryPlatformRestrictions`'s `outbound_flows` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountServiceResourceTreasuryPlatformRestrictionsOutboundFlows {
+    Restricted,
+    Unrestricted,
+}
+
+impl AccountServiceResourceTreasuryPlatformRestrictionsOutboundFlows {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountServiceResourceTreasuryPlatformRestrictionsOutboundFlows::Restricted => {
+                "restricted"
+            }
+            AccountServiceResourceTreasuryPlatformRestrictionsOutboundFlows::Unrestricted => {
+                "unrestricted"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for AccountServiceResourceTreasuryPlatformRestrictionsOutboundFlows {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountServiceResourceTreasuryPlatformRestrictionsOutboundFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountServiceResourceTreasuryPlatformRestrictionsOutboundFlows {
+    fn default() -> Self {
+        Self::Restricted
     }
 }
 

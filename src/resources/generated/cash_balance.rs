@@ -12,6 +12,7 @@ pub struct CashBalance {
     /// A hash of all cash balances available to this customer.
     ///
     /// You cannot delete a customer with any cash balances, even if the balance is 0.
+    /// Amounts are represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub available: Option<i64>,
 
