@@ -749,6 +749,9 @@ pub struct CreateOrderLineItems {
     pub product: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_data: Option<CreateOrderLineItemsProductData>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -841,6 +844,9 @@ pub struct UpdateOrderLineItems {
     pub product: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub product_data: Option<UpdateOrderLineItemsProductData>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -926,6 +932,34 @@ pub struct CreateOrderLineItemsPriceData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateOrderLineItemsProductData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    pub id: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub images: Option<Vec<String>>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    pub name: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub package_dimensions: Option<CreateOrderLineItemsProductDataPackageDimensions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shippable: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1054,6 +1088,34 @@ pub struct UpdateOrderLineItemsPriceData {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateOrderLineItemsProductData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    pub id: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub images: Option<Vec<String>>,
+
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    pub name: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub package_dimensions: Option<UpdateOrderLineItemsProductDataPackageDimensions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shippable: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
@@ -1131,6 +1193,17 @@ pub struct UpdateOrderTaxDetailsTaxIds {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateOrderLineItemsProductDataPackageDimensions {
+    pub height: f64,
+
+    pub length: f64,
+
+    pub weight: f64,
+
+    pub width: f64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebit>,
@@ -1200,6 +1273,17 @@ pub struct CreateOrderShippingCostShippingRateDataFixedAmount {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateOrderLineItemsProductDataPackageDimensions {
+    pub height: f64,
+
+    pub length: f64,
+
+    pub weight: f64,
+
+    pub width: f64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2431,6 +2515,8 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     EnAu,
     #[serde(rename = "en-BE")]
     EnBe,
+    #[serde(rename = "en-CA")]
+    EnCa,
     #[serde(rename = "en-DE")]
     EnDe,
     #[serde(rename = "en-DK")]
@@ -2465,6 +2551,8 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     FiFi,
     #[serde(rename = "fr-BE")]
     FrBe,
+    #[serde(rename = "fr-CA")]
+    FrCa,
     #[serde(rename = "fr-FR")]
     FrFr,
     #[serde(rename = "it-IT")]
@@ -2490,6 +2578,7 @@ impl CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnCa => "en-CA",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
@@ -2507,6 +2596,7 @@ impl CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EsUs => "es-US",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FiFi => "fi-FI",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrBe => "fr-BE",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrCa => "fr-CA",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrFr => "fr-FR",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::ItIt => "it-IT",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::NbNo => "nb-NO",
@@ -4558,6 +4648,8 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     EnAu,
     #[serde(rename = "en-BE")]
     EnBe,
+    #[serde(rename = "en-CA")]
+    EnCa,
     #[serde(rename = "en-DE")]
     EnDe,
     #[serde(rename = "en-DK")]
@@ -4592,6 +4684,8 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     FiFi,
     #[serde(rename = "fr-BE")]
     FrBe,
+    #[serde(rename = "fr-CA")]
+    FrCa,
     #[serde(rename = "fr-FR")]
     FrFr,
     #[serde(rename = "it-IT")]
@@ -4617,6 +4711,7 @@ impl UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnCa => "en-CA",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
@@ -4634,6 +4729,7 @@ impl UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EsUs => "es-US",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FiFi => "fi-FI",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrBe => "fr-BE",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrCa => "fr-CA",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrFr => "fr-FR",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::ItIt => "it-IT",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::NbNo => "nb-NO",

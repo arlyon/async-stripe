@@ -9,7 +9,8 @@ use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId}
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
     Address, CheckoutSessionItem, Currency, Customer, Discount, LinkedAccountOptionsUsBankAccount,
-    PaymentIntent, PaymentLink, SetupIntent, Shipping, ShippingRate, Subscription, TaxRate,
+    PaymentIntent, PaymentLink, PaymentMethodOptionsCustomerBalanceEuBankAccount, SetupIntent,
+    Shipping, ShippingRate, Subscription, TaxRate,
 };
 
 /// The resource representing a Stripe "Session".
@@ -254,6 +255,9 @@ pub struct CheckoutSessionPaymentMethodOptions {
     pub card: Option<CheckoutCardPaymentMethodOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<CheckoutCustomerBalancePaymentMethodOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CheckoutEpsPaymentMethodOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -428,6 +432,9 @@ pub struct CheckoutBoletoPaymentMethodOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CheckoutCardPaymentMethodOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub installments: Option<CheckoutCardInstallmentsOptions>,
+
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -451,6 +458,51 @@ pub struct CheckoutCardPaymentMethodOptions {
     /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix_kanji: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CheckoutCardInstallmentsOptions {
+    /// Indicates if installments are enabled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CheckoutCustomerBalancePaymentMethodOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer: Option<CheckoutCustomerBalanceBankTransferPaymentMethodOptions>,
+
+    /// The funding method type to be used when there are not enough funds in the customer balance.
+    ///
+    /// Permitted values include: `bank_transfer`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding_type: Option<CheckoutCustomerBalancePaymentMethodOptionsFundingType>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CheckoutCustomerBalanceBankTransferPaymentMethodOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<PaymentMethodOptionsCustomerBalanceEuBankAccount>,
+
+    /// List of address types that should be returned in the financial_addresses response.
+    ///
+    /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested_address_types:
+        Option<Vec<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes>>,
+
+    /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1197,6 +1249,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     pub card: Option<CreateCheckoutSessionPaymentMethodOptionsCard>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_balance: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalance>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CreateCheckoutSessionPaymentMethodOptionsEps>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1442,6 +1497,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub installments: Option<CreateCheckoutSessionPaymentMethodOptionsCardInstallments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1449,6 +1507,19 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCard {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix_kanji: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub funding_type: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1677,6 +1748,28 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlan>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer {
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested_address_types: Option<Vec<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
+
+    #[serde(rename = "type")]
+    pub type_: CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<
@@ -1704,6 +1797,21 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options:
         Option<CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlan {
+    pub count: u64,
+
+    pub interval: CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval,
+
+    #[serde(rename = "type")]
+    pub type_: CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
+    pub country: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2171,6 +2279,160 @@ impl std::fmt::Display for CheckoutCardPaymentMethodOptionsSetupFutureUsage {
     }
 }
 impl std::default::Default for CheckoutCardPaymentMethodOptionsSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutCustomerBalanceBankTransferPaymentMethodOptions`'s `requested_address_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
+    Iban,
+    Sepa,
+    SortCode,
+    Spei,
+    Zengin,
+}
+
+impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::Iban => "iban",
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::Sepa => "sepa",
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::SortCode => "sort_code",
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::Spei => "spei",
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::Zengin => "zengin",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
+{
+    fn default() -> Self {
+        Self::Iban
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutCustomerBalanceBankTransferPaymentMethodOptions`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
+    EuBankTransfer,
+    GbBankTransfer,
+    JpBankTransfer,
+    MxBankTransfer,
+}
+
+impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::EuBankTransfer => {
+                "eu_bank_transfer"
+            }
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::GbBankTransfer => {
+                "gb_bank_transfer"
+            }
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::JpBankTransfer => {
+                "jp_bank_transfer"
+            }
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::MxBankTransfer => {
+                "mx_bank_transfer"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
+    fn default() -> Self {
+        Self::EuBankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutCustomerBalancePaymentMethodOptions`'s `funding_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutCustomerBalancePaymentMethodOptionsFundingType {
+    BankTransfer,
+}
+
+impl CheckoutCustomerBalancePaymentMethodOptionsFundingType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutCustomerBalancePaymentMethodOptionsFundingType::BankTransfer => "bank_transfer",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CheckoutCustomerBalancePaymentMethodOptionsFundingType {
+    fn default() -> Self {
+        Self::BankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutCustomerBalancePaymentMethodOptions`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
+    None,
+}
+
+impl CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CheckoutCustomerBalancePaymentMethodOptionsSetupFutureUsage {
     fn default() -> Self {
         Self::None
     }
@@ -3700,6 +3962,74 @@ impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsBoletoSe
     }
 }
 
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlan`'s `interval` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval {
+    Month,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval::Month => "month",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanInterval
+{
+    fn default() -> Self {
+        Self::Month
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlan`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType {
+    FixedCount,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType::FixedCount => {
+                "fixed_count"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsCardInstallmentsPlanType {
+    fn default() -> Self {
+        Self::FixedCount
+    }
+}
+
 /// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsCard`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3735,6 +4065,166 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardSetupFut
 impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage {
     fn default() -> Self {
         Self::OffSession
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer`'s `requested_address_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Iban,
+    Sepa,
+    SortCode,
+    Spei,
+    Zengin,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn default() -> Self {
+        Self::Iban
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
+    EuBankTransfer,
+    GbBankTransfer,
+    JpBankTransfer,
+    MxBankTransfer,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType
+{
+    fn default() -> Self {
+        Self::EuBankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsCustomerBalance`'s `funding_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType {
+    BankTransfer,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType::BankTransfer => {
+                "bank_transfer"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType {
+    fn default() -> Self {
+        Self::BankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsCustomerBalance`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    None,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage::None => {
+                "none"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+{
+    fn default() -> Self {
+        Self::None
     }
 }
 
@@ -4340,6 +4830,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Blik,
     Boleto,
     Card,
+    CustomerBalance,
     Eps,
     Fpx,
     Giropay,
@@ -4370,6 +4861,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             CreateCheckoutSessionPaymentMethodTypes::Blik => "blik",
             CreateCheckoutSessionPaymentMethodTypes::Boleto => "boleto",
             CreateCheckoutSessionPaymentMethodTypes::Card => "card",
+            CreateCheckoutSessionPaymentMethodTypes::CustomerBalance => "customer_balance",
             CreateCheckoutSessionPaymentMethodTypes::Eps => "eps",
             CreateCheckoutSessionPaymentMethodTypes::Fpx => "fpx",
             CreateCheckoutSessionPaymentMethodTypes::Giropay => "giropay",

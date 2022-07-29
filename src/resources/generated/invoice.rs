@@ -583,12 +583,22 @@ pub struct InvoicesPaymentMethodOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsCard {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub installments: Option<InvoiceInstallmentsCard>,
+
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     ///
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure: Option<InvoicePaymentMethodOptionsCardRequestThreeDSecure>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InvoiceInstallmentsCard {
+    /// Whether Installments are enabled for this Invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -971,6 +981,9 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub installments: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallments>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
 }
@@ -1008,6 +1021,15 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptio
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallments {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eu_bank_transfer: Option<
@@ -1024,6 +1046,16 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancia
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan {
+    pub count: u64,
+
+    pub interval: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval,
+
+    #[serde(rename = "type")]
+    pub type_: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1221,6 +1253,80 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::De
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan`'s `interval` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+    Month,
+}
+
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval::Month => {
+                "month"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval
+{
+    fn default() -> Self {
+        Self::Month
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
+    FixedCount,
+}
+
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::FixedCount => "fixed_count",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType
+{
+    fn default() -> Self {
+        Self::FixedCount
     }
 }
 
