@@ -23,7 +23,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: make
-          args: openapi-install
+          args: openapi-install-latest
       - name: verify
         id: verify
         # currently waiting for https://github.com/actions-rs/cargo/pull/206
