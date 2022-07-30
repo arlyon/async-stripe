@@ -1,7 +1,7 @@
 use std::{collections::BTreeSet, fs};
 
 use anyhow::{Context, Result};
-use clap::Parser;
+use structopt::StructOpt;
 
 use crate::spec_fetch::fetch_spec;
 use crate::{metadata::Metadata, url_finder::UrlFinder};
@@ -15,32 +15,24 @@ mod types;
 mod url_finder;
 mod util;
 
-#[derive(Debug, Parser)]
+#[derive(Debug, StructOpt)]
 struct Command {
-    #[clap(
-        default_value_t = String::from("spec3.json"),
-        help = "Input path for the OpenAPI spec, defaults to `spec3.json`"
-    )]
+    /// Input path for the OpenAPI spec, defaults to `spec3.json`
+    #[structopt(default_value = "spec3.json")]
     spec_path: String,
-    #[clap(
-        long,
-        default_value_t = String::from("out"),
-        help = "Output directory for generated code, defaults to `out`")
-    ]
+    /// Output directory for generated code, defaults to `out`
+    #[structopt(long, default_value = "out")]
     out: String,
-    #[clap(
-        long,
-        parse(try_from_str = spec_fetch::parse_spec_version),
-        help = "If not passed, skips the step of fetching the spec. \
-        Otherwise, `latest` for the newest spec release, `current` for the version \
-        used in the latest codegen update, or a specific version, such as `v171`"
-    )]
+    /// If not passed, skips the step of fetching the spec. Otherwise, `latest` for the
+    /// newest spec release, `current` for the version used in the latest codegen update,
+    /// or a specific version, such as `v171`
+    #[structopt(long, parse(try_from_str = spec_fetch::parse_spec_version))]
     fetch: Option<spec_fetch::SpecVersion>,
 }
 
 fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
-    let args = Command::parse();
+    let args = Command::from_args();
 
     let in_path = args.spec_path;
     let out_path = args.out;
