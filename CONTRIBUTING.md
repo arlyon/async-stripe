@@ -51,10 +51,17 @@ to run `cargo fmt` to make sure it conforms to the standard.
 
 This library is (mostly) authored via code generation by parsing the OpenAPI specification for Stripe.
 To automatically update the generated code, copy it into the `generated` folder, and format, use the `cargo make` target
-`openapi-install`. This will also fetch the latest spec from the repository.
+`openapi-install`. This will also fetch the spec matching the OpenAPI release used for the generated
+code on `master`.
 
 ```sh
 cargo make openapi-install
+```
+
+To instead update the generated code using the latest OpenAPI specification release, use
+
+```sh
+cargo make openapi-install-latest
 ```
 
 ## Testing
