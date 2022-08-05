@@ -5,31 +5,31 @@
 use serde::{Deserialize, Serialize};
 
 use crate::params::Object;
-use crate::resources::AccountServiceResourceTreasuryToggleSettings;
+use crate::resources::TreasuryFinancialAccountsResourceToggleSettings;
 
-/// The resource representing a Stripe "AccountServiceResourceTreasuryFinancialAccountFeatures".
+/// The resource representing a Stripe "TreasuryFinancialAccountsResourceFinancialAccountFeatures".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_issuing: Option<AccountServiceResourceTreasuryToggleSettings>,
+    pub card_issuing: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub deposit_insurance: Option<AccountServiceResourceTreasuryToggleSettings>,
+    pub deposit_insurance: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub financial_addresses: Option<AccountServiceResourceTreasuryFinancialAddressesFeatures>,
+    pub financial_addresses: Option<TreasuryFinancialAccountsResourceFinancialAddressesFeatures>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub inbound_transfers: Option<AccountServiceResourceTreasuryInboundTransfers>,
+    pub inbound_transfers: Option<TreasuryFinancialAccountsResourceInboundTransfers>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub intra_stripe_flows: Option<AccountServiceResourceTreasuryToggleSettings>,
+    pub intra_stripe_flows: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub outbound_payments: Option<AccountServiceResourceTreasuryOutboundPayments>,
+    pub outbound_payments: Option<TreasuryFinancialAccountsResourceOutboundPayments>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub outbound_transfers: Option<AccountServiceResourceTreasuryOutboundTransfers>,
+    pub outbound_transfers: Option<TreasuryFinancialAccountsResourceOutboundTransfers>,
 }
 
 impl Object for TreasuryFinancialAccountFeatures {
@@ -41,31 +41,31 @@ impl Object for TreasuryFinancialAccountFeatures {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct AccountServiceResourceTreasuryFinancialAddressesFeatures {
+pub struct TreasuryFinancialAccountsResourceFinancialAddressesFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub aba: Option<AccountServiceResourceTreasuryToggleSettings>,
+    pub aba: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct AccountServiceResourceTreasuryInboundTransfers {
+pub struct TreasuryFinancialAccountsResourceInboundTransfers {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ach: Option<AccountServiceResourceTreasuryToggleSettings>,
+    pub ach: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct AccountServiceResourceTreasuryOutboundPayments {
+pub struct TreasuryFinancialAccountsResourceOutboundPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ach: Option<AccountServiceResourceTreasuryToggleSettings>,
+    pub ach: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_domestic_wire: Option<AccountServiceResourceTreasuryToggleSettings>,
+    pub us_domestic_wire: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct AccountServiceResourceTreasuryOutboundTransfers {
+pub struct TreasuryFinancialAccountsResourceOutboundTransfers {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub ach: Option<AccountServiceResourceTreasuryToggleSettings>,
+    pub ach: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_domestic_wire: Option<AccountServiceResourceTreasuryToggleSettings>,
+    pub us_domestic_wire: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 }
