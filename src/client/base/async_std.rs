@@ -45,7 +45,8 @@ impl AsyncStdClient {
 
         Box::pin(async move {
             let bytes = send_inner(&client, request, &strategy).await?;
-            serde_json::from_slice(&bytes).map_err(StripeError::from)
+            let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
+            serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
         })
     }
 }
@@ -99,7 +100,8 @@ async fn send_inner(
 
                 if !status.is_success() {
                     tries += 1;
-                    last_error = serde_json::from_slice(&bytes)
+                    let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
+                    last_error = serde_path_to_error::deserialize(json_deserializer)
                         .map(|mut e: ErrorResponse| {
                             e.error.http_status = status.into();
                             StripeError::from(e.error)

@@ -132,10 +132,15 @@ impl Client {
     ) -> Response<T> {
         let url = self.url(path);
         let mut req = self.create_request(Method::Post, url);
-        req.set_body(match serde_qs::to_string(&form) {
-            Err(e) => return err(StripeError::QueryStringSerialize(e)),
-            Ok(body) => Body::from_string(body),
-        });
+
+        let mut params_buffer = Vec::new();
+        let qs_ser = &mut serde_qs::Serializer::new(&mut params_buffer);
+        serde_path_to_error::serialize(&form, qs_ser).map_err(StripeError::from)?;
+
+        let body = std::str::from_utf8(params_buffer.as_slice()).unwrap().to_string();
+
+        req.set_body(Body::from_string(body));
+
         req.insert_header("content-type", "application/x-www-form-urlencoded");
         self.client.execute::<T>(req, &self.strategy)
     }
@@ -148,7 +153,13 @@ impl Client {
 
     fn url_with_params<P: Serialize>(&self, path: &str, params: P) -> Result<Url, StripeError> {
         let mut url = self.url(path);
-        let params = serde_qs::to_string(&params).map_err(StripeError::from)?;
+
+        let mut params_buffer = Vec::new();
+        let qs_ser = &mut serde_qs::Serializer::new(&mut params_buffer);
+        serde_path_to_error::serialize(&params, qs_ser).map_err(StripeError::from)?;
+
+        let params = std::str::from_utf8(params_buffer.as_slice()).unwrap().to_string();
+
         url.set_query(Some(&params));
         Ok(url)
     }
