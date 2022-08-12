@@ -65,7 +65,11 @@ pub struct Topup {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
 
-    pub source: Source,
+    /// For most Stripe users, the source of every top-up is a bank account.
+    ///
+    /// This hash is then the [source object](https://stripe.com/docs/api#source_object) describing that bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub source: Option<Source>,
 
     /// Extra information about a top-up.
     ///

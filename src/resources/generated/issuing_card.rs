@@ -263,6 +263,7 @@ impl std::default::Default for IssuingCardApplePayIneligibleReason {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum IssuingCardCancellationReason {
+    DesignRejected,
     Lost,
     Stolen,
 }
@@ -270,6 +271,7 @@ pub enum IssuingCardCancellationReason {
 impl IssuingCardCancellationReason {
     pub fn as_str(self) -> &'static str {
         match self {
+            IssuingCardCancellationReason::DesignRejected => "design_rejected",
             IssuingCardCancellationReason::Lost => "lost",
             IssuingCardCancellationReason::Stolen => "stolen",
         }
@@ -289,7 +291,7 @@ impl std::fmt::Display for IssuingCardCancellationReason {
 }
 impl std::default::Default for IssuingCardCancellationReason {
     fn default() -> Self {
-        Self::Lost
+        Self::DesignRejected
     }
 }
 

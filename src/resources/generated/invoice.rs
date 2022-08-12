@@ -752,11 +752,10 @@ pub struct CreateInvoice<'a> {
 
     /// How to handle pending invoice items on invoice creation.
     ///
-    /// One of `include`, `exclude`, or `include_and_require`.
+    /// One of `include` or `exclude`.
     /// `include` will include any pending invoice items, and will create an empty draft invoice if no pending invoice items exist.
-    /// `include_and_require` will include any pending invoice items, if no pending invoice items exist then the request will fail.
     /// `exclude` will always create an empty invoice draft regardless if there are pending invoice items or not.
-    /// Defaults to `include_and_require` if the parameter is omitted.
+    /// Defaults to `exclude` if the parameter is omitted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_invoice_items_behavior: Option<InvoicePendingInvoiceItemsBehavior>,
 
@@ -773,8 +772,7 @@ pub struct CreateInvoice<'a> {
 
     /// The ID of the subscription to invoice, if any.
     ///
-    /// If not set, the created invoice will include all pending invoice items for the customer.
-    /// If set, the created invoice will only include pending invoice items for that subscription and pending invoice items not associated with any subscription.
+    /// If set, the created invoice will only include pending invoice items for that subscription and pending invoice items not associated with any subscription if `pending_invoice_items_behavior` is `include`.
     /// The subscription's billing cycle and regular subscription events won't be affected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<SubscriptionId>,

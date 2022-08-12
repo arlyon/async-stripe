@@ -328,6 +328,7 @@ pub struct PersonRequirements {
 pub enum AccountRequirementsErrorCode {
     InvalidAddressCityStatePostalCode,
     InvalidStreetAddress,
+    InvalidTosAcceptance,
     InvalidValueOther,
     VerificationDocumentAddressMismatch,
     VerificationDocumentAddressMissing,
@@ -378,6 +379,7 @@ impl AccountRequirementsErrorCode {
         match self {
             AccountRequirementsErrorCode::InvalidAddressCityStatePostalCode => "invalid_address_city_state_postal_code",
             AccountRequirementsErrorCode::InvalidStreetAddress => "invalid_street_address",
+            AccountRequirementsErrorCode::InvalidTosAcceptance => "invalid_tos_acceptance",
             AccountRequirementsErrorCode::InvalidValueOther => "invalid_value_other",
             AccountRequirementsErrorCode::VerificationDocumentAddressMismatch => "verification_document_address_mismatch",
             AccountRequirementsErrorCode::VerificationDocumentAddressMissing => "verification_document_address_missing",

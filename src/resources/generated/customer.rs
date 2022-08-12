@@ -14,8 +14,7 @@ use crate::params::{
 };
 use crate::resources::{
     Address, CashBalance, Currency, Discount, InvoiceSettingRenderingOptions, PaymentMethod,
-    PaymentSource, PaymentSourceParams, Scheduled, Shipping, Subscription, TaxId,
-    TestHelpersTestClock,
+    PaymentSource, PaymentSourceParams, Shipping, Subscription, TaxId, TestHelpersTestClock,
 };
 
 /// The resource representing a Stripe "Customer".
@@ -54,10 +53,6 @@ pub struct Customer {
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) the customer can be charged in for recurring billing purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
-
-    /// The default three-letter [ISO code for the currency](https://stripe.com/docs/currencies) that the customer will be charged in for billing purposes.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_currency: Option<Currency>,
 
     /// ID of the default payment source for the customer.
     ///
@@ -593,15 +588,6 @@ pub struct UpdateCustomer<'a> {
     /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<CustomerTaxExemptFilter>,
-
-    /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
-    ///
-    /// This will always overwrite any trials that might apply via a subscribed plan.
-    /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
-    /// The special value `now` can be provided to end the customer's trial immediately.
-    /// Can be at most two years from `billing_cycle_anchor`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub trial_end: Option<Scheduled>,
 }
 
 impl<'a> UpdateCustomer<'a> {
@@ -631,7 +617,6 @@ impl<'a> UpdateCustomer<'a> {
             source: Default::default(),
             tax: Default::default(),
             tax_exempt: Default::default(),
-            trial_end: Default::default(),
         }
     }
 }
