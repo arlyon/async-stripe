@@ -135,9 +135,13 @@ impl Client {
 
         let mut params_buffer = Vec::new();
         let qs_ser = &mut serde_qs::Serializer::new(&mut params_buffer);
-        serde_path_to_error::serialize(&form, qs_ser).map_err(StripeError::from)?;
+        if let Err(qs_ser_err) = serde_path_to_error::serialize(&form, qs_ser) {
+            return err(StripeError::QueryStringSerialize(qs_ser_err));
+        }
 
-        let body = std::str::from_utf8(params_buffer.as_slice()).unwrap().to_string();
+        let body = std::str::from_utf8(params_buffer.as_slice())
+            .expect("Unable to extract string from params_buffer")
+            .to_string();
 
         req.set_body(Body::from_string(body));
 
@@ -158,7 +162,9 @@ impl Client {
         let qs_ser = &mut serde_qs::Serializer::new(&mut params_buffer);
         serde_path_to_error::serialize(&params, qs_ser).map_err(StripeError::from)?;
 
-        let params = std::str::from_utf8(params_buffer.as_slice()).unwrap().to_string();
+        let params = std::str::from_utf8(params_buffer.as_slice())
+            .expect("Unable to extract string from params_buffer")
+            .to_string();
 
         url.set_query(Some(&params));
         Ok(url)
