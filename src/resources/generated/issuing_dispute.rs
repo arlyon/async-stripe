@@ -16,7 +16,7 @@ pub struct IssuingDispute {
     /// Unique identifier for the object.
     pub id: IssuingDisputeId,
 
-    /// Disputed amount.
+    /// Disputed amount in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     ///
     /// Usually the amount of the `transaction`, but can differ (usually because of currency fluctuation).
     pub amount: i64,

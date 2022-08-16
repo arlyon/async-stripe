@@ -54,6 +54,7 @@ mod checkout {
 #[cfg(feature = "connect")]
 mod connect {
     pub mod login_links_ext;
+    pub mod recipient_ext;
 }
 
 #[path = "resources"]
@@ -125,6 +126,7 @@ pub use {
         payment_method_options_alipay::*,
         payment_method_options_bancontact::*,
         payment_method_options_customer_balance::*,
+        payment_method_options_customer_balance_eu_bank_account::*,
         payment_method_options_ideal::*,
         payment_method_options_klarna::*,
         payment_method_options_oxxo::*,
@@ -234,6 +236,7 @@ pub use {
 pub use {
     connect::{
         login_links_ext::*,
+        recipient_ext::*,
     },
     generated::connect::{
         account_link::*,

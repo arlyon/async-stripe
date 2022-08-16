@@ -285,7 +285,7 @@ pub fn field_mappings() -> FieldMap {
             ("IssuingTransactionType", "IssuingTransactionType"),
         ),
         (("file", "purpose"), ("", "FilePurpose")),
-        (("recipient", "type"), ("", "Option<RecipientType>")),
+        (("recipient", "type"), ("", "crate::RecipientType")),
         (("review", "reason"), ("ReviewReason", "ReviewReason")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
         (

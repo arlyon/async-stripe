@@ -66,6 +66,7 @@ impl std::default::Default for ThreeDSecureDetailsAuthenticationFlow {
 pub enum ThreeDSecureDetailsResult {
     AttemptAcknowledged,
     Authenticated,
+    Exempted,
     Failed,
     NotSupported,
     ProcessingError,
@@ -76,6 +77,7 @@ impl ThreeDSecureDetailsResult {
         match self {
             ThreeDSecureDetailsResult::AttemptAcknowledged => "attempt_acknowledged",
             ThreeDSecureDetailsResult::Authenticated => "authenticated",
+            ThreeDSecureDetailsResult::Exempted => "exempted",
             ThreeDSecureDetailsResult::Failed => "failed",
             ThreeDSecureDetailsResult::NotSupported => "not_supported",
             ThreeDSecureDetailsResult::ProcessingError => "processing_error",

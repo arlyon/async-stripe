@@ -5511,6 +5511,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnAu,
     #[serde(rename = "en-BE")]
     EnBe,
+    #[serde(rename = "en-CA")]
+    EnCa,
     #[serde(rename = "en-DE")]
     EnDe,
     #[serde(rename = "en-DK")]
@@ -5545,6 +5547,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     FiFi,
     #[serde(rename = "fr-BE")]
     FrBe,
+    #[serde(rename = "fr-CA")]
+    FrCa,
     #[serde(rename = "fr-FR")]
     FrFr,
     #[serde(rename = "it-IT")]
@@ -5570,6 +5574,7 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCa => "en-CA",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
@@ -5587,6 +5592,7 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EsUs => "es-US",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FiFi => "fi-FI",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrBe => "fr-BE",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrCa => "fr-CA",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrFr => "fr-FR",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::ItIt => "it-IT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::NbNo => "nb-NO",
@@ -9309,6 +9315,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnAu,
     #[serde(rename = "en-BE")]
     EnBe,
+    #[serde(rename = "en-CA")]
+    EnCa,
     #[serde(rename = "en-DE")]
     EnDe,
     #[serde(rename = "en-DK")]
@@ -9343,6 +9351,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     FiFi,
     #[serde(rename = "fr-BE")]
     FrBe,
+    #[serde(rename = "fr-CA")]
+    FrCa,
     #[serde(rename = "fr-FR")]
     FrFr,
     #[serde(rename = "it-IT")]
@@ -9368,6 +9378,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCa => "en-CA",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
@@ -9385,6 +9396,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EsUs => "es-US",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FiFi => "fi-FI",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrBe => "fr-BE",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrCa => "fr-CA",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrFr => "fr-FR",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::ItIt => "it-IT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::NbNo => "nb-NO",

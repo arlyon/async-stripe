@@ -14,7 +14,7 @@ use crate::{
     util::{infer_integer_type, print_doc_comment, print_doc_from_schema, write_out_field},
 };
 
-#[tracing::instrument(skip_all)]
+#[tracing::instrument(skip_all, fields(name = %state.name))]
 pub fn gen_struct(
     out: &mut String,
     state: &mut FileGenerator,
@@ -1401,7 +1401,7 @@ pub fn gen_field_rust_type(
     }
 }
 
-#[tracing::instrument(skip_all)]
+#[tracing::instrument(skip_all, fields(name = %state.name))]
 pub fn gen_impl_requests(
     state: &mut FileGenerator,
     meta: &Metadata,

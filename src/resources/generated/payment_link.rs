@@ -44,6 +44,11 @@ pub struct PaymentLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub consent_collection: Option<PaymentLinksResourceConsentCollection>,
 
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
+
     /// Configuration for Customer creation during checkout.
     pub customer_creation: PaymentLinkCustomerCreation,
 
@@ -68,6 +73,9 @@ pub struct PaymentLink {
     /// Indicates the parameters to be passed to PaymentIntent creation during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent_data: Option<PaymentLinksResourcePaymentIntentData>,
+
+    /// Configuration for collecting a payment method during checkout.
+    pub payment_method_collection: PaymentLinkPaymentMethodCollection,
 
     /// The list of payment method types that customers can use.
     ///
@@ -310,6 +318,12 @@ pub struct CreatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent_data: Option<CreatePaymentLinkPaymentIntentData>,
 
+    /// Specify whether Checkout should collect a payment method.
+    ///
+    /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_collection: Option<PaymentLinkPaymentMethodCollection>,
+
     /// The list of payment method types that customers can use.
     ///
     /// If no value is passed, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods) (20+ payment methods [supported](https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support)).
@@ -368,6 +382,7 @@ impl<'a> CreatePaymentLink<'a> {
             metadata: Default::default(),
             on_behalf_of: Default::default(),
             payment_intent_data: Default::default(),
+            payment_method_collection: Default::default(),
             payment_method_types: Default::default(),
             phone_number_collection: Default::default(),
             shipping_address_collection: Default::default(),
@@ -478,6 +493,12 @@ pub struct UpdatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 
+    /// Specify whether Checkout should collect a payment method.
+    ///
+    /// When set to `if_required`, Checkout will not collect a payment method when the total due for the session is 0.This may occur if the Checkout Session includes a free trial or a discount.  Can only be set in `subscription` mode.  If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_collection: Option<PaymentLinkPaymentMethodCollection>,
+
     /// The list of payment method types that customers can use.
     ///
     /// Pass an empty string to enable automatic payment methods that use your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
@@ -501,6 +522,7 @@ impl<'a> UpdatePaymentLink<'a> {
             expand: Default::default(),
             line_items: Default::default(),
             metadata: Default::default(),
+            payment_method_collection: Default::default(),
             payment_method_types: Default::default(),
             shipping_address_collection: Default::default(),
         }
@@ -1679,6 +1701,40 @@ impl std::fmt::Display for PaymentLinkCustomerCreation {
     }
 }
 impl std::default::Default for PaymentLinkCustomerCreation {
+    fn default() -> Self {
+        Self::Always
+    }
+}
+
+/// An enum representing the possible values of an `PaymentLink`'s `payment_method_collection` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinkPaymentMethodCollection {
+    Always,
+    IfRequired,
+}
+
+impl PaymentLinkPaymentMethodCollection {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinkPaymentMethodCollection::Always => "always",
+            PaymentLinkPaymentMethodCollection::IfRequired => "if_required",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinkPaymentMethodCollection {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinkPaymentMethodCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinkPaymentMethodCollection {
     fn default() -> Self {
         Self::Always
     }

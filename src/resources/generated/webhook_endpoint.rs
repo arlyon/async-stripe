@@ -477,14 +477,6 @@ pub enum EventFilter {
     MandateUpdated,
     #[serde(rename = "order.created")]
     OrderCreated,
-    #[serde(rename = "order.payment_failed")]
-    OrderPaymentFailed,
-    #[serde(rename = "order.payment_succeeded")]
-    OrderPaymentSucceeded,
-    #[serde(rename = "order.updated")]
-    OrderUpdated,
-    #[serde(rename = "order_return.created")]
-    OrderReturnCreated,
     #[serde(rename = "payment_intent.amount_capturable_updated")]
     PaymentIntentAmountCapturableUpdated,
     #[serde(rename = "payment_intent.canceled")]
@@ -655,10 +647,6 @@ pub enum EventFilter {
     TopupSucceeded,
     #[serde(rename = "transfer.created")]
     TransferCreated,
-    #[serde(rename = "transfer.failed")]
-    TransferFailed,
-    #[serde(rename = "transfer.paid")]
-    TransferPaid,
     #[serde(rename = "transfer.reversed")]
     TransferReversed,
     #[serde(rename = "transfer.updated")]
@@ -860,10 +848,6 @@ impl EventFilter {
             EventFilter::IssuingTransactionUpdated => "issuing_transaction.updated",
             EventFilter::MandateUpdated => "mandate.updated",
             EventFilter::OrderCreated => "order.created",
-            EventFilter::OrderPaymentFailed => "order.payment_failed",
-            EventFilter::OrderPaymentSucceeded => "order.payment_succeeded",
-            EventFilter::OrderUpdated => "order.updated",
-            EventFilter::OrderReturnCreated => "order_return.created",
             EventFilter::PaymentIntentAmountCapturableUpdated => {
                 "payment_intent.amount_capturable_updated"
             }
@@ -955,8 +939,6 @@ impl EventFilter {
             EventFilter::TopupReversed => "topup.reversed",
             EventFilter::TopupSucceeded => "topup.succeeded",
             EventFilter::TransferCreated => "transfer.created",
-            EventFilter::TransferFailed => "transfer.failed",
-            EventFilter::TransferPaid => "transfer.paid",
             EventFilter::TransferReversed => "transfer.reversed",
             EventFilter::TransferUpdated => "transfer.updated",
             EventFilter::TreasuryCreditReversalCreated => "treasury.credit_reversal.created",

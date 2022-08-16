@@ -22,6 +22,10 @@ pub struct AppsSecret {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deleted: Option<bool>,
 
+    /// The Unix timestamp for the expiry time of the secret, after which the secret deletes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<Timestamp>,
+
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
