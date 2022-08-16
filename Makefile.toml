@@ -28,25 +28,22 @@ rg -N --no-filename -i '^pub (struct|enum) ([A-Z][a-zA-z0-9]+).*?$'  src/resourc
  | uniq -cd
 '''
 
-[tasks.openapi-fetch]
-cwd = "openapi"
-command = "wget"
-args = [
-    "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
-]
-dependencies = ["openapi-delete"]
-
 [tasks.openapi-generate]
 cwd = "openapi"
 command = "cargo"
-args = ["run", "spec3.json"]
-dependencies = ["openapi-fetch"]
+args = ["run", "spec3.json", "--fetch", "current"]
+dependencies = ["openapi-delete"]
+
+[tasks.openapi-generate-latest]
+cwd = "openapi"
+command = "cargo"
+args = ["run", "spec3.json", "--fetch", "latest"]
+dependencies = ["openapi-delete"]
 
 [tasks.openapi-copy]
 cwd = "openapi"
 command = "cp"
 args = ["-a", "out/.", "../src/resources/generated"]
-dependencies = ["openapi-generate"]
 
 [tasks.fmt]
 command = "cargo"
@@ -61,7 +58,10 @@ install_crate = "rustfmt"
 args = ["fmt", "--", "--check", "@@split(RUST_FILES,;)"]
 
 [tasks.openapi-install]
-dependencies = ["openapi-copy", "fmt"]
+dependencies = ["openapi-generate", "openapi-copy", "fmt"]
+
+[tasks.openapi-install-latest]
+dependencies = ["openapi-generate-latest", "openapi-copy", "fmt"]
 
 [config]
 default_to_workspace = false

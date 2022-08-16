@@ -7,11 +7,13 @@ edition = "2018"
 [dependencies]
 heck = "0.3"
 lazy_static = "1"
-reqwest = { version = "0.11", features = ["blocking"] }
+reqwest = { version = "0.11", features = ["blocking", "json"] }
 regex = "1"
+serde = {version = "1", features = ["derive"]}
 serde_json = "1"
 anyhow = "1.0.34"
 tracing = "=0.1.29" # prevent valuable
 log = "0.4.14"
 tracing-subscriber = "=0.3.7" # prevent valuable
 tracing-core="=0.1.21" # prevent valuable
+structopt = "0.3.26"
