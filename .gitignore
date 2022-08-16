@@ -12,6 +12,7 @@ stripe-mock/
 .idea/
 *.swp
 ~*
+.vscode
 
 spec3.json
 
