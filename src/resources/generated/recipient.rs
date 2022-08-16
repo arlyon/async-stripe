@@ -62,7 +62,7 @@ pub struct Recipient {
 
     /// Type of the recipient, one of `individual` or `corporation`.
     #[serde(rename = "type")]
-    pub type_: Option<RecipientType>,
+    pub type_: crate::RecipientType,
 }
 
 impl Object for Recipient {

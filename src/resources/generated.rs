@@ -36,6 +36,7 @@ pub mod core {
     pub mod payment_method_options_alipay;
     pub mod payment_method_options_bancontact;
     pub mod payment_method_options_customer_balance;
+    pub mod payment_method_options_customer_balance_eu_bank_account;
     pub mod payment_method_options_ideal;
     pub mod payment_method_options_klarna;
     pub mod payment_method_options_oxxo;

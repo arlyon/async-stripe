@@ -126,6 +126,7 @@ pub use {
         payment_method_options_alipay::*,
         payment_method_options_bancontact::*,
         payment_method_options_customer_balance::*,
+        payment_method_options_customer_balance_eu_bank_account::*,
         payment_method_options_ideal::*,
         payment_method_options_klarna::*,
         payment_method_options_oxxo::*,
