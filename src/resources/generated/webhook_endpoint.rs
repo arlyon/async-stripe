@@ -389,6 +389,8 @@ pub enum EventFilter {
     CustomerTaxIdUpdated,
     #[serde(rename = "customer.updated")]
     CustomerUpdated,
+    #[serde(rename = "customer_cash_balance_transaction.created")]
+    CustomerCashBalanceTransactionCreated,
     #[serde(rename = "file.created")]
     FileCreated,
     #[serde(rename = "financial_connections.account.created")]
@@ -782,6 +784,9 @@ impl EventFilter {
             EventFilter::CustomerTaxIdDeleted => "customer.tax_id.deleted",
             EventFilter::CustomerTaxIdUpdated => "customer.tax_id.updated",
             EventFilter::CustomerUpdated => "customer.updated",
+            EventFilter::CustomerCashBalanceTransactionCreated => {
+                "customer_cash_balance_transaction.created"
+            }
             EventFilter::FileCreated => "file.created",
             EventFilter::FinancialConnectionsAccountCreated => {
                 "financial_connections.account.created"

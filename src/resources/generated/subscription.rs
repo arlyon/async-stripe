@@ -359,6 +359,13 @@ pub struct SubscriptionPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<InvoiceMandateOptionsCard>,
 
+    /// Selected network to process this Subscription on.
+    ///
+    /// Depends on the available networks of the card attached to the Subscription.
+    /// Can be only set confirm-time.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network: Option<SubscriptionPaymentMethodOptionsCardNetwork>,
+
     /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
     ///
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
@@ -1210,6 +1217,9 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
         Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub network: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
 }
@@ -1271,6 +1281,9 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options:
         Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
@@ -1557,6 +1570,64 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Fixed
+    }
+}
+
+/// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard`'s `network` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
+    Amex,
+    CartesBancaires,
+    Diners,
+    Discover,
+    Interac,
+    Jcb,
+    Mastercard,
+    Unionpay,
+    Unknown,
+    Visa,
+}
+
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Amex => "amex",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::CartesBancaires => {
+                "cartes_bancaires"
+            }
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Diners => "diners",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Discover => {
+                "discover"
+            }
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Interac => "interac",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Jcb => "jcb",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Mastercard => {
+                "mastercard"
+            }
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Unionpay => {
+                "unionpay"
+            }
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Unknown => "unknown",
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Visa => "visa",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
+    fn default() -> Self {
+        Self::Amex
     }
 }
 
@@ -2004,6 +2075,56 @@ impl std::fmt::Display for SubscriptionPaymentBehavior {
 impl std::default::Default for SubscriptionPaymentBehavior {
     fn default() -> Self {
         Self::AllowIncomplete
+    }
+}
+
+/// An enum representing the possible values of an `SubscriptionPaymentMethodOptionsCard`'s `network` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionPaymentMethodOptionsCardNetwork {
+    Amex,
+    CartesBancaires,
+    Diners,
+    Discover,
+    Interac,
+    Jcb,
+    Mastercard,
+    Unionpay,
+    Unknown,
+    Visa,
+}
+
+impl SubscriptionPaymentMethodOptionsCardNetwork {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SubscriptionPaymentMethodOptionsCardNetwork::Amex => "amex",
+            SubscriptionPaymentMethodOptionsCardNetwork::CartesBancaires => "cartes_bancaires",
+            SubscriptionPaymentMethodOptionsCardNetwork::Diners => "diners",
+            SubscriptionPaymentMethodOptionsCardNetwork::Discover => "discover",
+            SubscriptionPaymentMethodOptionsCardNetwork::Interac => "interac",
+            SubscriptionPaymentMethodOptionsCardNetwork::Jcb => "jcb",
+            SubscriptionPaymentMethodOptionsCardNetwork::Mastercard => "mastercard",
+            SubscriptionPaymentMethodOptionsCardNetwork::Unionpay => "unionpay",
+            SubscriptionPaymentMethodOptionsCardNetwork::Unknown => "unknown",
+            SubscriptionPaymentMethodOptionsCardNetwork::Visa => "visa",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionPaymentMethodOptionsCardNetwork {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionPaymentMethodOptionsCardNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionPaymentMethodOptionsCardNetwork {
+    fn default() -> Self {
+        Self::Amex
     }
 }
 
@@ -2519,6 +2640,64 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Fixed
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard`'s `network` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
+    Amex,
+    CartesBancaires,
+    Diners,
+    Discover,
+    Interac,
+    Jcb,
+    Mastercard,
+    Unionpay,
+    Unknown,
+    Visa,
+}
+
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Amex => "amex",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::CartesBancaires => {
+                "cartes_bancaires"
+            }
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Diners => "diners",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Discover => {
+                "discover"
+            }
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Interac => "interac",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Jcb => "jcb",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Mastercard => {
+                "mastercard"
+            }
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Unionpay => {
+                "unionpay"
+            }
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Unknown => "unknown",
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Visa => "visa",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
+    fn default() -> Self {
+        Self::Amex
     }
 }
 

@@ -638,9 +638,6 @@ pub struct UpdateSubscriptionSchedulePhases {
     pub coupon: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
