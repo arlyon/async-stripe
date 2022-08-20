@@ -775,6 +775,7 @@ pub fn gen_emitted_structs(
     }
 }
 
+#[tracing::instrument(skip_all)]
 pub fn gen_unions(out: &mut String, unions: &BTreeMap<String, InferredUnion>, meta: &Metadata) {
     for (union_name, union_) in unions {
         log::trace!("union {} {{ ... }}", union_name);
@@ -825,6 +826,7 @@ pub fn gen_unions(out: &mut String, unions: &BTreeMap<String, InferredUnion>, me
     }
 }
 
+#[tracing::instrument(skip_all)]
 pub fn gen_variant_name(wire_name: &str, meta: &Metadata) -> String {
     match wire_name {
         "*" => "All".to_string(),
@@ -838,6 +840,7 @@ pub fn gen_variant_name(wire_name: &str, meta: &Metadata) -> String {
     }
 }
 
+#[tracing::instrument(skip_all)]
 pub fn gen_enums(out: &mut String, enums: &BTreeMap<String, InferredEnum>, meta: &Metadata) {
     for (enum_name, enum_) in enums {
         log::trace!("enum {} {{ ... }}", enum_name);
@@ -930,6 +933,7 @@ pub fn gen_enums(out: &mut String, enums: &BTreeMap<String, InferredEnum>, meta:
     }
 }
 
+#[tracing::instrument(skip_all)]
 pub fn gen_member_variable_string(schema: &Schema) -> Result<String, TypeError> {
     if let Some(type_) = schema.get_type() {
         match type_ {
