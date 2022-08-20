@@ -100,7 +100,7 @@ impl FileGenerator {
         gen_struct(&mut out, self, meta, &mut shared_objects, url_finder);
 
         if let Some(object_literal) =
-            properties.get_field("object").and_then(|o| o.get_enum().and_then(|e| e.first()))
+            properties.get_field("object").and_then(|o| o.get_first_enum_value())
         {
             self.gen_object_trait(meta, id_type, &mut out, struct_name, object_literal);
         }

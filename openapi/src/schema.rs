@@ -28,7 +28,7 @@ pub struct Schema {
     type_: Option<String>,
     /// Specify possible values of the schema type
     #[serde(rename = "enum")]
-    enum_: Option<Vec<String>>,
+    enum_: Option<EnumData>,
     #[serde(rename = "$ref")]
     /// A URI-reference that is resolved to another schema
     /// https://json-schema.org/understanding-json-schema/structuring.html#ref
@@ -54,6 +54,29 @@ pub struct Schema {
     pub expansion_resources: Option<ExpansionResources>,
 }
 
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize, Eq, PartialEq)]
+#[serde(untagged)]
+enum EnumData {
+    Strings(Vec<String>),
+    // Only hit for the property `deleted` in deleted structs
+    Bools(Vec<bool>),
+}
+
+impl EnumData {
+    fn as_strings(&self) -> Option<&Vec<String>> {
+        match self {
+            EnumData::Strings(vals) => Some(vals),
+            EnumData::Bools(_) => None,
+        }
+    }
+}
+
+impl Default for EnumData {
+    fn default() -> Self {
+        EnumData::Strings(vec![])
+    }
+}
+
 impl Schema {
     pub fn get_id_schema(&self) -> Option<&Schema> {
         self.properties.as_ref().and_then(|p| p.get_field("id"))
@@ -67,13 +90,15 @@ impl Schema {
         self.properties
             .as_ref()
             .and_then(|p| p.get_field("object"))
-            .and_then(|schema| schema.enum_.as_ref())
-            .and_then(|vals| vals.first())
-            .map(|s| s.as_str())
+            .and_then(|schema| schema.get_first_enum_value())
     }
 
-    pub fn get_enum(&self) -> Option<&Vec<String>> {
-        self.enum_.as_ref()
+    pub fn get_enum_strings(&self) -> Option<&Vec<String>> {
+        self.enum_.as_ref().and_then(|enum_| enum_.as_strings())
+    }
+
+    pub fn get_first_enum_value(&self) -> Option<&str> {
+        self.get_enum_strings().and_then(|vals| vals.first().map(|v| v.as_str()))
     }
 
     pub fn additional_properties(&self) -> Option<&Schema> {
@@ -173,18 +198,17 @@ pub struct ExpansionResources {
 /// each value is a schema used to validate that property.
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize, Eq, PartialEq, Default)]
 pub struct Properties {
-    deleted: Option<DeletedSchema>,
     #[serde(flatten)]
-    rest: BTreeMap<String, Schema>,
+    properties: BTreeMap<String, Schema>,
 }
 
 impl Properties {
     pub fn get_fields(&self) -> &BTreeMap<String, Schema> {
-        &self.rest
+        &self.properties
     }
 
     pub fn get_field(&self, name: &str) -> Option<&Schema> {
-        self.rest.get(name)
+        self.properties.get(name)
     }
 }
 

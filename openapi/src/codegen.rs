@@ -549,14 +549,14 @@ pub fn gen_inferred_params(
                             out.push_str(": Option<RangeQuery<Timestamp>>,\n");
                         }
                     } else if param.schema_type() == Some("string")
-                        && param.schema().get_enum().is_some()
+                        && param.schema().get_enum_strings().is_some()
                     {
                         let enum_schema = meta.schema_field(&object, param_rename);
                         let enum_name = meta.schema_to_rust_type(&enum_schema);
                         let enum_ = InferredEnum {
                             parent: params.rust_type.clone(),
                             field: param_rename.into(),
-                            options: param.schema().get_enum().unwrap().clone(),
+                            options: param.schema().get_enum_strings().unwrap().clone(),
                         };
                         let inserted = state.try_insert_enum(enum_name.clone(), enum_.clone());
                         let enum_name = if inserted.is_err() {
@@ -1129,7 +1129,7 @@ fn gen_field_type(
         Some("number") => "f64".into(),
         Some("integer") => infer_integer_type(state, field_name, field.format()),
         Some("string") => {
-            if let Some(variants) = field.get_enum() {
+            if let Some(variants) = field.get_enum_strings() {
                 let enum_schema = meta.schema_field(object, field_name);
                 let enum_name = meta.schema_to_rust_type(&enum_schema);
                 let parent_type = meta.schema_to_rust_type(object);
@@ -1222,8 +1222,7 @@ fn gen_field_type(
                 if any_of.len() == 1
                     || (any_of.len() == 2
                         && any_of[1]
-                            .get_enum()
-                            .and_then(|val| val.first())
+                            .get_first_enum_value()
                             .map(|v| v.is_empty())
                             .unwrap_or_default())
                 {
