@@ -1,4 +1,4 @@
-use serde_json::Value;
+use crate::schema::{Parameter, Schema};
 
 #[derive(Clone, Copy, Debug)]
 pub enum CopyOrClone {
@@ -29,20 +29,20 @@ pub struct InferredUnion {
 #[derive(Clone, Debug, PartialEq)]
 pub struct InferredStruct {
     pub field: String,
-    pub schema: Value,
+    pub schema: Schema,
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct InferredParams {
     pub method: String,
     pub rust_type: String,
-    pub parameters: Value,
+    pub parameters: Option<Vec<Parameter>>,
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct InferredObject {
     pub rust_type: String,
-    pub schema: Value,
+    pub schema: Schema,
 }
 
 #[derive(Eq, PartialEq, Hash, PartialOrd, Ord, Debug)]

@@ -4,19 +4,16 @@ use std::{
     path::Path,
 };
 
-use anyhow::{anyhow, Result};
+use anyhow::{Context, Result};
 use heck::SnakeCase;
 
+use crate::codegen::{gen_enums, gen_objects, gen_prelude, gen_unions};
 use crate::{
     codegen::gen_emitted_structs,
-    codegen::gen_enums,
     codegen::gen_generated_schemas,
     codegen::gen_impl_requests,
     codegen::gen_inferred_params,
-    codegen::gen_objects,
-    codegen::gen_prelude,
     codegen::gen_struct,
-    codegen::gen_unions,
     metadata::Metadata,
     types::InferredEnum,
     types::InferredObject,
@@ -97,13 +94,14 @@ impl FileGenerator {
         let id_type = meta.schema_to_id_type(&self.name);
         let struct_name = meta.schema_to_rust_type(&self.name);
 
-        let fields = meta.spec["components"]["schemas"][&self.name]["properties"]
-            .as_object()
-            .ok_or(anyhow!("no properties"))?;
+        let properties =
+            meta.spec.get_schema_unchecked(&self.name).properties().context("No properties")?;
 
         gen_struct(&mut out, self, meta, &mut shared_objects, url_finder);
 
-        if let Some(object_literal) = fields.get("object").and_then(|o| o["enum"][0].as_str()) {
+        if let Some(object_literal) =
+            properties.get_field("object").and_then(|o| o.get_enum().and_then(|e| e.first()))
+        {
             self.gen_object_trait(meta, id_type, &mut out, struct_name, object_literal);
         }
 
@@ -113,11 +111,11 @@ impl FileGenerator {
 
         gen_emitted_structs(&mut out, self, meta, &mut shared_objects);
 
-        gen_unions(&mut out, self, meta);
+        gen_unions(&mut out, &self.inferred_unions, meta);
 
-        gen_enums(&mut out, self, meta);
+        gen_enums(&mut out, &self.inferred_enums, meta);
 
-        gen_objects(&mut out, self);
+        gen_objects(&mut out, &self.generated_objects);
 
         Ok((gen_prelude(self, meta) + &out, shared_objects))
     }
@@ -170,9 +168,7 @@ impl FileGenerator {
         let name = name.into();
         let mut enum_ = enum_;
         enum_.options.sort();
-        if let std::collections::btree_map::Entry::Vacant(e) =
-            self.inferred_enums.entry(name.clone())
-        {
+        if let Entry::Vacant(e) = self.inferred_enums.entry(name.clone()) {
             e.insert(enum_);
             return Ok(());
         }
@@ -201,17 +197,7 @@ impl FileGenerator {
             return Ok(());
         }
         if let Some(other) = self.inferred_structs.get(&name) {
-            let mut self_schema = struct_.schema;
-            let mut other_schema = other.schema.clone();
-            if let Some(x) = self_schema.as_object_mut() {
-                x.remove("description");
-                x.remove("title");
-            }
-            if let Some(x) = other_schema.as_object_mut() {
-                x.remove("description");
-                x.remove("title");
-            }
-            if self_schema != other_schema {
+            if !struct_.schema.equal_without_title_desc(&other.schema) {
                 return Err(other);
             }
         }

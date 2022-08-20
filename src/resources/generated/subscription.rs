@@ -76,7 +76,8 @@ pub struct Subscription {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: Currency,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
 
     /// End of the current period that the subscription has been invoiced for.
     ///
@@ -1042,9 +1043,6 @@ pub struct UpdateSubscriptionItems {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clear_usage: Option<bool>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,

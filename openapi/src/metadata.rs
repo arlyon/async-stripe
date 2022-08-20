@@ -3,8 +3,8 @@ use std::fs::write;
 use std::path::Path;
 
 use heck::{CamelCase, SnakeCase};
-use serde_json::Value;
 
+use crate::spec::Spec;
 use crate::{
     file_generator::FileGenerator,
     mappings::{self, FieldMap, ObjectMap},
@@ -15,7 +15,7 @@ use crate::{
 /// Global metadata for the entire codegen process.
 #[derive(Debug)]
 pub struct Metadata<'a> {
-    pub spec: &'a Value,
+    pub spec: &'a Spec,
     /// A map of `objects` to their rust id type
     pub id_mappings: BTreeMap<String, (String, CopyOrClone)>,
 
@@ -38,7 +38,7 @@ pub struct Metadata<'a> {
 }
 
 impl<'a> Metadata<'a> {
-    pub fn from_spec(spec: &'a Value) -> Self {
+    pub fn from_spec(spec: &'a Spec) -> Self {
         let id_renames = mappings::id_renames();
         let object_mappings = mappings::object_mappings();
         let field_mappings = mappings::field_mappings();
@@ -48,15 +48,15 @@ impl<'a> Metadata<'a> {
         let mut dependents: BTreeMap<_, BTreeSet<_>> = BTreeMap::new();
         let mut id_mappings = BTreeMap::new();
 
-        for (key, schema) in spec["components"]["schemas"].as_object().unwrap() {
+        for (key, schema) in spec.component_schemas() {
             let schema_name = key.as_str();
-            let fields = match schema["properties"].as_object() {
-                Some(some) => some,
+            let props = match schema.properties() {
+                Some(p) => p,
                 None => continue,
             };
-            if fields.contains_key("object") {
+            if props.get_field("object").is_some() {
                 objects.insert(schema_name);
-                if !schema["properties"]["id"].is_null() {
+                if schema.get_id_schema().is_some() {
                     let id_type = id_renames
                         .get(&schema_name)
                         .unwrap_or(&schema_name)
@@ -70,14 +70,14 @@ impl<'a> Metadata<'a> {
                     );
                 }
             }
-            for (_, field) in fields {
-                if let Some(path) = field["$ref"].as_str() {
+            for field in props.get_fields().values() {
+                if let Some(path) = field.path_ref() {
                     let dep = path.trim_start_matches("#/components/schemas/");
                     dependents.entry(dep).or_default().insert(schema_name);
                 }
-                if let Some(any_of) = field["anyOf"].as_array() {
+                if let Some(any_of) = field.any_of() {
                     for ty in any_of {
-                        if let Some(path) = ty["$ref"].as_str() {
+                        if let Some(path) = ty.path_ref() {
                             let dep = path.trim_start_matches("#/components/schemas/");
                             dependents.entry(dep).or_default().insert(schema_name);
                         }
@@ -176,11 +176,11 @@ impl<'a> Metadata<'a> {
 /// given a spec and a set of objects in that spec, metadatas a
 /// map with the requests to implement for each of the types in the spec
 pub fn metadata_requests<'a>(
-    spec: &'a Value,
+    spec: &'a Spec,
     objects: &BTreeSet<&'a str>,
 ) -> BTreeMap<String, BTreeSet<&'a str>> {
     let mut requests = BTreeMap::<String, BTreeSet<_>>::new();
-    for (path, _) in spec["paths"].as_object().unwrap() {
+    for path in spec.paths() {
         let mut seg_iterator = path.trim_start_matches("/v1/").split('/');
         let object = match (seg_iterator.next(), seg_iterator.next(), seg_iterator.next()) {
             // handle special case for sessions
@@ -215,83 +215,83 @@ pub fn metadata_requests<'a>(
 #[rustfmt::skip]
 pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
     [
-		// N.B. For now both `core` and `payment-methods` are always enabled.
-		/*
-		// Core Resources
-		("balance", "core"),
-		("balance_transaction", "core"),
-		("charge", "core"),
-		("customer", "core"),
-		("dispute", "core"),
-		("file", "core"),
-		("file_link", "core"),
-		("setup_intent", "core"),
-		("payout", "core"),
-		("platform_tax_fee", "core"),
-		("product", "core"),
-		("refund", "core"),
-		("reserve_transaction", "core"),
-		("token", "core"),
+        // N.B. For now both `core` and `payment-methods` are always enabled.
+        /*
+        // Core Resources
+        ("balance", "core"),
+        ("balance_transaction", "core"),
+        ("charge", "core"),
+        ("customer", "core"),
+        ("dispute", "core"),
+        ("file", "core"),
+        ("file_link", "core"),
+        ("setup_intent", "core"),
+        ("payout", "core"),
+        ("platform_tax_fee", "core"),
+        ("product", "core"),
+        ("refund", "core"),
+        ("reserve_transaction", "core"),
+        ("token", "core"),
 
-		// Payment Methods
+        // Payment Methods
         ("alipay_account", "payment-methods"),
-		("bank_account", "payment-methods"),
-		("payment_method", "payment-methods"),
-		("source", "payment-methods"),
-		*/
+        ("bank_account", "payment-methods"),
+        ("payment_method", "payment-methods"),
+        ("source", "payment-methods"),
+        */
 
-		// Checkout
-		("checkout_session", "checkout"),
+        // Checkout
+        ("checkout_session", "checkout"),
 
-		// Billing (aka. Subscriptions)
-		("coupon", "billing"),
-		("discount", "billing"),
-		("invoice", "billing"),
-		("invoiceitem", "billing"),
+        // Billing (aka. Subscriptions)
+        ("coupon", "billing"),
+        ("discount", "billing"),
+        ("invoice", "billing"),
+        ("invoiceitem", "billing"),
         ("line_item", "billing"),
-		("plan", "billing"),
-		("subscription", "billing"),
-		("subscription_item", "billing"),
-		("subscription_schedule", "billing"),
- 		("subscription_schedule_revision", "billing"),
+        ("plan", "billing"),
+        ("subscription", "billing"),
+        ("subscription_item", "billing"),
+        ("subscription_schedule", "billing"),
+        ("subscription_schedule_revision", "billing"),
         ("tax_id", "billing"),
-		("tax_rate", "billing"),
+        ("tax_rate", "billing"),
 
-		// Connect
-		("account", "connect"),
-		("application", "connect"),
-		("application_fee", "connect"),
-		("connect_collection_transfer", "connect"),
-		("fee_refund", "connect"),
-		("person", "connect"),
-		("recipient", "connect"),
-		("topup", "connect"),
-		("transfer", "connect"),
-		("transfer_reversal", "connect"),
+        // Connect
+        ("account", "connect"),
+        ("application", "connect"),
+        ("application_fee", "connect"),
+        ("connect_collection_transfer", "connect"),
+        ("fee_refund", "connect"),
+        ("person", "connect"),
+        ("recipient", "connect"),
+        ("topup", "connect"),
+        ("transfer", "connect"),
+        ("transfer_reversal", "connect"),
 
-		// Fraud
-		("review", "fraud"),
+        // Fraud
+        ("review", "fraud"),
 
-		// Issuing
-		("issuing.authorization", "issuing"),
-		("issuing.card", "issuing"),
-		("issuing.cardholder", "issuing"),
-		("issuing.dispute", "issuing"),
-		("issuing.transaction", "issuing"),
+        // Issuing
+        ("issuing.authorization", "issuing"),
+        ("issuing.card", "issuing"),
+        ("issuing.cardholder", "issuing"),
+        ("issuing.dispute", "issuing"),
+        ("issuing.transaction", "issuing"),
 
-		// Orders
-		("order", "orders"),
-		("order_item", "orders"),
-		("order_return", "orders"),
-		("sku", "orders"),
+        // Orders
+        ("order", "orders"),
+        ("order_item", "orders"),
+        ("order_return", "orders"),
+        ("sku", "orders"),
 
-		// Sigma
-		("scheduled_query_run", "sigma"),
+        // Sigma
+        ("scheduled_query_run", "sigma"),
 
-		// Webhooks Endpoints
-		("webhook_endpoint", "webhook-endpoints"),
-	]
-	.iter()
-	.copied()
-	.collect()
+        // Webhooks Endpoints
+        ("webhook_endpoint", "webhook-endpoints"),
+    ]
+        .iter()
+        .copied()
+        .collect()
 }

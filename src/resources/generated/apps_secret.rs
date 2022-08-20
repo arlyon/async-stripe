@@ -18,10 +18,6 @@ pub struct AppsSecret {
     /// Measured in seconds since the Unix epoch.
     pub created: Timestamp,
 
-    /// If true, indicates that this secret has been deleted.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted: Option<bool>,
-
     /// The Unix timestamp for the expiry time of the secret, after which the secret deletes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<Timestamp>,

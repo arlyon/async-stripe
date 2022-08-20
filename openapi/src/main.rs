@@ -10,6 +10,8 @@ mod codegen;
 mod file_generator;
 mod mappings;
 mod metadata;
+mod schema;
+mod spec;
 mod spec_fetch;
 mod types;
 mod url_finder;
@@ -41,7 +43,8 @@ fn main() -> Result<()> {
     log::info!("generating code for {} to {}", in_path, out_path);
 
     let spec = if let Some(version) = args.fetch {
-        fetch_spec(version, &in_path)?
+        let raw = fetch_spec(version, &in_path)?;
+        serde_json::from_value(raw)?
     } else {
         let raw = fs::File::open(in_path).context("failed to load the specfile. does it exist?")?;
         serde_json::from_reader(&raw).context("failed to read json from specfile")?
