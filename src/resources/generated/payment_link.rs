@@ -44,6 +44,11 @@ pub struct PaymentLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub consent_collection: Option<PaymentLinksResourceConsentCollection>,
 
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
+
     /// Configuration for Customer creation during checkout.
     pub customer_creation: PaymentLinkCustomerCreation,
 
