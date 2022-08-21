@@ -899,7 +899,7 @@ pub struct CreateAccount<'a> {
     ///
     /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
-    /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
+    /// To add additional external accounts without replacing the existing default for the currency, use the [bank account](https://stripe.com/docs/api#account_create_bank_account) or [card creation](https://stripe.com/docs/api#account_create_card) APIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account: Option<&'a str>,
 
@@ -1058,7 +1058,7 @@ pub struct UpdateAccount<'a> {
     ///
     /// You can provide either a token, like the ones returned by [Stripe.js](https://stripe.com/docs/js), or a dictionary, as documented in the `external_account` parameter for [bank account](https://stripe.com/docs/api#account_create_bank_account) creation.
     /// By default, providing an external account sets it as the new default external account for its currency, and deletes the old default if one exists.
-    /// To add additional external accounts without replacing the existing default for the currency, use the bank account or card creation API.
+    /// To add additional external accounts without replacing the existing default for the currency, use the [bank account](https://stripe.com/docs/api#account_create_bank_account) or [card creation](https://stripe.com/docs/api#account_create_card) APIs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account: Option<&'a str>,
 
