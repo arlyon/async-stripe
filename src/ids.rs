@@ -536,14 +536,14 @@ def_id!(
 );
 def_id!(PersonId, "person_");
 def_id!(PlanId: String); // N.B. A plan id can be user-provided so can be any arbitrary string
-def_id!(PlatformTaxFeeId: String);
+def_id!(PlatformTaxFeeId, "ptf");
 def_id!(PriceId, "price_");
 def_id!(ProductId: String); // N.B. A product id can be user-provided so can be any arbitrary string
 def_id!(PromotionCodeId, "promo_"); // N.B. A product id can be user-provided so can be any arbitrary string
 def_id!(QuoteId, "qt_");
 def_id!(RecipientId: String); // FIXME: This doesn't seem to be documented yet
 def_id!(RefundId, "re_");
-def_id!(ReserveTransactionId: String);
+def_id!(ReserveTransactionId, "rtx");
 def_id!(ReviewId, "prv_");
 def_id!(ScheduledQueryRunId, "sqr_");
 def_id!(SetupAttemptId, "setatt_");
@@ -557,7 +557,7 @@ def_id!(SubscriptionLineId, "sli_");
 def_id!(SubscriptionScheduleId, "sub_sched_");
 def_id!(TaxIdId, "txi_");
 def_id!(TaxCodeId, "txcd_");
-def_id!(TaxDeductedAtSourceId: String);
+def_id!(TaxDeductedAtSourceId, "itds");
 def_id!(TaxRateId, "txr_");
 def_id!(TerminalConfigurationId, "tmc_");
 def_id!(TerminalLocationId, "tml_");
