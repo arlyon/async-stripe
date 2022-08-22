@@ -5,7 +5,9 @@
 [![async-stripe  on docs.rs](https://docs.rs/async-stripe/badge.svg)](https://docs.rs/async-stripe)
 
 Convenient rust bindings and types for the Stripe HTTP API aiming to support
-the entire API surface. Not the case? Please open an issue.
+the entire API surface. Not the case? Please open an issue. We update our
+defitions [every week](https://github.com/arlyon/async-stripe/actions/workflows/openapi.yml) to ensure that we are up to date.
+Want to see a changelog of the stripe api? [Look no further](https://stripe.com/docs/changelog).
 
 ## Documentation
 
