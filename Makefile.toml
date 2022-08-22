@@ -1,6 +1,3 @@
-[env]
-RUST_FILES = { glob = "./**/*.rs", include_files = true, include_dirs = false, ignore_type = "git" }
-
 [tasks.openapi-delete]
 cwd = "openapi"
 command = "rm"
@@ -49,13 +46,13 @@ args = ["-a", "out/.", "../src/resources/generated"]
 command = "cargo"
 toolchain = "nightly"
 install_crate = "rustfmt"
-args = ["fmt", "--", "@@split(RUST_FILES,;)"]
+args = ["fmt", "--"]
 
 [tasks.check]
 command = "cargo"
 toolchain = "nightly"
 install_crate = "rustfmt"
-args = ["fmt", "--", "--check", "@@split(RUST_FILES,;)"]
+args = ["fmt", "--", "--check"]
 
 [tasks.openapi-install]
 dependencies = ["openapi-generate", "openapi-copy", "fmt"]
