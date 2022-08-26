@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::CapabilityId;
+use crate::ids::{CapabilityId};
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::Account;
+use crate::resources::{Account};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "AccountCapability".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -50,6 +49,7 @@ impl Object for Capability {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountCapabilityFutureRequirements {
+
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
@@ -92,6 +92,7 @@ pub struct AccountCapabilityFutureRequirements {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountCapabilityRequirements {
+
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
@@ -136,6 +137,7 @@ pub struct AccountCapabilityRequirements {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsAlternative {
+
     /// Fields that can be provided to satisfy all fields in `original_fields_due`.
     pub alternative_fields_due: Vec<String>,
 
@@ -145,6 +147,7 @@ pub struct AccountRequirementsAlternative {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsError {
+
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
 

@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::ChargeId;
+use crate::ids::{ChargeId};
 use crate::params::{Object, Timestamp};
-use crate::resources::Currency;
+use crate::resources::{Currency};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SourceTransaction".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -68,6 +67,7 @@ impl Object for SourceTransaction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransactionAchCreditTransferData {
+
     /// Customer data associated with the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_data: Option<String>,
@@ -87,6 +87,7 @@ pub struct SourceTransactionAchCreditTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransactionChfCreditTransferData {
+
     /// Reference associated with the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
@@ -110,6 +111,7 @@ pub struct SourceTransactionChfCreditTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransactionGbpCreditTransferData {
+
     /// Bank account fingerprint associated with the Stripe owned bank account receiving the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
@@ -144,6 +146,7 @@ pub struct SourceTransactionGbpCreditTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransactionPaperCheckData {
+
     /// Time at which the deposited funds will be available for use.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -157,6 +160,7 @@ pub struct SourceTransactionPaperCheckData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTransactionSepaCreditTransferData {
+
     /// Reference associated with the transfer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,

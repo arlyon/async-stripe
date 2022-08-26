@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "IssuingAuthorizationMerchantData".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MerchantData {
+
     /// A categorization of the seller's type of business.
     ///
     /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.

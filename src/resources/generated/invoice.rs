@@ -431,7 +431,6 @@ impl Invoice {
 
     /// This endpoint creates a draft invoice for a given customer.
     ///
-    /// The draft invoice created pulls in all pending invoice items on that customer, including prorations.
     /// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
     pub fn create(client: &Client, params: CreateInvoice<'_>) -> Response<Invoice> {
         client.post_form("/invoices", &params)
