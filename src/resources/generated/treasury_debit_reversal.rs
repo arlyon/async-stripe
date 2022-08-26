@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::TreasuryDebitReversalId;
+use crate::ids::{TreasuryDebitReversalId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Currency, TreasuryTransaction};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryReceivedDebitsResourceDebitReversal".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -70,6 +69,7 @@ impl Object for TreasuryDebitReversal {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryReceivedDebitsResourceDebitReversalLinkedFlows {
+
     /// Set if there is an Issuing dispute associated with the DebitReversal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_dispute: Option<String>,
@@ -77,6 +77,7 @@ pub struct TreasuryReceivedDebitsResourceDebitReversalLinkedFlows {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryReceivedDebitsResourceStatusTransitions {
+
     /// Timestamp describing when the DebitReversal changed status to `completed`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub completed_at: Option<Timestamp>,

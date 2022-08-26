@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::TreasuryOutboundPaymentId;
+use crate::ids::{TreasuryOutboundPaymentId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Currency, TreasurySharedResourceBillingDetails, TreasuryTransaction};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryOutboundPaymentsResourceOutboundPayment".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -52,8 +51,7 @@ pub struct TreasuryOutboundPayment {
 
     /// Details about the end user.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub end_user_details:
-        Option<TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails>,
+    pub end_user_details: Option<TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails>,
 
     /// The date when funds are expected to arrive in the destination account.
     pub expected_arrival_date: Timestamp,
@@ -89,8 +87,7 @@ pub struct TreasuryOutboundPayment {
     /// If an OutboundPayment fails to arrive at its destination, its status will change to `returned`.
     pub status: TreasuryOutboundPaymentStatus,
 
-    pub status_transitions:
-        TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitions,
+    pub status_transitions: TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitions,
 
     /// The Transaction associated with this object.
     pub transaction: Expandable<TreasuryTransaction>,
@@ -108,6 +105,7 @@ impl Object for TreasuryOutboundPayment {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OutboundPaymentsPaymentMethodDetails {
+
     pub billing_details: TreasurySharedResourceBillingDetails,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -123,6 +121,7 @@ pub struct OutboundPaymentsPaymentMethodDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OutboundPaymentsPaymentMethodDetailsFinancialAccount {
+
     /// Token of the FinancialAccount.
     pub id: String,
 
@@ -132,10 +131,10 @@ pub struct OutboundPaymentsPaymentMethodDetailsFinancialAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccount {
+
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type:
-        Option<OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType>,
+    pub account_holder_type: Option<OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType>,
 
     /// Account type: checkings or savings.
     ///
@@ -167,6 +166,7 @@ pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails {
+
     /// IP address of the user initiating the OutboundPayment.
     ///
     /// Set if `present` is set to `true`.
@@ -183,6 +183,7 @@ pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitions {
+
     /// Timestamp describing when an OutboundPayment changed status to `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<Timestamp>,
@@ -202,6 +203,7 @@ pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransiti
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryOutboundPaymentsResourceReturnedStatus {
+
     /// Reason for the return.
     pub code: TreasuryOutboundPaymentsResourceReturnedStatusCode,
 
@@ -286,12 +288,8 @@ pub enum OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType {
 impl OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType {
     pub fn as_str(self) -> &'static str {
         match self {
-            OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType::Company => {
-                "company"
-            }
-            OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType::Individual => {
-                "individual"
-            }
+            OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType::Company => "company",
+            OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType::Individual => "individual",
         }
     }
 }
@@ -359,9 +357,7 @@ impl OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork {
     pub fn as_str(self) -> &'static str {
         match self {
             OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork::Ach => "ach",
-            OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork::UsDomesticWire => {
-                "us_domestic_wire"
-            }
+            OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork::UsDomesticWire => "us_domestic_wire",
         }
     }
 }
@@ -444,22 +440,12 @@ impl TreasuryOutboundPaymentsResourceReturnedStatusCode {
         match self {
             TreasuryOutboundPaymentsResourceReturnedStatusCode::AccountClosed => "account_closed",
             TreasuryOutboundPaymentsResourceReturnedStatusCode::AccountFrozen => "account_frozen",
-            TreasuryOutboundPaymentsResourceReturnedStatusCode::BankAccountRestricted => {
-                "bank_account_restricted"
-            }
-            TreasuryOutboundPaymentsResourceReturnedStatusCode::BankOwnershipChanged => {
-                "bank_ownership_changed"
-            }
+            TreasuryOutboundPaymentsResourceReturnedStatusCode::BankAccountRestricted => "bank_account_restricted",
+            TreasuryOutboundPaymentsResourceReturnedStatusCode::BankOwnershipChanged => "bank_ownership_changed",
             TreasuryOutboundPaymentsResourceReturnedStatusCode::Declined => "declined",
-            TreasuryOutboundPaymentsResourceReturnedStatusCode::IncorrectAccountHolderName => {
-                "incorrect_account_holder_name"
-            }
-            TreasuryOutboundPaymentsResourceReturnedStatusCode::InvalidAccountNumber => {
-                "invalid_account_number"
-            }
-            TreasuryOutboundPaymentsResourceReturnedStatusCode::InvalidCurrency => {
-                "invalid_currency"
-            }
+            TreasuryOutboundPaymentsResourceReturnedStatusCode::IncorrectAccountHolderName => "incorrect_account_holder_name",
+            TreasuryOutboundPaymentsResourceReturnedStatusCode::InvalidAccountNumber => "invalid_account_number",
+            TreasuryOutboundPaymentsResourceReturnedStatusCode::InvalidCurrency => "invalid_currency",
             TreasuryOutboundPaymentsResourceReturnedStatusCode::NoAccount => "no_account",
             TreasuryOutboundPaymentsResourceReturnedStatusCode::Other => "other",
         }

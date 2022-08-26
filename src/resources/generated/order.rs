@@ -45,6 +45,10 @@ pub struct Order {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<OrdersV2ResourceBillingDetails>,
 
+    /// The fields on the Order that can be updated from the client.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub client_permissions: Option<OrdersV2ResourceClientPermissions>,
+
     /// The client secret of this Order.
     ///
     /// Used for client-side retrieval using a publishable key.
@@ -185,6 +189,21 @@ pub struct OrdersV2ResourceBillingDetails {
     /// Billing phone number for the order (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct OrdersV2ResourceClientPermissions {
+    /// Allows or disallows billing details to be set on an Order with a publishable key and Order client_secret.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_details: Option<OrdersV2ResourceClientPermissionsBillingDetails>,
+
+    /// Allows or disallows promotion codes to be set on an Order with a publishable key and Order client_secret.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_codes: Option<OrdersV2ResourceClientPermissionsPromotionCodes>,
+
+    /// Allows or disallows shipping details to be set on an Order with a publishable key and Order client_secret.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_details: Option<OrdersV2ResourceClientPermissionsShippingDetails>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -477,6 +496,10 @@ pub struct CreateOrder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<CreateOrderBillingDetails>,
 
+    /// The fields on the order that are allowed to be updated from your frontend application with a publishable key and order client secret.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub client_permissions: Option<CreateOrderClientPermissions>,
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -539,6 +562,7 @@ impl<'a> CreateOrder<'a> {
         CreateOrder {
             automatic_tax: Default::default(),
             billing_details: Default::default(),
+            client_permissions: Default::default(),
             currency,
             customer: Default::default(),
             description: Default::default(),
@@ -617,6 +641,10 @@ pub struct UpdateOrder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<UpdateOrderBillingDetails>,
 
+    /// The fields on the order that are allowed to be updated from your frontend application with a publishable key and order client secret.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub client_permissions: Option<UpdateOrderClientPermissions>,
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -683,6 +711,7 @@ impl<'a> UpdateOrder<'a> {
         UpdateOrder {
             automatic_tax: Default::default(),
             billing_details: Default::default(),
+            client_permissions: Default::default(),
             currency: Default::default(),
             customer: Default::default(),
             description: Default::default(),
@@ -717,6 +746,18 @@ pub struct CreateOrderBillingDetails {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateOrderClientPermissions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_details: Option<CreateOrderClientPermissionsBillingDetails>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_codes: Option<CreateOrderClientPermissionsPromotionCodes>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_details: Option<CreateOrderClientPermissionsShippingDetails>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -809,6 +850,18 @@ pub struct UpdateOrderBillingDetails {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateOrderClientPermissions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_details: Option<UpdateOrderClientPermissionsBillingDetails>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_codes: Option<UpdateOrderClientPermissionsPromotionCodes>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_details: Option<UpdateOrderClientPermissionsShippingDetails>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1802,6 +1855,108 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTran
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
     pub country: String,
+}
+
+/// An enum representing the possible values of an `CreateOrderClientPermissions`'s `billing_details` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateOrderClientPermissionsBillingDetails {
+    Allow,
+    Disallow,
+}
+
+impl CreateOrderClientPermissionsBillingDetails {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateOrderClientPermissionsBillingDetails::Allow => "allow",
+            CreateOrderClientPermissionsBillingDetails::Disallow => "disallow",
+        }
+    }
+}
+
+impl AsRef<str> for CreateOrderClientPermissionsBillingDetails {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateOrderClientPermissionsBillingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateOrderClientPermissionsBillingDetails {
+    fn default() -> Self {
+        Self::Allow
+    }
+}
+
+/// An enum representing the possible values of an `CreateOrderClientPermissions`'s `promotion_codes` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateOrderClientPermissionsPromotionCodes {
+    Allow,
+    Disallow,
+}
+
+impl CreateOrderClientPermissionsPromotionCodes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateOrderClientPermissionsPromotionCodes::Allow => "allow",
+            CreateOrderClientPermissionsPromotionCodes::Disallow => "disallow",
+        }
+    }
+}
+
+impl AsRef<str> for CreateOrderClientPermissionsPromotionCodes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateOrderClientPermissionsPromotionCodes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateOrderClientPermissionsPromotionCodes {
+    fn default() -> Self {
+        Self::Allow
+    }
+}
+
+/// An enum representing the possible values of an `CreateOrderClientPermissions`'s `shipping_details` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateOrderClientPermissionsShippingDetails {
+    Allow,
+    Disallow,
+}
+
+impl CreateOrderClientPermissionsShippingDetails {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateOrderClientPermissionsShippingDetails::Allow => "allow",
+            CreateOrderClientPermissionsShippingDetails::Disallow => "disallow",
+        }
+    }
+}
+
+impl AsRef<str> for CreateOrderClientPermissionsShippingDetails {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateOrderClientPermissionsShippingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateOrderClientPermissionsShippingDetails {
+    fn default() -> Self {
+        Self::Allow
+    }
 }
 
 /// An enum representing the possible values of an `CreateOrderLineItemsPriceData`'s `tax_behavior` field.
@@ -3621,6 +3776,108 @@ impl std::default::Default for OrdersV2ResourceCardPaymentMethodOptionsSetupFutu
     }
 }
 
+/// An enum representing the possible values of an `OrdersV2ResourceClientPermissions`'s `billing_details` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum OrdersV2ResourceClientPermissionsBillingDetails {
+    Allow,
+    Disallow,
+}
+
+impl OrdersV2ResourceClientPermissionsBillingDetails {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            OrdersV2ResourceClientPermissionsBillingDetails::Allow => "allow",
+            OrdersV2ResourceClientPermissionsBillingDetails::Disallow => "disallow",
+        }
+    }
+}
+
+impl AsRef<str> for OrdersV2ResourceClientPermissionsBillingDetails {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for OrdersV2ResourceClientPermissionsBillingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for OrdersV2ResourceClientPermissionsBillingDetails {
+    fn default() -> Self {
+        Self::Allow
+    }
+}
+
+/// An enum representing the possible values of an `OrdersV2ResourceClientPermissions`'s `promotion_codes` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum OrdersV2ResourceClientPermissionsPromotionCodes {
+    Allow,
+    Disallow,
+}
+
+impl OrdersV2ResourceClientPermissionsPromotionCodes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            OrdersV2ResourceClientPermissionsPromotionCodes::Allow => "allow",
+            OrdersV2ResourceClientPermissionsPromotionCodes::Disallow => "disallow",
+        }
+    }
+}
+
+impl AsRef<str> for OrdersV2ResourceClientPermissionsPromotionCodes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for OrdersV2ResourceClientPermissionsPromotionCodes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for OrdersV2ResourceClientPermissionsPromotionCodes {
+    fn default() -> Self {
+        Self::Allow
+    }
+}
+
+/// An enum representing the possible values of an `OrdersV2ResourceClientPermissions`'s `shipping_details` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum OrdersV2ResourceClientPermissionsShippingDetails {
+    Allow,
+    Disallow,
+}
+
+impl OrdersV2ResourceClientPermissionsShippingDetails {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            OrdersV2ResourceClientPermissionsShippingDetails::Allow => "allow",
+            OrdersV2ResourceClientPermissionsShippingDetails::Disallow => "disallow",
+        }
+    }
+}
+
+impl AsRef<str> for OrdersV2ResourceClientPermissionsShippingDetails {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for OrdersV2ResourceClientPermissionsShippingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for OrdersV2ResourceClientPermissionsShippingDetails {
+    fn default() -> Self {
+        Self::Allow
+    }
+}
+
 /// An enum representing the possible values of an `OrdersV2ResourcePaymentSettings`'s `payment_method_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3930,6 +4187,108 @@ impl std::fmt::Display for PaymentMethodOptionsPaypalCaptureMethod {
 impl std::default::Default for PaymentMethodOptionsPaypalCaptureMethod {
     fn default() -> Self {
         Self::Manual
+    }
+}
+
+/// An enum representing the possible values of an `UpdateOrderClientPermissions`'s `billing_details` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateOrderClientPermissionsBillingDetails {
+    Allow,
+    Disallow,
+}
+
+impl UpdateOrderClientPermissionsBillingDetails {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateOrderClientPermissionsBillingDetails::Allow => "allow",
+            UpdateOrderClientPermissionsBillingDetails::Disallow => "disallow",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateOrderClientPermissionsBillingDetails {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateOrderClientPermissionsBillingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateOrderClientPermissionsBillingDetails {
+    fn default() -> Self {
+        Self::Allow
+    }
+}
+
+/// An enum representing the possible values of an `UpdateOrderClientPermissions`'s `promotion_codes` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateOrderClientPermissionsPromotionCodes {
+    Allow,
+    Disallow,
+}
+
+impl UpdateOrderClientPermissionsPromotionCodes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateOrderClientPermissionsPromotionCodes::Allow => "allow",
+            UpdateOrderClientPermissionsPromotionCodes::Disallow => "disallow",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateOrderClientPermissionsPromotionCodes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateOrderClientPermissionsPromotionCodes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateOrderClientPermissionsPromotionCodes {
+    fn default() -> Self {
+        Self::Allow
+    }
+}
+
+/// An enum representing the possible values of an `UpdateOrderClientPermissions`'s `shipping_details` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateOrderClientPermissionsShippingDetails {
+    Allow,
+    Disallow,
+}
+
+impl UpdateOrderClientPermissionsShippingDetails {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateOrderClientPermissionsShippingDetails::Allow => "allow",
+            UpdateOrderClientPermissionsShippingDetails::Disallow => "disallow",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateOrderClientPermissionsShippingDetails {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateOrderClientPermissionsShippingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateOrderClientPermissionsShippingDetails {
+    fn default() -> Self {
+        Self::Allow
     }
 }
 

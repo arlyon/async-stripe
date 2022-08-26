@@ -2,13 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::FinancialConnectionsAccountId;
+use crate::ids::{FinancialConnectionsAccountId};
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{
-    BankConnectionsResourceAccountholder, FinancialConnectionsAccountOwnership,
-};
+use crate::resources::{BankConnectionsResourceAccountholder, FinancialConnectionsAccountOwnership};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankConnectionsResourceLinkedAccount".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -101,6 +98,7 @@ impl Object for FinancialConnectionsAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BankConnectionsResourceBalance {
+
     /// The time that the external institution calculated this balance.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -131,6 +129,7 @@ pub struct BankConnectionsResourceBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BankConnectionsResourceBalanceApiResourceCashBalance {
+
     /// The funds available to the account holder.
     ///
     /// Typically this is the current balance less any holds.  Each key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.  Each value is a integer amount.
@@ -142,6 +141,7 @@ pub struct BankConnectionsResourceBalanceApiResourceCashBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BankConnectionsResourceBalanceApiResourceCreditBalance {
+
     /// The credit that has been used by the account holder.
     ///
     /// Each key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -156,6 +156,7 @@ pub struct BankConnectionsResourceBalanceApiResourceCreditBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BankConnectionsResourceBalanceRefresh {
+
     /// The time at which the last refresh attempt was initiated.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -167,6 +168,7 @@ pub struct BankConnectionsResourceBalanceRefresh {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BankConnectionsResourceOwnershipRefresh {
+
     /// The time at which the last refresh attempt was initiated.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -448,9 +450,7 @@ impl FinancialConnectionsAccountSupportedPaymentMethodTypes {
     pub fn as_str(self) -> &'static str {
         match self {
             FinancialConnectionsAccountSupportedPaymentMethodTypes::Link => "link",
-            FinancialConnectionsAccountSupportedPaymentMethodTypes::UsBankAccount => {
-                "us_bank_account"
-            }
+            FinancialConnectionsAccountSupportedPaymentMethodTypes::UsBankAccount => "us_bank_account",
         }
     }
 }

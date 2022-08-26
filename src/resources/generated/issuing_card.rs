@@ -146,12 +146,22 @@ pub struct IssuingCardShipping {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub carrier: Option<IssuingCardShippingCarrier>,
 
+    /// Additional information that may be required for clearing customs.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customs: Option<IssuingCardShippingCustoms>,
+
     /// A unix timestamp representing a best estimate of when the card will be delivered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eta: Option<Timestamp>,
 
     /// Recipient name.
     pub name: String,
+
+    /// The phone number of the receiver of the bulk shipment.
+    ///
+    /// This phone number will be provided to the shipping company, who might use it to contact the receiver in case of delivery issues.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone_number: Option<String>,
 
     /// Shipment service, such as `standard` or `express`.
     pub service: IssuingCardShippingService,
@@ -171,6 +181,15 @@ pub struct IssuingCardShipping {
     /// Packaging options.
     #[serde(rename = "type")]
     pub type_: IssuingCardShippingType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingCardShippingCustoms {
+    /// A registration number used for customs in Europe.
+    ///
+    /// See https://www.gov.uk/eori and https://ec.europa.eu/taxation_customs/business/customs-procedures-import-and-export/customs-procedures/economic-operators-registration-and-identification-number-eori_en.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eori_number: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

@@ -2,10 +2,9 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::AppsSecretId;
+use crate::ids::{AppsSecretId};
 use crate::params::{Object, Timestamp};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SecretServiceResourceSecret".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -51,6 +50,7 @@ impl Object for AppsSecret {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SecretServiceResourceScope {
+
     /// The secret scope type.
     #[serde(rename = "type")]
     pub type_: SecretServiceResourceScopeType,

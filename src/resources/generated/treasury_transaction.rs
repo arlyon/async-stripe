@@ -2,14 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::TreasuryTransactionId;
+use crate::ids::{TreasuryTransactionId};
 use crate::params::{List, Object, Timestamp};
-use crate::resources::{
-    Currency, TreasuryTransactionEntry, TreasuryTransactionsResourceBalanceImpact,
-    TreasuryTransactionsResourceFlowDetails,
-};
+use crate::resources::{Currency, TreasuryTransactionEntry, TreasuryTransactionsResourceBalanceImpact, TreasuryTransactionsResourceFlowDetails};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryTransactionsResourceTransaction".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -63,8 +59,7 @@ pub struct TreasuryTransaction {
     /// Status of the Transaction.
     pub status: TreasuryTransactionStatus,
 
-    pub status_transitions:
-        TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions,
+    pub status_transitions: TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions,
 }
 
 impl Object for TreasuryTransaction {
@@ -79,6 +74,7 @@ impl Object for TreasuryTransaction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions {
+
     /// Timestamp describing when the Transaction changed status to `posted`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub posted_at: Option<Timestamp>,
