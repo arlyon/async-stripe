@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::{PaymentSourceId, SourceId, TokenId};
 use crate::params::Object;
-use crate::resources::{Account, AlipayAccount, BankAccount, Card, Currency, Source};
+use crate::resources::{Account, BankAccount, Card, Currency, Source};
 
 /// A PaymentSourceParams represents all of the supported ways that can
 /// be used to creating a new customer with a payment method or creating
@@ -36,7 +36,6 @@ pub enum PaymentSource {
     Source(Source),
     Account(Account),
     BankAccount(BankAccount),
-    AlipayAccount(AlipayAccount),
 }
 
 impl Object for PaymentSource {
@@ -47,7 +46,6 @@ impl Object for PaymentSource {
             PaymentSource::Source(x) => PaymentSourceId::Source(x.id()),
             PaymentSource::Account(x) => PaymentSourceId::Account(x.id()),
             PaymentSource::BankAccount(x) => PaymentSourceId::BankAccount(x.id()),
-            PaymentSource::AlipayAccount(x) => PaymentSourceId::AlipayAccount(x.id()),
         }
     }
     fn object(&self) -> &'static str {
@@ -56,7 +54,6 @@ impl Object for PaymentSource {
             PaymentSource::Source(x) => x.object(),
             PaymentSource::Account(x) => x.object(),
             PaymentSource::BankAccount(x) => x.object(),
-            PaymentSource::AlipayAccount(x) => x.object(),
         }
     }
 }

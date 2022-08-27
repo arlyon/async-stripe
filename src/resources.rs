@@ -158,7 +158,6 @@ pub use {
         source_ext::*
     },
     generated::payment::{
-        alipay_account::*,
         card::*,
         bank_account::*,
         payment_method::*,
