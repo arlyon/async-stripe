@@ -835,7 +835,7 @@ pub fn gen_unions(out: &mut String, state: &mut FileGenerator, meta: &Metadata) 
             .map(|s| gen_variant_name(s, meta))
             .next()
         {
-            out.push_str("impl Default for ");
+            out.push_str("impl std::default::Default for ");
             out.push_str(&union_name.to_camel_case());
             out.push_str(" {\n");
             out.push_str("    fn default() -> Self {\n");
