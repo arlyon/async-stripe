@@ -28,6 +28,9 @@ jobs:
           args: openapi-install
       - name: ensure generated files unchanged
         uses: tj-actions/verify-changed-files@v11.1
+        with:
+          files: |
+            *.rs
       - name: report changed files
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         run: |
