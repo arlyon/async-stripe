@@ -7,7 +7,7 @@ on:
     branches:
       - master
 jobs:
-  format:
+  verify-codegen:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -25,7 +25,24 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: make
+          args: openapi-install
+      - name: ensure generated files unchanged
+        uses: tj-actions/verify-changed-files@v11.1
+        id: verify-changed-files
+        with:
+          files: |
+            **/*.rs
+      - name: report changed files
+        if: steps.verify-changed-files.outputs.files_changed == 'true'
+        run: |
+          echo "Some files changed after code generation: ${{ steps.verify-changed-files.outputs.changed_files }}"
+          exit 1
+      - name: format
+        uses: actions-rs/cargo@v1
+        with:
+          command: make
           args: check
+
   clippy:
     runs-on: ubuntu-20.04
     strategy:

@@ -39,8 +39,10 @@ dependencies = ["openapi-delete"]
 
 [tasks.openapi-copy]
 cwd = "openapi"
-command = "cp"
-args = ["-a", "out/.", "../src/resources/generated"]
+command = "rsync"
+# --delete so that generated files don't stick around when not
+# generated anymore, see https://github.com/arlyon/async-stripe/issues/229
+args = ["-a", "--delete-during", "out/", "../src/resources/generated"]
 
 [tasks.fmt]
 command = "cargo"
