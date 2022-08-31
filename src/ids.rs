@@ -542,7 +542,7 @@ def_id!(ProductId: String); // N.B. A product id can be user-provided so can be 
 def_id!(PromotionCodeId, "promo_"); // N.B. A product id can be user-provided so can be any arbitrary string
 def_id!(QuoteId, "qt_");
 def_id!(RecipientId: String); // FIXME: This doesn't seem to be documented yet
-def_id!(RefundId, "re_");
+def_id!(RefundId, "re_" | "pyr_");
 def_id!(ReserveTransactionId, "rtx");
 def_id!(ReviewId, "prv_");
 def_id!(ScheduledQueryRunId, "sqr_");
