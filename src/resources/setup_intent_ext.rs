@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use crate::client::{Client, Response};
 use crate::resources::SetupIntent;
-use crate::{SetupIntentId, SetupIntentCancellationReason};
+use crate::{SetupIntentCancellationReason, SetupIntentId};
 
 #[derive(Clone, Debug, Serialize)]
 pub struct ConfirmSetupIntent {
@@ -29,7 +29,6 @@ pub struct CancelSetupIntent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cancellation_reason: Option<SetupIntentCancellationReason>,
 }
-
 
 impl SetupIntent {
     pub fn confirm(
