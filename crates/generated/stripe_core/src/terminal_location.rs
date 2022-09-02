@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::{ids::TerminalLocationId, params::Object};
+use async_stripe_common::{ids::TerminalLocationId, params::Object};
 use serde::{Deserialize, Serialize};
 use stripe::{params::Metadata, resources::Address};
 

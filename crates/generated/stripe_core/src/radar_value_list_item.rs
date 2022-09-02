@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::{ids::RadarValueListItemId, params::Object};
+use async_stripe_common::{ids::RadarValueListItemId, params::Object};
 use serde::{Deserialize, Serialize};
 use stripe::params::Timestamp;
 

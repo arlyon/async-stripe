@@ -69,7 +69,8 @@ edition = "2018"
 
 [dependencies]
 serde = {{ version = "1.0", features = ["derive"] }}
-async-stripe-client = {{ path = "../../async_stripe_client" }}
+serde_json = "1.0"
+async-stripe-common = {{ path = "../../async_stripe_common" }}
 "#,
                 &self.crate_name
             ),

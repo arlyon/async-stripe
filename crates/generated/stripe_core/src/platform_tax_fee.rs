@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::{ids::PlatformTaxFeeId, params::Object};
+use async_stripe_common::{ids::PlatformTaxFeeId, params::Object};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PlatformTax".

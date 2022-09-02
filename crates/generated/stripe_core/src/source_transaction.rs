@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::{ids::ChargeId, params::Object};
+use async_stripe_common::{ids::ChargeId, params::Object};
 use serde::{Deserialize, Serialize};
 use stripe::{params::Timestamp, resources::Currency};
 

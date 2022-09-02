@@ -12,7 +12,7 @@ edition = "2018"
 homepage = "https://github.com/arlyon/async-stripe"
 keywords = ["stripe", "v1", "api", "async"]
 license = "MIT OR Apache-2.0"
-name = "async-stripe-client"
+name = "async-stripe-common"
 readme = "README.md"
 repository = "https://github.com/arlyon/async-stripe"
 rust-version = "1.54.0"
@@ -65,8 +65,9 @@ tokio = {version = "1.2", optional = true}
 uuid = {version = "0.8", optional = true, features = ["v4"]}
 
 # webhook support
+futures-util = "0.3.24"
 hex = {version = "0.4", optional = true}
 hmac = {version = "0.12", optional = true}
-sha2 = {version = "0.10", optional = true}
-futures-util = "0.3.24"
 serde_path_to_error = "0.1.8"
+sha2 = {version = "0.10", optional = true}
+async_stripe_core = { version = "0.1.0", path = "../async_stripe_core" }

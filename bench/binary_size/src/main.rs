@@ -12,6 +12,9 @@ fn main() {
     create_customer(&client);
 }
 
+#[cfg(not(feature = "runtime-blocking"))]
+fn main() {}
+
 #[cfg(feature = "runtime-blocking")]
 fn create_charge(client: &stripe::Client) {
     // Define a card to charge

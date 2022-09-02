@@ -1,6 +1,5 @@
+use async_stripe_core::params::to_snakecase;
 use serde::{Deserialize, Serialize};
-
-use crate::params::to_snakecase;
 
 /// Currency is the list of supported currencies.
 ///

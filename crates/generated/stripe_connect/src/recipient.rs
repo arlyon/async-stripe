@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::{
+use async_stripe_common::{
     ids::RecipientId,
     params::{Expandable, List, Object},
 };

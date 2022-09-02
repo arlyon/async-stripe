@@ -185,7 +185,7 @@ impl FileGenerator {
             out.push('\n');
             out.push_str(&impls);
         }
-        self.imported.params.insert(("async_stripe_client", "Object".to_string()));
+        self.imported.params.insert(("async_stripe_common", "Object".to_string()));
         out.push('\n');
         out.push_str("impl Object for ");
         out.push_str(&struct_name);

@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::{
+use async_stripe_common::{
     ids::CustomerBalanceTransactionId,
     params::{Expandable, Object},
 };

@@ -1,6 +1,5 @@
+use async_stripe_core::{ids::*, params::Object};
 use serde::{Deserialize, Serialize};
-
-use crate::{ids::*, params::Object};
 
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

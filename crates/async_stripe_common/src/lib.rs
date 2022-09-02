@@ -36,22 +36,4 @@
 #![warn(clippy::unwrap_used, clippy::missing_errors_doc, clippy::missing_panics_doc)]
 #![forbid(unsafe_code)]
 
-pub mod client;
 pub mod resources;
-
-// N.B. Ideally we would support both a blocking client and
-//      an async client without a feature flag, but the originally
-//      discussed solution requires Generic Associated Types--
-//      instead we provide an async client only a feature flag.
-//
-// See https://github.com/wyyerd/stripe-rs/issues/24#issuecomment-451514187
-// See https://github.com/rust-lang/rust/issues/44265
-pub use crate::{
-    client::*,
-    error::{ErrorCode, ErrorType, RequestError, StripeError, WebhookError},
-    ids::*,
-    params::{
-        Expandable, Headers, IdOrCreate, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,
-    },
-    resources::*,
-};

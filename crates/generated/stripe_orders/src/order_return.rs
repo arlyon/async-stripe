@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::{
+use async_stripe_common::{
     client::{Client, Response},
     ids::{OrderId, OrderReturnId},
     params::{Expand, Expandable, List, Object, RangeQuery, Timestamp},

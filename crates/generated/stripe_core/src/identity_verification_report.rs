@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::{ids::IdentityVerificationReportId, params::Object};
+use async_stripe_common::{ids::IdentityVerificationReportId, params::Object};
 use serde::{Deserialize, Serialize};
 use stripe::{params::Timestamp, resources::Address};
 

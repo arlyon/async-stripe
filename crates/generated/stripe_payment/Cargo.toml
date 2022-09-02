@@ -1,8 +1,8 @@
 [package]
+edition = "2018"
 name = "stripe-payment"
 version = "0.1.0"
-edition = "2018"
 
 [dependencies]
-serde = { version = "1.0", features = ["derive"] }
-async-stripe-client = { path = "../../async_stripe_client" }
+async-stripe-common = {path = "../../async_stripe_common"}
+serde = {version = "1.0", features = ["derive"]}

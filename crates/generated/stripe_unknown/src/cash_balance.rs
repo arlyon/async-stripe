@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::params::Object;
+use async_stripe_common::params::Object;
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "cash_balance".

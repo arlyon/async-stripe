@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::{ids::ReserveTransactionId, params::Object};
+use async_stripe_common::{ids::ReserveTransactionId, params::Object};
 use serde::{Deserialize, Serialize};
 use stripe::resources::Currency;
 

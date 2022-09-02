@@ -156,6 +156,7 @@ pub use {
     webhook_endpoints::webhook_endpoint_ext::*,
 };
 
+use async_stripe_core::params::Metadata;
 #[cfg(not(feature = "full"))]
 pub use generated::placeholders::*;
 
@@ -167,7 +168,7 @@ pub use generated::placeholders::*;
 #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub struct CompanyParams {
     #[serde(default)]
-    pub metadata: crate::params::Metadata,
+    pub metadata: Metadata,
 }
 
 /// this struct is just a stub for code not using the "connect" feature
@@ -178,5 +179,5 @@ pub struct CompanyParams {
 #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub struct PersonParams {
     #[serde(default)]
-    pub metadata: crate::params::Metadata,
+    pub metadata: Metadata,
 }

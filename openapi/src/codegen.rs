@@ -54,7 +54,7 @@ pub fn gen_struct(
     out.push_str(&struct_name);
     out.push_str(" {\n");
     if let Some((id_type, _)) = &id_type {
-        state.imported.ids.insert(("async_stripe_client", id_type.clone()));
+        state.imported.ids.insert(("async_stripe_common", id_type.clone()));
         if let Some(doc) = schema["properties"]["id"]["description"].as_str() {
             print_doc_comment(out, doc, 1);
         }
@@ -317,7 +317,7 @@ pub fn gen_inferred_params(
                         "IdOrCreate<'a, CreateProduct<'a>>".into(),
                         required,
                     ));
-                    state.imported.params.insert(("async_stripe_client", "IdOrCreate".to_string()));
+                    state.imported.params.insert(("async_stripe_common", "IdOrCreate".to_string()));
                     state.imported.resources.insert(("stripe_core", "CreateProduct".to_owned()));
                     if required {
                         out.push_str("    pub product: IdOrCreate<'a, CreateProduct<'a>>,\n");
@@ -331,7 +331,7 @@ pub fn gen_inferred_params(
                 "metadata" => {
                     print_doc(out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
-                    state.imported.params.insert(("async_stripe_client", "Metadata".to_string()));
+                    state.imported.params.insert(("async_stripe_common", "Metadata".to_string()));
                     if required {
                         out.push_str("    pub metadata: Metadata,\n");
                     } else {
@@ -342,7 +342,7 @@ pub fn gen_inferred_params(
                 "expand" => {
                     print_doc(out);
                     initializers.push(("expand".into(), "&'a [&'a str]".into(), false));
-                    state.imported.params.insert(("async_stripe_client", "Expand".to_string()));
+                    state.imported.params.insert(("async_stripe_common", "Expand".to_string()));
                     out.push_str("    #[serde(skip_serializing_if = \"Expand::is_empty\")]\n");
                     out.push_str("    pub expand: &'a [&'a str],\n");
                 }
@@ -396,10 +396,10 @@ pub fn gen_inferred_params(
                                 state
                                     .imported
                                     .params
-                                    .insert(("async_stripe_client", "Metadata".to_string()));
+                                    .insert(("async_stripe_common", "Metadata".to_string()));
                             }
                             path if path.ends_with("Id") && path != "TaxId" => {
-                                state.imported.ids.insert(("async_stripe_client", path.into()));
+                                state.imported.ids.insert(("async_stripe_common", path.into()));
                             }
                             path => {
                                 // todo(arlyon): unknown import
@@ -423,7 +423,7 @@ pub fn gen_inferred_params(
                         let (id_type, _) = meta.schema_to_id_type(param_name).unwrap();
                         print_doc(out);
                         initializers.push((param_name.into(), id_type.clone(), required));
-                        state.imported.ids.insert(("async_stripe_client", id_type.clone()));
+                        state.imported.ids.insert(("async_stripe_common", id_type.clone()));
                         if required {
                             out.push_str("    pub ");
                             out.push_str(param_name);
@@ -507,11 +507,11 @@ pub fn gen_inferred_params(
                         state
                             .imported
                             .params
-                            .insert(("async_stripe_client", "RangeQuery".to_string()));
+                            .insert(("async_stripe_common", "RangeQuery".to_string()));
                         state
                             .imported
                             .params
-                            .insert(("async_stripe_client", "Timestamp".to_string()));
+                            .insert(("async_stripe_common", "Timestamp".to_string()));
                         if required {
                             out.push_str("    pub ");
                             out.push_str(param_rename);
@@ -572,7 +572,7 @@ pub fn gen_inferred_params(
                     {
                         print_doc(out);
                         initializers.push((param_rename.into(), "Currency".into(), required));
-                        state.imported.resources.insert(("async_stripe_client", "Currency".into()));
+                        state.imported.resources.insert(("async_stripe_common", "Currency".into()));
                         if required {
                             out.push_str("    pub ");
                             out.push_str(param_rename);
@@ -1111,7 +1111,7 @@ fn gen_field_type(
         match use_path {
             "" | "String" => (),
             "Metadata" => {
-                state.imported.params.insert(("async_stripe_client", "Metadata".to_string()));
+                state.imported.params.insert(("async_stripe_common", "Metadata".to_string()));
             }
             _ => {
                 state.imported.resources.insert(("stripe", use_path.into())); // todo(arlyon) unknown import
@@ -1120,19 +1120,19 @@ fn gen_field_type(
         return rust_type.into();
     }
     if field_name == "metadata" {
-        state.imported.params.insert(("async_stripe_client", "Metadata".to_string()));
+        state.imported.params.insert(("async_stripe_common", "Metadata".to_string()));
         return "Metadata".into();
     } else if (field_name == "currency" || field_name.ends_with("_currency"))
         && field["type"].as_str() == Some("string")
     {
-        state.imported.resources.insert(("async_stripe_client", "Currency".into()));
+        state.imported.resources.insert(("async_stripe_common", "Currency".into()));
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Currency>".into();
         } else {
             return "Currency".into();
         }
     } else if field_name == "created" {
-        state.imported.params.insert(("async_stripe_client", "Timestamp".to_string()));
+        state.imported.params.insert(("async_stripe_common", "Timestamp".to_string()));
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Timestamp>".into();
         } else {
@@ -1183,7 +1183,7 @@ fn gen_field_type(
         }
         Some("object") => {
             if field["properties"]["object"]["enum"][0].as_str() == Some("list") {
-                state.imported.params.insert(("async_stripe_client", "List".to_string()));
+                state.imported.params.insert(("async_stripe_common", "List".to_string()));
                 let element = &field["properties"]["data"]["items"];
                 let element_field_name = if field_name.ends_with('s') {
                     field_name[0..field_name.len() - 1].into()
@@ -1275,11 +1275,11 @@ fn gen_field_type(
                         false,
                         shared_objects,
                     );
-                    state.imported.params.insert(("async_stripe_client", "Expandable".to_string()));
+                    state.imported.params.insert(("async_stripe_common", "Expandable".to_string()));
                     format!("Expandable<{}>", ty_)
                 } else if any_of[0]["title"].as_str() == Some("range_query_specs") {
-                    state.imported.params.insert(("async_stripe_client", "RangeQuery".to_string()));
-                    state.imported.params.insert(("async_stripe_client", "Timestamp".to_string()));
+                    state.imported.params.insert(("async_stripe_common", "RangeQuery".to_string()));
+                    state.imported.params.insert(("async_stripe_common", "Timestamp".to_string()));
                     "RangeQuery<Timestamp>".into()
                 } else {
                     log::trace!("object: {}, field_name: {}", object, field_name);
@@ -1441,7 +1441,7 @@ pub fn gen_impl_requests(
                     parameters: get_request["parameters"].clone(),
                 };
                 state.inferred.parameters.insert(params_name.to_snake_case(), params);
-                state.imported.params.insert(("async_stripe_client", "List".to_string()));
+                state.imported.params.insert(("async_stripe_common", "List".to_string()));
 
                 let mut out = String::new();
                 out.push('\n');
@@ -1477,7 +1477,7 @@ pub fn gen_impl_requests(
                     out.push_str("    pub fn retrieve(client: &Client, id: &");
                     out.push_str(id_type);
                     if let Some(param) = expand_param {
-                        state.imported.params.insert(("async_stripe_client", "Expand".to_string()));
+                        state.imported.params.insert(("async_stripe_common", "Expand".to_string()));
                         assert_eq!(param["in"].as_str(), Some("query"));
                         out.push_str(", expand: &[&str]) -> Response<");
                         out.push_str(&rust_struct);
@@ -1665,7 +1665,7 @@ pub fn gen_impl_requests(
                     None => continue,
                 };
                 if let Some(id_type) = &object_id {
-                    state.imported.params.insert(("async_stripe_client", "Deleted".to_string()));
+                    state.imported.params.insert(("async_stripe_common", "Deleted".to_string()));
                     assert_eq!(id_param["required"].as_bool(), Some(true));
                     assert_eq!(id_param["style"].as_str(), Some("simple"));
 
@@ -1693,8 +1693,8 @@ pub fn gen_impl_requests(
         None
     } else {
         // Add imports
-        state.imported.client.insert(("async_stripe_client", "Client".to_string()));
-        state.imported.client.insert(("async_stripe_client", "Response".to_string()));
+        state.imported.client.insert(("async_stripe_common", "Client".to_string()));
+        state.imported.client.insert(("async_stripe_common", "Response".to_string()));
 
         // Output the impl block
         Some(format!(

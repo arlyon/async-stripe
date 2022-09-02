@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use async_stripe_client::{ids::ApplicationId, params::Object};
+use async_stripe_common::{ids::ApplicationId, params::Object};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Application".

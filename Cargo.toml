@@ -5,7 +5,7 @@ members = [
   "crates/async_stripe",
   "crates/async_stripe_core",
   "crates/async_stripe_surf",
-  "crates/async_stripe_hyper", # "crates/async_stripe_blocking",
+  "crates/async_stripe_hyper",
   "crates/generated/*",
 ]
 resolver = "2"
