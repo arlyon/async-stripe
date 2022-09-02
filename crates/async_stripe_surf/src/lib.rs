@@ -1,57 +1,40 @@
-use std::{
-    future::{self, Future},
-    pin::Pin,
-};
-
 use async_std::task::sleep;
 use http_types::{Request, StatusCode};
 use serde::de::DeserializeOwned;
 
-use crate::{
-    client::request_strategy::{Outcome, RequestStrategy},
+use async_stripe_core::{
+    base_client::BaseClient,
     error::{ErrorResponse, StripeError},
+    request_strategy::{Outcome, RequestStrategy},
 };
 
-pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
-
-#[allow(dead_code)]
-#[inline(always)]
-pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
-    Box::pin(future::ready(Ok(ok)))
-}
-
-#[allow(dead_code)]
-#[inline(always)]
-pub(crate) fn err<T: Send + 'static>(err: StripeError) -> Response<T> {
-    Box::pin(future::ready(Err(err)))
-}
-
 #[derive(Clone)]
-pub struct AsyncStdClient {
+pub struct SurfClient {
     client: surf::Client,
 }
 
-impl AsyncStdClient {
+impl SurfClient {
     /// Creates a new client pointed to `https://api.stripe.com/`
     pub fn new() -> Self {
         Self { client: surf::Client::new() }
     }
+}
 
-    pub fn execute<T: DeserializeOwned + Send + 'static>(
+#[maybe_async::must_be_async(?Send)]
+impl BaseClient for SurfClient {
+    async fn execute<T: DeserializeOwned + Send + 'static>(
         &self,
         request: Request,
         strategy: &RequestStrategy,
-    ) -> Response<T> {
+    ) -> Result<T, StripeError> {
         // need to clone here since client could be used across threads.
         // N.B. Client is send sync; cloned clients share the same pool.
         let client = self.client.clone();
         let strategy = strategy.clone();
 
-        Box::pin(async move {
-            let bytes = send_inner(&client, request, &strategy).await?;
-            let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
-            serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
-        })
+        let bytes = send_inner(&client, request, &strategy).await?;
+        let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
+        serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
     }
 }
 
@@ -125,15 +108,17 @@ async fn send_inner(
 
 #[cfg(test)]
 mod tests {
+    use async_stripe_core::{
+        base_client::BaseClient, error::StripeError, request_strategy::RequestStrategy,
+    };
     use http_types::{Request, Url};
     use httpmock::prelude::*;
 
-    use super::AsyncStdClient;
-    use crate::{client::request_strategy::RequestStrategy, StripeError};
+    use super::SurfClient;
 
     #[async_std::test]
     async fn retry() {
-        let client = AsyncStdClient::new();
+        let client = SurfClient::new();
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;
@@ -153,7 +138,7 @@ mod tests {
 
     #[async_std::test]
     async fn user_error() {
-        let client = AsyncStdClient::new();
+        let client = SurfClient::new();
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;
@@ -182,7 +167,7 @@ mod tests {
 
     #[async_std::test]
     async fn retry_header() {
-        let client = AsyncStdClient::new();
+        let client = SurfClient::new();
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;
@@ -202,7 +187,7 @@ mod tests {
 
     #[async_std::test]
     async fn retry_body() {
-        let client = AsyncStdClient::new();
+        let client = SurfClient::new();
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;

@@ -3,13 +3,11 @@ use std::collections::HashMap;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 use crate::{
-    client::{
-        config::{err, ok},
-        Client, Response,
-    },
+    base_client::BaseClient,
     error::StripeError,
-    resources::ApiVersion,
-    AccountId, ApplicationId,
+    ids::{AccountId, ApplicationId},
+    stripe::Client,
+    version::ApiVersion,
 };
 
 #[derive(Clone, Default)]
@@ -316,7 +314,8 @@ where
     }
 
     /// Fetch an additional page of data from stripe.
-    pub fn next(&self, client: &Client) -> Response<Self> {
+    #[maybe_async::maybe_async]
+    pub async fn next<C: BaseClient>(&self, client: &Client<C>) -> Result<Self, StripeError> {
         if let Some(last) = self.page.data.last() {
             if self.page.url.starts_with("/v1/") {
                 let path = self.page.url.trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
@@ -328,15 +327,13 @@ where
                     p
                 };
 
-                println!("next");
-                let page = client.get_query(&path, &params_next);
-
-                ListPaginator::create_paginator(page, params_next)
+                let page = client.get_query(&path, &params_next).await?;
+                Ok(ListPaginator { page, params: params_next })
             } else {
-                err(StripeError::UnsupportedVersion)
+                Err(StripeError::UnsupportedVersion)
             }
         } else {
-            ok(ListPaginator {
+            Ok(ListPaginator {
                 page: List {
                     data: Vec::new(),
                     has_more: false,
@@ -346,19 +343,6 @@ where
                 params: self.params.clone(),
             })
         }
-    }
-
-    /// Pin a new future which maps the result inside the page future into
-    /// a ListPaginator
-    #[cfg(feature = "async")]
-    fn create_paginator(page: Response<List<T>>, params: P) -> Response<Self> {
-        use futures_util::FutureExt;
-        Box::pin(page.map(|page| page.map(|page| ListPaginator { page, params })))
-    }
-
-    #[cfg(feature = "blocking")]
-    fn create_paginator(page: Response<List<T>>, params: P) -> Response<Self> {
-        page.map(|page| ListPaginator { page, params })
     }
 }
 

@@ -27,11 +27,11 @@ name = "stripe"
 
 [features]
 # runtimes
-runtime-async-std-surf = ["async-stripe-client/runtime-async-std-surf"]
-runtime-blocking = ["async-stripe-client/runtime-blocking"]
-runtime-blocking-rustls = ["async-stripe-client/runtime-blocking-rustls"]
-runtime-tokio-hyper = ["async-stripe-client/runtime-tokio-hyper"]
-runtime-tokio-hyper-rustls = ["async-stripe-client/runtime-tokio-hyper-rustls"]
+runtime-async-std-surf = ["async-stripe-surf"]
+runtime-blocking = ["async-stripe-hyper/is_sync", "async-stripe-hyper/hyper-tls"]
+runtime-blocking-rustls = ["async-stripe-hyper/is_sync", "async-stripe-hyper/hyper-rustls"]
+runtime-tokio-hyper = ["async-stripe-hyper/hyper-tls"]
+runtime-tokio-hyper-rustls = ["async-stripe-hyper/hyper-rustls"]
 
 # features
 billing = ["stripe-billing"]
@@ -46,7 +46,8 @@ payment = ["stripe-payment"]
 sigma = ["stripe-sigma"]
 
 [dependencies]
-async-stripe-client = {path = "../async_stripe_client"}
+async-stripe-hyper = {path = "../async_stripe_hyper", optional = true}
+async-stripe-surf = {path = "../async_stripe_surf", optional = true}
 stripe-billing = {path = "../generated/stripe_billing", optional = true}
 stripe-checkout = {path = "../generated/stripe_checkout", optional = true}
 stripe-connect = {path = "../generated/stripe_connect", optional = true}

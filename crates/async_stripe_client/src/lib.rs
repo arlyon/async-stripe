@@ -37,9 +37,6 @@
 #![forbid(unsafe_code)]
 
 pub mod client;
-pub mod error;
-pub mod ids;
-pub mod params;
 pub mod resources;
 
 // N.B. Ideally we would support both a blocking client and

@@ -2,17 +2,19 @@ use http_types::{Body, Method, Request, Url};
 use serde::{de::DeserializeOwned, Serialize};
 
 use crate::{
-    client::{request_strategy::RequestStrategy, BaseClient, Response},
-    config::err,
-    params::AppInfo,
-    AccountId, ApiVersion, ApplicationId, Headers, StripeError,
+    base_client::BaseClient,
+    error::StripeError,
+    ids::{AccountId, ApplicationId},
+    params::{AppInfo, Headers},
+    request_strategy::RequestStrategy,
+    version::ApiVersion,
 };
 
 static USER_AGENT: &str = concat!("Stripe/v1 RustBindings/", env!("CARGO_PKG_VERSION"));
 
 #[derive(Clone)]
-pub struct Client {
-    client: crate::client::BaseClient,
+pub struct Client<C: BaseClient> {
+    client: C,
     secret_key: String,
     headers: Headers,
     strategy: RequestStrategy,
@@ -21,16 +23,16 @@ pub struct Client {
     api_root: String,
 }
 
-impl Client {
+impl<C: BaseClient> Client<C> {
     /// Create a new account with the given secret key.
-    pub fn new(secret_key: impl Into<String>) -> Self {
-        Self::from_url("https://api.stripe.com/", secret_key)
+    pub fn new(secret_key: impl Into<String>, client: C) -> Self {
+        Self::from_url("https://api.stripe.com/", secret_key, client)
     }
 
     /// Create a new account pointed at a specific URL. This is useful for testing.
-    pub fn from_url<'a>(url: impl Into<&'a str>, secret_key: impl Into<String>) -> Self {
+    pub fn from_url<'a>(url: impl Into<&'a str>, secret_key: impl Into<String>, client: C) -> Self {
         Client {
-            client: BaseClient::new(),
+            client,
             secret_key: secret_key.into(),
             headers: Headers {
                 stripe_version: ApiVersion::V2020_08_27,
@@ -81,62 +83,71 @@ impl Client {
     }
 
     /// Make a `GET` http request with just a path
-    pub fn get<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
+    #[maybe_async::maybe_async]
+    pub async fn get<T: DeserializeOwned + Send + 'static>(
+        &self,
+        path: &str,
+    ) -> Result<T, StripeError> {
         let url = self.url(path);
-        self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy)
+        self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy).await
     }
 
     /// Make a `GET` http request with url query parameters
-    pub fn get_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
+    #[maybe_async::maybe_async]
+    pub async fn get_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
         &self,
         path: &str,
         params: P,
-    ) -> Response<T> {
-        let url = match self.url_with_params(path, params) {
-            Err(e) => return err(e),
-            Ok(ok) => ok,
-        };
-        self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy)
+    ) -> Result<T, StripeError> {
+        let url = self.url_with_params(path, params)?;
+        self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy).await
     }
 
     /// Make a `DELETE` http request with just a path
-    pub fn delete<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
+    #[maybe_async::maybe_async]
+    pub async fn delete<T: DeserializeOwned + Send + 'static>(
+        &self,
+        path: &str,
+    ) -> Result<T, StripeError> {
         let url = self.url(path);
-        self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy)
+        self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy).await
     }
 
     /// Make a `DELETE` http request with url query parameters
-    pub fn delete_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
+    #[maybe_async::maybe_async]
+    pub async fn delete_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
         &self,
         path: &str,
         params: P,
-    ) -> Response<T> {
-        let url = match self.url_with_params(path, params) {
-            Err(e) => return err(e),
-            Ok(ok) => ok,
-        };
-        self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy)
+    ) -> Result<T, StripeError> {
+        let url = self.url_with_params(path, params)?;
+        self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy).await
     }
 
     /// Make a `POST` http request with just a path
-    pub fn post<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
+    #[maybe_async::maybe_async]
+    pub async fn post<T: DeserializeOwned + Send + 'static>(
+        &self,
+        path: &str,
+    ) -> Result<T, StripeError> {
         let url = self.url(path);
-        self.client.execute::<T>(self.create_request(Method::Post, url), &self.strategy)
+        self.client.execute::<T>(self.create_request(Method::Post, url), &self.strategy).await
     }
 
     /// Make a `POST` http request with urlencoded body
-    pub fn post_form<T: DeserializeOwned + Send + 'static, F: Serialize>(
+    #[maybe_async::maybe_async]
+    pub async fn post_form<T: DeserializeOwned + Send + 'static, F: Serialize>(
         &self,
         path: &str,
         form: F,
-    ) -> Response<T> {
+    ) -> Result<T, StripeError> {
         let url = self.url(path);
         let mut req = self.create_request(Method::Post, url);
 
         let mut params_buffer = Vec::new();
         let qs_ser = &mut serde_qs::Serializer::new(&mut params_buffer);
         if let Err(qs_ser_err) = serde_path_to_error::serialize(&form, qs_ser) {
-            return err(StripeError::QueryStringSerialize(qs_ser_err));
+            return Err(StripeError::QueryStringSerialize(qs_ser_err));
         }
 
         let body = std::str::from_utf8(params_buffer.as_slice())
@@ -146,7 +157,7 @@ impl Client {
         req.set_body(Body::from_string(body));
 
         req.insert_header("content-type", "application/x-www-form-urlencoded");
-        self.client.execute::<T>(req, &self.strategy)
+        self.client.execute::<T>(req, &self.strategy).await
     }
 
     fn url(&self, path: &str) -> Url {

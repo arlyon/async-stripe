@@ -36,7 +36,7 @@ impl From<http_types::Error> for StripeError {
 }
 
 /// The list of possible values for a RequestError's type.
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Deserialize)]
 pub enum ErrorType {
     #[serde(skip_deserializing)]
     Unknown,

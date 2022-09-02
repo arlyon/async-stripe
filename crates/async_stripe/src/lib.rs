@@ -1,1 +1,5 @@
-pub use async_stripe_client;
+#[cfg(feature = "runtime-async-std-surf")]
+pub use async_stripe_surf::SurfClient;
+
+#[cfg(feature = "runtime-tokio-hyper")]
+pub use async_stripe_hyper::HyperClient;

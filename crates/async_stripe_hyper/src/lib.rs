@@ -1,17 +1,21 @@
-use std::{
-    future::{self, Future},
-    pin::Pin,
-};
-
+use async_stripe_core::base_client::BaseClient;
 use http_types::{Request, StatusCode};
 use hyper::{client::HttpConnector, http, Body};
+use lazy_static::lazy_static;
 use serde::de::DeserializeOwned;
 use tokio::time::sleep;
 
-use crate::{
-    client::request_strategy::{Outcome, RequestStrategy},
+use async_stripe_core::{
     error::{ErrorResponse, StripeError},
+    request_strategy::{Outcome, RequestStrategy},
 };
+
+lazy_static! {
+    static ref RT: tokio::runtime::Runtime = tokio::runtime::Builder::new_current_thread()
+    .enable_io()
+    .enable_time() // use separate `io/time` instead of `all` to ensure `tokio/time` is enabled
+    .build().expect("cannot create a runtime");
+}
 
 #[cfg(feature = "hyper-rustls")]
 mod connector {
@@ -38,45 +42,60 @@ compile_error!("You must enable only one TLS implementation");
 
 type HttpClient = hyper::Client<connector::HttpsConnector<HttpConnector>, Body>;
 
-pub type Response<T> = Pin<Box<dyn Future<Output = Result<T, StripeError>> + Send>>;
-
-#[allow(dead_code)]
-#[inline(always)]
-pub(crate) fn ok<T: Send + 'static>(ok: T) -> Response<T> {
-    Box::pin(future::ready(Ok(ok)))
-}
-
-#[allow(dead_code)]
-#[inline(always)]
-pub(crate) fn err<T: Send + 'static>(err: StripeError) -> Response<T> {
-    Box::pin(future::ready(Err(err)))
-}
-
 #[derive(Clone)]
-pub struct TokioClient {
+pub struct HyperClient {
     client: HttpClient,
 }
 
-impl TokioClient {
+impl HyperClient {
     pub fn new() -> Self {
         Self { client: hyper::Client::builder().build(connector::create()) }
     }
+}
 
-    pub fn execute<T: DeserializeOwned + Send + 'static>(
+#[maybe_async::async_impl(?Send)]
+impl BaseClient for HyperClient {
+    async fn execute<T: DeserializeOwned + Send + 'static>(
         &self,
         request: Request,
         strategy: &RequestStrategy,
-    ) -> Response<T> {
+    ) -> Result<T, StripeError> {
         // need to clone here since client could be used across threads.
         // N.B. Client is send sync; cloned clients share the same pool.
         let client = self.client.clone();
         let strategy = strategy.clone();
 
-        Box::pin(async move {
-            let bytes = send_inner(&client, request, &strategy).await?;
-            let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
-            serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
-        })
+        let bytes = send_inner(&client, request, &strategy).await?;
+        let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
+        serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
+    }
+}
+
+#[maybe_async::sync_impl]
+impl BaseClient for HyperClient {
+    fn execute<T: DeserializeOwned + Send + 'static>(
+        &self,
+        request: Request,
+        strategy: &RequestStrategy,
+    ) -> Result<T, StripeError> {
+        /// The delay after which the blocking `Client` will assume the request has failed.
+        const DEFAULT_TIMEOUT: tokio::time::Duration = tokio::time::Duration::from_secs(30);
+        match RT.block_on(async {
+            tokio::time::timeout(DEFAULT_TIMEOUT, async {
+                // need to clone here since client could be used across threads.
+                // N.B. Client is send sync; cloned clients share the same pool.
+                let client = self.client.clone();
+                let strategy = strategy.clone();
+
+                let bytes = send_inner(&client, request, &strategy).await?;
+                let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
+                serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
+            })
+            .await
+        }) {
+            Ok(f) => f,
+            Err(_) => Err(StripeError::Timeout),
+        }
     }
 }
 
@@ -159,14 +178,16 @@ async fn convert_request(mut request: http_types::Request) -> http::Request<hype
     http::Request::from_parts(request.into_parts().0, hyper::Body::from(body))
 }
 
-#[cfg(test)]
+#[cfg(all(test, not(feature = "is_sync")))]
 mod tests {
+    use async_stripe_core::{
+        base_client::BaseClient, error::StripeError, request_strategy::RequestStrategy,
+    };
     use http_types::{Method, Request, Url};
     use httpmock::prelude::*;
     use hyper::{body::to_bytes, Body, Request as HyperRequest};
 
-    use super::{convert_request, TokioClient};
-    use crate::{client::request_strategy::RequestStrategy, StripeError};
+    use super::{convert_request, HyperClient};
 
     const TEST_URL: &str = "https://api.stripe.com/v1/";
 
@@ -221,7 +242,7 @@ mod tests {
 
     #[tokio::test]
     async fn retry() {
-        let client = TokioClient::new();
+        let client = HyperClient::new();
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;
@@ -241,7 +262,7 @@ mod tests {
 
     #[tokio::test]
     async fn user_error() {
-        let client = TokioClient::new();
+        let client = HyperClient::new();
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;
@@ -278,7 +299,7 @@ mod tests {
             name: String,
         }
 
-        let client = TokioClient::new();
+        let client = HyperClient::new();
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;
@@ -309,7 +330,7 @@ mod tests {
 
     #[tokio::test]
     async fn retry_header() {
-        let client = TokioClient::new();
+        let client = HyperClient::new();
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;
@@ -329,7 +350,7 @@ mod tests {
 
     #[tokio::test]
     async fn retry_body() {
-        let client = TokioClient::new();
+        let client = HyperClient::new();
 
         // Start a lightweight mock server.
         let server = MockServer::start_async().await;
@@ -346,5 +367,45 @@ mod tests {
 
         hello_mock.assert_hits_async(5).await;
         assert!(res.is_err());
+    }
+}
+
+#[cfg(all(test, feature = "is_sync"))]
+mod tests_sync {
+    use async_stripe_core::{
+        base_client::BaseClient, error::StripeError, request_strategy::RequestStrategy,
+    };
+    use http_types::{Request, Url};
+    use httpmock::prelude::*;
+
+    use super::TokioClient;
+
+    #[test]
+    fn user_error() {
+        let client = HyperClient::new();
+
+        // Start a lightweight mock server.
+        let server = MockServer::start();
+
+        let mock = server.mock(|when, then| {
+            when.method(GET).path("/v1/missing");
+            then.status(404).body("{
+                \"error\": {
+                  \"message\": \"Unrecognized request URL (GET: /v1/missing). Please see https://stripe.com/docs or we can help at https://support.stripe.com/.\",
+                  \"type\": \"invalid_request_error\"
+                }
+              }
+              ");
+        });
+
+        let req = Request::get(Url::parse(&server.url("/v1/missing")).unwrap());
+        let res = client.execute::<()>(req, &RequestStrategy::Retry(3));
+
+        mock.assert_hits(1);
+
+        match res {
+            Err(StripeError::Stripe(x)) => println!("{:?}", x),
+            _ => panic!("Expected stripe error {:?}", res),
+        }
     }
 }
