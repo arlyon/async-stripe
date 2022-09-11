@@ -18,3 +18,4 @@ tracing-subscriber = "=0.3.7" # prevent valuable
 tracing-core="=0.1.21" # prevent valuable
 itertools = "0.10.3"
 structopt = "0.3.26"
+petgraph = "0.6.2"

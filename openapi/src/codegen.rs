@@ -16,10 +16,10 @@ use crate::{
 };
 
 #[tracing::instrument(skip_all, fields(name = %state.name))]
-pub fn gen_struct(
+pub fn gen_struct<'a>(
     out: &mut String,
-    state: &mut FileGenerator,
-    meta: &Metadata,
+    state: &mut FileGenerator<'a>,
+    meta: &Metadata<'a>,
 
     shared_objects: &mut BTreeSet<FileGenerator>,
     url_finder: &UrlFinder,
@@ -54,7 +54,7 @@ pub fn gen_struct(
     out.push_str(&struct_name);
     out.push_str(" {\n");
     if let Some((id_type, _)) = &id_type {
-        state.imported.ids.insert(("async_stripe_common", id_type.clone()));
+        state.imported.ids.insert(("async_stripe_core", id_type.clone()));
         if let Some(doc) = schema["properties"]["id"]["description"].as_str() {
             print_doc_comment(out, doc, 1);
         }
@@ -108,10 +108,10 @@ pub fn gen_struct(
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_prelude(
-    file_state: &FileGenerator,
+pub fn gen_prelude<'a>(
+    file_state: &FileGenerator<'a>,
     crate_state: &CrateGenerator,
-    meta: &Metadata,
+    meta: &Metadata<'a>,
 ) -> String {
     let mut prelude = String::new();
     prelude.push_str("// ======================================\n");
@@ -124,10 +124,10 @@ pub fn gen_prelude(
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_generated_schemas(
+pub fn gen_generated_schemas<'a>(
     out: &mut String,
-    state: &mut FileGenerator,
-    meta: &Metadata,
+    state: &mut FileGenerator<'a>,
+    meta: &Metadata<'a>,
     shared_objects: &mut BTreeSet<FileGenerator>,
 ) {
     while let Some(schema_name) =
@@ -225,10 +225,10 @@ pub fn gen_multitype_params(
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_inferred_params(
+pub fn gen_inferred_params<'a>(
     out: &mut String,
-    state: &mut FileGenerator,
-    meta: &Metadata,
+    state: &mut FileGenerator<'a>,
+    meta: &Metadata<'a>,
     shared_objects: &mut BTreeSet<FileGenerator>,
 ) {
     let object = state.name.clone();
@@ -317,8 +317,11 @@ pub fn gen_inferred_params(
                         "IdOrCreate<'a, CreateProduct<'a>>".into(),
                         required,
                     ));
-                    state.imported.params.insert(("async_stripe_common", "IdOrCreate".to_string()));
-                    state.imported.resources.insert(("stripe_core", "CreateProduct".to_owned()));
+                    state.imported.params.insert(("async_stripe_core", "IdOrCreate".to_string()));
+                    state
+                        .imported
+                        .resources
+                        .insert(("async_stripe_core", "CreateProduct".to_owned()));
                     if required {
                         out.push_str("    pub product: IdOrCreate<'a, CreateProduct<'a>>,\n");
                     } else {
@@ -331,7 +334,7 @@ pub fn gen_inferred_params(
                 "metadata" => {
                     print_doc(out);
                     initializers.push(("metadata".into(), "Metadata".into(), required));
-                    state.imported.params.insert(("async_stripe_common", "Metadata".to_string()));
+                    state.imported.params.insert(("async_stripe_core", "Metadata".to_string()));
                     if required {
                         out.push_str("    pub metadata: Metadata,\n");
                     } else {
@@ -342,7 +345,7 @@ pub fn gen_inferred_params(
                 "expand" => {
                     print_doc(out);
                     initializers.push(("expand".into(), "&'a [&'a str]".into(), false));
-                    state.imported.params.insert(("async_stripe_common", "Expand".to_string()));
+                    state.imported.params.insert(("async_stripe_core", "Expand".to_string()));
                     out.push_str("    #[serde(skip_serializing_if = \"Expand::is_empty\")]\n");
                     out.push_str("    pub expand: &'a [&'a str],\n");
                 }
@@ -396,14 +399,19 @@ pub fn gen_inferred_params(
                                 state
                                     .imported
                                     .params
-                                    .insert(("async_stripe_common", "Metadata".to_string()));
+                                    .insert(("async_stripe_core", "Metadata".to_string()));
                             }
                             path if path.ends_with("Id") && path != "TaxId" => {
-                                state.imported.ids.insert(("async_stripe_common", path.into()));
+                                state.imported.ids.insert(("async_stripe_core", path.into()));
                             }
                             path => {
-                                // todo(arlyon): unknown import
-                                state.imported.resources.insert(("stripe", path.into()));
+                                log::warn!("generating {:?}", param);
+                                state.imported.resources.insert((
+                                    meta.crate_lookup
+                                        .get(object.as_str())
+                                        .unwrap_or(&"stripe_unknown"),
+                                    path.into(),
+                                ));
                             }
                         }
                         if rust_type.starts_with("Option<") {
@@ -423,7 +431,7 @@ pub fn gen_inferred_params(
                         let (id_type, _) = meta.schema_to_id_type(param_name).unwrap();
                         print_doc(out);
                         initializers.push((param_name.into(), id_type.clone(), required));
-                        state.imported.ids.insert(("async_stripe_common", id_type.clone()));
+                        state.imported.ids.insert(("async_stripe_core", id_type.clone()));
                         if required {
                             out.push_str("    pub ");
                             out.push_str(param_name);
@@ -507,11 +515,11 @@ pub fn gen_inferred_params(
                         state
                             .imported
                             .params
-                            .insert(("async_stripe_common", "RangeQuery".to_string()));
+                            .insert(("async_stripe_core", "RangeQuery".to_string()));
                         state
                             .imported
                             .params
-                            .insert(("async_stripe_common", "Timestamp".to_string()));
+                            .insert(("async_stripe_core", "Timestamp".to_string()));
                         if required {
                             out.push_str("    pub ");
                             out.push_str(param_rename);
@@ -676,7 +684,7 @@ pub fn gen_inferred_params(
 
         // we implement paginate on lists that have an Id
         if let ("list", Some(_)) = (params.method.as_str(), &id_type) {
-            state.imported.params.insert(("stripe", "Paginable".into()));
+            state.imported.params.insert(("async_stripe_core", "Paginable".into()));
 
             out.push_str("impl Paginable for ");
             out.push_str(&params.rust_type);
@@ -695,10 +703,10 @@ pub fn gen_inferred_params(
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_emitted_structs(
+pub fn gen_emitted_structs<'a>(
     out: &mut String,
-    state: &mut FileGenerator,
-    meta: &Metadata,
+    state: &mut FileGenerator<'a>,
+    meta: &Metadata<'a>,
     shared_objects: &mut BTreeSet<FileGenerator>,
 ) {
     let mut emitted_structs = BTreeSet::new();
@@ -1048,9 +1056,9 @@ pub fn gen_objects(out: &mut String, state: &mut FileGenerator) {
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_field(
-    state: &mut FileGenerator,
-    meta: &Metadata,
+pub fn gen_field<'a>(
+    state: &mut FileGenerator<'a>,
+    meta: &Metadata<'a>,
     object: &str,
     field_name: &str,
     field: &Value,
@@ -1097,9 +1105,9 @@ pub fn gen_field(
 }
 
 #[tracing::instrument(skip_all)]
-fn gen_field_type(
-    state: &mut FileGenerator,
-    meta: &Metadata,
+fn gen_field_type<'a>(
+    state: &mut FileGenerator<'a>,
+    meta: &Metadata<'a>,
     object: &str,
     field_name: &str,
     field: &Value,
@@ -1111,16 +1119,19 @@ fn gen_field_type(
         match use_path {
             "" | "String" => (),
             "Metadata" => {
-                state.imported.params.insert(("async_stripe_common", "Metadata".to_string()));
+                state.imported.params.insert(("async_stripe_core", "Metadata".to_string()));
             }
             _ => {
-                state.imported.resources.insert(("stripe", use_path.into())); // todo(arlyon) unknown import
+                state.imported.resources.insert((
+                    meta.crate_lookup.get(object).unwrap_or(&"stripe_unknown"),
+                    use_path.into(),
+                ));
             }
         }
         return rust_type.into();
     }
     if field_name == "metadata" {
-        state.imported.params.insert(("async_stripe_common", "Metadata".to_string()));
+        state.imported.params.insert(("async_stripe_core", "Metadata".to_string()));
         return "Metadata".into();
     } else if (field_name == "currency" || field_name.ends_with("_currency"))
         && field["type"].as_str() == Some("string")
@@ -1132,7 +1143,7 @@ fn gen_field_type(
             return "Currency".into();
         }
     } else if field_name == "created" {
-        state.imported.params.insert(("async_stripe_common", "Timestamp".to_string()));
+        state.imported.params.insert(("async_stripe_core", "Timestamp".to_string()));
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Timestamp>".into();
         } else {
@@ -1183,7 +1194,7 @@ fn gen_field_type(
         }
         Some("object") => {
             if field["properties"]["object"]["enum"][0].as_str() == Some("list") {
-                state.imported.params.insert(("async_stripe_common", "List".to_string()));
+                state.imported.params.insert(("async_stripe_core", "List".to_string()));
                 let element = &field["properties"]["data"]["items"];
                 let element_field_name = if field_name.ends_with('s') {
                     field_name[0..field_name.len() - 1].into()
@@ -1232,13 +1243,20 @@ fn gen_field_type(
                 let type_name = meta.schema_to_rust_type(schema_name);
                 if schema_name != object {
                     if meta.objects.contains(schema_name) {
-                        // todo(arlyon) unknown import
-                        state.imported.resources.insert(("stripe", type_name.clone()));
-                    } else if meta.dependents.get(schema_name).map(|x| x.len()).unwrap_or(0) > 1 {
-                        state.imported.resources.insert(("stripe", type_name.clone())); // todo(arlyon): unknown import
+                        state.imported.resources.insert((
+                            meta.crate_lookup.get(object).unwrap_or(&"stripe_unknown"),
+                            type_name.clone(),
+                        ));
+                    } else if meta.dep_graph.edges(schema_name).count() > 1 {
+                        state.imported.resources.insert((
+                            meta.crate_lookup.get(object).unwrap_or(&"stripe_unknown"),
+                            type_name.clone(),
+                        ));
                         shared_objects.insert(FileGenerator::new(schema_name.to_string()));
                     } else if !state.generated.schemas.contains_key(schema_name) {
                         state.generated.schemas.insert(schema_name.into(), false);
+                    } else {
+                        log::error!("fall through");
                     }
                 }
                 type_name
@@ -1275,11 +1293,11 @@ fn gen_field_type(
                         false,
                         shared_objects,
                     );
-                    state.imported.params.insert(("async_stripe_common", "Expandable".to_string()));
+                    state.imported.params.insert(("async_stripe_core", "Expandable".to_string()));
                     format!("Expandable<{}>", ty_)
                 } else if any_of[0]["title"].as_str() == Some("range_query_specs") {
-                    state.imported.params.insert(("async_stripe_common", "RangeQuery".to_string()));
-                    state.imported.params.insert(("async_stripe_common", "Timestamp".to_string()));
+                    state.imported.params.insert(("async_stripe_core", "RangeQuery".to_string()));
+                    state.imported.params.insert(("async_stripe_core", "Timestamp".to_string()));
                     "RangeQuery<Timestamp>".into()
                 } else {
                     log::trace!("object: {}, field_name: {}", object, field_name);
@@ -1304,15 +1322,12 @@ fn gen_field_type(
                                     .trim_start_matches("#/components/schemas/");
                                 let type_name = meta.schema_to_rust_type(schema_name);
                                 if meta.objects.contains(schema_name)
-                                    || meta
-                                        .dependents
-                                        .get(schema_name)
-                                        .map(|x| x.len())
-                                        .unwrap_or(0)
-                                        > 1
+                                    || meta.dep_graph.edges(schema_name).count() > 1
                                 {
-                                    // todo(arlyon): unknown import
-                                    state.imported.resources.insert(("stripe", type_name));
+                                    state.imported.resources.insert((
+                                        meta.crate_lookup.get(object).unwrap_or(&"stripe_unknown"),
+                                        type_name,
+                                    ));
                                 } else if !state.generated.schemas.contains_key(schema_name) {
                                     state.generated.schemas.insert(schema_name.into(), false);
                                 }
@@ -1332,9 +1347,9 @@ fn gen_field_type(
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_field_rust_type(
-    state: &mut FileGenerator,
-    meta: &Metadata,
+pub fn gen_field_rust_type<'a>(
+    state: &mut FileGenerator<'a>,
+    meta: &Metadata<'a>,
     object: &str,
     field_name: &str,
     field: &Value,
@@ -1346,28 +1361,28 @@ pub fn gen_field_rust_type(
         match use_path {
             "" | "String" => (),
             "Metadata" => {
-                state.imported.params.insert(("stripe", "Metadata".into()));
+                state.imported.params.insert(("async_stripe_core", "Metadata".into()));
             }
             _ => {
-                state.imported.resources.insert(("stripe", use_path.into()));
+                state.imported.resources.insert(("async_stripe_core", use_path.into()));
             }
         }
         return rust_type.into();
     }
     if field_name == "metadata" {
-        state.imported.params.insert(("stripe", "Metadata".into()));
+        state.imported.params.insert(("async_stripe_core", "Metadata".into()));
         return "Metadata".into();
     } else if (field_name == "currency" || field_name.ends_with("_currency"))
         && field["type"].as_str() == Some("string")
     {
-        state.imported.resources.insert(("stripe", "Currency".into()));
+        state.imported.resources.insert(("async_stripe_common", "Currency".into()));
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Currency>".into();
         } else {
             return "Currency".into();
         }
     } else if field_name == "created" {
-        state.imported.params.insert(("stripe", "Timestamp".into()));
+        state.imported.params.insert(("async_stripe_core", "Timestamp".into()));
         if !required || field["nullable"].as_bool() == Some(true) {
             return "Option<Timestamp>".into();
         } else {
@@ -1441,14 +1456,14 @@ pub fn gen_impl_requests(
                     parameters: get_request["parameters"].clone(),
                 };
                 state.inferred.parameters.insert(params_name.to_snake_case(), params);
-                state.imported.params.insert(("async_stripe_common", "List".to_string()));
+                state.imported.params.insert(("async_stripe_core", "List".to_string()));
 
                 let mut out = String::new();
                 out.push('\n');
                 print_doc_comment(&mut out, doc_comment, 1);
-                out.push_str("    pub fn list(client: &Client, params: &");
+                out.push_str("    pub fn list<C: BaseClient>(client: &Client<C>, params: &");
                 out.push_str(&params_name);
-                out.push_str("<'_>) -> Response<List<");
+                out.push_str("<'_>) -> <C as BaseClient>::Response<List<");
                 out.push_str(&rust_struct);
                 out.push_str(">> {\n");
                 out.push_str("        client.get_query(\"/");
@@ -1474,19 +1489,19 @@ pub fn gen_impl_requests(
                     let mut out = String::new();
                     out.push('\n');
                     print_doc_comment(&mut out, doc_comment, 1);
-                    out.push_str("    pub fn retrieve(client: &Client, id: &");
+                    out.push_str("    pub fn retrieve<C: BaseClient>(client: &Client<C>, id: &");
                     out.push_str(id_type);
                     if let Some(param) = expand_param {
-                        state.imported.params.insert(("async_stripe_common", "Expand".to_string()));
+                        state.imported.params.insert(("async_stripe_core", "Expand".to_string()));
                         assert_eq!(param["in"].as_str(), Some("query"));
-                        out.push_str(", expand: &[&str]) -> Response<");
+                        out.push_str(", expand: &[&str]) -> <C as BaseClient>::Response<");
                         out.push_str(&rust_struct);
                         out.push_str("> {\n");
                         out.push_str("        client.get_query(");
                         out.push_str(&format!("&format!(\"/{}/{{}}\", id)", segments[0]));
                         out.push_str(", &Expand { expand })\n");
                     } else {
-                        out.push_str(") -> Response<");
+                        out.push_str(") -> <C as BaseClient>::Response<");
                         out.push_str(&rust_struct);
                         out.push_str("> {\n");
                         out.push_str("        client.get(/");
@@ -1566,9 +1581,9 @@ pub fn gen_impl_requests(
                 let mut out = String::new();
                 out.push('\n');
                 print_doc_comment(&mut out, doc_comment, 1);
-                out.push_str("    pub fn create(client: &Client, params: ");
+                out.push_str("    pub fn create<C: BaseClient>(client: &Client<C>, params: ");
                 out.push_str(&params_name);
-                out.push_str("<'_>) -> Response<");
+                out.push_str("<'_>) -> <C as BaseClient>::Response<");
                 out.push_str(&return_type);
                 out.push_str("> {\n");
                 out.push_str("        client.post_form(\"/");
@@ -1618,11 +1633,11 @@ pub fn gen_impl_requests(
                     let mut out = String::new();
                     out.push('\n');
                     print_doc_comment(&mut out, doc_comment, 1);
-                    out.push_str("    pub fn update(client: &Client, id: &");
+                    out.push_str("    pub fn update<C: BaseClient>(client: &Client<C>, id: &");
                     out.push_str(id_type);
                     out.push_str(", params: ");
                     out.push_str(&params_name);
-                    out.push_str("<'_>) -> Response<");
+                    out.push_str("<'_>) -> <C as BaseClient>::Response<");
                     out.push_str(&return_type);
                     out.push_str("> {\n");
                     out.push_str("        client.post_form(");
@@ -1665,16 +1680,16 @@ pub fn gen_impl_requests(
                     None => continue,
                 };
                 if let Some(id_type) = &object_id {
-                    state.imported.params.insert(("async_stripe_common", "Deleted".to_string()));
+                    state.imported.params.insert(("async_stripe_core", "Deleted".to_string()));
                     assert_eq!(id_param["required"].as_bool(), Some(true));
                     assert_eq!(id_param["style"].as_str(), Some("simple"));
 
                     let mut out = String::new();
                     out.push('\n');
                     print_doc_comment(&mut out, doc_comment, 1);
-                    out.push_str("    pub fn delete(client: &Client, id: &");
+                    out.push_str("    pub fn delete<C: BaseClient>(client: &Client<C>, id: &");
                     out.push_str(id_type);
-                    out.push_str(") -> Response<Deleted<");
+                    out.push_str(") -> <C as BaseClient>::Response<Deleted<");
                     out.push_str(id_type);
                     out.push_str(">> {\n");
                     out.push_str("        client.delete(");
@@ -1693,8 +1708,8 @@ pub fn gen_impl_requests(
         None
     } else {
         // Add imports
-        state.imported.client.insert(("async_stripe_common", "Client".to_string()));
-        state.imported.client.insert(("async_stripe_common", "Response".to_string()));
+        state.imported.client.insert(("async_stripe_core", "Client".to_string()));
+        state.imported.client.insert(("async_stripe_core", "BaseClient".to_string()));
 
         // Output the impl block
         Some(format!(

@@ -82,72 +82,76 @@ impl<C: BaseClient> Client<C> {
         self
     }
 
+    pub fn ok<T>(&self, item: T) -> C::Response<T> {
+        self.client.ok(item)
+    }
+
+    pub fn err<T>(&self, err: StripeError) -> C::Response<T> {
+        self.client.err(err)
+    }
+
+    pub fn map<T, U, F: FnOnce(T) -> U>(&self, a: C::Response<T>, fun: F) -> C::Response<U> {
+        self.client.map(a, fun)
+    }
+
     /// Make a `GET` http request with just a path
-    #[maybe_async::maybe_async]
-    pub async fn get<T: DeserializeOwned + Send + 'static>(
-        &self,
-        path: &str,
-    ) -> Result<T, StripeError> {
+    pub fn get<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> C::Response<T> {
         let url = self.url(path);
-        self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy).await
+        self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy)
     }
 
     /// Make a `GET` http request with url query parameters
-    #[maybe_async::maybe_async]
-    pub async fn get_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
+
+    pub fn get_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
         &self,
         path: &str,
         params: P,
-    ) -> Result<T, StripeError> {
-        let url = self.url_with_params(path, params)?;
-        self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy).await
+    ) -> C::Response<T> {
+        let url = match self.url_with_params(path, params) {
+            Ok(u) => u,
+            Err(e) => return self.client.err(e),
+        };
+        self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy)
     }
 
     /// Make a `DELETE` http request with just a path
-    #[maybe_async::maybe_async]
-    pub async fn delete<T: DeserializeOwned + Send + 'static>(
-        &self,
-        path: &str,
-    ) -> Result<T, StripeError> {
+    pub fn delete<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> C::Response<T> {
         let url = self.url(path);
-        self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy).await
+        self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy)
     }
 
     /// Make a `DELETE` http request with url query parameters
-    #[maybe_async::maybe_async]
-    pub async fn delete_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
+    pub fn delete_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
         &self,
         path: &str,
         params: P,
-    ) -> Result<T, StripeError> {
-        let url = self.url_with_params(path, params)?;
-        self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy).await
+    ) -> C::Response<T> {
+        let url = match self.url_with_params(path, params) {
+            Ok(u) => u,
+            Err(e) => return self.client.err(e),
+        };
+        self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy)
     }
 
     /// Make a `POST` http request with just a path
-    #[maybe_async::maybe_async]
-    pub async fn post<T: DeserializeOwned + Send + 'static>(
-        &self,
-        path: &str,
-    ) -> Result<T, StripeError> {
+    pub fn post<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> C::Response<T> {
         let url = self.url(path);
-        self.client.execute::<T>(self.create_request(Method::Post, url), &self.strategy).await
+        self.client.execute::<T>(self.create_request(Method::Post, url), &self.strategy)
     }
 
     /// Make a `POST` http request with urlencoded body
-    #[maybe_async::maybe_async]
-    pub async fn post_form<T: DeserializeOwned + Send + 'static, F: Serialize>(
+    pub fn post_form<T: DeserializeOwned + Send + 'static, F: Serialize>(
         &self,
         path: &str,
         form: F,
-    ) -> Result<T, StripeError> {
+    ) -> C::Response<T> {
         let url = self.url(path);
         let mut req = self.create_request(Method::Post, url);
 
         let mut params_buffer = Vec::new();
         let qs_ser = &mut serde_qs::Serializer::new(&mut params_buffer);
         if let Err(qs_ser_err) = serde_path_to_error::serialize(&form, qs_ser) {
-            return Err(StripeError::QueryStringSerialize(qs_ser_err));
+            return self.client.err(StripeError::QueryStringSerialize(qs_ser_err));
         }
 
         let body = std::str::from_utf8(params_buffer.as_slice())
@@ -157,7 +161,7 @@ impl<C: BaseClient> Client<C> {
         req.set_body(Body::from_string(body));
 
         req.insert_header("content-type", "application/x-www-form-urlencoded");
-        self.client.execute::<T>(req, &self.strategy).await
+        self.client.execute::<T>(req, &self.strategy)
     }
 
     fn url(&self, path: &str) -> Url {

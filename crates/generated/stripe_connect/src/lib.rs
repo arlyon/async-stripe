@@ -1,12 +1,8 @@
-pub mod account;
-pub mod account_link;
-pub mod application;
-pub mod application_fee;
-pub mod connect_collection_transfer;
-pub mod fee_refund;
-pub mod login_link;
-pub mod person;
-pub mod recipient;
-pub mod topup;
-pub mod transfer;
-pub mod transfer_reversal;
+pub mod generated;
+mod resources {
+    pub use crate::generated::{
+        account::*, account_link::*, application::*, application_fee::*,
+        connect_collection_transfer::*, fee_refund::*, login_link::*, person::*, recipient::*,
+        topup::*, transfer::*, transfer_reversal::*,
+    };
+}

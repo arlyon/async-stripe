@@ -6,6 +6,10 @@ use std::{
 
 use heck::{CamelCase, SnakeCase};
 use itertools::Itertools;
+use petgraph::{
+    graphmap::{DiGraphMap, GraphMap},
+    Directed, Graph,
+};
 use serde_json::Value;
 
 use crate::{
@@ -16,8 +20,6 @@ use crate::{
     types::CopyOrClone,
 };
 
-const CRATES: [(&str, [&str; 0]); 2] = [("billing", []), ("billing", [])];
-
 /// Global metadata for the entire codegen process.
 #[derive(Debug)]
 pub struct Metadata<'a> {
@@ -27,13 +29,16 @@ pub struct Metadata<'a> {
 
     pub feature_groups: BTreeMap<&'a str, &'a str>,
 
+    /// Maps all object to their respective crates.
     pub crate_lookup: BTreeMap<&'a str, &'a str>,
+
+    /// A graph that tracks maps dependencies between types.
+    /// Used to determine imports.
+    pub dep_graph: DiGraphMap<&'a str, ()>,
 
     /// The set of schemas which should implement `Object`.
     /// These have both an `id` property and on `object` property.
     pub objects: BTreeSet<&'a str>,
-    /// A one to many map of schema to depending types.
-    pub dependents: BTreeMap<&'a str, BTreeSet<&'a str>>,
     /// How a particular schema should be renamed.
     pub object_mappings: ObjectMap,
     /// An override for the rust-type of a particular object/field pair.
@@ -46,15 +51,16 @@ pub struct Metadata<'a> {
 }
 
 impl<'a> Metadata<'a> {
-    pub fn from_spec(spec: &'a Value) -> Self {
+    pub fn from_spec(spec: &'a Value) -> Metadata<'a> {
         let id_renames = mappings::id_renames();
         let object_mappings = mappings::object_mappings();
         let field_mappings = mappings::field_mappings();
         let feature_groups = metadata::feature_groups();
 
         let mut objects = BTreeSet::new();
-        let mut dependents: BTreeMap<_, BTreeSet<_>> = BTreeMap::new();
         let mut id_mappings = BTreeMap::new();
+
+        let mut dep_graph = DiGraphMap::<&str, ()>::new();
 
         for (key, schema) in spec["components"]["schemas"].as_object().unwrap() {
             let schema_name = key.as_str();
@@ -81,29 +87,46 @@ impl<'a> Metadata<'a> {
             for (_, field) in fields {
                 if let Some(path) = field["$ref"].as_str() {
                     let dep = path.trim_start_matches("#/components/schemas/");
-                    dependents.entry(dep).or_default().insert(schema_name);
+                    dep_graph.add_edge(schema_name, dep, ());
                 }
                 if let Some(any_of) = field["anyOf"].as_array() {
                     for ty in any_of {
                         if let Some(path) = ty["$ref"].as_str() {
                             let dep = path.trim_start_matches("#/components/schemas/");
-                            dependents.entry(dep).or_default().insert(schema_name);
+                            dep_graph.add_edge(schema_name, dep, ());
                         }
                     }
                 }
             }
         }
 
+        let mut obj_to_crate = BTreeMap::new();
+        obj_to_crate.extend(crate_mappings().iter());
+
+        for (a, b, _) in dep_graph.all_edges() {
+            // ignore already discovered relations (probably predefined crate roots)
+            if obj_to_crate.contains_key(b) {
+                continue;
+            };
+
+            let a_crate = match obj_to_crate.get(a) {
+                Some(a_crate) => *a_crate,
+                None => continue,
+            };
+
+            obj_to_crate.insert(b, a_crate);
+        }
+
         Self {
             spec,
             requests: metadata_requests(spec, &objects),
+            dep_graph,
             objects,
-            dependents,
             id_mappings,
             object_mappings,
             field_mappings,
             feature_groups,
-            crate_lookup: crate_mappings(),
+            crate_lookup: obj_to_crate,
         }
     }
 
@@ -157,7 +180,7 @@ impl<'a> Metadata<'a> {
         self.objects
             .iter()
             .filter(|o| !o.starts_with("deleted_"))
-            .into_group_map_by(|object| self.crate_lookup.get(*object).unwrap_or(&"unknown"))
+            .into_group_map_by(|object| self.crate_lookup.get(*object).unwrap_or(&"stripe_unknown"))
             .into_iter()
             .map(|(crate_name, objects)| CrateGenerator {
                 crate_name: crate_name.to_string(),

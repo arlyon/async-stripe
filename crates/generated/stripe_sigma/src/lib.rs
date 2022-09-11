@@ -1,1 +1,4 @@
-pub mod scheduled_query_run;
+pub mod generated;
+mod resources {
+    pub use crate::generated::scheduled_query_run::*;
+}

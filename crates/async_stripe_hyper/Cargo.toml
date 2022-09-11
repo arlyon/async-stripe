@@ -10,7 +10,7 @@ is_sync = ["maybe-async/is_sync"]
 
 [dependencies]
 async-trait = "0.1.57"
-async_stripe_core = {version = "0.1.0", path = "../async_stripe_core", features = ["hyper"]}
+async-stripe-core = {version = "0.1.0", path = "../async_stripe_core", features = ["hyper"]}
 http-types = {version = "2.12.0", features = ["hyperium_http"]}
 hyper = {version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"]}
 hyper-rustls = {version = "0.22", optional = true}

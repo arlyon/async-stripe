@@ -1,9 +1,13 @@
 use std::{
-    collections::{BTreeSet, HashSet},
+    collections::{BTreeSet, HashMap, HashSet},
     fs,
 };
 
 use anyhow::{Context, Result};
+use petgraph::{
+    dot::{Config, Dot},
+    graphmap::DiGraphMap,
+};
 use structopt::StructOpt;
 
 use crate::{
@@ -53,48 +57,27 @@ fn main() -> Result<()> {
         serde_json::from_reader(&raw).context("failed to read json from specfile")?
     };
 
-    let meta = Metadata::from_spec(&spec);
+    let mut meta = Metadata::from_spec(&spec);
     let url_finder = UrlFinder::new().context("couldn't initialize url finder")?;
+
+    println!("{:?}", &meta.crate_lookup);
+
+    let mut crates = DiGraphMap::<&str, ()>::new();
+
+    for (l, r, _) in meta.dep_graph.all_edges() {
+        println!("{} {}", l, r);
+        let left = meta.crate_lookup.get(l).unwrap_or(&"stripe_unknown").to_owned();
+        let right = meta.crate_lookup.entry(r).or_insert(left);
+        println!("{} {}", left, right);
+        crates.add_edge(left, right, ());
+    }
+
+    // println!("{:?}", Dot::with_config(&crates, &[Config::EdgeNoLabel]));
 
     meta.write_placeholders(&out_path);
 
     let v: Vec<_> =
         meta.get_crates().into_iter().map(|mut c| c.write(&out_path, &meta, &url_finder)).collect();
-
-    // write files and get those files referenced
-    // let shared_objects = meta
-    //     .get_files()
-    //     .into_iter()
-    //     .flat_map(|mut f| f.write(&out_path, &meta, &crate_state, &url_finder))
-    //     .flatten();
-
-    // println!(
-    //     "{:#?}",
-    //     meta.get_files()
-    //         .into_iter()
-    //         .map(|mut f| {
-    //             f.generate(&meta, &url_finder).unwrap();
-    //             format!(
-    //                 "{} - {:?} {:?} {:?} {:?}",
-    //                 &f.name,
-    //                 f.imported.config,
-    //                 f.imported.ids,
-    //                 f.imported.params,
-    //                 f.imported.resources
-    //             )
-    //         })
-    //         .collect::<HashSet<_>>()
-    // );
-    // println!("{:#?}", shared_objects.map(|f| f.name).collect::<HashSet<_>>());
-
-    // write out the 'indirect' files
-    // let extra_objects = shared_objects
-    //     .flat_map(|mut f| f.write(&out_path, &meta, &crate_state, &url_finder))
-    //     .flatten()
-    //     .collect::<BTreeSet<_>>();
-
-    // todo(arlyon): understand the implications of this
-    // log::warn!("leftover objects: {:#?}", extra_objects);
 
     Ok(())
 }

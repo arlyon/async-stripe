@@ -1,0 +1,10 @@
+[cargo-make] INFO - cargo make 0.35.0
+[cargo-make] INFO - Build File: Makefile.toml
+[cargo-make] INFO - Task: openapi-install
+[cargo-make] INFO - Profile: development
+[cargo-make] INFO - Running Task: legacy-migration
+[cargo-make] INFO - Execute Command: "rm" "-rf" "out"
+[cargo-make] INFO - Execute Command: "cargo" "run" "spec3.json"
+[2m2022-09-03T16:01:01.492620Z[0m [32m INFO[0m [2mstripe_openapi_codegen[0m[2m:[0m generating code for spec3.json to out    
+[cargo-make] ERROR - Error while executing command, exit code: 101
+[cargo-make] WARN - Build Failed.

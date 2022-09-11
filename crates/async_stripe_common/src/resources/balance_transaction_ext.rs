@@ -1,8 +1,5 @@
+use async_stripe_core::ids::BalanceTransactionSourceId;
 use serde::{Deserialize, Serialize};
-
-use crate::{
-    ids::BalanceTransactionSourceId, params::Object, resources::BalanceTransactionSourceUnion,
-};
 
 impl Object for BalanceTransactionSourceUnion {
     type Id = BalanceTransactionSourceId;

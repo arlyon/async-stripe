@@ -1,1 +1,4 @@
-pub mod review;
+pub mod generated;
+mod resources {
+    pub use crate::generated::review::*;
+}

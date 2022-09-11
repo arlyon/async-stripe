@@ -1,4 +1,4 @@
-pub mod bank_account;
-pub mod card;
-pub mod payment_method;
-pub mod source;
+pub mod generated;
+mod resources {
+    pub use crate::generated::{bank_account::*, card::*, payment_method::*, source::*};
+}

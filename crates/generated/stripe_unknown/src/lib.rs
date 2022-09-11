@@ -1,19 +1,12 @@
-pub mod apps_secret;
-pub mod cash_balance;
-pub mod financial_connections_account;
-pub mod financial_connections_account_owner;
-pub mod financial_connections_account_ownership;
-pub mod financial_connections_session;
-pub mod funding_instructions;
-pub mod terminal_configuration;
-pub mod treasury_credit_reversal;
-pub mod treasury_debit_reversal;
-pub mod treasury_financial_account;
-pub mod treasury_financial_account_features;
-pub mod treasury_inbound_transfer;
-pub mod treasury_outbound_payment;
-pub mod treasury_outbound_transfer;
-pub mod treasury_received_credit;
-pub mod treasury_received_debit;
-pub mod treasury_transaction;
-pub mod treasury_transaction_entry;
+pub mod generated;
+mod resources {
+    pub use crate::generated::{
+        apps_secret::*, financial_connections_account::*, financial_connections_account_owner::*,
+        financial_connections_account_ownership::*, financial_connections_session::*,
+        funding_instructions::*, terminal_configuration::*, treasury_credit_reversal::*,
+        treasury_debit_reversal::*, treasury_financial_account::*,
+        treasury_financial_account_features::*, treasury_inbound_transfer::*,
+        treasury_outbound_payment::*, treasury_outbound_transfer::*, treasury_received_credit::*,
+        treasury_received_debit::*, treasury_transaction::*, treasury_transaction_entry::*,
+    };
+}

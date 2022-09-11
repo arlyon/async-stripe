@@ -1,6 +1,7 @@
-pub mod issuing_authorization;
-pub mod issuing_card;
-pub mod issuing_cardholder;
-pub mod issuing_dispute;
-pub mod issuing_settlement;
-pub mod issuing_transaction;
+pub mod generated;
+mod resources {
+    pub use crate::generated::{
+        issuing_authorization::*, issuing_card::*, issuing_cardholder::*, issuing_dispute::*,
+        issuing_settlement::*, issuing_transaction::*,
+    };
+}

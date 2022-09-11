@@ -79,7 +79,7 @@ pub struct Expand<'a> {
 }
 
 impl Expand<'_> {
-    pub(crate) fn is_empty(expand: &[&str]) -> bool {
+    pub fn is_empty(expand: &[&str]) -> bool {
         expand.is_empty()
     }
 }
@@ -228,7 +228,7 @@ where
     ///
     /// Requires `feature = "blocking"`.
     #[cfg(feature = "blocking")]
-    pub fn get_all(self, client: &Client) -> Response<Vec<T>> {
+    pub fn get_all<C: BaseClient>(self, client: &Client<C>) -> Response<Vec<T>> {
         let mut data = Vec::with_capacity(self.page.total_count.unwrap_or(0) as usize);
         let mut paginator = self;
         loop {
@@ -275,10 +275,10 @@ where
     ///
     /// Requires `feature = ["async", "stream"]`.
     #[cfg(all(feature = "async", feature = "stream"))]
-    pub fn stream(
+    pub fn stream<C: BaseClient>(
         mut self,
-        client: &Client,
-    ) -> impl futures_util::Stream<Item = Result<T, StripeError>> + Unpin {
+        client: &Client<C>,
+    ) -> impl futures_util::Stream<Item = C::Response<T>> + Unpin {
         // We are going to be popping items off the end of the list, so we need to reverse it.
         self.page.data.reverse();
 
@@ -287,9 +287,9 @@ where
 
     /// unfold a single item from the stream
     #[cfg(all(feature = "async", feature = "stream"))]
-    async fn unfold_stream(
-        state: Option<(Self, Client)>,
-    ) -> Option<(Result<T, StripeError>, Option<(Self, Client)>)> {
+    async fn unfold_stream<C: BaseClient>(
+        state: Option<(Self, Client<C>)>,
+    ) -> Option<(C::Response<T>, Option<(Self, Client<C>)>)> {
         let (mut paginator, client) = state?; // If none, we sent the last item in the last iteration
 
         if paginator.page.data.len() > 1 {
@@ -315,7 +315,7 @@ where
 
     /// Fetch an additional page of data from stripe.
     #[maybe_async::maybe_async]
-    pub async fn next<C: BaseClient>(&self, client: &Client<C>) -> Result<Self, StripeError> {
+    pub async fn next<C: BaseClient>(&self, client: &Client<C>) -> C::Response<Self> {
         if let Some(last) = self.page.data.last() {
             if self.page.url.starts_with("/v1/") {
                 let path = self.page.url.trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
@@ -327,13 +327,15 @@ where
                     p
                 };
 
-                let page = client.get_query(&path, &params_next).await?;
-                Ok(ListPaginator { page, params: params_next })
+                client.map(client.get_query(&path, &params_next), |page| ListPaginator {
+                    page,
+                    params: params_next,
+                })
             } else {
-                Err(StripeError::UnsupportedVersion)
+                client.err(StripeError::UnsupportedVersion)
             }
         } else {
-            Ok(ListPaginator {
+            client.ok(ListPaginator {
                 page: List {
                     data: Vec::new(),
                     has_more: false,

@@ -7,6 +7,7 @@ use std::{
 use anyhow::{anyhow, Result};
 use heck::SnakeCase;
 use itertools::Itertools;
+use log::info;
 
 use crate::{
     codegen::{
@@ -23,26 +24,26 @@ use crate::{
 
 ///
 #[derive(Default, Debug)]
-pub struct FileGenerator {
+pub struct FileGenerator<'a> {
     pub name: String,
-    pub imported: Imported,
+    pub imported: Imported<'a>,
     pub inferred: Inferred,
     pub generated: Generated,
 }
 
 #[derive(Default, Debug, Clone)]
-pub struct Imported {
+pub struct Imported<'a> {
     /// The ids that must be imported in this file.
-    pub ids: BTreeSet<(&'static str, String)>,
+    pub ids: BTreeSet<(&'a str, String)>,
     /// The config that must be imported in this file.
-    pub client: BTreeSet<(&'static str, String)>,
+    pub client: BTreeSet<(&'a str, String)>,
     /// The params that must be imported in this file.
-    pub params: BTreeSet<(&'static str, String)>,
+    pub params: BTreeSet<(&'a str, String)>,
     /// The resources that must be imported in this file.
-    pub resources: BTreeSet<(&'static str, String)>,
+    pub resources: BTreeSet<(&'a str, String)>,
 }
 
-impl Imported {
+impl<'a> Imported<'a> {
     pub fn gen_imports(
         &self,
         file_state: &FileGenerator,
@@ -51,7 +52,9 @@ impl Imported {
     ) -> String {
         let a_orig = &crate_state.crate_name;
 
-        let imports = [(&self.client, "client"), (&self.ids, "ids"), (&self.params, "params")];
+        let imports =
+            [(&self.client, None), (&self.ids, Some("ids")), (&self.params, Some("params"))];
+
         let imports = imports
             .iter()
             .flat_map(|(set, name)| set.iter().map(move |(crate_, type_)| (crate_, name, type_)));
@@ -67,11 +70,22 @@ impl Imported {
                     && !file_state.inferred.enums.contains_key(x)
                     && x != &meta.schema_to_rust_type(&file_state.name)
             })
-            .map(|(crate_, type_)| (crate_, &"resources", type_));
+            .map(|(crate_, type_)| (crate_, &Some("resources"), type_));
 
         imports
             .chain(resources)
-            .map(|(a, b, c)| format!("use {}::{b}::{c};", if a.eq(&a_orig) { "crate" } else { a }))
+            .map(|(a, b, c)| {
+                format!(
+                    "use {}::{}{c};",
+                    if a.eq(&a_orig) {
+                        info!("formatting crate import for {a} {a_orig}");
+                        "crate"
+                    } else {
+                        a
+                    },
+                    b.map(|b| format!("{b}::")).unwrap_or_default(),
+                )
+            })
             .join("\n")
     }
 }
@@ -97,7 +111,7 @@ pub struct Generated {
     pub objects: BTreeMap<String, InferredObject>,
 }
 
-impl FileGenerator {
+impl<'a> FileGenerator<'a> {
     pub fn new(object_name: String) -> Self {
         Self { name: object_name, ..Default::default() }
     }
@@ -116,19 +130,21 @@ impl FileGenerator {
     pub fn write<T>(
         &mut self,
         base: T,
-        meta: &Metadata,
+        meta: &Metadata<'a>,
         crate_state: &CrateGenerator,
         url_finder: &UrlFinder,
-    ) -> Result<(String, BTreeSet<FileGenerator>, Imported)>
+    ) -> Result<(String, BTreeSet<FileGenerator<'a>>, Imported)>
     where
         T: AsRef<Path> + std::fmt::Debug,
     {
         let path = self.get_path();
-        let (out, additional, imports) = self.generate(meta, crate_state, url_finder)?;
+        let name = self.get_module();
         let pathbuf = base.as_ref().join(path);
         log::debug!("writing object {} to {:?}", self.name, pathbuf);
+
+        let (out, additional, imports) = self.generate(meta, crate_state, url_finder)?;
         write(&pathbuf, out.as_bytes())?;
-        Ok((self.get_module(), additional, imports))
+        Ok((name, additional, imports))
     }
 
     /// Generates this file, returning a set of FileGenerators
@@ -136,10 +152,10 @@ impl FileGenerator {
     #[tracing::instrument(skip(self, meta, crate_state, url_finder))]
     pub fn generate(
         &mut self,
-        meta: &Metadata,
+        meta: &Metadata<'a>,
         crate_state: &CrateGenerator,
         url_finder: &UrlFinder,
-    ) -> Result<(String, BTreeSet<FileGenerator>, Imported)> {
+    ) -> Result<(String, BTreeSet<FileGenerator<'a>>, Imported)> {
         let mut out = String::new();
         let mut shared_objects = BTreeSet::<FileGenerator>::new();
 
@@ -185,7 +201,7 @@ impl FileGenerator {
             out.push('\n');
             out.push_str(&impls);
         }
-        self.imported.params.insert(("async_stripe_common", "Object".to_string()));
+        self.imported.params.insert(("async_stripe_core", "Object".to_string()));
         out.push('\n');
         out.push_str("impl Object for ");
         out.push_str(&struct_name);
@@ -268,21 +284,21 @@ impl FileGenerator {
     }
 }
 
-impl PartialEq for FileGenerator {
+impl PartialEq for FileGenerator<'_> {
     fn eq(&self, other: &Self) -> bool {
         self.name == other.name
     }
 }
 
-impl Eq for FileGenerator {}
+impl Eq for FileGenerator<'_> {}
 
-impl PartialOrd for FileGenerator {
+impl PartialOrd for FileGenerator<'_> {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         self.name.partial_cmp(&other.name)
     }
 }
 
-impl Ord for FileGenerator {
+impl Ord for FileGenerator<'_> {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.name.cmp(&other.name)
     }

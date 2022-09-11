@@ -4,7 +4,7 @@ RUST_FILES = { glob = "./**/*.rs", include_files = true, include_dirs = false, i
 [tasks.openapi-delete]
 cwd = "openapi"
 command = "rm"
-args = ["-rf", "spec3.json", "out"]
+args = ["-rf", "out"]
 
 # verifies if all the apis are exported, and reports which are missing
 [tasks.verify]
@@ -31,7 +31,7 @@ rg -N --no-filename -i '^pub (struct|enum) ([A-Z][a-zA-z0-9]+).*?$'  src/resourc
 [tasks.openapi-generate]
 cwd = "openapi"
 command = "cargo"
-args = ["run", "spec3.json", "--fetch", "current"]
+args = ["run", "spec3.json"]
 dependencies = ["openapi-delete"]
 
 [tasks.openapi-generate-latest]

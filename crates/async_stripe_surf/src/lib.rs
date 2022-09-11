@@ -1,12 +1,15 @@
-use async_std::task::sleep;
-use http_types::{Request, StatusCode};
-use serde::de::DeserializeOwned;
+#![feature(generic_associated_types)]
 
+use std::{future::Future, pin::Pin};
+
+use async_std::task::sleep;
 use async_stripe_core::{
     base_client::BaseClient,
     error::{ErrorResponse, StripeError},
     request_strategy::{Outcome, RequestStrategy},
 };
+use http_types::{Request, StatusCode};
+use serde::de::DeserializeOwned;
 
 #[derive(Clone)]
 pub struct SurfClient {
@@ -22,7 +25,7 @@ impl SurfClient {
 
 #[maybe_async::must_be_async(?Send)]
 impl BaseClient for SurfClient {
-    async fn execute<T: DeserializeOwned + Send + 'static>(
+    async fn execute<T: DeserializeOwned + Send>(
         &self,
         request: Request,
         strategy: &RequestStrategy,
@@ -35,6 +38,20 @@ impl BaseClient for SurfClient {
         let bytes = send_inner(&client, request, &strategy).await?;
         let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
         serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
+    }
+
+    type Response<T> = Result<T, StripeError>;
+
+    fn ok<T>(&self, e: T) -> Self::Response<T> {
+        Ok(e)
+    }
+
+    fn err<T>(&self, e: StripeError) -> Self::Response<T> {
+        Err(e)
+    }
+
+    fn map<T, U, F: FnOnce(T) -> U>(&self, a: Self::Response<T>, fun: F) -> Self::Response<U> {
+        a.map(fun)
     }
 }
 
