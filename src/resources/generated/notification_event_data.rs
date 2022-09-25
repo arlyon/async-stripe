@@ -12,3 +12,7 @@ pub struct NotificationEventData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub previous_attributes: Option<NotificationEventDataPreviousAttributes>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct NotificationEventDataPreviousAttributes {
+}

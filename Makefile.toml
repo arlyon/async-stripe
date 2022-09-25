@@ -3,6 +3,11 @@ cwd = "openapi"
 command = "rm"
 args = ["-rf", "spec3.json", "out"]
 
+[tasks.openapi-delete-out]
+cwd = "openapi"
+command = "rm"
+args = ["-rf", "out"]
+
 # verifies if all the apis are exported, and reports which are missing
 [tasks.verify]
 script = '''
@@ -24,6 +29,12 @@ rg -N --no-filename -i '^pub (struct|enum) ([A-Z][a-zA-z0-9]+).*?$'  src/resourc
  | sort\
  | uniq -cd
 '''
+
+[tasks.openapi-generate-no-fetch]
+cwd = "openapi"
+command = "cargo"
+args = ["run", "spec3.json"]
+dependencies = ["openapi-delete-out"]
 
 [tasks.openapi-generate]
 cwd = "openapi"
@@ -61,6 +72,9 @@ dependencies = ["openapi-generate", "openapi-copy", "fmt"]
 
 [tasks.openapi-install-latest]
 dependencies = ["openapi-generate-latest", "openapi-copy", "fmt"]
+
+[tasks.openapi-install-no-fetch]
+dependencies = ["openapi-generate-no-fetch", "openapi-copy", "fmt"]
 
 [config]
 default_to_workspace = false

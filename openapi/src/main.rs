@@ -3,6 +3,7 @@ use std::{collections::BTreeSet, fs};
 use anyhow::{Context, Result};
 use structopt::StructOpt;
 
+use crate::spec::Spec;
 use crate::spec_fetch::fetch_spec;
 use crate::{metadata::Metadata, url_finder::UrlFinder};
 
@@ -10,6 +11,7 @@ mod codegen;
 mod file_generator;
 mod mappings;
 mod metadata;
+mod spec;
 mod spec_fetch;
 mod types;
 mod url_finder;
@@ -41,11 +43,13 @@ fn main() -> Result<()> {
     log::info!("generating code for {} to {}", in_path, out_path);
 
     let spec = if let Some(version) = args.fetch {
-        fetch_spec(version, &in_path)?
+        let raw = fetch_spec(version, &in_path)?;
+        Spec::new(serde_json::from_value(raw)?)
     } else {
         let raw = fs::File::open(in_path).context("failed to load the specfile. does it exist?")?;
-        serde_json::from_reader(&raw).context("failed to read json from specfile")?
+        Spec::new(serde_json::from_reader(&raw).context("failed to read json from specfile")?)
     };
+    log::info!("Finished parsing spec");
 
     let meta = Metadata::from_spec(&spec);
     let url_finder = UrlFinder::new().context("couldn't initialize url finder")?;
