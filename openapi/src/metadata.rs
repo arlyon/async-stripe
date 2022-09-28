@@ -3,8 +3,9 @@ use std::fs::write;
 use std::path::Path;
 
 use heck::{CamelCase, SnakeCase};
-use serde_json::Value;
+use openapiv3::{ReferenceOr, SchemaKind};
 
+use crate::spec::{as_object_properties, Spec};
 use crate::{
     file_generator::FileGenerator,
     mappings::{self, FieldMap, ObjectMap},
@@ -15,7 +16,7 @@ use crate::{
 /// Global metadata for the entire codegen process.
 #[derive(Debug)]
 pub struct Metadata<'a> {
-    pub spec: &'a Value,
+    pub spec: &'a Spec,
     /// A map of `objects` to their rust id type
     pub id_mappings: BTreeMap<String, (String, CopyOrClone)>,
 
@@ -38,7 +39,7 @@ pub struct Metadata<'a> {
 }
 
 impl<'a> Metadata<'a> {
-    pub fn from_spec(spec: &'a Value) -> Self {
+    pub fn from_spec(spec: &'a Spec) -> Self {
         let id_renames = mappings::id_renames();
         let object_mappings = mappings::object_mappings();
         let field_mappings = mappings::field_mappings();
@@ -48,15 +49,15 @@ impl<'a> Metadata<'a> {
         let mut dependents: BTreeMap<_, BTreeSet<_>> = BTreeMap::new();
         let mut id_mappings = BTreeMap::new();
 
-        for (key, schema) in spec["components"]["schemas"].as_object().unwrap() {
+        for (key, ref_or_schema) in spec.component_schemas() {
             let schema_name = key.as_str();
-            let fields = match schema["properties"].as_object() {
-                Some(some) => some,
+            let properties = match ref_or_schema.as_item().and_then(as_object_properties) {
+                Some(props) => props,
                 None => continue,
             };
-            if fields.contains_key("object") {
+            if properties.contains_key("object") {
                 objects.insert(schema_name);
-                if !schema["properties"]["id"].is_null() {
+                if properties.contains_key("id") {
                     let id_type = id_renames
                         .get(&schema_name)
                         .unwrap_or(&schema_name)
@@ -70,16 +71,20 @@ impl<'a> Metadata<'a> {
                     );
                 }
             }
-            for (_, field) in fields {
-                if let Some(path) = field["$ref"].as_str() {
-                    let dep = path.trim_start_matches("#/components/schemas/");
-                    dependents.entry(dep).or_default().insert(schema_name);
-                }
-                if let Some(any_of) = field["anyOf"].as_array() {
-                    for ty in any_of {
-                        if let Some(path) = ty["$ref"].as_str() {
-                            let dep = path.trim_start_matches("#/components/schemas/");
-                            dependents.entry(dep).or_default().insert(schema_name);
+            for schema_or_ref in properties.values() {
+                match schema_or_ref {
+                    ReferenceOr::Reference { reference } => {
+                        let dep = reference.trim_start_matches("#/components/schemas/");
+                        dependents.entry(dep).or_default().insert(schema_name);
+                    }
+                    ReferenceOr::Item(schema) => {
+                        if let SchemaKind::AnyOf { any_of } = &schema.schema_kind {
+                            for ty in any_of {
+                                if let ReferenceOr::Reference { reference } = ty {
+                                    let dep = reference.trim_start_matches("#/components/schemas/");
+                                    dependents.entry(dep).or_default().insert(schema_name);
+                                }
+                            }
                         }
                     }
                 }
@@ -176,11 +181,11 @@ impl<'a> Metadata<'a> {
 /// given a spec and a set of objects in that spec, metadatas a
 /// map with the requests to implement for each of the types in the spec
 pub fn metadata_requests<'a>(
-    spec: &'a Value,
+    spec: &'a Spec,
     objects: &BTreeSet<&'a str>,
 ) -> BTreeMap<String, BTreeSet<&'a str>> {
     let mut requests = BTreeMap::<String, BTreeSet<_>>::new();
-    for (path, _) in spec["paths"].as_object().unwrap() {
+    for path in spec.paths() {
         let mut seg_iterator = path.trim_start_matches("/v1/").split('/');
         let object = match (seg_iterator.next(), seg_iterator.next(), seg_iterator.next()) {
             // handle special case for sessions
@@ -214,7 +219,7 @@ pub fn metadata_requests<'a>(
 
 #[rustfmt::skip]
 pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
-    [
+   [
 		// N.B. For now both `core` and `payment-methods` are always enabled.
 		/*
 		// Core Resources
@@ -232,7 +237,6 @@ pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
 		("refund", "core"),
 		("reserve_transaction", "core"),
 		("token", "core"),
-
 		// Payment Methods
         ("alipay_account", "payment-methods"),
 		("bank_account", "payment-methods"),
@@ -293,5 +297,5 @@ pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
 	]
 	.iter()
 	.copied()
-	.collect()
+	.collect() 
 }

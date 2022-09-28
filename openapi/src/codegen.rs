@@ -1,9 +1,19 @@
+use std::borrow::Borrow;
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 use heck::{CamelCase, SnakeCase};
-use serde_json::{json, Value};
+use openapiv3::{
+    AdditionalProperties, Parameter, ParameterSchemaOrContent, PathStyle, ReferenceOr, Schema,
+    SchemaKind, Type,
+};
 
-use crate::util::write_serde_rename;
+use crate::spec::{
+    as_any_of_first_item_title, as_data_array_item, as_enum_strings, as_first_enum_value,
+    as_object_enum_name, as_object_properties, as_object_type, err_schema_expected,
+    find_param_by_name, get_id_param, get_ok_response, get_ok_response_schema,
+    get_request_form_parameters, non_path_ref_params, ExpansionResources,
+};
+use crate::util::{print_doc_from_schema, write_serde_rename};
 use crate::{
     file_generator::FileGenerator,
     metadata::Metadata,
@@ -12,7 +22,7 @@ use crate::{
         TypeError,
     },
     url_finder::UrlFinder,
-    util::{infer_integer_type, print_doc_comment, print_doc_from_schema, write_out_field},
+    util::{infer_integer_type, print_doc_comment, write_out_field},
 };
 
 #[tracing::instrument(skip_all, fields(name = %state.name))]
@@ -29,13 +39,10 @@ pub fn gen_struct(
 
     let id_type = meta.schema_to_id_type(object);
     let struct_name = meta.schema_to_rust_type(object);
-    let schema = &meta.spec["components"]["schemas"][object];
-    let schema_title = schema["title"].as_str().unwrap();
-    let deleted_schema = &meta.spec["components"]["schemas"][format!("deleted_{}", object)];
-    let fields = match schema["properties"].as_object() {
-        Some(some) => some,
-        None => return,
-    };
+    let schema = meta.spec.get_schema_unwrapped(object).as_item().expect("Expected item");
+    let obj = as_object_type(schema).expect("Expected object type");
+    let schema_title = schema.schema_data.title.as_ref().expect("No title found");
+    let deleted_schema = meta.spec.component_schemas().get(&format!("deleted_{}", object));
 
     log::trace!("struct {} {{...}}", struct_name);
 
@@ -55,7 +62,11 @@ pub fn gen_struct(
     out.push_str(" {\n");
     if let Some((id_type, _)) = &id_type {
         state.use_ids.insert(id_type.clone());
-        if let Some(doc) = schema["properties"]["id"]["description"].as_str() {
+        if let Some(doc) = obj
+            .properties
+            .get("id")
+            .and_then(|id| id.as_item().and_then(|i| i.schema_data.description.as_ref()))
+        {
             print_doc_comment(out, doc, 1);
         }
         if id_type == "InvoiceId" {
@@ -66,7 +77,7 @@ pub fn gen_struct(
         out.push_str(",\n");
     }
     let mut did_emit_deleted = false;
-    for (key, field) in fields {
+    for (key, field) in &obj.properties {
         if key == "id" {
             continue;
         }
@@ -74,7 +85,7 @@ pub fn gen_struct(
             continue;
         }
         if !did_emit_deleted
-            && !deleted_schema.is_null()
+            && deleted_schema.is_some()
             && key.as_str().cmp("deleted") == std::cmp::Ordering::Greater
         {
             out.push('\n');
@@ -83,12 +94,11 @@ pub fn gen_struct(
             out.push_str("    pub deleted: bool,\n");
             did_emit_deleted = true;
         }
-        let required = schema["required"]
-            .as_array()
-            .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
-            .unwrap_or(false);
-        let force_optional = if deleted_schema["properties"].is_object() {
-            deleted_schema["properties"][&key].is_null()
+        let required = obj.required.contains(key);
+        let force_optional = if let Some(properties) =
+            deleted_schema.and_then(|schema| schema.as_item()).and_then(as_object_properties)
+        {
+            !properties.contains_key(key)
         } else {
             false
         };
@@ -189,22 +199,18 @@ pub fn gen_generated_schemas(
         out.push_str("pub struct ");
         out.push_str(&struct_name);
         out.push_str(" {\n");
-        for (key, field) in meta.spec["components"]["schemas"][&schema_name]["properties"]
-            .as_object()
-            .cloned()
-            .unwrap_or_default()
-        {
-            let required = meta.spec["components"]["schemas"][&schema_name]["required"]
-                .as_array()
-                .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
-                .unwrap_or(false);
+
+        let schema = meta.spec.get_schema_unwrapped(&schema_name).as_item().expect("Expected item");
+        let obj_type = as_object_type(schema).expect("Expected object type schema");
+        for (key, field) in &obj_type.properties {
+            let required = obj_type.required.contains(key);
             out.push('\n');
             out.push_str(&gen_field(
                 state,
                 meta,
                 &schema_name,
-                &key,
-                &field,
+                key,
+                field,
                 required,
                 false,
                 shared_objects,
@@ -221,15 +227,18 @@ pub fn gen_generated_schemas(
 pub fn gen_multitype_params(
     parent_struct_rust_type: &str,
     param_name: &str,
-    param: &Value,
+    param: &Parameter,
     initializers: &mut Vec<(String, String, bool)>,
     required: bool,
     state: &mut FileGenerator,
     meta: &Metadata,
     out: &mut String,
 ) {
-    let member_schema = param["schema"].clone();
-    match gen_member_variable_string(&member_schema) {
+    let member_schema = match &param.parameter_data_ref().format {
+        ParameterSchemaOrContent::Schema(ReferenceOr::Item(s)) => s,
+        _ => panic!("Expected schema content"),
+    };
+    match gen_member_variable_string(member_schema) {
         Ok(type_) => {
             initializers.push((param_name.into(), type_.clone(), required));
             write_out_field(out, param_name, &type_, required);
@@ -237,7 +246,7 @@ pub fn gen_multitype_params(
         Err(TypeError::NoType) => {
             //Weird case, found with anyOf so only case we are handling
             //at the current moment
-            if member_schema["anyOf"].as_array().is_some() {
+            if let SchemaKind::AnyOf { .. } = &member_schema.schema_kind {
                 let union_addition = format!("{param_name}_union");
                 let mut new_type_name = parent_struct_rust_type.to_owned();
                 new_type_name.push_str(&meta.schema_to_rust_type(&union_addition));
@@ -255,14 +264,12 @@ pub fn gen_multitype_params(
         }
         Err(TypeError::IsObject) => {
             let new_type_name =
-                member_schema["title"].as_str().map(|s| s.to_camel_case()).unwrap_or_else(|| {
-                    format!("{}{}Info", parent_struct_rust_type, param_name.to_camel_case())
-                });
+                member_schema.schema_data.title.as_ref().map(|s| s.to_camel_case()).unwrap_or_else(
+                    || format!("{}{}Info", parent_struct_rust_type, param_name.to_camel_case()),
+                );
 
-            let inferred_object = InferredObject {
-                rust_type: new_type_name.clone(),
-                schema: param["schema"].clone(),
-            };
+            let inferred_object =
+                InferredObject { rust_type: new_type_name.clone(), schema: member_schema.clone() };
             state.generated_objects.insert(new_type_name.clone(), inferred_object);
             initializers.push((param_name.into(), new_type_name.clone(), required));
             write_out_field(out, param_name, &new_type_name, required);
@@ -286,14 +293,10 @@ pub fn gen_inferred_params(
 
     for (_, params) in state.inferred_parameters.clone() {
         let params_schema = params.rust_type.to_snake_case();
-        let parameters = match params.parameters.as_array() {
-            Some(some) => some.as_slice(),
-            None => &[],
-        };
 
         // Derive Default when no param is required
         let can_derive_default =
-            parameters.iter().all(|param| param["required"].as_bool() != Some(true));
+            params.parameters.iter().all(|param| !param.parameter_data_ref().required);
 
         out.push('\n');
         out.push_str(&format!("/// The parameters for `{}::{}`.\n", struct_name, params.method));
@@ -308,31 +311,26 @@ pub fn gen_inferred_params(
         out.push_str(&params.rust_type);
         out.push_str("<'a> {\n");
         let mut initializers: Vec<(String, String, bool)> = Vec::new();
-        for param in parameters {
-            match param["in"].as_str() {
-                Some("query") | Some("form") => (),
-                _ => continue,
-            }
-
-            let param_name = param["name"].as_str().unwrap();
+        for param in params.parameters.iter().filter(|p| matches!(p, Parameter::Query { .. })) {
+            let param_name = param.parameter_data_ref().name.as_str();
             let param_rename = match param_name {
                 "type" => "type_",
                 other => other,
             };
             let print_doc = |out: &mut String| {
                 out.push('\n');
-                if let Some(doc) = param["description"].as_str() {
+                if let Some(doc) = &param.parameter_data_ref().description {
                     print_doc_comment(out, doc, 1);
                 }
                 if param_rename != param_name {
                     write_serde_rename(out, param_name);
                 }
             };
-            let required = param["required"].as_bool() == Some(true);
+            let required = param.parameter_data_ref().required;
             match param_name {
                 // TODO: Handle these unusual params
                 "bank_account" | "usage" => continue,
-                "destination" => {
+                "destination" | "card" => {
                     print_doc(out);
                     gen_multitype_params(
                         &params.rust_type,
@@ -345,20 +343,6 @@ pub fn gen_inferred_params(
                         out,
                     );
                 }
-                "card" => {
-                    print_doc(out);
-                    gen_multitype_params(
-                        &params.rust_type,
-                        param_name,
-                        param,
-                        &mut initializers,
-                        required,
-                        state,
-                        meta,
-                        out,
-                    );
-                }
-
                 "product" => {
                     print_doc(out);
                     initializers.push((
@@ -411,6 +395,12 @@ pub fn gen_inferred_params(
                     }
                 }
                 _ => {
+                    let schema = match &param.parameter_data_ref().format {
+                        ParameterSchemaOrContent::Schema(s) => s,
+                        ParameterSchemaOrContent::Content(_) => panic!("Expected schema"),
+                    };
+                    let kind = schema.as_item().map(|s| &s.schema_kind);
+                    let is_string_schema = matches!(kind, Some(SchemaKind::Type(Type::String(_))));
                     if let Some((use_path, rust_type)) =
                         meta.field_to_rust_type(params_schema.as_str(), param_name)
                     {
@@ -439,7 +429,7 @@ pub fn gen_inferred_params(
                         out.push_str(rust_type);
                         out.push_str(",\n");
                     } else if meta.schema_to_id_type(param_name).is_some()
-                        && param["schema"]["type"].as_str() == Some("string")
+                        && is_string_schema
                         && param_name != "tax_id"
                     {
                         let (id_type, _) = meta.schema_to_id_type(param_name).unwrap();
@@ -447,25 +437,20 @@ pub fn gen_inferred_params(
                         initializers.push((param_name.into(), id_type.clone(), required));
                         state.use_ids.insert(id_type.clone());
                         write_out_field(out, param_rename, &id_type, required);
-                    } else if param["schema"]["type"].as_str() == Some("boolean") {
+                    } else if matches!(kind, Some(SchemaKind::Type(Type::Boolean { .. }))) {
                         print_doc(out);
                         initializers.push((param_rename.into(), "bool".into(), false));
                         write_out_field(out, param_rename, "bool", required);
-                    } else if param["schema"]["type"].as_str() == Some("integer") {
-                        let rust_type = infer_integer_type(
-                            state,
-                            param_name,
-                            param["schema"]["format"].as_str(),
-                        );
-
+                    } else if let Some(SchemaKind::Type(Type::Integer(int_type))) = kind {
+                        let rust_type = infer_integer_type(state, param_name, &int_type.format);
                         print_doc(out);
                         initializers.push((param_rename.into(), rust_type.clone(), required));
                         write_out_field(out, param_rename, &rust_type, required);
-                    } else if param["schema"]["type"].as_str() == Some("number") {
+                    } else if matches!(kind, Some(SchemaKind::Type(Type::Number(_)))) {
                         print_doc(out);
                         initializers.push((param_rename.into(), "f64".into(), required));
                         write_out_field(out, param_rename, "f64", required);
-                    } else if param["schema"]["anyOf"][0]["title"].as_str()
+                    } else if schema.as_item().and_then(as_any_of_first_item_title)
                         == Some("range_query_specs")
                     {
                         print_doc(out);
@@ -477,20 +462,13 @@ pub fn gen_inferred_params(
                         state.use_params.insert("RangeQuery");
                         state.use_params.insert("Timestamp");
                         write_out_field(out, param_rename, "RangeQuery<Timestamp>", required);
-                    } else if param["schema"]["type"].as_str() == Some("string")
-                        && param["schema"]["enum"].is_array()
-                    {
+                    } else if let Some(enum_strings) = schema.as_item().and_then(as_enum_strings) {
                         let enum_schema = meta.schema_field(&object, param_rename);
                         let enum_name = meta.schema_to_rust_type(&enum_schema);
                         let enum_ = InferredEnum {
                             parent: params.rust_type.clone(),
                             field: param_rename.into(),
-                            options: param["schema"]["enum"]
-                                .as_array()
-                                .unwrap()
-                                .iter()
-                                .map(|x| x.as_str().unwrap().into())
-                                .collect(),
+                            options: enum_strings,
                         };
                         let inserted = state.try_insert_enum(enum_name.clone(), enum_.clone());
                         let enum_name = if inserted.is_err() {
@@ -506,27 +484,32 @@ pub fn gen_inferred_params(
                         initializers.push((param_rename.into(), enum_name.clone(), required));
                         write_out_field(out, param_rename, &enum_name, required);
                     } else if (param_name == "currency" || param_name.ends_with("_currency"))
-                        && param["schema"]["type"].as_str() == Some("string")
+                        && is_string_schema
                     {
                         print_doc(out);
                         initializers.push((param_rename.into(), "Currency".into(), required));
                         state.use_resources.insert("Currency".into());
                         write_out_field(out, param_rename, "Currency", required);
-                    } else if param["schema"]["type"].as_str() == Some("string") {
+                    } else if is_string_schema {
                         print_doc(out);
                         initializers.push((param_rename.into(), "&'a str".into(), required));
                         write_out_field(out, param_rename, "&'a str", required);
-                    } else if param["schema"]["type"].as_str() == Some("object")
-                        || param["schema"]["type"].as_str() == Some("array")
-                        || param["schema"]["$ref"].is_string()
-                        || param["schema"]["anyOf"].is_array()
+                    } else if schema.as_item().is_none()
+                        || matches!(
+                            kind,
+                            Some(
+                                SchemaKind::AnyOf { .. }
+                                    | SchemaKind::Type(Type::Object(_))
+                                    | SchemaKind::Type(Type::Array(_))
+                            )
+                        )
                     {
                         let rust_type = gen_field_rust_type(
                             state,
                             meta,
                             &params.rust_type.to_snake_case(),
                             param_rename,
-                            &param["schema"],
+                            schema,
                             required,
                             false,
                             shared_objects,
@@ -545,10 +528,7 @@ pub fn gen_inferred_params(
                         out.push_str(&rust_type);
                         out.push_str(",\n");
                     } else if required {
-                        panic!(
-                            "error: skipped required parameter: {} => {:?}",
-                            param_name, param["schema"]
-                        );
+                        panic!("error: skipped required parameter: {} => {:?}", param_name, schema);
                     } else {
                         log::warn!("skipping optional parameter: {}", param_name);
                     }
@@ -634,24 +614,23 @@ pub fn gen_emitted_structs(
                 log::trace!("struct {} {{ ... }}", struct_name);
             }
 
-            let fields = match struct_.schema["properties"].as_object() {
-                Some(some) => some,
-                None => {
+            let obj = match struct_.schema.schema_kind {
+                SchemaKind::Type(Type::Object(o)) => o,
+                _ => {
                     // TODO: Handle these objects
-                    log::warn!("{} has no properties ({})", struct_name, struct_.schema);
+                    log::warn!("{} has no properties ({:#?})", struct_name, struct_.schema);
                     continue;
                 }
             };
+
             out.push('\n');
             out.push_str("#[derive(Clone, Debug, Default, Deserialize, Serialize)]\n");
             out.push_str("pub struct ");
             out.push_str(&struct_name.to_camel_case());
             out.push_str(" {\n");
-            for (key, field) in fields {
-                let required = struct_.schema["required"]
-                    .as_array()
-                    .map(|arr| arr.iter().filter_map(|x| x.as_str()).any(|x| x == key))
-                    .unwrap_or(false);
+
+            for (key, field) in &obj.properties {
+                let required = obj.required.contains(key);
                 out.push('\n');
                 out.push_str(&gen_field(
                     state,
@@ -670,8 +649,8 @@ pub fn gen_emitted_structs(
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_unions(out: &mut String, state: &mut FileGenerator, meta: &Metadata) {
-    for (union_name, union_) in state.inferred_unions.clone() {
+pub fn gen_unions(out: &mut String, unions: &BTreeMap<String, InferredUnion>, meta: &Metadata) {
+    for (union_name, union_) in unions {
         log::trace!("union {} {{ ... }}", union_name);
 
         out.push('\n');
@@ -681,16 +660,14 @@ pub fn gen_unions(out: &mut String, state: &mut FileGenerator, meta: &Metadata) 
         out.push_str(&union_name.to_camel_case());
         out.push_str(" {\n");
         for variant_schema in &union_.schema_variants {
-            let object_name = meta.spec["components"]["schemas"][&variant_schema]["properties"]
-                ["object"]["enum"][0]
-                .as_str()
-                .unwrap_or_else(|| {
-                    meta.spec["components"]["schemas"][&variant_schema]["title"].as_str().unwrap()
-                });
-            let variant_name = meta.schema_to_rust_type(object_name);
+            let schema =
+                meta.spec.get_schema_unwrapped(variant_schema).as_item().expect("Expected an item");
+            let object_name = as_object_enum_name(schema)
+                .unwrap_or_else(|| schema.schema_data.title.clone().unwrap());
+            let variant_name = meta.schema_to_rust_type(&object_name);
             let type_name = meta.schema_to_rust_type(variant_schema);
             if variant_name.to_snake_case() != object_name {
-                write_serde_rename(out, object_name);
+                write_serde_rename(out, &object_name);
             }
             out.push_str("    ");
             out.push_str(&variant_name);
@@ -736,8 +713,8 @@ pub fn gen_variant_name(wire_name: &str, meta: &Metadata) -> String {
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_enums(out: &mut String, state: &mut FileGenerator, meta: &Metadata) {
-    for (enum_name, enum_) in &state.inferred_enums {
+pub fn gen_enums(out: &mut String, enums: &BTreeMap<String, InferredEnum>, meta: &Metadata) {
+    for (enum_name, enum_) in enums {
         log::trace!("enum {} {{ ... }}", enum_name);
 
         out.push('\n');
@@ -827,16 +804,17 @@ pub fn gen_enums(out: &mut String, state: &mut FileGenerator, meta: &Metadata) {
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_member_variable_string(schema: &Value) -> Result<String, TypeError> {
-    if let Some(type_) = schema["type"].as_str() {
-        match type_ {
-            "integer" => Ok("i32".into()),
-            "string" => Ok("String".into()),
-            "boolean" => Ok("bool".into()),
-            "array" => {
-                Ok(format!("Vec<{}>", gen_member_variable_string(&schema["items"]).unwrap()))
-            }
-            "object" => Err(TypeError::IsObject),
+pub fn gen_member_variable_string(schema: &Schema) -> Result<String, TypeError> {
+    if let SchemaKind::Type(typ) = &schema.schema_kind {
+        match typ {
+            Type::String(_) => Ok("String".into()),
+            Type::Integer(_) => Ok("i32".into()),
+            Type::Boolean { .. } => Ok("bool".into()),
+            Type::Array(arr) => Ok(format!(
+                "Vec<{}>",
+                gen_member_variable_string(arr.items.as_ref().unwrap().as_item().unwrap()).unwrap()
+            )),
+            Type::Object(_) => Err(TypeError::IsObject),
             _ => Err(TypeError::Unhandled),
         }
     } else {
@@ -845,8 +823,8 @@ pub fn gen_member_variable_string(schema: &Value) -> Result<String, TypeError> {
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_objects(out: &mut String, state: &mut FileGenerator) {
-    let mut generated_objects = state.generated_objects.clone();
+pub fn gen_objects(out: &mut String, objects: &BTreeMap<String, InferredObject>) {
+    let mut generated_objects = objects.clone();
     while !generated_objects.is_empty() {
         let key_str: String;
         let value_obj: InferredObject;
@@ -869,108 +847,96 @@ pub fn gen_objects(out: &mut String, state: &mut FileGenerator) {
         out.push('\n');
         print_doc_from_schema(out, &schema, 0);
 
-        if let Some(type_) = schema["type"].as_str() {
-            match type_ {
-                "object" => {
-                    out.push_str("#[derive(Clone, Debug, Default, Deserialize, Serialize)]\n");
-                    out.push_str(&format!("pub struct {} {{\n", key_str));
-                    if let Some(prop_map) = schema["properties"].as_object() {
-                        let empty_vec = vec![];
-                        let required = schema["required"].as_array().unwrap_or(&empty_vec);
-                        assert!(
-                            required.iter().all(|val| val.is_string()),
-                            "Required vector is not a vector of strings: {:#?}",
-                            required
-                        );
-                        for (member_name, member_schema) in prop_map.iter() {
-                            let mut is_required = false;
-                            if required.iter().any(|val| {
-                                let req_str = val.as_str().unwrap();
-                                req_str == *member_name
-                            }) {
-                                is_required = true;
-                            }
-                            print_doc_from_schema(out, member_schema, 1);
-                            match gen_member_variable_string(member_schema) {
-                                Ok(normal_var) => {
-                                    write_out_field(out, member_name, &normal_var, is_required)
-                                }
-                                Err(TypeError::IsObject) => {
-                                    let rust_type = member_name.to_camel_case();
-                                    write_out_field(out, member_name, &rust_type, is_required);
-                                    let new_params = InferredObject {
-                                        rust_type: rust_type.clone(),
-                                        schema: member_schema.clone(),
-                                    };
-                                    generated_objects.insert(rust_type, new_params);
-                                }
-                                _ => {
-                                    panic!("Unhandled case, inspect: {:#?}", member_schema);
-                                }
-                            }
+        match schema.schema_kind {
+            SchemaKind::Type(Type::Object(obj)) => {
+                out.push_str("#[derive(Clone, Debug, Default, Deserialize, Serialize)]\n");
+                out.push_str(&format!("pub struct {} {{\n", key_str));
+                let props = obj.properties.iter().flat_map(|(name, schema_or)| match schema_or {
+                    ReferenceOr::Reference { .. } => None,
+                    ReferenceOr::Item(schema) => Some((name, schema)),
+                });
+                for (member_name, member_schema) in props {
+                    let is_required = obj.required.contains(member_name);
+                    print_doc_from_schema(out, member_schema, 1);
+                    match gen_member_variable_string(member_schema) {
+                        Ok(normal_var) => {
+                            write_out_field(out, member_name, &normal_var, is_required)
                         }
-                        out.push_str("}\n");
-                    } else {
-                        panic!("Object has no properties: {:#?}", schema);
+                        Err(TypeError::IsObject) => {
+                            let rust_type = member_name.to_camel_case();
+                            write_out_field(out, member_name, &rust_type, is_required);
+                            let new_params = InferredObject {
+                                rust_type: rust_type.clone(),
+                                schema: *member_schema.clone(),
+                            };
+                            generated_objects.insert(rust_type, new_params);
+                        }
+                        _ => {
+                            panic!("Unhandled case, inspect: {:#?}", member_schema);
+                        }
                     }
                 }
-                other => panic!("Expected an object here got: {}", other),
+                out.push_str("}\n");
             }
-        };
+            SchemaKind::AnyOf { any_of } => {
+                out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
+                out.push_str("#[serde(untagged, rename_all = \"snake_case\")]\n");
+                out.push_str(&format!("pub enum {} {{\n", key_str));
 
-        if let Some(array) = schema["anyOf"].as_array() {
-            out.push_str("#[derive(Clone, Debug, Deserialize, Serialize)]\n");
-            out.push_str("#[serde(untagged, rename_all = \"snake_case\")]\n");
-            out.push_str(&format!("pub enum {} {{\n", key_str));
+                let mut variants = HashMap::new();
 
-            let mut variants = HashMap::new();
+                for value in any_of.iter().flat_map(|a| match a {
+                    ReferenceOr::Reference { .. } => None,
+                    ReferenceOr::Item(s) => Some(s),
+                }) {
+                    let title = &value.schema_data.title;
+                    let type_name = gen_member_variable_string(value).unwrap_or_else(|_| {
+                        let type_name = title.as_ref().unwrap().to_camel_case();
 
-            for value in array {
-                let type_name = gen_member_variable_string(value).unwrap_or_else(|_| {
-                    let type_name = value["title"].as_str().unwrap().to_camel_case();
+                        generated_objects.insert(
+                            type_name.clone(),
+                            InferredObject { rust_type: type_name.clone(), schema: value.clone() },
+                        );
 
-                    generated_objects.insert(
-                        type_name.clone(),
-                        InferredObject { rust_type: type_name.clone(), schema: value.clone() },
-                    );
-
-                    type_name
-                });
-
-                // if the title is not provided, the variant
-                // should have the same name as the type it contains
-                // with an optional suffix if there are clashes
-                let variant_name =
-                    value["title"].as_str().map(|s| s.to_camel_case()).unwrap_or_else(|| {
-                        let count = variants.entry(type_name.clone()).or_insert(0);
-                        let suffix = if *count == 0 { "".to_string() } else { count.to_string() };
-                        *count += 1;
-
-                        format!("{}{}", type_name, suffix)
+                        type_name
                     });
 
-                out.push_str(&format!("    pub {}({}),\n", variant_name, type_name));
-            }
-            out.push_str("}\n");
-        }
+                    // if the title is not provided, the variant
+                    // should have the same name as the type it contains
+                    // with an optional suffix if there are clashes
+                    let variant_name =
+                        title.as_ref().map(|s| s.to_camel_case()).unwrap_or_else(|| {
+                            let count = variants.entry(type_name.clone()).or_insert(0);
+                            let suffix =
+                                if *count == 0 { "".to_string() } else { count.to_string() };
+                            *count += 1;
 
+                            format!("{}{}", type_name, suffix)
+                        });
+
+                    out.push_str(&format!("    pub {}({}),\n", variant_name, type_name));
+                }
+                out.push_str("}\n");
+            }
+            other => panic!("Expected an object here got: {:?}", other),
+        }
         generated_objects.remove(&key_str);
     }
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_field(
+pub fn gen_field<T: Borrow<Schema>>(
     state: &mut FileGenerator,
     meta: &Metadata,
     object: &str,
     field_name: &str,
-    field: &Value,
+    field: &ReferenceOr<T>,
     required: bool,
     default: bool,
     shared_objects: &mut BTreeSet<FileGenerator>,
 ) -> String {
     let mut out = String::new();
-    if let Some(doc) = field["description"].as_str() {
+    if let Some(doc) = field.as_item().and_then(|s| s.borrow().schema_data.description.as_deref()) {
         print_doc_comment(&mut out, doc, 1);
     }
     let mut field_rename = field_name.to_snake_case();
@@ -1005,37 +971,83 @@ pub fn gen_field(
     out
 }
 
+fn gen_schema_ref(
+    state: &mut FileGenerator,
+    meta: &Metadata,
+    object: &str,
+    path: &str,
+    shared_objects: &mut BTreeSet<FileGenerator>,
+) -> String {
+    let schema_name = path.trim_start_matches("#/components/schemas/");
+    let type_name = meta.schema_to_rust_type(schema_name);
+    if schema_name != object {
+        if meta.objects.contains(schema_name) {
+            state.use_resources.insert(type_name.clone());
+        } else if meta.dependents.get(schema_name).map(|x| x.len()).unwrap_or(0) > 1 {
+            state.use_resources.insert(type_name.clone());
+            shared_objects.insert(FileGenerator::new(schema_name.to_string()));
+        } else if !state.generated_schemas.contains_key(schema_name) {
+            state.generated_schemas.insert(schema_name.into(), false);
+        }
+    }
+    type_name
+}
+
+fn gen_schema_or_ref_type<T: Borrow<Schema>>(
+    state: &mut FileGenerator,
+    meta: &Metadata,
+    object: &str,
+    field_name: &str,
+    field: &ReferenceOr<T>,
+    required: bool,
+    default: bool,
+    shared_objects: &mut BTreeSet<FileGenerator>,
+) -> String {
+    match field {
+        ReferenceOr::Reference { reference } => {
+            gen_schema_ref(state, meta, object, reference, shared_objects)
+        }
+        ReferenceOr::Item(schema) => gen_field_type(
+            state,
+            meta,
+            object,
+            field_name,
+            schema.borrow(),
+            required,
+            default,
+            shared_objects,
+        ),
+    }
+}
+
 #[tracing::instrument(skip_all)]
 fn gen_field_type(
     state: &mut FileGenerator,
     meta: &Metadata,
     object: &str,
     field_name: &str,
-    field: &Value,
+    field: &Schema,
     required: bool,
     default: bool,
     shared_objects: &mut BTreeSet<FileGenerator>,
 ) -> String {
-    let ty = match field["type"].as_str() {
-        Some("boolean") => {
-            if default {
-                // N.B. return immediately; if we want to use `Default` for bool rather than `Option`
-                return "bool".into();
-            } else {
-                "bool".into()
-            }
+    match &field.schema_kind {
+        // N.B. return immediately; if we want to use `Default` for bool rather than `Option`
+        SchemaKind::Type(Type::Boolean {}) => "bool".into(),
+        SchemaKind::Type(Type::Number(_)) => "f64".into(),
+        SchemaKind::Type(Type::Integer(format)) => {
+            infer_integer_type(state, field_name, &format.format)
         }
-        Some("number") => "f64".into(),
-        Some("integer") => infer_integer_type(state, field_name, field["format"].as_str()),
-        Some("string") => {
-            if let Some(variants) = field["enum"].as_array() {
+        SchemaKind::Type(Type::String(typ)) => {
+            let variants = typ.enumeration.iter().flatten().cloned().collect::<Vec<_>>();
+            if !variants.is_empty() {
                 let enum_schema = meta.schema_field(object, field_name);
                 let enum_name = meta.schema_to_rust_type(&enum_schema);
                 let parent_type = meta.schema_to_rust_type(object);
                 let enum_ = InferredEnum {
                     parent: parent_type,
                     field: field_name.into(),
-                    options: variants.iter().map(|x| x.as_str().unwrap().into()).collect(),
+                    options: variants,
                 };
                 state.insert_enum(enum_name.clone(), enum_);
                 enum_name
@@ -1043,24 +1055,26 @@ fn gen_field_type(
                 "String".into()
             }
         }
-        Some("array") => {
-            let element = &field["items"];
+        SchemaKind::Type(Type::Array(typ)) => {
+            let element = typ.items.clone().unwrap().unbox();
             let element_type = gen_field_rust_type(
                 state,
                 meta,
                 object,
                 field_name,
-                element,
+                &element,
                 true,
                 false,
                 shared_objects,
             );
             format!("Vec<{}>", element_type)
         }
-        Some("object") => {
-            if field["properties"]["object"]["enum"][0].as_str() == Some("list") {
+        SchemaKind::Type(Type::Object(typ)) => {
+            if as_object_enum_name(field).as_deref() == Some("list") {
                 state.use_params.insert("List");
-                let element = &field["properties"]["data"]["items"];
+                let element = as_data_array_item(typ).unwrap_or_else(|| {
+                    panic!("Expected to find array item but found {:?}", field.schema_kind)
+                });
                 let element_field_name = if field_name.ends_with('s') {
                     field_name[0..field_name.len() - 1].into()
                 } else if field_name.ends_with("ies") {
@@ -1083,13 +1097,13 @@ fn gen_field_type(
                 return format!("List<{}>", element_type);
             }
 
-            if let Some(_) = field["additionalProperties"].as_object() {
-                return gen_field_type(
+            if let Some(AdditionalProperties::Schema(additional)) = &typ.additional_properties {
+                return gen_schema_or_ref_type(
                     state,
                     meta,
                     object,
                     field_name,
-                    &field["additionalProperties"],
+                    additional,
                     required,
                     default,
                     shared_objects,
@@ -1102,119 +1116,115 @@ fn gen_field_type(
             state.insert_struct(struct_name.clone(), struct_);
             struct_name
         }
-        _ => {
-            if let Some(path) = field["$ref"].as_str() {
-                let schema_name = path.trim_start_matches("#/components/schemas/");
-                let type_name = meta.schema_to_rust_type(schema_name);
-                if schema_name != object {
-                    if meta.objects.contains(schema_name) {
-                        state.use_resources.insert(type_name.clone());
-                    } else if meta.dependents.get(schema_name).map(|x| x.len()).unwrap_or(0) > 1 {
-                        state.use_resources.insert(type_name.clone());
-                        shared_objects.insert(FileGenerator::new(schema_name.to_string()));
-                    } else if !state.generated_schemas.contains_key(schema_name) {
-                        state.generated_schemas.insert(schema_name.into(), false);
-                    }
-                }
-                type_name
-            } else if let Some(any_of) =
-                field["anyOf"].as_array().or_else(|| field["oneOf"].as_array())
+        SchemaKind::AnyOf { .. } | SchemaKind::OneOf { .. } => {
+            let any_of = match &field.schema_kind {
+                SchemaKind::AnyOf { any_of } => any_of,
+                SchemaKind::OneOf { one_of } => one_of,
+                _ => unreachable!(),
+            };
+            if any_of.len() == 1
+                || (any_of.len() == 2
+                    && any_of[1]
+                        .as_item()
+                        .and_then(as_first_enum_value)
+                        .map(|v| v.is_empty())
+                        .unwrap_or_default())
             {
-                if any_of.len() == 1
-                    || (any_of.len() == 2 && any_of[1]["enum"][0].as_str() == Some(""))
-                {
-                    gen_field_rust_type(
-                        state,
-                        meta,
-                        object,
-                        field_name,
-                        &any_of[0],
-                        true,
-                        false,
-                        shared_objects,
-                    )
-                } else if field["x-expansionResources"].is_object() {
-                    let ty_ = gen_field_rust_type(
-                        state,
-                        meta,
-                        object,
-                        field_name,
-                        &json!({
-                            "oneOf": Value::Array(field["x-expansionResources"]["oneOf"].as_array().unwrap()
-                            .iter()
-                            .filter(|v| !v["$ref"].as_str().unwrap().starts_with("#/components/schemas/deleted_"))
-                            .cloned()
-                            .collect())
-                        }),
-                        true,
-                        false,
-                        shared_objects,
-                    );
-                    state.use_params.insert("Expandable");
-                    format!("Expandable<{}>", ty_)
-                } else if any_of[0]["title"].as_str() == Some("range_query_specs") {
-                    state.use_params.insert("RangeQuery");
-                    state.use_params.insert("Timestamp");
-                    "RangeQuery<Timestamp>".into()
-                } else {
-                    log::trace!("object: {}, field_name: {}", object, field_name);
-                    let union_addition = format!("{field_name}_union");
-                    let union_schema = meta.schema_field(object, &union_addition);
-                    let union_name = meta.schema_to_rust_type(&union_schema);
-                    log::trace!("union_schema: {}, union_name: {}", union_schema, union_name);
-                    let union_ = InferredUnion {
-                        field: field_name.into(),
-                        schema_variants: any_of
-                            .iter()
-                            .map(|x| {
-                                let schema_name = x["$ref"]
-                                    .as_str()
-                                    .unwrap_or_else(|| {
-                                        panic!(
-                                            "invalid union for `{}.{}`:  {:#?}",
-                                            object, field_name, field
-                                        )
-                                    })
-                                    .trim_start_matches("#/components/schemas/");
-                                let type_name = meta.schema_to_rust_type(schema_name);
-                                if meta.objects.contains(schema_name)
-                                    || meta
-                                        .dependents
-                                        .get(schema_name)
-                                        .map(|x| x.len())
-                                        .unwrap_or(0)
-                                        > 1
-                                {
-                                    state.use_resources.insert(type_name);
-                                } else if !state.generated_schemas.contains_key(schema_name) {
-                                    state.generated_schemas.insert(schema_name.into(), false);
-                                }
-                                schema_name.into()
-                            })
-                            .collect(),
-                    };
-                    state.inferred_unions.insert(union_name.clone(), union_);
-                    union_name
-                }
+                gen_field_rust_type(
+                    state,
+                    meta,
+                    object,
+                    field_name,
+                    &any_of[0],
+                    true,
+                    false,
+                    shared_objects,
+                )
+            } else if let Some(resources) = field.schema_data.extensions.get("x-expansionResources")
+            {
+                let expansion_resources =
+                    serde_json::from_value::<ExpansionResources>(resources.clone())
+                        .expect("Could not deserialize expansion resources");
+
+                let ty_ = gen_field_rust_type(
+                    state,
+                    meta,
+                    object,
+                    field_name,
+                    &ReferenceOr::Item(Schema {
+                        schema_data: Default::default(),
+                        schema_kind: expansion_resources.into_schema_kind(),
+                    }),
+                    true,
+                    false,
+                    shared_objects,
+                );
+                state.use_params.insert("Expandable");
+                format!("Expandable<{}>", ty_)
+            } else if any_of[0].as_item().and_then(|s| s.schema_data.title.as_deref())
+                == Some("range_query_specs")
+            {
+                state.use_params.insert("RangeQuery");
+                state.use_params.insert("Timestamp");
+                "RangeQuery<Timestamp>".into()
             } else {
-                panic!("unhandled field type for `{}.{}`: {}\n", object, field_name, field)
+                log::trace!("object: {}, field_name: {}", object, field_name);
+                let union_addition = format!("{field_name}_union");
+                let union_schema = meta.schema_field(object, &union_addition);
+                let union_name = meta.schema_to_rust_type(&union_schema);
+                log::trace!("union_schema: {}, union_name: {}", union_schema, union_name);
+                let union_ = InferredUnion {
+                    field: field_name.into(),
+                    schema_variants: any_of
+                        .iter()
+                        .map(|x| {
+                            let schema_name = match &x {
+                                ReferenceOr::Reference { reference } => {
+                                    reference.trim_start_matches("#/components/schemas/")
+                                }
+                                ReferenceOr::Item(_) => {
+                                    panic!(
+                                        "invalid union for `{}.{}`:  {:#?}",
+                                        object, field_name, field
+                                    )
+                                }
+                            };
+                            let type_name = meta.schema_to_rust_type(schema_name);
+                            if meta.objects.contains(schema_name)
+                                || meta.dependents.get(schema_name).map(|x| x.len()).unwrap_or(0)
+                                    > 1
+                            {
+                                state.use_resources.insert(type_name);
+                            } else if !state.generated_schemas.contains_key(schema_name) {
+                                state.generated_schemas.insert(schema_name.into(), false);
+                            }
+                            schema_name.into()
+                        })
+                        .collect(),
+                };
+                state.inferred_unions.insert(union_name.clone(), union_);
+                union_name
             }
         }
-    };
-    return ty;
+        _ => {
+            panic!("unhandled field type for `{}.{}`: {:#?}\n", object, field_name, field)
+        }
+    }
 }
 
 #[tracing::instrument(skip_all)]
-pub fn gen_field_rust_type(
+pub fn gen_field_rust_type<T: Borrow<Schema>>(
     state: &mut FileGenerator,
     meta: &Metadata,
     object: &str,
     field_name: &str,
-    field: &Value,
+    field: &ReferenceOr<T>,
     required: bool,
     default: bool,
     shared_objects: &mut BTreeSet<FileGenerator>,
 ) -> String {
+    let maybe_schema = field.as_item().map(|s| s.borrow());
+    let is_nullable = maybe_schema.map(|s| s.schema_data.nullable).unwrap_or_default();
     if let Some((use_path, rust_type)) = meta.field_to_rust_type(object, field_name) {
         match use_path {
             "" | "String" => (),
@@ -1231,25 +1241,33 @@ pub fn gen_field_rust_type(
         state.use_params.insert("Metadata");
         return "Metadata".into();
     } else if (field_name == "currency" || field_name.ends_with("_currency"))
-        && field["type"].as_str() == Some("string")
+        && matches!(maybe_schema.map(|s| &s.schema_kind), Some(SchemaKind::Type(Type::String(_))))
     {
         state.use_resources.insert("Currency".into());
-        if !required || field["nullable"].as_bool() == Some(true) {
-            return "Option<Currency>".into();
+        return if !required || is_nullable {
+            "Option<Currency>".into()
         } else {
-            return "Currency".into();
-        }
+            "Currency".into()
+        };
     } else if field_name == "created" {
         state.use_params.insert("Timestamp");
-        if !required || field["nullable"].as_bool() == Some(true) {
-            return "Option<Timestamp>".into();
+        return if !required || is_nullable {
+            "Option<Timestamp>".into()
         } else {
-            return "Timestamp".into();
-        }
+            "Timestamp".into()
+        };
     }
 
-    let ty =
-        gen_field_type(state, meta, object, field_name, field, required, default, shared_objects);
+    let ty = gen_schema_or_ref_type(
+        state,
+        meta,
+        object,
+        field_name,
+        field,
+        required,
+        default,
+        shared_objects,
+    );
     if ty == "bool" && default {
         // N.B. return immediately; if we want to use `Default` for bool rather than `Option`
         // Not sure why this is here, but we want to preserve it for now
@@ -1260,7 +1278,7 @@ pub fn gen_field_rust_type(
         return ty;
     }
 
-    let optional = !required || field["nullable"].as_bool() == Some(true);
+    let optional = !required || is_nullable;
     let should_box = ty.as_str() == "ApiErrors";
 
     match (optional, should_box) {
@@ -1286,21 +1304,34 @@ pub fn gen_impl_requests(
     let mut methods = BTreeMap::new();
 
     for path in requests {
-        let request = &meta.spec["paths"][path];
+        // Unwrapped is safe here to avoid dealing with an `Option` since these paths come
+        // from the spec already
+        let request = meta
+            .spec
+            .get_request_unwrapped(*path)
+            .as_item()
+            .expect("Expected item, not path reference");
         let segments = path.trim_start_matches("/v1/").split('/').collect::<Vec<_>>();
 
-        if let Some(get_request) = &request["get"].as_object() {
-            let ok_schema =
-                &get_request["responses"]["200"]["content"]["application/json"]["schema"];
-            let err_schema =
-                &get_request["responses"]["default"]["content"]["application/json"]["schema"];
-            if ok_schema.is_null()
-                || err_schema["$ref"].as_str() != Some("#/components/schemas/error")
-            {
+        if let Some(get_request) = &request.get {
+            let ok_resp = match get_ok_response(get_request) {
+                None => continue,
+                Some(s) => s,
+            };
+            if !err_schema_expected(get_request) {
                 continue; // skip generating this unusual request (for now...)
             }
-            let doc_comment = get_request["description"].as_str().unwrap_or_default();
-            if ok_schema["properties"]["object"]["enum"][0].as_str() == Some("list")
+            let doc_comment =
+                get_request.description.as_ref().expect("No description in GET request");
+            let body_schema = ok_resp
+                .as_item()
+                .and_then(|s| s.content.get("application/json"))
+                .and_then(|c| c.schema.as_ref());
+            if body_schema
+                .as_ref()
+                .and_then(|s| s.as_item())
+                .map(|s| as_object_enum_name(s).as_deref() == Some("list"))
+                .unwrap_or_default()
                 && !methods.contains_key(&MethodTypes::List)
             {
                 let params_name = if rust_struct.ends_with('y') {
@@ -1311,7 +1342,7 @@ pub fn gen_impl_requests(
                 let params = InferredParams {
                     method: "list".into(),
                     rust_type: params_name.clone(),
-                    parameters: get_request["parameters"].clone(),
+                    parameters: non_path_ref_params(get_request),
                 };
                 state.inferred_parameters.insert(params_name.to_snake_case(), params);
                 state.use_params.insert("List");
@@ -1330,19 +1361,14 @@ pub fn gen_impl_requests(
                 out.push_str("    }");
                 methods.insert(MethodTypes::List, out);
             } else if segments.len() == 2 && !methods.contains_key(&MethodTypes::Retrieve) {
-                let id_param = get_request["parameters"]
-                    .as_array()
-                    .and_then(|arr| arr.iter().find(|p| p["in"].as_str() == Some("path")));
-                let id_param = match id_param {
+                let id_param = match get_id_param(&get_request.parameters) {
                     Some(p) => p,
                     None => continue,
                 };
-                let expand_param = get_request["parameters"]
-                    .as_array()
-                    .and_then(|arr| arr.iter().find(|p| p["name"].as_str() == Some("expand")));
+                let expand_param = find_param_by_name(get_request, "expand");
                 if let Some(id_type) = &object_id {
-                    assert_eq!(id_param["required"].as_bool(), Some(true));
-                    assert_eq!(id_param["style"].as_str(), Some("simple"));
+                    assert!(id_param.parameter_data_ref().required);
+                    assert!(matches!(id_param, Parameter::Path { style: PathStyle::Simple, .. }));
 
                     let mut out = String::new();
                     out.push('\n');
@@ -1351,7 +1377,7 @@ pub fn gen_impl_requests(
                     out.push_str(id_type);
                     if let Some(param) = expand_param {
                         state.use_params.insert("Expand");
-                        assert_eq!(param["in"].as_str(), Some("query"));
+                        assert!(matches!(param, Parameter::Query { .. }));
                         out.push_str(", expand: &[&str]) -> Response<");
                         out.push_str(&rust_struct);
                         out.push_str("> {\n");
@@ -1372,30 +1398,20 @@ pub fn gen_impl_requests(
             }
         }
 
-        if let Some(post_request) = &request["post"].as_object() {
-            let ok_schema =
-                &post_request["responses"]["200"]["content"]["application/json"]["schema"];
-            let err_schema =
-                &post_request["responses"]["default"]["content"]["application/json"]["schema"];
-            if ok_schema.is_null()
-                || err_schema["$ref"].as_str() != Some("#/components/schemas/error")
-            {
+        if let Some(post_request) = &request.post {
+            let return_type = match get_ok_response_schema(post_request) {
+                Some(ReferenceOr::Reference { reference }) => {
+                    let schema = reference.trim_start_matches("#/components/schemas/");
+                    meta.schema_to_rust_type(schema)
+                }
+                _ => continue,
+            };
+            if !err_schema_expected(post_request) {
                 continue; // skip generating this unusual request (for now...)
             }
-            let return_type = if let Some(path) = ok_schema["$ref"].as_str() {
-                assert!(ok_schema["nullable"].is_null());
-                let schema = path.trim_start_matches("#/components/schemas/");
-                meta.schema_to_rust_type(schema)
-            } else {
-                continue;
-            };
-
-            let doc_comment = post_request["description"].as_str().unwrap_or_default();
-            let parameter_count = post_request
-                .get("parameters")
-                .and_then(|p| p.as_array())
-                .map(|a| a.len())
-                .unwrap_or_default();
+            let doc_comment =
+                post_request.description.as_ref().expect("No description for POST request");
+            let parameter_count = post_request.parameters.len();
 
             let create = doc_comment.contains("Create")
                 || doc_comment.contains("create")
@@ -1405,34 +1421,16 @@ pub fn gen_impl_requests(
             let update = doc_comment.contains("Update") || doc_comment.contains("update");
 
             if !methods.contains_key(&MethodTypes::Create) && parameter_count == 0 && create {
-                // Just make sure I don't miss anything unexpected
-                let query_params: &[_] = post_request
-                    .get("parameters")
-                    .and_then(|p| p.as_array().map(|x| x.as_ref()))
-                    .unwrap_or_default();
-                assert!(query_params.is_empty());
-
                 // Construct `parameters` from the request body schema
-                let create_schema = &post_request["requestBody"]["content"]
-                    ["application/x-www-form-urlencoded"]["schema"];
-                let mut create_parameters = Vec::new();
-                for (key, value) in create_schema["properties"].as_object().unwrap() {
-                    create_parameters.push(json!({
-                        "in": "form",
-                        "name": key,
-                        "description": value["description"],
-                        "required": create_schema["required"].as_array().map(|arr| {
-                            arr.iter().any(|v| v.as_str() == Some(key))
-                        }),
-                        "schema": value,
-                        "style": "deepObject"
-                    }));
-                }
+                let create_parameters =
+                    get_request_form_parameters(post_request).unwrap_or_else(|err| {
+                        panic!("Could not extract create parameters due to error {}", err)
+                    });
                 let params_name = format!("Create{}", rust_struct);
                 let params = InferredParams {
                     method: "create".into(),
                     rust_type: params_name.clone(),
-                    parameters: Value::Array(create_parameters),
+                    parameters: create_parameters,
                 };
                 state.inferred_parameters.insert(params_name.to_snake_case(), params);
 
@@ -1452,41 +1450,27 @@ pub fn gen_impl_requests(
             } else if !methods.contains_key(&MethodTypes::Update) && parameter_count == 1 && update
             {
                 // Get the id parameter
-                let id_param = post_request["parameters"]
-                    .as_array()
-                    .and_then(|arr| arr.iter().find(|p| p["in"].as_str() == Some("path")));
-                let id_param = match id_param {
+                let id_param = match get_id_param(&post_request.parameters) {
                     Some(p) => p,
                     None => continue,
                 };
 
                 // Construct `parameters` from the request body schema
-                let update_schema = &post_request["requestBody"]["content"]
-                    ["application/x-www-form-urlencoded"]["schema"];
-                let mut update_parameters = Vec::new();
-                for (key, value) in update_schema["properties"].as_object().unwrap() {
-                    update_parameters.push(json!({
-                        "in": "form",
-                        "name": key,
-                        "description": value["description"],
-                        "required": update_schema["required"].as_array().map(|arr| {
-                            arr.iter().any(|v| v.as_str() == Some(key))
-                        }),
-                        "schema": value,
-                        "style": "deepObject"
-                    }));
-                }
+                let update_parameters =
+                    get_request_form_parameters(post_request).unwrap_or_else(|err| {
+                        panic!("Could not extract update parameters due to error {}", err)
+                    });
                 let params_name = format!("Update{}", rust_struct);
                 let params = InferredParams {
                     method: "update".into(),
                     rust_type: params_name.clone(),
-                    parameters: Value::Array(update_parameters),
+                    parameters: update_parameters,
                 };
                 state.inferred_parameters.insert(params_name.to_snake_case(), params);
 
                 if let Some(id_type) = &object_id {
-                    assert_eq!(id_param["required"].as_bool(), Some(true));
-                    assert_eq!(id_param["style"].as_str(), Some("simple"));
+                    assert!(id_param.parameter_data_ref().required);
+                    assert!(matches!(id_param, Parameter::Path { style: PathStyle::Simple, .. }));
 
                     let mut out = String::new();
                     out.push('\n');
@@ -1517,30 +1501,26 @@ pub fn gen_impl_requests(
             }
         }
 
-        if let Some(delete_request) = &request["delete"].as_object() {
-            let ok_schema =
-                &delete_request["responses"]["200"]["content"]["application/json"]["schema"];
-            let err_schema =
-                &delete_request["responses"]["default"]["content"]["application/json"]["schema"];
-            if ok_schema.is_null()
-                || err_schema["$ref"].as_str() != Some("#/components/schemas/error")
-            {
+        if let Some(delete_request) = &request.delete {
+            match get_ok_response_schema(delete_request) {
+                None => continue,
+                Some(s) => s,
+            };
+            if !err_schema_expected(delete_request) {
                 continue; // skip generating this unusual request (for now...)
             }
 
-            let doc_comment = delete_request["description"].as_str().unwrap_or_default();
+            let doc_comment =
+                delete_request.description.as_ref().expect("Missing DELETE description");
             if segments.len() == 2 && !methods.contains_key(&MethodTypes::Delete) {
-                let id_param = delete_request["parameters"]
-                    .as_array()
-                    .and_then(|arr| arr.iter().find(|p| p["in"].as_str() == Some("path")));
-                let id_param = match id_param {
+                let id_param = match get_id_param(&delete_request.parameters) {
                     Some(p) => p,
                     None => continue,
                 };
                 if let Some(id_type) = &object_id {
                     state.use_params.insert("Deleted");
-                    assert_eq!(id_param["required"].as_bool(), Some(true));
-                    assert_eq!(id_param["style"].as_str(), Some("simple"));
+                    assert!(id_param.parameter_data_ref().required);
+                    assert!(matches!(id_param, Parameter::Path { style: PathStyle::Simple, .. }));
 
                     let mut out = String::new();
                     out.push('\n');
