@@ -1,23 +1,20 @@
 use std::collections::BTreeMap;
 
 pub fn id_renames() -> BTreeMap<&'static str, &'static str> {
-    [
+    BTreeMap::from([
         ("fee_refund", "application_fee_refund"),
         ("invoiceitem", "invoice_item"),
         ("line_item", "invoice_line_item"),
         ("source_transaction", "charge"),
         ("item", "checkout_session_item"),
-    ]
-    .iter()
-    .copied()
-    .collect()
+    ])
 }
 
 pub type ObjectMap = BTreeMap<&'static str, &'static str>;
 
 #[rustfmt::skip]
 pub fn object_mappings() -> ObjectMap {
-    [
+    BTreeMap::from([
         // Config for object types
         ("account_business_profile", "business_profile"),
         ("account_capabilities_card_issuing", "capability_status"),
@@ -179,10 +176,7 @@ pub fn object_mappings() -> ObjectMap {
         ("webhook_endpoint_api_version", "api_version"),
         ("create_webhook_endpoint_enabled_events", "event_filter"),
         ("update_webhook_endpoint_enabled_events", "event_filter"),
-    ]
-    .iter()
-    .copied()
-    .collect()
+    ])
 }
 
 pub type FieldMap = BTreeMap<FieldSpec, ImportSpec>;
@@ -197,7 +191,7 @@ pub type ImportSpec = (
 
 #[rustfmt::skip]
 pub fn field_mappings() -> FieldMap {
-    [
+    BTreeMap::from([
         // Config for object types
         (("account", "type"), ("AccountType", "Option<AccountType>")),
         (("balance_transaction", "status"), ("BalanceTransactionStatus", "BalanceTransactionStatus")),
@@ -546,8 +540,5 @@ pub fn field_mappings() -> FieldMap {
         ),
         (("transfer_schedule_params", "delay_days"), ("DelayDays", "Option<DelayDays>")),
         (("create_webhook_endpoint", "api_version"), ("ApiVersion", "Option<ApiVersion>")),
-    ]
-    .iter()
-    .copied()
-    .collect()
+    ])
 }
