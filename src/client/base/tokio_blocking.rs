@@ -10,15 +10,17 @@ use crate::error::StripeError;
 /// The delay after which the blocking `Client` will assume the request has failed.
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
 
-pub type Response<T> = Result<T, StripeError>;
+// this lifetime param is purely so that we match the
+// async clients, and does nothing.
+pub type Response<'a, T> = Result<T, StripeError>;
 
 #[inline(always)]
-pub(crate) fn ok<T>(ok: T) -> Response<T> {
+pub(crate) fn ok<'a, T: 'a>(ok: T) -> Response<'a, T> {
     Ok(ok)
 }
 
 #[inline(always)]
-pub(crate) fn err<T>(err: crate::StripeError) -> Response<T> {
+pub(crate) fn err<'a, T: 'a>(err: crate::StripeError) -> Response<'a, T> {
     Err(err)
 }
 
@@ -43,11 +45,11 @@ impl TokioBlockingClient {
         TokioBlockingClient { inner, runtime: Arc::new(runtime) }
     }
 
-    pub fn execute<T: DeserializeOwned + Send + 'static>(
-        &self,
+    pub fn execute<'a, T: DeserializeOwned + Send + 'a>(
+        &'a self,
         request: Request,
-        strategy: &RequestStrategy,
-    ) -> Response<T> {
+        strategy: &'a RequestStrategy,
+    ) -> Response<'a, T> {
         let future = self.inner.execute(request, strategy);
         match self.runtime.block_on(async {
             // N.B. The `tokio::time::timeout` must be called from within a running async

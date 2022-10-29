@@ -239,12 +239,15 @@ where
         let mut data = Vec::with_capacity(self.page.total_count.unwrap_or(0) as usize);
         let mut paginator = self;
         loop {
+            data.extend(paginator.page.data.into_iter());
             if !paginator.page.has_more {
-                data.extend(paginator.page.data.into_iter());
                 break;
             }
+
+            // dumb hack
+            paginator.page.data = vec![data.last().expect("we just set this").clone()];
             let next_paginator = paginator.next(client)?;
-            data.extend(paginator.page.data.into_iter());
+
             paginator = next_paginator
         }
         Ok(data)
