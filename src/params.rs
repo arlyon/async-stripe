@@ -180,7 +180,7 @@ pub trait Paginable {
 }
 
 #[derive(Debug)]
-pub struct ListPaginator<'a, T, P> {
+pub struct ListPaginator<T, P> {
     pub page: List<T>,
     pub params: P,
 }
@@ -215,14 +215,20 @@ impl<T: Clone> Clone for List<T> {
 
 impl<T> List<T> {
     pub fn paginate<P>(self, params: P) -> ListPaginator<T, P> {
-        ListPaginator { page: self, params }
+        ListPaginator::new(self, params)
     }
 }
 
-impl<'a, T, P> ListPaginator<'a, T, P>
+impl<T, P> ListPaginator<T, P> {
+    pub fn new(page: List<T>, params: P) -> Self {
+        ListPaginator { page, params }
+    }
+}
+
+impl<'a, T, P> ListPaginator<T, P>
 where
-    T: 'static + Paginate + DeserializeOwned + Send + Sync + Clone + std::fmt::Debug,
-    P: Paginable<O = T> + 'static + Clone + Serialize + Send + std::fmt::Debug,
+    T: 'a + Paginate + DeserializeOwned + Send + Clone,
+    P: 'a + Paginable<O = T> + Serialize + Send + Clone,
 {
     /// Repeatedly queries Stripe for more data until all elements in list are fetched, using
     /// Stripe's default page size.
@@ -275,19 +281,19 @@ where
     #[cfg(all(feature = "async", feature = "stream"))]
     pub fn stream(
         mut self,
-        client: &Client,
-    ) -> impl futures_util::Stream<Item = Result<T, StripeError>> + Unpin {
+        client: &'a Client,
+    ) -> impl futures_util::Stream<Item = Result<T, StripeError>> + Unpin + 'a {
         // We are going to be popping items off the end of the list, so we need to reverse it.
         self.page.data.reverse();
 
-        Box::pin(futures_util::stream::unfold(Some((self, client.clone())), Self::unfold_stream))
+        Box::pin(futures_util::stream::unfold(Some((self, client)), Self::unfold_stream))
     }
 
     /// unfold a single item from the stream
     #[cfg(all(feature = "async", feature = "stream"))]
     async fn unfold_stream(
-        state: Option<(Self, Client)>,
-    ) -> Option<(Result<T, StripeError>, Option<(Self, Client)>)> {
+        state: Option<(Self, &'a Client)>,
+    ) -> Option<(Result<T, StripeError>, Option<(ListPaginator<T, P>, &'a Client)>)> {
         let (mut paginator, client) = state?; // If none, we sent the last item in the last iteration
 
         if paginator.page.data.len() > 1 {
@@ -299,20 +305,23 @@ where
             return Some((Ok(paginator.page.data.pop()?), None)); // Final value of the stream, no errors
         }
 
-        match paginator.next(&client).await {
+        let data = paginator.page.data.last().expect("there is one more item").clone();
+
+        match paginator.next(client).await {
             Ok(mut next_paginator) => {
-                let data = paginator.page.data.pop()?;
                 next_paginator.page.data.reverse();
 
                 // Yield last value of thimuts page, the next page (and client) becomes the state
-                Some((Ok(data), Some((next_paginator, client))))
+                Some((Ok(data), Some((next_paginator, &client))))
             }
             Err(e) => Some((Err(e), None)), // We ran into an error. The last value of the stream will be the error.
         }
     }
 
-    /// Fetch an additional page of data from stripe.
-    pub fn next(&'a self, client: &'a Client) -> Response<'a, Self> {
+    /// Fetch an additional page of data from stripe,
+    /// using the id of the last item in the current page
+    /// as the cursor
+    pub fn next(self, client: &'a Client) -> Response<'a, Self> {
         if let Some(last) = self.page.data.last() {
             if self.page.url.starts_with("/v1/") {
                 let path = self.page.url.trim_start_matches("/v1/").to_string(); // the url we get back is prefixed
@@ -331,24 +340,24 @@ where
                 err(StripeError::UnsupportedVersion)
             }
         } else {
-            ok(ListPaginator {
-                page: List {
+            ok(ListPaginator::new(
+                List {
                     data: Vec::new(),
                     has_more: false,
                     total_count: self.page.total_count,
                     url: self.page.url.clone(),
                 },
-                params: self.params.clone(),
-            })
+                self.params.clone(),
+            ))
         }
     }
 
     /// Pin a new future which maps the result inside the page future into
     /// a ListPaginator
     #[cfg(feature = "async")]
-    fn create_paginator(page: Response<'a, List<T>>, params: P) -> Response<'a, Self> {
+    fn create_paginator(page_fut: Response<'a, List<T>>, params: P) -> Response<'a, Self> {
         use futures_util::FutureExt;
-        Box::pin(page.map(|page| page.map(|page| ListPaginator { page, params })))
+        Box::pin(page_fut.map(|page| page.map(|page| ListPaginator::new(page, params))))
     }
 
     #[cfg(feature = "blocking")]
@@ -582,7 +591,6 @@ mod tests {
 
         let stream = res.stream(&client).collect::<Vec<_>>().await;
 
-        println!("{:#?}", stream);
         assert_eq!(stream.len(), 2);
 
         first_item.assert_hits_async(1).await;
