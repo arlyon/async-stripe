@@ -114,6 +114,7 @@ httpmock = "0.6.6"
 tokio = { version = "1.24.1", features = ["rt", "macros"] }
 axum = "0.4.8"
 actix-web = "4.2.1"
+tokio-test = "0.4.2"
 
 [[example]]
 name = "checkout"
