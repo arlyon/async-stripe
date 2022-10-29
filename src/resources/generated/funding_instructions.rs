@@ -2,14 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::params::{Object};
-use crate::resources::{Currency};
 use serde::{Deserialize, Serialize};
+
+use crate::params::Object;
+use crate::resources::Currency;
 
 /// The resource representing a Stripe "CustomerBalanceFundingInstructionsCustomerBalanceFundingInstructions".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructions {
-
     pub bank_transfer: FundingInstructionsBankTransfer,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -34,7 +34,6 @@ impl Object for FundingInstructions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransfer {
-
     /// The country of the bank account to fund.
     pub country: String,
 
@@ -48,7 +47,6 @@ pub struct FundingInstructionsBankTransfer {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferFinancialAddress {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub iban: Option<FundingInstructionsBankTransferIbanRecord>,
 
@@ -60,7 +58,8 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
 
     /// The payment networks supported by this FinancialAddress.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub supported_networks: Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
+    pub supported_networks:
+        Option<Vec<FundingInstructionsBankTransferFinancialAddressSupportedNetworks>>,
 
     /// The type of financial address.
     #[serde(rename = "type")]
@@ -72,7 +71,6 @@ pub struct FundingInstructionsBankTransferFinancialAddress {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferIbanRecord {
-
     /// The name of the person or business that owns the bank account.
     pub account_holder_name: String,
 
@@ -88,7 +86,6 @@ pub struct FundingInstructionsBankTransferIbanRecord {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferSortCodeRecord {
-
     /// The name of the person or business that owns the bank account.
     pub account_holder_name: String,
 
@@ -101,7 +98,6 @@ pub struct FundingInstructionsBankTransferSortCodeRecord {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferSpeiRecord {
-
     /// The three-digit bank code.
     pub bank_code: String,
 
@@ -114,7 +110,6 @@ pub struct FundingInstructionsBankTransferSpeiRecord {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FundingInstructionsBankTransferZenginRecord {
-
     /// The account holder name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_name: Option<String>,

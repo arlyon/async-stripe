@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{ReportingReportRunId};
+use serde::{Deserialize, Serialize};
+
+use crate::ids::ReportingReportRunId;
 use crate::params::{Object, Timestamp};
 use crate::resources::{Currency, File};
-use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "reporting_report_run".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -61,7 +62,6 @@ impl Object for ReportingReportRun {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FinancialReportingFinanceReportRunRunParameters {
-
     /// The set of output columns requested for inclusion in the report run.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub columns: Option<Vec<String>>,

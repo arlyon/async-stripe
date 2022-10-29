@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::client::{Client, Response};
-use crate::ids::{ExchangeRateId};
-use crate::params::{Expand, List, Object, Paginable};
 use serde::{Deserialize, Serialize};
+
+use crate::client::{Client, Response};
+use crate::ids::ExchangeRateId;
+use crate::params::{Expand, List, Object, Paginable};
 
 /// The resource representing a Stripe "ExchangeRate".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -20,7 +21,6 @@ pub struct ExchangeRate {
 }
 
 impl ExchangeRate {
-
     /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
     ///
     /// Only shows the currencies for which Stripe supports.
@@ -29,7 +29,11 @@ impl ExchangeRate {
     }
 
     /// Retrieves the exchange rates from the given currency to every supported currency.
-    pub fn retrieve(client: &Client, id: &ExchangeRateId, expand: &[&str]) -> Response<ExchangeRate> {
+    pub fn retrieve(
+        client: &Client,
+        id: &ExchangeRateId,
+        expand: &[&str],
+    ) -> Response<ExchangeRate> {
         client.get_query(&format!("/exchange_rates/{}", id), &Expand { expand })
     }
 }
@@ -47,7 +51,6 @@ impl Object for ExchangeRate {
 /// The parameters for `ExchangeRate::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListExchangeRates<'a> {
-
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is the currency that defines your place in the list.
@@ -86,5 +89,6 @@ impl<'a> ListExchangeRates<'a> {
 impl Paginable for ListExchangeRates<'_> {
     type O = ExchangeRate;
     fn set_last(&mut self, item: Self::O) {
-                self.starting_after = Some(item.id());
-            }}
+        self.starting_after = Some(item.id());
+    }
+}

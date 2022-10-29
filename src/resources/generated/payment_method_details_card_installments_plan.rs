@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "payment_method_details_card_installments_plan".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardInstallmentsPlan {
-
     /// For `fixed_count` installment plans, this is the number of installment payments your customer will make to their credit card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub count: Option<u64>,

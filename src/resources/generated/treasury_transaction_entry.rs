@@ -2,10 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TreasuryTransactionEntryId};
-use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{Currency, TreasuryTransaction, TreasuryTransactionsResourceBalanceImpact, TreasuryTransactionsResourceFlowDetails};
 use serde::{Deserialize, Serialize};
+
+use crate::ids::TreasuryTransactionEntryId;
+use crate::params::{Expandable, Object, Timestamp};
+use crate::resources::{
+    Currency, TreasuryTransaction, TreasuryTransactionsResourceBalanceImpact,
+    TreasuryTransactionsResourceFlowDetails,
+};
 
 /// The resource representing a Stripe "TreasuryTransactionsResourceTransactionEntry".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -146,15 +150,21 @@ impl TreasuryTransactionEntryType {
             TreasuryTransactionEntryType::InboundTransfer => "inbound_transfer",
             TreasuryTransactionEntryType::InboundTransferReturn => "inbound_transfer_return",
             TreasuryTransactionEntryType::IssuingAuthorizationHold => "issuing_authorization_hold",
-            TreasuryTransactionEntryType::IssuingAuthorizationRelease => "issuing_authorization_release",
+            TreasuryTransactionEntryType::IssuingAuthorizationRelease => {
+                "issuing_authorization_release"
+            }
             TreasuryTransactionEntryType::Other => "other",
             TreasuryTransactionEntryType::OutboundPayment => "outbound_payment",
-            TreasuryTransactionEntryType::OutboundPaymentCancellation => "outbound_payment_cancellation",
+            TreasuryTransactionEntryType::OutboundPaymentCancellation => {
+                "outbound_payment_cancellation"
+            }
             TreasuryTransactionEntryType::OutboundPaymentFailure => "outbound_payment_failure",
             TreasuryTransactionEntryType::OutboundPaymentPosting => "outbound_payment_posting",
             TreasuryTransactionEntryType::OutboundPaymentReturn => "outbound_payment_return",
             TreasuryTransactionEntryType::OutboundTransfer => "outbound_transfer",
-            TreasuryTransactionEntryType::OutboundTransferCancellation => "outbound_transfer_cancellation",
+            TreasuryTransactionEntryType::OutboundTransferCancellation => {
+                "outbound_transfer_cancellation"
+            }
             TreasuryTransactionEntryType::OutboundTransferFailure => "outbound_transfer_failure",
             TreasuryTransactionEntryType::OutboundTransferPosting => "outbound_transfer_posting",
             TreasuryTransactionEntryType::OutboundTransferReturn => "outbound_transfer_return",

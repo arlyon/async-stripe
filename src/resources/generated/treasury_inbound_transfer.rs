@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TreasuryInboundTransferId};
+use serde::{Deserialize, Serialize};
+
+use crate::ids::TreasuryInboundTransferId;
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Currency, TreasurySharedResourceBillingDetails, TreasuryTransaction};
-use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryInboundTransfersResourceInboundTransfer".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -81,7 +82,8 @@ pub struct TreasuryInboundTransfer {
     /// The status changes to `failed` if the transfer fails.
     pub status: TreasuryInboundTransferStatus,
 
-    pub status_transitions: TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitions,
+    pub status_transitions:
+        TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitions,
 
     /// The Transaction associated with this object.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -100,7 +102,6 @@ impl Object for TreasuryInboundTransfer {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InboundTransfers {
-
     pub billing_details: TreasurySharedResourceBillingDetails,
 
     /// The type of the payment method used in the InboundTransfer.
@@ -113,10 +114,10 @@ pub struct InboundTransfers {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InboundTransfersPaymentMethodDetailsUsBankAccount {
-
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub account_holder_type: Option<InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType>,
+    pub account_holder_type:
+        Option<InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType>,
 
     /// Account type: checkings or savings.
     ///
@@ -148,14 +149,12 @@ pub struct InboundTransfersPaymentMethodDetailsUsBankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryInboundTransfersResourceFailureDetails {
-
     /// Reason for the failure.
     pub code: TreasuryInboundTransfersResourceFailureDetailsCode,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryInboundTransfersResourceInboundTransferResourceLinkedFlows {
-
     /// If funds for this flow were returned after the flow went to the `succeeded` state, this field contains a reference to the ReceivedDebit return.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub received_debit: Option<String>,
@@ -163,7 +162,6 @@ pub struct TreasuryInboundTransfersResourceInboundTransferResourceLinkedFlows {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitions {
-
     /// Timestamp describing when an InboundTransfer changed status to `canceled`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<Timestamp>,
@@ -188,8 +186,12 @@ pub enum InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType {
 impl InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType {
     pub fn as_str(self) -> &'static str {
         match self {
-            InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType::Company => "company",
-            InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType::Individual => "individual",
+            InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType::Company => {
+                "company"
+            }
+            InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType::Individual => {
+                "individual"
+            }
         }
     }
 }
@@ -371,15 +373,33 @@ impl TreasuryInboundTransfersResourceFailureDetailsCode {
         match self {
             TreasuryInboundTransfersResourceFailureDetailsCode::AccountClosed => "account_closed",
             TreasuryInboundTransfersResourceFailureDetailsCode::AccountFrozen => "account_frozen",
-            TreasuryInboundTransfersResourceFailureDetailsCode::BankAccountRestricted => "bank_account_restricted",
-            TreasuryInboundTransfersResourceFailureDetailsCode::BankOwnershipChanged => "bank_ownership_changed",
-            TreasuryInboundTransfersResourceFailureDetailsCode::DebitNotAuthorized => "debit_not_authorized",
-            TreasuryInboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderAddress => "incorrect_account_holder_address",
-            TreasuryInboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderName => "incorrect_account_holder_name",
-            TreasuryInboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderTaxId => "incorrect_account_holder_tax_id",
-            TreasuryInboundTransfersResourceFailureDetailsCode::InsufficientFunds => "insufficient_funds",
-            TreasuryInboundTransfersResourceFailureDetailsCode::InvalidAccountNumber => "invalid_account_number",
-            TreasuryInboundTransfersResourceFailureDetailsCode::InvalidCurrency => "invalid_currency",
+            TreasuryInboundTransfersResourceFailureDetailsCode::BankAccountRestricted => {
+                "bank_account_restricted"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::BankOwnershipChanged => {
+                "bank_ownership_changed"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::DebitNotAuthorized => {
+                "debit_not_authorized"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderAddress => {
+                "incorrect_account_holder_address"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderName => {
+                "incorrect_account_holder_name"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::IncorrectAccountHolderTaxId => {
+                "incorrect_account_holder_tax_id"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::InsufficientFunds => {
+                "insufficient_funds"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::InvalidAccountNumber => {
+                "invalid_account_number"
+            }
+            TreasuryInboundTransfersResourceFailureDetailsCode::InvalidCurrency => {
+                "invalid_currency"
+            }
             TreasuryInboundTransfersResourceFailureDetailsCode::NoAccount => "no_account",
             TreasuryInboundTransfersResourceFailureDetailsCode::Other => "other",
         }

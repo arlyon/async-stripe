@@ -2,14 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::params::{Object};
-use crate::resources::{TreasuryFinancialAccountsResourceToggleSettings};
 use serde::{Deserialize, Serialize};
+
+use crate::params::Object;
+use crate::resources::TreasuryFinancialAccountsResourceToggleSettings;
 
 /// The resource representing a Stripe "TreasuryFinancialAccountsResourceFinancialAccountFeatures".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountFeatures {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_issuing: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 
@@ -42,21 +42,18 @@ impl Object for TreasuryFinancialAccountFeatures {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceFinancialAddressesFeatures {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aba: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceInboundTransfers {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceOutboundPayments {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 
@@ -66,7 +63,6 @@ pub struct TreasuryFinancialAccountsResourceOutboundPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceOutboundTransfers {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<TreasuryFinancialAccountsResourceToggleSettings>,
 

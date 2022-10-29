@@ -2,11 +2,12 @@
 // This file was automatically generated.
 // ======================================
 
+use serde::{Deserialize, Serialize};
+
 use crate::client::{Client, Response};
-use crate::ids::{FinancialConnectionsSessionId};
+use crate::ids::FinancialConnectionsSessionId;
 use crate::params::{Expand, List, Object};
 use crate::resources::{BankConnectionsResourceAccountholder, FinancialConnectionsAccount};
-use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankConnectionsResourceLinkAccountSession".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -41,11 +42,13 @@ pub struct FinancialConnectionsSession {
 }
 
 impl FinancialConnectionsSession {
-
     /// To launch the Financial Connections authorization flow, create a `Session`.
     ///
     /// The session’s `client_secret` can be used to launch the flow using Stripe.js.
-    pub fn create(client: &Client, params: CreateFinancialConnectionsSession<'_>) -> Response<FinancialConnectionsSession> {
+    pub fn create(
+        client: &Client,
+        params: CreateFinancialConnectionsSession<'_>,
+    ) -> Response<FinancialConnectionsSession> {
         client.post_form("/financial_connections/sessions", &params)
     }
 }
@@ -62,7 +65,6 @@ impl Object for FinancialConnectionsSession {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BankConnectionsResourceLinkAccountSessionFilters {
-
     /// List of countries from which to filter accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub countries: Option<Vec<String>>,
@@ -71,7 +73,6 @@ pub struct BankConnectionsResourceLinkAccountSessionFilters {
 /// The parameters for `FinancialConnectionsSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateFinancialConnectionsSession<'a> {
-
     /// The account holder to link accounts for.
     pub account_holder: CreateFinancialConnectionsSessionAccountHolder,
 
@@ -96,7 +97,10 @@ pub struct CreateFinancialConnectionsSession<'a> {
 }
 
 impl<'a> CreateFinancialConnectionsSession<'a> {
-    pub fn new(account_holder: CreateFinancialConnectionsSessionAccountHolder, permissions: Vec<CreateFinancialConnectionsSessionPermissions>) -> Self {
+    pub fn new(
+        account_holder: CreateFinancialConnectionsSessionAccountHolder,
+        permissions: Vec<CreateFinancialConnectionsSessionPermissions>,
+    ) -> Self {
         CreateFinancialConnectionsSession {
             account_holder,
             expand: Default::default(),
@@ -109,7 +113,6 @@ impl<'a> CreateFinancialConnectionsSession<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateFinancialConnectionsSessionAccountHolder {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
 
@@ -122,7 +125,6 @@ pub struct CreateFinancialConnectionsSessionAccountHolder {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateFinancialConnectionsSessionFilters {
-
     pub countries: Vec<String>,
 }
 

@@ -2,10 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TreasuryReceivedCreditId};
-use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{Currency, Payout, TreasuryCreditReversal, TreasuryOutboundPayment, TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails, TreasuryTransaction};
 use serde::{Deserialize, Serialize};
+
+use crate::ids::TreasuryReceivedCreditId;
+use crate::params::{Expandable, Object, Timestamp};
+use crate::resources::{
+    Currency, Payout, TreasuryCreditReversal, TreasuryOutboundPayment,
+    TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+    TreasuryTransaction,
+};
 
 /// The resource representing a Stripe "TreasuryReceivedCreditsResourceReceivedCredit".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -45,7 +50,8 @@ pub struct TreasuryReceivedCredit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
-    pub initiating_payment_method_details: TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
+    pub initiating_payment_method_details:
+        TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
 
     pub linked_flows: TreasuryReceivedCreditsResourceLinkedFlows,
 
@@ -82,7 +88,6 @@ impl Object for TreasuryReceivedCredit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryReceivedCreditsResourceLinkedFlows {
-
     /// The CreditReversal created as a result of this ReceivedCredit being reversed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_reversal: Option<String>,
@@ -113,7 +118,6 @@ pub struct TreasuryReceivedCreditsResourceLinkedFlows {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryReceivedCreditsResourceReversalDetails {
-
     /// Time before which a ReceivedCredit can be reversed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deadline: Option<Timestamp>,
@@ -125,7 +129,6 @@ pub struct TreasuryReceivedCreditsResourceReversalDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryReceivedCreditsResourceSourceFlowsDetails {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_reversal: Option<TreasuryCreditReversal>,
 
@@ -301,9 +304,13 @@ pub enum TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
 impl TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::CreditReversal => "credit_reversal",
+            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::CreditReversal => {
+                "credit_reversal"
+            }
             TreasuryReceivedCreditsResourceSourceFlowsDetailsType::Other => "other",
-            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::OutboundPayment => "outbound_payment",
+            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::OutboundPayment => {
+                "outbound_payment"
+            }
             TreasuryReceivedCreditsResourceSourceFlowsDetailsType::Payout => "payout",
         }
     }

@@ -7,7 +7,6 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "TreasuryFinancialAccountsResourceToggleSettings".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceToggleSettings {
-
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
 
@@ -20,7 +19,6 @@ pub struct TreasuryFinancialAccountsResourceToggleSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
-
     /// Represents the reason why the status is `pending` or `restricted`.
     pub code: TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode,
 
@@ -30,7 +28,8 @@ pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
 
     /// The `platform_restrictions` that are restricting this Feature.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub restriction: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>,
+    pub restriction:
+        Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>,
 }
 
 /// An enum representing the possible values of an `TreasuryFinancialAccountsResourceToggleSettings`'s `status` field.
@@ -147,7 +146,9 @@ impl std::fmt::Display for TreasuryFinancialAccountsResourceTogglesSettingStatus
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
+impl std::default::Default
+    for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution
+{
     fn default() -> Self {
         Self::ContactStripe
     }
@@ -181,7 +182,9 @@ impl std::fmt::Display for TreasuryFinancialAccountsResourceTogglesSettingStatus
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
+impl std::default::Default
+    for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction
+{
     fn default() -> Self {
         Self::InboundFlows
     }

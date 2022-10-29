@@ -2,10 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{IdentityVerificationReportId};
-use crate::params::{Object, Timestamp};
-use crate::resources::{Address};
 use serde::{Deserialize, Serialize};
+
+use crate::ids::IdentityVerificationReportId;
+use crate::params::{Object, Timestamp};
+use crate::resources::Address;
 
 /// The resource representing a Stripe "GelatoVerificationReport".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -53,7 +54,6 @@ impl Object for IdentityVerificationReport {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoDocumentReport {
-
     /// Address as it appears in the document.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -107,7 +107,6 @@ pub struct GelatoDocumentReport {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoDataDocumentReportDateOfBirth {
-
     /// Numerical day between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub day: Option<i64>,
@@ -123,7 +122,6 @@ pub struct GelatoDataDocumentReportDateOfBirth {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoDataDocumentReportExpirationDate {
-
     /// Numerical day between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub day: Option<i64>,
@@ -139,7 +137,6 @@ pub struct GelatoDataDocumentReportExpirationDate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoDataDocumentReportIssuedDate {
-
     /// Numerical day between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub day: Option<i64>,
@@ -155,7 +152,6 @@ pub struct GelatoDataDocumentReportIssuedDate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoDocumentReportError {
-
     /// A short machine-readable string giving the reason for the verification failure.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<GelatoDocumentReportErrorCode>,
@@ -169,7 +165,6 @@ pub struct GelatoDocumentReportError {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoIdNumberReport {
-
     /// Date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<GelatoDataIdNumberReportDate>,
@@ -202,7 +197,6 @@ pub struct GelatoIdNumberReport {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoDataIdNumberReportDate {
-
     /// Numerical day between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub day: Option<i64>,
@@ -218,7 +212,6 @@ pub struct GelatoDataIdNumberReportDate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoIdNumberReportError {
-
     /// A short machine-readable string giving the reason for the verification failure.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<GelatoIdNumberReportErrorCode>,
@@ -232,7 +225,6 @@ pub struct GelatoIdNumberReportError {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSelfieReport {
-
     /// ID of the [File](https://stripe.com/docs/api/files) holding the image of the identity document used in this check.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<String>,
@@ -253,7 +245,6 @@ pub struct GelatoSelfieReport {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSelfieReportError {
-
     /// A short machine-readable string giving the reason for the verification failure.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<GelatoSelfieReportErrorCode>,
@@ -267,7 +258,6 @@ pub struct GelatoSelfieReportError {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoVerificationReportOptions {
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<GelatoReportDocumentOptions>,
 
@@ -277,7 +267,6 @@ pub struct GelatoVerificationReportOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoReportDocumentOptions {
-
     /// Array of strings of allowed identity document types.
     ///
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
@@ -300,8 +289,7 @@ pub struct GelatoReportDocumentOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct GelatoReportIdNumberOptions {
-}
+pub struct GelatoReportIdNumberOptions {}
 
 /// An enum representing the possible values of an `GelatoDocumentReportError`'s `code` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
@@ -316,7 +304,9 @@ impl GelatoDocumentReportErrorCode {
     pub fn as_str(self) -> &'static str {
         match self {
             GelatoDocumentReportErrorCode::DocumentExpired => "document_expired",
-            GelatoDocumentReportErrorCode::DocumentTypeNotSupported => "document_type_not_supported",
+            GelatoDocumentReportErrorCode::DocumentTypeNotSupported => {
+                "document_type_not_supported"
+            }
             GelatoDocumentReportErrorCode::DocumentUnverifiedOther => "document_unverified_other",
         }
     }
@@ -421,7 +411,9 @@ pub enum GelatoIdNumberReportErrorCode {
 impl GelatoIdNumberReportErrorCode {
     pub fn as_str(self) -> &'static str {
         match self {
-            GelatoIdNumberReportErrorCode::IdNumberInsufficientDocumentData => "id_number_insufficient_document_data",
+            GelatoIdNumberReportErrorCode::IdNumberInsufficientDocumentData => {
+                "id_number_insufficient_document_data"
+            }
             GelatoIdNumberReportErrorCode::IdNumberMismatch => "id_number_mismatch",
             GelatoIdNumberReportErrorCode::IdNumberUnverifiedOther => "id_number_unverified_other",
         }
@@ -564,7 +556,9 @@ pub enum GelatoSelfieReportErrorCode {
 impl GelatoSelfieReportErrorCode {
     pub fn as_str(self) -> &'static str {
         match self {
-            GelatoSelfieReportErrorCode::SelfieDocumentMissingPhoto => "selfie_document_missing_photo",
+            GelatoSelfieReportErrorCode::SelfieDocumentMissingPhoto => {
+                "selfie_document_missing_photo"
+            }
             GelatoSelfieReportErrorCode::SelfieFaceMismatch => "selfie_face_mismatch",
             GelatoSelfieReportErrorCode::SelfieManipulated => "selfie_manipulated",
             GelatoSelfieReportErrorCode::SelfieUnverifiedOther => "selfie_unverified_other",
