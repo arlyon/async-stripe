@@ -36,6 +36,29 @@
 #![warn(clippy::unwrap_used, clippy::missing_errors_doc, clippy::missing_panics_doc)]
 #![forbid(unsafe_code)]
 
+// Give a clear error when a required runtime error is not present. Would be better for this
+// to be a fatal error preventing emission of further compile errors relating to lack of
+// a runtime feature, but that does not seem currently possible:
+// https://github.com/rust-lang/rust/issues/68838
+
+#[cfg(not(any(
+    feature = "runtime-tokio-hyper",
+    feature = "runtime-tokio-hyper-rustls",
+    feature = "runtime-blocking",
+    feature = "runtime-blocking-rustls",
+    feature = "runtime-async-std-surf",
+)))]
+compile_error!(
+    r"one of the following runtime features must be enabled:
+    [
+        'runtime-tokio-hyper', 
+        'runtime-tokio-hyper-rustls',
+        'runtime-blocking', 
+        'runtime-blocking-rustls', 
+        'runtime-async-std-surf'
+    ]"
+);
+
 mod client;
 mod error;
 mod ids;
