@@ -36,14 +36,14 @@ pub async fn stripe_webhooks(stripe_signature: StripeSignature<'_>, payload: Pay
             EventType::CheckoutSessionCompleted => {
                 if let EventObject::CheckoutSession(session) = event.data.object {
                     match checkout_session_completed(session) {
-                        Ok(_) => return Status::Accepted,
-                        Err(_) => return Status::BadRequest,
+                        Ok(_) => Status::Accepted,
+                        Err(_) => Status::BadRequest,
                     }
                 } else {
-                    return Status::BadRequest;
+                    Status::BadRequest
                 }
             }
-            _ => return Status::Accepted,
+            _ => Status::Accepted,
         }
     } else {
         Status::BadRequest
@@ -76,7 +76,7 @@ impl<'r> FromData<'r> for Payload {
         use rocket::outcome::Outcome::*;
         use Error::*;
 
-        let limit = req.limits().get("form").unwrap_or(1_000_000.bytes());
+        let limit = req.limits().get("form").unwrap_or_else(|| 1_000_000.bytes());
 
         let contents = match data.open(limit).into_string().await {
             Ok(string) if string.is_complete() => string.into_inner(),
@@ -99,7 +99,7 @@ impl<'r> FromRequest<'r> for StripeSignature<'r> {
         match req.headers().get_one("Stripe-Signature") {
             None => Outcome::Failure((Status::BadRequest, "No signature provided")),
             Some(signature) => Outcome::Success(StripeSignature {
-                signature: signature,
+                signature,
             }),
         }
     }
