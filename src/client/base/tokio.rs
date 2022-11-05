@@ -273,7 +273,10 @@ mod tests {
 
         #[derive(Debug, Deserialize)]
         struct DataType {
+            // Allowing dead code since used for deserialization
+            #[allow(dead_code)]
             id: String,
+            #[allow(dead_code)]
             name: String,
         }
 

@@ -557,7 +557,6 @@ impl Webhook {
 struct Signature<'r> {
     t: i64,
     v1: &'r str,
-    v0: Option<&'r str>,
 }
 
 #[cfg(feature = "webhook-events")]
@@ -579,8 +578,7 @@ impl<'r> Signature<'r> {
             .collect();
         let t = headers.get("t").ok_or(WebhookError::BadSignature)?;
         let v1 = headers.get("v1").ok_or(WebhookError::BadSignature)?;
-        let v0 = headers.get("v0").map(|r| *r);
-        Ok(Signature { t: t.parse::<i64>().map_err(WebhookError::BadHeader)?, v1, v0 })
+        Ok(Signature { t: t.parse::<i64>().map_err(WebhookError::BadHeader)?, v1 })
     }
 }
 
@@ -599,7 +597,6 @@ mod tests {
             signature.v1,
             "5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd"
         );
-        assert_eq!(signature.v0, None);
 
         let raw_signature_with_test_mode = "t=1492774577,v1=5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd,v0=6ffbb59b2300aae63f272406069a9788598b792a944a07aba816edb039989a39";
         let signature = Signature::parse(raw_signature_with_test_mode).unwrap();
@@ -607,10 +604,6 @@ mod tests {
         assert_eq!(
             signature.v1,
             "5257a869e7ecebeda32affa62cdca3fa51cad7e77a0e56ff536d0ce8e108d8bd"
-        );
-        assert_eq!(
-            signature.v0,
-            Some("6ffbb59b2300aae63f272406069a9788598b792a944a07aba816edb039989a39")
         );
     }
 

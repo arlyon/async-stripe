@@ -1,5 +1,3 @@
-use chrono::Utc;
-
 mod mock;
 
 #[test]
@@ -13,8 +11,11 @@ fn can_create_usage_record() {
             stripe::CreateUsageRecord {
                 quantity: 42,
                 action: Some(stripe::UsageRecordAction::Increment),
-                timestamp: Some(Utc::now().timestamp()),
+                timestamp: Some(chrono::Utc::now().timestamp()),
             },
-        );
+        )
+        .unwrap();
+        assert_eq!(usage_record.quantity, 42);
+        assert_eq!(usage_record.subscription_item, subscription_item_id.as_str());
     });
 }
