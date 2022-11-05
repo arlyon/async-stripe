@@ -1,7 +1,9 @@
 use std::borrow::Borrow;
 use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::fmt::Write as _;
 
 use heck::{CamelCase, SnakeCase};
+use indoc::writedoc;
 use openapiv3::{
     AdditionalProperties, Parameter, ParameterSchemaOrContent, PathStyle, ReferenceOr, Schema,
     SchemaKind, Type,
@@ -687,13 +689,18 @@ pub fn gen_unions(out: &mut String, unions: &BTreeMap<String, InferredUnion>, me
             .map(|s| gen_variant_name(s, meta))
             .next()
         {
-            out.push_str("impl std::default::Default for ");
-            out.push_str(&union_name.to_camel_case());
-            out.push_str(" {\n");
-            out.push_str("    fn default() -> Self {\n");
-            out.push_str(&format!("        Self::{}(Default::default())\n", first));
-            out.push_str("    }\n");
-            out.push_str("}\n");
+            let struct_name = union_name.to_camel_case();
+            writedoc!(
+                out,
+                r"
+                impl std::default::Default for {struct_name} {{
+                    fn default() -> Self {{
+                        Self::{first}(Default::default())
+                    }}
+                }}
+                "
+            )
+            .unwrap();
         }
     }
 }
@@ -766,22 +773,23 @@ pub fn gen_enums(out: &mut String, enums: &BTreeMap<String, InferredEnum>, meta:
         out.push_str("    }\n");
         out.push_str("}\n");
         out.push('\n');
-        out.push_str("impl AsRef<str> for ");
-        out.push_str(enum_name);
-        out.push_str(" {\n");
-        out.push_str("    fn as_ref(&self) -> &str {\n");
-        out.push_str("        self.as_str()\n");
-        out.push_str("    }\n");
-        out.push_str("}\n");
-        out.push('\n');
-        out.push_str("impl std::fmt::Display for ");
-        out.push_str(enum_name);
-        out.push_str(" {\n");
-        out.push_str("    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {\n");
-        out.push_str("        self.as_str().fmt(f)\n");
-        out.push_str("    }\n");
-        out.push_str("}\n");
-
+        writedoc!(
+            out,
+            r"
+        impl AsRef<str> for {enum_name} {{
+            fn as_ref(&self) -> &str {{
+                self.as_str()
+            }}
+        }}
+        
+        impl std::fmt::Display for {enum_name} {{
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {{
+                self.as_str().fmt(f)
+            }}
+        }}
+        "
+        )
+        .unwrap();
         if let Some(first) = enum_
             .options
             .iter()
@@ -1350,15 +1358,13 @@ pub fn gen_impl_requests(
                 let mut out = String::new();
                 out.push('\n');
                 print_doc_comment(&mut out, doc_comment, 1);
-                out.push_str("    pub fn list(client: &Client, params: &");
-                out.push_str(&params_name);
-                out.push_str("<'_>) -> Response<List<");
-                out.push_str(&rust_struct);
-                out.push_str(">> {\n");
-                out.push_str("        client.get_query(\"/");
-                out.push_str(&segments.join("/"));
-                out.push_str("\", &params)\n");
-                out.push_str("    }");
+
+                let query_path = segments.join("/");
+                writedoc!(&mut out, r#"
+                    pub fn list(client: &Client, params: &{params_name}<'_>) -> Response<List<{rust_struct}>> {{
+                       client.get_query("/{query_path}", &params)
+                    }}
+                "#).unwrap();
                 methods.insert(MethodTypes::List, out);
             } else if segments.len() == 2 && !methods.contains_key(&MethodTypes::Retrieve) {
                 let id_param = match get_id_param(&get_request.parameters) {
