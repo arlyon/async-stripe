@@ -625,9 +625,8 @@ mod tests {
     use std::fmt::{Debug, Display};
     use std::str::FromStr;
 
-    use http_types::convert::Deserialize;
     use serde::de::DeserializeOwned;
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
     use serde_json::json;
 
     use super::*;
