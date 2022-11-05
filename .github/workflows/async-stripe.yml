@@ -45,7 +45,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: make
-          args: openapi-install-no-fetch
+          args: openapi-install
       - name: ensure generated files unchanged
         uses: tj-actions/verify-changed-files@v11.1
         id: verify-changed-files
