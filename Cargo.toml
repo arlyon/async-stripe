@@ -116,7 +116,6 @@ time = {version = "0.3,<0.3.10", optional = true}
 [dev-dependencies]
 async-std = { version = "1.10.0", features = ["attributes"] }
 httpmock = "0.6.6"
-lazy_static = "1.4"
 tokio = { version = "1.2", features = ["rt", "macros"] }
 axum = "0.4.8"
 actix-web = "4.0.1"
