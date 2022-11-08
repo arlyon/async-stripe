@@ -74,11 +74,9 @@ impl Object for TerminalReader {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceReaderAction {
     /// Failure code, only set if status is `failed`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_code: Option<String>,
 
     /// Detailed failure message, only set if status is `failed`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_message: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -132,7 +130,6 @@ pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceSetReaderDisplayAction {
     /// Cart object to be displayed by the reader.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub cart: Option<TerminalReaderReaderResourceCart>,
 
     /// Type of information to be displayed by the reader.
@@ -153,7 +150,6 @@ pub struct TerminalReaderReaderResourceCart {
     /// Tax amount for the entire cart.
     ///
     /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<i64>,
 
     /// Total amount for the entire cart, including tax.

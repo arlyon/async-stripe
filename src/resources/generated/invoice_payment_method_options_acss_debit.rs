@@ -18,7 +18,6 @@ pub struct InvoicePaymentMethodOptionsAcssDebit {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicePaymentMethodOptionsAcssDebitMandateOptions {
     /// Transaction type of the mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type: Option<InvoicePaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
 }
 

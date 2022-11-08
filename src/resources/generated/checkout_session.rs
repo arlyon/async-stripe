@@ -22,25 +22,20 @@ pub struct CheckoutSession {
     pub id: CheckoutSessionId,
 
     /// When set, provides configuration for actions to take if this Checkout Session expires.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub after_expiration: Option<PaymentPagesCheckoutSessionAfterExpiration>,
 
     /// Enables user redeemable promotion codes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_promotion_codes: Option<bool>,
 
     /// Total of all items before discounts or taxes are applied.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_subtotal: Option<i64>,
 
     /// Total of all items after discounts and taxes are applied.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_total: Option<i64>,
 
     pub automatic_tax: PaymentPagesCheckoutSessionAutomaticTax,
 
     /// Describes whether Checkout should collect the customer's billing address.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_address_collection: Option<CheckoutSessionBillingAddressCollection>,
 
     /// The URL the customer will be directed to if they decide to cancel payment and return to your website.
@@ -49,15 +44,12 @@ pub struct CheckoutSession {
     /// A unique string to reference the Checkout Session.
     ///
     /// This can be a customer ID, a cart ID, or similar, and can be used to reconcile the Session with your internal systems.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub client_reference_id: Option<String>,
 
     /// Results of `consent_collection` for this session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub consent: Option<PaymentPagesCheckoutSessionConsent>,
 
     /// When set, provides configuration for the Checkout Session to gather active consent from customers.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub consent_collection: Option<PaymentPagesCheckoutSessionConsentCollection>,
 
     /// Time at which the object was created.
@@ -68,7 +60,6 @@ pub struct CheckoutSession {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
     /// The ID of the customer for this Session.
@@ -76,17 +67,14 @@ pub struct CheckoutSession {
     /// will create a new customer object based on information provided
     /// during the payment flow unless an existing customer was provided when
     /// the Session was created.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Expandable<Customer>>,
 
     /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_creation: Option<CheckoutSessionCustomerCreation>,
 
     /// The customer details including the customer's tax exempt status and the customer's tax IDs.
     ///
     /// Only the customer's email is present on Sessions in `setup` mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_details: Option<PaymentPagesCheckoutSessionCustomerDetails>,
 
     /// If provided, this value will be used when the Customer object is created.
@@ -95,7 +83,6 @@ pub struct CheckoutSession {
     /// on file.
     ///
     /// To access information about the customer once the payment flow is complete, use the `customer` attribute.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_email: Option<String>,
 
     /// The timestamp at which the Checkout Session will expire.
@@ -111,32 +98,26 @@ pub struct CheckoutSession {
     /// The IETF language tag of the locale Checkout is displayed in.
     ///
     /// If blank or `auto`, the browser's locale is used.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub locale: Option<CheckoutSessionLocale>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
     pub metadata: Metadata,
 
     /// The mode of the Checkout Session.
     pub mode: CheckoutSessionMode,
 
     /// The ID of the PaymentIntent for Checkout Sessions in `payment` mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<Expandable<PaymentIntent>>,
 
     /// The ID of the Payment Link that created this Session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_link: Option<Expandable<PaymentLink>>,
 
     /// Configure whether a Checkout Session should collect a payment method.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_collection: Option<CheckoutSessionPaymentMethodCollection>,
 
     /// Payment-method-specific configuration for the PaymentIntent or SetupIntent of this CheckoutSession.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<CheckoutSessionPaymentMethodOptions>,
 
     /// A list of the types of payment methods (e.g.
@@ -152,41 +133,33 @@ pub struct CheckoutSession {
     pub phone_number_collection: Option<PaymentPagesCheckoutSessionPhoneNumberCollection>,
 
     /// The ID of the original expired Checkout Session that triggered the recovery flow.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub recovered_from: Option<String>,
 
     /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_intent: Option<Expandable<SetupIntent>>,
 
     /// When set, provides configuration for Checkout to collect a shipping address from a customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<PaymentPagesCheckoutSessionShippingAddressCollection>,
 
     /// The details of the customer cost of shipping, including the customer chosen ShippingRate.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_cost: Option<PaymentPagesCheckoutSessionShippingCost>,
 
     /// Shipping information for this Checkout Session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_details: Option<Shipping>,
 
     /// The shipping rate options applied to this Session.
     pub shipping_options: Vec<PaymentPagesCheckoutSessionShippingOption>,
 
     /// The status of the Checkout Session, one of `open`, `complete`, or `expired`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<CheckoutSessionStatus>,
 
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button.
     ///
     /// `submit_type` can only be specified on Checkout Sessions in `payment` mode, but not Checkout Sessions in `subscription` or `setup` mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub submit_type: Option<CheckoutSessionSubmitType>,
 
     /// The ID of the subscription for Checkout Sessions in `subscription` mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<Expandable<Subscription>>,
 
     /// The URL the customer will be directed to after the payment or
@@ -197,7 +170,6 @@ pub struct CheckoutSession {
     pub tax_id_collection: Option<PaymentPagesCheckoutSessionTaxIdCollection>,
 
     /// Tax and discount details for the computed total amount.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub total_details: Option<PaymentPagesCheckoutSessionTotalDetails>,
 
     /// The URL to the Checkout Session.
@@ -205,7 +177,6 @@ pub struct CheckoutSession {
     /// Redirect customers to this URL to take them to Checkout.
     /// If you’re using [Custom Domains](https://stripe.com/docs/payments/checkout/custom-domains), the URL will use your subdomain.
     /// Otherwise, it’ll use `checkout.stripe.com.` This value is only present when the session is active.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
@@ -348,15 +319,12 @@ pub struct CheckoutAcssDebitMandateOptions {
     /// Description of the interval.
     ///
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
 
     /// Payment schedule for the mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_schedule: Option<CheckoutAcssDebitMandateOptionsPaymentSchedule>,
 
     /// Transaction type of the mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type: Option<CheckoutAcssDebitMandateOptionsTransactionType>,
 }
 
@@ -487,7 +455,6 @@ pub struct CheckoutCustomerBalancePaymentMethodOptions {
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub funding_type: Option<CheckoutCustomerBalancePaymentMethodOptionsFundingType>,
 
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -513,7 +480,6 @@ pub struct CheckoutCustomerBalanceBankTransferPaymentMethodOptions {
 
     /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
     #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType>,
 }
 
@@ -588,7 +554,6 @@ pub struct CheckoutKonbiniPaymentMethodOptions {
     /// The number of calendar days (between 1 and 60) after which Konbini payment instructions will expire.
     ///
     /// For example, if a PaymentIntent is confirmed with Konbini and `expires_after_days` set to 2 on Monday JST, the instructions will expire on Wednesday 23:59:59 JST.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
 
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -641,7 +606,6 @@ pub struct CheckoutPaynowPaymentMethodOptions {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CheckoutPixPaymentMethodOptions {
     /// The number of seconds after which Pix payment will expire.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
 }
 
@@ -688,7 +652,6 @@ pub struct CheckoutUsBankAccountPaymentMethodOptions {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionAfterExpiration {
     /// When set, configuration used to recover the Checkout Session on expiry.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub recovery: Option<PaymentPagesCheckoutSessionAfterExpirationRecovery>,
 }
 
@@ -706,11 +669,9 @@ pub struct PaymentPagesCheckoutSessionAfterExpirationRecovery {
     pub enabled: bool,
 
     /// The timestamp at which the recovery URL will expire.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<Timestamp>,
 
     /// URL that creates a new Checkout Session when clicked that is a copy of this expired Checkout Session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
@@ -720,7 +681,6 @@ pub struct PaymentPagesCheckoutSessionAutomaticTax {
     pub enabled: bool,
 
     /// The status of the most recent automated tax calculation for this session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<PaymentPagesCheckoutSessionAutomaticTaxStatus>,
 }
 
@@ -728,11 +688,9 @@ pub struct PaymentPagesCheckoutSessionAutomaticTax {
 pub struct PaymentPagesCheckoutSessionConsent {
     /// If `opt_in`, the customer consents to receiving promotional communications
     /// from the merchant about this Checkout Session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<PaymentPagesCheckoutSessionConsentPromotions>,
 
     /// If `accepted`, the customer in this Checkout Session has agreed to the merchant's terms of service.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service: Option<PaymentPagesCheckoutSessionConsentTermsOfService>,
 }
 
@@ -742,11 +700,9 @@ pub struct PaymentPagesCheckoutSessionConsentCollection {
     ///
     /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
     /// Only available to US merchants.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<PaymentPagesCheckoutSessionConsentCollectionPromotions>,
 
     /// If set to `required`, it requires customers to accept the terms of service before being able to pay.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service: Option<PaymentPagesCheckoutSessionConsentCollectionTermsOfService>,
 }
 
@@ -755,30 +711,24 @@ pub struct PaymentPagesCheckoutSessionCustomerDetails {
     /// The customer's address after a completed Checkout Session.
     ///
     /// Note: This property is populated only for sessions on or after March 30, 2022.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
     /// The email associated with the Customer, if one exists, on the Checkout Session after a completed Checkout Session or at time of session expiry.
     /// Otherwise, if the customer has consented to promotional content, this value is the most recent valid email provided by the customer on the Checkout form.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
     /// The customer's name after a completed Checkout Session.
     ///
     /// Note: This property is populated only for sessions on or after March 30, 2022.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
     /// The customer's phone number after a completed Checkout Session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 
     /// The customer’s tax exempt status after a completed Checkout Session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<PaymentPagesCheckoutSessionCustomerDetailsTaxExempt>,
 
     /// The customer’s tax IDs after a completed Checkout Session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_ids: Option<Vec<PaymentPagesCheckoutSessionTaxId>>,
 }
 
@@ -812,7 +762,6 @@ pub struct PaymentPagesCheckoutSessionShippingCost {
     pub amount_total: i64,
 
     /// The ID of the ShippingRate for this order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<Expandable<ShippingRate>>,
 
     /// The taxes applied to the shipping rate.
@@ -844,7 +793,6 @@ pub struct PaymentPagesCheckoutSessionTaxId {
     pub type_: PaymentPagesCheckoutSessionTaxIdType,
 
     /// The value of the tax ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
@@ -860,7 +808,6 @@ pub struct PaymentPagesCheckoutSessionTotalDetails {
     pub amount_discount: i64,
 
     /// This is the sum of all the shipping amounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_shipping: Option<i64>,
 
     /// This is the sum of all the tax amounts.
@@ -1053,6 +1000,12 @@ pub struct CreateCheckoutSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_options: Option<Vec<CreateCheckoutSessionShippingOptions>>,
 
+    /// [Deprecated] The shipping rate to apply to this Session.
+    ///
+    /// Only up to one may be specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_rates: Option<Vec<String>>,
+
     /// Describes the type of transaction being performed by Checkout in order to customize
     /// relevant text on the page, such as the submit button.
     ///
@@ -1105,6 +1058,7 @@ impl<'a> CreateCheckoutSession<'a> {
             setup_intent_data: Default::default(),
             shipping_address_collection: Default::default(),
             shipping_options: Default::default(),
+            shipping_rates: Default::default(),
             submit_type: Default::default(),
             subscription_data: Default::default(),
             success_url,
@@ -1179,329 +1133,593 @@ impl Paginable for ListCheckoutSessions<'_> {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAfterExpiration {
+    /// Configure a Checkout Session that can be used to recover an expired session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recovery: Option<CreateCheckoutSessionAfterExpirationRecovery>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAutomaticTax {
+    /// Set to true to enable automatic taxes.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionConsentCollection {
+    /// If set to `auto`, enables the collection of customer consent for promotional communications.
+    ///
+    /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
+    /// Only available to US merchants.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<CreateCheckoutSessionConsentCollectionPromotions>,
 
+    /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
+    /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service: Option<CreateCheckoutSessionConsentCollectionTermsOfService>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomerUpdate {
+    /// Describes whether Checkout saves the billing address onto `customer.address`.
+    /// To always collect a full billing address, use `billing_address_collection`.
+    ///
+    /// Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<CreateCheckoutSessionCustomerUpdateAddress>,
 
+    /// Describes whether Checkout saves the name onto `customer.name`.
+    ///
+    /// Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<CreateCheckoutSessionCustomerUpdateName>,
 
+    /// Describes whether Checkout saves shipping information onto `customer.shipping`.
+    /// To collect shipping information, use `shipping_address_collection`.
+    ///
+    /// Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<CreateCheckoutSessionCustomerUpdateShipping>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionDiscounts {
+    /// The ID of the coupon to apply to this Session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
+    /// The ID of a promotion code to apply to this Session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItems {
+    /// When set, provides configuration for this item’s quantity to be adjusted by the customer during Checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<CreateCheckoutSessionLineItemsAdjustableQuantity>,
 
+    /// [Deprecated] The amount to be collected per unit of the line item.
+    ///
+    /// If specified, must also pass `currency` and `name`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+
+    /// [Deprecated] Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    /// Required if `amount` is passed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<Currency>,
+
+    /// [Deprecated] The description for the line item, to be displayed on the Checkout page.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    /// The [tax rates](https://stripe.com/docs/api/tax_rates) that will be applied to this line item depending on the customer's billing/shipping address.
+    ///
+    /// We currently support the following countries: US, GB, AU, and all countries in the EU.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dynamic_tax_rates: Option<Vec<String>>,
 
+    /// [Deprecated] A list of image URLs representing this line item.
+    ///
+    /// Each image can be up to 5 MB in size.
+    /// If passing `price` or `price_data`, specify images on the associated product instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub images: Option<Vec<String>>,
+
+    /// [Deprecated] The name for the item to be displayed on the Checkout page.
+    ///
+    /// Required if `amount` is passed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// The ID of the [Price](https://stripe.com/docs/api/prices) or [Plan](https://stripe.com/docs/api/plans) object.
+    ///
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
 
+    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    ///
+    /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreateCheckoutSessionLineItemsPriceData>,
 
+    /// The quantity of the line item being purchased.
+    ///
+    /// Quantity should not be defined when `recurring.usage_type=metered`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
+    /// The [tax rates](https://stripe.com/docs/api/tax_rates) which apply to this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentData {
+    /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
+    ///
+    /// The amount of the application fee collected will be capped at the total payment amount.
+    /// For more information, see the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
 
+    /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreateCheckoutSessionPaymentIntentDataCaptureMethod>,
 
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// The Stripe account ID for which these funds are intended.
+    ///
+    /// For details, see the PaymentIntents [use case for connected accounts](/docs/payments/connected-accounts).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
 
+    /// Email address that the receipt for the resulting payment will be sent to.
+    ///
+    /// If `receipt_email` is specified for a payment in live mode, a receipt will be sent regardless of your [email settings](https://dashboard.stripe.com/account/emails).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub receipt_email: Option<String>,
 
+    /// Indicates that you intend to [make future payments](https://stripe.com/docs/payments/payment-intents#future-usage) with the payment
+    /// method collected by this Checkout Session.
+    ///
+    /// When setting this to `on_session`, Checkout will show a notice to the
+    /// customer that their payment details will be saved.
+    ///
+    /// When setting this to `off_session`, Checkout will show a notice to the
+    /// customer that their payment details will be saved and used for future
+    /// payments.
+    ///
+    /// If a Customer has been provided or Checkout creates a new Customer,
+    /// Checkout will attach the payment method to the Customer.
+    ///
+    /// If Checkout does not create a Customer, the payment method is not attached
+    /// to a Customer.
+    ///
+    /// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.  When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentIntentDataSetupFutureUsage>,
 
+    /// Shipping information for this payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<CreateCheckoutSessionPaymentIntentDataShipping>,
 
+    /// Extra information about the payment.
+    ///
+    /// This will appear on your customer's statement when this payment succeeds in creating a charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
+    /// Provides information about the charge that customers see on their statements.
+    ///
+    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that’s set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters for the concatenated descriptor.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix: Option<String>,
 
+    /// The parameters used to automatically create a Transfer when the payment succeeds.
+    /// For more information, see the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<CreateCheckoutSessionPaymentIntentDataTransferData>,
 
+    /// A string that identifies the resulting payment as part of a group.
+    ///
+    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptions {
+    /// contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebit>,
 
+    /// contains details about the Affirm payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub affirm: Option<CreateCheckoutSessionPaymentMethodOptionsAffirm>,
 
+    /// contains details about the Afterpay Clearpay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay>,
 
+    /// contains details about the Alipay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<CreateCheckoutSessionPaymentMethodOptionsAlipay>,
 
+    /// contains details about the AU Becs Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub au_becs_debit: Option<CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit>,
 
+    /// contains details about the Bacs Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bacs_debit: Option<CreateCheckoutSessionPaymentMethodOptionsBacsDebit>,
 
+    /// contains details about the Bancontact payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<CreateCheckoutSessionPaymentMethodOptionsBancontact>,
 
+    /// contains details about the Boleto payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreateCheckoutSessionPaymentMethodOptionsBoleto>,
 
+    /// contains details about the Card payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateCheckoutSessionPaymentMethodOptionsCard>,
 
+    /// contains details about the Customer Balance payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalance>,
 
+    /// contains details about the EPS payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps: Option<CreateCheckoutSessionPaymentMethodOptionsEps>,
 
+    /// contains details about the FPX payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fpx: Option<CreateCheckoutSessionPaymentMethodOptionsFpx>,
 
+    /// contains details about the Giropay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub giropay: Option<CreateCheckoutSessionPaymentMethodOptionsGiropay>,
 
+    /// contains details about the Grabpay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub grabpay: Option<CreateCheckoutSessionPaymentMethodOptionsGrabpay>,
 
+    /// contains details about the Ideal payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<CreateCheckoutSessionPaymentMethodOptionsIdeal>,
 
+    /// contains details about the Klarna payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<CreateCheckoutSessionPaymentMethodOptionsKlarna>,
 
+    /// contains details about the Konbini payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<CreateCheckoutSessionPaymentMethodOptionsKonbini>,
 
+    /// contains details about the OXXO payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<CreateCheckoutSessionPaymentMethodOptionsOxxo>,
 
+    /// contains details about the P24 payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<CreateCheckoutSessionPaymentMethodOptionsP24>,
 
+    /// contains details about the PayNow payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<CreateCheckoutSessionPaymentMethodOptionsPaynow>,
 
+    /// contains details about the Pix payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pix: Option<CreateCheckoutSessionPaymentMethodOptionsPix>,
 
+    /// contains details about the Sepa Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateCheckoutSessionPaymentMethodOptionsSepaDebit>,
 
+    /// contains details about the Sofort payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateCheckoutSessionPaymentMethodOptionsSofort>,
 
+    /// contains details about the Us Bank Account payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccount>,
 
+    /// contains details about the WeChat Pay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<CreateCheckoutSessionPaymentMethodOptionsWechatPay>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPhoneNumberCollection {
+    /// Set to `true` to enable phone number collection.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSetupIntentData {
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// The Stripe account for which the setup is intended.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingAddressCollection {
+    /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
+    /// shipping locations.
+    ///
+    /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
     pub allowed_countries: Vec<CreateCheckoutSessionShippingAddressCollectionAllowedCountries>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptions {
+    /// The ID of the Shipping Rate to use for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<String>,
 
+    /// Parameters to be passed to Shipping Rate creation for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate_data: Option<CreateCheckoutSessionShippingOptionsShippingRateData>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionData {
+    /// A non-negative decimal between 0 and 100, with at most two decimal places.
+    ///
+    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
+    /// To use an application fee percent, the request must be made on behalf of another account, using the `Stripe-Account` header or an OAuth key.
+    /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/subscriptions#collecting-fees-on-subscriptions).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
 
+    /// The ID of the coupon to apply to this subscription.
+    ///
+    /// A coupon applied to a subscription will only affect invoices created for that particular subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+
+    /// The tax rates that will apply to any subscription item that does not have
+    /// `tax_rates` set.
+    ///
+    /// Invoices created will have their `default_tax_rates` populated from the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<String>>,
 
+    /// The subscription's description, meant to be displayable to the customer.
+    /// Use this field to optionally store an explanation of the subscription
+    /// for rendering in Stripe hosted surfaces.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// This parameter is deprecated.
+    ///
+    /// Use the line_items parameter on the Session instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<CreateCheckoutSessionSubscriptionDataItems>>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// The account on behalf of which to charge, for each of the subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
 
+    /// If specified, the funds from the subscription's invoices will be transferred to the destination and the ID of the resulting transfers will be found on the resulting charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<CreateCheckoutSessionSubscriptionDataTransferData>,
 
+    /// Unix timestamp representing the end of the trial period the customer
+    /// will get before being charged for the first time.
+    ///
+    /// Has to be at least 48 hours in the future.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<Timestamp>,
 
+    /// Indicates if a plan’s `trial_period_days` should be applied to the subscription.
+    ///
+    /// Setting `trial_end` on `subscription_data` is preferred.
+    /// Defaults to `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_from_plan: Option<bool>,
+
+    /// Integer representing the number of trial period days before the
+    /// customer is charged for the first time.
+    ///
+    /// Has to be at least 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionTaxIdCollection {
+    /// Set to true to enable Tax ID collection.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ListCheckoutSessionsCustomerDetails {
+    /// Customer's email address.
     pub email: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionAfterExpirationRecovery {
+    /// Enables user redeemable promotion codes on the recovered Checkout Sessions.
+    ///
+    /// Defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_promotion_codes: Option<bool>,
 
+    /// If `true`, a recovery URL will be generated to recover this Checkout Session if it
+    /// expires before a successful transaction is completed.
+    ///
+    /// It will be attached to the Checkout Session object upon expiration.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsAdjustableQuantity {
+    /// Set to true if the quantity can be adjusted to any non-negative integer.
+    ///
+    /// By default customers will be able to remove the line item by setting the quantity to 0.
     pub enabled: bool,
 
+    /// The maximum quantity the customer can purchase for the Checkout Session.
+    ///
+    /// By default this value is 99.
+    /// You can specify a value up to 999999.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
 
+    /// The minimum quantity the customer must purchase for the Checkout Session.
+    ///
+    /// By default this value is 0.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceData {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// The ID of the product that this price will belong to.
+    ///
+    /// One of `product` or `product_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product: Option<String>,
 
+    /// Data used to generate a new product object inline.
+    ///
+    /// One of `product` or `product_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_data: Option<CreateCheckoutSessionLineItemsPriceDataProductData>,
 
+    /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateCheckoutSessionLineItemsPriceDataRecurring>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateCheckoutSessionLineItemsPriceDataTaxBehavior>,
 
+    /// A non-negative integer in cents (or local equivalent) representing how much to charge.
+    ///
+    /// One of `unit_amount` or `unit_amount_decimal` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataShipping {
+    /// Shipping address.
     pub address: CreateCheckoutSessionPaymentIntentDataShippingAddress,
 
+    /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub carrier: Option<String>,
 
+    /// Recipient name.
     pub name: String,
 
+    /// Recipient phone (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 
+    /// The tracking number for a physical product, obtained from the delivery service.
+    ///
+    /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_number: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
+    /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
+    /// If specified, successful charges will be attributed to the destination
+    /// account for tax reporting, and the funds from charges will be transferred
+    /// to the destination account.
+    ///
+    /// The ID of the resulting transfer will be returned on the successful charge's `transfer` field.
     pub destination: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    /// This is only accepted for Checkout Sessions in `setup` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
+    /// Additional fields for Mandate creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetupFutureUsage>,
 
+    /// Verification method for the intent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -1509,12 +1727,22 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAffirm {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
@@ -1522,12 +1750,22 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAlipay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage>,
@@ -1535,6 +1773,11 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetupFutureUsage>,
@@ -1542,6 +1785,11 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBancontact {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage>,
@@ -1549,36 +1797,69 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBancontact {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
+    /// The number of calendar days before a Boleto voucher expires.
+    ///
+    /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto invoice will expire on Wednesday at 23:59 America/Sao_Paulo time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCard {
+    /// Installment options for card payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub installments: Option<CreateCheckoutSessionPaymentMethodOptionsCardInstallments>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage>,
 
+    /// Provides information about a card payment that customers see on their statements.
+    ///
+    /// Concatenated with the Kana prefix (shortened Kana descriptor) or Kana statement descriptor that’s set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters.
+    /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 22 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix_kana: Option<String>,
 
+    /// Provides information about a card payment that customers see on their statements.
+    ///
+    /// Concatenated with the Kanji prefix (shortened Kanji descriptor) or Kanji statement descriptor that’s set on the account to form the complete statement descriptor.
+    /// Maximum 17 characters.
+    /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix_kanji: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalance {
+    /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_transfer: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer>,
 
+    /// The funding method type to be used when there are not enough funds in the customer balance.
+    ///
+    /// Permitted values include: `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding_type: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
@@ -1586,18 +1867,33 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsEps {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsFpx {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsGiropay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage>,
@@ -1605,6 +1901,11 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsGiropay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsGrabpay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage>,
@@ -1612,21 +1913,40 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsGrabpay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsIdeal {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsIdealSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKlarna {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKonbini {
+    /// The number of calendar days (between 1 and 60) after which Konbini payment instructions will expire.
+    ///
+    /// For example, if a PaymentIntent is confirmed with Konbini and `expires_after_days` set to 2 on Monday JST, the instructions will expire on Wednesday 23:59:59 JST.
+    /// Defaults to 3 days.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage>,
@@ -1634,36 +1954,63 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKonbini {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsOxxo {
+    /// The number of calendar days before an OXXO voucher expires.
+    ///
+    /// For example, if you create an OXXO voucher on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsP24 {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsP24SetupFutureUsage>,
 
+    /// Confirm that the payer has accepted the P24 terms and conditions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPaynow {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPix {
+    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
+    ///
+    /// Defaults to 86400 seconds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetupFutureUsage>,
@@ -1671,20 +2018,32 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSofort {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
+    /// Additional fields for Financial Connections Session creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_connections:
         Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage>,
 
+    /// Verification method for the intent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -1692,11 +2051,20 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay {
+    /// The app ID registered with WeChat Pay.
+    ///
+    /// Only required when client is ios or android.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub app_id: Option<String>,
 
+    /// The client type that the end customer will pay from.
     pub client: CreateCheckoutSessionPaymentMethodOptionsWechatPayClient,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage>,
@@ -1704,98 +2072,179 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
+    /// The estimated range for how long shipping will take, meant to be displayable to the customer.
+    ///
+    /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delivery_estimate:
         Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate>,
 
+    /// The name of the shipping rate, meant to be displayable to the customer.
+    ///
+    /// This will appear on CheckoutSessions.
     pub display_name: String,
 
+    /// Describes a fixed amount to charge for shipping.
+    ///
+    /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amount: Option<CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    ///
+    /// The Shipping tax code is `txcd_92010001`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 
+    /// The type of calculation to use on the shipping rate.
+    ///
+    /// Can only be `fixed_amount` for now.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateCheckoutSessionShippingOptionsShippingRateDataType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionSubscriptionDataItems {
+    /// Plan ID for this item.
+    pub plan: String,
+
+    /// The quantity of the subscription item being purchased.
+    ///
+    /// Quantity should not be defined when `recurring.usage_type=metered`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
+
+    /// The tax rates which apply to this item.
+    ///
+    /// When set, the `default_tax_rates` on `subscription_data` do not apply to this item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_rates: Option<Vec<String>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataTransferData {
+    /// A non-negative decimal between 0 and 100, with at most two decimal places.
+    ///
+    /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
+    /// By default, the entire amount is transferred to the destination.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_percent: Option<f64>,
 
+    /// ID of an existing, connected Stripe account.
     pub destination: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceDataProductData {
+    /// The product's description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// The product's name, meant to be displayable to the customer.
     pub name: String,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
+    /// Specifies billing frequency.
+    ///
+    /// Either `day`, `week`, `month` or `year`.
     pub interval: CreateCheckoutSessionLineItemsPriceDataRecurringInterval,
 
+    /// The number of intervals between subscription billings.
+    ///
+    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
+    /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
+    /// Address line 1 (e.g., street, PO Box, or company name).
     pub line1: String,
 
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
 
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
 
+    /// State, county, province, or region.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
+    /// A URL for custom mandate text to render during confirmation step.
+    /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,
+    /// or `setup_intent` and `setup_intent_client_secret` when confirming a Setup Intent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
 
+    /// List of Stripe products where this mandate can be selected automatically.
+    ///
+    /// Only usable in `setup` mode.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_for:
         Option<Vec<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor>>,
 
+    /// Description of the mandate interval.
+    ///
+    /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
 
+    /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_schedule:
         Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule>,
 
+    /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type:
         Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
@@ -1803,6 +2252,8 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
+    /// Setting to true enables installments for this Checkout Session.
+    /// Setting to false will prevent any installment plan from applying to a payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
@@ -1810,18 +2261,29 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer {
 
+    /// Configuration for eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eu_bank_transfer: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
 
+    /// List of address types that should be returned in the financial_addresses response.
+    ///
+    /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types: Option<Vec<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
 
+    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding.
+    ///
+    /// Permitted values include: `us_bank_account`, `eu_bank_account`, `id_bank_account`, `gb_bank_account`, `jp_bank_account`, `mx_bank_account`, `eu_bank_transfer`, `gb_bank_transfer`, `id_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections {
+    /// The list of permissions to request.
+    ///
+    /// If this parameter is passed, the `payment_method` permission must be included.
+    /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<
         Vec<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>,
@@ -1830,10 +2292,16 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnec
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
+    /// The upper bound of the estimated range.
+    ///
+    /// If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum:
         Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum>,
 
+    /// The lower bound of the estimated range.
+    ///
+    /// If empty, represents no lower bound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum:
         Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum>,
@@ -1841,10 +2309,17 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate 
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
+    /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// Shipping rates defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options:
         Option<CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions>,
@@ -1852,27 +2327,38 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
+    /// The desired country code of the bank account information.
+    ///
+    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
+    /// A unit of time.
     pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit,
 
+    /// Must be greater than 0.
     pub value: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
+    /// A unit of time.
     pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit,
 
+    /// Must be greater than 0.
     pub value: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions {
+    /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<
         CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior,

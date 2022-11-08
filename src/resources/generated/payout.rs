@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::PayoutId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{BalanceTransaction, BankAccount, Card, Currency};
+use crate::resources::{BalanceTransaction, Currency, PayoutDestinationUnion};
 
 /// The resource representing a Stripe "Payout".
 ///
@@ -29,7 +29,6 @@ pub struct Payout {
     pub automatic: bool,
 
     /// ID of the balance transaction that describes the impact of this payout on your account balance.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub balance_transaction: Option<Expandable<BalanceTransaction>>,
 
     /// Time at which the object was created.
@@ -45,25 +44,20 @@ pub struct Payout {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// ID of the bank account or card the payout was sent to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub destination: Option<Expandable<PayoutDestinationUnion>>,
 
     /// If the payout failed or was canceled, this will be the ID of the balance transaction that reversed the initial balance transaction, and puts the funds from the failed payout back in your balance.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_balance_transaction: Option<Expandable<BalanceTransaction>>,
 
     /// Error code explaining reason for payout failure if available.
     ///
     /// See [Types of payout failures](https://stripe.com/docs/api#payout_failures) for a list of failure codes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_code: Option<String>,
 
     /// Message to user further explaining reason for payout failure if available.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_message: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -72,7 +66,6 @@ pub struct Payout {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
     pub metadata: Metadata,
 
     /// The method used to send this payout, which can be `standard` or `instant`.
@@ -82,11 +75,9 @@ pub struct Payout {
     pub method: String,
 
     /// If the payout reverses another, this is the ID of the original payout.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub original_payout: Option<Expandable<Payout>>,
 
     /// If the payout was reversed, this is the ID of the payout that reverses this payout.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reversed_by: Option<Expandable<Payout>>,
 
     /// The source balance this payout came from.
@@ -95,7 +86,6 @@ pub struct Payout {
     pub source_type: String,
 
     /// Extra information about a payout to be displayed on the user's bank statement.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
     /// Current status of the payout: `paid`, `pending`, `in_transit`, `canceled` or `failed`.
@@ -309,18 +299,6 @@ pub struct UpdatePayout<'a> {
 impl<'a> UpdatePayout<'a> {
     pub fn new() -> Self {
         UpdatePayout { expand: Default::default(), metadata: Default::default() }
-    }
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
-pub enum PayoutDestinationUnion {
-    BankAccount(BankAccount),
-    Card(Card),
-}
-impl std::default::Default for PayoutDestinationUnion {
-    fn default() -> Self {
-        Self::BankAccount(Default::default())
     }
 }
 

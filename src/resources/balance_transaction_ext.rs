@@ -2,8 +2,41 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::BalanceTransactionSourceId;
 use crate::params::Object;
-use crate::resources::BalanceTransactionSourceUnion;
+use crate::resources::{
+    ApplicationFee, ApplicationFeeRefund, Charge, ConnectCollectionTransfer, Dispute,
+    IssuingAuthorization, IssuingDispute, IssuingTransaction, Payout, PlatformTaxFee, Refund,
+    ReserveTransaction, TaxDeductedAtSource, Topup, Transfer, TransferReversal,
+};
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum BalanceTransactionSourceUnion {
+    ApplicationFee(ApplicationFee),
+    Charge(Charge),
+    ConnectCollectionTransfer(ConnectCollectionTransfer),
+    Dispute(Dispute),
+    #[serde(rename = "fee_refund")]
+    ApplicationFeeRefund(ApplicationFeeRefund),
+    #[serde(rename = "issuing.authorization")]
+    IssuingAuthorization(IssuingAuthorization),
+    #[serde(rename = "issuing.dispute")]
+    IssuingDispute(IssuingDispute),
+    #[serde(rename = "issuing.transaction")]
+    IssuingTransaction(IssuingTransaction),
+    Payout(Payout),
+    PlatformTaxFee(PlatformTaxFee),
+    Refund(Refund),
+    ReserveTransaction(ReserveTransaction),
+    TaxDeductedAtSource(TaxDeductedAtSource),
+    Topup(Topup),
+    Transfer(Transfer),
+    TransferReversal(TransferReversal),
+}
+impl std::default::Default for BalanceTransactionSourceUnion {
+    fn default() -> Self {
+        Self::ApplicationFee(Default::default())
+    }
+}
 impl Object for BalanceTransactionSourceUnion {
     type Id = BalanceTransactionSourceId;
     fn id(&self) -> Self::Id {

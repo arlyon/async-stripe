@@ -28,11 +28,9 @@ pub struct PaymentLink {
     pub allow_promotion_codes: bool,
 
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
 
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
 
     pub automatic_tax: PaymentLinksResourceAutomaticTax,
@@ -41,7 +39,6 @@ pub struct PaymentLink {
     pub billing_address_collection: PaymentLinkBillingAddressCollection,
 
     /// When set, provides configuration to gather active consent from customers.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub consent_collection: Option<PaymentLinksResourceConsentCollection>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -67,11 +64,9 @@ pub struct PaymentLink {
     /// The account on behalf of which to charge.
     ///
     /// See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<Expandable<Account>>,
 
     /// Indicates the parameters to be passed to PaymentIntent creation during checkout.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent_data: Option<PaymentLinksResourcePaymentIntentData>,
 
     /// Configuration for collecting a payment method during checkout.
@@ -80,13 +75,11 @@ pub struct PaymentLink {
     /// The list of payment method types that customers can use.
     ///
     /// When `null`, Stripe will dynamically show relevant payment methods you've enabled in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<PaymentLinkPaymentMethodTypes>>,
 
     pub phone_number_collection: PaymentLinksResourcePhoneNumberCollection,
 
     /// Configuration for collecting the customer's shipping address.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address_collection: Option<PaymentLinksResourceShippingAddressCollection>,
 
     /// The shipping rate options applied to the session.
@@ -98,13 +91,11 @@ pub struct PaymentLink {
     /// When creating a subscription, the specified configuration data will be used.
     ///
     /// There must be at least one line item with a recurring price to use `subscription_data`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_data: Option<PaymentLinksResourceSubscriptionData>,
 
     pub tax_id_collection: PaymentLinksResourceTaxIdCollection,
 
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<PaymentLinksResourceTransferData>,
 
     /// The public URL that can be shared with customers.
@@ -169,7 +160,6 @@ pub struct PaymentLinksResourceAutomaticTax {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCompletionBehaviorConfirmationPage {
     /// The custom message that is displayed to the customer after the purchase is complete.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_message: Option<String>,
 }
 
@@ -182,24 +172,20 @@ pub struct PaymentLinksResourceCompletionBehaviorRedirect {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceConsentCollection {
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<PaymentLinksResourceConsentCollectionPromotions>,
 
     /// If set to `required`, it requires cutomers to accept the terms of service before being able to pay.
     ///
     /// If set to `none`, customers won't be shown a checkbox to accept the terms of service.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service: Option<PaymentLinksResourceConsentCollectionTermsOfService>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourcePaymentIntentData {
     /// Indicates when the funds will be captured from the customer's account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>,
 
     /// Indicates that you intend to make future payments with the payment method collected during checkout.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>,
 }
 
@@ -231,11 +217,9 @@ pub struct PaymentLinksResourceSubscriptionData {
     /// The subscription's description, meant to be displayable to the customer.
     ///
     /// Use this field to optionally store an explanation of the subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// Integer representing the number of trial period days before the customer is charged for the first time.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 }
 
@@ -250,7 +234,6 @@ pub struct PaymentLinksResourceTransferData {
     /// The amount in %s that will be transferred to the destination account.
     ///
     /// By default, the entire amount is transferred to the destination.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
     /// The connected account receiving the transfer.
@@ -543,160 +526,247 @@ impl<'a> UpdatePaymentLink<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletion {
+    /// Configuration when `type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_confirmation: Option<CreatePaymentLinkAfterCompletionHostedConfirmation>,
 
+    /// Configuration when `type=redirect`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect: Option<CreatePaymentLinkAfterCompletionRedirect>,
 
+    /// The specified behavior after the purchase is complete.
+    ///
+    /// Either `redirect` or `hosted_confirmation`.
     #[serde(rename = "type")]
     pub type_: CreatePaymentLinkAfterCompletionType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAutomaticTax {
+    /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkConsentCollection {
+    /// If set to `auto`, enables the collection of customer consent for promotional communications.
+    ///
+    /// The Checkout Session will determine whether to display an option to opt into promotional communication from the merchant depending on the customer's locale.
+    /// Only available to US merchants.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<CreatePaymentLinkConsentCollectionPromotions>,
 
+    /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
+    /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service: Option<CreatePaymentLinkConsentCollectionTermsOfService>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItems {
+    /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<CreatePaymentLinkLineItemsAdjustableQuantity>,
 
+    /// The ID of the [Price](https://stripe.com/docs/api/prices) or [Plan](https://stripe.com/docs/api/plans) object.
     pub price: String,
 
+    /// The quantity of the line item being purchased.
     pub quantity: u64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkPaymentIntentData {
+    /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentLinkPaymentIntentDataCaptureMethod>,
 
+    /// Indicates that you intend to [make future payments](https://stripe.com/docs/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
+    ///
+    /// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
+    ///
+    /// When setting this to `off_session`, Checkout will show a notice to the customer that their payment details will be saved and used for future payments.
+    ///
+    /// If a Customer has been provided or Checkout creates a new Customer,Checkout will attach the payment method to the Customer.
+    ///
+    /// If Checkout does not create a Customer, the payment method is not attached to a Customer.
+    ///
+    /// To reuse the payment method, you can retrieve it from the Checkout Session's PaymentIntent.  When processing card payments, Checkout also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as SCA.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentLinkPaymentIntentDataSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkPhoneNumberCollection {
+    /// Set to `true` to enable phone number collection.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkShippingAddressCollection {
+    /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
+    /// shipping locations.
+    ///
+    /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
     pub allowed_countries: Vec<CreatePaymentLinkShippingAddressCollectionAllowedCountries>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkShippingOptions {
+    /// The ID of the Shipping Rate to use for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkSubscriptionData {
+    /// The subscription's description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store an explanation of the subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// Integer representing the number of trial period days before the customer is charged for the first time.
+    ///
+    /// Has to be at least 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkTaxIdCollection {
+    /// Set to `true` to enable tax ID collection.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkTransferData {
+    /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
+    /// If specified, successful charges will be attributed to the destination
+    /// account for tax reporting, and the funds from charges will be transferred
+    /// to the destination account.
+    ///
+    /// The ID of the resulting transfer will be returned on the successful charge's `transfer` field.
     pub destination: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletion {
+    /// Configuration when `type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_confirmation: Option<UpdatePaymentLinkAfterCompletionHostedConfirmation>,
 
+    /// Configuration when `type=redirect`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect: Option<UpdatePaymentLinkAfterCompletionRedirect>,
 
+    /// The specified behavior after the purchase is complete.
+    ///
+    /// Either `redirect` or `hosted_confirmation`.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentLinkAfterCompletionType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAutomaticTax {
+    /// If `true`, tax will be calculated automatically using the customer's location.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItems {
+    /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<UpdatePaymentLinkLineItemsAdjustableQuantity>,
 
+    /// The ID of an existing line item on the payment link.
     pub id: String,
 
+    /// The quantity of the line item being purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkShippingAddressCollection {
+    /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for
+    /// shipping locations.
+    ///
+    /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SD, SY, UM, VI`.
     pub allowed_countries: Vec<UpdatePaymentLinkShippingAddressCollectionAllowedCountries>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletionHostedConfirmation {
+    /// A custom message to display to the customer after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_message: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkAfterCompletionRedirect {
+    /// The URL the customer will be redirected to after the purchase is complete.
+    ///
+    /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
     pub url: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItemsAdjustableQuantity {
+    /// Set to true if the quantity can be adjusted to any non-negative Integer.
     pub enabled: bool,
 
+    /// The maximum quantity the customer can purchase.
+    ///
+    /// By default this value is 99.
+    /// You can specify a value up to 99.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
 
+    /// The minimum quantity the customer can purchase.
+    ///
+    /// By default this value is 0.
+    /// You can specify a value up to 98.
+    /// If there is only one item in the cart then that item's quantity cannot go down to 0.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletionHostedConfirmation {
+    /// A custom message to display to the customer after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_message: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkAfterCompletionRedirect {
+    /// The URL the customer will be redirected to after the purchase is complete.
+    ///
+    /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
     pub url: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
+    /// Set to true if the quantity can be adjusted to any non-negative Integer.
     pub enabled: bool,
 
+    /// The maximum quantity the customer can purchase.
+    ///
+    /// By default this value is 99.
+    /// You can specify a value up to 99.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
 
+    /// The minimum quantity the customer can purchase.
+    ///
+    /// By default this value is 0.
+    /// You can specify a value up to 98.
+    /// If there is only one item in the cart then that item's quantity cannot go down to 0.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 }

@@ -5,9 +5,9 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
-use crate::ids::{PriceId, SubscriptionId, SubscriptionItemId};
+use crate::ids::{PlanId, PriceId, SubscriptionId, SubscriptionItemId};
 use crate::params::{Deleted, Expand, List, Metadata, Object, Paginable, Timestamp};
-use crate::resources::{Currency, Price, SubscriptionItemBillingThresholds, TaxRate};
+use crate::resources::{Currency, Plan, Price, SubscriptionItemBillingThresholds, TaxRate};
 
 /// The resource representing a Stripe "SubscriptionItem".
 ///
@@ -36,6 +36,9 @@ pub struct SubscriptionItem {
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(default)]
     pub metadata: Metadata,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<Plan>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<Price>,
@@ -149,6 +152,10 @@ pub struct CreateSubscriptionItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_behavior: Option<SubscriptionPaymentBehavior>,
 
+    /// The identifier of the plan to add to the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<PlanId>,
+
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<PriceId>,
@@ -189,6 +196,7 @@ impl<'a> CreateSubscriptionItem<'a> {
             expand: Default::default(),
             metadata: Default::default(),
             payment_behavior: Default::default(),
+            plan: Default::default(),
             price: Default::default(),
             price_data: Default::default(),
             proration_behavior: Default::default(),
@@ -288,6 +296,10 @@ pub struct UpdateSubscriptionItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_behavior: Option<SubscriptionPaymentBehavior>,
 
+    /// The identifier of the new plan for this subscription item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<PlanId>,
+
     /// The ID of the price object.
     ///
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
@@ -328,6 +340,7 @@ impl<'a> UpdateSubscriptionItem<'a> {
             metadata: Default::default(),
             off_session: Default::default(),
             payment_behavior: Default::default(),
+            plan: Default::default(),
             price: Default::default(),
             price_data: Default::default(),
             proration_behavior: Default::default(),
@@ -340,26 +353,46 @@ impl<'a> UpdateSubscriptionItem<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceData {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// The ID of the product that this price will belong to.
     pub product: String,
 
+    /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: SubscriptionItemPriceDataRecurring,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<SubscriptionItemPriceDataTaxBehavior>,
 
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceDataRecurring {
+    /// Specifies billing frequency.
+    ///
+    /// Either `day`, `week`, `month` or `year`.
     pub interval: PlanInterval,
 
+    /// The number of intervals between subscription billings.
+    ///
+    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }

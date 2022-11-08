@@ -61,7 +61,6 @@ impl Object for Mandate {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerAcceptance {
     /// The time at which the customer accepted the Mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub accepted_at: Option<Timestamp>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -126,7 +125,6 @@ pub struct MandateAcssDebit {
     /// Description of the interval.
     ///
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
 
     /// Payment schedule for the mandate.
@@ -161,7 +159,6 @@ pub struct MandateBacsDebit {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateBlik {
     /// Date at which the mandate expires.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after: Option<Timestamp>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -169,7 +166,6 @@ pub struct MandateBlik {
 
     /// Type of the mandate.
     #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<MandateBlikType>,
 }
 
@@ -205,11 +201,9 @@ pub struct OfflineAcceptance {}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OnlineAcceptance {
     /// The IP address from which the Mandate was accepted by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
 
     /// The user agent of the browser from which the Mandate was accepted by the customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
 }
 

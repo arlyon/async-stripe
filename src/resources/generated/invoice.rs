@@ -482,7 +482,6 @@ pub struct AutomaticTax {
     pub enabled: bool,
 
     /// The status of the most recent automated tax calculation for this invoice.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<AutomaticTaxStatus>,
 }
 
@@ -519,7 +518,6 @@ pub struct TaxAmount {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceThresholdReason {
     /// The total invoice amount threshold boundary if it triggered the threshold invoice.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_gte: Option<i64>,
 
     /// Indicates which line items triggered a threshold invoice.
@@ -540,7 +538,6 @@ pub struct InvoiceTransferData {
     /// The amount in %s that will be transferred to the destination account when the invoice is paid.
     ///
     /// By default, the entire amount is transferred to the destination.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
     /// The account where funds from the payment will be transferred to upon payment success.
@@ -561,45 +558,36 @@ pub struct InvoicesPaymentSettings {
     /// ID of the mandate to be used for this invoice.
     ///
     /// It must correspond to the payment method used to pay the invoice, including the invoice's default_payment_method or default_source, if set.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_mandate: Option<String>,
 
     /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<InvoicesPaymentMethodOptions>,
 
     /// The list of payment method types (e.g.
     ///
     /// card) to provide to the invoice’s PaymentIntent.
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<InvoicesPaymentSettingsPaymentMethodTypes>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesPaymentMethodOptions {
     /// If paying by `acss_debit`, this sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to the invoice’s PaymentIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<InvoicePaymentMethodOptionsAcssDebit>,
 
     /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<InvoicePaymentMethodOptionsBancontact>,
 
     /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<InvoicePaymentMethodOptionsCard>,
 
     /// If paying by `customer_balance`, this sub-hash contains details about the Bank transfer payment method options to pass to the invoice’s PaymentIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<InvoicePaymentMethodOptionsCustomerBalance>,
 
     /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<InvoicePaymentMethodOptionsKonbini>,
 
     /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<InvoicePaymentMethodOptionsUsBankAccount>,
 }
 
@@ -612,14 +600,12 @@ pub struct InvoicePaymentMethodOptionsCard {
     ///
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
     /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure: Option<InvoicePaymentMethodOptionsCardRequestThreeDSecure>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceInstallmentsCard {
     /// Whether Installments are enabled for this Invoice.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
 
@@ -630,26 +616,21 @@ pub struct InvoicesResourceInvoiceTaxId {
     pub type_: TaxIdType,
 
     /// The value of the tax ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesStatusTransitions {
     /// The time that the invoice draft was finalized.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub finalized_at: Option<Timestamp>,
 
     /// The time that the invoice was marked uncollectible.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub marked_uncollectible_at: Option<Timestamp>,
 
     /// The time that the invoice was paid.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub paid_at: Option<Timestamp>,
 
     /// The time that the invoice was voided.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub voided_at: Option<Timestamp>,
 }
 
@@ -922,85 +903,125 @@ impl Paginable for ListInvoices<'_> {
 }
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceAutomaticTax {
+    /// Whether Stripe automatically computes tax on this invoice.
+    ///
+    /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceCustomFields {
+    /// The name of the custom field.
+    ///
+    /// This may be up to 30 characters.
     pub name: String,
 
+    /// The value of the custom field.
+    ///
+    /// This may be up to 30 characters.
     pub value: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceDiscounts {
+    /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceFromInvoice {
+    /// The relation between the new invoice and the original invoice.
+    ///
+    /// Currently, only 'revision' is permitted.
     pub action: CreateInvoiceFromInvoiceAction,
 
+    /// The `id` of the invoice that will be cloned.
     pub invoice: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettings {
+    /// ID of the mandate to be used for this invoice.
+    ///
+    /// It must correspond to the payment method used to pay the invoice, including the invoice's default_payment_method or default_source, if set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_mandate: Option<String>,
 
+    /// Payment-method-specific configuration to provide to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<CreateInvoicePaymentSettingsPaymentMethodOptions>,
 
+    /// The list of payment method types (e.g.
+    ///
+    /// card) to provide to the invoice’s PaymentIntent.
+    /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodTypes>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceRenderingOptions {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    ///
+    /// One of `exclude_tax` or `include_inclusive_tax`.
+    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_tax_display: Option<CreateInvoiceRenderingOptionsAmountTaxDisplay>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceTransferData {
+    /// The amount that will be transferred automatically when the invoice is paid.
+    ///
+    /// If no amount is set, the full amount is transferred.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
+    /// ID of an existing, connected Stripe account.
     pub destination: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
+    /// If paying by `acss_debit`, this sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit>,
 
+    /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact>,
 
+    /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCard>,
 
+    /// If paying by `customer_balance`, this sub-hash contains details about the Bank transfer payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalance>,
 
+    /// If paying by `konbini`, this sub-hash contains details about the Konbini payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub konbini: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsKonbini>,
 
+    /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit {
+    /// Additional fields for Mandate creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions>,
 
+    /// Verification method for the intent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -1008,6 +1029,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact {
+    /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
@@ -1015,9 +1037,16 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsBancontact {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
+    /// Installment configuration for payments attempted on this invoice (Mexico Only).
+    ///
+    /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub installments: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallments>,
 
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    ///
+    /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
+    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
@@ -1025,10 +1054,14 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalance {
+    /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_transfer:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer>,
 
+    /// The funding method type to be used when there are not enough funds in the customer balance.
+    ///
+    /// Permitted values include: `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding_type: Option<String>,
 }
@@ -1038,10 +1071,12 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsKonbini {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
+    /// Additional fields for Financial Connections Session creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_connections:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections>,
 
+    /// Verification method for the intent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -1049,6 +1084,7 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
+    /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type: Option<
         CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType,
@@ -1057,20 +1093,27 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptio
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallments {
+    /// Setting to true enables installments for this invoice.
+    /// Setting to false will prevent any selected plan from applying to a payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 
+    /// The selected installment plan to use for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
+    /// Configuration for eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eu_bank_transfer: Option<
         CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer,
     >,
 
+    /// The bank transfer type that can be used for funding.
+    ///
+    /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
@@ -1079,16 +1122,24 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTr
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
 
+    /// The list of permissions to request.
+    ///
+    /// If this parameter is passed, the `payment_method` permission must be included.
+    /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan {
+    /// For `fixed_count` installment plans, this is the number of installment payments your customer will make to their credit card.
     pub count: u64,
 
+    /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
+    /// One of `month`.
     pub interval: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanInterval,
 
+    /// Type of installment plan, one of `fixed_count`.
     #[serde(rename = "type")]
     pub type_: CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType,
 }
@@ -1096,6 +1147,9 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlan 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer
 {
+    /// The desired country code of the bank account information.
+    ///
+    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: String,
 }
 
@@ -1543,6 +1597,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Link,
     Paynow,
     Promptpay,
+    SepaCreditTransfer,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -1571,6 +1626,9 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             CreateInvoicePaymentSettingsPaymentMethodTypes::Link => "link",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Paynow => "paynow",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Promptpay => "promptpay",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::SepaCreditTransfer => {
+                "sepa_credit_transfer"
+            }
             CreateInvoicePaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Sofort => "sofort",
             CreateInvoicePaymentSettingsPaymentMethodTypes::UsBankAccount => "us_bank_account",
@@ -1891,6 +1949,7 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     Link,
     Paynow,
     Promptpay,
+    SepaCreditTransfer,
     SepaDebit,
     Sofort,
     UsBankAccount,
@@ -1917,6 +1976,7 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             InvoicesPaymentSettingsPaymentMethodTypes::Link => "link",
             InvoicesPaymentSettingsPaymentMethodTypes::Paynow => "paynow",
             InvoicesPaymentSettingsPaymentMethodTypes::Promptpay => "promptpay",
+            InvoicesPaymentSettingsPaymentMethodTypes::SepaCreditTransfer => "sepa_credit_transfer",
             InvoicesPaymentSettingsPaymentMethodTypes::SepaDebit => "sepa_debit",
             InvoicesPaymentSettingsPaymentMethodTypes::Sofort => "sofort",
             InvoicesPaymentSettingsPaymentMethodTypes::UsBankAccount => "us_bank_account",

@@ -10,11 +10,9 @@ pub struct PaymentMethodOptionsWechatPay {
     /// The app ID registered with WeChat Pay.
     ///
     /// Only required when client is ios or android.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub app_id: Option<String>,
 
     /// The client type that the end customer will pay from.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub client: Option<PaymentMethodOptionsWechatPayClient>,
 
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.

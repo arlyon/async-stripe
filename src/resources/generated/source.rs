@@ -36,7 +36,6 @@ pub struct Source {
     ///
     /// This is the amount for which the source will be chargeable once ready.
     /// Required for `single_use` sources.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -68,7 +67,6 @@ pub struct Source {
     ///
     /// This is the currency for which the source will be chargeable once ready.
     /// Required for `single_use` sources.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
     /// The ID of the customer to which this source is attached.
@@ -100,14 +98,12 @@ pub struct Source {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
     pub metadata: Metadata,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub multibanco: Option<SourceTypeMultibanco>,
 
     /// Information about the owner of the payment instrument that may be used or required by particular source types.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<SourceOwner>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -118,6 +114,9 @@ pub struct Source {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect: Option<SourceRedirectFlow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_credit_transfer: Option<SourceTypeSepaCreditTransfer>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<SourceTypeSepaDebit>,
@@ -131,7 +130,6 @@ pub struct Source {
     /// Extra information about a source.
     ///
     /// This will appear on your customer's statement every time you charge the source.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
     /// The status of the source, one of `canceled`, `chargeable`, `consumed`, `failed`, or `pending`.
@@ -155,7 +153,6 @@ pub struct Source {
     /// Whether this source should be reusable or not.
     /// Some source types may or may not be reusable by construction, while others may leave the option at creation.
     /// If an incompatible value is passed, an error will be returned.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub usage: Option<SourceUsage>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -224,7 +221,6 @@ pub struct SourceOrder {
     pub email: Option<String>,
 
     /// List of items constituting the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<SourceOrderItem>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -234,23 +230,19 @@ pub struct SourceOrder {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceOrderItem {
     /// The amount (price) for this order item.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
     /// This currency of this order item.
     ///
     /// Required when `amount` is present.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
     /// Human-readable description for this order item.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// The ID of the associated object for this line item.
     ///
     /// Expandable if not null (e.g., expandable to a SKU).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub parent: Option<String>,
 
     /// The quantity of this order item.
@@ -263,54 +255,45 @@ pub struct SourceOrderItem {
     ///
     /// Must be `sku`, `tax`, or `shipping`.
     #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceOwner {
     /// Owner's address.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
     /// Owner's email address.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
     /// Owner's full name.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
     /// Owner's phone number (including extension).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 
     /// Verified owner's address.
     ///
     /// Verified values are verified or provided by the payment method directly (and if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_address: Option<Address>,
 
     /// Verified owner's email address.
     ///
     /// Verified values are verified or provided by the payment method directly (and if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_email: Option<String>,
 
     /// Verified owner's full name.
     ///
     /// Verified values are verified or provided by the payment method directly (and if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_name: Option<String>,
 
     /// Verified owner's phone number (including extension).
     ///
     /// Verified values are verified or provided by the payment method directly (and if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_phone: Option<String>,
 }
 
@@ -319,7 +302,6 @@ pub struct SourceReceiverFlow {
     /// The address of the receiver source.
     ///
     /// This is the value that should be communicated to the customer to send their funds to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
 
     /// The total amount that was moved to your balance.
@@ -352,7 +334,6 @@ pub struct SourceRedirectFlow {
     /// The failure reason for the redirect, either `user_abort` (the customer aborted or dropped out of the redirect flow), `declined` (the authentication failed or the transaction was declined), or `processing_error` (the redirect failed due to a technical error).
     ///
     /// Present only if the redirect status is `failed`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_reason: Option<SourceRedirectFlowFailureReason>,
 
     /// The URL you provide to redirect the customer to after they authenticated their payment.
@@ -510,6 +491,9 @@ pub struct SourceTypeCard {
     pub cvc_check: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dynamic_last4: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -523,6 +507,12 @@ pub struct SourceTypeCard {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iin: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
@@ -567,6 +557,9 @@ pub struct SourceTypeCardPresent {
     pub dedicated_file_name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub emv_auth_data: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -586,6 +579,12 @@ pub struct SourceTypeCardPresent {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iin: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
@@ -769,6 +768,42 @@ pub struct SourceTypeP24 {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SourceTypeSepaCreditTransfer {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bic: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iban: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_account_holder_address_city: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_account_holder_address_country: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_account_holder_address_line1: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_account_holder_address_line2: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_account_holder_address_postal_code: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_account_holder_address_state: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_account_holder_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub refund_iban: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceTypeSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_code: Option<String>,
@@ -843,6 +878,9 @@ pub struct SourceTypeThreeDSecure {
     pub cvc_check: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub dynamic_last4: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -856,6 +894,12 @@ pub struct SourceTypeThreeDSecure {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iin: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
@@ -1084,47 +1128,75 @@ impl<'a> UpdateSource<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSourceReceiver {
+    /// The method Stripe should use to request information needed to process a refund or mispayment.
+    ///
+    /// Either `email` (an email is sent directly to the customer) or `manual` (a `source.refund_attributes_required` event is sent to your webhooks endpoint).
+    /// Refer to each payment method's documentation to learn which refund attributes may be required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_attributes_method: Option<SourceRefundNotificationMethod>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSourceRedirect {
+    /// The URL you provide to redirect the customer back to you after they authenticated their payment.
+    ///
+    /// It can use your application URI scheme in the context of a mobile application.
     pub return_url: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSourceSourceOrder {
+    /// List of items constituting the order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CreateSourceSourceOrderItems>>,
 
+    /// Shipping address for the order.
+    ///
+    /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<CreateSourceSourceOrderShipping>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceMandateParams {
+    /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acceptance: Option<SourceAcceptanceParams>,
 
+    /// The amount specified by the mandate.
+    ///
+    /// (Leave null for a mandate covering all amounts).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
+    /// The currency specified by the mandate.
+    ///
+    /// (Must match `currency` of the source).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
+    /// The interval of debits permitted by the mandate.
+    ///
+    /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval: Option<SourceMandateInterval>,
 
+    /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
+    ///
+    /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub notification_method: Option<SourceMandateNotificationMethod>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSourceSourceOrder {
+    /// List of items constituting the order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<UpdateSourceSourceOrderItems>>,
 
+    /// Shipping address for the order.
+    ///
+    /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<UpdateSourceSourceOrderShipping>,
 }
@@ -1140,9 +1212,13 @@ pub struct CreateSourceSourceOrderItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// The ID of the SKU being ordered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parent: Option<String>,
 
+    /// The quantity of this order item.
+    ///
+    /// When type is `sku`, this is the number of instances of the SKU to be ordered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
@@ -1153,41 +1229,63 @@ pub struct CreateSourceSourceOrderItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSourceSourceOrderShipping {
+    /// Shipping address.
     pub address: CreateSourceSourceOrderShippingAddress,
 
+    /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub carrier: Option<String>,
 
+    /// Recipient name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
+    /// Recipient phone (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 
+    /// The tracking number for a physical product, obtained from the delivery service.
+    ///
+    /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_number: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceAcceptanceParams {
+    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
 
+    /// The IP address from which the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
 
+    /// The parameters required to store a mandate accepted offline.
+    ///
+    /// Should only be set if `mandate[type]` is `offline`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offline: Option<SourceAcceptanceOfflineParams>,
 
+    /// The parameters required to store a mandate accepted online.
+    ///
+    /// Should only be set if `mandate[type]` is `online`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub online: Option<SourceAcceptanceOnlineParams>,
 
+    /// The status of the mandate acceptance.
+    ///
+    /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
     pub status: SourceAcceptanceParamsStatus,
 
+    /// The type of acceptance information included with the mandate.
+    ///
+    /// Either `online` or `offline`.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<SourceAcceptanceParamsType>,
 
+    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
 }
@@ -1203,9 +1301,13 @@ pub struct UpdateSourceSourceOrderItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// The ID of the SKU being ordered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parent: Option<String>,
 
+    /// The quantity of this order item.
+    ///
+    /// When type is `sku`, this is the number of instances of the SKU to be ordered.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
@@ -1216,74 +1318,97 @@ pub struct UpdateSourceSourceOrderItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSourceSourceOrderShipping {
+    /// Shipping address.
     pub address: UpdateSourceSourceOrderShippingAddress,
 
+    /// The delivery service that shipped a physical product, such as Fedex, UPS, USPS, etc.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub carrier: Option<String>,
 
+    /// Recipient name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
+    /// Recipient phone (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 
+    /// The tracking number for a physical product, obtained from the delivery service.
+    ///
+    /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_number: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSourceSourceOrderShippingAddress {
+    /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
+    /// Address line 1 (e.g., street, PO Box, or company name).
     pub line1: String,
 
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
 
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
 
+    /// State, county, province, or region.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceAcceptanceOfflineParams {
+    /// An email to contact you with if a copy of the mandate is requested, required if `type` is `offline`.
     pub contact_email: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SourceAcceptanceOnlineParams {
+    /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
 
+    /// The IP address from which the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
 
+    /// The user agent of the browser from which the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSourceSourceOrderShippingAddress {
+    /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
+    /// Address line 1 (e.g., street, PO Box, or company name).
     pub line1: String,
 
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
 
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
 
+    /// State, county, province, or region.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -1566,6 +1691,7 @@ pub enum SourceType {
     Klarna,
     Multibanco,
     P24,
+    SepaCreditTransfer,
     SepaDebit,
     Sofort,
     ThreeDSecure,
@@ -1589,6 +1715,7 @@ impl SourceType {
             SourceType::Klarna => "klarna",
             SourceType::Multibanco => "multibanco",
             SourceType::P24 => "p24",
+            SourceType::SepaCreditTransfer => "sepa_credit_transfer",
             SourceType::SepaDebit => "sepa_debit",
             SourceType::Sofort => "sofort",
             SourceType::ThreeDSecure => "three_d_secure",

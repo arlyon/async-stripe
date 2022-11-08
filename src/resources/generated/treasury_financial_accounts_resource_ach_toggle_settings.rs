@@ -25,7 +25,6 @@ pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
     pub code: TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode,
 
     /// Represents what the user should do, if anything, to activate the Feature.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub resolution: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution>,
 
     /// The `platform_restrictions` that are restricting this Feature.

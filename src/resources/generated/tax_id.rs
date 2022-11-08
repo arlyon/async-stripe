@@ -68,11 +68,9 @@ pub struct TaxIdVerification {
     pub status: TaxIdVerificationStatus,
 
     /// Verified address.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_address: Option<String>,
 
     /// Verified name.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_name: Option<String>,
 }
 

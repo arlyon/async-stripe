@@ -169,14 +169,12 @@ impl Object for Price {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CurrencyOption {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CustomUnitAmount>,
 
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CurrencyOptionTaxBehavior>,
 
     /// Each element represents a pricing tier.
@@ -189,36 +187,29 @@ pub struct CurrencyOption {
     /// The unit amount in %s to be charged, represented as a whole integer if possible.
     ///
     /// Only set if `billing_scheme=per_unit`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
     /// The unit amount in %s to be charged, represented as a decimal string with at most 12 decimal places.
     ///
     /// Only set if `billing_scheme=per_unit`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PriceTier {
     /// Price for the entire tier.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
 
     /// Same as `flat_amount`, but contains a decimal value with at most 12 decimal places.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount_decimal: Option<String>,
 
     /// Per unit price for units relevant to the tier.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 
     /// Up to and including to this quantity will be contained in the tier.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub up_to: Option<i64>,
 }
 
@@ -228,7 +219,6 @@ pub struct Recurring {
     ///
     /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
     /// Defaults to `sum`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_usage: Option<RecurringAggregateUsage>,
 
     /// The frequency at which a subscription is billed.
@@ -240,6 +230,9 @@ pub struct Recurring {
     ///
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     pub interval_count: u64,
+
+    /// Default number of trial days when subscribing a customer to this price using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
+    pub trial_period_days: Option<u32>,
 
     /// Configures how the quantity per period should be determined.
     ///
@@ -513,6 +506,10 @@ pub struct UpdatePrice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<&'a str>,
 
+    /// The recurring components of a price such as `interval` and `usage_type`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub recurring: Option<UpdatePriceRecurring>,
+
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -534,6 +531,7 @@ impl<'a> UpdatePrice<'a> {
             lookup_key: Default::default(),
             metadata: Default::default(),
             nickname: Default::default(),
+            recurring: Default::default(),
             tax_behavior: Default::default(),
             transfer_lookup_key: Default::default(),
         }
@@ -542,183 +540,321 @@ impl<'a> UpdatePrice<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceCurrencyOptions {
+    /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CreatePriceCurrencyOptionsCustomUnitAmount>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreatePriceCurrencyOptionsTaxBehavior>,
 
+    /// Each element represents a pricing tier.
+    ///
+    /// This parameter requires `billing_scheme` to be set to `tiered`.
+    /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tiers: Option<Vec<CreatePriceCurrencyOptionsTiers>>,
 
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceCustomUnitAmount {
+    /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
 
+    /// The maximum unit amount the customer can specify for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
 
+    /// The minimum unit amount the customer can specify for this item.
+    ///
+    /// Must be at least the minimum charge amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 
+    /// The starting unit amount which can be updated by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preset: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceProductData {
+    /// Whether the product is currently available for purchase.
+    ///
+    /// Defaults to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
+    /// The identifier for the product.
+    ///
+    /// Must be unique.
+    /// If not provided, an identifier will be randomly generated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// The product's name, meant to be displayable to the customer.
     pub name: String,
 
+    /// An arbitrary string to be displayed on your customer's credit card or bank statement.
+    ///
+    /// While most banks display this information consistently, some may display it incorrectly or not at all.  This may be up to 22 characters.
+    /// The statement description may not include `<`, `>`, `\`, `"`, `'` characters, and will appear on your customer's statement in capital letters.
+    /// Non-ASCII characters are automatically stripped.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 
+    /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
+    ///
+    /// When set, this will be included in associated invoice line item descriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceRecurring {
+    /// Specifies a usage aggregation strategy for prices of `usage_type=metered`.
+    ///
+    /// Allowed values are `sum` for summing up all usage during a period, `last_during_period` for using the last usage record reported within a period, `last_ever` for using the last usage record ever (across period bounds) or `max` which uses the usage record with the maximum reported usage during a period.
+    /// Defaults to `sum`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aggregate_usage: Option<CreatePriceRecurringAggregateUsage>,
 
+    /// Specifies billing frequency.
+    ///
+    /// Either `day`, `week`, `month` or `year`.
     pub interval: CreatePriceRecurringInterval,
 
+    /// The number of intervals between subscription billings.
+    ///
+    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 
+    /// Default number of trial days when subscribing a customer to this price using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_period_days: Option<u32>,
+
+    /// Configures how the quantity per period should be determined.
+    ///
+    /// Can be either `metered` or `licensed`.
+    /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
+    /// `metered` aggregates the total usage based on usage records.
+    /// Defaults to `licensed`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_type: Option<CreatePriceRecurringUsageType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceTiers {
+    /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
 
+    /// Same as `flat_amount`, but accepts a decimal value representing an integer in the minor units of the currency.
+    ///
+    /// Only one of `flat_amount` and `flat_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount_decimal: Option<String>,
 
+    /// The per unit billing amount for each individual unit for which this tier applies.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 
+    /// Specifies the upper bound of this tier.
+    ///
+    /// The lower bound of a tier is the upper bound of the previous tier adding one.
+    /// Use `inf` to define a fallback tier.
     pub up_to: Option<UpTo>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceTransformQuantity {
+    /// Divide usage by this number.
     pub divide_by: i64,
 
+    /// After division, either round the result `up` or `down`.
     pub round: CreatePriceTransformQuantityRound,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ListPricesRecurring {
+    /// Filter by billing frequency.
+    ///
+    /// Either `day`, `week`, `month` or `year`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval: Option<ListPricesRecurringInterval>,
 
+    /// Filter by the usage type for this price.
+    ///
+    /// Can be either `metered` or `licensed`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_type: Option<ListPricesRecurringUsageType>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePriceCurrencyOptions {
+    /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<UpdatePriceCurrencyOptionsCustomUnitAmount>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<UpdatePriceCurrencyOptionsTaxBehavior>,
 
+    /// Each element represents a pricing tier.
+    ///
+    /// This parameter requires `billing_scheme` to be set to `tiered`.
+    /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tiers: Option<Vec<UpdatePriceCurrencyOptionsTiers>>,
 
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePriceRecurring {
+    /// Default number of trial days when subscribing a customer to this plan using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_period_days: Option<u32>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceCurrencyOptionsCustomUnitAmount {
+    /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
 
+    /// The maximum unit amount the customer can specify for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
 
+    /// The minimum unit amount the customer can specify for this item.
+    ///
+    /// Must be at least the minimum charge amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 
+    /// The starting unit amount which can be updated by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preset: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceCurrencyOptionsTiers {
+    /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
 
+    /// Same as `flat_amount`, but accepts a decimal value representing an integer in the minor units of the currency.
+    ///
+    /// Only one of `flat_amount` and `flat_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount_decimal: Option<String>,
 
+    /// The per unit billing amount for each individual unit for which this tier applies.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 
+    /// Specifies the upper bound of this tier.
+    ///
+    /// The lower bound of a tier is the upper bound of the previous tier adding one.
+    /// Use `inf` to define a fallback tier.
     pub up_to: Option<UpTo>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePriceCurrencyOptionsCustomUnitAmount {
+    /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
 
+    /// The maximum unit amount the customer can specify for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
 
+    /// The minimum unit amount the customer can specify for this item.
+    ///
+    /// Must be at least the minimum charge amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 
+    /// The starting unit amount which can be updated by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preset: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePriceCurrencyOptionsTiers {
+    /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
 
+    /// Same as `flat_amount`, but accepts a decimal value representing an integer in the minor units of the currency.
+    ///
+    /// Only one of `flat_amount` and `flat_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount_decimal: Option<String>,
 
+    /// The per unit billing amount for each individual unit for which this tier applies.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 
+    /// Specifies the upper bound of this tier.
+    ///
+    /// The lower bound of a tier is the upper bound of the previous tier adding one.
+    /// Use `inf` to define a fallback tier.
     pub up_to: Option<UpTo>,
 }
 

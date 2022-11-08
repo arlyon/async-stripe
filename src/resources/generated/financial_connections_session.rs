@@ -15,7 +15,6 @@ pub struct FinancialConnectionsSession {
     pub id: FinancialConnectionsSessionId,
 
     /// The account holder for whom accounts are collected in this session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder: Option<BankConnectionsResourceAccountholder>,
 
     /// The accounts that were collected as part of this Session.
@@ -64,7 +63,6 @@ impl Object for FinancialConnectionsSession {
 pub struct BankConnectionsResourceLinkAccountSessionFilters {
 
     /// List of countries from which to filter accounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub countries: Option<Vec<String>>,
 }
 
@@ -110,12 +108,19 @@ impl<'a> CreateFinancialConnectionsSession<'a> {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateFinancialConnectionsSessionAccountHolder {
 
+    /// The ID of the Stripe account whose accounts will be retrieved.
+    ///
+    /// Should only be present if `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
 
+    /// The ID of the Stripe customer whose accounts will be retrieved.
+    ///
+    /// Should only be present if `type` is `customer`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
 
+    /// Type of account holder to collect accounts for.
     #[serde(rename = "type")]
     pub type_: CreateFinancialConnectionsSessionAccountHolderType,
 }
@@ -123,6 +128,7 @@ pub struct CreateFinancialConnectionsSessionAccountHolder {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateFinancialConnectionsSessionFilters {
 
+    /// List of countries from which to collect accounts.
     pub countries: Vec<String>,
 }
 

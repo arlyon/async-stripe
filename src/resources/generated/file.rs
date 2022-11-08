@@ -23,11 +23,9 @@ pub struct File {
     pub created: Timestamp,
 
     /// The time at which the file expires and is no longer available in epoch seconds.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<Timestamp>,
 
     /// A filename for the file, suitable for saving to a filesystem.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub filename: Option<String>,
 
     /// A list of [file links](https://stripe.com/docs/api#file_links) that point at this file.
@@ -41,16 +39,13 @@ pub struct File {
     pub size: u64,
 
     /// A user friendly title for the document.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 
     /// The type of the file returned (e.g., `csv`, `pdf`, `jpg`, or `png`).
     #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
 
     /// The URL from which the file can be downloaded using your live secret API key.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 

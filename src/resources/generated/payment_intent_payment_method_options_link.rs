@@ -12,7 +12,6 @@ pub struct PaymentIntentPaymentMethodOptionsLink {
     pub capture_method: Option<PaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
 
     /// Token used for persistent Link logins.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<String>,
 
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.

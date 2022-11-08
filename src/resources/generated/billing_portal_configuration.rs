@@ -18,7 +18,6 @@ pub struct BillingPortalConfiguration {
     pub active: bool,
 
     /// ID of the Connect Application that created the configuration.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub application: Option<Expandable<Application>>,
 
     pub business_profile: PortalBusinessProfile,
@@ -31,7 +30,6 @@ pub struct BillingPortalConfiguration {
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
     ///
     /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_return_url: Option<String>,
 
     pub features: PortalFeatures,
@@ -49,7 +47,6 @@ pub struct BillingPortalConfiguration {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
     pub metadata: Metadata,
 
     /// Time at which the object was last updated.
@@ -71,15 +68,12 @@ impl Object for BillingPortalConfiguration {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PortalBusinessProfile {
     /// The messaging shown to customers in the portal.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub headline: Option<String>,
 
     /// A link to the business’s publicly available privacy policy.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub privacy_policy_url: Option<String>,
 
     /// A link to the business’s publicly available terms of service.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service_url: Option<String>,
 }
 
@@ -125,7 +119,6 @@ pub struct PortalLoginPage {
     /// A shareable URL to the hosted portal login page.
     ///
     /// Your customers will be able to log in with their [email](https://stripe.com/docs/api/customers/object#customer_object-email) and receive a link to their customer portal.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
@@ -177,7 +170,6 @@ pub struct PortalSubscriptionUpdate {
     pub enabled: bool,
 
     /// The list of products that support subscription updates.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub products: Option<Vec<PortalSubscriptionUpdateProduct>>,
 
     /// Determines how to handle prorations resulting from subscription updates.

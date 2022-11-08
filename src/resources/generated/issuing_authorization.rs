@@ -26,7 +26,6 @@ pub struct IssuingAuthorization {
     /// Detailed breakdown of amount components.
     ///
     /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_details: Option<IssuingAuthorizationAmountDetails>,
 
     /// Whether the authorization has been approved.
@@ -41,7 +40,6 @@ pub struct IssuingAuthorization {
     pub card: IssuingCard,
 
     /// The cardholder to whom this authorization belongs.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub cardholder: Option<Expandable<IssuingCardholder>>,
 
     /// Time at which the object was created.
@@ -76,13 +74,11 @@ pub struct IssuingAuthorization {
     pub metadata: Metadata,
 
     /// Details about the authorization, such as identifiers, set by the card network.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub network_data: Option<IssuingAuthorizationNetworkData>,
 
     /// The pending authorization request.
     ///
     /// This field will only be non-null during an `issuing_authorization.request` webhook.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub pending_request: Option<IssuingAuthorizationPendingRequest>,
 
     /// History of every time `pending_request` was approved/denied, either by you directly or by Stripe (e.g.
@@ -106,7 +102,6 @@ pub struct IssuingAuthorization {
     /// The digital wallet used for this authorization.
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub wallet: Option<String>,
 }
 
@@ -128,7 +123,6 @@ pub struct IssuingAuthorizationNetworkData {
     /// For Maestro debit transactions this is a 9 digit code.
     /// Uncommonly, acquiring institution ID is not provided.
     /// When this occurs, the value will be null.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub acquiring_institution_id: Option<String>,
 }
 
@@ -140,7 +134,6 @@ pub struct IssuingAuthorizationPendingRequest {
     /// Detailed breakdown of amount components.
     ///
     /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_details: Option<IssuingAuthorizationAmountDetails>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -170,7 +163,6 @@ pub struct IssuingAuthorizationRequest {
     /// Detailed breakdown of amount components.
     ///
     /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_details: Option<IssuingAuthorizationAmountDetails>,
 
     /// Whether this request was approved.
@@ -199,7 +191,6 @@ pub struct IssuingAuthorizationRequest {
     pub reason: IssuingAuthorizationReason,
 
     /// If approve/decline decision is directly responsed to the webhook with json payload and if the response is invalid (e.g., parsing errors), we surface the detailed message via this field.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reason_message: Option<String>,
 }
 
@@ -212,7 +203,6 @@ pub struct IssuingAuthorizationTreasury {
     pub received_debits: Vec<String>,
 
     /// The Treasury [Transaction](https://stripe.com/docs/api/treasury/transactions) associated with this authorization.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction: Option<String>,
 }
 

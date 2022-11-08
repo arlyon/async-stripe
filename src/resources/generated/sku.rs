@@ -132,7 +132,6 @@ pub struct SkuInventory {
     /// The count of inventory available.
     ///
     /// Will be present if and only if `type` is `finite`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
     /// Inventory type.
@@ -145,7 +144,6 @@ pub struct SkuInventory {
     ///
     /// Possible values are `in_stock`, `limited`, and `out_of_stock`.
     /// Will be present if and only if `type` is `bucket`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 

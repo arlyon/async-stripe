@@ -10,19 +10,15 @@ use crate::resources::Currency;
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateOptionsOffSessionDetailsBlik {
     /// Amount of each recurring payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
     /// Currency of each recurring payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
     /// Frequency interval of each recurring payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub interval: Option<MandateOptionsOffSessionDetailsBlikInterval>,
 
     /// Frequency indicator of each recurring payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }
 

@@ -408,18 +408,7 @@ pub fn gen_inferred_params(
                     {
                         print_doc(out);
                         initializers.push((param_rename.into(), rust_type.to_string(), required));
-                        match use_path {
-                            "" | "String" => {}
-                            "Metadata" => {
-                                state.use_params.insert("Metadata");
-                            }
-                            path if path.ends_with("Id") && path != "TaxId" => {
-                                state.use_ids.insert(path.into());
-                            }
-                            path => {
-                                state.use_resources.insert(path.into());
-                            }
-                        }
+                        state.add_use(use_path);
                         if rust_type.starts_with("Option<") {
                             out.push_str(
                                 "    #[serde(skip_serializing_if = \"Option::is_none\")]\n",
@@ -1234,15 +1223,7 @@ pub fn gen_field_rust_type<T: Borrow<Schema>>(
     let maybe_schema = field.as_item().map(|s| s.borrow());
     let is_nullable = maybe_schema.map(|s| s.schema_data.nullable).unwrap_or_default();
     if let Some((use_path, rust_type)) = meta.field_to_rust_type(object, field_name) {
-        match use_path {
-            "" | "String" => (),
-            "Metadata" => {
-                state.use_params.insert("Metadata");
-            }
-            _ => {
-                state.use_resources.insert(use_path.into());
-            }
-        }
+        state.add_use(use_path);
         return rust_type.into();
     }
     if field_name == "metadata" {

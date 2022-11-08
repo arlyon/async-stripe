@@ -36,18 +36,15 @@ pub struct TreasuryTransaction {
     /// A list of TransactionEntries that are part of this Transaction.
     ///
     /// This cannot be expanded in any list endpoints.
-    #[serde(default)]
     pub entries: List<TreasuryTransactionEntry>,
 
     /// The FinancialAccount associated with this object.
     pub financial_account: String,
 
     /// ID of the flow that created the Transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub flow: Option<String>,
 
     /// Details of the flow that created the Transaction.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub flow_details: Option<TreasuryTransactionsResourceFlowDetails>,
 
     /// Type of the flow that created the Transaction.
@@ -76,11 +73,9 @@ impl Object for TreasuryTransaction {
 pub struct TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions {
 
     /// Timestamp describing when the Transaction changed status to `posted`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub posted_at: Option<Timestamp>,
 
     /// Timestamp describing when the Transaction changed status to `void`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub void_at: Option<Timestamp>,
 }
 

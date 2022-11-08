@@ -13,6 +13,7 @@ mod types;
 
 #[path = "resources"]
 mod core {
+    pub mod account_ext;
     pub mod balance_transaction_ext;
     pub mod charge_ext;
     pub mod customer_ext;
@@ -90,6 +91,7 @@ pub use {
     types::*,
 
     self::core::{
+        account_ext::*,
         balance_transaction_ext::*,
         charge_ext::*,
         customer_ext::*,

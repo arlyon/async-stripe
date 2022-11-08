@@ -24,7 +24,6 @@ pub struct Transfer {
     pub amount_reversed: i64,
 
     /// Balance transaction that describes the impact of this transfer on your account balance.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub balance_transaction: Option<Expandable<BalanceTransaction>>,
 
     /// Time that this record of the transfer was first created.
@@ -38,11 +37,9 @@ pub struct Transfer {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// ID of the Stripe account the transfer was sent to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub destination: Option<Expandable<Account>>,
 
     /// If the destination is a Stripe account, this will be the ID of the payment that the destination account received for the transfer.
@@ -68,7 +65,6 @@ pub struct Transfer {
     /// ID of the charge or payment that was used to fund the transfer.
     ///
     /// If null, the transfer was funded from the available balance.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_transaction: Option<Expandable<Charge>>,
 
     /// The source balance this transfer came from.
@@ -80,7 +76,6 @@ pub struct Transfer {
     /// A string that identifies this transaction as part of a group.
     ///
     /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
 }
 

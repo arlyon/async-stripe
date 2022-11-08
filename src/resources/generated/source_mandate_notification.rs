@@ -20,7 +20,6 @@ pub struct SourceMandateNotification {
     ///
     /// The amount is expressed in the currency of the underlying source.
     /// Required if the notification type is `debit_initiated`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]

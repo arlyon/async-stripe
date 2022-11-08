@@ -27,15 +27,12 @@ pub struct TreasuryDebitReversal {
     pub currency: Currency,
 
     /// The FinancialAccount to reverse funds from.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_account: Option<String>,
 
     /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
     /// Other flows linked to a DebitReversal.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub linked_flows: Option<TreasuryReceivedDebitsResourceDebitReversalLinkedFlows>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -58,7 +55,6 @@ pub struct TreasuryDebitReversal {
     pub status_transitions: TreasuryReceivedDebitsResourceStatusTransitions,
 
     /// The Transaction associated with this object.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction: Option<Expandable<TreasuryTransaction>>,
 }
 
@@ -76,7 +72,6 @@ impl Object for TreasuryDebitReversal {
 pub struct TreasuryReceivedDebitsResourceDebitReversalLinkedFlows {
 
     /// Set if there is an Issuing dispute associated with the DebitReversal.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_dispute: Option<String>,
 }
 
@@ -84,7 +79,6 @@ pub struct TreasuryReceivedDebitsResourceDebitReversalLinkedFlows {
 pub struct TreasuryReceivedDebitsResourceStatusTransitions {
 
     /// Timestamp describing when the DebitReversal changed status to `completed`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub completed_at: Option<Timestamp>,
 }
 

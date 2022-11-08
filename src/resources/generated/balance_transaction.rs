@@ -8,10 +8,7 @@ use crate::client::{Client, Response};
 use crate::ids::{BalanceTransactionId, PayoutId, SourceId};
 use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
-    ApplicationFee, ApplicationFeeRefund, BalanceTransactionStatus, Charge,
-    ConnectCollectionTransfer, Currency, Dispute, FeeType, IssuingAuthorization, IssuingDispute,
-    IssuingTransaction, Payout, PlatformTaxFee, Refund, ReserveTransaction, TaxDeductedAtSource,
-    Topup, Transfer, TransferReversal,
+    BalanceTransactionSourceUnion, BalanceTransactionStatus, Currency, FeeType,
 };
 
 /// The resource representing a Stripe "BalanceTransaction".
@@ -41,7 +38,6 @@ pub struct BalanceTransaction {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// The exchange rate used, if applicable, for this transaction.
@@ -51,7 +47,6 @@ pub struct BalanceTransaction {
     /// Then the PaymentIntent's `amount` would be `1000` and `currency` would be `eur`.
     /// Suppose this was converted into 12.34 USD in your Stripe account.
     /// Then the BalanceTransaction's `amount` would be `1234`, `currency` would be `usd`, and `exchange_rate` would be `1.234`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub exchange_rate: Option<f64>,
 
     /// Fees (in %s) paid for this transaction.
@@ -67,7 +62,6 @@ pub struct BalanceTransaction {
     pub reporting_category: String,
 
     /// The Stripe object to which this transaction is related.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<Expandable<BalanceTransactionSourceUnion>>,
 
     /// If the transaction's net funds are available in the Stripe balance yet.
@@ -122,7 +116,6 @@ pub struct Fee {
     pub amount: i64,
 
     /// ID of the Connect application that earned the fee.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub application: Option<String>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -133,7 +126,6 @@ pub struct Fee {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// Type of the fee, one of: `application_fee`, `stripe_fee` or `tax`.
@@ -144,6 +136,10 @@ pub struct Fee {
 /// The parameters for `BalanceTransaction::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListBalanceTransactions<'a> {
+    /// This parameter is deprecated and we recommend listing by created and filtering in memory instead.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub available_on: Option<RangeQuery<Timestamp>>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -197,6 +193,7 @@ pub struct ListBalanceTransactions<'a> {
 impl<'a> ListBalanceTransactions<'a> {
     pub fn new() -> Self {
         ListBalanceTransactions {
+            available_on: Default::default(),
             created: Default::default(),
             currency: Default::default(),
             ending_before: Default::default(),
@@ -215,36 +212,6 @@ impl Paginable for ListBalanceTransactions<'_> {
         self.starting_after = Some(item.id());
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
-pub enum BalanceTransactionSourceUnion {
-    ApplicationFee(ApplicationFee),
-    Charge(Charge),
-    ConnectCollectionTransfer(ConnectCollectionTransfer),
-    Dispute(Dispute),
-    #[serde(rename = "fee_refund")]
-    ApplicationFeeRefund(ApplicationFeeRefund),
-    #[serde(rename = "issuing.authorization")]
-    IssuingAuthorization(IssuingAuthorization),
-    #[serde(rename = "issuing.dispute")]
-    IssuingDispute(IssuingDispute),
-    #[serde(rename = "issuing.transaction")]
-    IssuingTransaction(IssuingTransaction),
-    Payout(Payout),
-    PlatformTaxFee(PlatformTaxFee),
-    Refund(Refund),
-    ReserveTransaction(ReserveTransaction),
-    TaxDeductedAtSource(TaxDeductedAtSource),
-    Topup(Topup),
-    Transfer(Transfer),
-    TransferReversal(TransferReversal),
-}
-impl std::default::Default for BalanceTransactionSourceUnion {
-    fn default() -> Self {
-        Self::ApplicationFee(Default::default())
-    }
-}
-
 /// An enum representing the possible values of an `BalanceTransaction`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

@@ -35,24 +35,20 @@ pub struct PromotionCode {
     pub created: Timestamp,
 
     /// The customer that this promotion code can be used by.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Expandable<Customer>>,
 
     /// Date at which the promotion code can no longer be redeemed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<Timestamp>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
     /// Maximum number of times this promotion code can be redeemed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_redemptions: Option<i64>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
     pub metadata: Metadata,
 
     pub restrictions: PromotionCodesResourceRestrictions,
@@ -112,11 +108,9 @@ pub struct PromotionCodesResourceRestrictions {
     pub first_time_transaction: bool,
 
     /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_amount: Option<i64>,
 
     /// Three-letter [ISO code](https://stripe.com/docs/currencies) for minimum_amount.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_amount_currency: Option<Currency>,
 }
 
@@ -236,12 +230,16 @@ impl<'a> UpdatePromotionCode<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePromotionCodeRestrictions {
+    /// Promotion codes defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<UpdatePromotionCodeRestrictionsCurrencyOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePromotionCodeRestrictionsCurrencyOptions {
+    /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_amount: Option<i64>,
 }
