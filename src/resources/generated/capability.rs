@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::CapabilityId;
+use crate::ids::{CapabilityId};
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::Account;
+use crate::resources::{Account};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "AccountCapability".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -50,6 +49,7 @@ impl Object for Capability {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountCapabilityFutureRequirements {
+
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
@@ -92,6 +92,7 @@ pub struct AccountCapabilityFutureRequirements {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountCapabilityRequirements {
+
     /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alternatives: Option<Vec<AccountRequirementsAlternative>>,
@@ -136,6 +137,7 @@ pub struct AccountCapabilityRequirements {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsAlternative {
+
     /// Fields that can be provided to satisfy all fields in `original_fields_due`.
     pub alternative_fields_due: Vec<String>,
 
@@ -145,6 +147,7 @@ pub struct AccountRequirementsAlternative {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AccountRequirementsError {
+
     /// The code for the type of error.
     pub code: AccountRequirementsErrorCode,
 
@@ -160,6 +163,9 @@ pub struct AccountRequirementsError {
 #[serde(rename_all = "snake_case")]
 pub enum AccountRequirementsErrorCode {
     InvalidAddressCityStatePostalCode,
+    #[serde(rename = "invalid_dob_age_under_18")]
+    InvalidDobAgeUnder18,
+    InvalidRepresentativeCountry,
     InvalidStreetAddress,
     InvalidTosAcceptance,
     InvalidValueOther,
@@ -200,6 +206,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
     VerificationMissingExecutives,
@@ -211,6 +218,8 @@ impl AccountRequirementsErrorCode {
     pub fn as_str(self) -> &'static str {
         match self {
             AccountRequirementsErrorCode::InvalidAddressCityStatePostalCode => "invalid_address_city_state_postal_code",
+            AccountRequirementsErrorCode::InvalidDobAgeUnder18 => "invalid_dob_age_under_18",
+            AccountRequirementsErrorCode::InvalidRepresentativeCountry => "invalid_representative_country",
             AccountRequirementsErrorCode::InvalidStreetAddress => "invalid_street_address",
             AccountRequirementsErrorCode::InvalidTosAcceptance => "invalid_tos_acceptance",
             AccountRequirementsErrorCode::InvalidValueOther => "invalid_value_other",
@@ -251,6 +260,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationFailedKeyedMatch => "verification_failed_keyed_match",
             AccountRequirementsErrorCode::VerificationFailedNameMatch => "verification_failed_name_match",
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
+            AccountRequirementsErrorCode::VerificationFailedResidentialAddress => "verification_failed_residential_address",
             AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
             AccountRequirementsErrorCode::VerificationMissingExecutives => "verification_missing_executives",

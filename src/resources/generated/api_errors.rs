@@ -49,6 +49,10 @@ pub struct ApiErrors {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_type: Option<String>,
 
+    /// A URL to the request log entry in your dashboard.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub request_log_url: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_intent: Option<SetupIntent>,
 

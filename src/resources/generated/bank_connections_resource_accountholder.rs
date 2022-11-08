@@ -2,14 +2,14 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::params::Expandable;
+use crate::params::{Expandable};
 use crate::resources::{Account, Customer};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankConnectionsResourceAccountholder".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct BankConnectionsResourceAccountholder {
+
     /// The ID of the Stripe account this account belongs to.
     ///
     /// Should only be present if `account_holder.type` is `account`.

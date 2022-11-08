@@ -363,14 +363,14 @@ impl Object for Plan {
 #[cfg(not(feature = "connect"))]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Recipient {
-    pub id: RecipientId,
+    pub id: (),
 }
 
 #[cfg(not(feature = "connect"))]
 impl Object for Recipient {
-    type Id = RecipientId;
+    type Id = ();
     fn id(&self) -> Self::Id {
-        self.id.clone()
+        self.id
     }
     fn object(&self) -> &'static str {
         "recipient"

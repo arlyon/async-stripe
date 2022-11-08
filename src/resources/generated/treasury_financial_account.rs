@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::TreasuryFinancialAccountId;
+use crate::ids::{TreasuryFinancialAccountId};
 use crate::params::{Metadata, Object, Timestamp};
-use crate::resources::TreasuryFinancialAccountFeatures;
+use crate::resources::{TreasuryFinancialAccountFeatures};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryFinancialAccountsResourceFinancialAccount".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -15,7 +14,8 @@ pub struct TreasuryFinancialAccount {
     pub id: TreasuryFinancialAccountId,
 
     /// The array of paths to active Features in the Features hash.
-    pub active_features: Vec<TreasuryFinancialAccountActiveFeatures>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active_features: Option<Vec<TreasuryFinancialAccountActiveFeatures>>,
 
     pub balance: TreasuryFinancialAccountsResourceBalance,
 
@@ -43,14 +43,16 @@ pub struct TreasuryFinancialAccount {
     pub metadata: Metadata,
 
     /// The array of paths to pending Features in the Features hash.
-    pub pending_features: Vec<TreasuryFinancialAccountPendingFeatures>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pending_features: Option<Vec<TreasuryFinancialAccountPendingFeatures>>,
 
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub platform_restrictions: Option<TreasuryFinancialAccountsResourcePlatformRestrictions>,
 
     /// The array of paths to restricted Features in the Features hash.
-    pub restricted_features: Vec<TreasuryFinancialAccountRestrictedFeatures>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restricted_features: Option<Vec<TreasuryFinancialAccountRestrictedFeatures>>,
 
     /// The enum specifying what state the account is in.
     pub status: TreasuryFinancialAccountStatus,
@@ -75,6 +77,7 @@ impl Object for TreasuryFinancialAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceBalance {
+
     /// Funds the user can spend right now.
     pub cash: i64,
 
@@ -87,13 +90,13 @@ pub struct TreasuryFinancialAccountsResourceBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceFinancialAddress {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aba: Option<TreasuryFinancialAccountsResourceAbaRecord>,
 
     /// The list of networks that the address supports.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub supported_networks:
-        Option<Vec<TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks>>,
+    pub supported_networks: Option<Vec<TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks>>,
 
     /// The type of financial address.
     #[serde(rename = "type")]
@@ -102,6 +105,7 @@ pub struct TreasuryFinancialAccountsResourceFinancialAddress {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceAbaRecord {
+
     /// The name of the person or business that owns the bank account.
     pub account_holder_name: String,
 
@@ -121,6 +125,7 @@ pub struct TreasuryFinancialAccountsResourceAbaRecord {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourcePlatformRestrictions {
+
     /// Restricts all inbound money movement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inbound_flows: Option<TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows>,
@@ -132,6 +137,7 @@ pub struct TreasuryFinancialAccountsResourcePlatformRestrictions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceStatusDetails {
+
     /// Details related to the closure of this FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub closed: Option<TreasuryFinancialAccountsResourceClosedStatusDetails>,
@@ -139,6 +145,7 @@ pub struct TreasuryFinancialAccountsResourceStatusDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryFinancialAccountsResourceClosedStatusDetails {
+
     /// The array that contains reasons for a FinancialAccount closure.
     pub reasons: Vec<TreasuryFinancialAccountsResourceClosedStatusDetailsReasons>,
 }
@@ -170,24 +177,14 @@ impl TreasuryFinancialAccountActiveFeatures {
         match self {
             TreasuryFinancialAccountActiveFeatures::CardIssuing => "card_issuing",
             TreasuryFinancialAccountActiveFeatures::DepositInsurance => "deposit_insurance",
-            TreasuryFinancialAccountActiveFeatures::FinancialAddressesAba => {
-                "financial_addresses.aba"
-            }
+            TreasuryFinancialAccountActiveFeatures::FinancialAddressesAba => "financial_addresses.aba",
             TreasuryFinancialAccountActiveFeatures::InboundTransfersAch => "inbound_transfers.ach",
             TreasuryFinancialAccountActiveFeatures::IntraStripeFlows => "intra_stripe_flows",
             TreasuryFinancialAccountActiveFeatures::OutboundPaymentsAch => "outbound_payments.ach",
-            TreasuryFinancialAccountActiveFeatures::OutboundPaymentsUsDomesticWire => {
-                "outbound_payments.us_domestic_wire"
-            }
-            TreasuryFinancialAccountActiveFeatures::OutboundTransfersAch => {
-                "outbound_transfers.ach"
-            }
-            TreasuryFinancialAccountActiveFeatures::OutboundTransfersUsDomesticWire => {
-                "outbound_transfers.us_domestic_wire"
-            }
-            TreasuryFinancialAccountActiveFeatures::RemoteDepositCapture => {
-                "remote_deposit_capture"
-            }
+            TreasuryFinancialAccountActiveFeatures::OutboundPaymentsUsDomesticWire => "outbound_payments.us_domestic_wire",
+            TreasuryFinancialAccountActiveFeatures::OutboundTransfersAch => "outbound_transfers.ach",
+            TreasuryFinancialAccountActiveFeatures::OutboundTransfersUsDomesticWire => "outbound_transfers.us_domestic_wire",
+            TreasuryFinancialAccountActiveFeatures::RemoteDepositCapture => "remote_deposit_capture",
         }
     }
 }
@@ -236,24 +233,14 @@ impl TreasuryFinancialAccountPendingFeatures {
         match self {
             TreasuryFinancialAccountPendingFeatures::CardIssuing => "card_issuing",
             TreasuryFinancialAccountPendingFeatures::DepositInsurance => "deposit_insurance",
-            TreasuryFinancialAccountPendingFeatures::FinancialAddressesAba => {
-                "financial_addresses.aba"
-            }
+            TreasuryFinancialAccountPendingFeatures::FinancialAddressesAba => "financial_addresses.aba",
             TreasuryFinancialAccountPendingFeatures::InboundTransfersAch => "inbound_transfers.ach",
             TreasuryFinancialAccountPendingFeatures::IntraStripeFlows => "intra_stripe_flows",
             TreasuryFinancialAccountPendingFeatures::OutboundPaymentsAch => "outbound_payments.ach",
-            TreasuryFinancialAccountPendingFeatures::OutboundPaymentsUsDomesticWire => {
-                "outbound_payments.us_domestic_wire"
-            }
-            TreasuryFinancialAccountPendingFeatures::OutboundTransfersAch => {
-                "outbound_transfers.ach"
-            }
-            TreasuryFinancialAccountPendingFeatures::OutboundTransfersUsDomesticWire => {
-                "outbound_transfers.us_domestic_wire"
-            }
-            TreasuryFinancialAccountPendingFeatures::RemoteDepositCapture => {
-                "remote_deposit_capture"
-            }
+            TreasuryFinancialAccountPendingFeatures::OutboundPaymentsUsDomesticWire => "outbound_payments.us_domestic_wire",
+            TreasuryFinancialAccountPendingFeatures::OutboundTransfersAch => "outbound_transfers.ach",
+            TreasuryFinancialAccountPendingFeatures::OutboundTransfersUsDomesticWire => "outbound_transfers.us_domestic_wire",
+            TreasuryFinancialAccountPendingFeatures::RemoteDepositCapture => "remote_deposit_capture",
         }
     }
 }
@@ -302,28 +289,14 @@ impl TreasuryFinancialAccountRestrictedFeatures {
         match self {
             TreasuryFinancialAccountRestrictedFeatures::CardIssuing => "card_issuing",
             TreasuryFinancialAccountRestrictedFeatures::DepositInsurance => "deposit_insurance",
-            TreasuryFinancialAccountRestrictedFeatures::FinancialAddressesAba => {
-                "financial_addresses.aba"
-            }
-            TreasuryFinancialAccountRestrictedFeatures::InboundTransfersAch => {
-                "inbound_transfers.ach"
-            }
+            TreasuryFinancialAccountRestrictedFeatures::FinancialAddressesAba => "financial_addresses.aba",
+            TreasuryFinancialAccountRestrictedFeatures::InboundTransfersAch => "inbound_transfers.ach",
             TreasuryFinancialAccountRestrictedFeatures::IntraStripeFlows => "intra_stripe_flows",
-            TreasuryFinancialAccountRestrictedFeatures::OutboundPaymentsAch => {
-                "outbound_payments.ach"
-            }
-            TreasuryFinancialAccountRestrictedFeatures::OutboundPaymentsUsDomesticWire => {
-                "outbound_payments.us_domestic_wire"
-            }
-            TreasuryFinancialAccountRestrictedFeatures::OutboundTransfersAch => {
-                "outbound_transfers.ach"
-            }
-            TreasuryFinancialAccountRestrictedFeatures::OutboundTransfersUsDomesticWire => {
-                "outbound_transfers.us_domestic_wire"
-            }
-            TreasuryFinancialAccountRestrictedFeatures::RemoteDepositCapture => {
-                "remote_deposit_capture"
-            }
+            TreasuryFinancialAccountRestrictedFeatures::OutboundPaymentsAch => "outbound_payments.ach",
+            TreasuryFinancialAccountRestrictedFeatures::OutboundPaymentsUsDomesticWire => "outbound_payments.us_domestic_wire",
+            TreasuryFinancialAccountRestrictedFeatures::OutboundTransfersAch => "outbound_transfers.ach",
+            TreasuryFinancialAccountRestrictedFeatures::OutboundTransfersUsDomesticWire => "outbound_transfers.us_domestic_wire",
+            TreasuryFinancialAccountRestrictedFeatures::RemoteDepositCapture => "remote_deposit_capture",
         }
     }
 }
@@ -391,12 +364,8 @@ pub enum TreasuryFinancialAccountsResourceClosedStatusDetailsReasons {
 impl TreasuryFinancialAccountsResourceClosedStatusDetailsReasons {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryFinancialAccountsResourceClosedStatusDetailsReasons::AccountRejected => {
-                "account_rejected"
-            }
-            TreasuryFinancialAccountsResourceClosedStatusDetailsReasons::ClosedByPlatform => {
-                "closed_by_platform"
-            }
+            TreasuryFinancialAccountsResourceClosedStatusDetailsReasons::AccountRejected => "account_rejected",
+            TreasuryFinancialAccountsResourceClosedStatusDetailsReasons::ClosedByPlatform => "closed_by_platform",
             TreasuryFinancialAccountsResourceClosedStatusDetailsReasons::Other => "other",
         }
     }
@@ -431,9 +400,7 @@ impl TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks {
     pub fn as_str(self) -> &'static str {
         match self {
             TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks::Ach => "ach",
-            TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks::UsDomesticWire => {
-                "us_domestic_wire"
-            }
+            TreasuryFinancialAccountsResourceFinancialAddressSupportedNetworks::UsDomesticWire => "us_domestic_wire",
         }
     }
 }
@@ -498,12 +465,8 @@ pub enum TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
 impl TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::Restricted => {
-                "restricted"
-            }
-            TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::Unrestricted => {
-                "unrestricted"
-            }
+            TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::Restricted => "restricted",
+            TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::Unrestricted => "unrestricted",
         }
     }
 }
@@ -536,12 +499,8 @@ pub enum TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
 impl TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::Restricted => {
-                "restricted"
-            }
-            TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::Unrestricted => {
-                "unrestricted"
-            }
+            TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::Restricted => "restricted",
+            TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::Unrestricted => "unrestricted",
         }
     }
 }

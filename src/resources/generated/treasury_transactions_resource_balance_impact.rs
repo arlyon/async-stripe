@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "TreasuryTransactionsResourceBalanceImpact".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryTransactionsResourceBalanceImpact {
+
     /// The change made to funds the user can spend right now.
     pub cash: i64,
 

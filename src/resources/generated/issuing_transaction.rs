@@ -239,11 +239,11 @@ pub struct IssuingTransactionReceiptData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransactionTreasury {
-    /// The Treasury [ReceivedCredit](https://stripe.com/docs/api/treasury/received_debits) representing this Issuing transaction if it is a refund.
+    /// The Treasury [ReceivedCredit](https://stripe.com/docs/api/treasury/received_credits) representing this Issuing transaction if it is a refund.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub received_credit: Option<String>,
 
-    /// The Treasury [ReceivedDebit](https://stripe.com/docs/api/treasury/received_credits) representing this Issuing transaction if it is a capture.
+    /// The Treasury [ReceivedDebit](https://stripe.com/docs/api/treasury/received_debits) representing this Issuing transaction if it is a capture.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub received_debit: Option<String>,
 }

@@ -327,6 +327,9 @@ pub struct PersonRequirements {
 #[serde(rename_all = "snake_case")]
 pub enum AccountRequirementsErrorCode {
     InvalidAddressCityStatePostalCode,
+    #[serde(rename = "invalid_dob_age_under_18")]
+    InvalidDobAgeUnder18,
+    InvalidRepresentativeCountry,
     InvalidStreetAddress,
     InvalidTosAcceptance,
     InvalidValueOther,
@@ -367,6 +370,7 @@ pub enum AccountRequirementsErrorCode {
     VerificationFailedKeyedMatch,
     VerificationFailedNameMatch,
     VerificationFailedOther,
+    VerificationFailedResidentialAddress,
     VerificationFailedTaxIdMatch,
     VerificationFailedTaxIdNotIssued,
     VerificationMissingExecutives,
@@ -378,6 +382,8 @@ impl AccountRequirementsErrorCode {
     pub fn as_str(self) -> &'static str {
         match self {
             AccountRequirementsErrorCode::InvalidAddressCityStatePostalCode => "invalid_address_city_state_postal_code",
+            AccountRequirementsErrorCode::InvalidDobAgeUnder18 => "invalid_dob_age_under_18",
+            AccountRequirementsErrorCode::InvalidRepresentativeCountry => "invalid_representative_country",
             AccountRequirementsErrorCode::InvalidStreetAddress => "invalid_street_address",
             AccountRequirementsErrorCode::InvalidTosAcceptance => "invalid_tos_acceptance",
             AccountRequirementsErrorCode::InvalidValueOther => "invalid_value_other",
@@ -418,6 +424,7 @@ impl AccountRequirementsErrorCode {
             AccountRequirementsErrorCode::VerificationFailedKeyedMatch => "verification_failed_keyed_match",
             AccountRequirementsErrorCode::VerificationFailedNameMatch => "verification_failed_name_match",
             AccountRequirementsErrorCode::VerificationFailedOther => "verification_failed_other",
+            AccountRequirementsErrorCode::VerificationFailedResidentialAddress => "verification_failed_residential_address",
             AccountRequirementsErrorCode::VerificationFailedTaxIdMatch => "verification_failed_tax_id_match",
             AccountRequirementsErrorCode::VerificationFailedTaxIdNotIssued => "verification_failed_tax_id_not_issued",
             AccountRequirementsErrorCode::VerificationMissingExecutives => "verification_missing_executives",

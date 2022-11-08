@@ -24,6 +24,9 @@ use crate::resources::{
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Invoice {
     /// Unique identifier for the object.
+    ///
+    /// This property is always present unless the invoice is an upcoming invoice.
+    /// See [Retrieve an upcoming invoice](https://stripe.com/docs/api/invoices/upcoming) for more details.
     #[serde(default = "InvoiceId::none")]
     pub id: InvoiceId,
 
@@ -238,6 +241,12 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
 
+    /// Details of the invoice that was cloned.
+    ///
+    /// See the [revision documentation](https://stripe.com/docs/invoicing/invoice-revisions) for more details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from_invoice: Option<InvoicesFromInvoice>,
+
     /// The URL for the hosted invoice page, which allows customers to view and pay an invoice.
     ///
     /// If the invoice has not been finalized yet, this will be null.
@@ -255,6 +264,10 @@ pub struct Invoice {
     /// This field is cleared when the invoice is successfully finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_finalization_error: Option<Box<ApiErrors>>,
+
+    /// The ID of the most recent non-draft revision of this invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub latest_revision: Option<Expandable<Invoice>>,
 
     /// The individual line items that make up the invoice.
     ///
@@ -342,6 +355,7 @@ pub struct Invoice {
     /// Starting customer balance before the invoice is finalized.
     ///
     /// If the invoice has not been finalized yet, this will be the current customer balance.
+    /// For revision invoices, this also includes any customer balance that was applied to the original invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_balance: Option<i64>,
 
@@ -534,6 +548,15 @@ pub struct InvoiceTransferData {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InvoicesFromInvoice {
+    /// The relation between this invoice and the cloned invoice.
+    pub action: String,
+
+    /// The invoice that was cloned.
+    pub invoice: Expandable<Invoice>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesPaymentSettings {
     /// ID of the mandate to be used for this invoice.
     ///
@@ -602,7 +625,7 @@ pub struct InvoiceInstallmentsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesResourceInvoiceTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: TaxIdType,
 
@@ -730,6 +753,13 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<&'a str>,
 
+    /// Revise an existing invoice.
+    ///
+    /// The new invoice will be created in `status=draft`.
+    /// See the [revision documentation](https://stripe.com/docs/invoicing/invoice-revisions) for more details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from_invoice: Option<CreateInvoiceFromInvoice>,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -801,6 +831,7 @@ impl<'a> CreateInvoice<'a> {
             due_date: Default::default(),
             expand: Default::default(),
             footer: Default::default(),
+            from_invoice: Default::default(),
             metadata: Default::default(),
             on_behalf_of: Default::default(),
             payment_settings: Default::default(),
@@ -908,6 +939,13 @@ pub struct CreateInvoiceDiscounts {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceFromInvoice {
+    pub action: CreateInvoiceFromInvoiceAction,
+
+    pub invoice: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1128,6 +1166,38 @@ impl std::fmt::Display for CollectionMethod {
 impl std::default::Default for CollectionMethod {
     fn default() -> Self {
         Self::ChargeAutomatically
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoiceFromInvoice`'s `action` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceFromInvoiceAction {
+    Revision,
+}
+
+impl CreateInvoiceFromInvoiceAction {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceFromInvoiceAction::Revision => "revision",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceFromInvoiceAction {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceFromInvoiceAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateInvoiceFromInvoiceAction {
+    fn default() -> Self {
+        Self::Revision
     }
 }
 
@@ -1890,6 +1960,7 @@ pub enum TaxIdType {
     CaQst,
     ChVat,
     ClTin,
+    EgTin,
     EsCif,
     EuOssVat,
     EuVat,
@@ -1903,6 +1974,8 @@ pub enum TaxIdType {
     IsVat,
     JpCn,
     JpRn,
+    JpTrn,
+    KePin,
     KrBrn,
     LiUid,
     MxRfc,
@@ -1911,6 +1984,7 @@ pub enum TaxIdType {
     MySst,
     NoVat,
     NzGst,
+    PhTin,
     RuInn,
     RuKpp,
     SaVat,
@@ -1918,6 +1992,7 @@ pub enum TaxIdType {
     SgUen,
     SiTin,
     ThVat,
+    TrTin,
     TwVat,
     UaVat,
     Unknown,
@@ -1942,6 +2017,7 @@ impl TaxIdType {
             TaxIdType::CaQst => "ca_qst",
             TaxIdType::ChVat => "ch_vat",
             TaxIdType::ClTin => "cl_tin",
+            TaxIdType::EgTin => "eg_tin",
             TaxIdType::EsCif => "es_cif",
             TaxIdType::EuOssVat => "eu_oss_vat",
             TaxIdType::EuVat => "eu_vat",
@@ -1955,6 +2031,8 @@ impl TaxIdType {
             TaxIdType::IsVat => "is_vat",
             TaxIdType::JpCn => "jp_cn",
             TaxIdType::JpRn => "jp_rn",
+            TaxIdType::JpTrn => "jp_trn",
+            TaxIdType::KePin => "ke_pin",
             TaxIdType::KrBrn => "kr_brn",
             TaxIdType::LiUid => "li_uid",
             TaxIdType::MxRfc => "mx_rfc",
@@ -1963,6 +2041,7 @@ impl TaxIdType {
             TaxIdType::MySst => "my_sst",
             TaxIdType::NoVat => "no_vat",
             TaxIdType::NzGst => "nz_gst",
+            TaxIdType::PhTin => "ph_tin",
             TaxIdType::RuInn => "ru_inn",
             TaxIdType::RuKpp => "ru_kpp",
             TaxIdType::SaVat => "sa_vat",
@@ -1970,6 +2049,7 @@ impl TaxIdType {
             TaxIdType::SgUen => "sg_uen",
             TaxIdType::SiTin => "si_tin",
             TaxIdType::ThVat => "th_vat",
+            TaxIdType::TrTin => "tr_tin",
             TaxIdType::TwVat => "tw_vat",
             TaxIdType::UaVat => "ua_vat",
             TaxIdType::Unknown => "unknown",

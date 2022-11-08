@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::TreasuryCreditReversalId;
+use crate::ids::{TreasuryCreditReversalId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Currency, TreasuryTransaction};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryReceivedCreditsResourceCreditReversal".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -16,6 +15,11 @@ pub struct TreasuryCreditReversal {
 
     /// Amount (in cents) transferred.
     pub amount: i64,
+
+    /// Time at which the object was created.
+    ///
+    /// Measured in seconds since the Unix epoch.
+    pub created: Timestamp,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -65,6 +69,7 @@ impl Object for TreasuryCreditReversal {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryReceivedCreditsResourceStatusTransitions {
+
     /// Timestamp describing when the CreditReversal changed status to `posted`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub posted_at: Option<Timestamp>,

@@ -765,6 +765,9 @@ pub struct CreateSetupIntentPaymentMethodData {
     pub paynow: Option<CreateSetupIntentPaymentMethodDataPaynow>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<CreateSetupIntentPaymentMethodDataPix>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<CreateSetupIntentPaymentMethodDataPromptpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -887,6 +890,9 @@ pub struct UpdateSetupIntentPaymentMethodData {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<UpdateSetupIntentPaymentMethodDataPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<UpdateSetupIntentPaymentMethodDataPix>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<UpdateSetupIntentPaymentMethodDataPromptpay>,
@@ -1058,6 +1064,9 @@ pub struct CreateSetupIntentPaymentMethodDataP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataPix {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataPromptpay {}
@@ -1270,6 +1279,9 @@ pub struct UpdateSetupIntentPaymentMethodDataP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataPix {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataPromptpay {}
@@ -1735,6 +1747,7 @@ pub enum CreateSetupIntentPaymentMethodDataEpsBank {
     BrullKallmusBankAg,
     BtvVierLanderBank,
     CapitalBankGraweGruppeAg,
+    DeutscheBankAg,
     Dolomitenbank,
     EasybankAg,
     ErsteBankUndSparkassen,
@@ -1779,6 +1792,7 @@ impl CreateSetupIntentPaymentMethodDataEpsBank {
             CreateSetupIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => {
                 "capital_bank_grawe_gruppe_ag"
             }
+            CreateSetupIntentPaymentMethodDataEpsBank::DeutscheBankAg => "deutsche_bank_ag",
             CreateSetupIntentPaymentMethodDataEpsBank::Dolomitenbank => "dolomitenbank",
             CreateSetupIntentPaymentMethodDataEpsBank::EasybankAg => "easybank_ag",
             CreateSetupIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => {
@@ -1841,6 +1855,7 @@ pub enum CreateSetupIntentPaymentMethodDataFpxBank {
     Ambank,
     BankIslam,
     BankMuamalat,
+    BankOfChina,
     BankRakyat,
     Bsn,
     Cimb,
@@ -1867,6 +1882,7 @@ impl CreateSetupIntentPaymentMethodDataFpxBank {
             CreateSetupIntentPaymentMethodDataFpxBank::Ambank => "ambank",
             CreateSetupIntentPaymentMethodDataFpxBank::BankIslam => "bank_islam",
             CreateSetupIntentPaymentMethodDataFpxBank::BankMuamalat => "bank_muamalat",
+            CreateSetupIntentPaymentMethodDataFpxBank::BankOfChina => "bank_of_china",
             CreateSetupIntentPaymentMethodDataFpxBank::BankRakyat => "bank_rakyat",
             CreateSetupIntentPaymentMethodDataFpxBank::Bsn => "bsn",
             CreateSetupIntentPaymentMethodDataFpxBank::Cimb => "cimb",
@@ -2116,6 +2132,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     Oxxo,
     P24,
     Paynow,
+    Pix,
     Promptpay,
     SepaDebit,
     Sofort,
@@ -2147,6 +2164,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             CreateSetupIntentPaymentMethodDataType::Oxxo => "oxxo",
             CreateSetupIntentPaymentMethodDataType::P24 => "p24",
             CreateSetupIntentPaymentMethodDataType::Paynow => "paynow",
+            CreateSetupIntentPaymentMethodDataType::Pix => "pix",
             CreateSetupIntentPaymentMethodDataType::Promptpay => "promptpay",
             CreateSetupIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
             CreateSetupIntentPaymentMethodDataType::Sofort => "sofort",
@@ -3377,6 +3395,7 @@ pub enum UpdateSetupIntentPaymentMethodDataEpsBank {
     BrullKallmusBankAg,
     BtvVierLanderBank,
     CapitalBankGraweGruppeAg,
+    DeutscheBankAg,
     Dolomitenbank,
     EasybankAg,
     ErsteBankUndSparkassen,
@@ -3421,6 +3440,7 @@ impl UpdateSetupIntentPaymentMethodDataEpsBank {
             UpdateSetupIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => {
                 "capital_bank_grawe_gruppe_ag"
             }
+            UpdateSetupIntentPaymentMethodDataEpsBank::DeutscheBankAg => "deutsche_bank_ag",
             UpdateSetupIntentPaymentMethodDataEpsBank::Dolomitenbank => "dolomitenbank",
             UpdateSetupIntentPaymentMethodDataEpsBank::EasybankAg => "easybank_ag",
             UpdateSetupIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => {
@@ -3483,6 +3503,7 @@ pub enum UpdateSetupIntentPaymentMethodDataFpxBank {
     Ambank,
     BankIslam,
     BankMuamalat,
+    BankOfChina,
     BankRakyat,
     Bsn,
     Cimb,
@@ -3509,6 +3530,7 @@ impl UpdateSetupIntentPaymentMethodDataFpxBank {
             UpdateSetupIntentPaymentMethodDataFpxBank::Ambank => "ambank",
             UpdateSetupIntentPaymentMethodDataFpxBank::BankIslam => "bank_islam",
             UpdateSetupIntentPaymentMethodDataFpxBank::BankMuamalat => "bank_muamalat",
+            UpdateSetupIntentPaymentMethodDataFpxBank::BankOfChina => "bank_of_china",
             UpdateSetupIntentPaymentMethodDataFpxBank::BankRakyat => "bank_rakyat",
             UpdateSetupIntentPaymentMethodDataFpxBank::Bsn => "bsn",
             UpdateSetupIntentPaymentMethodDataFpxBank::Cimb => "cimb",
@@ -3758,6 +3780,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     Oxxo,
     P24,
     Paynow,
+    Pix,
     Promptpay,
     SepaDebit,
     Sofort,
@@ -3789,6 +3812,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             UpdateSetupIntentPaymentMethodDataType::Oxxo => "oxxo",
             UpdateSetupIntentPaymentMethodDataType::P24 => "p24",
             UpdateSetupIntentPaymentMethodDataType::Paynow => "paynow",
+            UpdateSetupIntentPaymentMethodDataType::Pix => "pix",
             UpdateSetupIntentPaymentMethodDataType::Promptpay => "promptpay",
             UpdateSetupIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
             UpdateSetupIntentPaymentMethodDataType::Sofort => "sofort",

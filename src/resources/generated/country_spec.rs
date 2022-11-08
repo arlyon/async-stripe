@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::CountrySpecId;
+use crate::ids::{CountrySpecId};
 use crate::params::{Expand, List, Object, Paginable};
-use crate::resources::Currency;
+use crate::resources::{Currency};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CountrySpec".
 ///
@@ -43,10 +42,12 @@ pub struct CountrySpec {
 }
 
 impl CountrySpec {
+
     /// Lists all Country Spec objects available in the API.
-    pub fn list(client: &Client, params: &ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
-        client.get_query("/country_specs", &params)
-    }
+pub fn list(client: &Client, params: &ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
+   client.get_query("/country_specs", &params)
+}
+
 
     /// Returns a Country Spec for a given Country code.
     pub fn retrieve(client: &Client, id: &CountrySpecId, expand: &[&str]) -> Response<CountrySpec> {
@@ -66,6 +67,7 @@ impl Object for CountrySpec {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFields {
+
     pub company: CountrySpecVerificationFieldDetails,
 
     pub individual: CountrySpecVerificationFieldDetails,
@@ -73,6 +75,7 @@ pub struct CountrySpecVerificationFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CountrySpecVerificationFieldDetails {
+
     /// Additional fields which are only required for some users.
     pub additional: Vec<String>,
 
@@ -83,6 +86,7 @@ pub struct CountrySpecVerificationFieldDetails {
 /// The parameters for `CountrySpec::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCountrySpecs<'a> {
+
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -121,6 +125,5 @@ impl<'a> ListCountrySpecs<'a> {
 impl Paginable for ListCountrySpecs<'_> {
     type O = CountrySpec;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}

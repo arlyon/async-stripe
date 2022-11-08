@@ -2,18 +2,16 @@
 // This file was automatically generated.
 // ======================================
 
+use crate::resources::{TreasurySharedResourceBillingDetails};
 use serde::{Deserialize, Serialize};
-
-use crate::resources::TreasurySharedResourceBillingDetails;
 
 /// The resource representing a Stripe "TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails {
+
     /// Set when `type` is `balance`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub balance: Option<
-        TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance,
-    >,
+    pub balance: Option<TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance>,
 
     pub billing_details: TreasurySharedResourceBillingDetails,
 
@@ -30,8 +28,7 @@ pub struct TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPayment
     ///
     /// This can be an external account, a Stripe balance, or a FinancialAccount.
     #[serde(rename = "type")]
-    pub type_:
-        TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType,
+    pub type_: TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccount>,
@@ -39,6 +36,7 @@ pub struct TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPayment
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ReceivedPaymentMethodDetailsFinancialAccount {
+
     /// The FinancialAccount ID.
     pub id: String,
 
@@ -50,6 +48,7 @@ pub struct ReceivedPaymentMethodDetailsFinancialAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasurySharedResourceInitiatingPaymentMethodDetailsUsBankAccount {
+
     /// Bank name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_name: Option<String>,
@@ -110,24 +109,18 @@ impl TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethod
     }
 }
 
-impl AsRef<str>
-    for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance
-{
+impl AsRef<str> for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display
-    for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance
-{
+impl std::fmt::Display for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default
-    for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance
-{
+impl std::default::Default for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance {
     fn default() -> Self {
         Self::Payments
     }
@@ -156,24 +149,18 @@ impl TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethod
     }
 }
 
-impl AsRef<str>
-    for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType
-{
+impl AsRef<str> for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType {
     fn as_ref(&self) -> &str {
         self.as_str()
     }
 }
 
-impl std::fmt::Display
-    for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType
-{
+impl std::fmt::Display for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.as_str().fmt(f)
     }
 }
-impl std::default::Default
-    for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType
-{
+impl std::default::Default for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType {
     fn default() -> Self {
         Self::Balance
     }

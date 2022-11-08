@@ -256,6 +256,17 @@ pub struct CreateInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<SubscriptionId>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<InvoiceItemTaxBehavior>,
+
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+
     /// The tax rates which apply to the invoice item.
     ///
     /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
@@ -293,6 +304,8 @@ impl<'a> CreateInvoiceItem<'a> {
             price_data: Default::default(),
             quantity: Default::default(),
             subscription: Default::default(),
+            tax_behavior: Default::default(),
+            tax_code: Default::default(),
             tax_rates: Default::default(),
             unit_amount: Default::default(),
             unit_amount_decimal: Default::default(),
@@ -432,6 +445,17 @@ pub struct UpdateInvoiceItem<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<InvoiceItemTaxBehavior>,
+
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+
     /// The tax rates which apply to the invoice item.
     ///
     /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
@@ -466,6 +490,8 @@ impl<'a> UpdateInvoiceItem<'a> {
             price: Default::default(),
             price_data: Default::default(),
             quantity: Default::default(),
+            tax_behavior: Default::default(),
+            tax_code: Default::default(),
             tax_rates: Default::default(),
             unit_amount: Default::default(),
             unit_amount_decimal: Default::default(),
@@ -538,6 +564,42 @@ impl std::fmt::Display for InvoiceItemPriceDataTaxBehavior {
     }
 }
 impl std::default::Default for InvoiceItemPriceDataTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoiceItem`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum InvoiceItemTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl InvoiceItemTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            InvoiceItemTaxBehavior::Exclusive => "exclusive",
+            InvoiceItemTaxBehavior::Inclusive => "inclusive",
+            InvoiceItemTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for InvoiceItemTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for InvoiceItemTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for InvoiceItemTaxBehavior {
     fn default() -> Self {
         Self::Exclusive
     }
