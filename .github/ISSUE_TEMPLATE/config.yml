@@ -3,6 +3,6 @@ contact_links:
   - name: Stripe support
     url: https://support.stripe.com/
     about: |
-      Please only file issues here that you believe represent actual bugs or feature requests for the Stripe PHP library.
+      Please only file issues here that you believe represent actual bugs or feature requests for the `async-stripe` library.
 
       If you're having general trouble with your Stripe integration, please reach out to support.
