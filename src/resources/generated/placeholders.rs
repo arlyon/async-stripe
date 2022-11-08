@@ -360,23 +360,6 @@ impl Object for Plan {
     }
 }
 
-#[cfg(not(feature = "connect"))]
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct Recipient {
-    pub id: (),
-}
-
-#[cfg(not(feature = "connect"))]
-impl Object for Recipient {
-    type Id = ();
-    fn id(&self) -> Self::Id {
-        self.id
-    }
-    fn object(&self) -> &'static str {
-        "recipient"
-    }
-}
-
 #[cfg(not(feature = "fraud"))]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Review {
