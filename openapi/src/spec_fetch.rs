@@ -67,8 +67,10 @@ pub fn fetch_spec(version: SpecVersion, in_path: &str) -> anyhow::Result<Value> 
     };
     log::info!("Fetching OpenAPI spec version {}", version);
 
-    let url =
-        format!("https://raw.githubusercontent.com/stripe/openapi/{}/openapi/spec3.json", version);
+    let url = format!(
+        "https://raw.githubusercontent.com/stripe/openapi/{}/openapi/spec3.sdk.json",
+        version
+    );
 
     let spec: Value = client.get(url).send()?.error_for_status()?.json()?;
     let writer = fs::File::create(in_path)?;
