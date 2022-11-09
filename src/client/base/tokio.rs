@@ -56,7 +56,9 @@ pub struct TokioClient {
 
 impl TokioClient {
     pub fn new() -> Self {
-        Self { client: hyper::Client::builder().build(connector::create()) }
+        Self {
+            client: hyper::Client::builder().pool_max_idle_per_host(0).build(connector::create()),
+        }
     }
 
     pub fn execute<T: DeserializeOwned + Send + 'static>(

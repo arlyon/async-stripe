@@ -1,4 +1,4 @@
-use std::{cell::RefCell, sync::Arc, time::Duration};
+use std::{sync::Arc, time::Duration};
 
 use http_types::Request;
 use serde::de::DeserializeOwned;
@@ -25,7 +25,7 @@ pub(crate) fn err<T>(err: crate::StripeError) -> Response<T> {
 #[derive(Clone)]
 pub struct TokioBlockingClient {
     inner: TokioClient,
-    runtime: Arc<RefCell<tokio::runtime::Runtime>>,
+    runtime: Arc<tokio::runtime::Runtime>,
 }
 
 impl TokioBlockingClient {
@@ -40,7 +40,7 @@ impl TokioBlockingClient {
             .enable_time() // use separate `io/time` instead of `all` to ensure `tokio/time` is enabled
             .build()
             .expect("should be able to get a runtime");
-        TokioBlockingClient { inner, runtime: Arc::new(RefCell::new(runtime)) }
+        TokioBlockingClient { inner, runtime: Arc::new(runtime) }
     }
 
     pub fn execute<T: DeserializeOwned + Send + 'static>(
@@ -49,7 +49,7 @@ impl TokioBlockingClient {
         strategy: &RequestStrategy,
     ) -> Response<T> {
         let future = self.inner.execute(request, strategy);
-        match self.runtime.borrow_mut().block_on(async {
+        match self.runtime.block_on(async {
             // N.B. The `tokio::time::timeout` must be called from within a running async
             //      context or else it will panic (it registers with the thread-local timer).
             tokio::time::timeout(DEFAULT_TIMEOUT, future).await
