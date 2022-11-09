@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::FinancialConnectionsAccountOwnershipId;
+use crate::ids::{FinancialConnectionsAccountOwnershipId};
 use crate::params::{List, Object, Timestamp};
-use crate::resources::FinancialConnectionsAccountOwner;
+use crate::resources::{FinancialConnectionsAccountOwner};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankConnectionsResourceOwnership".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

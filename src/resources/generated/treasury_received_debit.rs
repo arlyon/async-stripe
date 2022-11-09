@@ -2,14 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::TreasuryReceivedDebitId;
+use crate::ids::{TreasuryReceivedDebitId};
 use crate::params::{Expandable, Object, Timestamp};
-use crate::resources::{
-    Currency, TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
-    TreasuryTransaction,
-};
+use crate::resources::{Currency, TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails, TreasuryTransaction};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TreasuryReceivedDebitsResourceReceivedDebit".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -50,8 +46,7 @@ pub struct TreasuryReceivedDebit {
     pub hosted_regulatory_receipt_url: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub initiating_payment_method_details:
-        Option<TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails>,
+    pub initiating_payment_method_details: Option<TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails>,
 
     pub linked_flows: TreasuryReceivedDebitsResourceLinkedFlows,
 
@@ -88,6 +83,7 @@ impl Object for TreasuryReceivedDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryReceivedDebitsResourceLinkedFlows {
+
     /// The DebitReversal created as a result of this ReceivedDebit being reversed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub debit_reversal: Option<String>,
@@ -107,6 +103,7 @@ pub struct TreasuryReceivedDebitsResourceLinkedFlows {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TreasuryReceivedDebitsResourceReversalDetails {
+
     /// Time before which a ReceivedDebit can be reversed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub deadline: Option<Timestamp>,
@@ -238,19 +235,11 @@ pub enum TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
 impl TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::AlreadyReversed => {
-                "already_reversed"
-            }
-            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::DeadlinePassed => {
-                "deadline_passed"
-            }
-            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::NetworkRestricted => {
-                "network_restricted"
-            }
+            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::AlreadyReversed => "already_reversed",
+            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::DeadlinePassed => "deadline_passed",
+            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::NetworkRestricted => "network_restricted",
             TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::Other => "other",
-            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::SourceFlowRestricted => {
-                "source_flow_restricted"
-            }
+            TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason::SourceFlowRestricted => "source_flow_restricted",
         }
     }
 }

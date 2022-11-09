@@ -268,7 +268,6 @@ pub fn feature_groups() -> BTreeMap<&'static str, &'static str> {
 		("connect_collection_transfer", "connect"),
 		("fee_refund", "connect"),
 		("person", "connect"),
-		("recipient", "connect"),
 		("topup", "connect"),
 		("transfer", "connect"),
 		("transfer_reversal", "connect"),

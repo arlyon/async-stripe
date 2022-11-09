@@ -2,13 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use crate::params::{Timestamp};
 use serde::{Deserialize, Serialize};
-
-use crate::params::Timestamp;
 
 /// The resource representing a Stripe "payment_method_details_card_present".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardPresent {
+
     /// The authorized amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_authorized: Option<i64>,
@@ -69,8 +69,7 @@ pub struct PaymentMethodDetailsCardPresent {
     /// Whether this [PaymentIntent](https://stripe.com/docs/api/payment_intents) is eligible for incremental authorizations.
     ///
     /// Request support using [request_incremental_authorization_support](https://stripe.com/docs/api/payment_intents/create#create_payment_intent-payment_method_options-card_present-request_incremental_authorization_support).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub incremental_authorization_supported: Option<bool>,
+    pub incremental_authorization_supported: bool,
 
     /// The last four digits of the card.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -83,8 +82,7 @@ pub struct PaymentMethodDetailsCardPresent {
     pub network: Option<String>,
 
     /// Defines whether the authorized amount can be over-captured or not.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub overcapture_supported: Option<bool>,
+    pub overcapture_supported: bool,
 
     /// How card details were read in this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -99,6 +97,7 @@ pub struct PaymentMethodDetailsCardPresent {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardPresentReceipt {
+
     /// The type of account being debited or credited.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_type: Option<PaymentMethodDetailsCardPresentReceiptAccountType>,
@@ -156,15 +155,9 @@ impl PaymentMethodDetailsCardPresentReadMethod {
         match self {
             PaymentMethodDetailsCardPresentReadMethod::ContactEmv => "contact_emv",
             PaymentMethodDetailsCardPresentReadMethod::ContactlessEmv => "contactless_emv",
-            PaymentMethodDetailsCardPresentReadMethod::ContactlessMagstripeMode => {
-                "contactless_magstripe_mode"
-            }
-            PaymentMethodDetailsCardPresentReadMethod::MagneticStripeFallback => {
-                "magnetic_stripe_fallback"
-            }
-            PaymentMethodDetailsCardPresentReadMethod::MagneticStripeTrack2 => {
-                "magnetic_stripe_track2"
-            }
+            PaymentMethodDetailsCardPresentReadMethod::ContactlessMagstripeMode => "contactless_magstripe_mode",
+            PaymentMethodDetailsCardPresentReadMethod::MagneticStripeFallback => "magnetic_stripe_fallback",
+            PaymentMethodDetailsCardPresentReadMethod::MagneticStripeTrack2 => "magnetic_stripe_track2",
         }
     }
 }

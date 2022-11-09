@@ -154,6 +154,7 @@ pub enum FilePurpose {
     Selfie,
     SigmaScheduledQuery,
     TaxDocumentUserUpload,
+    TerminalReaderSplashscreen,
 }
 
 impl FilePurpose {
@@ -173,6 +174,7 @@ impl FilePurpose {
             FilePurpose::Selfie => "selfie",
             FilePurpose::SigmaScheduledQuery => "sigma_scheduled_query",
             FilePurpose::TaxDocumentUserUpload => "tax_document_user_upload",
+            FilePurpose::TerminalReaderSplashscreen => "terminal_reader_splashscreen",
         }
     }
 }

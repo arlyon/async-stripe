@@ -311,6 +311,9 @@ pub struct PaymentIntentNextAction {
     pub paynow_display_qr_code: Option<PaymentIntentNextActionPaynowDisplayQrCode>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix_display_qr_code: Option<PaymentIntentNextActionPixDisplayQrCode>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay_display_qr_code: Option<PaymentIntentNextActionPromptpayDisplayQrCode>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -619,6 +622,29 @@ pub struct PaymentIntentNextActionPaynowDisplayQrCode {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentNextActionPixDisplayQrCode {
+    /// The raw data string used to generate QR code, it should be used together with QR code library.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub data: Option<String>,
+
+    /// The date (unix timestamp) when the PIX expires.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<i64>,
+
+    /// The URL to the hosted pix instructions page, which allows customers to view the pix QR code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hosted_instructions_url: Option<String>,
+
+    /// The image_url_png string used to render png QR code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub image_url_png: Option<String>,
+
+    /// The image_url_svg string used to render svg QR code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub image_url_svg: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentIntentNextActionPromptpayDisplayQrCode {
     /// The raw data string used to generate QR code, it should be used together with QR code library.
     pub data: String,
@@ -777,6 +803,9 @@ pub struct PaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<PaymentIntentPaymentMethodOptionsPaynowUnion>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<PaymentIntentPaymentMethodOptionsPixUnion>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<PaymentIntentPaymentMethodOptionsPromptpayUnion>,
@@ -1173,6 +1202,25 @@ pub struct PaymentMethodOptionsPaynow {
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<PaymentMethodOptionsPaynowSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsPix {
+    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_after_seconds: Option<i64>,
+
+    /// The timestamp at which the Pix expires.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<i64>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsPixSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1710,6 +1758,9 @@ pub struct CreatePaymentIntentPaymentMethodData {
     pub paynow: Option<CreatePaymentIntentPaymentMethodDataPaynow>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<CreatePaymentIntentPaymentMethodDataPix>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<CreatePaymentIntentPaymentMethodDataPromptpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1804,6 +1855,9 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<CreatePaymentIntentPaymentMethodOptionsPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<CreatePaymentIntentPaymentMethodOptionsPix>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<CreatePaymentIntentPaymentMethodOptionsPromptpay>,
@@ -1926,6 +1980,9 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     pub paynow: Option<UpdatePaymentIntentPaymentMethodDataPaynow>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<UpdatePaymentIntentPaymentMethodDataPix>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<UpdatePaymentIntentPaymentMethodDataPromptpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2020,6 +2077,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<UpdatePaymentIntentPaymentMethodOptionsPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<UpdatePaymentIntentPaymentMethodOptionsPix>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<UpdatePaymentIntentPaymentMethodOptionsPromptpay>,
@@ -2186,6 +2246,9 @@ pub struct CreatePaymentIntentPaymentMethodDataP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataPix {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataPromptpay {}
@@ -2464,6 +2527,18 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPaynow {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsPix {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_after_seconds: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<Timestamp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsPromptpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
@@ -2652,6 +2727,9 @@ pub struct UpdatePaymentIntentPaymentMethodDataP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataPix {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataPromptpay {}
@@ -2927,6 +3005,18 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsP24 {
 pub struct UpdatePaymentIntentPaymentMethodOptionsPaynow {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsPix {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_after_seconds: Option<i64>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at: Option<Timestamp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3648,6 +3738,21 @@ impl std::default::Default for PaymentIntentPaymentMethodOptionsPaynowUnion {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsPixUnion {
+    PaymentMethodOptionsPix(PaymentMethodOptionsPix),
+    #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
+    PaymentIntentTypeSpecificPaymentMethodOptionsClient(
+        PaymentIntentTypeSpecificPaymentMethodOptionsClient,
+    ),
+}
+impl std::default::Default for PaymentIntentPaymentMethodOptionsPixUnion {
+    fn default() -> Self {
+        Self::PaymentMethodOptionsPix(Default::default())
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
 pub enum PaymentIntentPaymentMethodOptionsPromptpayUnion {
     PaymentMethodOptionsPromptpay(PaymentMethodOptionsPromptpay),
     #[serde(rename = "PaymentIntentTypeSpecificPaymentMethodOptionsClient")]
@@ -3769,6 +3874,7 @@ pub enum CreatePaymentIntentPaymentMethodDataEpsBank {
     BrullKallmusBankAg,
     BtvVierLanderBank,
     CapitalBankGraweGruppeAg,
+    DeutscheBankAg,
     Dolomitenbank,
     EasybankAg,
     ErsteBankUndSparkassen,
@@ -3815,6 +3921,7 @@ impl CreatePaymentIntentPaymentMethodDataEpsBank {
             CreatePaymentIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => {
                 "capital_bank_grawe_gruppe_ag"
             }
+            CreatePaymentIntentPaymentMethodDataEpsBank::DeutscheBankAg => "deutsche_bank_ag",
             CreatePaymentIntentPaymentMethodDataEpsBank::Dolomitenbank => "dolomitenbank",
             CreatePaymentIntentPaymentMethodDataEpsBank::EasybankAg => "easybank_ag",
             CreatePaymentIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => {
@@ -3877,6 +3984,7 @@ pub enum CreatePaymentIntentPaymentMethodDataFpxBank {
     Ambank,
     BankIslam,
     BankMuamalat,
+    BankOfChina,
     BankRakyat,
     Bsn,
     Cimb,
@@ -3903,6 +4011,7 @@ impl CreatePaymentIntentPaymentMethodDataFpxBank {
             CreatePaymentIntentPaymentMethodDataFpxBank::Ambank => "ambank",
             CreatePaymentIntentPaymentMethodDataFpxBank::BankIslam => "bank_islam",
             CreatePaymentIntentPaymentMethodDataFpxBank::BankMuamalat => "bank_muamalat",
+            CreatePaymentIntentPaymentMethodDataFpxBank::BankOfChina => "bank_of_china",
             CreatePaymentIntentPaymentMethodDataFpxBank::BankRakyat => "bank_rakyat",
             CreatePaymentIntentPaymentMethodDataFpxBank::Bsn => "bsn",
             CreatePaymentIntentPaymentMethodDataFpxBank::Cimb => "cimb",
@@ -4154,6 +4263,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
     Oxxo,
     P24,
     Paynow,
+    Pix,
     Promptpay,
     SepaDebit,
     Sofort,
@@ -4185,6 +4295,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
             CreatePaymentIntentPaymentMethodDataType::Oxxo => "oxxo",
             CreatePaymentIntentPaymentMethodDataType::P24 => "p24",
             CreatePaymentIntentPaymentMethodDataType::Paynow => "paynow",
+            CreatePaymentIntentPaymentMethodDataType::Pix => "pix",
             CreatePaymentIntentPaymentMethodDataType::Promptpay => "promptpay",
             CreatePaymentIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
             CreatePaymentIntentPaymentMethodDataType::Sofort => "sofort",
@@ -5503,6 +5614,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     DaDk,
     #[serde(rename = "de-AT")]
     DeAt,
+    #[serde(rename = "de-CH")]
+    DeCh,
     #[serde(rename = "de-DE")]
     DeDe,
     #[serde(rename = "en-AT")]
@@ -5513,6 +5626,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnBe,
     #[serde(rename = "en-CA")]
     EnCa,
+    #[serde(rename = "en-CH")]
+    EnCh,
     #[serde(rename = "en-DE")]
     EnDe,
     #[serde(rename = "en-DK")]
@@ -5535,6 +5650,10 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnNo,
     #[serde(rename = "en-NZ")]
     EnNz,
+    #[serde(rename = "en-PL")]
+    EnPl,
+    #[serde(rename = "en-PT")]
+    EnPt,
     #[serde(rename = "en-SE")]
     EnSe,
     #[serde(rename = "en-US")]
@@ -5549,8 +5668,12 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     FrBe,
     #[serde(rename = "fr-CA")]
     FrCa,
+    #[serde(rename = "fr-CH")]
+    FrCh,
     #[serde(rename = "fr-FR")]
     FrFr,
+    #[serde(rename = "it-CH")]
+    ItCh,
     #[serde(rename = "it-IT")]
     ItIt,
     #[serde(rename = "nb-NO")]
@@ -5559,6 +5682,10 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     NlBe,
     #[serde(rename = "nl-NL")]
     NlNl,
+    #[serde(rename = "pl-PL")]
+    PlPl,
+    #[serde(rename = "pt-PT")]
+    PtPt,
     #[serde(rename = "sv-FI")]
     SvFi,
     #[serde(rename = "sv-SE")]
@@ -5570,11 +5697,13 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
         match self {
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DaDk => "da-DK",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeAt => "de-AT",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeCh => "de-CH",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeDe => "de-DE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCa => "en-CA",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCh => "en-CH",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
@@ -5586,6 +5715,8 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNo => "en-NO",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNz => "en-NZ",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnPl => "en-PL",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnPt => "en-PT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnSe => "en-SE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnUs => "en-US",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EsEs => "es-ES",
@@ -5593,11 +5724,15 @@ impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FiFi => "fi-FI",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrBe => "fr-BE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrCa => "fr-CA",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrCh => "fr-CH",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrFr => "fr-FR",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::ItCh => "it-CH",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::ItIt => "it-IT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::NbNo => "nb-NO",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::NlBe => "nl-BE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::NlNl => "nl-NL",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::PlPl => "pl-PL",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::PtPt => "pt-PT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::SvFi => "sv-FI",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::SvSe => "sv-SE",
         }
@@ -5844,6 +5979,38 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFut
     }
 }
 impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsPix`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    None,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn default() -> Self {
         Self::None
     }
@@ -7527,6 +7694,38 @@ impl std::default::Default for PaymentMethodOptionsPaynowSetupFutureUsage {
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodOptionsPix`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsPixSetupFutureUsage {
+    None,
+}
+
+impl PaymentMethodOptionsPixSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsPixSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsPixSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsPixSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `PaymentMethodOptionsPromptpay`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -7573,6 +7772,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataEpsBank {
     BrullKallmusBankAg,
     BtvVierLanderBank,
     CapitalBankGraweGruppeAg,
+    DeutscheBankAg,
     Dolomitenbank,
     EasybankAg,
     ErsteBankUndSparkassen,
@@ -7619,6 +7819,7 @@ impl UpdatePaymentIntentPaymentMethodDataEpsBank {
             UpdatePaymentIntentPaymentMethodDataEpsBank::CapitalBankGraweGruppeAg => {
                 "capital_bank_grawe_gruppe_ag"
             }
+            UpdatePaymentIntentPaymentMethodDataEpsBank::DeutscheBankAg => "deutsche_bank_ag",
             UpdatePaymentIntentPaymentMethodDataEpsBank::Dolomitenbank => "dolomitenbank",
             UpdatePaymentIntentPaymentMethodDataEpsBank::EasybankAg => "easybank_ag",
             UpdatePaymentIntentPaymentMethodDataEpsBank::ErsteBankUndSparkassen => {
@@ -7681,6 +7882,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataFpxBank {
     Ambank,
     BankIslam,
     BankMuamalat,
+    BankOfChina,
     BankRakyat,
     Bsn,
     Cimb,
@@ -7707,6 +7909,7 @@ impl UpdatePaymentIntentPaymentMethodDataFpxBank {
             UpdatePaymentIntentPaymentMethodDataFpxBank::Ambank => "ambank",
             UpdatePaymentIntentPaymentMethodDataFpxBank::BankIslam => "bank_islam",
             UpdatePaymentIntentPaymentMethodDataFpxBank::BankMuamalat => "bank_muamalat",
+            UpdatePaymentIntentPaymentMethodDataFpxBank::BankOfChina => "bank_of_china",
             UpdatePaymentIntentPaymentMethodDataFpxBank::BankRakyat => "bank_rakyat",
             UpdatePaymentIntentPaymentMethodDataFpxBank::Bsn => "bsn",
             UpdatePaymentIntentPaymentMethodDataFpxBank::Cimb => "cimb",
@@ -7958,6 +8161,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
     Oxxo,
     P24,
     Paynow,
+    Pix,
     Promptpay,
     SepaDebit,
     Sofort,
@@ -7989,6 +8193,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
             UpdatePaymentIntentPaymentMethodDataType::Oxxo => "oxxo",
             UpdatePaymentIntentPaymentMethodDataType::P24 => "p24",
             UpdatePaymentIntentPaymentMethodDataType::Paynow => "paynow",
+            UpdatePaymentIntentPaymentMethodDataType::Pix => "pix",
             UpdatePaymentIntentPaymentMethodDataType::Promptpay => "promptpay",
             UpdatePaymentIntentPaymentMethodDataType::SepaDebit => "sepa_debit",
             UpdatePaymentIntentPaymentMethodDataType::Sofort => "sofort",
@@ -9307,6 +9512,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     DaDk,
     #[serde(rename = "de-AT")]
     DeAt,
+    #[serde(rename = "de-CH")]
+    DeCh,
     #[serde(rename = "de-DE")]
     DeDe,
     #[serde(rename = "en-AT")]
@@ -9317,6 +9524,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnBe,
     #[serde(rename = "en-CA")]
     EnCa,
+    #[serde(rename = "en-CH")]
+    EnCh,
     #[serde(rename = "en-DE")]
     EnDe,
     #[serde(rename = "en-DK")]
@@ -9339,6 +9548,10 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnNo,
     #[serde(rename = "en-NZ")]
     EnNz,
+    #[serde(rename = "en-PL")]
+    EnPl,
+    #[serde(rename = "en-PT")]
+    EnPt,
     #[serde(rename = "en-SE")]
     EnSe,
     #[serde(rename = "en-US")]
@@ -9353,8 +9566,12 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     FrBe,
     #[serde(rename = "fr-CA")]
     FrCa,
+    #[serde(rename = "fr-CH")]
+    FrCh,
     #[serde(rename = "fr-FR")]
     FrFr,
+    #[serde(rename = "it-CH")]
+    ItCh,
     #[serde(rename = "it-IT")]
     ItIt,
     #[serde(rename = "nb-NO")]
@@ -9363,6 +9580,10 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     NlBe,
     #[serde(rename = "nl-NL")]
     NlNl,
+    #[serde(rename = "pl-PL")]
+    PlPl,
+    #[serde(rename = "pt-PT")]
+    PtPt,
     #[serde(rename = "sv-FI")]
     SvFi,
     #[serde(rename = "sv-SE")]
@@ -9374,11 +9595,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
         match self {
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DaDk => "da-DK",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeAt => "de-AT",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeCh => "de-CH",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeDe => "de-DE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCa => "en-CA",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCh => "en-CH",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
@@ -9390,6 +9613,8 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNo => "en-NO",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNz => "en-NZ",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnPl => "en-PL",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnPt => "en-PT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnSe => "en-SE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnUs => "en-US",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EsEs => "es-ES",
@@ -9397,11 +9622,15 @@ impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FiFi => "fi-FI",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrBe => "fr-BE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrCa => "fr-CA",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrCh => "fr-CH",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::FrFr => "fr-FR",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::ItCh => "it-CH",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::ItIt => "it-IT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::NbNo => "nb-NO",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::NlBe => "nl-BE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::NlNl => "nl-NL",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::PlPl => "pl-PL",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::PtPt => "pt-PT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::SvFi => "sv-FI",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::SvSe => "sv-SE",
         }
@@ -9648,6 +9877,38 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFut
     }
 }
 impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsPix`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    None,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn default() -> Self {
         Self::None
     }

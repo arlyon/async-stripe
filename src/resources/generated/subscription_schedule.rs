@@ -8,8 +8,8 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, SubscriptionScheduleId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
-    Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price, Scheduled,
-    Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds,
+    Account, Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Price,
+    Scheduled, Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds,
     SubscriptionTransferData, TaxRate, TestHelpersTestClock,
 };
 
@@ -181,7 +181,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
-    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
+    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<CollectionMethod>,
 
@@ -192,8 +192,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
+    pub currency: Currency,
 
     /// ID of the default payment method for the subscription schedule.
     ///
@@ -205,6 +204,12 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// The default tax rates to apply to the subscription during this phase of the subscription schedule.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<TaxRate>>,
+
+    /// Subscription description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store an explanation of the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
 
     /// The end of this phase of the subscription schedule.
     pub end_date: Timestamp,
@@ -222,6 +227,12 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// Updating the underlying subscription's `metadata` directly will not affect the current phase's `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
+
+    /// The account (if any) the charge was made on behalf of for charges associated with the schedule's subscription.
+    ///
+    /// See the Connect documentation for details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<Expandable<Account>>,
 
     /// If the subscription schedule will prorate when transitioning to this phase.
     ///
@@ -307,7 +318,7 @@ pub struct SubscriptionScheduleDefaultSettings {
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
-    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
+    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<SubscriptionScheduleDefaultSettingsCollectionMethod>,
 
@@ -317,9 +328,21 @@ pub struct SubscriptionScheduleDefaultSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<Expandable<PaymentMethod>>,
 
+    /// Subscription description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store an explanation of the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
     /// The subscription schedule's default invoice settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<SubscriptionScheduleInvoiceSettings>,
+
+    /// The account (if any) the charge was made on behalf of for charges associated with the schedule's subscription.
+    ///
+    /// See the Connect documentation for details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<Expandable<Account>>,
 
     /// The account (if any) the associated subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -561,6 +584,9 @@ pub struct CreateSubscriptionSchedulePhases {
     pub default_tax_rates: Option<Vec<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<Scheduled>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -573,6 +599,9 @@ pub struct CreateSubscriptionSchedulePhases {
 
     #[serde(default)]
     pub metadata: Metadata,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,
@@ -608,7 +637,13 @@ pub struct SubscriptionScheduleDefaultSettingsParams {
     pub default_payment_method: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<SubscriptionScheduleInvoiceSettings>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<SubscriptionScheduleDefaultSettingsParamsTransferData>,
@@ -644,6 +679,9 @@ pub struct UpdateSubscriptionSchedulePhases {
     pub default_tax_rates: Option<Vec<String>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<Scheduled>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -656,6 +694,9 @@ pub struct UpdateSubscriptionSchedulePhases {
 
     #[serde(default)]
     pub metadata: Metadata,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<SubscriptionProrationBehavior>,

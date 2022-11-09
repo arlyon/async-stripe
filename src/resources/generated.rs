@@ -117,7 +117,6 @@ pub mod connect {
     pub mod fee_refund;
     pub mod login_link;
     pub mod person;
-    pub mod recipient;
     pub mod topup;
     pub mod transfer;
     pub mod transfer_reversal;

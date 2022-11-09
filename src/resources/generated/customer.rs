@@ -40,7 +40,8 @@ pub struct Customer {
 
     /// The current funds being held by Stripe on behalf of the customer.
     ///
-    /// These funds can be applied towards payment intents with source "cash_balance".The settings[reconciliation_mode] field describes whether these funds are applied to such payment intents manually or automatically.
+    /// These funds can be applied towards payment intents with source "cash_balance".
+    /// The settings[reconciliation_mode] field describes whether these funds are applied to such payment intents manually or automatically.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cash_balance: Option<CashBalance>,
 
@@ -84,9 +85,12 @@ pub struct Customer {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
-    /// The current multi-currency balances, if any, being stored on the customer.If positive in a currency, the customer has a credit to apply to their next invoice denominated in that currency.If negative, the customer has an amount owed that will be added to their next invoice denominated in that currency.
+    /// The current multi-currency balances, if any, being stored on the customer.
     ///
-    /// These balances do not refer to any unpaid invoices.They solely track amounts that have yet to be successfully applied to any invoice.
+    /// If positive in a currency, the customer has a credit to apply to their next invoice denominated in that currency.
+    /// If negative, the customer has an amount owed that will be added to their next invoice denominated in that currency.
+    /// These balances do not refer to any unpaid invoices.
+    /// They solely track amounts that have yet to be successfully applied to any invoice.
     /// A balance in a particular currency is only applied to any invoice as an invoice in that currency is finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_credit_balance: Option<i64>,
@@ -991,6 +995,7 @@ pub enum TaxIdType {
     CaQst,
     ChVat,
     ClTin,
+    EgTin,
     EsCif,
     EuOssVat,
     EuVat,
@@ -1004,6 +1009,8 @@ pub enum TaxIdType {
     IsVat,
     JpCn,
     JpRn,
+    JpTrn,
+    KePin,
     KrBrn,
     LiUid,
     MxRfc,
@@ -1012,6 +1019,7 @@ pub enum TaxIdType {
     MySst,
     NoVat,
     NzGst,
+    PhTin,
     RuInn,
     RuKpp,
     SaVat,
@@ -1019,6 +1027,7 @@ pub enum TaxIdType {
     SgUen,
     SiTin,
     ThVat,
+    TrTin,
     TwVat,
     UaVat,
     UsEin,
@@ -1042,6 +1051,7 @@ impl TaxIdType {
             TaxIdType::CaQst => "ca_qst",
             TaxIdType::ChVat => "ch_vat",
             TaxIdType::ClTin => "cl_tin",
+            TaxIdType::EgTin => "eg_tin",
             TaxIdType::EsCif => "es_cif",
             TaxIdType::EuOssVat => "eu_oss_vat",
             TaxIdType::EuVat => "eu_vat",
@@ -1055,6 +1065,8 @@ impl TaxIdType {
             TaxIdType::IsVat => "is_vat",
             TaxIdType::JpCn => "jp_cn",
             TaxIdType::JpRn => "jp_rn",
+            TaxIdType::JpTrn => "jp_trn",
+            TaxIdType::KePin => "ke_pin",
             TaxIdType::KrBrn => "kr_brn",
             TaxIdType::LiUid => "li_uid",
             TaxIdType::MxRfc => "mx_rfc",
@@ -1063,6 +1075,7 @@ impl TaxIdType {
             TaxIdType::MySst => "my_sst",
             TaxIdType::NoVat => "no_vat",
             TaxIdType::NzGst => "nz_gst",
+            TaxIdType::PhTin => "ph_tin",
             TaxIdType::RuInn => "ru_inn",
             TaxIdType::RuKpp => "ru_kpp",
             TaxIdType::SaVat => "sa_vat",
@@ -1070,6 +1083,7 @@ impl TaxIdType {
             TaxIdType::SgUen => "sg_uen",
             TaxIdType::SiTin => "si_tin",
             TaxIdType::ThVat => "th_vat",
+            TaxIdType::TrTin => "tr_tin",
             TaxIdType::TwVat => "tw_vat",
             TaxIdType::UaVat => "ua_vat",
             TaxIdType::UsEin => "us_ein",

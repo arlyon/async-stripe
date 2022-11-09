@@ -417,7 +417,7 @@ pub struct OrdersV2ResourceTaxDetails {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OrdersV2ResourceTaxDetailsResourceTaxId {
-    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, or `unknown`.
+    /// The type of the tax ID, one of `eu_vat`, `br_cnpj`, `br_cpf`, `eu_oss_vat`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, or `unknown`.
     #[serde(rename = "type")]
     pub type_: OrdersV2ResourceTaxDetailsResourceTaxIdType,
 
@@ -2662,6 +2662,8 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     DaDk,
     #[serde(rename = "de-AT")]
     DeAt,
+    #[serde(rename = "de-CH")]
+    DeCh,
     #[serde(rename = "de-DE")]
     DeDe,
     #[serde(rename = "en-AT")]
@@ -2672,6 +2674,8 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     EnBe,
     #[serde(rename = "en-CA")]
     EnCa,
+    #[serde(rename = "en-CH")]
+    EnCh,
     #[serde(rename = "en-DE")]
     EnDe,
     #[serde(rename = "en-DK")]
@@ -2694,6 +2698,10 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     EnNo,
     #[serde(rename = "en-NZ")]
     EnNz,
+    #[serde(rename = "en-PL")]
+    EnPl,
+    #[serde(rename = "en-PT")]
+    EnPt,
     #[serde(rename = "en-SE")]
     EnSe,
     #[serde(rename = "en-US")]
@@ -2708,8 +2716,12 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     FrBe,
     #[serde(rename = "fr-CA")]
     FrCa,
+    #[serde(rename = "fr-CH")]
+    FrCh,
     #[serde(rename = "fr-FR")]
     FrFr,
+    #[serde(rename = "it-CH")]
+    ItCh,
     #[serde(rename = "it-IT")]
     ItIt,
     #[serde(rename = "nb-NO")]
@@ -2718,6 +2730,10 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     NlBe,
     #[serde(rename = "nl-NL")]
     NlNl,
+    #[serde(rename = "pl-PL")]
+    PlPl,
+    #[serde(rename = "pt-PT")]
+    PtPt,
     #[serde(rename = "sv-FI")]
     SvFi,
     #[serde(rename = "sv-SE")]
@@ -2729,11 +2745,13 @@ impl CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
         match self {
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DaDk => "da-DK",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DeAt => "de-AT",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DeCh => "de-CH",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DeDe => "de-DE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnCa => "en-CA",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnCh => "en-CH",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
@@ -2745,6 +2763,8 @@ impl CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNo => "en-NO",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNz => "en-NZ",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnPl => "en-PL",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnPt => "en-PT",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnSe => "en-SE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnUs => "en-US",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EsEs => "es-ES",
@@ -2752,11 +2772,15 @@ impl CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FiFi => "fi-FI",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrBe => "fr-BE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrCa => "fr-CA",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrCh => "fr-CH",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrFr => "fr-FR",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::ItCh => "it-CH",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::ItIt => "it-IT",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::NbNo => "nb-NO",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::NlBe => "nl-BE",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::NlNl => "nl-NL",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::PlPl => "pl-PL",
+            CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::PtPt => "pt-PT",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::SvFi => "sv-FI",
             CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::SvSe => "sv-SE",
         }
@@ -3458,6 +3482,7 @@ pub enum CreateOrderTaxDetailsTaxIdsType {
     CaQst,
     ChVat,
     ClTin,
+    EgTin,
     EsCif,
     EuOssVat,
     EuVat,
@@ -3471,6 +3496,8 @@ pub enum CreateOrderTaxDetailsTaxIdsType {
     IsVat,
     JpCn,
     JpRn,
+    JpTrn,
+    KePin,
     KrBrn,
     LiUid,
     MxRfc,
@@ -3479,6 +3506,7 @@ pub enum CreateOrderTaxDetailsTaxIdsType {
     MySst,
     NoVat,
     NzGst,
+    PhTin,
     RuInn,
     RuKpp,
     SaVat,
@@ -3486,6 +3514,7 @@ pub enum CreateOrderTaxDetailsTaxIdsType {
     SgUen,
     SiTin,
     ThVat,
+    TrTin,
     TwVat,
     UaVat,
     UsEin,
@@ -3509,6 +3538,7 @@ impl CreateOrderTaxDetailsTaxIdsType {
             CreateOrderTaxDetailsTaxIdsType::CaQst => "ca_qst",
             CreateOrderTaxDetailsTaxIdsType::ChVat => "ch_vat",
             CreateOrderTaxDetailsTaxIdsType::ClTin => "cl_tin",
+            CreateOrderTaxDetailsTaxIdsType::EgTin => "eg_tin",
             CreateOrderTaxDetailsTaxIdsType::EsCif => "es_cif",
             CreateOrderTaxDetailsTaxIdsType::EuOssVat => "eu_oss_vat",
             CreateOrderTaxDetailsTaxIdsType::EuVat => "eu_vat",
@@ -3522,6 +3552,8 @@ impl CreateOrderTaxDetailsTaxIdsType {
             CreateOrderTaxDetailsTaxIdsType::IsVat => "is_vat",
             CreateOrderTaxDetailsTaxIdsType::JpCn => "jp_cn",
             CreateOrderTaxDetailsTaxIdsType::JpRn => "jp_rn",
+            CreateOrderTaxDetailsTaxIdsType::JpTrn => "jp_trn",
+            CreateOrderTaxDetailsTaxIdsType::KePin => "ke_pin",
             CreateOrderTaxDetailsTaxIdsType::KrBrn => "kr_brn",
             CreateOrderTaxDetailsTaxIdsType::LiUid => "li_uid",
             CreateOrderTaxDetailsTaxIdsType::MxRfc => "mx_rfc",
@@ -3530,6 +3562,7 @@ impl CreateOrderTaxDetailsTaxIdsType {
             CreateOrderTaxDetailsTaxIdsType::MySst => "my_sst",
             CreateOrderTaxDetailsTaxIdsType::NoVat => "no_vat",
             CreateOrderTaxDetailsTaxIdsType::NzGst => "nz_gst",
+            CreateOrderTaxDetailsTaxIdsType::PhTin => "ph_tin",
             CreateOrderTaxDetailsTaxIdsType::RuInn => "ru_inn",
             CreateOrderTaxDetailsTaxIdsType::RuKpp => "ru_kpp",
             CreateOrderTaxDetailsTaxIdsType::SaVat => "sa_vat",
@@ -3537,6 +3570,7 @@ impl CreateOrderTaxDetailsTaxIdsType {
             CreateOrderTaxDetailsTaxIdsType::SgUen => "sg_uen",
             CreateOrderTaxDetailsTaxIdsType::SiTin => "si_tin",
             CreateOrderTaxDetailsTaxIdsType::ThVat => "th_vat",
+            CreateOrderTaxDetailsTaxIdsType::TrTin => "tr_tin",
             CreateOrderTaxDetailsTaxIdsType::TwVat => "tw_vat",
             CreateOrderTaxDetailsTaxIdsType::UaVat => "ua_vat",
             CreateOrderTaxDetailsTaxIdsType::UsEin => "us_ein",
@@ -4016,6 +4050,7 @@ pub enum OrdersV2ResourceTaxDetailsResourceTaxIdType {
     CaQst,
     ChVat,
     ClTin,
+    EgTin,
     EsCif,
     EuOssVat,
     EuVat,
@@ -4029,6 +4064,8 @@ pub enum OrdersV2ResourceTaxDetailsResourceTaxIdType {
     IsVat,
     JpCn,
     JpRn,
+    JpTrn,
+    KePin,
     KrBrn,
     LiUid,
     MxRfc,
@@ -4037,6 +4074,7 @@ pub enum OrdersV2ResourceTaxDetailsResourceTaxIdType {
     MySst,
     NoVat,
     NzGst,
+    PhTin,
     RuInn,
     RuKpp,
     SaVat,
@@ -4044,6 +4082,7 @@ pub enum OrdersV2ResourceTaxDetailsResourceTaxIdType {
     SgUen,
     SiTin,
     ThVat,
+    TrTin,
     TwVat,
     UaVat,
     Unknown,
@@ -4068,6 +4107,7 @@ impl OrdersV2ResourceTaxDetailsResourceTaxIdType {
             OrdersV2ResourceTaxDetailsResourceTaxIdType::CaQst => "ca_qst",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::ChVat => "ch_vat",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::ClTin => "cl_tin",
+            OrdersV2ResourceTaxDetailsResourceTaxIdType::EgTin => "eg_tin",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::EsCif => "es_cif",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::EuOssVat => "eu_oss_vat",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::EuVat => "eu_vat",
@@ -4081,6 +4121,8 @@ impl OrdersV2ResourceTaxDetailsResourceTaxIdType {
             OrdersV2ResourceTaxDetailsResourceTaxIdType::IsVat => "is_vat",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::JpCn => "jp_cn",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::JpRn => "jp_rn",
+            OrdersV2ResourceTaxDetailsResourceTaxIdType::JpTrn => "jp_trn",
+            OrdersV2ResourceTaxDetailsResourceTaxIdType::KePin => "ke_pin",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::KrBrn => "kr_brn",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::LiUid => "li_uid",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::MxRfc => "mx_rfc",
@@ -4089,6 +4131,7 @@ impl OrdersV2ResourceTaxDetailsResourceTaxIdType {
             OrdersV2ResourceTaxDetailsResourceTaxIdType::MySst => "my_sst",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::NoVat => "no_vat",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::NzGst => "nz_gst",
+            OrdersV2ResourceTaxDetailsResourceTaxIdType::PhTin => "ph_tin",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::RuInn => "ru_inn",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::RuKpp => "ru_kpp",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::SaVat => "sa_vat",
@@ -4096,6 +4139,7 @@ impl OrdersV2ResourceTaxDetailsResourceTaxIdType {
             OrdersV2ResourceTaxDetailsResourceTaxIdType::SgUen => "sg_uen",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::SiTin => "si_tin",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::ThVat => "th_vat",
+            OrdersV2ResourceTaxDetailsResourceTaxIdType::TrTin => "tr_tin",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::TwVat => "tw_vat",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::UaVat => "ua_vat",
             OrdersV2ResourceTaxDetailsResourceTaxIdType::Unknown => "unknown",
@@ -4995,6 +5039,8 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     DaDk,
     #[serde(rename = "de-AT")]
     DeAt,
+    #[serde(rename = "de-CH")]
+    DeCh,
     #[serde(rename = "de-DE")]
     DeDe,
     #[serde(rename = "en-AT")]
@@ -5005,6 +5051,8 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     EnBe,
     #[serde(rename = "en-CA")]
     EnCa,
+    #[serde(rename = "en-CH")]
+    EnCh,
     #[serde(rename = "en-DE")]
     EnDe,
     #[serde(rename = "en-DK")]
@@ -5027,6 +5075,10 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     EnNo,
     #[serde(rename = "en-NZ")]
     EnNz,
+    #[serde(rename = "en-PL")]
+    EnPl,
+    #[serde(rename = "en-PT")]
+    EnPt,
     #[serde(rename = "en-SE")]
     EnSe,
     #[serde(rename = "en-US")]
@@ -5041,8 +5093,12 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     FrBe,
     #[serde(rename = "fr-CA")]
     FrCa,
+    #[serde(rename = "fr-CH")]
+    FrCh,
     #[serde(rename = "fr-FR")]
     FrFr,
+    #[serde(rename = "it-CH")]
+    ItCh,
     #[serde(rename = "it-IT")]
     ItIt,
     #[serde(rename = "nb-NO")]
@@ -5051,6 +5107,10 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
     NlBe,
     #[serde(rename = "nl-NL")]
     NlNl,
+    #[serde(rename = "pl-PL")]
+    PlPl,
+    #[serde(rename = "pt-PT")]
+    PtPt,
     #[serde(rename = "sv-FI")]
     SvFi,
     #[serde(rename = "sv-SE")]
@@ -5062,11 +5122,13 @@ impl UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
         match self {
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DaDk => "da-DK",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DeAt => "de-AT",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DeCh => "de-CH",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::DeDe => "de-DE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnCa => "en-CA",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnCh => "en-CH",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
@@ -5078,6 +5140,8 @@ impl UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNo => "en-NO",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnNz => "en-NZ",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnPl => "en-PL",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnPt => "en-PT",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnSe => "en-SE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EnUs => "en-US",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::EsEs => "es-ES",
@@ -5085,11 +5149,15 @@ impl UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale {
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FiFi => "fi-FI",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrBe => "fr-BE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrCa => "fr-CA",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrCh => "fr-CH",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::FrFr => "fr-FR",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::ItCh => "it-CH",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::ItIt => "it-IT",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::NbNo => "nb-NO",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::NlBe => "nl-BE",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::NlNl => "nl-NL",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::PlPl => "pl-PL",
+            UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::PtPt => "pt-PT",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::SvFi => "sv-FI",
             UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale::SvSe => "sv-SE",
         }
@@ -5791,6 +5859,7 @@ pub enum UpdateOrderTaxDetailsTaxIdsType {
     CaQst,
     ChVat,
     ClTin,
+    EgTin,
     EsCif,
     EuOssVat,
     EuVat,
@@ -5804,6 +5873,8 @@ pub enum UpdateOrderTaxDetailsTaxIdsType {
     IsVat,
     JpCn,
     JpRn,
+    JpTrn,
+    KePin,
     KrBrn,
     LiUid,
     MxRfc,
@@ -5812,6 +5883,7 @@ pub enum UpdateOrderTaxDetailsTaxIdsType {
     MySst,
     NoVat,
     NzGst,
+    PhTin,
     RuInn,
     RuKpp,
     SaVat,
@@ -5819,6 +5891,7 @@ pub enum UpdateOrderTaxDetailsTaxIdsType {
     SgUen,
     SiTin,
     ThVat,
+    TrTin,
     TwVat,
     UaVat,
     UsEin,
@@ -5842,6 +5915,7 @@ impl UpdateOrderTaxDetailsTaxIdsType {
             UpdateOrderTaxDetailsTaxIdsType::CaQst => "ca_qst",
             UpdateOrderTaxDetailsTaxIdsType::ChVat => "ch_vat",
             UpdateOrderTaxDetailsTaxIdsType::ClTin => "cl_tin",
+            UpdateOrderTaxDetailsTaxIdsType::EgTin => "eg_tin",
             UpdateOrderTaxDetailsTaxIdsType::EsCif => "es_cif",
             UpdateOrderTaxDetailsTaxIdsType::EuOssVat => "eu_oss_vat",
             UpdateOrderTaxDetailsTaxIdsType::EuVat => "eu_vat",
@@ -5855,6 +5929,8 @@ impl UpdateOrderTaxDetailsTaxIdsType {
             UpdateOrderTaxDetailsTaxIdsType::IsVat => "is_vat",
             UpdateOrderTaxDetailsTaxIdsType::JpCn => "jp_cn",
             UpdateOrderTaxDetailsTaxIdsType::JpRn => "jp_rn",
+            UpdateOrderTaxDetailsTaxIdsType::JpTrn => "jp_trn",
+            UpdateOrderTaxDetailsTaxIdsType::KePin => "ke_pin",
             UpdateOrderTaxDetailsTaxIdsType::KrBrn => "kr_brn",
             UpdateOrderTaxDetailsTaxIdsType::LiUid => "li_uid",
             UpdateOrderTaxDetailsTaxIdsType::MxRfc => "mx_rfc",
@@ -5863,6 +5939,7 @@ impl UpdateOrderTaxDetailsTaxIdsType {
             UpdateOrderTaxDetailsTaxIdsType::MySst => "my_sst",
             UpdateOrderTaxDetailsTaxIdsType::NoVat => "no_vat",
             UpdateOrderTaxDetailsTaxIdsType::NzGst => "nz_gst",
+            UpdateOrderTaxDetailsTaxIdsType::PhTin => "ph_tin",
             UpdateOrderTaxDetailsTaxIdsType::RuInn => "ru_inn",
             UpdateOrderTaxDetailsTaxIdsType::RuKpp => "ru_kpp",
             UpdateOrderTaxDetailsTaxIdsType::SaVat => "sa_vat",
@@ -5870,6 +5947,7 @@ impl UpdateOrderTaxDetailsTaxIdsType {
             UpdateOrderTaxDetailsTaxIdsType::SgUen => "sg_uen",
             UpdateOrderTaxDetailsTaxIdsType::SiTin => "si_tin",
             UpdateOrderTaxDetailsTaxIdsType::ThVat => "th_vat",
+            UpdateOrderTaxDetailsTaxIdsType::TrTin => "tr_tin",
             UpdateOrderTaxDetailsTaxIdsType::TwVat => "tw_vat",
             UpdateOrderTaxDetailsTaxIdsType::UaVat => "ua_vat",
             UpdateOrderTaxDetailsTaxIdsType::UsEin => "us_ein",

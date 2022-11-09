@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::CardId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Account, Currency, Customer, Recipient};
+use crate::resources::{Account, Currency, Customer};
 
 /// The resource representing a Stripe "Card".
 ///
@@ -139,12 +139,6 @@ pub struct Card {
     /// Cardholder name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-
-    /// The recipient that this card belongs to.
-    ///
-    /// This attribute will not be in the card object if the card belongs to a customer or account instead.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub recipient: Option<Expandable<Recipient>>,
 
     /// For external accounts, possible values are `new` and `errored`.
     ///

@@ -174,7 +174,6 @@ pub struct CreateCoupon<'a> {
 
     /// Specifies how long the discount will be in effect if used on a subscription.
     ///
-    /// Can be `forever`, `once`, or `repeating`.
     /// Defaults to `once`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<CouponDuration>,

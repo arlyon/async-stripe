@@ -36,7 +36,7 @@ pub struct TaxId {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub livemode: Option<bool>,
 
-    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
+    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
     ///
     /// Note that some legacy tax IDs have type `unknown`.
     #[serde(rename = "type")]
@@ -94,6 +94,7 @@ pub enum TaxIdType {
     CaQst,
     ChVat,
     ClTin,
+    EgTin,
     EsCif,
     EuOssVat,
     EuVat,
@@ -107,6 +108,8 @@ pub enum TaxIdType {
     IsVat,
     JpCn,
     JpRn,
+    JpTrn,
+    KePin,
     KrBrn,
     LiUid,
     MxRfc,
@@ -115,6 +118,7 @@ pub enum TaxIdType {
     MySst,
     NoVat,
     NzGst,
+    PhTin,
     RuInn,
     RuKpp,
     SaVat,
@@ -122,6 +126,7 @@ pub enum TaxIdType {
     SgUen,
     SiTin,
     ThVat,
+    TrTin,
     TwVat,
     UaVat,
     Unknown,
@@ -146,6 +151,7 @@ impl TaxIdType {
             TaxIdType::CaQst => "ca_qst",
             TaxIdType::ChVat => "ch_vat",
             TaxIdType::ClTin => "cl_tin",
+            TaxIdType::EgTin => "eg_tin",
             TaxIdType::EsCif => "es_cif",
             TaxIdType::EuOssVat => "eu_oss_vat",
             TaxIdType::EuVat => "eu_vat",
@@ -159,6 +165,8 @@ impl TaxIdType {
             TaxIdType::IsVat => "is_vat",
             TaxIdType::JpCn => "jp_cn",
             TaxIdType::JpRn => "jp_rn",
+            TaxIdType::JpTrn => "jp_trn",
+            TaxIdType::KePin => "ke_pin",
             TaxIdType::KrBrn => "kr_brn",
             TaxIdType::LiUid => "li_uid",
             TaxIdType::MxRfc => "mx_rfc",
@@ -167,6 +175,7 @@ impl TaxIdType {
             TaxIdType::MySst => "my_sst",
             TaxIdType::NoVat => "no_vat",
             TaxIdType::NzGst => "nz_gst",
+            TaxIdType::PhTin => "ph_tin",
             TaxIdType::RuInn => "ru_inn",
             TaxIdType::RuKpp => "ru_kpp",
             TaxIdType::SaVat => "sa_vat",
@@ -174,6 +183,7 @@ impl TaxIdType {
             TaxIdType::SgUen => "sg_uen",
             TaxIdType::SiTin => "si_tin",
             TaxIdType::ThVat => "th_vat",
+            TaxIdType::TrTin => "tr_tin",
             TaxIdType::TwVat => "tw_vat",
             TaxIdType::UaVat => "ua_vat",
             TaxIdType::Unknown => "unknown",

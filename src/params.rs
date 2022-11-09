@@ -254,9 +254,6 @@ where
     /// ```no_run
     /// # use stripe::{Customer, ListCustomers, StripeError, Client};
     /// # use futures_util::TryStreamExt;
-    /// # fn main() {
-    /// # tokio_test::block_on(run());
-    /// # }
     /// # async fn run() -> Result<(), StripeError> {
     /// # let client = Client::new("sk_test_123");
     /// # let params = ListCustomers { ..Default::default() };

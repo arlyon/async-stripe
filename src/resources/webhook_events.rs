@@ -488,7 +488,6 @@ pub enum EventObject {
     Product(Product),
     PromotionCode(PromotionCode),
     Quote(Quote),
-    Recipient(Recipient),
     Refund(Refund),
     Review(Review),
     SetupIntent(SetupIntent),
