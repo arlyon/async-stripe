@@ -115,6 +115,9 @@ pub struct PaymentMethod {
     pub paynow: Option<PaymentMethodPaynow>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<PaymentMethodPix>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<PaymentMethodPromptpay>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -493,7 +496,7 @@ pub struct PaymentMethodCustomerBalance {}
 pub struct PaymentMethodEps {
     /// The customer's bank.
     ///
-    /// Should be one of `arzte_und_apotheker_bank`, `austrian_anadi_bank_ag`, `bank_austria`, `bankhaus_carl_spangler`, `bankhaus_schelhammer_und_schattera_ag`, `bawag_psk_ag`, `bks_bank_ag`, `brull_kallmus_bank_ag`, `btv_vier_lander_bank`, `capital_bank_grawe_gruppe_ag`, `dolomitenbank`, `easybank_ag`, `erste_bank_und_sparkassen`, `hypo_alpeadriabank_international_ag`, `hypo_noe_lb_fur_niederosterreich_u_wien`, `hypo_oberosterreich_salzburg_steiermark`, `hypo_tirol_bank_ag`, `hypo_vorarlberg_bank_ag`, `hypo_bank_burgenland_aktiengesellschaft`, `marchfelder_bank`, `oberbank_ag`, `raiffeisen_bankengruppe_osterreich`, `schoellerbank_ag`, `sparda_bank_wien`, `volksbank_gruppe`, `volkskreditbank_ag`, or `vr_bank_braunau`.
+    /// Should be one of `arzte_und_apotheker_bank`, `austrian_anadi_bank_ag`, `bank_austria`, `bankhaus_carl_spangler`, `bankhaus_schelhammer_und_schattera_ag`, `bawag_psk_ag`, `bks_bank_ag`, `brull_kallmus_bank_ag`, `btv_vier_lander_bank`, `capital_bank_grawe_gruppe_ag`, `deutsche_bank_ag`, `dolomitenbank`, `easybank_ag`, `erste_bank_und_sparkassen`, `hypo_alpeadriabank_international_ag`, `hypo_noe_lb_fur_niederosterreich_u_wien`, `hypo_oberosterreich_salzburg_steiermark`, `hypo_tirol_bank_ag`, `hypo_vorarlberg_bank_ag`, `hypo_bank_burgenland_aktiengesellschaft`, `marchfelder_bank`, `oberbank_ag`, `raiffeisen_bankengruppe_osterreich`, `schoellerbank_ag`, `sparda_bank_wien`, `volksbank_gruppe`, `volkskreditbank_ag`, or `vr_bank_braunau`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<PaymentMethodEpsBank>,
 }
@@ -502,7 +505,7 @@ pub struct PaymentMethodEps {
 pub struct PaymentMethodFpx {
     /// The customer's bank, if provided.
     ///
-    /// Can be one of `affin_bank`, `agrobank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, or `pb_enterprise`.
+    /// Can be one of `affin_bank`, `agrobank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`, `deutsche_bank`, `maybank2e`, `pb_enterprise`, or `bank_of_china`.
     pub bank: PaymentMethodFpxBank,
 }
 
@@ -576,6 +579,9 @@ pub struct PaymentMethodP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodPix {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodPromptpay {}
@@ -808,6 +814,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<CreatePaymentMethodPaynow>,
 
+    /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<CreatePaymentMethodPix>,
+
     /// If this is a `promptpay` PaymentMethod, this hash contains details about the PromptPay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promptpay: Option<CreatePaymentMethodPromptpay>,
@@ -874,6 +884,7 @@ impl<'a> CreatePaymentMethod<'a> {
             p24: Default::default(),
             payment_method: Default::default(),
             paynow: Default::default(),
+            pix: Default::default(),
             promptpay: Default::default(),
             radar_options: Default::default(),
             sepa_debit: Default::default(),
@@ -1083,6 +1094,9 @@ pub struct CreatePaymentMethodP24 {
 pub struct CreatePaymentMethodPaynow {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodPix {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodPromptpay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1154,6 +1168,7 @@ pub enum CreatePaymentMethodEpsBank {
     BrullKallmusBankAg,
     BtvVierLanderBank,
     CapitalBankGraweGruppeAg,
+    DeutscheBankAg,
     Dolomitenbank,
     EasybankAg,
     ErsteBankUndSparkassen,
@@ -1188,6 +1203,7 @@ impl CreatePaymentMethodEpsBank {
             CreatePaymentMethodEpsBank::BrullKallmusBankAg => "brull_kallmus_bank_ag",
             CreatePaymentMethodEpsBank::BtvVierLanderBank => "btv_vier_lander_bank",
             CreatePaymentMethodEpsBank::CapitalBankGraweGruppeAg => "capital_bank_grawe_gruppe_ag",
+            CreatePaymentMethodEpsBank::DeutscheBankAg => "deutsche_bank_ag",
             CreatePaymentMethodEpsBank::Dolomitenbank => "dolomitenbank",
             CreatePaymentMethodEpsBank::EasybankAg => "easybank_ag",
             CreatePaymentMethodEpsBank::ErsteBankUndSparkassen => "erste_bank_und_sparkassen",
@@ -1246,6 +1262,7 @@ pub enum CreatePaymentMethodFpxBank {
     Ambank,
     BankIslam,
     BankMuamalat,
+    BankOfChina,
     BankRakyat,
     Bsn,
     Cimb,
@@ -1272,6 +1289,7 @@ impl CreatePaymentMethodFpxBank {
             CreatePaymentMethodFpxBank::Ambank => "ambank",
             CreatePaymentMethodFpxBank::BankIslam => "bank_islam",
             CreatePaymentMethodFpxBank::BankMuamalat => "bank_muamalat",
+            CreatePaymentMethodFpxBank::BankOfChina => "bank_of_china",
             CreatePaymentMethodFpxBank::BankRakyat => "bank_rakyat",
             CreatePaymentMethodFpxBank::Bsn => "bsn",
             CreatePaymentMethodFpxBank::Cimb => "cimb",
@@ -1574,6 +1592,7 @@ pub enum PaymentMethodEpsBank {
     BrullKallmusBankAg,
     BtvVierLanderBank,
     CapitalBankGraweGruppeAg,
+    DeutscheBankAg,
     Dolomitenbank,
     EasybankAg,
     ErsteBankUndSparkassen,
@@ -1608,6 +1627,7 @@ impl PaymentMethodEpsBank {
             PaymentMethodEpsBank::BrullKallmusBankAg => "brull_kallmus_bank_ag",
             PaymentMethodEpsBank::BtvVierLanderBank => "btv_vier_lander_bank",
             PaymentMethodEpsBank::CapitalBankGraweGruppeAg => "capital_bank_grawe_gruppe_ag",
+            PaymentMethodEpsBank::DeutscheBankAg => "deutsche_bank_ag",
             PaymentMethodEpsBank::Dolomitenbank => "dolomitenbank",
             PaymentMethodEpsBank::EasybankAg => "easybank_ag",
             PaymentMethodEpsBank::ErsteBankUndSparkassen => "erste_bank_und_sparkassen",
@@ -1666,6 +1686,7 @@ pub enum PaymentMethodFpxBank {
     Ambank,
     BankIslam,
     BankMuamalat,
+    BankOfChina,
     BankRakyat,
     Bsn,
     Cimb,
@@ -1692,6 +1713,7 @@ impl PaymentMethodFpxBank {
             PaymentMethodFpxBank::Ambank => "ambank",
             PaymentMethodFpxBank::BankIslam => "bank_islam",
             PaymentMethodFpxBank::BankMuamalat => "bank_muamalat",
+            PaymentMethodFpxBank::BankOfChina => "bank_of_china",
             PaymentMethodFpxBank::BankRakyat => "bank_rakyat",
             PaymentMethodFpxBank::Bsn => "bsn",
             PaymentMethodFpxBank::Cimb => "cimb",
@@ -1961,6 +1983,7 @@ pub enum PaymentMethodType {
     Oxxo,
     P24,
     Paynow,
+    Pix,
     Promptpay,
     SepaDebit,
     Sofort,
@@ -1995,6 +2018,7 @@ impl PaymentMethodType {
             PaymentMethodType::Oxxo => "oxxo",
             PaymentMethodType::P24 => "p24",
             PaymentMethodType::Paynow => "paynow",
+            PaymentMethodType::Pix => "pix",
             PaymentMethodType::Promptpay => "promptpay",
             PaymentMethodType::SepaDebit => "sepa_debit",
             PaymentMethodType::Sofort => "sofort",
@@ -2047,6 +2071,7 @@ pub enum PaymentMethodTypeFilter {
     Oxxo,
     P24,
     Paynow,
+    Pix,
     Promptpay,
     SepaDebit,
     Sofort,
@@ -2079,6 +2104,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Oxxo => "oxxo",
             PaymentMethodTypeFilter::P24 => "p24",
             PaymentMethodTypeFilter::Paynow => "paynow",
+            PaymentMethodTypeFilter::Pix => "pix",
             PaymentMethodTypeFilter::Promptpay => "promptpay",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",
             PaymentMethodTypeFilter::Sofort => "sofort",

@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 /// The resource representing a Stripe "three_d_secure_details".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ThreeDSecureDetails {
+
     /// For authenticated transactions: how the customer was authenticated by
     /// the issuing bank.
     #[serde(skip_serializing_if = "Option::is_none")]

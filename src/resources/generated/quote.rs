@@ -48,7 +48,7 @@ pub struct Quote {
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay invoices at the end of the subscription cycle or on finalization using the default payment method attached to the subscription or customer.
-    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
+    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     /// Defaults to `charge_automatically`.
     pub collection_method: QuoteCollectionMethod,
 
@@ -266,6 +266,12 @@ pub struct QuotesResourceStatusTransitions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct QuotesResourceSubscriptionData {
+    /// The subscription's description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store an explanation of the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
     /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
     ///
     /// This date is ignored if it is in the past when the quote is accepted.

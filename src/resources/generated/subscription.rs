@@ -10,7 +10,7 @@ use crate::params::{
     Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{
-    Application, CollectionMethod, Currency, Customer, Discount, Invoice,
+    Account, Application, CollectionMethod, Currency, Customer, Discount, Invoice,
     InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
     InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
     InvoicePaymentMethodOptionsUsBankAccount, PaymentMethod, PaymentSource, Scheduled, SetupIntent,
@@ -65,7 +65,7 @@ pub struct Subscription {
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
-    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
+    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     pub collection_method: Option<CollectionMethod>,
 
     /// Time at which the object was created.
@@ -151,6 +151,12 @@ pub struct Subscription {
     /// Specifies the approximate timestamp on which any pending invoice items will be billed according to the schedule provided at `pending_invoice_item_interval`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_pending_invoice_item_invoice: Option<Timestamp>,
+
+    /// The account (if any) the charge was made on behalf of for charges associated with this subscription.
+    ///
+    /// See the Connect documentation for details.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<Expandable<Account>>,
 
     /// If specified, payment collection for this subscription will be paused.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -477,7 +483,7 @@ pub struct CreateSubscription<'a> {
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
-    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
+    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     /// Defaults to `charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<CollectionMethod>,
@@ -551,6 +557,12 @@ pub struct CreateSubscription<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub off_session: Option<bool>,
 
+    /// The account on behalf of which to charge, for each of the subscription's invoices.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<String>,
+
+    /// Only applies to subscriptions with `collection_method=charge_automatically`.
+    ///
     /// Use `allow_incomplete` to create subscriptions with `status=incomplete` if the first invoice cannot be paid.
     ///
     /// Creating subscriptions with this status allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
@@ -563,7 +575,7 @@ pub struct CreateSubscription<'a> {
     /// If the payment intent is not confirmed within 23 hours subscriptions transition to `status=incomplete_expired`, which is a terminal state.  Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's first invoice cannot be paid.
     /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not create a subscription and returns an error instead.
     /// This was the default behavior for API versions prior to 2019-03-14.
-    /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.  `pending_if_incomplete` is only used with updates and cannot be passed when creating a subscription.
+    /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.  `pending_if_incomplete` is only used with updates and cannot be passed when creating a subscription.  Subscriptions with `collection_method=send_invoice` are automatically activated regardless of the first invoice status.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_behavior: Option<SubscriptionPaymentBehavior>,
 
@@ -643,6 +655,7 @@ impl<'a> CreateSubscription<'a> {
             items: Default::default(),
             metadata: Default::default(),
             off_session: Default::default(),
+            on_behalf_of: Default::default(),
             payment_behavior: Default::default(),
             payment_settings: Default::default(),
             pending_invoice_item_interval: Default::default(),
@@ -796,7 +809,7 @@ pub struct UpdateSubscription<'a> {
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
-    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions.
+    /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
     /// Defaults to `charge_automatically`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method: Option<CollectionMethod>,
@@ -861,6 +874,10 @@ pub struct UpdateSubscription<'a> {
     /// Indicates if a customer is on or off-session while an invoice payment is attempted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub off_session: Option<bool>,
+
+    /// The account on behalf of which to charge, for each of the subscription's invoices.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<String>,
 
     /// If specified, payment collection for this subscription will be paused.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -953,6 +970,7 @@ impl<'a> UpdateSubscription<'a> {
             items: Default::default(),
             metadata: Default::default(),
             off_session: Default::default(),
+            on_behalf_of: Default::default(),
             pause_collection: Default::default(),
             payment_behavior: Default::default(),
             payment_settings: Default::default(),

@@ -54,7 +54,6 @@ mod checkout {
 #[cfg(feature = "connect")]
 mod connect {
     pub mod login_links_ext;
-    pub mod recipient_ext;
 }
 
 #[path = "resources"]
@@ -235,7 +234,6 @@ pub use {
 pub use {
     connect::{
         login_links_ext::*,
-        recipient_ext::*,
     },
     generated::connect::{
         account_link::*,
@@ -246,7 +244,6 @@ pub use {
         fee_refund::*,
         login_link::*,
         person::*,
-        recipient::*,
         topup::*,
         transfer::*,
         transfer_reversal::*,

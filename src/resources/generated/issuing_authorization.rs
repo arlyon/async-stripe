@@ -75,6 +75,10 @@ pub struct IssuingAuthorization {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
 
+    /// Details about the authorization, such as identifiers, set by the card network.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network_data: Option<IssuingAuthorizationNetworkData>,
+
     /// The pending authorization request.
     ///
     /// This field will only be non-null during an `issuing_authorization.request` webhook.
@@ -114,6 +118,18 @@ impl Object for IssuingAuthorization {
     fn object(&self) -> &'static str {
         "issuing.authorization"
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingAuthorizationNetworkData {
+    /// ID from the network that identifies the acquiring financial institution.
+    ///
+    /// For Visa and Mastercard credit transactions this is as 6 digit code.
+    /// For Maestro debit transactions this is a 9 digit code.
+    /// Uncommonly, acquiring institution ID is not provided.
+    /// When this occurs, the value will be null.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acquiring_institution_id: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -181,6 +197,10 @@ pub struct IssuingAuthorizationRequest {
 
     /// The reason for the approval or decline.
     pub reason: IssuingAuthorizationReason,
+
+    /// If approve/decline decision is directly responsed to the webhook with json payload and if the response is invalid (e.g., parsing errors), we surface the detailed message via this field.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason_message: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

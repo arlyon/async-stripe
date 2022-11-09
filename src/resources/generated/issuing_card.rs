@@ -163,6 +163,14 @@ pub struct IssuingCardShipping {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number: Option<String>,
 
+    /// Whether a signature is required for card delivery.
+    ///
+    /// This feature is only supported for US users.
+    /// Standard shipping service does not support signature on delivery.
+    /// The default value for standard shipping service is false and for express and priority services is true.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_signature: Option<bool>,
+
     /// Shipment service, such as `standard` or `express`.
     pub service: IssuingCardShippingService,
 

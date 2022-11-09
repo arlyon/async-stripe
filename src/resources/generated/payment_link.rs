@@ -184,6 +184,12 @@ pub struct PaymentLinksResourceConsentCollection {
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<PaymentLinksResourceConsentCollectionPromotions>,
+
+    /// If set to `required`, it requires cutomers to accept the terms of service before being able to pay.
+    ///
+    /// If set to `none`, customers won't be shown a checkbox to accept the terms of service.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service: Option<PaymentLinksResourceConsentCollectionTermsOfService>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -222,6 +228,12 @@ pub struct PaymentLinksResourceShippingOption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceSubscriptionData {
+    /// The subscription's description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store an explanation of the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
@@ -550,6 +562,9 @@ pub struct CreatePaymentLinkAutomaticTax {
 pub struct CreatePaymentLinkConsentCollection {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<CreatePaymentLinkConsentCollectionPromotions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terms_of_service: Option<CreatePaymentLinkConsentCollectionTermsOfService>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -589,6 +604,9 @@ pub struct CreatePaymentLinkShippingOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkSubscriptionData {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 }
@@ -751,6 +769,40 @@ impl std::default::Default for CreatePaymentLinkConsentCollectionPromotions {
     }
 }
 
+/// An enum representing the possible values of an `CreatePaymentLinkConsentCollection`'s `terms_of_service` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkConsentCollectionTermsOfService {
+    None,
+    Required,
+}
+
+impl CreatePaymentLinkConsentCollectionTermsOfService {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkConsentCollectionTermsOfService::None => "none",
+            CreatePaymentLinkConsentCollectionTermsOfService::Required => "required",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkConsentCollectionTermsOfService {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkConsentCollectionTermsOfService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkConsentCollectionTermsOfService {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `CreatePaymentLinkPaymentIntentData`'s `capture_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -842,6 +894,7 @@ pub enum CreatePaymentLinkPaymentMethodTypes {
     Oxxo,
     P24,
     Paynow,
+    Pix,
     Promptpay,
     SepaDebit,
     Sofort,
@@ -871,6 +924,7 @@ impl CreatePaymentLinkPaymentMethodTypes {
             CreatePaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             CreatePaymentLinkPaymentMethodTypes::P24 => "p24",
             CreatePaymentLinkPaymentMethodTypes::Paynow => "paynow",
+            CreatePaymentLinkPaymentMethodTypes::Pix => "pix",
             CreatePaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
             CreatePaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             CreatePaymentLinkPaymentMethodTypes::Sofort => "sofort",
@@ -1763,6 +1817,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     Oxxo,
     P24,
     Paynow,
+    Pix,
     Promptpay,
     SepaDebit,
     Sofort,
@@ -1792,6 +1847,7 @@ impl PaymentLinkPaymentMethodTypes {
             PaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             PaymentLinkPaymentMethodTypes::P24 => "p24",
             PaymentLinkPaymentMethodTypes::Paynow => "paynow",
+            PaymentLinkPaymentMethodTypes::Pix => "pix",
             PaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
             PaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             PaymentLinkPaymentMethodTypes::Sofort => "sofort",
@@ -1921,6 +1977,40 @@ impl std::fmt::Display for PaymentLinksResourceConsentCollectionPromotions {
 impl std::default::Default for PaymentLinksResourceConsentCollectionPromotions {
     fn default() -> Self {
         Self::Auto
+    }
+}
+
+/// An enum representing the possible values of an `PaymentLinksResourceConsentCollection`'s `terms_of_service` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinksResourceConsentCollectionTermsOfService {
+    None,
+    Required,
+}
+
+impl PaymentLinksResourceConsentCollectionTermsOfService {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinksResourceConsentCollectionTermsOfService::None => "none",
+            PaymentLinksResourceConsentCollectionTermsOfService::Required => "required",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinksResourceConsentCollectionTermsOfService {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinksResourceConsentCollectionTermsOfService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinksResourceConsentCollectionTermsOfService {
+    fn default() -> Self {
+        Self::None
     }
 }
 
@@ -2790,6 +2880,7 @@ pub enum UpdatePaymentLinkPaymentMethodTypes {
     Oxxo,
     P24,
     Paynow,
+    Pix,
     Promptpay,
     SepaDebit,
     Sofort,
@@ -2819,6 +2910,7 @@ impl UpdatePaymentLinkPaymentMethodTypes {
             UpdatePaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             UpdatePaymentLinkPaymentMethodTypes::P24 => "p24",
             UpdatePaymentLinkPaymentMethodTypes::Paynow => "paynow",
+            UpdatePaymentLinkPaymentMethodTypes::Pix => "pix",
             UpdatePaymentLinkPaymentMethodTypes::Promptpay => "promptpay",
             UpdatePaymentLinkPaymentMethodTypes::SepaDebit => "sepa_debit",
             UpdatePaymentLinkPaymentMethodTypes::Sofort => "sofort",

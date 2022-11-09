@@ -112,6 +112,9 @@ pub struct TerminalReaderReaderResourceProcessConfig {
     /// Override showing a tipping selection screen on this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub skip_tipping: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tipping: Option<TerminalReaderReaderResourceTippingConfig>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -171,6 +174,15 @@ pub struct TerminalReaderReaderResourceLineItem {
 
     /// The quantity of the line item.
     pub quantity: u64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct TerminalReaderReaderResourceTippingConfig {
+    /// Amount used to calculate tip suggestions on tipping selection screen for this transaction.
+    ///
+    /// Must be a positive integer in the smallest currency unit (e.g., 100 cents to represent $1.00 or 100 to represent ¥100, a zero-decimal currency).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_eligible: Option<i64>,
 }
 
 /// An enum representing the possible values of an `TerminalReader`'s `device_type` field.

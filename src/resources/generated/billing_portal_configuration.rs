@@ -44,6 +44,8 @@ pub struct BillingPortalConfiguration {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
+    pub login_page: PortalLoginPage,
+
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -111,6 +113,20 @@ pub struct PortalCustomerUpdate {
 pub struct PortalInvoiceList {
     /// Whether the feature is enabled.
     pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalLoginPage {
+    /// If `true`, a shareable `url` will be generated that will take your customers to a hosted login page for the customer portal.
+    ///
+    /// If `false`, the previously generated `url`, if any, will be deactivated.
+    pub enabled: bool,
+
+    /// A shareable URL to the hosted portal login page.
+    ///
+    /// Your customers will be able to log in with their [email](https://stripe.com/docs/api/customers/object#customer_object-email) and receive a link to their customer portal.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

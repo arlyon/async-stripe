@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::IdentityVerificationSessionId;
+use crate::ids::{IdentityVerificationSessionId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, IdentityVerificationReport};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "GelatoVerificationSession".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -88,6 +87,7 @@ impl Object for IdentityVerificationSession {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSessionLastError {
+
     /// A short machine-readable string giving the reason for the verification or user-session failure.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<GelatoSessionLastErrorCode>,
@@ -99,6 +99,7 @@ pub struct GelatoSessionLastError {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoVerificationSessionOptions {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<GelatoSessionDocumentOptions>,
 
@@ -108,6 +109,7 @@ pub struct GelatoVerificationSessionOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoSessionDocumentOptions {
+
     /// Array of strings of allowed identity document types.
     ///
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
@@ -130,10 +132,12 @@ pub struct GelatoSessionDocumentOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct GelatoSessionIdNumberOptions {}
+pub struct GelatoSessionIdNumberOptions {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoVerifiedOutputs {
+
     /// The user's verified address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -161,6 +165,7 @@ pub struct GelatoVerifiedOutputs {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct GelatoDataVerifiedOutputsDate {
+
     /// Numerical day between 1 and 31.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub day: Option<i64>,
@@ -176,6 +181,7 @@ pub struct GelatoDataVerifiedOutputsDate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct VerificationSessionRedaction {
+
     /// Indicates whether this object and its related objects have been redacted or not.
     pub status: VerificationSessionRedactionStatus,
 }
@@ -247,14 +253,10 @@ impl GelatoSessionLastErrorCode {
             GelatoSessionLastErrorCode::DocumentExpired => "document_expired",
             GelatoSessionLastErrorCode::DocumentTypeNotSupported => "document_type_not_supported",
             GelatoSessionLastErrorCode::DocumentUnverifiedOther => "document_unverified_other",
-            GelatoSessionLastErrorCode::IdNumberInsufficientDocumentData => {
-                "id_number_insufficient_document_data"
-            }
+            GelatoSessionLastErrorCode::IdNumberInsufficientDocumentData => "id_number_insufficient_document_data",
             GelatoSessionLastErrorCode::IdNumberMismatch => "id_number_mismatch",
             GelatoSessionLastErrorCode::IdNumberUnverifiedOther => "id_number_unverified_other",
-            GelatoSessionLastErrorCode::SelfieDocumentMissingPhoto => {
-                "selfie_document_missing_photo"
-            }
+            GelatoSessionLastErrorCode::SelfieDocumentMissingPhoto => "selfie_document_missing_photo",
             GelatoSessionLastErrorCode::SelfieFaceMismatch => "selfie_face_mismatch",
             GelatoSessionLastErrorCode::SelfieManipulated => "selfie_manipulated",
             GelatoSessionLastErrorCode::SelfieUnverifiedOther => "selfie_unverified_other",
