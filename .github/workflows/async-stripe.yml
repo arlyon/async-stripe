@@ -92,6 +92,8 @@ jobs:
             --features runtime-${{ matrix.runtime }}
   test:
     runs-on: ubuntu-20.04
+    env:
+      RUSTFLAGS: -D warnings
     strategy:
       matrix:
         runtime:
