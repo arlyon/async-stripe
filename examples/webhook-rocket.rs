@@ -98,9 +98,7 @@ impl<'r> FromRequest<'r> for StripeSignature<'r> {
     async fn from_request(req: &'r Request<'_>) -> Outcome<Self, Self::Error> {
         match req.headers().get_one("Stripe-Signature") {
             None => Outcome::Failure((Status::BadRequest, "No signature provided")),
-            Some(signature) => Outcome::Success(StripeSignature {
-                signature,
-            }),
+            Some(signature) => Outcome::Success(StripeSignature { signature }),
         }
     }
 }
