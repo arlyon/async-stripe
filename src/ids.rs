@@ -125,14 +125,26 @@ macro_rules! def_id {
         impl $struct_name {
             /// The prefix of the id type (e.g. `cus_` for a `CustomerId`).
             #[inline(always)]
+            #[deprecated(note = "Please use prefixes or is_valid_prefix")]
             pub fn prefix() -> &'static str {
                 $prefix
+            }
+
+            /// The valid prefixes of the id type (e.g. [`ch_`, `py_`\ for a `ChargeId`).
+            #[inline(always)]
+            pub fn prefixes() -> &'static [&'static str] {
+                &[$prefix$(, $alt_prefix)*]
             }
 
             /// Extracts a string slice containing the entire id.
             #[inline(always)]
             pub fn as_str(&self) -> &str {
                 self.0.as_str()
+            }
+
+            /// Check is provided prefix would be a valid prefix for id's of this type
+            pub fn is_valid_prefix(prefix: &str) -> bool {
+                prefix == $prefix $( || prefix == $alt_prefix )*
             }
         }
 
@@ -287,7 +299,7 @@ macro_rules! def_id {
                     })?;
 
                 match prefix {
-                    $(_ if prefix == $($variant_type)*::prefix() => {
+                    $(_ if $($variant_type)*::is_valid_prefix(prefix) => {
                         Ok($enum_name::$variant_name(s.parse()?))
                     })*
                     _ => {
@@ -394,7 +406,7 @@ macro_rules! def_id {
                     })?;
 
                 match prefix {
-                    $(_ if prefix == $($variant_type)*::prefix() => {
+                    $(_ if $($variant_type)*::is_valid_prefix(prefix) => {
                         Ok($enum_name::$variant_name(s.parse()?))
                     })*
                     _ => {
@@ -488,7 +500,7 @@ def_id!(ConnectCollectionTransferId, "connct_");
 def_id!(CouponId: String); // N.B. A coupon id can be user-provided so can be any arbitrary string
 def_id!(CustomerId, "cus_");
 def_id!(DiscountId, "di_");
-def_id!(DisputeId, "dp_");
+def_id!(DisputeId, "dp_" | "du_");
 def_id!(EphemeralKeyId, "ephkey_");
 def_id!(EventId, "evt_");
 def_id!(FileId, "file_");
