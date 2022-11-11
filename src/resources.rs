@@ -7,7 +7,7 @@
 //! some are generated.
 
 mod currency;
-mod generated;
+pub mod generated;
 mod placeholders;
 mod types;
 
