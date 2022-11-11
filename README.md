@@ -15,7 +15,7 @@ See the [rust api docs](https://docs.rs/async-stripe), the [examples](/examples)
 
 ## Installation
 
-`async-stripe` is compatible with the [`async-std`](https://github.com/async-rs/async-std) and [`tokio`](https://github.com/tokio-rs/tokio) runtimes and the `native-tls` and `rustls` backends. When adding the dependency, you much select a runtime feature.
+`async-stripe` is compatible with the [`async-std`](https://github.com/async-rs/async-std) and [`tokio`](https://github.com/tokio-rs/tokio) runtimes and the `native-tls` and `rustls` backends. When adding the dependency, you must select a runtime feature.
 
 ```toml
 [dependencies]
