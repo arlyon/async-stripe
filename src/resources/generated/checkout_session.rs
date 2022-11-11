@@ -1654,9 +1654,6 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsP24 {
 pub struct CreateCheckoutSessionPaymentMethodOptionsPaynow {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tos_shown_and_accepted: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

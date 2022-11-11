@@ -144,9 +144,9 @@ pub struct PaymentMethod {
 }
 
 impl PaymentMethod {
-    /// Returns a list of PaymentMethods attached to the StripeAccount.
+    /// Returns a list of PaymentMethods for Treasury flows.
     ///
-    /// For listing a customer’s payment methods, you should use [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list).
+    /// If you want to list the PaymentMethods attached to a Customer for payments, you should use the [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list) API instead.
     pub fn list(client: &Client, params: &ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
         client.get_query("/payment_methods", &params)
     }
