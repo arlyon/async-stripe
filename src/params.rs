@@ -326,7 +326,6 @@ where
                     p
                 };
 
-                println!("next");
                 let page = client.get_query(&path, &params_next);
 
                 ListPaginator::create_paginator(page, params_next)
