@@ -551,7 +551,7 @@ def_id!(PlanId: String); // N.B. A plan id can be user-provided so can be any ar
 def_id!(PlatformTaxFeeId, "ptf");
 def_id!(PriceId, "price_");
 def_id!(ProductId: String); // N.B. A product id can be user-provided so can be any arbitrary string
-def_id!(PromotionCodeId, "promo_"); // N.B. A product id can be user-provided so can be any arbitrary string
+def_id!(PromotionCodeId, "promo_");
 def_id!(QuoteId, "qt_");
 def_id!(RecipientId: String); // FIXME: This doesn't seem to be documented yet
 def_id!(RefundId, "re_" | "pyr_");
@@ -634,7 +634,91 @@ impl<'de> serde::Deserialize<'de> for InvoiceId {
 
 #[cfg(test)]
 mod tests {
+    use std::fmt::{Debug, Display};
+    use std::str::FromStr;
+
+    use serde::de::DeserializeOwned;
+    use serde::{Deserialize, Serialize};
+    use serde_json::json;
+
     use super::*;
+
+    fn assert_ser_de_roundtrip<T>(id: &str)
+    where
+        T: DeserializeOwned + Serialize + FromStr + Display + Debug,
+        <T as FromStr>::Err: Debug,
+    {
+        let parsed_id = T::from_str(id).expect("Could not parse id");
+        let ser = serde_json::to_string(&parsed_id).expect("Could not serialize id");
+        let deser: T = serde_json::from_str(&ser).expect("Could not deserialize id");
+        assert_eq!(deser.to_string(), id.to_string());
+    }
+
+    fn assert_deser_err<T: DeserializeOwned + Debug>(id: &str) {
+        let json_str = format!(r#""{}""#, id);
+        let deser: Result<T, _> = serde_json::from_str(&json_str);
+        assert!(deser.is_err(), "Expected error, got {:?}", deser);
+    }
+
+    #[test]
+    fn test_empty_invoice_id_default() {
+        #[derive(Deserialize)]
+        struct WithInvoiceId {
+            id: InvoiceId,
+        }
+
+        for body in [json!({"id": ""}), json!({})] {
+            let deser: WithInvoiceId = serde_json::from_value(body).expect("Could not deser");
+            assert_eq!(deser.id, InvoiceId::none());
+        }
+    }
+
+    #[test]
+    fn test_ser_de_roundtrip() {
+        // InvoiceId special cased
+        for id in ["in_12345", "in_"] {
+            assert_ser_de_roundtrip::<InvoiceId>(id);
+        }
+
+        // Single prefix
+        assert_ser_de_roundtrip::<PriceId>("price_abc");
+
+        // Case where multiple possible prefixes
+        for id in ["re_bcd", "pyr_123"] {
+            assert_ser_de_roundtrip::<RefundId>(id);
+        }
+
+        // Case where id can be anything
+        for id in ["anything", ""] {
+            assert_ser_de_roundtrip::<ProductId>(id);
+        }
+
+        // Case where enum id
+        for id in ["tok_123", "btok_456"] {
+            assert_ser_de_roundtrip::<TokenId>(id);
+        }
+    }
+
+    #[test]
+    fn test_deser_err() {
+        // InvoiceId special cased
+        assert_deser_err::<InvoiceId>("in");
+
+        // Single prefix
+        for id in ["sub", ""] {
+            assert_deser_err::<SubscriptionId>(id);
+        }
+
+        // Case where multiple possible prefixes
+        for id in ["abc_bcd", "pyr_123"] {
+            assert_deser_err::<PaymentMethodId>(id);
+        }
+
+        // Case where enum id
+        for id in ["tok_123", "btok_456"] {
+            assert_deser_err::<PaymentSourceId>(id);
+        }
+    }
 
     #[test]
     fn test_parse_customer() {
