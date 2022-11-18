@@ -59,6 +59,9 @@ args = ["-a", "--delete-during", "out/", "../src/resources/generated"]
 command = "cargo"
 toolchain = "nightly"
 install_crate = "rustfmt"
+# we set this to true because missing files currently cause rustfmt to fail
+# which impacts our weekly CI job 
+ignore_errors = true 
 args = ["fmt"]
 
 [tasks.check]
