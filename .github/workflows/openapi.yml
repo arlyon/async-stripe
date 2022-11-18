@@ -62,4 +62,4 @@ jobs:
             ```
           branch: openapi
           branch-suffix: timestamp
-          assignees: arlyon
+          reviewers: arlyon
