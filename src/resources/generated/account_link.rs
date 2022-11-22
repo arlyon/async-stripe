@@ -128,6 +128,8 @@ impl std::default::Default for AccountLinkCollect {
 pub enum AccountLinkType {
     AccountOnboarding,
     AccountUpdate,
+    CustomAccountUpdate,
+    CustomAccountVerification,
 }
 
 impl AccountLinkType {
@@ -135,6 +137,8 @@ impl AccountLinkType {
         match self {
             AccountLinkType::AccountOnboarding => "account_onboarding",
             AccountLinkType::AccountUpdate => "account_update",
+            AccountLinkType::CustomAccountUpdate => "custom_account_update",
+            AccountLinkType::CustomAccountVerification => "custom_account_verification",
         }
     }
 }

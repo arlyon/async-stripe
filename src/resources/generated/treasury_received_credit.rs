@@ -34,15 +34,12 @@ pub struct TreasuryReceivedCredit {
     /// Reason for the failure.
     ///
     /// A ReceivedCredit might fail because the receiving FinancialAccount is closed or frozen.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_code: Option<TreasuryReceivedCreditFailureCode>,
 
     /// The FinancialAccount that received the funds.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_account: Option<String>,
 
     /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
     pub initiating_payment_method_details: TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
@@ -56,7 +53,6 @@ pub struct TreasuryReceivedCredit {
     pub network: TreasuryReceivedCreditNetwork,
 
     /// Details describing when a ReceivedCredit may be reversed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reversal_details: Option<TreasuryReceivedCreditsResourceReversalDetails>,
 
     /// Status of the ReceivedCredit.
@@ -66,7 +62,6 @@ pub struct TreasuryReceivedCredit {
     pub status: TreasuryReceivedCreditStatus,
 
     /// The Transaction associated with this object.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction: Option<Expandable<TreasuryTransaction>>,
 }
 
@@ -84,30 +79,24 @@ impl Object for TreasuryReceivedCredit {
 pub struct TreasuryReceivedCreditsResourceLinkedFlows {
 
     /// The CreditReversal created as a result of this ReceivedCredit being reversed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub credit_reversal: Option<String>,
 
     /// Set if the ReceivedCredit was created due to an [Issuing Authorization](https://stripe.com/docs/api#issuing_authorizations) object.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_authorization: Option<String>,
 
     /// Set if the ReceivedCredit is also viewable as an [Issuing transaction](https://stripe.com/docs/api#issuing_transactions) object.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_transaction: Option<String>,
 
     /// ID of the source flow.
     ///
     /// Set if `network` is `stripe` and the source flow is visible to the user.
     /// Examples of source flows include OutboundPayments, payouts, or CreditReversals.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_flow: Option<String>,
 
     /// The expandable object of the source flow.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_flow_details: Option<TreasuryReceivedCreditsResourceSourceFlowsDetails>,
 
     /// The type of flow that originated the ReceivedCredit (for example, `outbound_payment`).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub source_flow_type: Option<String>,
 }
 
@@ -115,11 +104,9 @@ pub struct TreasuryReceivedCreditsResourceLinkedFlows {
 pub struct TreasuryReceivedCreditsResourceReversalDetails {
 
     /// Time before which a ReceivedCredit can be reversed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub deadline: Option<Timestamp>,
 
     /// Set if a ReceivedCredit cannot be reversed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub restricted_reason: Option<TreasuryReceivedCreditsResourceReversalDetailsRestrictedReason>,
 }
 

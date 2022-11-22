@@ -4,7 +4,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::resources::{BankAccount, Card, PaymentIntent, PaymentMethod, SetupIntent, Source};
+use crate::resources::{PaymentIntent, PaymentMethod, PaymentSource, SetupIntent};
 
 /// The resource representing a Stripe "APIErrors".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -56,28 +56,14 @@ pub struct ApiErrors {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_intent: Option<SetupIntent>,
 
-    /// The source object for errors returned on a request involving a source.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub source: Option<ApiErrorsSourceUnion>,
+    pub source: Option<PaymentSource>,
 
     /// The type of error returned.
     ///
     /// One of `api_error`, `card_error`, `idempotency_error`, or `invalid_request_error`.
     #[serde(rename = "type")]
     pub type_: ApiErrorsType,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
-pub enum ApiErrorsSourceUnion {
-    BankAccount(BankAccount),
-    Card(Card),
-    Source(Source),
-}
-impl std::default::Default for ApiErrorsSourceUnion {
-    fn default() -> Self {
-        Self::BankAccount(Default::default())
-    }
 }
 
 /// An enum representing the possible values of an `ApiErrors`'s `type` field.

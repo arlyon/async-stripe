@@ -21,7 +21,6 @@ pub struct IssuingCard {
     pub brand: CardBrand,
 
     /// The reason why the card was canceled.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub cancellation_reason: Option<IssuingCardCancellationReason>,
 
     pub cardholder: IssuingCardholder,
@@ -72,19 +71,15 @@ pub struct IssuingCard {
     pub number: Option<String>,
 
     /// The latest card that replaces this card, if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub replaced_by: Option<Expandable<IssuingCard>>,
 
     /// The card this card replaces, if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub replacement_for: Option<Expandable<IssuingCard>>,
 
     /// The reason why the previous card needed to be replaced.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub replacement_reason: Option<IssuingCardReplacementReason>,
 
     /// Where and how the card will be shipped.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<IssuingCardShipping>,
 
     pub spending_controls: IssuingCardAuthorizationControls,
@@ -97,7 +92,6 @@ pub struct IssuingCard {
     pub type_: IssuingCardType,
 
     /// Information relating to digital wallets (like Apple Pay and Google Pay).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub wallets: Option<IssuingCardWallets>,
 }
 
@@ -117,24 +111,20 @@ pub struct IssuingCardAuthorizationControls {
     ///
     /// All other categories will be blocked.
     /// Cannot be set with `blocked_categories`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_categories: Option<Vec<MerchantCategory>>,
 
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     ///
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub blocked_categories: Option<Vec<MerchantCategory>>,
 
     /// Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits: Option<Vec<IssuingCardSpendingLimit>>,
 
     /// Currency of the amounts within `spending_limits`.
     ///
     /// Always the same as the currency of the card.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits_currency: Option<Currency>,
 }
 
@@ -143,15 +133,12 @@ pub struct IssuingCardShipping {
     pub address: Address,
 
     /// The delivery company that shipped a card.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub carrier: Option<IssuingCardShippingCarrier>,
 
     /// Additional information that may be required for clearing customs.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customs: Option<IssuingCardShippingCustoms>,
 
     /// A unix timestamp representing a best estimate of when the card will be delivered.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub eta: Option<Timestamp>,
 
     /// Recipient name.
@@ -160,7 +147,6 @@ pub struct IssuingCardShipping {
     /// The phone number of the receiver of the bulk shipment.
     ///
     /// This phone number will be provided to the shipping company, who might use it to contact the receiver in case of delivery issues.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number: Option<String>,
 
     /// Whether a signature is required for card delivery.
@@ -168,22 +154,18 @@ pub struct IssuingCardShipping {
     /// This feature is only supported for US users.
     /// Standard shipping service does not support signature on delivery.
     /// The default value for standard shipping service is false and for express and priority services is true.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub require_signature: Option<bool>,
 
     /// Shipment service, such as `standard` or `express`.
     pub service: IssuingCardShippingService,
 
     /// The delivery status of the card.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<IssuingCardShippingStatus>,
 
     /// A tracking number for a card shipment.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_number: Option<String>,
 
     /// A link to the shipping carrier's site where you can view detailed information about a card shipment.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_url: Option<String>,
 
     /// Packaging options.
@@ -196,7 +178,6 @@ pub struct IssuingCardShippingCustoms {
     /// A registration number used for customs in Europe.
     ///
     /// See https://www.gov.uk/eori and https://ec.europa.eu/taxation_customs/business/customs-procedures-import-and-export/customs-procedures/economic-operators-registration-and-identification-number-eori_en.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub eori_number: Option<String>,
 }
 
@@ -210,7 +191,6 @@ pub struct IssuingCardSpendingLimit {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
     ///
     /// Omitting this field will apply the limit to all categories.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<IssuingCardSpendingLimitCategories>>,
 
     /// Interval (or event) to which the amount applies.
@@ -224,7 +204,6 @@ pub struct IssuingCardWallets {
     pub google_pay: IssuingCardGooglePay,
 
     /// Unique identifier for a card used with digital wallets.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub primary_account_identifier: Option<String>,
 }
 
@@ -234,7 +213,6 @@ pub struct IssuingCardApplePay {
     pub eligible: bool,
 
     /// Reason the card is ineligible for Apple Pay.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ineligible_reason: Option<IssuingCardApplePayIneligibleReason>,
 }
 
@@ -244,7 +222,6 @@ pub struct IssuingCardGooglePay {
     pub eligible: bool,
 
     /// Reason the card is ineligible for Google Pay.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ineligible_reason: Option<IssuingCardGooglePayIneligibleReason>,
 }
 

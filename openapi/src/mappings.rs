@@ -194,7 +194,9 @@ pub fn field_mappings() -> FieldMap {
     BTreeMap::from([
         // Config for object types
         (("account", "type"), ("AccountType", "Option<AccountType>")),
+        (("account", "external_account"), ("ExternalAccount", "ExternalAccount")),
         (("balance_transaction", "status"), ("BalanceTransactionStatus", "BalanceTransactionStatus")),
+        (("balance_transaction", "source"), ("BalanceTransactionSourceUnion,Expandable", "Option<Expandable<BalanceTransactionSourceUnion>>")),
         (("bank_account", "status"), ("BankAccountStatus", "Option<BankAccountStatus>")),
         (("fee", "type"), ("FeeType", "FeeType")),
         (("charge", "source"), ("PaymentSource", "Option<PaymentSource>")),
@@ -279,7 +281,7 @@ pub fn field_mappings() -> FieldMap {
             ("IssuingTransactionType", "IssuingTransactionType"),
         ),
         (("file", "purpose"), ("", "FilePurpose")),
-        (("recipient", "type"), ("", "crate::RecipientType")),
+        (("payout", "destination"), ("PayoutDestinationUnion", "Option<Expandable<PayoutDestinationUnion>>")),
         (("review", "reason"), ("ReviewReason", "ReviewReason")),
         (("sku", "attributes"), ("Metadata", "Option<Metadata>")),
         (
@@ -509,6 +511,7 @@ pub fn field_mappings() -> FieldMap {
         ),
 
         // Miscellaneous params
+        (("create_payment_method", "type"), ("", "Option<PaymentMethodTypeFilter>")),
         (("create_recipient", "type"), ("", "RecipientType")),
         (
             ("update_payment_method", "billing_details"),

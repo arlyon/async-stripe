@@ -1,7 +1,9 @@
+use serde::{Deserialize, Serialize};
+
 use crate::client::{Client, Response};
 use crate::ids::{PayoutDestinationId, PayoutId};
 use crate::params::Object;
-use crate::resources::{Payout, PayoutDestinationUnion};
+use crate::resources::{BankAccount, Card, Payout};
 
 impl Payout {
     /// Cancels the payout.
@@ -12,6 +14,17 @@ impl Payout {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged, rename_all = "snake_case")]
+pub enum PayoutDestinationUnion {
+    BankAccount(BankAccount),
+    Card(Card),
+}
+impl std::default::Default for PayoutDestinationUnion {
+    fn default() -> Self {
+        Self::BankAccount(Default::default())
+    }
+}
 impl Object for PayoutDestinationUnion {
     type Id = PayoutDestinationId;
     fn id(&self) -> Self::Id {

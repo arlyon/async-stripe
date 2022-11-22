@@ -32,20 +32,17 @@ pub struct TreasuryInboundTransfer {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// Details about this InboundTransfer's failure.
     ///
     /// Only set when status is `failed`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_details: Option<TreasuryInboundTransfersResourceFailureDetails>,
 
     /// The FinancialAccount that received the funds.
     pub financial_account: String,
 
     /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
     pub linked_flows: TreasuryInboundTransfersResourceInboundTransferResourceLinkedFlows,
@@ -62,11 +59,9 @@ pub struct TreasuryInboundTransfer {
     pub origin_payment_method: String,
 
     /// Details about the PaymentMethod for an InboundTransfer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub origin_payment_method_details: Option<InboundTransfers>,
 
     /// Returns `true` if the funds for an InboundTransfer were returned after the InboundTransfer went to the `succeeded` state.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub returned: Option<bool>,
 
     /// Statement descriptor shown when funds are debited from the source.
@@ -84,7 +79,6 @@ pub struct TreasuryInboundTransfer {
     pub status_transitions: TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitions,
 
     /// The Transaction associated with this object.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction: Option<Expandable<TreasuryTransaction>>,
 }
 
@@ -115,34 +109,28 @@ pub struct InboundTransfers {
 pub struct InboundTransfersPaymentMethodDetailsUsBankAccount {
 
     /// Account holder type: individual or company.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType>,
 
     /// Account type: checkings or savings.
     ///
     /// Defaults to checking if omitted.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_type: Option<InboundTransfersPaymentMethodDetailsUsBankAccountAccountType>,
 
     /// Name of the bank associated with the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_name: Option<String>,
 
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 
     /// Last four digits of the bank account number.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
 
     /// The US bank account network used to debit funds.
     pub network: InboundTransfersPaymentMethodDetailsUsBankAccountNetwork,
 
     /// Routing number of the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
 }
 
@@ -157,7 +145,6 @@ pub struct TreasuryInboundTransfersResourceFailureDetails {
 pub struct TreasuryInboundTransfersResourceInboundTransferResourceLinkedFlows {
 
     /// If funds for this flow were returned after the flow went to the `succeeded` state, this field contains a reference to the ReceivedDebit return.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub received_debit: Option<String>,
 }
 
@@ -169,11 +156,9 @@ pub struct TreasuryInboundTransfersResourceInboundTransferResourceStatusTransiti
     pub canceled_at: Option<Timestamp>,
 
     /// Timestamp describing when an InboundTransfer changed status to `failed`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failed_at: Option<Timestamp>,
 
     /// Timestamp describing when an InboundTransfer changed status to `succeeded`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub succeeded_at: Option<Timestamp>,
 }
 

@@ -13,7 +13,6 @@ pub struct FinancialConnectionsAccountOwner {
     pub id: FinancialConnectionsAccountOwnerId,
 
     /// The email address of the owner.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
     /// The full name of the owner.
@@ -23,15 +22,12 @@ pub struct FinancialConnectionsAccountOwner {
     pub ownership: String,
 
     /// The raw phone number of the owner.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 
     /// The raw physical address of the owner.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub raw_address: Option<String>,
 
     /// The timestamp of the refresh that updated this owner.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub refreshed_at: Option<Timestamp>,
 }
 

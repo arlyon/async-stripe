@@ -15,7 +15,6 @@ pub struct PaymentMethodOptionsCustomerBalance {
     /// The funding method type to be used when there are not enough funds in the customer balance.
     ///
     /// Permitted values include: `bank_transfer`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub funding_type: Option<PaymentMethodOptionsCustomerBalanceFundingType>,
 
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -41,7 +40,6 @@ pub struct PaymentMethodOptionsCustomerBalanceBankTransfer {
 
     /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
     #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<PaymentMethodOptionsCustomerBalanceBankTransferType>,
 }
 

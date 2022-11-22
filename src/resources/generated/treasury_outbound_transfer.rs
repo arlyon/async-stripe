@@ -32,11 +32,9 @@ pub struct TreasuryOutboundTransfer {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// The PaymentMethod used as the payment instrument for an OutboundTransfer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub destination_payment_method: Option<String>,
 
     pub destination_payment_method_details: OutboundTransfersPaymentMethodDetails,
@@ -48,7 +46,6 @@ pub struct TreasuryOutboundTransfer {
     pub financial_account: String,
 
     /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -62,7 +59,6 @@ pub struct TreasuryOutboundTransfer {
     /// Details about a returned OutboundTransfer.
     ///
     /// Only set when the status is `returned`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_details: Option<TreasuryOutboundTransfersResourceReturnedDetails>,
 
     /// Information about the OutboundTransfer to be sent to the recipient account.
@@ -108,34 +104,28 @@ pub struct OutboundTransfersPaymentMethodDetails {
 pub struct OutboundTransfersPaymentMethodDetailsUsBankAccount {
 
     /// Account holder type: individual or company.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<OutboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType>,
 
     /// Account type: checkings or savings.
     ///
     /// Defaults to checking if omitted.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_type: Option<OutboundTransfersPaymentMethodDetailsUsBankAccountAccountType>,
 
     /// Name of the bank associated with the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_name: Option<String>,
 
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 
     /// Last four digits of the bank account number.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
 
     /// The US bank account network used to send funds.
     pub network: OutboundTransfersPaymentMethodDetailsUsBankAccountNetwork,
 
     /// Routing number of the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
 }
 
@@ -153,19 +143,15 @@ pub struct TreasuryOutboundTransfersResourceReturnedDetails {
 pub struct TreasuryOutboundTransfersResourceStatusTransitions {
 
     /// Timestamp describing when an OutboundTransfer changed status to `canceled`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<Timestamp>,
 
     /// Timestamp describing when an OutboundTransfer changed status to `failed`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failed_at: Option<Timestamp>,
 
     /// Timestamp describing when an OutboundTransfer changed status to `posted`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub posted_at: Option<Timestamp>,
 
     /// Timestamp describing when an OutboundTransfer changed status to `returned`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<Timestamp>,
 }
 

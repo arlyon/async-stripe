@@ -30,7 +30,6 @@ pub struct TreasuryCreditReversal {
     pub financial_account: String,
 
     /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -53,7 +52,6 @@ pub struct TreasuryCreditReversal {
     pub status_transitions: TreasuryReceivedCreditsResourceStatusTransitions,
 
     /// The Transaction associated with this object.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction: Option<Expandable<TreasuryTransaction>>,
 }
 
@@ -71,7 +69,6 @@ impl Object for TreasuryCreditReversal {
 pub struct TreasuryReceivedCreditsResourceStatusTransitions {
 
     /// Timestamp describing when the CreditReversal changed status to `posted`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub posted_at: Option<Timestamp>,
 }
 

@@ -101,6 +101,12 @@ pub struct Card {
     #[serde(default)]
     pub deleted: bool,
 
+    /// A high-level description of the type of cards issued in this range.
+    ///
+    /// (For internal use only and not typically available in standard API requests.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
     /// (For tokenized numbers only.) The last four digits of the device account number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dynamic_last4: Option<String>,
@@ -125,6 +131,18 @@ pub struct Card {
     /// Can be `credit`, `debit`, `prepaid`, or `unknown`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding: Option<String>,
+
+    /// Issuer identification number of the card.
+    ///
+    /// (For internal use only and not typically available in standard API requests.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iin: Option<String>,
+
+    /// The name of the card's issuing bank.
+    ///
+    /// (For internal use only and not typically available in standard API requests.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<String>,
 
     /// The last four digits of the card.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -22,7 +22,6 @@ pub struct TaxRate {
     pub active: bool,
 
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
     /// Time at which the object was created.
@@ -33,7 +32,6 @@ pub struct TaxRate {
     /// An arbitrary string attached to the tax rate for your internal use only.
     ///
     /// It will not be visible to your customers.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// The display name of the tax rates as it will appear to your customer on their receipt email, PDF, and the hosted invoice page.
@@ -46,7 +44,6 @@ pub struct TaxRate {
     ///
     /// You can use this label field for tax reporting purposes.
     /// It also appears on your customer’s invoice.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub jurisdiction: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -55,7 +52,6 @@ pub struct TaxRate {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
     pub metadata: Metadata,
 
     /// This represents the tax rate percent out of 100.
@@ -64,11 +60,9 @@ pub struct TaxRate {
     /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.
     ///
     /// For example, "NY" for New York, United States.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 
     /// The high-level tax type, such as `vat` or `sales_tax`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_type: Option<TaxRateTaxType>,
 }
 

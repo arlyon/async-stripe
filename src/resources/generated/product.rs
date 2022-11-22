@@ -23,11 +23,27 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
+    /// A list of up to 5 attributes that each SKU can provide values for (e.g., `["color", "size"]`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<Vec<String>>,
+
+    /// A short one-line description of the product, meant to be displayable to the customer.
+    ///
+    /// Only applicable to products of `type=good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption: Option<String>,
+
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<Timestamp>,
+
+    /// An array of connect application identifiers that cannot purchase this product.
+    ///
+    /// Only applicable to products of `type=good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deactivate_on: Option<Vec<String>>,
 
     /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -78,6 +94,13 @@ pub struct Product {
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<Expandable<TaxCode>>,
+
+    /// The type of the product.
+    ///
+    /// The product is either of type `good`, which is eligible for use with Orders and SKUs, or `service`, which is eligible for use with Subscriptions and Plans.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<ProductType>,
 
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
@@ -151,6 +174,24 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
 
+    /// A list of up to 5 alphanumeric attributes.
+    ///
+    /// Should only be set if type=`good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<Vec<String>>,
+
+    /// A short one-line description of the product, meant to be displayable to the customer.
+    ///
+    /// May only be set if type=`good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption: Option<&'a str>,
+
+    /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
+    ///
+    /// May only be set if type=`good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deactivate_on: Option<Vec<String>>,
+
     /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object.
     ///
     /// This Price will be set as the default price for this product.
@@ -208,6 +249,15 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<TaxCodeId>,
 
+    /// The type of the product.
+    ///
+    /// Defaults to `service` if not explicitly specified, enabling use of this product with Subscriptions and Plans.
+    /// Set this parameter to `good` to use this product with Orders and SKUs.
+    /// On API versions before `2018-02-05`, this field defaults to `good` for compatibility reasons.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<ProductType>,
+
     /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
     ///
     /// When set, this will be included in associated invoice line item descriptions.
@@ -223,6 +273,9 @@ impl<'a> CreateProduct<'a> {
     pub fn new(name: &'a str) -> Self {
         CreateProduct {
             active: Default::default(),
+            attributes: Default::default(),
+            caption: Default::default(),
+            deactivate_on: Default::default(),
             default_price_data: Default::default(),
             description: Default::default(),
             expand: Default::default(),
@@ -234,6 +287,7 @@ impl<'a> CreateProduct<'a> {
             shippable: Default::default(),
             statement_descriptor: Default::default(),
             tax_code: Default::default(),
+            type_: Default::default(),
             unit_label: Default::default(),
             url: Default::default(),
         }
@@ -285,6 +339,11 @@ pub struct ListProducts<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<ProductId>,
 
+    /// Only return products of this type.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<ProductType>,
+
     /// Only return products with the given url.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<&'a str>,
@@ -301,6 +360,7 @@ impl<'a> ListProducts<'a> {
             limit: Default::default(),
             shippable: Default::default(),
             starting_after: Default::default(),
+            type_: Default::default(),
             url: Default::default(),
         }
     }
@@ -317,6 +377,25 @@ pub struct UpdateProduct<'a> {
     /// Whether the product is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
+
+    /// A list of up to 5 alphanumeric attributes that each SKU can provide values for (e.g., `["color", "size"]`).
+    ///
+    /// If a value for `attributes` is specified, the list specified will replace the existing attributes list on this product.
+    /// Any attributes not present after the update will be deleted from the SKUs for this product.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<Vec<String>>,
+
+    /// A short one-line description of the product, meant to be displayable to the customer.
+    ///
+    /// May only be set if `type=good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption: Option<&'a str>,
+
+    /// An array of Connect application names or identifiers that should not be able to order the SKUs for this product.
+    ///
+    /// May only be set if `type=good`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deactivate_on: Option<Vec<String>>,
 
     /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -385,6 +464,9 @@ impl<'a> UpdateProduct<'a> {
     pub fn new() -> Self {
         UpdateProduct {
             active: Default::default(),
+            attributes: Default::default(),
+            caption: Default::default(),
+            deactivate_on: Default::default(),
             default_price: Default::default(),
             description: Default::default(),
             expand: Default::default(),
@@ -403,78 +485,133 @@ impl<'a> UpdateProduct<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceData {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// Prices defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<CreateProductDefaultPriceDataCurrencyOptions>,
 
+    /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateProductDefaultPriceDataRecurring>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateProductDefaultPriceDataTaxBehavior>,
 
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
+    ///
+    /// One of `unit_amount` or `unit_amount_decimal` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceDataCurrencyOptions {
+    /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateProductDefaultPriceDataCurrencyOptionsTaxBehavior>,
 
+    /// Each element represents a pricing tier.
+    ///
+    /// This parameter requires `billing_scheme` to be set to `tiered`.
+    /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tiers: Option<Vec<CreateProductDefaultPriceDataCurrencyOptionsTiers>>,
 
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceDataRecurring {
+    /// Specifies billing frequency.
+    ///
+    /// Either `day`, `week`, `month` or `year`.
     pub interval: CreateProductDefaultPriceDataRecurringInterval,
 
+    /// The number of intervals between subscription billings.
+    ///
+    /// For example, `interval=month` and `interval_count=3` bills every 3 months.
+    /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
+    /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
 
+    /// The maximum unit amount the customer can specify for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
 
+    /// The minimum unit amount the customer can specify for this item.
+    ///
+    /// Must be at least the minimum charge amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 
+    /// The starting unit amount which can be updated by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preset: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers {
+    /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
 
+    /// Same as `flat_amount`, but accepts a decimal value representing an integer in the minor units of the currency.
+    ///
+    /// Only one of `flat_amount` and `flat_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount_decimal: Option<String>,
 
+    /// The per unit billing amount for each individual unit for which this tier applies.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 
+    /// Specifies the upper bound of this tier.
+    ///
+    /// The lower bound of a tier is the upper bound of the previous tier adding one.
+    /// Use `inf` to define a fallback tier.
     pub up_to: Option<UpTo>,
 }
 
@@ -585,5 +722,39 @@ impl std::fmt::Display for CreateProductDefaultPriceDataTaxBehavior {
 impl std::default::Default for CreateProductDefaultPriceDataTaxBehavior {
     fn default() -> Self {
         Self::Exclusive
+    }
+}
+
+/// An enum representing the possible values of an `Product`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ProductType {
+    Good,
+    Service,
+}
+
+impl ProductType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ProductType::Good => "good",
+            ProductType::Service => "service",
+        }
+    }
+}
+
+impl AsRef<str> for ProductType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for ProductType {
+    fn default() -> Self {
+        Self::Good
     }
 }

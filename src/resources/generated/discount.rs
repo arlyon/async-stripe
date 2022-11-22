@@ -22,13 +22,11 @@ pub struct Discount {
     /// The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode.
     ///
     /// Will not be present for subscription mode.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub checkout_session: Option<String>,
 
     pub coupon: Coupon,
 
     /// The ID of the customer associated with this discount.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Expandable<Customer>>,
 
     // Always true for a deleted object
@@ -42,22 +40,18 @@ pub struct Discount {
     pub end: Option<Timestamp>,
 
     /// The invoice that the discount's coupon was applied to, if it was applied directly to a particular invoice.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice: Option<String>,
 
     /// The invoice item `id` (or invoice line item `id` for invoice line items of type='subscription') that the discount's coupon was applied to, if it was applied directly to a particular invoice item or invoice line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_item: Option<String>,
 
     /// The promotion code applied to create this discount.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<Expandable<PromotionCode>>,
 
     /// Date that the coupon was applied.
     pub start: Timestamp,
 
     /// The subscription that this coupon is applied to, if it is applied to a particular subscription.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<String>,
 }
 

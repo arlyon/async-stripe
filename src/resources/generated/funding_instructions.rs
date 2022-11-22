@@ -116,33 +116,26 @@ pub struct FundingInstructionsBankTransferSpeiRecord {
 pub struct FundingInstructionsBankTransferZenginRecord {
 
     /// The account holder name.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_name: Option<String>,
 
     /// The account number.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<String>,
 
     /// The bank account type.
     ///
     /// In Japan, this can only be `futsu` or `toza`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_type: Option<String>,
 
     /// The bank code of the account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_code: Option<String>,
 
     /// The bank name of the account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_name: Option<String>,
 
     /// The branch code of the account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub branch_code: Option<String>,
 
     /// The branch name of the account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub branch_name: Option<String>,
 }
 

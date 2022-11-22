@@ -12,10 +12,8 @@ pub struct TreasurySharedResourceBillingDetails {
     pub address: Address,
 
     /// Email address.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
     /// Full name.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

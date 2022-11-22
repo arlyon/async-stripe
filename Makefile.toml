@@ -1,7 +1,7 @@
 [tasks.openapi-delete]
 cwd = "openapi"
 command = "rm"
-args = ["-rf", "spec3.json", "out"]
+args = ["-rf", "spec3.sdk.json", "out"]
 
 [tasks.openapi-delete-out]
 cwd = "openapi"
@@ -33,19 +33,19 @@ rg -N --no-filename -i '^pub (struct|enum) ([A-Z][a-zA-z0-9]+).*?$'  src/resourc
 [tasks.openapi-generate-no-fetch]
 cwd = "openapi"
 command = "cargo"
-args = ["run", "spec3.json"]
+args = ["run", "spec3.sdk.json"]
 dependencies = ["openapi-delete-out"]
 
 [tasks.openapi-generate]
 cwd = "openapi"
 command = "cargo"
-args = ["run", "spec3.json", "--fetch", "current"]
+args = ["run", "spec3.sdk.json", "--fetch", "current"]
 dependencies = ["openapi-delete"]
 
 [tasks.openapi-generate-latest]
 cwd = "openapi"
 command = "cargo"
-args = ["run", "spec3.json", "--fetch", "latest"]
+args = ["run", "spec3.sdk.json", "--fetch", "latest"]
 dependencies = ["openapi-delete"]
 
 [tasks.openapi-copy]

@@ -30,13 +30,11 @@ pub struct ShippingRate {
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub delivery_estimate: Option<ShippingRateDeliveryEstimate>,
 
     /// The name of the shipping rate, meant to be displayable to the customer.
     ///
     /// This will appear on CheckoutSessions.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub display_name: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -53,13 +51,11 @@ pub struct ShippingRate {
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<ShippingRateTaxBehavior>,
 
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     ///
     /// The Shipping tax code is `txcd_92010001`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<Expandable<TaxCode>>,
 
     /// The type of calculation to use on the shipping rate.
@@ -114,13 +110,11 @@ pub struct ShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range.
     ///
     /// If empty, represents no upper bound i.e., infinite.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<ShippingRateDeliveryEstimateBound>,
 
     /// The lower bound of the estimated range.
     ///
     /// If empty, represents no lower bound.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<ShippingRateDeliveryEstimateBound>,
 }
 
@@ -337,56 +331,84 @@ impl<'a> UpdateShippingRate<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
+    /// The upper bound of the estimated range.
+    ///
+    /// If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<CreateShippingRateDeliveryEstimateMaximum>,
 
+    /// The lower bound of the estimated range.
+    ///
+    /// If empty, represents no lower bound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<CreateShippingRateDeliveryEstimateMinimum>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateFixedAmount {
+    /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// Shipping rates defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<CreateShippingRateFixedAmountCurrencyOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateShippingRateFixedAmount {
+    /// Shipping rates defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<UpdateShippingRateFixedAmountCurrencyOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMaximum {
+    /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
 
+    /// Must be greater than 0.
     pub value: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMinimum {
+    /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,
 
+    /// Must be greater than 0.
     pub value: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateFixedAmountCurrencyOptions {
+    /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateShippingRateFixedAmountCurrencyOptionsTaxBehavior>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateShippingRateFixedAmountCurrencyOptions {
+    /// A non-negative integer in cents representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<UpdateShippingRateFixedAmountCurrencyOptionsTaxBehavior>,
 }

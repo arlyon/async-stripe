@@ -20,7 +20,6 @@ pub struct ReportingReportRun {
 
     /// If something should go wrong during the run, a message about the failure (populated when
     ///  `status=failed`).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
 
     /// `true` if the report is run on live mode data and `false` if it is run on test mode data.
@@ -33,7 +32,6 @@ pub struct ReportingReportRun {
 
     /// The file object representing the result of the report run (populated when
     ///  `status=succeeded`).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub result: Option<File>,
 
     /// Status of this report run.
@@ -45,7 +43,6 @@ pub struct ReportingReportRun {
     ///  `status=succeeded`).
     ///
     /// Measured in seconds since the Unix epoch.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub succeeded_at: Option<Timestamp>,
 }
 

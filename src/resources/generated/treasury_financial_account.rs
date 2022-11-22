@@ -39,7 +39,6 @@ pub struct TreasuryFinancialAccount {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
     pub metadata: Metadata,
 
     /// The array of paths to pending Features in the Features hash.
@@ -110,7 +109,6 @@ pub struct TreasuryFinancialAccountsResourceAbaRecord {
     pub account_holder_name: String,
 
     /// The account number.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_number: Option<String>,
 
     /// The last four characters of the account number.
@@ -127,11 +125,9 @@ pub struct TreasuryFinancialAccountsResourceAbaRecord {
 pub struct TreasuryFinancialAccountsResourcePlatformRestrictions {
 
     /// Restricts all inbound money movement.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub inbound_flows: Option<TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows>,
 
     /// Restricts all outbound money movement.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub outbound_flows: Option<TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows>,
 }
 
@@ -139,7 +135,6 @@ pub struct TreasuryFinancialAccountsResourcePlatformRestrictions {
 pub struct TreasuryFinancialAccountsResourceStatusDetails {
 
     /// Details related to the closure of this FinancialAccount.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub closed: Option<TreasuryFinancialAccountsResourceClosedStatusDetails>,
 }
 

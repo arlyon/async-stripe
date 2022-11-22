@@ -19,7 +19,6 @@ pub struct IdentityVerificationSession {
     /// Don’t store it, log it, embed it in a URL, or expose it to anyone other than the user.
     /// Make sure that you have TLS enabled on any page that includes the client secret.
     /// Refer to our docs on [passing the client secret to the frontend](https://stripe.com/docs/identity/verification-sessions#client-secret) to learn more.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<String>,
 
     /// Time at which the object was created.
@@ -28,13 +27,11 @@ pub struct IdentityVerificationSession {
     pub created: Timestamp,
 
     /// If present, this property tells you the last error encountered when processing the verification.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_error: Option<GelatoSessionLastError>,
 
     /// ID of the most recent VerificationReport.
     ///
     /// [Learn more about accessing detailed verification results.](https://stripe.com/docs/identity/verification-sessions#results).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_verification_report: Option<Expandable<IdentityVerificationReport>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -50,7 +47,6 @@ pub struct IdentityVerificationSession {
     /// Redaction status of this VerificationSession.
     ///
     /// If the VerificationSession is not redacted, this field will be null.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub redaction: Option<VerificationSessionRedaction>,
 
     /// Status of this VerificationSession.
@@ -67,11 +63,9 @@ pub struct IdentityVerificationSession {
     /// This URL expires after 48 hours and can only be used once.
     /// Don’t store it, log it, send it in emails or expose it to anyone other than the user.
     /// Refer to our docs on [verifying identity documents](https://stripe.com/docs/identity/verify-identity-documents?platform=web&type=redirect) to learn how to redirect users to Stripe.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 
     /// The user’s verified data.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub verified_outputs: Option<GelatoVerifiedOutputs>,
 }
 
@@ -89,11 +83,9 @@ impl Object for IdentityVerificationSession {
 pub struct GelatoSessionLastError {
 
     /// A short machine-readable string giving the reason for the verification or user-session failure.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<GelatoSessionLastErrorCode>,
 
     /// A message that explains the reason for verification or user-session failure.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
 
@@ -139,27 +131,21 @@ pub struct GelatoSessionIdNumberOptions {
 pub struct GelatoVerifiedOutputs {
 
     /// The user's verified address.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
     /// The user’s verified date of birth.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<GelatoDataVerifiedOutputsDate>,
 
     /// The user's verified first name.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub first_name: Option<String>,
 
     /// The user's verified id number.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number: Option<String>,
 
     /// The user's verified id number type.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub id_number_type: Option<GelatoVerifiedOutputsIdNumberType>,
 
     /// The user's verified last name.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_name: Option<String>,
 }
 
@@ -167,15 +153,12 @@ pub struct GelatoVerifiedOutputs {
 pub struct GelatoDataVerifiedOutputsDate {
 
     /// Numerical day between 1 and 31.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub day: Option<i64>,
 
     /// Numerical month between 1 and 12.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub month: Option<i64>,
 
     /// The four-digit year.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub year: Option<i64>,
 }
 

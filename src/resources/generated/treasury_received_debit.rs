@@ -34,15 +34,12 @@ pub struct TreasuryReceivedDebit {
     /// Reason for the failure.
     ///
     /// A ReceivedDebit might fail because the FinancialAccount doesn't have sufficient funds, is closed, or is frozen.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_code: Option<TreasuryReceivedDebitFailureCode>,
 
     /// The FinancialAccount that funds were pulled from.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub financial_account: Option<String>,
 
     /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -57,7 +54,6 @@ pub struct TreasuryReceivedDebit {
     pub network: TreasuryReceivedDebitNetwork,
 
     /// Details describing when a ReceivedDebit might be reversed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reversal_details: Option<TreasuryReceivedDebitsResourceReversalDetails>,
 
     /// Status of the ReceivedDebit.
@@ -67,7 +63,6 @@ pub struct TreasuryReceivedDebit {
     pub status: TreasuryReceivedDebitStatus,
 
     /// The Transaction associated with this object.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction: Option<Expandable<TreasuryTransaction>>,
 }
 
@@ -85,19 +80,15 @@ impl Object for TreasuryReceivedDebit {
 pub struct TreasuryReceivedDebitsResourceLinkedFlows {
 
     /// The DebitReversal created as a result of this ReceivedDebit being reversed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub debit_reversal: Option<String>,
 
     /// Set if the ReceivedDebit is associated with an InboundTransfer's return of funds.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub inbound_transfer: Option<String>,
 
     /// Set if the ReceivedDebit was created due to an [Issuing Authorization](https://stripe.com/docs/api#issuing_authorizations) object.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_authorization: Option<String>,
 
     /// Set if the ReceivedDebit is also viewable as an [Issuing Dispute](https://stripe.com/docs/api#issuing_disputes) object.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_transaction: Option<String>,
 }
 
@@ -105,11 +96,9 @@ pub struct TreasuryReceivedDebitsResourceLinkedFlows {
 pub struct TreasuryReceivedDebitsResourceReversalDetails {
 
     /// Time before which a ReceivedDebit can be reversed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub deadline: Option<Timestamp>,
 
     /// Set if a ReceivedDebit can't be reversed.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub restricted_reason: Option<TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason>,
 }
 

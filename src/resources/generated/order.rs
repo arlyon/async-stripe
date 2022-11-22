@@ -35,19 +35,13 @@ pub struct Order {
     pub amount_total: i64,
 
     /// ID of the Connect application that created the Order, if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub application: Option<Expandable<Application>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub automatic_tax: Option<OrdersV2ResourceAutomaticTax>,
 
     /// Customer billing details associated with the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<OrdersV2ResourceBillingDetails>,
-
-    /// The fields on the Order that can be updated from the client.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub client_permissions: Option<OrdersV2ResourceClientPermissions>,
 
     /// The client secret of this Order.
     ///
@@ -56,7 +50,6 @@ pub struct Order {
     /// It should not be stored, logged, embedded in URLs, or exposed to anyone other than the customer.
     /// Make sure that you have TLS enabled on any page that includes the client secret.
     /// Refer to our docs for [creating and processing an order](https://stripe.com/docs/orders-beta/create-and-process) to learn about how client_secret should be handled.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub client_secret: Option<String>,
 
     /// Time at which the object was created.
@@ -70,23 +63,19 @@ pub struct Order {
     pub currency: Currency,
 
     /// The customer which this orders belongs to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<Expandable<Customer>>,
 
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// The discounts applied to the order.
     ///
     /// Use `expand[]=discounts` to expand each discount.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<Expandable<Discount>>>,
 
     /// A recent IP address of the purchaser used for tax reporting and tax location inference.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
 
     /// A list of line items the customer is ordering.
@@ -102,17 +91,14 @@ pub struct Order {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
     pub metadata: Metadata,
 
     pub payment: OrdersV2ResourcePayment,
 
     /// The details of the customer cost of shipping, including the customer chosen ShippingRate.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_cost: Option<OrdersV2ResourceShippingCost>,
 
     /// Customer shipping information associated with the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_details: Option<OrdersV2ResourceShippingDetails>,
 
     /// The overall status of the order.
@@ -168,42 +154,22 @@ pub struct OrdersV2ResourceAutomaticTax {
     pub enabled: bool,
 
     /// The status of the most recent automated tax calculation for this Order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<OrdersV2ResourceAutomaticTaxStatus>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OrdersV2ResourceBillingDetails {
     /// Billing address for the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
     /// Email address for the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
     /// Full name for the order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
     /// Billing phone number for the order (including extension).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct OrdersV2ResourceClientPermissions {
-    /// Allows or disallows billing details to be set on an Order with a publishable key and Order client_secret.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<OrdersV2ResourceClientPermissionsBillingDetails>,
-
-    /// Allows or disallows promotion codes to be set on an Order with a publishable key and Order client_secret.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotion_codes: Option<OrdersV2ResourceClientPermissionsPromotionCodes>,
-
-    /// Allows or disallows shipping details to be set on an Order with a publishable key and Order client_secret.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_details: Option<OrdersV2ResourceClientPermissionsShippingDetails>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -211,59 +177,48 @@ pub struct OrdersV2ResourcePayment {
     /// ID of the payment intent associated with this order.
     ///
     /// Null when the order is `open`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<Expandable<PaymentIntent>>,
 
     /// Settings describing how the order should configure generated PaymentIntents.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub settings: Option<OrdersV2ResourcePaymentSettings>,
 
     /// The status of the underlying payment associated with this order, if any.
     ///
     /// Null when the order is `open`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<OrdersV2ResourcePaymentStatus>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OrdersV2ResourcePaymentSettings {
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
 
     /// Indicates whether order has been opted into using [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) to manage payment method types.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub automatic_payment_methods: Option<OrdersV2ResourceAutomaticPaymentMethods>,
 
     /// PaymentMethod-specific configuration to provide to the order's PaymentIntent.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<OrdersV2ResourcePaymentMethodOptions>,
 
     /// The list of [payment method types](https://stripe.com/docs/payments/payment-methods/overview) to provide to the order's PaymentIntent.
     ///
     /// Do not include this attribute if you prefer to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<OrdersV2ResourcePaymentSettingsPaymentMethodTypes>>,
 
     /// The URL to redirect the customer to after they authenticate their payment.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
 
     /// For non-card charges, you can use this value as the complete description that appears on your customers' statements.
     ///
     /// Must contain at least one letter, maximum 22 characters.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
     /// Provides information about a card payment that customers see on their statements.
     ///
     /// Concatenated with the prefix (shortened descriptor) or statement descriptor that’s set on the account to form the complete statement descriptor.
     /// Maximum 22 characters for the concatenated descriptor.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix: Option<String>,
 
     /// Provides configuration for completing a transfer for the order after it is paid.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<OrdersV2ResourceTransferData>,
 }
 
@@ -331,7 +286,6 @@ pub struct OrdersPaymentMethodOptionsAfterpayClearpay {
     ///
     /// We recommend using a value that helps you answer any questions a customer might have about the payment.
     /// The identifier is limited to 128 characters and may contain only letters, digits, underscores, backslashes and dashes.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 
     /// Indicates that you intend to make future payments with the payment method.
@@ -371,7 +325,6 @@ pub struct OrdersV2ResourceShippingCost {
     pub amount_total: i64,
 
     /// The ID of the ShippingRate for this order.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<Expandable<ShippingRate>>,
 
     /// The taxes applied to the shipping rate.
@@ -392,15 +345,12 @@ pub struct OrdersV2ResourceShippingDetails {
     /// Recipient shipping address.
     ///
     /// Required if the order includes products that are shippable.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
 
     /// Recipient name.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
     /// Recipient phone (including extension).
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
 
@@ -422,7 +372,6 @@ pub struct OrdersV2ResourceTaxDetailsResourceTaxId {
     pub type_: OrdersV2ResourceTaxDetailsResourceTaxIdType,
 
     /// The value of the tax ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
@@ -432,7 +381,6 @@ pub struct OrdersV2ResourceTotalDetails {
     pub amount_discount: i64,
 
     /// This is the sum of all the shipping amounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_shipping: Option<i64>,
 
     /// This is the sum of all the tax amounts.
@@ -465,7 +413,6 @@ pub struct OrdersV2ResourceTransferData {
     ///
     /// If no amount is set, the full amount is transferred.
     /// There cannot be any line items with recurring prices when using this field.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
     /// ID of the Connected account receiving the transfer.
@@ -479,7 +426,6 @@ pub struct PaymentMethodOptionsPaypal {
     pub capture_method: Option<PaymentMethodOptionsPaypalCaptureMethod>,
 
     /// Preferred locale of the PayPal checkout page that the customer is redirected to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locale: Option<String>,
 }
 
@@ -495,10 +441,6 @@ pub struct CreateOrder<'a> {
     /// If a customer is provided, this will be automatically populated with values from that customer if override values are not provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<CreateOrderBillingDetails>,
-
-    /// The fields on the order that are allowed to be updated from your frontend application with a publishable key and order client secret.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub client_permissions: Option<CreateOrderClientPermissions>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -562,7 +504,6 @@ impl<'a> CreateOrder<'a> {
         CreateOrder {
             automatic_tax: Default::default(),
             billing_details: Default::default(),
-            client_permissions: Default::default(),
             currency,
             customer: Default::default(),
             description: Default::default(),
@@ -641,10 +582,6 @@ pub struct UpdateOrder<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<UpdateOrderBillingDetails>,
 
-    /// The fields on the order that are allowed to be updated from your frontend application with a publishable key and order client secret.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub client_permissions: Option<UpdateOrderClientPermissions>,
-
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -711,7 +648,6 @@ impl<'a> UpdateOrder<'a> {
         UpdateOrder {
             automatic_tax: Default::default(),
             billing_details: Default::default(),
-            client_permissions: Default::default(),
             currency: Default::default(),
             customer: Default::default(),
             description: Default::default(),
@@ -730,334 +666,493 @@ impl<'a> UpdateOrder<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderAutomaticTax {
+    /// Enable automatic tax calculation which will automatically compute tax rates on this order.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderBillingDetails {
+    /// The billing address provided by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<CreateOrderBillingDetailsAddress>,
 
+    /// The billing email provided by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
+    /// The billing name provided by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
+    /// The billing phone number provided by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CreateOrderClientPermissions {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<CreateOrderClientPermissionsBillingDetails>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotion_codes: Option<CreateOrderClientPermissionsPromotionCodes>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_details: Option<CreateOrderClientPermissionsShippingDetails>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderDiscounts {
+    /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
 
+    /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderLineItems {
+    /// The description for the line item.
+    ///
+    /// Will default to the name of the associated product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// The discounts applied to this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<CreateOrderLineItemsDiscounts>>,
 
+    /// The ID of a [Price](https://stripe.com/docs/api/prices) to add to the Order.
+    ///
+    /// The `price` parameter is an alternative to using the `product` parameter.
+    ///
+    /// If each of your products are sold at a single price, you can set `Product.default_price` and then pass the `product` parameter when creating a line item.
+    /// If your products are sold at several possible prices, use the `price` parameter to explicitly specify which one to use.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
 
+    /// Data used to generate a new Price object inline.
+    ///
+    /// The `price_data` parameter is an alternative to using the `product` or `price` parameters.
+    ///
+    /// If you create products upfront and configure a `Product.default_price`, pass the `product` parameter when creating a line item.
+    /// If you prefer not to define products upfront, or if you charge variable prices, pass the `price_data` parameter to describe the price for this line item.  Each time you pass `price_data` we create a Price for the product.
+    /// This Price is hidden in both the Dashboard and API lists and cannot be reused.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreateOrderLineItemsPriceData>,
 
+    /// The ID of a [Product](https://stripe.com/docs/api/products) to add to the Order.
+    ///
+    /// The product must have a `default_price` specified.
+    ///
+    /// Otherwise, specify the price by passing the `price` or `price_data` parameter.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product: Option<String>,
 
+    /// Defines a Product inline and adds it to the Order.
+    ///
+    /// `product_data` is an alternative to the `product` parameter.
+    ///
+    /// If you created a Product upfront, use the `product` parameter to refer to the existing Product.
+    /// But if you prefer not to create Products upfront, pass the `product_data` parameter to define a Product inline as part of configuring the Order.  `product_data` automatically creates a Product, just as if you had manually created the Product.
+    /// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_data: Option<CreateOrderLineItemsProductData>,
 
+    /// The quantity of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
+    /// The tax rates applied to this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPayment {
+    /// Settings describing how the order should configure generated PaymentIntents.
     pub settings: CreateOrderPaymentSettings,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShippingCost {
+    /// The ID of the shipping rate to use for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<String>,
 
+    /// Parameters to create a new ad-hoc shipping rate for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate_data: Option<CreateOrderShippingCostShippingRateData>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShippingDetails {
+    /// The shipping address for the order.
     pub address: CreateOrderShippingDetailsAddress,
 
+    /// The name of the recipient of the order.
     pub name: String,
 
+    /// The phone number (including extension) for the recipient of the order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderTaxDetails {
+    /// The purchaser's tax exemption status.
+    ///
+    /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<CreateOrderTaxDetailsTaxExempt>,
 
+    /// The purchaser's tax IDs to be used for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_ids: Option<Vec<CreateOrderTaxDetailsTaxIds>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderAutomaticTax {
+    /// Enable automatic tax calculation which will automatically compute tax rates on this order.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderBillingDetails {
+    /// The billing address provided by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<UpdateOrderBillingDetailsAddress>,
 
+    /// The billing email provided by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
+    /// The billing name provided by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 
+    /// The billing phone number provided by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct UpdateOrderClientPermissions {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billing_details: Option<UpdateOrderClientPermissionsBillingDetails>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotion_codes: Option<UpdateOrderClientPermissionsPromotionCodes>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub shipping_details: Option<UpdateOrderClientPermissionsShippingDetails>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderDiscounts {
+    /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
 
+    /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderLineItems {
+    /// The description for the line item.
+    ///
+    /// Will default to the name of the associated product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// The discounts applied to this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<UpdateOrderLineItemsDiscounts>>,
 
+    /// The ID of an existing line item on the order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 
+    /// The ID of a [Price](https://stripe.com/docs/api/prices) to add to the Order.
+    ///
+    /// The `price` parameter is an alternative to using the `product` parameter.
+    ///
+    /// If each of your products are sold at a single price, you can set `Product.default_price` and then pass the `product` parameter when creating a line item.
+    /// If your products are sold at several possible prices, use the `price` parameter to explicitly specify which one to use.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
 
+    /// Data used to generate a new Price object inline.
+    ///
+    /// The `price_data` parameter is an alternative to using the `product` or `price` parameters.
+    ///
+    /// If you create products upfront and configure a `Product.default_price`, pass the `product` parameter when creating a line item.
+    /// If you prefer not to define products upfront, or if you charge variable prices, pass the `price_data` parameter to describe the price for this line item.  Each time you pass `price_data` we create a Price for the product.
+    /// This Price is hidden in both the Dashboard and API lists and cannot be reused.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<UpdateOrderLineItemsPriceData>,
 
+    /// The ID of a [Product](https://stripe.com/docs/api/products) to add to the Order.
+    ///
+    /// The product must have a `default_price` specified.
+    ///
+    /// Otherwise, specify the price by passing the `price` or `price_data` parameter.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product: Option<String>,
 
+    /// Defines a Product inline and adds it to the Order.
+    ///
+    /// `product_data` is an alternative to the `product` parameter.
+    ///
+    /// If you created a Product upfront, use the `product` parameter to refer to the existing Product.
+    /// But if you prefer not to create Products upfront, pass the `product_data` parameter to define a Product inline as part of configuring the Order.  `product_data` automatically creates a Product, just as if you had manually created the Product.
+    /// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_data: Option<UpdateOrderLineItemsProductData>,
 
+    /// The quantity of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
+    /// The tax rates applied to this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPayment {
+    /// Settings describing how the order should configure generated PaymentIntents.
     pub settings: UpdateOrderPaymentSettings,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderShippingCost {
+    /// The ID of the shipping rate to use for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<String>,
 
+    /// Parameters to create a new ad-hoc shipping rate for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate_data: Option<UpdateOrderShippingCostShippingRateData>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderShippingDetails {
+    /// The shipping address for the order.
     pub address: UpdateOrderShippingDetailsAddress,
 
+    /// The name of the recipient of the order.
     pub name: String,
 
+    /// The phone number (including extension) for the recipient of the order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderTaxDetails {
+    /// The purchaser's tax exemption status.
+    ///
+    /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<UpdateOrderTaxDetailsTaxExempt>,
 
+    /// The purchaser's tax IDs to be used for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_ids: Option<Vec<UpdateOrderTaxDetailsTaxIds>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderBillingDetailsAddress {
+    /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
+    /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
 
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
 
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
 
+    /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
+    ///
+    /// Example: "NY" or "TX".
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderLineItemsDiscounts {
+    /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderLineItemsPriceData {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
+    /// ID of the product this price belongs to.
+    ///
+    /// Use this to implement a variable-pricing model in your integration.
+    ///
+    /// This is required if `product_data` is not specifed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product: Option<String>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateOrderLineItemsPriceDataTaxBehavior>,
 
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderLineItemsProductData {
+    /// The product's description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// A unique identifier for this product.
+    ///
+    /// `product_data` automatically creates a Product with this ID.
+    ///
+    /// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
+    /// If any of the fields in the existing Product are different from the values in `product_data`, `product_data` updates the existing Product with the new information.
+    /// So set `product_data[id]` to the same string every time you sell the same product, but don't re-use the same string for different products.
     pub id: String,
 
+    /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// The product's name, meant to be displayable to the customer.
     pub name: String,
 
+    /// The dimensions of this product for shipping purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<CreateOrderLineItemsProductDataPackageDimensions>,
 
+    /// Whether this product is shipped (i.e., physical goods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shippable: Option<bool>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 
+    /// A URL of a publicly-accessible webpage for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettings {
+    /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
 
+    /// PaymentMethod-specific configuration to provide to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<CreateOrderPaymentSettingsPaymentMethodOptions>,
 
+    /// The list of [payment method types](https://stripe.com/docs/payments/payment-methods/overview) to provide to the order's PaymentIntent.
+    ///
+    /// Do not include this attribute if you prefer to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<CreateOrderPaymentSettingsPaymentMethodTypes>>,
 
+    /// The URL to redirect the customer to after they authenticate their payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
 
+    /// For non-card charges, you can use this value as the complete description that appears on your customers' statements.
+    ///
+    /// Must contain at least one letter, maximum 22 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
+    /// Provides information about a card payment that customers see on their statements.
+    ///
+    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that’s set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters for the concatenated descriptor.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix: Option<String>,
 
+    /// Provides configuration for completing a transfer for the order after it is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<CreateOrderPaymentSettingsTransferData>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShippingCostShippingRateData {
+    /// The estimated range for how long shipping will take, meant to be displayable to the customer.
+    ///
+    /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delivery_estimate: Option<CreateOrderShippingCostShippingRateDataDeliveryEstimate>,
 
+    /// The name of the shipping rate, meant to be displayable to the customer.
+    ///
+    /// This will appear on CheckoutSessions.
     pub display_name: String,
 
+    /// Describes a fixed amount to charge for shipping.
+    ///
+    /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amount: Option<CreateOrderShippingCostShippingRateDataFixedAmount>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateOrderShippingCostShippingRateDataTaxBehavior>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    ///
+    /// The Shipping tax code is `txcd_92010001`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 
+    /// The type of calculation to use on the shipping rate.
+    ///
+    /// Can only be `fixed_amount` for now.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateOrderShippingCostShippingRateDataType>,
@@ -1065,152 +1160,246 @@ pub struct CreateOrderShippingCostShippingRateData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShippingDetailsAddress {
+    /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
+    /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
 
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
 
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
 
+    /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
+    ///
+    /// Example: "NY" or "TX".
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderTaxDetailsTaxIds {
+    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: CreateOrderTaxDetailsTaxIdsType,
 
+    /// Value of the tax ID.
     pub value: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderBillingDetailsAddress {
+    /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
+    /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
 
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
 
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
 
+    /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
+    ///
+    /// Example: "NY" or "TX".
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderLineItemsDiscounts {
+    /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderLineItemsPriceData {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
+    /// ID of the product this price belongs to.
+    ///
+    /// Use this to implement a variable-pricing model in your integration.
+    ///
+    /// This is required if `product_data` is not specifed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product: Option<String>,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<UpdateOrderLineItemsPriceDataTaxBehavior>,
 
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderLineItemsProductData {
+    /// The product's description, meant to be displayable to the customer.
+    ///
+    /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// A unique identifier for this product.
+    ///
+    /// `product_data` automatically creates a Product with this ID.
+    ///
+    /// If a Product with the same ID already exists, then `product_data` re-uses it to avoid duplicates.
+    /// If any of the fields in the existing Product are different from the values in `product_data`, `product_data` updates the existing Product with the new information.
+    /// So set `product_data[id]` to the same string every time you sell the same product, but don't re-use the same string for different products.
     pub id: String,
 
+    /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// The product's name, meant to be displayable to the customer.
     pub name: String,
 
+    /// The dimensions of this product for shipping purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<UpdateOrderLineItemsProductDataPackageDimensions>,
 
+    /// Whether this product is shipped (i.e., physical goods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shippable: Option<bool>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 
+    /// A URL of a publicly-accessible webpage for this product.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettings {
+    /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_amount: Option<i64>,
 
+    /// PaymentMethod-specific configuration to provide to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_options: Option<UpdateOrderPaymentSettingsPaymentMethodOptions>,
 
+    /// The list of [payment method types](https://stripe.com/docs/payments/payment-methods/overview) to provide to the order's PaymentIntent.
+    ///
+    /// Do not include this attribute if you prefer to manage your payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_types: Option<Vec<UpdateOrderPaymentSettingsPaymentMethodTypes>>,
 
+    /// The URL to redirect the customer to after they authenticate their payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
 
+    /// For non-card charges, you can use this value as the complete description that appears on your customers' statements.
+    ///
+    /// Must contain at least one letter, maximum 22 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 
+    /// Provides information about a card payment that customers see on their statements.
+    ///
+    /// Concatenated with the prefix (shortened descriptor) or statement descriptor that’s set on the account to form the complete statement descriptor.
+    /// Maximum 22 characters for the concatenated descriptor.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix: Option<String>,
 
+    /// Provides configuration for completing a transfer for the order after it is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<UpdateOrderPaymentSettingsTransferData>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderShippingCostShippingRateData {
+    /// The estimated range for how long shipping will take, meant to be displayable to the customer.
+    ///
+    /// This will appear on CheckoutSessions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delivery_estimate: Option<UpdateOrderShippingCostShippingRateDataDeliveryEstimate>,
 
+    /// The name of the shipping rate, meant to be displayable to the customer.
+    ///
+    /// This will appear on CheckoutSessions.
     pub display_name: String,
 
+    /// Describes a fixed amount to charge for shipping.
+    ///
+    /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amount: Option<UpdateOrderShippingCostShippingRateDataFixedAmount>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(default)]
     pub metadata: Metadata,
 
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<UpdateOrderShippingCostShippingRateDataTaxBehavior>,
 
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    ///
+    /// The Shipping tax code is `txcd_92010001`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 
+    /// The type of calculation to use on the shipping rate.
+    ///
+    /// Can only be `fixed_amount` for now.
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<UpdateOrderShippingCostShippingRateDataType>,
@@ -1218,209 +1407,314 @@ pub struct UpdateOrderShippingCostShippingRateData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderShippingDetailsAddress {
+    /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
+    /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
 
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
 
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
 
+    /// State/province as an [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code, without country prefix.
+    ///
+    /// Example: "NY" or "TX".
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderTaxDetailsTaxIds {
+    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: UpdateOrderTaxDetailsTaxIdsType,
 
+    /// Value of the tax ID.
     pub value: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderLineItemsProductDataPackageDimensions {
+    /// Height, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
     pub height: f64,
 
+    /// Length, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
     pub length: f64,
 
+    /// Weight, in ounces.
+    ///
+    /// Maximum precision is 2 decimal places.
     pub weight: f64,
 
+    /// Width, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
     pub width: f64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptions {
+    /// If paying by `acss_debit`, this sub-hash contains details about the ACSS Debit payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebit>,
 
+    /// If paying by `afterpay_clearpay`, this sub-hash contains details about the AfterpayClearpay payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay>,
 
+    /// If paying by `alipay`, this sub-hash contains details about the Alipay payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<CreateOrderPaymentSettingsPaymentMethodOptionsAlipay>,
 
+    /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<CreateOrderPaymentSettingsPaymentMethodOptionsBancontact>,
 
+    /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCard>,
 
+    /// If paying by `customer_balance`, this sub-hash contains details about the Customer Balance payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance>,
 
+    /// If paying by `ideal`, this sub-hash contains details about the iDEAL payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<CreateOrderPaymentSettingsPaymentMethodOptionsIdeal>,
 
+    /// If paying by `klarna`, this sub-hash contains details about the Klarna payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<CreateOrderPaymentSettingsPaymentMethodOptionsKlarna>,
 
+    /// If paying by `link`, this sub-hash contains details about the Link payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<CreateOrderPaymentSettingsPaymentMethodOptionsLink>,
 
+    /// If paying by `oxxo`, this sub-hash contains details about the OXXO payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<CreateOrderPaymentSettingsPaymentMethodOptionsOxxo>,
 
+    /// If paying by `p24`, this sub-hash contains details about the P24 payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<CreateOrderPaymentSettingsPaymentMethodOptionsP24>,
 
+    /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Debit payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebit>,
 
+    /// If paying by `sofort`, this sub-hash contains details about the Sofort payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateOrderPaymentSettingsPaymentMethodOptionsSofort>,
 
+    /// If paying by `wechat_pay`, this sub-hash contains details about the WeChat Pay payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<CreateOrderPaymentSettingsPaymentMethodOptionsWechatPay>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsTransferData {
+    /// The amount that will be transferred automatically when the order is paid.
+    ///
+    /// If no amount is set, the full amount is transferred.
+    /// There cannot be any line items with recurring prices when using this field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
+    /// ID of the Connected account receiving the transfer.
     pub destination: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShippingCostShippingRateDataDeliveryEstimate {
+    /// The upper bound of the estimated range.
+    ///
+    /// If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximum>,
 
+    /// The lower bound of the estimated range.
+    ///
+    /// If empty, represents no lower bound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimum>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShippingCostShippingRateDataFixedAmount {
+    /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// Shipping rates defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderLineItemsProductDataPackageDimensions {
+    /// Height, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
     pub height: f64,
 
+    /// Length, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
     pub length: f64,
 
+    /// Weight, in ounces.
+    ///
+    /// Maximum precision is 2 decimal places.
     pub weight: f64,
 
+    /// Width, in inches.
+    ///
+    /// Maximum precision is 2 decimal places.
     pub width: f64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptions {
+    /// If paying by `acss_debit`, this sub-hash contains details about the ACSS Debit payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebit>,
 
+    /// If paying by `afterpay_clearpay`, this sub-hash contains details about the AfterpayClearpay payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub afterpay_clearpay: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay>,
 
+    /// If paying by `alipay`, this sub-hash contains details about the Alipay payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alipay: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAlipay>,
 
+    /// If paying by `bancontact`, this sub-hash contains details about the Bancontact payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bancontact: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsBancontact>,
 
+    /// If paying by `card`, this sub-hash contains details about the Card payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCard>,
 
+    /// If paying by `customer_balance`, this sub-hash contains details about the Customer Balance payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance>,
 
+    /// If paying by `ideal`, this sub-hash contains details about the iDEAL payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsIdeal>,
 
+    /// If paying by `klarna`, this sub-hash contains details about the Klarna payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsKlarna>,
 
+    /// If paying by `link`, this sub-hash contains details about the Link payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsLink>,
 
+    /// If paying by `oxxo`, this sub-hash contains details about the OXXO payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsOxxo>,
 
+    /// If paying by `p24`, this sub-hash contains details about the P24 payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub p24: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsP24>,
 
+    /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Debit payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebit>,
 
+    /// If paying by `sofort`, this sub-hash contains details about the Sofort payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsSofort>,
 
+    /// If paying by `wechat_pay`, this sub-hash contains details about the WeChat Pay payment method options to pass to the order's PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPay>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsTransferData {
+    /// The amount that will be transferred automatically when the order is paid.
+    ///
+    /// If no amount is set, the full amount is transferred.
+    /// There cannot be any line items with recurring prices when using this field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
+    /// ID of the Connected account receiving the transfer.
     pub destination: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderShippingCostShippingRateDataDeliveryEstimate {
+    /// The upper bound of the estimated range.
+    ///
+    /// If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximum>,
 
+    /// The lower bound of the estimated range.
+    ///
+    /// If empty, represents no lower bound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimum>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderShippingCostShippingRateDataFixedAmount {
+    /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// Shipping rates defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebit {
+    /// Additional fields for Mandate creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage>,
 
+    /// Verification method for the intent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -1428,13 +1722,27 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay {
+    /// Controls when the funds will be captured from the customer's account.
+    ///
+    /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
 
+    /// Order identifier shown to the customer in Afterpay’s online portal.
+    ///
+    /// We recommend using a value that helps you answer any questions a customer might have about the payment.
+    /// The identifier is limited to 128 characters and may contain only letters, digits, underscores, backslashes and dashes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 
+    /// Indicates that you intend to make future payments with the payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the order's Customer, if present, after the order's PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
@@ -1442,6 +1750,11 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAlipay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsAlipaySetupFutureUsage>,
@@ -1449,10 +1762,16 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAlipay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsBancontact {
+    /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage>,
@@ -1460,9 +1779,15 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsBancontact {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCard {
+    /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod>,
 
+    /// Indicates that you intend to make future payments with the payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the order's Customer, if present, after the order's PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage>,
@@ -1470,14 +1795,23 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance {
+    /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_transfer:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer>,
 
+    /// The funding method type to be used when there are not enough funds in the customer balance.
+    ///
+    /// Permitted values include: `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding_type:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
@@ -1485,6 +1819,11 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsIdeal {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsIdealSetupFutureUsage>,
@@ -1492,13 +1831,24 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsIdeal {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsKlarna {
+    /// Controls when the funds will be captured from the customer's account.
+    ///
+    /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaCaptureMethod>,
 
+    /// Preferred language of the Klarna authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locale:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsKlarnaSetupFutureUsage>,
@@ -1506,12 +1856,23 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsKlarna {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsLink {
+    /// Controls when the funds will be captured from the customer's account.
+    ///
+    /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod>,
 
+    /// Token used for persistent Link logins.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<String>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage>,
@@ -1519,9 +1880,17 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsLink {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsOxxo {
+    /// The number of calendar days before an OXXO voucher expires.
+    ///
+    /// For example, if you create an OXXO voucher on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsOxxoSetupFutureUsage>,
@@ -1529,20 +1898,32 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsOxxo {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsP24 {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsP24SetupFutureUsage>,
 
+    /// Confirm that the payer has accepted the P24 terms and conditions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebit {
+    /// Additional fields for Mandate creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage>,
@@ -1550,10 +1931,16 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsSofort {
+    /// Language shown to the payer on redirect.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsSofortPreferredLanguage>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsSofortSetupFutureUsage>,
@@ -1561,11 +1948,20 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsSofort {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsWechatPay {
+    /// The app ID registered with WeChat Pay.
+    ///
+    /// Only required when client is ios or android.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub app_id: Option<String>,
 
+    /// The client type that the end customer will pay from.
     pub client: CreateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateOrderPaymentSettingsPaymentMethodOptionsWechatPaySetupFutureUsage>,
@@ -1573,22 +1969,30 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsWechatPay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximum {
+    /// A unit of time.
     pub unit: CreateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit,
 
+    /// Must be greater than 0.
     pub value: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimum {
+    /// A unit of time.
     pub unit: CreateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit,
 
+    /// Must be greater than 0.
     pub value: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions {
+    /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior:
         Option<CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
@@ -1596,14 +2000,21 @@ pub struct CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebit {
+    /// Additional fields for Mandate creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitSetupFutureUsage>,
 
+    /// Verification method for the intent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -1611,13 +2022,27 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay {
+    /// Controls when the funds will be captured from the customer's account.
+    ///
+    /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod>,
 
+    /// Order identifier shown to the customer in Afterpay’s online portal.
+    ///
+    /// We recommend using a value that helps you answer any questions a customer might have about the payment.
+    /// The identifier is limited to 128 characters and may contain only letters, digits, underscores, backslashes and dashes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 
+    /// Indicates that you intend to make future payments with the payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the order's Customer, if present, after the order's PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
@@ -1625,6 +2050,11 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAlipay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsAlipaySetupFutureUsage>,
@@ -1632,10 +2062,16 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAlipay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsBancontact {
+    /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage>,
@@ -1643,9 +2079,15 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsBancontact {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCard {
+    /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCardCaptureMethod>,
 
+    /// Indicates that you intend to make future payments with the payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the order's Customer, if present, after the order's PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCardSetupFutureUsage>,
@@ -1653,14 +2095,23 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance {
+    /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_transfer:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer>,
 
+    /// The funding method type to be used when there are not enough funds in the customer balance.
+    ///
+    /// Permitted values include: `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding_type:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
@@ -1668,6 +2119,11 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsIdeal {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsIdealSetupFutureUsage>,
@@ -1675,13 +2131,24 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsIdeal {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsKlarna {
+    /// Controls when the funds will be captured from the customer's account.
+    ///
+    /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaCaptureMethod>,
 
+    /// Preferred language of the Klarna authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locale:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaPreferredLocale>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsKlarnaSetupFutureUsage>,
@@ -1689,12 +2156,23 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsKlarna {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsLink {
+    /// Controls when the funds will be captured from the customer's account.
+    ///
+    /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsLinkCaptureMethod>,
 
+    /// Token used for persistent Link logins.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub persistent_token: Option<String>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsLinkSetupFutureUsage>,
@@ -1702,9 +2180,17 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsLink {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsOxxo {
+    /// The number of calendar days before an OXXO voucher expires.
+    ///
+    /// For example, if you create an OXXO voucher on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_days: Option<u32>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsOxxoSetupFutureUsage>,
@@ -1712,20 +2198,32 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsOxxo {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsP24 {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsP24SetupFutureUsage>,
 
+    /// Confirm that the payer has accepted the P24 terms and conditions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<bool>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebit {
+    /// Additional fields for Mandate creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitSetupFutureUsage>,
@@ -1733,10 +2231,16 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsSofort {
+    /// Language shown to the payer on redirect.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_language:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsSofortPreferredLanguage>,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsSofortSetupFutureUsage>,
@@ -1744,11 +2248,20 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsSofort {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPay {
+    /// The app ID registered with WeChat Pay.
+    ///
+    /// Only required when client is ios or android.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub app_id: Option<String>,
 
+    /// The client type that the end customer will pay from.
     pub client: UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPayClient,
 
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPaySetupFutureUsage>,
@@ -1756,22 +2269,30 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsWechatPay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximum {
+    /// A unit of time.
     pub unit: UpdateOrderShippingCostShippingRateDataDeliveryEstimateMaximumUnit,
 
+    /// Must be greater than 0.
     pub value: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimum {
+    /// A unit of time.
     pub unit: UpdateOrderShippingCostShippingRateDataDeliveryEstimateMinimumUnit,
 
+    /// Must be greater than 0.
     pub value: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions {
+    /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
 
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior:
         Option<UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
@@ -1779,17 +2300,25 @@ pub struct UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
+    /// A URL for custom mandate text to render during confirmation step.
+    /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,
+    /// or `setup_intent` and `setup_intent_client_secret` when confirming a Setup Intent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
 
+    /// Description of the mandate interval.
+    ///
+    /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
 
+    /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_schedule: Option<
         CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule,
     >,
 
+    /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type: Option<
         CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType,
@@ -1802,9 +2331,13 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTran
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eu_bank_transfer: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
 
+    /// List of address types that should be returned in the financial_addresses response.
+    ///
+    /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types: Option<Vec<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
 
+    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
@@ -1814,17 +2347,25 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
+    /// A URL for custom mandate text to render during confirmation step.
+    /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,
+    /// or `setup_intent` and `setup_intent_client_secret` when confirming a Setup Intent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_mandate_url: Option<String>,
 
+    /// Description of the mandate interval.
+    ///
+    /// Only required if 'payment_schedule' parameter is 'interval' or 'combined'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
 
+    /// Payment schedule for the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_schedule: Option<
         UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule,
     >,
 
+    /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type: Option<
         UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType,
@@ -1837,9 +2378,13 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTran
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eu_bank_transfer: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
 
+    /// List of address types that should be returned in the financial_addresses response.
+    ///
+    /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_address_types: Option<Vec<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
 
+    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
@@ -1849,114 +2394,18 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsSepaDebitMandateOptions
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
+    /// The desired country code of the bank account information.
+    ///
+    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
+    /// The desired country code of the bank account information.
+    ///
+    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: String,
-}
-
-/// An enum representing the possible values of an `CreateOrderClientPermissions`'s `billing_details` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum CreateOrderClientPermissionsBillingDetails {
-    Allow,
-    Disallow,
-}
-
-impl CreateOrderClientPermissionsBillingDetails {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            CreateOrderClientPermissionsBillingDetails::Allow => "allow",
-            CreateOrderClientPermissionsBillingDetails::Disallow => "disallow",
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderClientPermissionsBillingDetails {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderClientPermissionsBillingDetails {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for CreateOrderClientPermissionsBillingDetails {
-    fn default() -> Self {
-        Self::Allow
-    }
-}
-
-/// An enum representing the possible values of an `CreateOrderClientPermissions`'s `promotion_codes` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum CreateOrderClientPermissionsPromotionCodes {
-    Allow,
-    Disallow,
-}
-
-impl CreateOrderClientPermissionsPromotionCodes {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            CreateOrderClientPermissionsPromotionCodes::Allow => "allow",
-            CreateOrderClientPermissionsPromotionCodes::Disallow => "disallow",
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderClientPermissionsPromotionCodes {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderClientPermissionsPromotionCodes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for CreateOrderClientPermissionsPromotionCodes {
-    fn default() -> Self {
-        Self::Allow
-    }
-}
-
-/// An enum representing the possible values of an `CreateOrderClientPermissions`'s `shipping_details` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum CreateOrderClientPermissionsShippingDetails {
-    Allow,
-    Disallow,
-}
-
-impl CreateOrderClientPermissionsShippingDetails {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            CreateOrderClientPermissionsShippingDetails::Allow => "allow",
-            CreateOrderClientPermissionsShippingDetails::Disallow => "disallow",
-        }
-    }
-}
-
-impl AsRef<str> for CreateOrderClientPermissionsShippingDetails {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateOrderClientPermissionsShippingDetails {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for CreateOrderClientPermissionsShippingDetails {
-    fn default() -> Self {
-        Self::Allow
-    }
 }
 
 /// An enum representing the possible values of an `CreateOrderLineItemsPriceData`'s `tax_behavior` field.
@@ -3810,108 +4259,6 @@ impl std::default::Default for OrdersV2ResourceCardPaymentMethodOptionsSetupFutu
     }
 }
 
-/// An enum representing the possible values of an `OrdersV2ResourceClientPermissions`'s `billing_details` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum OrdersV2ResourceClientPermissionsBillingDetails {
-    Allow,
-    Disallow,
-}
-
-impl OrdersV2ResourceClientPermissionsBillingDetails {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            OrdersV2ResourceClientPermissionsBillingDetails::Allow => "allow",
-            OrdersV2ResourceClientPermissionsBillingDetails::Disallow => "disallow",
-        }
-    }
-}
-
-impl AsRef<str> for OrdersV2ResourceClientPermissionsBillingDetails {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for OrdersV2ResourceClientPermissionsBillingDetails {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for OrdersV2ResourceClientPermissionsBillingDetails {
-    fn default() -> Self {
-        Self::Allow
-    }
-}
-
-/// An enum representing the possible values of an `OrdersV2ResourceClientPermissions`'s `promotion_codes` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum OrdersV2ResourceClientPermissionsPromotionCodes {
-    Allow,
-    Disallow,
-}
-
-impl OrdersV2ResourceClientPermissionsPromotionCodes {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            OrdersV2ResourceClientPermissionsPromotionCodes::Allow => "allow",
-            OrdersV2ResourceClientPermissionsPromotionCodes::Disallow => "disallow",
-        }
-    }
-}
-
-impl AsRef<str> for OrdersV2ResourceClientPermissionsPromotionCodes {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for OrdersV2ResourceClientPermissionsPromotionCodes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for OrdersV2ResourceClientPermissionsPromotionCodes {
-    fn default() -> Self {
-        Self::Allow
-    }
-}
-
-/// An enum representing the possible values of an `OrdersV2ResourceClientPermissions`'s `shipping_details` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum OrdersV2ResourceClientPermissionsShippingDetails {
-    Allow,
-    Disallow,
-}
-
-impl OrdersV2ResourceClientPermissionsShippingDetails {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            OrdersV2ResourceClientPermissionsShippingDetails::Allow => "allow",
-            OrdersV2ResourceClientPermissionsShippingDetails::Disallow => "disallow",
-        }
-    }
-}
-
-impl AsRef<str> for OrdersV2ResourceClientPermissionsShippingDetails {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for OrdersV2ResourceClientPermissionsShippingDetails {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for OrdersV2ResourceClientPermissionsShippingDetails {
-    fn default() -> Self {
-        Self::Allow
-    }
-}
-
 /// An enum representing the possible values of an `OrdersV2ResourcePaymentSettings`'s `payment_method_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -4231,108 +4578,6 @@ impl std::fmt::Display for PaymentMethodOptionsPaypalCaptureMethod {
 impl std::default::Default for PaymentMethodOptionsPaypalCaptureMethod {
     fn default() -> Self {
         Self::Manual
-    }
-}
-
-/// An enum representing the possible values of an `UpdateOrderClientPermissions`'s `billing_details` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum UpdateOrderClientPermissionsBillingDetails {
-    Allow,
-    Disallow,
-}
-
-impl UpdateOrderClientPermissionsBillingDetails {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            UpdateOrderClientPermissionsBillingDetails::Allow => "allow",
-            UpdateOrderClientPermissionsBillingDetails::Disallow => "disallow",
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderClientPermissionsBillingDetails {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderClientPermissionsBillingDetails {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for UpdateOrderClientPermissionsBillingDetails {
-    fn default() -> Self {
-        Self::Allow
-    }
-}
-
-/// An enum representing the possible values of an `UpdateOrderClientPermissions`'s `promotion_codes` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum UpdateOrderClientPermissionsPromotionCodes {
-    Allow,
-    Disallow,
-}
-
-impl UpdateOrderClientPermissionsPromotionCodes {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            UpdateOrderClientPermissionsPromotionCodes::Allow => "allow",
-            UpdateOrderClientPermissionsPromotionCodes::Disallow => "disallow",
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderClientPermissionsPromotionCodes {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderClientPermissionsPromotionCodes {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for UpdateOrderClientPermissionsPromotionCodes {
-    fn default() -> Self {
-        Self::Allow
-    }
-}
-
-/// An enum representing the possible values of an `UpdateOrderClientPermissions`'s `shipping_details` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum UpdateOrderClientPermissionsShippingDetails {
-    Allow,
-    Disallow,
-}
-
-impl UpdateOrderClientPermissionsShippingDetails {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            UpdateOrderClientPermissionsShippingDetails::Allow => "allow",
-            UpdateOrderClientPermissionsShippingDetails::Disallow => "disallow",
-        }
-    }
-}
-
-impl AsRef<str> for UpdateOrderClientPermissionsShippingDetails {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateOrderClientPermissionsShippingDetails {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for UpdateOrderClientPermissionsShippingDetails {
-    fn default() -> Self {
-        Self::Allow
     }
 }
 

@@ -14,15 +14,12 @@ pub struct FinancialConnectionsAccount {
     pub id: FinancialConnectionsAccountId,
 
     /// The account holder that this account belongs to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder: Option<BankConnectionsResourceAccountholder>,
 
     /// The most recent information about the account's balance.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<BankConnectionsResourceBalance>,
 
     /// The state of the most recent attempt to refresh the account balance.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub balance_refresh: Option<BankConnectionsResourceBalanceRefresh>,
 
     /// The type of the account.
@@ -36,7 +33,6 @@ pub struct FinancialConnectionsAccount {
     pub created: Timestamp,
 
     /// A human-readable name that has been assigned to this account, either by the account holder or by the institution.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub display_name: Option<String>,
 
     /// The name of the institution that holds this account.
@@ -45,22 +41,18 @@ pub struct FinancialConnectionsAccount {
     /// The last 4 digits of the account number.
     ///
     /// If present, this will be 4 numeric characters.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 
     /// The most recent information about the account's owners.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ownership: Option<Expandable<FinancialConnectionsAccountOwnership>>,
 
     /// The state of the most recent attempt to refresh the account owners.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ownership_refresh: Option<BankConnectionsResourceOwnershipRefresh>,
 
     /// The list of permissions granted by this account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<FinancialConnectionsAccountPermissions>>,
 
     /// The status of the link to the account.
@@ -135,7 +127,6 @@ pub struct BankConnectionsResourceBalanceApiResourceCashBalance {
     /// Typically this is the current balance less any holds.  Each key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.  Each value is a integer amount.
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub available: Option<i64>,
 }
 
@@ -150,7 +141,6 @@ pub struct BankConnectionsResourceBalanceApiResourceCreditBalance {
     ///
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub used: Option<i64>,
 }
 

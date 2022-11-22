@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::InvoiceLineItemId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Currency, Discount, Period, Price, TaxRate};
+use crate::resources::{Currency, Discount, Period, Plan, Price, TaxRate};
 
 /// The resource representing a Stripe "InvoiceLineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -18,7 +18,6 @@ pub struct InvoiceLineItem {
     pub amount: i64,
 
     /// The integer amount in %s representing the amount for this line item, excluding all tax and discounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_excluding_tax: Option<i64>,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -29,11 +28,9 @@ pub struct InvoiceLineItem {
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// The amount of discount calculated per discount for this line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub discount_amounts: Option<Vec<DiscountsResourceDiscountAmount>>,
 
     /// If true, discounts will apply to this line item.
@@ -45,7 +42,6 @@ pub struct InvoiceLineItem {
     ///
     /// Line item discounts are applied before invoice discounts.
     /// Use `expand[]=discounts` to expand each discount.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<Expandable<Discount>>>,
 
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
@@ -63,23 +59,22 @@ pub struct InvoiceLineItem {
 
     pub period: Option<Period>,
 
+    /// The plan of the subscription, if the line item is a subscription or a proration.
+    pub plan: Option<Plan>,
+
     /// The price of the line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<Price>,
 
     /// Whether this is a proration.
     pub proration: bool,
 
     /// Additional details for proration line items.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_details: Option<InvoicesLineItemsProrationDetails>,
 
     /// The quantity of the subscription, if the line item is a subscription or a proration.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
     /// The subscription that the invoice item pertains to, if any.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription: Option<String>,
 
     /// The subscription item that generated this invoice item.
@@ -101,7 +96,6 @@ pub struct InvoiceLineItem {
     pub type_: InvoiceLineItemType,
 
     /// The amount in %s representing the unit amount for this line item, excluding all tax and discounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_excluding_tax: Option<String>,
 }
 
@@ -139,7 +133,6 @@ pub struct TaxAmount {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoicesLineItemsProrationDetails {
     /// For a credit proration `line_item`, the original debit line_items to which the credit proration applies.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub credited_items: Option<InvoicesLineItemsCreditedItems>,
 }
 

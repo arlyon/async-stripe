@@ -32,16 +32,13 @@ pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
     /// Description of the interval.
     ///
     /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_description: Option<String>,
 
     /// Payment schedule for the mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_schedule:
         Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
 
     /// Transaction type of the mandate.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type:
         Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
 }

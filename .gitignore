@@ -15,4 +15,5 @@ stripe-mock/
 .vscode
 
 spec3.json
+spec3.sdk.json
 

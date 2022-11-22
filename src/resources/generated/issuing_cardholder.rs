@@ -17,7 +17,6 @@ pub struct IssuingCardholder {
     pub billing: IssuingCardholderAddress,
 
     /// Additional information about a `company` cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub company: Option<IssuingCardholderCompany>,
 
     /// Time at which the object was created.
@@ -26,11 +25,9 @@ pub struct IssuingCardholder {
     pub created: Timestamp,
 
     /// The cardholder's email address.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
     /// Additional information about an `individual` cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<IssuingCardholderIndividual>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -50,7 +47,6 @@ pub struct IssuingCardholder {
     ///
     /// This is required for all cardholders who will be creating EU cards.
     /// See the [3D Secure documentation](https://stripe.com/docs/issuing/3d-secure#when-is-3d-secure-applied) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub phone_number: Option<String>,
 
     pub requirements: IssuingCardholderRequirements,
@@ -58,7 +54,6 @@ pub struct IssuingCardholder {
     /// Rules that control spending across this cardholder's cards.
     ///
     /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_controls: Option<IssuingCardholderAuthorizationControls>,
 
     /// Specifies whether to permit authorizations on this cardholder's cards.
@@ -90,22 +85,18 @@ pub struct IssuingCardholderAuthorizationControls {
     ///
     /// All other categories will be blocked.
     /// Cannot be set with `blocked_categories`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_categories: Option<Vec<MerchantCategory>>,
 
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     ///
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub blocked_categories: Option<Vec<MerchantCategory>>,
 
     /// Limit spending with amount-based rules that apply across this cardholder's cards.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits: Option<Vec<IssuingCardholderSpendingLimit>>,
 
     /// Currency of the amounts within `spending_limits`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits_currency: Option<Currency>,
 }
 
@@ -118,7 +109,6 @@ pub struct IssuingCardholderCompany {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividual {
     /// The date of birth of this cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<IssuingCardholderIndividualDob>,
 
     /// The first name of this cardholder.
@@ -128,33 +118,27 @@ pub struct IssuingCardholderIndividual {
     pub last_name: String,
 
     /// Government-issued ID document for this cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<IssuingCardholderVerification>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividualDob {
     /// The day of birth, between 1 and 31.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub day: Option<i64>,
 
     /// The month of birth, between 1 and 12.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub month: Option<i64>,
 
     /// The four-digit year of birth.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub year: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderRequirements {
     /// If `disabled_reason` is present, all cards will decline authorizations with `cardholder_verification_required` reason.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub disabled_reason: Option<IssuingCardholderRequirementsDisabledReason>,
 
     /// Array of fields that need to be collected in order to verify and re-enable the cardholder.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub past_due: Option<Vec<IssuingCardholderRequirementsPastDue>>,
 }
 
@@ -168,7 +152,6 @@ pub struct IssuingCardholderSpendingLimit {
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
     ///
     /// Omitting this field will apply the limit to all categories.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<IssuingCardholderSpendingLimitCategories>>,
 
     /// Interval (or event) to which the amount applies.
@@ -178,18 +161,15 @@ pub struct IssuingCardholderSpendingLimit {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderVerification {
     /// An identifying document, either a passport or local ID card.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<IssuingCardholderIdDocument>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderIdDocument {
     /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<Expandable<File>>,
 
     /// The front of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<Expandable<File>>,
 }
 

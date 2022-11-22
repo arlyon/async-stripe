@@ -10,7 +10,7 @@ use crate::params::{
     Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{
-    Currency, Customer, Discount, Invoice, Period, Price, Subscription, TaxRate,
+    Currency, Customer, Discount, Invoice, Period, Plan, Price, Subscription, TaxRate,
     TestHelpersTestClock,
 };
 
@@ -83,6 +83,10 @@ pub struct InvoiceItem {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
+
+    /// If the invoice item is a proration, the plan of the subscription that the proration was computed for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<Plan>,
 
     /// The price of the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -501,34 +505,50 @@ impl<'a> UpdateInvoiceItem<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceItemDiscounts {
+    /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// The ID of the product that this price will belong to.
     pub product: String,
 
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<InvoiceItemPriceDataTaxBehavior>,
 
+    /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateInvoiceItemDiscounts {
+    /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<String>,
 
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount: Option<String>,
 }

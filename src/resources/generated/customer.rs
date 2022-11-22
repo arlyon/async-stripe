@@ -5,10 +5,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
-use crate::ids::{
-    AlipayAccountId, BankAccountId, CardId, CouponId, CustomerId, PaymentMethodId, PaymentSourceId,
-    PromotionCodeId,
-};
+use crate::ids::{CouponId, CustomerId, PaymentMethodId, PaymentSourceId, PromotionCodeId};
 use crate::params::{
     Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
@@ -219,11 +216,9 @@ pub struct CustomerTax {
     pub automatic_tax: CustomerTaxAutomaticTax,
 
     /// A recent IP address of the customer used for tax reporting and tax location inference.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
 
     /// The customer's location as identified by Stripe Tax.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<CustomerTaxLocation>,
 }
 
@@ -236,26 +231,21 @@ pub struct CustomerTaxLocation {
     pub source: CustomerTaxLocationSource,
 
     /// The customer's state, county, province, or region as identified by Stripe Tax.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomerSetting {
     /// Default custom fields to be displayed on invoices for this customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<Vec<InvoiceSettingCustomField>>,
 
     /// ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<Expandable<PaymentMethod>>,
 
     /// Default footer to be displayed on invoices for this customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
 
     /// Default options for invoice PDF rendering for this customer.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<InvoiceSettingRenderingOptions>,
 }
 
@@ -377,6 +367,9 @@ pub struct CreateCustomer<'a> {
     /// ID of the test clock to attach to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub test_clock: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub validate: Option<bool>,
 }
 
 impl<'a> CreateCustomer<'a> {
@@ -404,6 +397,7 @@ impl<'a> CreateCustomer<'a> {
             tax_exempt: Default::default(),
             tax_id_data: Default::default(),
             test_clock: Default::default(),
+            validate: Default::default(),
         }
     }
 }
@@ -483,28 +477,12 @@ pub struct UpdateCustomer<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balance: Option<i64>,
 
-    /// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card: Option<UpdateCustomerCardUnion>,
-
     /// Balance information and default balance settings for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cash_balance: Option<UpdateCustomerCashBalance>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub coupon: Option<CouponId>,
-
-    /// ID of Alipay account to make the customer's new default for invoice payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_alipay_account: Option<AlipayAccountId>,
-
-    /// ID of bank account to make the customer's new default for invoice payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_bank_account: Option<BankAccountId>,
-
-    /// ID of card to make the customer's new default for invoice payments.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub default_card: Option<CardId>,
 
     /// If you are using payment methods created via the PaymentMethods API, see the [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) parameter.
     ///
@@ -592,6 +570,9 @@ pub struct UpdateCustomer<'a> {
     /// One of `none`, `exempt`, or `reverse`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_exempt: Option<CustomerTaxExemptFilter>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub validate: Option<bool>,
 }
 
 impl<'a> UpdateCustomer<'a> {
@@ -599,12 +580,8 @@ impl<'a> UpdateCustomer<'a> {
         UpdateCustomer {
             address: Default::default(),
             balance: Default::default(),
-            card: Default::default(),
             cash_balance: Default::default(),
             coupon: Default::default(),
-            default_alipay_account: Default::default(),
-            default_bank_account: Default::default(),
-            default_card: Default::default(),
             default_source: Default::default(),
             description: Default::default(),
             email: Default::default(),
@@ -621,140 +598,198 @@ impl<'a> UpdateCustomer<'a> {
             source: Default::default(),
             tax: Default::default(),
             tax_exempt: Default::default(),
+            validate: Default::default(),
         }
     }
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerCashBalance {
+    /// Settings controlling the behavior of the customer's cash balance,
+    /// such as reconciliation of funds received.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub settings: Option<CreateCustomerCashBalanceSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerShipping {
+    /// Customer shipping address.
     pub address: CreateCustomerShippingAddress,
 
+    /// Customer name.
     pub name: String,
 
+    /// Customer phone (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerTax {
+    /// A recent IP address of the customer used for tax reporting and tax location inference.
+    ///
+    /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
+    /// We recommend against updating this field more frequently since it could result in unexpected tax location/reporting outcomes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettings {
+    /// Default custom fields to be displayed on invoices for this customer.
+    ///
+    /// When updating, pass an empty string to remove previously-defined fields.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_fields: Option<Vec<CustomerInvoiceSettingsCustomFields>>,
 
+    /// ID of a payment method that's attached to the customer, to be used as the customer's default payment method for subscriptions and invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<String>,
 
+    /// Default footer to be displayed on invoices for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub footer: Option<String>,
 
+    /// Default options for invoice PDF rendering for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<CustomerInvoiceSettingsRenderingOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIdData {
+    /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: TaxIdType,
 
+    /// Value of the tax ID.
     pub value: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerCashBalance {
+    /// Settings controlling the behavior of the customer's cash balance,
+    /// such as reconciliation of funds received.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub settings: Option<UpdateCustomerCashBalanceSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerShipping {
+    /// Customer shipping address.
     pub address: UpdateCustomerShippingAddress,
 
+    /// Customer name.
     pub name: String,
 
+    /// Customer phone (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerTax {
+    /// A recent IP address of the customer used for tax reporting and tax location inference.
+    ///
+    /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
+    /// We recommend against updating this field more frequently since it could result in unexpected tax location/reporting outcomes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerCashBalanceSettings {
+    /// Controls how funds transferred by the customer are applied to payment intents and invoices.
+    ///
+    /// Valid options are `automatic` or `manual`.
+    /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<CreateCustomerCashBalanceSettingsReconciliationMode>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerShippingAddress {
+    /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
+    /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
 
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
 
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
 
+    /// State, county, province, or region.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettingsCustomFields {
+    /// The name of the custom field.
+    ///
+    /// This may be up to 30 characters.
     pub name: String,
 
+    /// The value of the custom field.
+    ///
+    /// This may be up to 30 characters.
     pub value: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettingsRenderingOptions {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    ///
+    /// One of `exclude_tax` or `include_inclusive_tax`.
+    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_tax_display: Option<CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerCashBalanceSettings {
+    /// Controls how funds transferred by the customer are applied to payment intents and invoices.
+    ///
+    /// Valid options are `automatic` or `manual`.
+    /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<UpdateCustomerCashBalanceSettingsReconciliationMode>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerShippingAddress {
+    /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
 
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub country: Option<String>,
 
+    /// Address line 1 (e.g., street, PO Box, or company name).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line1: Option<String>,
 
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub line2: Option<String>,
 
+    /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
 
+    /// State, county, province, or region.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -1141,39 +1176,4 @@ impl std::default::Default for UpdateCustomerCashBalanceSettingsReconciliationMo
     fn default() -> Self {
         Self::Automatic
     }
-}
-
-/// A token, like the ones returned by [Stripe.js](https://stripe.com/docs/js).
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged, rename_all = "snake_case")]
-pub enum UpdateCustomerCardUnion {
-    CustomerPaymentSourceCard(CustomerPaymentSourceCard),
-    String(String),
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CustomerPaymentSourceCard {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_city: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_country: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_line1: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_line2: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_state: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub address_zip: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cvc: Option<String>,
-    pub exp_month: i32,
-    pub exp_year: i32,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<Metadata>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    pub number: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub object: Option<String>,
 }

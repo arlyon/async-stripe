@@ -32,11 +32,9 @@ pub struct TreasuryTransactionEntry {
     pub financial_account: String,
 
     /// Token of the flow associated with the TransactionEntry.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub flow: Option<String>,
 
     /// Details of the flow associated with the TransactionEntry.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub flow_details: Option<TreasuryTransactionsResourceFlowDetails>,
 
     /// Type of the flow associated with the TransactionEntry.

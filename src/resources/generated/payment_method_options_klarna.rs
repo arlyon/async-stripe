@@ -12,7 +12,6 @@ pub struct PaymentMethodOptionsKlarna {
     pub capture_method: Option<PaymentMethodOptionsKlarnaCaptureMethod>,
 
     /// Preferred locale of the Klarna checkout page that the customer is redirected to.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred_locale: Option<String>,
 
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.

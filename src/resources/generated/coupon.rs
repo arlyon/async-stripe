@@ -335,17 +335,20 @@ impl<'a> UpdateCoupon<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCouponAppliesTo {
+    /// An array of Product IDs that this Coupon will apply to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub products: Option<Vec<String>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCouponCurrencyOptions {
+    /// A positive integer representing the amount to subtract from an invoice total.
     pub amount_off: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCouponCurrencyOptions {
+    /// A positive integer representing the amount to subtract from an invoice total.
     pub amount_off: i64,
 }
 

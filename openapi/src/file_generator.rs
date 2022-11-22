@@ -203,6 +203,26 @@ impl FileGenerator {
         }
         Ok(())
     }
+
+    pub fn add_use(&mut self, use_path: &str) {
+        for path in use_path.split(',') {
+            match path.into() {
+                "" | "String" => {}
+                "Metadata" => {
+                    self.use_params.insert("Metadata");
+                }
+                "Expandable" => {
+                    self.use_params.insert("Expandable");
+                }
+                path if path.ends_with("Id") && path != "TaxId" => {
+                    self.use_ids.insert(path.into());
+                }
+                path => {
+                    self.use_resources.insert(path.into());
+                }
+            }
+        }
+    }
 }
 
 impl PartialEq for FileGenerator {

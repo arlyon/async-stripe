@@ -46,7 +46,6 @@ pub struct CheckoutSessionItem {
     pub discounts: Option<Vec<LineItemsDiscountAmount>>,
 
     /// The price used to generate the line item.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<Price>,
 
     /// The ID of the product for this line item.
@@ -56,7 +55,6 @@ pub struct CheckoutSessionItem {
     pub product: Option<Expandable<Product>>,
 
     /// The quantity of products being purchased.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
     /// The taxes applied to the line item.

@@ -33,7 +33,6 @@ pub struct CreditNote {
     pub customer: Expandable<Customer>,
 
     /// Customer balance transaction related to this credit note.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance_transaction: Option<Expandable<CustomerBalanceTransaction>>,
 
     /// The integer amount in %s representing the total amount of discount that was credited.
@@ -52,31 +51,26 @@ pub struct CreditNote {
     pub livemode: bool,
 
     /// Customer-facing text that appears on the credit note PDF.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub memo: Option<String>,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    #[serde(default)]
     pub metadata: Metadata,
 
     /// A unique number that identifies this particular credit note and appears on the PDF of the credit note and its associated invoice.
     pub number: String,
 
     /// Amount that was credited outside of Stripe.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub out_of_band_amount: Option<i64>,
 
     /// The link to download the PDF of the credit note.
     pub pdf: String,
 
     /// Reason for issuing this credit note, one of `duplicate`, `fraudulent`, `order_change`, or `product_unsatisfactory`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub reason: Option<CreditNoteReason>,
 
     /// Refund related to this credit note.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub refund: Option<Expandable<Refund>>,
 
     /// Status of this credit note, one of `issued` or `void`.
@@ -88,7 +82,6 @@ pub struct CreditNote {
     pub subtotal: i64,
 
     /// The integer amount in %s representing the amount of the credit note, excluding all tax and invoice level discounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub subtotal_excluding_tax: Option<i64>,
 
     /// The aggregate amounts calculated per tax rate for all line items.
@@ -98,7 +91,6 @@ pub struct CreditNote {
     pub total: i64,
 
     /// The integer amount in %s representing the total amount of the credit note, excluding tax, but including discounts.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub total_excluding_tax: Option<i64>,
 
     /// Type of this credit note, one of `pre_payment` or `post_payment`.
@@ -109,7 +101,6 @@ pub struct CreditNote {
     pub type_: CreditNoteType,
 
     /// The time that the credit note was voided.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub voided_at: Option<Timestamp>,
 }
 
@@ -335,27 +326,48 @@ impl<'a> UpdateCreditNote<'a> {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCreditNoteLines {
 
+    /// The line item amount to credit.
+    ///
+    /// Only valid when `type` is `invoice_line_item`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 
+    /// The description of the credit note line item.
+    ///
+    /// Only valid when the `type` is `custom_line_item`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
+    /// The invoice line item to credit.
+    ///
+    /// Only valid when the `type` is `invoice_line_item`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_line_item: Option<String>,
 
+    /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 
+    /// The tax rates which apply to the credit note line item.
+    ///
+    /// Only valid when the `type` is `custom_line_item`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 
+    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
     #[serde(rename = "type")]
     pub type_: CreateCreditNoteLinesType,
 
+    /// The integer unit amount in cents (or local equivalent) of the credit note line item.
+    ///
+    /// This `unit_amount` will be multiplied by the quantity to get the full amount to credit for this line item.
+    /// Only valid when `type` is `custom_line_item`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
 
+    /// Same as `unit_amount`, but accepts a decimal value in cents (or local equivalent) with at most 12 decimal places.
+    ///
+    /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }

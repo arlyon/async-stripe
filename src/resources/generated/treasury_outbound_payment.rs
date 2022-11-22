@@ -30,27 +30,22 @@ pub struct TreasuryOutboundPayment {
     pub currency: Currency,
 
     /// ID of the [customer](https://stripe.com/docs/api/customers) to whom an OutboundPayment is sent.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
 
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
     /// The PaymentMethod via which an OutboundPayment is sent.
     ///
     /// This field can be empty if the OutboundPayment was created using `destination_payment_method_data`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub destination_payment_method: Option<String>,
 
     /// Details about the PaymentMethod for an OutboundPayment.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub destination_payment_method_details: Option<OutboundPaymentsPaymentMethodDetails>,
 
     /// Details about the end user.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub end_user_details: Option<TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails>,
 
     /// The date when funds are expected to arrive in the destination account.
@@ -60,7 +55,6 @@ pub struct TreasuryOutboundPayment {
     pub financial_account: String,
 
     /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_regulatory_receipt_url: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -74,7 +68,6 @@ pub struct TreasuryOutboundPayment {
     /// Details about a returned OutboundPayment.
     ///
     /// Only set when the status is `returned`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_details: Option<TreasuryOutboundPaymentsResourceReturnedStatus>,
 
     /// The description that appears on the receiving end for an OutboundPayment (for example, bank statement for external bank transfer).
@@ -133,34 +126,28 @@ pub struct OutboundPaymentsPaymentMethodDetailsFinancialAccount {
 pub struct OutboundPaymentsPaymentMethodDetailsUsBankAccount {
 
     /// Account holder type: individual or company.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountHolderType>,
 
     /// Account type: checkings or savings.
     ///
     /// Defaults to checking if omitted.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub account_type: Option<OutboundPaymentsPaymentMethodDetailsUsBankAccountAccountType>,
 
     /// Name of the bank associated with the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_name: Option<String>,
 
     /// Uniquely identifies this particular bank account.
     ///
     /// You can use this attribute to check whether two bank accounts are the same.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub fingerprint: Option<String>,
 
     /// Last four digits of the bank account number.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub last4: Option<String>,
 
     /// The US bank account network used to send funds.
     pub network: OutboundPaymentsPaymentMethodDetailsUsBankAccountNetwork,
 
     /// Routing number of the bank account.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
 }
 
@@ -172,7 +159,6 @@ pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails
     /// Set if `present` is set to `true`.
     /// IP address collection is required for risk and compliance reasons.
     /// This will be used to help determine if the OutboundPayment is authorized or should be blocked.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub ip_address: Option<String>,
 
     /// `true`` if the OutboundPayment creation request is being made on behalf of an end user by a platform.
@@ -185,19 +171,15 @@ pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceEndUserDetails
 pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceStatusTransitions {
 
     /// Timestamp describing when an OutboundPayment changed status to `canceled`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<Timestamp>,
 
     /// Timestamp describing when an OutboundPayment changed status to `failed`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub failed_at: Option<Timestamp>,
 
     /// Timestamp describing when an OutboundPayment changed status to `posted`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub posted_at: Option<Timestamp>,
 
     /// Timestamp describing when an OutboundPayment changed status to `returned`.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<Timestamp>,
 }
 

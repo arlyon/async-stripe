@@ -32,7 +32,6 @@ pub struct BillingPortalSession {
     /// The IETF language tag of the locale Customer Portal is displayed in.
     ///
     /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub locale: Option<BillingPortalSessionLocale>,
 
     /// The account for which the session was created on behalf of.
@@ -40,11 +39,9 @@ pub struct BillingPortalSession {
     /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
     /// For more information, see the [docs](https://stripe.com/docs/connect/charges-transfers#on-behalf-of).
     /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
 
     /// The URL to redirect customers to when they click on the portal's link to return to your website.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
 
     /// The short-lived URL of the session that gives customers access to the customer portal.
