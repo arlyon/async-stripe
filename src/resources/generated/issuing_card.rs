@@ -2,14 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::IssuingCardId;
+use crate::ids::{IssuingCardId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
-use crate::resources::{
-    Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType,
-    IssuingCardType, IssuingCardholder, MerchantCategory,
-};
+use crate::resources::{Address, CardBrand, Currency, IssuingCardShippingStatus, IssuingCardShippingType, IssuingCardType, IssuingCardholder, MerchantCategory};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "IssuingCard".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -107,6 +103,7 @@ impl Object for IssuingCard {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardAuthorizationControls {
+
     /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     ///
     /// All other categories will be blocked.
@@ -130,6 +127,7 @@ pub struct IssuingCardAuthorizationControls {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardShipping {
+
     pub address: Address,
 
     /// The delivery company that shipped a card.
@@ -175,6 +173,7 @@ pub struct IssuingCardShipping {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardShippingCustoms {
+
     /// A registration number used for customs in Europe.
     ///
     /// See https://www.gov.uk/eori and https://ec.europa.eu/taxation_customs/business/customs-procedures-import-and-export/customs-procedures/economic-operators-registration-and-identification-number-eori_en.
@@ -183,6 +182,7 @@ pub struct IssuingCardShippingCustoms {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardSpendingLimit {
+
     /// Maximum amount allowed to spend per interval.
     ///
     /// This amount is in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -199,6 +199,7 @@ pub struct IssuingCardSpendingLimit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardWallets {
+
     pub apple_pay: IssuingCardApplePay,
 
     pub google_pay: IssuingCardGooglePay,
@@ -209,6 +210,7 @@ pub struct IssuingCardWallets {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardApplePay {
+
     /// Apple Pay Eligibility.
     pub eligible: bool,
 
@@ -218,6 +220,7 @@ pub struct IssuingCardApplePay {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardGooglePay {
+
     /// Google Pay Eligibility.
     pub eligible: bool,
 
@@ -238,9 +241,7 @@ impl IssuingCardApplePayIneligibleReason {
     pub fn as_str(self) -> &'static str {
         match self {
             IssuingCardApplePayIneligibleReason::MissingAgreement => "missing_agreement",
-            IssuingCardApplePayIneligibleReason::MissingCardholderContact => {
-                "missing_cardholder_contact"
-            }
+            IssuingCardApplePayIneligibleReason::MissingCardholderContact => "missing_cardholder_contact",
             IssuingCardApplePayIneligibleReason::UnsupportedRegion => "unsupported_region",
         }
     }
@@ -312,9 +313,7 @@ impl IssuingCardGooglePayIneligibleReason {
     pub fn as_str(self) -> &'static str {
         match self {
             IssuingCardGooglePayIneligibleReason::MissingAgreement => "missing_agreement",
-            IssuingCardGooglePayIneligibleReason::MissingCardholderContact => {
-                "missing_cardholder_contact"
-            }
+            IssuingCardGooglePayIneligibleReason::MissingCardholderContact => "missing_cardholder_contact",
             IssuingCardGooglePayIneligibleReason::UnsupportedRegion => "unsupported_region",
         }
     }
