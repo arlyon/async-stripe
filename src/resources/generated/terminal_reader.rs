@@ -2,11 +2,10 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
-use crate::ids::TerminalReaderId;
+use crate::ids::{TerminalReaderId};
 use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Currency, PaymentIntent, SetupIntent, TerminalLocation};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TerminalReaderReader".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -73,6 +72,7 @@ impl Object for TerminalReader {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceReaderAction {
+
     /// Failure code, only set if status is `failed`.
     pub failure_code: Option<String>,
 
@@ -98,6 +98,7 @@ pub struct TerminalReaderReaderResourceReaderAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessPaymentIntentAction {
+
     /// Most recent PaymentIntent processed by the reader.
     pub payment_intent: Expandable<PaymentIntent>,
 
@@ -107,6 +108,7 @@ pub struct TerminalReaderReaderResourceProcessPaymentIntentAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessConfig {
+
     /// Override showing a tipping selection screen on this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub skip_tipping: Option<bool>,
@@ -117,6 +119,7 @@ pub struct TerminalReaderReaderResourceProcessConfig {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
+
     /// ID of a card PaymentMethod generated from the card_present PaymentMethod that may be attached to a Customer for future transactions.
     ///
     /// Only present if it was possible to generate a card PaymentMethod.
@@ -129,6 +132,7 @@ pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceSetReaderDisplayAction {
+
     /// Cart object to be displayed by the reader.
     pub cart: Option<TerminalReaderReaderResourceCart>,
 
@@ -139,6 +143,7 @@ pub struct TerminalReaderReaderResourceSetReaderDisplayAction {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceCart {
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -160,6 +165,7 @@ pub struct TerminalReaderReaderResourceCart {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceLineItem {
+
     /// The amount of the line item.
     ///
     /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
@@ -174,6 +180,7 @@ pub struct TerminalReaderReaderResourceLineItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceTippingConfig {
+
     /// Amount used to calculate tip suggestions on tipping selection screen for this transaction.
     ///
     /// Must be a positive integer in the smallest currency unit (e.g., 100 cents to represent $1.00 or 100 to represent ¥100, a zero-decimal currency).
@@ -272,12 +279,8 @@ pub enum TerminalReaderReaderResourceReaderActionType {
 impl TerminalReaderReaderResourceReaderActionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            TerminalReaderReaderResourceReaderActionType::ProcessPaymentIntent => {
-                "process_payment_intent"
-            }
-            TerminalReaderReaderResourceReaderActionType::ProcessSetupIntent => {
-                "process_setup_intent"
-            }
+            TerminalReaderReaderResourceReaderActionType::ProcessPaymentIntent => "process_payment_intent",
+            TerminalReaderReaderResourceReaderActionType::ProcessSetupIntent => "process_setup_intent",
             TerminalReaderReaderResourceReaderActionType::SetReaderDisplay => "set_reader_display",
         }
     }

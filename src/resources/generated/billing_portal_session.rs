@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{BillingPortalSessionId, CustomerId};
 use crate::params::{Expand, Expandable, Object, Timestamp};
-use crate::resources::BillingPortalConfiguration;
+use crate::resources::{BillingPortalConfiguration};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PortalSession".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -49,11 +48,9 @@ pub struct BillingPortalSession {
 }
 
 impl BillingPortalSession {
+
     /// Creates a session of the customer portal.
-    pub fn create(
-        client: &Client,
-        params: CreateBillingPortalSession<'_>,
-    ) -> Response<BillingPortalSession> {
+    pub fn create(client: &Client, params: CreateBillingPortalSession<'_>) -> Response<BillingPortalSession> {
         client.post_form("/billing_portal/sessions", &params)
     }
 }
@@ -71,6 +68,7 @@ impl Object for BillingPortalSession {
 /// The parameters for `BillingPortalSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateBillingPortalSession<'a> {
+
     /// The ID of an existing [configuration](https://stripe.com/docs/api/customer_portal/configuration) to use for this session, describing its functionality and features.
     ///
     /// If not specified, the session uses the default configuration.
