@@ -2,13 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
+use crate::resources::{Currency};
 use serde::{Deserialize, Serialize};
-
-use crate::resources::Currency;
 
 /// The resource representing a Stripe "mandate_options_off_session_details_blik".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateOptionsOffSessionDetailsBlik {
+
     /// Amount of each recurring payment.
     pub amount: Option<i64>,
 
