@@ -2,16 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, SubscriptionScheduleId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::{
-    Account, Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Plan, Price,
-    Scheduled, Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds,
-    SubscriptionTransferData, TaxRate, TestHelpersTestClock,
-};
+use crate::resources::{Account, Application, CollectionMethod, Coupon, Currency, Customer, PaymentMethod, Plan, Price, Scheduled, Subscription, SubscriptionBillingThresholds, SubscriptionItemBillingThresholds, SubscriptionTransferData, TaxRate, TestHelpersTestClock};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "SubscriptionSchedule".
 ///
@@ -49,7 +44,8 @@ pub struct SubscriptionSchedule {
 
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
-    /// Possible values are `release` and `cancel`.
+    /// Possible values are `release` or `cancel` with the default being `release`.
+    /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
     pub end_behavior: SubscriptionScheduleEndBehavior,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -85,41 +81,29 @@ pub struct SubscriptionSchedule {
 }
 
 impl SubscriptionSchedule {
+
     /// Retrieves the list of your subscription schedules.
-    pub fn list(
-        client: &Client,
-        params: &ListSubscriptionSchedules<'_>,
-    ) -> Response<List<SubscriptionSchedule>> {
-        client.get_query("/subscription_schedules", &params)
-    }
+pub fn list(client: &Client, params: &ListSubscriptionSchedules<'_>) -> Response<List<SubscriptionSchedule>> {
+   client.get_query("/subscription_schedules", &params)
+}
+
 
     /// Creates a new subscription schedule object.
     ///
     /// Each customer can have up to 500 active or scheduled subscriptions.
-    pub fn create(
-        client: &Client,
-        params: CreateSubscriptionSchedule<'_>,
-    ) -> Response<SubscriptionSchedule> {
+    pub fn create(client: &Client, params: CreateSubscriptionSchedule<'_>) -> Response<SubscriptionSchedule> {
         client.post_form("/subscription_schedules", &params)
     }
 
     /// Retrieves the details of an existing subscription schedule.
     ///
     /// You only need to supply the unique subscription schedule identifier that was returned upon subscription schedule creation.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionScheduleId,
-        expand: &[&str],
-    ) -> Response<SubscriptionSchedule> {
+    pub fn retrieve(client: &Client, id: &SubscriptionScheduleId, expand: &[&str]) -> Response<SubscriptionSchedule> {
         client.get_query(&format!("/subscription_schedules/{}", id), &Expand { expand })
     }
 
     /// Updates an existing subscription schedule.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionScheduleId,
-        params: UpdateSubscriptionSchedule<'_>,
-    ) -> Response<SubscriptionSchedule> {
+    pub fn update(client: &Client, id: &SubscriptionScheduleId, params: UpdateSubscriptionSchedule<'_>) -> Response<SubscriptionSchedule> {
         client.post_form(&format!("/subscription_schedules/{}", id), &params)
     }
 }
@@ -136,6 +120,7 @@ impl Object for SubscriptionSchedule {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleCurrentPhase {
+
     /// The end of this phase of the subscription schedule.
     pub end_date: Timestamp,
 
@@ -145,6 +130,7 @@ pub struct SubscriptionScheduleCurrentPhase {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionSchedulePhaseConfiguration {
+
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     pub add_invoice_items: Vec<SubscriptionScheduleAddInvoiceItem>,
 
@@ -232,12 +218,14 @@ pub struct SubscriptionSchedulePhaseConfiguration {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SchedulesPhaseAutomaticTax {
+
     /// Whether Stripe automatically computes tax on invoices created during this phase.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleAddInvoiceItem {
+
     /// ID of the price used to generate the invoice item.
     pub price: Expandable<Price>,
 
@@ -253,8 +241,14 @@ pub struct SubscriptionScheduleAddInvoiceItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleConfigurationItem {
+
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
     pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an item.
+    ///
+    /// Metadata on this item will update the underlying subscription item's `metadata` when the phase is entered.
+    pub metadata: Metadata,
 
     /// ID of the plan to which the customer should be subscribed.
     pub plan: Expandable<Plan>,
@@ -275,6 +269,7 @@ pub struct SubscriptionScheduleConfigurationItem {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettings {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account during this phase of the schedule.
@@ -323,6 +318,7 @@ pub struct SubscriptionScheduleDefaultSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
+
     /// Whether Stripe automatically computes tax on invoices created during this phase.
     pub enabled: bool,
 }
@@ -330,6 +326,7 @@ pub struct SubscriptionSchedulesResourceDefaultSettingsAutomaticTax {
 /// The parameters for `SubscriptionSchedule::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateSubscriptionSchedule<'a> {
+
     /// The identifier of the customer to create the subscription schedule for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
@@ -338,7 +335,7 @@ pub struct CreateSubscriptionSchedule<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_settings: Option<SubscriptionScheduleDefaultSettingsParams>,
 
-    /// Configures how the subscription schedule behaves when it ends.
+    /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
@@ -398,6 +395,7 @@ impl<'a> CreateSubscriptionSchedule<'a> {
 /// The parameters for `SubscriptionSchedule::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListSubscriptionSchedules<'a> {
+
     /// Only return subscription schedules that were created canceled the given date interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub canceled_at: Option<RangeQuery<Timestamp>>,
@@ -466,17 +464,17 @@ impl<'a> ListSubscriptionSchedules<'a> {
 impl Paginable for ListSubscriptionSchedules<'_> {
     type O = SubscriptionSchedule;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `SubscriptionSchedule::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionSchedule<'a> {
+
     /// Object representing the subscription schedule's default settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_settings: Option<SubscriptionScheduleDefaultSettingsParams>,
 
-    /// Configures how the subscription schedule behaves when it ends.
+    /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
@@ -525,6 +523,7 @@ impl<'a> UpdateSubscriptionSchedule<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhases {
+
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     ///
     /// You may pass up to 20 items.
@@ -648,6 +647,7 @@ pub struct CreateSubscriptionSchedulePhases {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParams {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the application owner's Stripe account.
@@ -709,6 +709,7 @@ pub struct SubscriptionScheduleDefaultSettingsParams {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhases {
+
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     ///
     /// You may pass up to 20 items.
@@ -838,6 +839,7 @@ pub struct UpdateSubscriptionSchedulePhases {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
+
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
@@ -861,17 +863,27 @@ pub struct AddInvoiceItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
+
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItems {
+
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     ///
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<CreateSubscriptionSchedulePhasesItemsBillingThresholds>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
+    ///
+    /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
+    /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
+    /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
+    #[serde(default)]
+    pub metadata: Metadata,
 
     /// The plan ID to subscribe to.
     ///
@@ -903,6 +915,7 @@ pub struct CreateSubscriptionSchedulePhasesItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesTransferData {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
@@ -916,6 +929,7 @@ pub struct CreateSubscriptionSchedulePhasesTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleBillingThresholds {
+
     /// Monetary threshold that triggers the subscription to advance to a new billing period.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_gte: Option<i64>,
@@ -929,12 +943,14 @@ pub struct SubscriptionScheduleBillingThresholds {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsAutomaticTax {
+
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
@@ -948,6 +964,7 @@ pub struct SubscriptionScheduleDefaultSettingsParamsTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionScheduleInvoiceSettings {
+
     /// Number of days within which a customer must pay invoices generated by this subscription schedule.
     ///
     /// This value will be `null` for subscription schedules where `billing=charge_automatically`.
@@ -957,17 +974,27 @@ pub struct SubscriptionScheduleInvoiceSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
+
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItems {
+
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     ///
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<UpdateSubscriptionSchedulePhasesItemsBillingThresholds>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
+    ///
+    /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
+    /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
+    /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
+    #[serde(default)]
+    pub metadata: Metadata,
 
     /// The plan ID to subscribe to.
     ///
@@ -999,6 +1026,7 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesTransferData {
+
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
     /// This represents the percentage of the subscription invoice subtotal that will be transferred to the destination account.
@@ -1012,12 +1040,14 @@ pub struct UpdateSubscriptionSchedulePhasesTransferData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsBillingThresholds {
+
     /// Usage threshold that triggers the subscription to advance to a new billing period.
     pub usage_gte: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1049,6 +1079,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceItemPriceData {
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1077,12 +1108,14 @@ pub struct InvoiceItemPriceData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsBillingThresholds {
+
     /// Usage threshold that triggers the subscription to advance to a new billing period.
     pub usage_gte: i64,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1114,6 +1147,7 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
+
     /// Specifies billing frequency.
     ///
     /// Either `day`, `week`, `month` or `year`.
@@ -1129,6 +1163,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
+
     /// Specifies billing frequency.
     ///
     /// Either `day`, `week`, `month` or `year`.
@@ -1367,9 +1402,7 @@ pub enum SubscriptionScheduleDefaultSettingsCollectionMethod {
 impl SubscriptionScheduleDefaultSettingsCollectionMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            SubscriptionScheduleDefaultSettingsCollectionMethod::ChargeAutomatically => {
-                "charge_automatically"
-            }
+            SubscriptionScheduleDefaultSettingsCollectionMethod::ChargeAutomatically => "charge_automatically",
             SubscriptionScheduleDefaultSettingsCollectionMethod::SendInvoice => "send_invoice",
         }
     }
@@ -1404,9 +1437,7 @@ impl SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor {
     pub fn as_str(self) -> &'static str {
         match self {
             SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor::Automatic => "automatic",
-            SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor::PhaseStart => {
-                "phase_start"
-            }
+            SubscriptionScheduleDefaultSettingsParamsBillingCycleAnchor::PhaseStart => "phase_start",
         }
     }
 }

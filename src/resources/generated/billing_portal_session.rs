@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{BillingPortalSessionId, CustomerId};
 use crate::params::{Expand, Expandable, Object, Timestamp};
-use crate::resources::BillingPortalConfiguration;
+use crate::resources::{BillingPortalConfiguration};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "PortalSession".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -25,6 +24,9 @@ pub struct BillingPortalSession {
 
     /// The ID of the customer for this session.
     pub customer: String,
+
+    /// Information about a specific flow for the customer to go through.
+    pub flow: Option<PortalFlowsFlow>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -49,11 +51,9 @@ pub struct BillingPortalSession {
 }
 
 impl BillingPortalSession {
+
     /// Creates a session of the customer portal.
-    pub fn create(
-        client: &Client,
-        params: CreateBillingPortalSession<'_>,
-    ) -> Response<BillingPortalSession> {
+    pub fn create(client: &Client, params: CreateBillingPortalSession<'_>) -> Response<BillingPortalSession> {
         client.post_form("/billing_portal/sessions", &params)
     }
 }
@@ -68,9 +68,58 @@ impl Object for BillingPortalSession {
     }
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsFlow {
+
+    pub after_completion: PortalFlowsFlowAfterCompletion,
+
+    /// Configuration when `flow.type=subscription_cancel`.
+    pub subscription_cancel: Option<PortalFlowsFlowSubscriptionCancel>,
+
+    /// Type of flow that the customer will go through.
+    #[serde(rename = "type")]
+    pub type_: PortalFlowsFlowType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsFlowAfterCompletion {
+
+    /// Configuration when `after_completion.type=hosted_confirmation`.
+    pub hosted_confirmation: Option<PortalFlowsAfterCompletionHostedConfirmation>,
+
+    /// Configuration when `after_completion.type=redirect`.
+    pub redirect: Option<PortalFlowsAfterCompletionRedirect>,
+
+    /// The specified type of behavior after the flow is completed.
+    #[serde(rename = "type")]
+    pub type_: PortalFlowsFlowAfterCompletionType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsAfterCompletionHostedConfirmation {
+
+    /// A custom message to display to the customer after the flow is completed.
+    pub custom_message: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsAfterCompletionRedirect {
+
+    /// The URL the customer will be redirected to after the flow is completed.
+    pub return_url: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsFlowSubscriptionCancel {
+
+    /// The ID of the subscription to be canceled.
+    pub subscription: String,
+}
+
 /// The parameters for `BillingPortalSession::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateBillingPortalSession<'a> {
+
     /// The ID of an existing [configuration](https://stripe.com/docs/api/customer_portal/configuration) to use for this session, describing its functionality and features.
     ///
     /// If not specified, the session uses the default configuration.
@@ -83,6 +132,10 @@ pub struct CreateBillingPortalSession<'a> {
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
+
+    /// Information about a specific flow for the customer to go through.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub flow_data: Option<CreateBillingPortalSessionFlowData>,
 
     /// The IETF language tag of the locale Customer Portal is displayed in.
     ///
@@ -109,11 +162,66 @@ impl<'a> CreateBillingPortalSession<'a> {
             configuration: Default::default(),
             customer,
             expand: Default::default(),
+            flow_data: Default::default(),
             locale: Default::default(),
             on_behalf_of: Default::default(),
             return_url: Default::default(),
         }
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowData {
+
+    /// Behavior after the flow is completed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_completion: Option<CreateBillingPortalSessionFlowDataAfterCompletion>,
+
+    /// Configuration when `flow_data.type=subscription_cancel`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_cancel: Option<CreateBillingPortalSessionFlowDataSubscriptionCancel>,
+
+    /// Type of flow that the customer will go through.
+    #[serde(rename = "type")]
+    pub type_: CreateBillingPortalSessionFlowDataType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowDataAfterCompletion {
+
+    /// Configuration when `after_completion.type=hosted_confirmation`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hosted_confirmation: Option<CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation>,
+
+    /// Configuration when `after_completion.type=redirect`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub redirect: Option<CreateBillingPortalSessionFlowDataAfterCompletionRedirect>,
+
+    /// The specified behavior after the flow is completed.
+    #[serde(rename = "type")]
+    pub type_: CreateBillingPortalSessionFlowDataAfterCompletionType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowDataSubscriptionCancel {
+
+    /// The ID of the subscription to be canceled.
+    pub subscription: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation {
+
+    /// A custom message to display to the customer after the flow is completed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_message: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowDataAfterCompletionRedirect {
+
+    /// The URL the customer will be redirected to after the flow is completed.
+    pub return_url: String,
 }
 
 /// An enum representing the possible values of an `BillingPortalSession`'s `locale` field.
@@ -249,5 +357,145 @@ impl std::fmt::Display for BillingPortalSessionLocale {
 impl std::default::Default for BillingPortalSessionLocale {
     fn default() -> Self {
         Self::Auto
+    }
+}
+
+/// An enum representing the possible values of an `CreateBillingPortalSessionFlowDataAfterCompletion`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateBillingPortalSessionFlowDataAfterCompletionType {
+    HostedConfirmation,
+    PortalHomepage,
+    Redirect,
+}
+
+impl CreateBillingPortalSessionFlowDataAfterCompletionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateBillingPortalSessionFlowDataAfterCompletionType::HostedConfirmation => "hosted_confirmation",
+            CreateBillingPortalSessionFlowDataAfterCompletionType::PortalHomepage => "portal_homepage",
+            CreateBillingPortalSessionFlowDataAfterCompletionType::Redirect => "redirect",
+        }
+    }
+}
+
+impl AsRef<str> for CreateBillingPortalSessionFlowDataAfterCompletionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateBillingPortalSessionFlowDataAfterCompletionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateBillingPortalSessionFlowDataAfterCompletionType {
+    fn default() -> Self {
+        Self::HostedConfirmation
+    }
+}
+
+/// An enum representing the possible values of an `CreateBillingPortalSessionFlowData`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateBillingPortalSessionFlowDataType {
+    PaymentMethodUpdate,
+    SubscriptionCancel,
+}
+
+impl CreateBillingPortalSessionFlowDataType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateBillingPortalSessionFlowDataType::PaymentMethodUpdate => "payment_method_update",
+            CreateBillingPortalSessionFlowDataType::SubscriptionCancel => "subscription_cancel",
+        }
+    }
+}
+
+impl AsRef<str> for CreateBillingPortalSessionFlowDataType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateBillingPortalSessionFlowDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateBillingPortalSessionFlowDataType {
+    fn default() -> Self {
+        Self::PaymentMethodUpdate
+    }
+}
+
+/// An enum representing the possible values of an `PortalFlowsFlowAfterCompletion`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PortalFlowsFlowAfterCompletionType {
+    HostedConfirmation,
+    PortalHomepage,
+    Redirect,
+}
+
+impl PortalFlowsFlowAfterCompletionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PortalFlowsFlowAfterCompletionType::HostedConfirmation => "hosted_confirmation",
+            PortalFlowsFlowAfterCompletionType::PortalHomepage => "portal_homepage",
+            PortalFlowsFlowAfterCompletionType::Redirect => "redirect",
+        }
+    }
+}
+
+impl AsRef<str> for PortalFlowsFlowAfterCompletionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PortalFlowsFlowAfterCompletionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PortalFlowsFlowAfterCompletionType {
+    fn default() -> Self {
+        Self::HostedConfirmation
+    }
+}
+
+/// An enum representing the possible values of an `PortalFlowsFlow`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PortalFlowsFlowType {
+    PaymentMethodUpdate,
+    SubscriptionCancel,
+}
+
+impl PortalFlowsFlowType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PortalFlowsFlowType::PaymentMethodUpdate => "payment_method_update",
+            PortalFlowsFlowType::SubscriptionCancel => "subscription_cancel",
+        }
+    }
+}
+
+impl AsRef<str> for PortalFlowsFlowType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PortalFlowsFlowType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PortalFlowsFlowType {
+    fn default() -> Self {
+        Self::PaymentMethodUpdate
     }
 }

@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
-use crate::ids::MandateId;
+use crate::ids::{MandateId};
 use crate::params::{Expand, Expandable, Object, Timestamp};
 use crate::resources::{Currency, MandateOptionsOffSessionDetailsBlik, PaymentMethod};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Mandate".
 ///
@@ -42,6 +41,7 @@ pub struct Mandate {
 }
 
 impl Mandate {
+
     /// Retrieves a Mandate object.
     pub fn retrieve(client: &Client, id: &MandateId, expand: &[&str]) -> Response<Mandate> {
         client.get_query(&format!("/mandates/{}", id), &Expand { expand })
@@ -60,6 +60,7 @@ impl Object for Mandate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerAcceptance {
+
     /// The time at which the customer accepted the Mandate.
     pub accepted_at: Option<Timestamp>,
 
@@ -77,10 +78,12 @@ pub struct CustomerAcceptance {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct MandateMultiUse {}
+pub struct MandateMultiUse {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandatePaymentMethodDetails {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<MandateAcssDebit>,
 
@@ -114,10 +117,12 @@ pub struct MandatePaymentMethodDetails {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CardMandatePaymentMethodDetails {}
+pub struct CardMandatePaymentMethodDetails {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateAcssDebit {
+
     /// List of Stripe products where this mandate can be selected automatically.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_for: Option<Vec<MandateAcssDebitDefaultFor>>,
@@ -136,6 +141,7 @@ pub struct MandateAcssDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateAuBecsDebit {
+
     /// The URL of the mandate.
     ///
     /// This URL generally contains sensitive information about the customer and should be shared with them exclusively.
@@ -144,6 +150,7 @@ pub struct MandateAuBecsDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateBacsDebit {
+
     /// The status of the mandate on the Bacs network.
     ///
     /// Can be one of `pending`, `revoked`, `refused`, or `accepted`.
@@ -158,6 +165,7 @@ pub struct MandateBacsDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateBlik {
+
     /// Date at which the mandate expires.
     pub expires_after: Option<Timestamp>,
 
@@ -170,10 +178,12 @@ pub struct MandateBlik {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct MandateLink {}
+pub struct MandateLink {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateSepaDebit {
+
     /// The unique reference of the mandate.
     pub reference: String,
 
@@ -185,6 +195,7 @@ pub struct MandateSepaDebit {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateSingleUse {
+
     /// On a single use mandate, the amount of the payment.
     pub amount: i64,
 
@@ -193,13 +204,16 @@ pub struct MandateSingleUse {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct MandateUsBankAccount {}
+pub struct MandateUsBankAccount {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct OfflineAcceptance {}
+pub struct OfflineAcceptance {
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct OnlineAcceptance {
+
     /// The IP address from which the Mandate was accepted by the customer.
     pub ip_address: Option<String>,
 
