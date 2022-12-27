@@ -555,12 +555,7 @@ impl<'a> ListSetupIntents<'a> {
         }
     }
 }
-impl Paginable for ListSetupIntents<'_> {
-    type O = SetupIntent;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `SetupIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSetupIntent<'a> {
@@ -645,6 +640,12 @@ impl<'a> UpdateSetupIntent<'a> {
     }
 }
 
+impl Paginable for ListSetupIntents<'_> {
+    type O = SetupIntent;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentMandateData {
     /// This hash contains details about the customer acceptance of the Mandate.
@@ -2540,8 +2541,8 @@ pub enum CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor 
 impl CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Invoice => "invoice",
-            CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Subscription => "subscription",
+CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Invoice => "invoice",
+CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Subscription => "subscription",
         }
     }
 }
@@ -2577,9 +2578,9 @@ pub enum CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSche
 impl CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
-            CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
-            CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
+CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
+CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
+CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
         }
     }
 }
@@ -2616,8 +2617,8 @@ pub enum CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransaction
 impl CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
-            CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+CreateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
         }
     }
 }
@@ -2888,10 +2889,10 @@ pub enum CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsP
 impl CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
-            CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
-            CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
-            CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+CreateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
         }
     }
 }
@@ -4180,8 +4181,8 @@ pub enum UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor 
 impl UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Invoice => "invoice",
-            UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Subscription => "subscription",
+UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Invoice => "invoice",
+UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor::Subscription => "subscription",
         }
     }
 }
@@ -4217,9 +4218,9 @@ pub enum UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSche
 impl UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
-            UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
-            UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
+UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
+UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
+UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
         }
     }
 }
@@ -4256,8 +4257,8 @@ pub enum UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransaction
 impl UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
-            UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+UpdateSetupIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
         }
     }
 }
@@ -4528,10 +4529,10 @@ pub enum UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsP
 impl UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
-            UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
-            UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
-            UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+UpdateSetupIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
         }
     }
 }

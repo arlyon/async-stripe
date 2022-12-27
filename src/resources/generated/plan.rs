@@ -63,7 +63,7 @@ pub struct Plan {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 
@@ -250,12 +250,7 @@ impl<'a> ListPlans<'a> {
         }
     }
 }
-impl Paginable for ListPlans<'_> {
-    type O = Plan;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Plan::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePlan<'a> {
@@ -300,6 +295,13 @@ impl<'a> UpdatePlan<'a> {
             product: Default::default(),
             trial_period_days: Default::default(),
         }
+    }
+}
+
+impl Paginable for ListPlans<'_> {
+    type O = Plan;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }
 

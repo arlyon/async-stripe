@@ -1,34 +1,18 @@
-use std::fmt::Write as _;
-
 use heck::SnakeCase;
 use lazy_static::lazy_static;
-use openapiv3::{IntegerFormat, Schema, VariantOrUnknownOrEmpty};
+use openapiv3::{IntegerFormat, VariantOrUnknownOrEmpty};
 use regex::Regex;
 
 use crate::file_generator::FileGenerator;
 
-pub fn write_out_field(out: &mut String, var_name: &str, var_type: &str, required: bool) {
-    if required {
-        writeln!(out, "    pub {var_name}: {var_type},").unwrap();
-    } else {
-        out.push_str("    #[serde(skip_serializing_if = \"Option::is_none\")]\n");
-        writeln!(out, "    pub {var_name}: Option<{var_type}>,").unwrap();
-    }
+pub fn write_serde_rename(rename: &str) -> String {
+    format!(r#"#[serde(rename = "{rename}")]"#)
 }
 
-pub fn write_serde_rename(out: &mut String, rename: &str) {
-    writeln!(out, r#"    #[serde(rename = "{rename}")]"#).unwrap();
-}
-
-pub fn print_doc_from_schema(out: &mut String, schema: &Schema, print_level: u8) {
-    if let Some(description) = &schema.schema_data.description {
-        print_doc_comment(out, description, print_level);
-    }
-}
-
-pub fn print_doc_comment(out: &mut String, description: &str, depth: u8) {
+pub fn write_doc_comment(description: &str, depth: u8) -> String {
+    let mut out = String::new();
     if description.trim().is_empty() {
-        return;
+        return out;
     }
 
     let doc = format_doc_comment(description);
@@ -38,7 +22,7 @@ pub fn print_doc_comment(out: &mut String, description: &str, depth: u8) {
         if i > 0 {
             out.push('\n');
         }
-        print_indent(out, depth);
+        print_indent(&mut out, depth);
         if !line.is_empty() {
             out.push_str("/// ");
             out.push_str(line);
@@ -51,10 +35,10 @@ pub fn print_doc_comment(out: &mut String, description: &str, depth: u8) {
     }
     out.push('\n');
     if let Some(tail) = doc_parts.next() {
-        print_indent(out, depth);
+        print_indent(&mut out, depth);
         out.push_str("///\n");
         for part in tail.split(". ") {
-            print_indent(out, depth);
+            print_indent(&mut out, depth);
             out.push_str("/// ");
             out.push_str(part.replace('\n', " ").trim());
             if !part.ends_with('.') {
@@ -63,6 +47,7 @@ pub fn print_doc_comment(out: &mut String, description: &str, depth: u8) {
             out.push('\n');
         }
     }
+    out
 }
 
 fn print_indent(out: &mut String, depth: u8) {

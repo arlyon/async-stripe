@@ -5,59 +5,62 @@
 use crate::ids::{TreasuryTransactionId};
 use crate::params::{List, Object, Timestamp};
 use crate::resources::{Currency, TreasuryTransactionEntry, TreasuryTransactionsResourceBalanceImpact, TreasuryTransactionsResourceFlowDetails};
+
 use serde::{Deserialize, Serialize};
 
+
 /// The resource representing a Stripe "TreasuryTransactionsResourceTransaction".
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct TreasuryTransaction {
     /// Unique identifier for the object.
-    pub id: TreasuryTransactionId,
+pub id: TreasuryTransactionId,
 
     /// Amount (in cents) transferred.
-    pub amount: i64,
+pub amount: i64,
 
-    pub balance_impact: TreasuryTransactionsResourceBalanceImpact,
+pub balance_impact: TreasuryTransactionsResourceBalanceImpact,
 
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub created: Timestamp,
+pub created: Timestamp,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: Currency,
+pub currency: Currency,
 
     /// An arbitrary string attached to the object.
     ///
     /// Often useful for displaying to users.
-    pub description: String,
+pub description: String,
 
     /// A list of TransactionEntries that are part of this Transaction.
     ///
     /// This cannot be expanded in any list endpoints.
-    pub entries: List<TreasuryTransactionEntry>,
+pub entries: List<TreasuryTransactionEntry>,
 
     /// The FinancialAccount associated with this object.
-    pub financial_account: String,
+pub financial_account: String,
 
     /// ID of the flow that created the Transaction.
-    pub flow: Option<String>,
+pub flow: Option<String>,
 
     /// Details of the flow that created the Transaction.
-    pub flow_details: Option<TreasuryTransactionsResourceFlowDetails>,
+pub flow_details: Option<TreasuryTransactionsResourceFlowDetails>,
 
     /// Type of the flow that created the Transaction.
-    pub flow_type: TreasuryTransactionFlowType,
+pub flow_type: TreasuryTransactionFlowType,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: bool,
+pub livemode: bool,
 
     /// Status of the Transaction.
-    pub status: TreasuryTransactionStatus,
+pub status: TreasuryTransactionStatus,
 
-    pub status_transitions: TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions,
+pub status_transitions: TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions,
 }
+
 
 impl Object for TreasuryTransaction {
     type Id = TreasuryTransactionId;
@@ -69,43 +72,48 @@ impl Object for TreasuryTransaction {
     }
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions {
-
     /// Timestamp describing when the Transaction changed status to `posted`.
-    pub posted_at: Option<Timestamp>,
+pub posted_at: Option<Timestamp>,
 
     /// Timestamp describing when the Transaction changed status to `void`.
-    pub void_at: Option<Timestamp>,
+pub void_at: Option<Timestamp>,
 }
+
+
+
+
+
 
 /// An enum representing the possible values of an `TreasuryTransaction`'s `flow_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TreasuryTransactionFlowType {
-    CreditReversal,
-    DebitReversal,
-    InboundTransfer,
-    IssuingAuthorization,
-    Other,
-    OutboundPayment,
-    OutboundTransfer,
-    ReceivedCredit,
-    ReceivedDebit,
+CreditReversal,
+DebitReversal,
+InboundTransfer,
+IssuingAuthorization,
+Other,
+OutboundPayment,
+OutboundTransfer,
+ReceivedCredit,
+ReceivedDebit,
+
 }
 
 impl TreasuryTransactionFlowType {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryTransactionFlowType::CreditReversal => "credit_reversal",
-            TreasuryTransactionFlowType::DebitReversal => "debit_reversal",
-            TreasuryTransactionFlowType::InboundTransfer => "inbound_transfer",
-            TreasuryTransactionFlowType::IssuingAuthorization => "issuing_authorization",
-            TreasuryTransactionFlowType::Other => "other",
-            TreasuryTransactionFlowType::OutboundPayment => "outbound_payment",
-            TreasuryTransactionFlowType::OutboundTransfer => "outbound_transfer",
-            TreasuryTransactionFlowType::ReceivedCredit => "received_credit",
-            TreasuryTransactionFlowType::ReceivedDebit => "received_debit",
+TreasuryTransactionFlowType::CreditReversal => "credit_reversal",
+TreasuryTransactionFlowType::DebitReversal => "debit_reversal",
+TreasuryTransactionFlowType::InboundTransfer => "inbound_transfer",
+TreasuryTransactionFlowType::IssuingAuthorization => "issuing_authorization",
+TreasuryTransactionFlowType::Other => "other",
+TreasuryTransactionFlowType::OutboundPayment => "outbound_payment",
+TreasuryTransactionFlowType::OutboundTransfer => "outbound_transfer",
+TreasuryTransactionFlowType::ReceivedCredit => "received_credit",
+TreasuryTransactionFlowType::ReceivedDebit => "received_debit",
         }
     }
 }
@@ -131,17 +139,18 @@ impl std::default::Default for TreasuryTransactionFlowType {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TreasuryTransactionStatus {
-    Open,
-    Posted,
-    Void,
+Open,
+Posted,
+Void,
+
 }
 
 impl TreasuryTransactionStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryTransactionStatus::Open => "open",
-            TreasuryTransactionStatus::Posted => "posted",
-            TreasuryTransactionStatus::Void => "void",
+TreasuryTransactionStatus::Open => "open",
+TreasuryTransactionStatus::Posted => "posted",
+TreasuryTransactionStatus::Void => "void",
         }
     }
 }

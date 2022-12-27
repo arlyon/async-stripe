@@ -31,7 +31,7 @@ pub struct WebhookEndpoint {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<Timestamp>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 
@@ -216,12 +216,7 @@ impl<'a> ListWebhookEndpoints<'a> {
         }
     }
 }
-impl Paginable for ListWebhookEndpoints<'_> {
-    type O = WebhookEndpoint;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `WebhookEndpoint::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateWebhookEndpoint<'a> {
@@ -266,6 +261,13 @@ impl<'a> UpdateWebhookEndpoint<'a> {
             metadata: Default::default(),
             url: Default::default(),
         }
+    }
+}
+
+impl Paginable for ListWebhookEndpoints<'_> {
+    type O = WebhookEndpoint;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }
 

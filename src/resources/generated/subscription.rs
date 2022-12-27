@@ -715,12 +715,7 @@ impl<'a> ListSubscriptions<'a> {
         }
     }
 }
-impl Paginable for ListSubscriptions<'_> {
-    type O = Subscription;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Subscription::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscription<'a> {
@@ -947,6 +942,12 @@ impl<'a> UpdateSubscription<'a> {
     }
 }
 
+impl Paginable for ListSubscriptions<'_> {
+    type O = Subscription;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct AddInvoiceItems {
     /// The ID of the price object.
@@ -1506,28 +1507,26 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptio
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
-
     /// Configuration for eu_bank_transfer funding type.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eu_bank_transfer: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub eu_bank_transfer: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
 
     /// The bank transfer type that can be used for funding.
     ///
     /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
+#[serde(rename = "type")]
+#[serde(skip_serializing_if = "Option::is_none")]
+pub type_: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
-
     /// The list of permissions to request.
     ///
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<Vec<CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub permissions: Option<Vec<CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1560,28 +1559,26 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptio
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
-
     /// Configuration for eu_bank_transfer funding type.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eu_bank_transfer: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub eu_bank_transfer: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
 
     /// The bank transfer type that can be used for funding.
     ///
     /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-    #[serde(rename = "type")]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub type_: Option<String>,
+#[serde(rename = "type")]
+#[serde(skip_serializing_if = "Option::is_none")]
+pub type_: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
-
     /// The list of permissions to request.
     ///
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub permissions: Option<Vec<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1614,8 +1611,8 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOp
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
         }
     }
 }
@@ -1655,9 +1652,9 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificat
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }
@@ -1698,10 +1695,10 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferre
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::De => "de",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::En => "en",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::Fr => "fr",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::Nl => "nl",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::De => "de",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::En => "en",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::Fr => "fr",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::Nl => "nl",
         }
     }
 }
@@ -1740,8 +1737,8 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Fixed => "fixed",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Maximum => "maximum",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Fixed => "fixed",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Maximum => "maximum",
         }
     }
 }
@@ -1838,8 +1835,8 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDS
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
         }
     }
 }
@@ -1879,10 +1876,10 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinan
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
         }
     }
 }
@@ -1916,9 +1913,9 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerif
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
-            CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
+CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }
@@ -2692,8 +2689,8 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOp
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
         }
     }
 }
@@ -2733,9 +2730,9 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificat
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }
@@ -2776,10 +2773,10 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferre
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::De => "de",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::En => "en",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::Fr => "fr",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::Nl => "nl",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::De => "de",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::En => "en",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::Fr => "fr",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::Nl => "nl",
         }
     }
 }
@@ -2818,8 +2815,8 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Fixed => "fixed",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Maximum => "maximum",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Fixed => "fixed",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::Maximum => "maximum",
         }
     }
 }
@@ -2916,8 +2913,8 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDS
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Any => "any",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::Automatic => "automatic",
         }
     }
 }
@@ -2957,10 +2954,10 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinan
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
         }
     }
 }
@@ -2994,9 +2991,9 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerif
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
-            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
+UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }

@@ -171,12 +171,7 @@ impl<'a> ListFileLinks<'a> {
         }
     }
 }
-impl Paginable for ListFileLinks<'_> {
-    type O = FileLink;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `FileLink::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateFileLink<'a> {
@@ -204,5 +199,12 @@ impl<'a> UpdateFileLink<'a> {
             expires_at: Default::default(),
             metadata: Default::default(),
         }
+    }
+}
+
+impl Paginable for ListFileLinks<'_> {
+    type O = FileLink;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }

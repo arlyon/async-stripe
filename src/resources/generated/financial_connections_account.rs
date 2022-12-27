@@ -5,58 +5,60 @@
 use crate::ids::{FinancialConnectionsAccountId};
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::{BankConnectionsResourceAccountholder, FinancialConnectionsAccountOwnership};
+
 use serde::{Deserialize, Serialize};
 
+
 /// The resource representing a Stripe "BankConnectionsResourceLinkedAccount".
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct FinancialConnectionsAccount {
     /// Unique identifier for the object.
-    pub id: FinancialConnectionsAccountId,
+pub id: FinancialConnectionsAccountId,
 
     /// The account holder that this account belongs to.
-    pub account_holder: Option<BankConnectionsResourceAccountholder>,
+pub account_holder: Option<BankConnectionsResourceAccountholder>,
 
     /// The most recent information about the account's balance.
-    pub balance: Option<BankConnectionsResourceBalance>,
+pub balance: Option<BankConnectionsResourceBalance>,
 
     /// The state of the most recent attempt to refresh the account balance.
-    pub balance_refresh: Option<BankConnectionsResourceBalanceRefresh>,
+pub balance_refresh: Option<BankConnectionsResourceBalanceRefresh>,
 
     /// The type of the account.
     ///
     /// Account category is further divided in `subcategory`.
-    pub category: FinancialConnectionsAccountCategory,
+pub category: FinancialConnectionsAccountCategory,
 
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub created: Timestamp,
+pub created: Timestamp,
 
     /// A human-readable name that has been assigned to this account, either by the account holder or by the institution.
-    pub display_name: Option<String>,
+pub display_name: Option<String>,
 
     /// The name of the institution that holds this account.
-    pub institution_name: String,
+pub institution_name: String,
 
     /// The last 4 digits of the account number.
     ///
     /// If present, this will be 4 numeric characters.
-    pub last4: Option<String>,
+pub last4: Option<String>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: bool,
+pub livemode: bool,
 
     /// The most recent information about the account's owners.
-    pub ownership: Option<Expandable<FinancialConnectionsAccountOwnership>>,
+pub ownership: Option<Expandable<FinancialConnectionsAccountOwnership>>,
 
     /// The state of the most recent attempt to refresh the account owners.
-    pub ownership_refresh: Option<BankConnectionsResourceOwnershipRefresh>,
+pub ownership_refresh: Option<BankConnectionsResourceOwnershipRefresh>,
 
     /// The list of permissions granted by this account.
-    pub permissions: Option<Vec<FinancialConnectionsAccountPermissions>>,
+pub permissions: Option<Vec<FinancialConnectionsAccountPermissions>>,
 
     /// The status of the link to the account.
-    pub status: FinancialConnectionsAccountStatus,
+pub status: FinancialConnectionsAccountStatus,
 
     /// If `category` is `cash`, one of:
     ///
@@ -72,11 +74,12 @@ pub struct FinancialConnectionsAccount {
     ///  - `other`
     ///
     /// If `category` is `investment` or `other`, this will be `other`.
-    pub subcategory: FinancialConnectionsAccountSubcategory,
+pub subcategory: FinancialConnectionsAccountSubcategory,
 
     /// The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
-    pub supported_payment_method_types: Vec<FinancialConnectionsAccountSupportedPaymentMethodTypes>,
+pub supported_payment_method_types: Vec<FinancialConnectionsAccountSupportedPaymentMethodTypes>,
 }
+
 
 impl Object for FinancialConnectionsAccount {
     type Id = FinancialConnectionsAccountId;
@@ -88,19 +91,18 @@ impl Object for FinancialConnectionsAccount {
     }
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct BankConnectionsResourceBalance {
-
     /// The time that the external institution calculated this balance.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub as_of: Timestamp,
+pub as_of: Timestamp,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cash: Option<BankConnectionsResourceBalanceApiResourceCashBalance>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub cash: Option<BankConnectionsResourceBalanceApiResourceCashBalance>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub credit: Option<BankConnectionsResourceBalanceApiResourceCreditBalance>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub credit: Option<BankConnectionsResourceBalanceApiResourceCreditBalance>,
 
     /// The balances owed to (or by) the account holder.
     ///
@@ -110,29 +112,27 @@ pub struct BankConnectionsResourceBalance {
     ///
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
-    pub current: i64,
+pub current: i64,
 
     /// The `type` of the balance.
     ///
     /// An additional hash is included on the balance with a name matching this value.
-    #[serde(rename = "type")]
-    pub type_: BankConnectionsResourceBalanceType,
+#[serde(rename = "type")]
+pub type_: BankConnectionsResourceBalanceType,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct BankConnectionsResourceBalanceApiResourceCashBalance {
-
     /// The funds available to the account holder.
     ///
     /// Typically this is the current balance less any holds.  Each key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.  Each value is a integer amount.
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
-    pub available: Option<i64>,
+pub available: Option<i64>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct BankConnectionsResourceBalanceApiResourceCreditBalance {
-
     /// The credit that has been used by the account holder.
     ///
     /// Each key is a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -141,48 +141,52 @@ pub struct BankConnectionsResourceBalanceApiResourceCreditBalance {
     ///
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
-    pub used: Option<i64>,
+pub used: Option<i64>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct BankConnectionsResourceBalanceRefresh {
-
     /// The time at which the last refresh attempt was initiated.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub last_attempted_at: Timestamp,
+pub last_attempted_at: Timestamp,
 
     /// The status of the last refresh attempt.
-    pub status: BankConnectionsResourceBalanceRefreshStatus,
+pub status: BankConnectionsResourceBalanceRefreshStatus,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct BankConnectionsResourceOwnershipRefresh {
-
     /// The time at which the last refresh attempt was initiated.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub last_attempted_at: Timestamp,
+pub last_attempted_at: Timestamp,
 
     /// The status of the last refresh attempt.
-    pub status: BankConnectionsResourceOwnershipRefreshStatus,
+pub status: BankConnectionsResourceOwnershipRefreshStatus,
 }
+
+
+
+
+
 
 /// An enum representing the possible values of an `BankConnectionsResourceBalanceRefresh`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum BankConnectionsResourceBalanceRefreshStatus {
-    Failed,
-    Pending,
-    Succeeded,
+Failed,
+Pending,
+Succeeded,
+
 }
 
 impl BankConnectionsResourceBalanceRefreshStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            BankConnectionsResourceBalanceRefreshStatus::Failed => "failed",
-            BankConnectionsResourceBalanceRefreshStatus::Pending => "pending",
-            BankConnectionsResourceBalanceRefreshStatus::Succeeded => "succeeded",
+BankConnectionsResourceBalanceRefreshStatus::Failed => "failed",
+BankConnectionsResourceBalanceRefreshStatus::Pending => "pending",
+BankConnectionsResourceBalanceRefreshStatus::Succeeded => "succeeded",
         }
     }
 }
@@ -208,15 +212,16 @@ impl std::default::Default for BankConnectionsResourceBalanceRefreshStatus {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum BankConnectionsResourceBalanceType {
-    Cash,
-    Credit,
+Cash,
+Credit,
+
 }
 
 impl BankConnectionsResourceBalanceType {
     pub fn as_str(self) -> &'static str {
         match self {
-            BankConnectionsResourceBalanceType::Cash => "cash",
-            BankConnectionsResourceBalanceType::Credit => "credit",
+BankConnectionsResourceBalanceType::Cash => "cash",
+BankConnectionsResourceBalanceType::Credit => "credit",
         }
     }
 }
@@ -242,17 +247,18 @@ impl std::default::Default for BankConnectionsResourceBalanceType {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum BankConnectionsResourceOwnershipRefreshStatus {
-    Failed,
-    Pending,
-    Succeeded,
+Failed,
+Pending,
+Succeeded,
+
 }
 
 impl BankConnectionsResourceOwnershipRefreshStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            BankConnectionsResourceOwnershipRefreshStatus::Failed => "failed",
-            BankConnectionsResourceOwnershipRefreshStatus::Pending => "pending",
-            BankConnectionsResourceOwnershipRefreshStatus::Succeeded => "succeeded",
+BankConnectionsResourceOwnershipRefreshStatus::Failed => "failed",
+BankConnectionsResourceOwnershipRefreshStatus::Pending => "pending",
+BankConnectionsResourceOwnershipRefreshStatus::Succeeded => "succeeded",
         }
     }
 }
@@ -278,19 +284,20 @@ impl std::default::Default for BankConnectionsResourceOwnershipRefreshStatus {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FinancialConnectionsAccountCategory {
-    Cash,
-    Credit,
-    Investment,
-    Other,
+Cash,
+Credit,
+Investment,
+Other,
+
 }
 
 impl FinancialConnectionsAccountCategory {
     pub fn as_str(self) -> &'static str {
         match self {
-            FinancialConnectionsAccountCategory::Cash => "cash",
-            FinancialConnectionsAccountCategory::Credit => "credit",
-            FinancialConnectionsAccountCategory::Investment => "investment",
-            FinancialConnectionsAccountCategory::Other => "other",
+FinancialConnectionsAccountCategory::Cash => "cash",
+FinancialConnectionsAccountCategory::Credit => "credit",
+FinancialConnectionsAccountCategory::Investment => "investment",
+FinancialConnectionsAccountCategory::Other => "other",
         }
     }
 }
@@ -316,19 +323,20 @@ impl std::default::Default for FinancialConnectionsAccountCategory {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FinancialConnectionsAccountPermissions {
-    Balances,
-    Ownership,
-    PaymentMethod,
-    Transactions,
+Balances,
+Ownership,
+PaymentMethod,
+Transactions,
+
 }
 
 impl FinancialConnectionsAccountPermissions {
     pub fn as_str(self) -> &'static str {
         match self {
-            FinancialConnectionsAccountPermissions::Balances => "balances",
-            FinancialConnectionsAccountPermissions::Ownership => "ownership",
-            FinancialConnectionsAccountPermissions::PaymentMethod => "payment_method",
-            FinancialConnectionsAccountPermissions::Transactions => "transactions",
+FinancialConnectionsAccountPermissions::Balances => "balances",
+FinancialConnectionsAccountPermissions::Ownership => "ownership",
+FinancialConnectionsAccountPermissions::PaymentMethod => "payment_method",
+FinancialConnectionsAccountPermissions::Transactions => "transactions",
         }
     }
 }
@@ -354,17 +362,18 @@ impl std::default::Default for FinancialConnectionsAccountPermissions {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FinancialConnectionsAccountStatus {
-    Active,
-    Disconnected,
-    Inactive,
+Active,
+Disconnected,
+Inactive,
+
 }
 
 impl FinancialConnectionsAccountStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            FinancialConnectionsAccountStatus::Active => "active",
-            FinancialConnectionsAccountStatus::Disconnected => "disconnected",
-            FinancialConnectionsAccountStatus::Inactive => "inactive",
+FinancialConnectionsAccountStatus::Active => "active",
+FinancialConnectionsAccountStatus::Disconnected => "disconnected",
+FinancialConnectionsAccountStatus::Inactive => "inactive",
         }
     }
 }
@@ -390,23 +399,24 @@ impl std::default::Default for FinancialConnectionsAccountStatus {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FinancialConnectionsAccountSubcategory {
-    Checking,
-    CreditCard,
-    LineOfCredit,
-    Mortgage,
-    Other,
-    Savings,
+Checking,
+CreditCard,
+LineOfCredit,
+Mortgage,
+Other,
+Savings,
+
 }
 
 impl FinancialConnectionsAccountSubcategory {
     pub fn as_str(self) -> &'static str {
         match self {
-            FinancialConnectionsAccountSubcategory::Checking => "checking",
-            FinancialConnectionsAccountSubcategory::CreditCard => "credit_card",
-            FinancialConnectionsAccountSubcategory::LineOfCredit => "line_of_credit",
-            FinancialConnectionsAccountSubcategory::Mortgage => "mortgage",
-            FinancialConnectionsAccountSubcategory::Other => "other",
-            FinancialConnectionsAccountSubcategory::Savings => "savings",
+FinancialConnectionsAccountSubcategory::Checking => "checking",
+FinancialConnectionsAccountSubcategory::CreditCard => "credit_card",
+FinancialConnectionsAccountSubcategory::LineOfCredit => "line_of_credit",
+FinancialConnectionsAccountSubcategory::Mortgage => "mortgage",
+FinancialConnectionsAccountSubcategory::Other => "other",
+FinancialConnectionsAccountSubcategory::Savings => "savings",
         }
     }
 }
@@ -432,15 +442,16 @@ impl std::default::Default for FinancialConnectionsAccountSubcategory {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum FinancialConnectionsAccountSupportedPaymentMethodTypes {
-    Link,
-    UsBankAccount,
+Link,
+UsBankAccount,
+
 }
 
 impl FinancialConnectionsAccountSupportedPaymentMethodTypes {
     pub fn as_str(self) -> &'static str {
         match self {
-            FinancialConnectionsAccountSupportedPaymentMethodTypes::Link => "link",
-            FinancialConnectionsAccountSupportedPaymentMethodTypes::UsBankAccount => "us_bank_account",
+FinancialConnectionsAccountSupportedPaymentMethodTypes::Link => "link",
+FinancialConnectionsAccountSupportedPaymentMethodTypes::UsBankAccount => "us_bank_account",
         }
     }
 }

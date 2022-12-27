@@ -1415,12 +1415,7 @@ impl<'a> ListPaymentIntents<'a> {
         }
     }
 }
-impl Paginable for ListPaymentIntents<'_> {
-    type O = PaymentIntent;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `PaymentIntent::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentIntent<'a> {
@@ -1567,6 +1562,12 @@ impl<'a> UpdatePaymentIntent<'a> {
     }
 }
 
+impl Paginable for ListPaymentIntents<'_> {
+    type O = PaymentIntent;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentAutomaticPaymentMethods {
     /// Whether this feature is enabled.
@@ -4772,9 +4773,9 @@ pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSc
 impl CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
-            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
-            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
+CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
+CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
+CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
         }
     }
 }
@@ -4811,8 +4812,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransacti
 impl CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
-            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
         }
     }
 }
@@ -5636,11 +5637,11 @@ pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferReque
 impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
-            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
-            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
-            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
-            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
+CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
+CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
+CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
+CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
+CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
 }
@@ -5681,10 +5682,10 @@ pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType 
 impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
-            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
-            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
-            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
+CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
+CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
+CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
         }
     }
 }
@@ -6547,10 +6548,10 @@ pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnection
 impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
-            CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
-            CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
-            CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
         }
     }
 }
@@ -6589,8 +6590,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
 impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::Ach => "ach",
-            CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::UsDomesticWire => "us_domestic_wire",
+CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::Ach => "ach",
+CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::UsDomesticWire => "us_domestic_wire",
         }
     }
 }
@@ -6668,9 +6669,9 @@ pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod 
 impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
-            CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
-            CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
+CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
+CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
+CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }
@@ -8594,9 +8595,9 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSc
 impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
-            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
-            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
+UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
+UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
+UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
         }
     }
 }
@@ -8633,8 +8634,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransacti
 impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
-            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
         }
     }
 }
@@ -9458,11 +9459,11 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferReque
 impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
-            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
-            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
-            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
-            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
+UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
+UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
+UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
+UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
+UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
 }
@@ -9503,10 +9504,10 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType 
 impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
-            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
-            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
-            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
+UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
+UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
+UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
         }
     }
 }
@@ -10369,10 +10370,10 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnection
 impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
-            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
-            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
-            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
         }
     }
 }
@@ -10411,8 +10412,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
 impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::Ach => "ach",
-            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::UsDomesticWire => "us_domestic_wire",
+UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::Ach => "ach",
+UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested::UsDomesticWire => "us_domestic_wire",
         }
     }
 }
@@ -10490,9 +10491,9 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod 
 impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
-            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
-            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
+UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
+UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
+UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }

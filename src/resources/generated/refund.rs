@@ -281,12 +281,7 @@ impl<'a> ListRefunds<'a> {
         }
     }
 }
-impl Paginable for ListRefunds<'_> {
-    type O = Refund;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Refund::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateRefund<'a> {
@@ -306,6 +301,13 @@ pub struct UpdateRefund<'a> {
 impl<'a> UpdateRefund<'a> {
     pub fn new() -> Self {
         UpdateRefund { expand: Default::default(), metadata: Default::default() }
+    }
+}
+
+impl Paginable for ListRefunds<'_> {
+    type O = Refund;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }
 

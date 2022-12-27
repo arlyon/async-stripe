@@ -878,12 +878,7 @@ impl<'a> ListPaymentMethods<'a> {
         }
     }
 }
-impl Paginable for ListPaymentMethods<'_> {
-    type O = PaymentMethod;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `PaymentMethod::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePaymentMethod<'a> {
@@ -971,6 +966,12 @@ impl<'a> UpdatePaymentMethod<'a> {
     }
 }
 
+impl Paginable for ListPaymentMethods<'_> {
+    type O = PaymentMethod;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodAcssDebit {
     /// Customer's bank account number.
@@ -2425,10 +2426,13 @@ pub struct CardDetailsParams {
     /// It is highly recommended to always include this value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc: Option<String>,
+
     /// Two-digit number representing the card's expiration month.
     pub exp_month: i32,
+
     /// Four-digit number representing the card's expiration year.
     pub exp_year: i32,
+
     /// The card number, as a string without any separators.
     pub number: String,
 }
@@ -2444,6 +2448,7 @@ pub struct UpdateApiParam {
     /// Two-digit number representing the card's expiration month.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub exp_month: Option<i32>,
+
     /// Four-digit number representing the card's expiration year.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub exp_year: Option<i32>,

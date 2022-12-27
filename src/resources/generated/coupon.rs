@@ -40,7 +40,7 @@ pub struct Coupon {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<CouponCurrencyOption>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 
@@ -288,12 +288,7 @@ impl<'a> ListCoupons<'a> {
         }
     }
 }
-impl Paginable for ListCoupons<'_> {
-    type O = Coupon;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Coupon::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCoupon<'a> {
@@ -333,6 +328,12 @@ impl<'a> UpdateCoupon<'a> {
     }
 }
 
+impl Paginable for ListCoupons<'_> {
+    type O = Coupon;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCouponAppliesTo {
     /// An array of Product IDs that this Coupon will apply to.

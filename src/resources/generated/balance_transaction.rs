@@ -206,12 +206,14 @@ impl<'a> ListBalanceTransactions<'a> {
         }
     }
 }
+
 impl Paginable for ListBalanceTransactions<'_> {
     type O = BalanceTransaction;
     fn set_last(&mut self, item: Self::O) {
         self.starting_after = Some(item.id());
     }
 }
+
 /// An enum representing the possible values of an `BalanceTransaction`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

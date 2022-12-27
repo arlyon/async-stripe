@@ -142,6 +142,7 @@ impl<'a> ListApplicationFees<'a> {
         }
     }
 }
+
 impl Paginable for ListApplicationFees<'_> {
     type O = ApplicationFee;
     fn set_last(&mut self, item: Self::O) {

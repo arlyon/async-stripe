@@ -185,12 +185,7 @@ impl<'a> ListPromotionCodes<'a> {
         }
     }
 }
-impl Paginable for ListPromotionCodes<'_> {
-    type O = PromotionCode;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `PromotionCode::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePromotionCode<'a> {
@@ -228,6 +223,12 @@ impl<'a> UpdatePromotionCode<'a> {
     }
 }
 
+impl Paginable for ListPromotionCodes<'_> {
+    type O = PromotionCode;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePromotionCodeRestrictions {
     /// Promotion codes defined in each available currency option.

@@ -200,7 +200,7 @@ pub struct Invoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<TaxRate>>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 
@@ -895,6 +895,7 @@ impl<'a> ListInvoices<'a> {
         }
     }
 }
+
 impl Paginable for ListInvoices<'_> {
     type O = Invoice;
     fn set_last(&mut self, item: Self::O) {
@@ -1121,13 +1122,12 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCustomerBalanceBankTr
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnections {
-
     /// The list of permissions to request.
     ///
     /// If this parameter is passed, the `payment_method` permission must be included.
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub permissions: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub permissions: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1266,8 +1266,8 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions
 impl CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
-            CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
         }
     }
 }
@@ -1307,9 +1307,9 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMe
 impl CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
-            CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }
@@ -1425,7 +1425,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanTyp
 impl CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::FixedCount => "fixed_count",
+CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallmentsPlanType::FixedCount => "fixed_count",
         }
     }
 }
@@ -1503,10 +1503,10 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialC
 impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
-            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
-            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
-            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
+CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Balances => "balances",
+CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Ownership => "ownership",
+CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::PaymentMethod => "payment_method",
+CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::Transactions => "transactions",
         }
     }
 }
@@ -1546,9 +1546,9 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificati
 impl CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
-            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
-            CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
+CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Automatic => "automatic",
+CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Instant => "instant",
+CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }

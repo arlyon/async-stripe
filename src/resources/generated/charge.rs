@@ -1590,12 +1590,7 @@ impl<'a> ListCharges<'a> {
         }
     }
 }
-impl Paginable for ListCharges<'_> {
-    type O = Charge;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Charge::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCharge<'a> {
@@ -1667,6 +1662,12 @@ impl<'a> UpdateCharge<'a> {
     }
 }
 
+impl Paginable for ListCharges<'_> {
+    type O = Charge;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateChargeRadarOptions {
     /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
@@ -2602,11 +2603,11 @@ impl std::default::Default for PaymentMethodDetailsUsBankAccountAccountType {
         Self::Checking
     }
 }
-
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DestinationSpecs {
     /// ID of an existing, connected Stripe account.
     pub account: String,
+
     /// The amount to transfer to the destination account without creating an `Application Fee` object.
     ///
     /// Cannot be combined with the `application_fee` parameter.

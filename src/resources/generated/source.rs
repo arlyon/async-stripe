@@ -1073,12 +1073,7 @@ impl<'a> ListSources<'a> {
         }
     }
 }
-impl Paginable for ListSources<'_> {
-    type O = Source;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Source::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSource<'a> {
@@ -1126,6 +1121,12 @@ impl<'a> UpdateSource<'a> {
     }
 }
 
+impl Paginable for ListSources<'_> {
+    type O = Source;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSourceReceiver {
     /// The method Stripe should use to request information needed to process a refund or mispayment.

@@ -2,35 +2,45 @@
 // This file was automatically generated.
 // ======================================
 
+
 use serde::{Deserialize, Serialize};
 
-/// The resource representing a Stripe "payment_method_details_card_installments_plan".
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsCardInstallmentsPlan {
 
+/// The resource representing a Stripe "payment_method_details_card_installments_plan".
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
+pub struct PaymentMethodDetailsCardInstallmentsPlan {
     /// For `fixed_count` installment plans, this is the number of installment payments your customer will make to their credit card.
-    pub count: Option<u64>,
+pub count: Option<u64>,
 
     /// For `fixed_count` installment plans, this is the interval between installment payments your customer will make to their credit card.
     /// One of `month`.
-    pub interval: Option<PaymentMethodDetailsCardInstallmentsPlanInterval>,
+pub interval: Option<PaymentMethodDetailsCardInstallmentsPlanInterval>,
 
     /// Type of installment plan, one of `fixed_count`.
-    #[serde(rename = "type")]
-    pub type_: PaymentMethodDetailsCardInstallmentsPlanType,
+#[serde(rename = "type")]
+pub type_: PaymentMethodDetailsCardInstallmentsPlanType,
 }
+
+
+
+
+
+
+
+
 
 /// An enum representing the possible values of an `PaymentMethodDetailsCardInstallmentsPlan`'s `interval` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodDetailsCardInstallmentsPlanInterval {
-    Month,
+Month,
+
 }
 
 impl PaymentMethodDetailsCardInstallmentsPlanInterval {
     pub fn as_str(self) -> &'static str {
         match self {
-            PaymentMethodDetailsCardInstallmentsPlanInterval::Month => "month",
+PaymentMethodDetailsCardInstallmentsPlanInterval::Month => "month",
         }
     }
 }
@@ -56,13 +66,14 @@ impl std::default::Default for PaymentMethodDetailsCardInstallmentsPlanInterval 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodDetailsCardInstallmentsPlanType {
-    FixedCount,
+FixedCount,
+
 }
 
 impl PaymentMethodDetailsCardInstallmentsPlanType {
     pub fn as_str(self) -> &'static str {
         match self {
-            PaymentMethodDetailsCardInstallmentsPlanType::FixedCount => "fixed_count",
+PaymentMethodDetailsCardInstallmentsPlanType::FixedCount => "fixed_count",
         }
     }
 }

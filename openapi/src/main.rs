@@ -13,6 +13,7 @@ mod mappings;
 mod metadata;
 mod spec;
 mod spec_fetch;
+mod templates;
 mod types;
 mod url_finder;
 mod util;

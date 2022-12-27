@@ -347,12 +347,14 @@ impl<'a> ListQuotes<'a> {
         }
     }
 }
+
 impl Paginable for ListQuotes<'_> {
     type O = Quote;
     fn set_last(&mut self, item: Self::O) {
         self.starting_after = Some(item.id());
     }
 }
+
 /// An enum representing the possible values of an `Quote`'s `collection_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

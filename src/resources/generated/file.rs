@@ -125,12 +125,14 @@ impl<'a> ListFiles<'a> {
         }
     }
 }
+
 impl Paginable for ListFiles<'_> {
     type O = File;
     fn set_last(&mut self, item: Self::O) {
         self.starting_after = Some(item.id());
     }
 }
+
 /// An enum representing the possible values of an `ListFiles`'s `purpose` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

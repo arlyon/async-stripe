@@ -563,12 +563,7 @@ impl<'a> ListOrders<'a> {
         }
     }
 }
-impl Paginable for ListOrders<'_> {
-    type O = Order;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Order::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateOrder<'a> {
@@ -664,6 +659,12 @@ impl<'a> UpdateOrder<'a> {
     }
 }
 
+impl Paginable for ListOrders<'_> {
+    type O = Order;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderAutomaticTax {
     /// Enable automatic tax calculation which will automatically compute tax rates on this order.
@@ -2327,19 +2328,18 @@ pub struct CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eu_bank_transfer: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub eu_bank_transfer: Option<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
 
     /// List of address types that should be returned in the financial_addresses response.
     ///
     /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested_address_types: Option<Vec<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub requested_address_types: Option<Vec<CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
 
     /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-    #[serde(rename = "type")]
-    pub type_: CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType,
+#[serde(rename = "type")]
+pub type_: CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2374,19 +2374,18 @@ pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransfer {
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eu_bank_transfer: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub eu_bank_transfer: Option<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
 
     /// List of address types that should be returned in the financial_addresses response.
     ///
     /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested_address_types: Option<Vec<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub requested_address_types: Option<Vec<UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
 
     /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
-    #[serde(rename = "type")]
-    pub type_: UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType,
+#[serde(rename = "type")]
+pub type_: UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2456,9 +2455,9 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPa
 impl CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
-            CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
-            CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
+CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
+CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
+CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
         }
     }
 }
@@ -2497,8 +2496,8 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTr
 impl CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
-            CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
         }
     }
 }
@@ -2580,9 +2579,9 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMeth
 impl CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
-            CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+CreateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }
@@ -2619,8 +2618,8 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMe
 impl CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod::Automatic => "automatic",
-            CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod::Manual => "manual",
+CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod::Automatic => "automatic",
+CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod::Manual => "manual",
         }
     }
 }
@@ -2656,7 +2655,7 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpaySetupFutu
 impl CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::None => "none",
+CreateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::None => "none",
         }
     }
 }
@@ -2773,8 +2772,8 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsag
 impl CreateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage::None => "none",
-            CreateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage::OffSession => "off_session",
+CreateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage::None => "none",
+CreateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage::OffSession => "off_session",
         }
     }
 }
@@ -2893,11 +2892,11 @@ impl
 {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
-            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
-            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
-            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
-            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
+CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
+CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
+CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
+CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
+CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
 }
@@ -2932,10 +2931,10 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransf
 impl CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
-            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
-            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
-            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
+CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
+CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
+CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
         }
     }
 }
@@ -2971,7 +2970,7 @@ pub enum CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingTyp
 impl CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType::BankTransfer => "bank_transfer",
+CreateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType::BankTransfer => "bank_transfer",
         }
     }
 }
@@ -3781,9 +3780,9 @@ pub enum CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBeh
 impl CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
     pub fn as_str(self) -> &'static str {
         match self {
-            CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Exclusive => "exclusive",
-            CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Inclusive => "inclusive",
-            CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Unspecified => "unspecified",
+CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Exclusive => "exclusive",
+CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Inclusive => "inclusive",
+CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Unspecified => "unspecified",
         }
     }
 }
@@ -4629,9 +4628,9 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPa
 impl UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Combined => "combined",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Interval => "interval",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule::Sporadic => "sporadic",
         }
     }
 }
@@ -4670,8 +4669,8 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTr
 impl UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Business => "business",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::Personal => "personal",
         }
     }
 }
@@ -4753,9 +4752,9 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMeth
 impl UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => "microdeposits",
         }
     }
 }
@@ -4792,8 +4791,8 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMe
 impl UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod::Automatic => "automatic",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod::Manual => "manual",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod::Automatic => "automatic",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpayCaptureMethod::Manual => "manual",
         }
     }
 }
@@ -4829,7 +4828,7 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpaySetupFutu
 impl UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::None => "none",
+UpdateOrderPaymentSettingsPaymentMethodOptionsAfterpayClearpaySetupFutureUsage::None => "none",
         }
     }
 }
@@ -4946,8 +4945,8 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsag
 impl UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage::None => "none",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage::OffSession => "off_session",
+UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage::None => "none",
+UpdateOrderPaymentSettingsPaymentMethodOptionsBancontactSetupFutureUsage::OffSession => "off_session",
         }
     }
 }
@@ -5066,11 +5065,11 @@ impl
 {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
+UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
+UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
+UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
+UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
+UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
 }
@@ -5105,10 +5104,10 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransf
 impl UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
-            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
+UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => "eu_bank_transfer",
+UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
+UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
+UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
         }
     }
 }
@@ -5144,7 +5143,7 @@ pub enum UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingTyp
 impl UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType::BankTransfer => "bank_transfer",
+UpdateOrderPaymentSettingsPaymentMethodOptionsCustomerBalanceFundingType::BankTransfer => "bank_transfer",
         }
     }
 }
@@ -5954,9 +5953,9 @@ pub enum UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBeh
 impl UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
     pub fn as_str(self) -> &'static str {
         match self {
-            UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Exclusive => "exclusive",
-            UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Inclusive => "inclusive",
-            UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Unspecified => "unspecified",
+UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Exclusive => "exclusive",
+UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Inclusive => "inclusive",
+UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Unspecified => "unspecified",
         }
     }
 }

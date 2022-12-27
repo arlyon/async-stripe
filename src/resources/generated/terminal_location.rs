@@ -21,7 +21,7 @@ pub struct TerminalLocation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub configuration_overrides: Option<String>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 

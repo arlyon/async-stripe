@@ -274,12 +274,7 @@ impl<'a> ListPayouts<'a> {
         }
     }
 }
-impl Paginable for ListPayouts<'_> {
-    type O = Payout;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Payout::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePayout<'a> {
@@ -299,6 +294,13 @@ pub struct UpdatePayout<'a> {
 impl<'a> UpdatePayout<'a> {
     pub fn new() -> Self {
         UpdatePayout { expand: Default::default(), metadata: Default::default() }
+    }
+}
+
+impl Paginable for ListPayouts<'_> {
+    type O = Payout;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }
 

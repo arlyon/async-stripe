@@ -53,7 +53,7 @@ pub struct Price {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CustomUnitAmount>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 
@@ -463,12 +463,7 @@ impl<'a> ListPrices<'a> {
         }
     }
 }
-impl Paginable for ListPrices<'_> {
-    type O = Price;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Price::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdatePrice<'a> {
@@ -538,6 +533,12 @@ impl<'a> UpdatePrice<'a> {
     }
 }
 
+impl Paginable for ListPrices<'_> {
+    type O = Price;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePriceCurrencyOptions {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.

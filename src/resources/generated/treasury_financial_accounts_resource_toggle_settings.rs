@@ -2,51 +2,59 @@
 // This file was automatically generated.
 // ======================================
 
+
 use serde::{Deserialize, Serialize};
 
-/// The resource representing a Stripe "TreasuryFinancialAccountsResourceToggleSettings".
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct TreasuryFinancialAccountsResourceToggleSettings {
 
+/// The resource representing a Stripe "TreasuryFinancialAccountsResourceToggleSettings".
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
+pub struct TreasuryFinancialAccountsResourceToggleSettings {
     /// Whether the FinancialAccount should have the Feature.
-    pub requested: bool,
+pub requested: bool,
 
     /// Whether the Feature is operational.
-    pub status: TreasuryFinancialAccountsResourceToggleSettingsStatus,
+pub status: TreasuryFinancialAccountsResourceToggleSettingsStatus,
 
     /// Additional details; includes at least one entry when the status is not `active`.
-    pub status_details: Vec<TreasuryFinancialAccountsResourceTogglesSettingStatusDetails>,
+pub status_details: Vec<TreasuryFinancialAccountsResourceTogglesSettingStatusDetails>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
 
+
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
+pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
     /// Represents the reason why the status is `pending` or `restricted`.
-    pub code: TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode,
+pub code: TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode,
 
     /// Represents what the user should do, if anything, to activate the Feature.
-    pub resolution: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution>,
+pub resolution: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution>,
 
     /// The `platform_restrictions` that are restricting this Feature.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub restriction: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub restriction: Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>,
 }
+
+
+
+
+
 
 /// An enum representing the possible values of an `TreasuryFinancialAccountsResourceToggleSettings`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TreasuryFinancialAccountsResourceToggleSettingsStatus {
-    Active,
-    Pending,
-    Restricted,
+Active,
+Pending,
+Restricted,
+
 }
 
 impl TreasuryFinancialAccountsResourceToggleSettingsStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryFinancialAccountsResourceToggleSettingsStatus::Active => "active",
-            TreasuryFinancialAccountsResourceToggleSettingsStatus::Pending => "pending",
-            TreasuryFinancialAccountsResourceToggleSettingsStatus::Restricted => "restricted",
+TreasuryFinancialAccountsResourceToggleSettingsStatus::Active => "active",
+TreasuryFinancialAccountsResourceToggleSettingsStatus::Pending => "pending",
+TreasuryFinancialAccountsResourceToggleSettingsStatus::Restricted => "restricted",
         }
     }
 }
@@ -72,29 +80,30 @@ impl std::default::Default for TreasuryFinancialAccountsResourceToggleSettingsSt
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
-    Activating,
-    CapabilityNotRequested,
-    FinancialAccountClosed,
-    RejectedOther,
-    RejectedUnsupportedBusiness,
-    RequirementsPastDue,
-    RequirementsPendingVerification,
-    RestrictedByPlatform,
-    RestrictedOther,
+Activating,
+CapabilityNotRequested,
+FinancialAccountClosed,
+RejectedOther,
+RejectedUnsupportedBusiness,
+RequirementsPastDue,
+RequirementsPendingVerification,
+RestrictedByPlatform,
+RestrictedOther,
+
 }
 
 impl TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::Activating => "activating",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::CapabilityNotRequested => "capability_not_requested",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::FinancialAccountClosed => "financial_account_closed",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RejectedOther => "rejected_other",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RejectedUnsupportedBusiness => "rejected_unsupported_business",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RequirementsPastDue => "requirements_past_due",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RequirementsPendingVerification => "requirements_pending_verification",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RestrictedByPlatform => "restricted_by_platform",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RestrictedOther => "restricted_other",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::Activating => "activating",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::CapabilityNotRequested => "capability_not_requested",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::FinancialAccountClosed => "financial_account_closed",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RejectedOther => "rejected_other",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RejectedUnsupportedBusiness => "rejected_unsupported_business",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RequirementsPastDue => "requirements_past_due",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RequirementsPendingVerification => "requirements_pending_verification",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RestrictedByPlatform => "restricted_by_platform",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::RestrictedOther => "restricted_other",
         }
     }
 }
@@ -120,17 +129,18 @@ impl std::default::Default for TreasuryFinancialAccountsResourceTogglesSettingSt
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
-    ContactStripe,
-    ProvideInformation,
-    RemoveRestriction,
+ContactStripe,
+ProvideInformation,
+RemoveRestriction,
+
 }
 
 impl TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::ContactStripe => "contact_stripe",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::ProvideInformation => "provide_information",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::RemoveRestriction => "remove_restriction",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::ContactStripe => "contact_stripe",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::ProvideInformation => "provide_information",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::RemoveRestriction => "remove_restriction",
         }
     }
 }
@@ -156,15 +166,16 @@ impl std::default::Default for TreasuryFinancialAccountsResourceTogglesSettingSt
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
-    InboundFlows,
-    OutboundFlows,
+InboundFlows,
+OutboundFlows,
+
 }
 
 impl TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction::InboundFlows => "inbound_flows",
-            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction::OutboundFlows => "outbound_flows",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction::InboundFlows => "inbound_flows",
+TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction::OutboundFlows => "outbound_flows",
         }
     }
 }

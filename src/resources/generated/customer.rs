@@ -58,7 +58,7 @@ pub struct Customer {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_source: Option<Expandable<PaymentSource>>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 
@@ -458,12 +458,7 @@ impl<'a> ListCustomers<'a> {
         }
     }
 }
-impl Paginable for ListCustomers<'_> {
-    type O = Customer;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Customer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCustomer<'a> {
@@ -603,6 +598,12 @@ impl<'a> UpdateCustomer<'a> {
     }
 }
 
+impl Paginable for ListCustomers<'_> {
+    type O = Customer;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerCashBalance {
     /// Settings controlling the behavior of the customer's cash balance,

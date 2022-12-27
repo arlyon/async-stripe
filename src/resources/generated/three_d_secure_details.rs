@@ -2,40 +2,50 @@
 // This file was automatically generated.
 // ======================================
 
+
 use serde::{Deserialize, Serialize};
 
-/// The resource representing a Stripe "three_d_secure_details".
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct ThreeDSecureDetails {
 
+/// The resource representing a Stripe "three_d_secure_details".
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
+pub struct ThreeDSecureDetails {
     /// For authenticated transactions: how the customer was authenticated by
     /// the issuing bank.
-    pub authentication_flow: Option<ThreeDSecureDetailsAuthenticationFlow>,
+pub authentication_flow: Option<ThreeDSecureDetailsAuthenticationFlow>,
 
     /// Indicates the outcome of 3D Secure authentication.
-    pub result: Option<ThreeDSecureDetailsResult>,
+pub result: Option<ThreeDSecureDetailsResult>,
 
     /// Additional information about why 3D Secure succeeded or failed based
     /// on the `result`.
-    pub result_reason: Option<ThreeDSecureDetailsResultReason>,
+pub result_reason: Option<ThreeDSecureDetailsResultReason>,
 
     /// The version of 3D Secure that was used.
-    pub version: Option<ThreeDSecureDetailsVersion>,
+pub version: Option<ThreeDSecureDetailsVersion>,
 }
+
+
+
+
+
+
+
+
 
 /// An enum representing the possible values of an `ThreeDSecureDetails`'s `authentication_flow` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum ThreeDSecureDetailsAuthenticationFlow {
-    Challenge,
-    Frictionless,
+Challenge,
+Frictionless,
+
 }
 
 impl ThreeDSecureDetailsAuthenticationFlow {
     pub fn as_str(self) -> &'static str {
         match self {
-            ThreeDSecureDetailsAuthenticationFlow::Challenge => "challenge",
-            ThreeDSecureDetailsAuthenticationFlow::Frictionless => "frictionless",
+ThreeDSecureDetailsAuthenticationFlow::Challenge => "challenge",
+ThreeDSecureDetailsAuthenticationFlow::Frictionless => "frictionless",
         }
     }
 }
@@ -61,23 +71,24 @@ impl std::default::Default for ThreeDSecureDetailsAuthenticationFlow {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum ThreeDSecureDetailsResult {
-    AttemptAcknowledged,
-    Authenticated,
-    Exempted,
-    Failed,
-    NotSupported,
-    ProcessingError,
+AttemptAcknowledged,
+Authenticated,
+Exempted,
+Failed,
+NotSupported,
+ProcessingError,
+
 }
 
 impl ThreeDSecureDetailsResult {
     pub fn as_str(self) -> &'static str {
         match self {
-            ThreeDSecureDetailsResult::AttemptAcknowledged => "attempt_acknowledged",
-            ThreeDSecureDetailsResult::Authenticated => "authenticated",
-            ThreeDSecureDetailsResult::Exempted => "exempted",
-            ThreeDSecureDetailsResult::Failed => "failed",
-            ThreeDSecureDetailsResult::NotSupported => "not_supported",
-            ThreeDSecureDetailsResult::ProcessingError => "processing_error",
+ThreeDSecureDetailsResult::AttemptAcknowledged => "attempt_acknowledged",
+ThreeDSecureDetailsResult::Authenticated => "authenticated",
+ThreeDSecureDetailsResult::Exempted => "exempted",
+ThreeDSecureDetailsResult::Failed => "failed",
+ThreeDSecureDetailsResult::NotSupported => "not_supported",
+ThreeDSecureDetailsResult::ProcessingError => "processing_error",
         }
     }
 }
@@ -103,25 +114,26 @@ impl std::default::Default for ThreeDSecureDetailsResult {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum ThreeDSecureDetailsResultReason {
-    Abandoned,
-    Bypassed,
-    Canceled,
-    CardNotEnrolled,
-    NetworkNotSupported,
-    ProtocolError,
-    Rejected,
+Abandoned,
+Bypassed,
+Canceled,
+CardNotEnrolled,
+NetworkNotSupported,
+ProtocolError,
+Rejected,
+
 }
 
 impl ThreeDSecureDetailsResultReason {
     pub fn as_str(self) -> &'static str {
         match self {
-            ThreeDSecureDetailsResultReason::Abandoned => "abandoned",
-            ThreeDSecureDetailsResultReason::Bypassed => "bypassed",
-            ThreeDSecureDetailsResultReason::Canceled => "canceled",
-            ThreeDSecureDetailsResultReason::CardNotEnrolled => "card_not_enrolled",
-            ThreeDSecureDetailsResultReason::NetworkNotSupported => "network_not_supported",
-            ThreeDSecureDetailsResultReason::ProtocolError => "protocol_error",
-            ThreeDSecureDetailsResultReason::Rejected => "rejected",
+ThreeDSecureDetailsResultReason::Abandoned => "abandoned",
+ThreeDSecureDetailsResultReason::Bypassed => "bypassed",
+ThreeDSecureDetailsResultReason::Canceled => "canceled",
+ThreeDSecureDetailsResultReason::CardNotEnrolled => "card_not_enrolled",
+ThreeDSecureDetailsResultReason::NetworkNotSupported => "network_not_supported",
+ThreeDSecureDetailsResultReason::ProtocolError => "protocol_error",
+ThreeDSecureDetailsResultReason::Rejected => "rejected",
         }
     }
 }
@@ -147,20 +159,21 @@ impl std::default::Default for ThreeDSecureDetailsResultReason {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum ThreeDSecureDetailsVersion {
-    #[serde(rename = "1.0.2")]
-    V1_0_2,
-    #[serde(rename = "2.1.0")]
-    V2_1_0,
-    #[serde(rename = "2.2.0")]
-    V2_2_0,
+#[serde(rename = "1.0.2")]
+V1_0_2,
+#[serde(rename = "2.1.0")]
+V2_1_0,
+#[serde(rename = "2.2.0")]
+V2_2_0,
+
 }
 
 impl ThreeDSecureDetailsVersion {
     pub fn as_str(self) -> &'static str {
         match self {
-            ThreeDSecureDetailsVersion::V1_0_2 => "1.0.2",
-            ThreeDSecureDetailsVersion::V2_1_0 => "2.1.0",
-            ThreeDSecureDetailsVersion::V2_2_0 => "2.2.0",
+ThreeDSecureDetailsVersion::V1_0_2 => "1.0.2",
+ThreeDSecureDetailsVersion::V2_1_0 => "2.1.0",
+ThreeDSecureDetailsVersion::V2_2_0 => "2.2.0",
         }
     }
 }

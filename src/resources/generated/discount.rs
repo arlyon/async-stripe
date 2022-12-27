@@ -29,7 +29,7 @@ pub struct Discount {
     /// The ID of the customer associated with this discount.
     pub customer: Option<Expandable<Customer>>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 

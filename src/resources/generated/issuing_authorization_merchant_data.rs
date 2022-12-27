@@ -2,35 +2,45 @@
 // This file was automatically generated.
 // ======================================
 
+
 use serde::{Deserialize, Serialize};
 
-/// The resource representing a Stripe "IssuingAuthorizationMerchantData".
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct MerchantData {
 
+/// The resource representing a Stripe "IssuingAuthorizationMerchantData".
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
+pub struct MerchantData {
     /// A categorization of the seller's type of business.
     ///
     /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
-    pub category: String,
+pub category: String,
 
     /// The merchant category code for the seller’s business.
-    pub category_code: String,
+pub category_code: String,
 
     /// City where the seller is located.
-    pub city: Option<String>,
+pub city: Option<String>,
 
     /// Country where the seller is located.
-    pub country: Option<String>,
+pub country: Option<String>,
 
     /// Name of the seller.
-    pub name: Option<String>,
+pub name: Option<String>,
 
     /// Identifier assigned to the seller by the card brand.
-    pub network_id: String,
+pub network_id: String,
 
     /// Postal code where the seller is located.
-    pub postal_code: Option<String>,
+pub postal_code: Option<String>,
 
     /// State where the seller is located.
-    pub state: Option<String>,
+pub state: Option<String>,
 }
+
+
+
+
+
+
+
+
+

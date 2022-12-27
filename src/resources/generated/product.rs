@@ -49,7 +49,7 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_price: Option<Expandable<Price>>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 
@@ -365,12 +365,7 @@ impl<'a> ListProducts<'a> {
         }
     }
 }
-impl Paginable for ListProducts<'_> {
-    type O = Product;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Product::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateProduct<'a> {
@@ -483,6 +478,12 @@ impl<'a> UpdateProduct<'a> {
     }
 }
 
+impl Paginable for ListProducts<'_> {
+    type O = Product;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.

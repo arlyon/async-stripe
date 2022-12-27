@@ -85,6 +85,7 @@ impl<'a> ListTaxCodes<'a> {
         }
     }
 }
+
 impl Paginable for ListTaxCodes<'_> {
     type O = TaxCode;
     fn set_last(&mut self, item: Self::O) {

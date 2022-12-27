@@ -39,7 +39,7 @@ pub struct Sku {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 
@@ -300,12 +300,7 @@ impl<'a> ListSkus<'a> {
         }
     }
 }
-impl Paginable for ListSkus<'_> {
-    type O = Sku;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Sku::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSku<'a> {
@@ -374,5 +369,12 @@ impl<'a> UpdateSku<'a> {
             price: Default::default(),
             product: Default::default(),
         }
+    }
+}
+
+impl Paginable for ListSkus<'_> {
+    type O = Sku;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }

@@ -5,58 +5,61 @@
 use crate::ids::{TreasuryDebitReversalId};
 use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Currency, TreasuryTransaction};
+
 use serde::{Deserialize, Serialize};
 
+
 /// The resource representing a Stripe "TreasuryReceivedDebitsResourceDebitReversal".
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct TreasuryDebitReversal {
     /// Unique identifier for the object.
-    pub id: TreasuryDebitReversalId,
+pub id: TreasuryDebitReversalId,
 
     /// Amount (in cents) transferred.
-    pub amount: i64,
+pub amount: i64,
 
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub created: Timestamp,
+pub created: Timestamp,
 
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: Currency,
+pub currency: Currency,
 
     /// The FinancialAccount to reverse funds from.
-    pub financial_account: Option<String>,
+pub financial_account: Option<String>,
 
     /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
-    pub hosted_regulatory_receipt_url: Option<String>,
+pub hosted_regulatory_receipt_url: Option<String>,
 
     /// Other flows linked to a DebitReversal.
-    pub linked_flows: Option<TreasuryReceivedDebitsResourceDebitReversalLinkedFlows>,
+pub linked_flows: Option<TreasuryReceivedDebitsResourceDebitReversalLinkedFlows>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: bool,
+pub livemode: bool,
 
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Metadata,
+pub metadata: Metadata,
 
     /// The rails used to reverse the funds.
-    pub network: TreasuryDebitReversalNetwork,
+pub network: TreasuryDebitReversalNetwork,
 
     /// The ReceivedDebit being reversed.
-    pub received_debit: String,
+pub received_debit: String,
 
     /// Status of the DebitReversal.
-    pub status: TreasuryDebitReversalStatus,
+pub status: TreasuryDebitReversalStatus,
 
-    pub status_transitions: TreasuryReceivedDebitsResourceStatusTransitions,
+pub status_transitions: TreasuryReceivedDebitsResourceStatusTransitions,
 
     /// The Transaction associated with this object.
-    pub transaction: Option<Expandable<TreasuryTransaction>>,
+pub transaction: Option<Expandable<TreasuryTransaction>>,
 }
+
 
 impl Object for TreasuryDebitReversal {
     type Id = TreasuryDebitReversalId;
@@ -68,33 +71,37 @@ impl Object for TreasuryDebitReversal {
     }
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct TreasuryReceivedDebitsResourceDebitReversalLinkedFlows {
-
     /// Set if there is an Issuing dispute associated with the DebitReversal.
-    pub issuing_dispute: Option<String>,
+pub issuing_dispute: Option<String>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct TreasuryReceivedDebitsResourceStatusTransitions {
-
     /// Timestamp describing when the DebitReversal changed status to `completed`.
-    pub completed_at: Option<Timestamp>,
+pub completed_at: Option<Timestamp>,
 }
+
+
+
+
+
 
 /// An enum representing the possible values of an `TreasuryDebitReversal`'s `network` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TreasuryDebitReversalNetwork {
-    Ach,
-    Card,
+Ach,
+Card,
+
 }
 
 impl TreasuryDebitReversalNetwork {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryDebitReversalNetwork::Ach => "ach",
-            TreasuryDebitReversalNetwork::Card => "card",
+TreasuryDebitReversalNetwork::Ach => "ach",
+TreasuryDebitReversalNetwork::Card => "card",
         }
     }
 }
@@ -120,17 +127,18 @@ impl std::default::Default for TreasuryDebitReversalNetwork {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum TreasuryDebitReversalStatus {
-    Failed,
-    Processing,
-    Succeeded,
+Failed,
+Processing,
+Succeeded,
+
 }
 
 impl TreasuryDebitReversalStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            TreasuryDebitReversalStatus::Failed => "failed",
-            TreasuryDebitReversalStatus::Processing => "processing",
-            TreasuryDebitReversalStatus::Succeeded => "succeeded",
+TreasuryDebitReversalStatus::Failed => "failed",
+TreasuryDebitReversalStatus::Processing => "processing",
+TreasuryDebitReversalStatus::Succeeded => "succeeded",
         }
     }
 }

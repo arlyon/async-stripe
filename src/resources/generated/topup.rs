@@ -166,12 +166,7 @@ impl<'a> ListTopups<'a> {
         }
     }
 }
-impl Paginable for ListTopups<'_> {
-    type O = Topup;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Topup::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTopup<'a> {
@@ -201,6 +196,13 @@ impl<'a> UpdateTopup<'a> {
             expand: Default::default(),
             metadata: Default::default(),
         }
+    }
+}
+
+impl Paginable for ListTopups<'_> {
+    type O = Topup;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }
 

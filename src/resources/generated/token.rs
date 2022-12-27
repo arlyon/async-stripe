@@ -449,23 +449,34 @@ pub enum CreateTokenCardUnion {
 pub struct CreditCardSpecs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_city: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_country: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line1: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_line2: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_state: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address_zip: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<String>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cvc: Option<String>,
+
     pub exp_month: String,
+
     pub exp_year: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+
     pub number: String,
 }

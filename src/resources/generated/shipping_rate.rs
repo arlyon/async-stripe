@@ -277,12 +277,7 @@ impl<'a> ListShippingRates<'a> {
         }
     }
 }
-impl Paginable for ListShippingRates<'_> {
-    type O = ShippingRate;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `ShippingRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateShippingRate<'a> {
@@ -329,6 +324,12 @@ impl<'a> UpdateShippingRate<'a> {
     }
 }
 
+impl Paginable for ListShippingRates<'_> {
+    type O = ShippingRate;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range.

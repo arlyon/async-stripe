@@ -317,12 +317,14 @@ impl<'a> ListSetupAttempts<'a> {
         }
     }
 }
+
 impl Paginable for ListSetupAttempts<'_> {
     type O = SetupAttempt;
     fn set_last(&mut self, item: Self::O) {
         self.starting_after = Some(item.id());
     }
 }
+
 /// An enum representing the possible values of an `SetupAttempt`'s `flow_directions` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

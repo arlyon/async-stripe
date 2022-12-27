@@ -271,12 +271,14 @@ impl<'a> ListDisputes<'a> {
         }
     }
 }
+
 impl Paginable for ListDisputes<'_> {
     type O = Dispute;
     fn set_last(&mut self, item: Self::O) {
         self.starting_after = Some(item.id());
     }
 }
+
 /// An enum representing the possible values of an `Dispute`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

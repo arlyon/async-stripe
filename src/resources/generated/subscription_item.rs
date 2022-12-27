@@ -27,7 +27,7 @@ pub struct SubscriptionItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<Timestamp>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 
@@ -250,12 +250,7 @@ impl<'a> ListSubscriptionItems<'a> {
         }
     }
 }
-impl Paginable for ListSubscriptionItems<'_> {
-    type O = SubscriptionItem;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `SubscriptionItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionItem<'a> {
@@ -351,6 +346,12 @@ impl<'a> UpdateSubscriptionItem<'a> {
     }
 }
 
+impl Paginable for ListSubscriptionItems<'_> {
+    type O = SubscriptionItem;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.

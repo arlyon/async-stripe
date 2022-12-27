@@ -159,14 +159,14 @@ pub struct CreateTaxRate<'a> {
 }
 
 impl<'a> CreateTaxRate<'a> {
-    pub fn new(display_name: &'a str, percentage: f64) -> Self {
+    pub fn new(display_name: &'a str, inclusive: bool, percentage: f64) -> Self {
         CreateTaxRate {
             active: Default::default(),
             country: Default::default(),
             description: Default::default(),
             display_name,
             expand: Default::default(),
-            inclusive: Default::default(),
+            inclusive,
             jurisdiction: Default::default(),
             metadata: Default::default(),
             percentage,
@@ -229,12 +229,7 @@ impl<'a> ListTaxRates<'a> {
         }
     }
 }
-impl Paginable for ListTaxRates<'_> {
-    type O = TaxRate;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `TaxRate::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTaxRate<'a> {
@@ -301,6 +296,13 @@ impl<'a> UpdateTaxRate<'a> {
             state: Default::default(),
             tax_type: Default::default(),
         }
+    }
+}
+
+impl Paginable for ListTaxRates<'_> {
+    type O = TaxRate;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }
 

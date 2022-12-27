@@ -245,12 +245,7 @@ impl<'a> ListTransfers<'a> {
         }
     }
 }
-impl Paginable for ListTransfers<'_> {
-    type O = Transfer;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `Transfer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateTransfer<'a> {
@@ -280,6 +275,13 @@ impl<'a> UpdateTransfer<'a> {
             expand: Default::default(),
             metadata: Default::default(),
         }
+    }
+}
+
+impl Paginable for ListTransfers<'_> {
+    type O = Transfer;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
     }
 }
 

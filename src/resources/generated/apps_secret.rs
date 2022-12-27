@@ -4,37 +4,40 @@
 
 use crate::ids::{AppsSecretId};
 use crate::params::{Object, Timestamp};
+
 use serde::{Deserialize, Serialize};
 
+
 /// The resource representing a Stripe "SecretServiceResourceSecret".
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct AppsSecret {
     /// Unique identifier for the object.
-    pub id: AppsSecretId,
+pub id: AppsSecretId,
 
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
-    pub created: Timestamp,
+pub created: Timestamp,
 
     /// If true, indicates that this secret has been deleted.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub deleted: Option<bool>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub deleted: Option<bool>,
 
     /// The Unix timestamp for the expiry time of the secret, after which the secret deletes.
-    pub expires_at: Option<Timestamp>,
+pub expires_at: Option<Timestamp>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: bool,
+pub livemode: bool,
 
     /// A name for the secret that's unique within the scope.
-    pub name: String,
+pub name: String,
 
     /// The plaintext secret value to be stored.
-    pub payload: Option<String>,
+pub payload: Option<String>,
 
-    pub scope: SecretServiceResourceScope,
+pub scope: SecretServiceResourceScope,
 }
+
 
 impl Object for AppsSecret {
     type Id = AppsSecretId;
@@ -46,31 +49,36 @@ impl Object for AppsSecret {
     }
 }
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone,Debug,Default,Deserialize,Serialize)]
 pub struct SecretServiceResourceScope {
-
     /// The secret scope type.
-    #[serde(rename = "type")]
-    pub type_: SecretServiceResourceScopeType,
+#[serde(rename = "type")]
+pub type_: SecretServiceResourceScopeType,
 
     /// The user ID, if type is set to "user".
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
+#[serde(skip_serializing_if = "Option::is_none")]
+pub user: Option<String>,
 }
+
+
+
+
+
 
 /// An enum representing the possible values of an `SecretServiceResourceScope`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum SecretServiceResourceScopeType {
-    Account,
-    User,
+Account,
+User,
+
 }
 
 impl SecretServiceResourceScopeType {
     pub fn as_str(self) -> &'static str {
         match self {
-            SecretServiceResourceScopeType::Account => "account",
-            SecretServiceResourceScopeType::User => "user",
+SecretServiceResourceScopeType::Account => "account",
+SecretServiceResourceScopeType::User => "user",
         }
     }
 }

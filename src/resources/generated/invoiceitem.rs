@@ -44,7 +44,7 @@ pub struct InvoiceItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<Timestamp>,
 
-    // Always true for a deleted object
+    /// Always true for a deleted object.
     #[serde(default)]
     pub deleted: bool,
 
@@ -382,12 +382,7 @@ impl<'a> ListInvoiceItems<'a> {
         }
     }
 }
-impl Paginable for ListInvoiceItems<'_> {
-    type O = InvoiceItem;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `InvoiceItem::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateInvoiceItem<'a> {
@@ -503,6 +498,12 @@ impl<'a> UpdateInvoiceItem<'a> {
     }
 }
 
+impl Paginable for ListInvoiceItems<'_> {
+    type O = InvoiceItem;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceItemDiscounts {
     /// ID of the coupon to create a new discount for.

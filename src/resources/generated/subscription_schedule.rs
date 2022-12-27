@@ -463,12 +463,7 @@ impl<'a> ListSubscriptionSchedules<'a> {
         }
     }
 }
-impl Paginable for ListSubscriptionSchedules<'_> {
-    type O = SubscriptionSchedule;
-    fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+
 /// The parameters for `SubscriptionSchedule::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateSubscriptionSchedule<'a> {
@@ -523,6 +518,12 @@ impl<'a> UpdateSubscriptionSchedule<'a> {
     }
 }
 
+impl Paginable for ListSubscriptionSchedules<'_> {
+    type O = SubscriptionSchedule;
+    fn set_last(&mut self, item: Self::O) {
+        self.starting_after = Some(item.id());
+    }
+}
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionSchedulePhases {
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.

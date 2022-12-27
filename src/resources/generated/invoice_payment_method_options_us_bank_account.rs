@@ -37,9 +37,9 @@ pub enum InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions
 impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
     pub fn as_str(self) -> &'static str {
         match self {
-            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::Balances => "balances",
-            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::PaymentMethod => "payment_method",
-            InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::Transactions => "transactions",
+InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::Balances => "balances",
+InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::PaymentMethod => "payment_method",
+InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::Transactions => "transactions",
         }
     }
 }

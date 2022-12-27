@@ -152,6 +152,7 @@ impl<'a> ListEvents<'a> {
         }
     }
 }
+
 impl Paginable for ListEvents<'_> {
     type O = Event;
     fn set_last(&mut self, item: Self::O) {

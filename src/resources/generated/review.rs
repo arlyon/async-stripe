@@ -164,12 +164,14 @@ impl<'a> ListReviews<'a> {
         }
     }
 }
+
 impl Paginable for ListReviews<'_> {
     type O = Review;
     fn set_last(&mut self, item: Self::O) {
         self.starting_after = Some(item.id());
     }
 }
+
 /// An enum representing the possible values of an `Review`'s `closed_reason` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
