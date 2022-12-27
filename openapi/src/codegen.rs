@@ -398,6 +398,14 @@ pub fn gen_inferred_params(
                 initializer.rust_type
             };
             let mut struct_field = StructField::new(param_rename, &rust_type).required(required);
+
+            // Special-case `bool` to maintain behavior treating boolean types as not
+            // required in the constructor. TODO: should be based on whether implements Default
+            // or something like that
+            if rust_type == "bool" {
+                struct_field = struct_field.required(false);
+            }
+
             if let Some(skip_ser) = initializer.skip_serializing {
                 struct_field = struct_field.skip_serializing(skip_ser);
             } else if rust_type.starts_with("Option<") {
