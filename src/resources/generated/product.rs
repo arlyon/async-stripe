@@ -2,14 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{ProductId, TaxCodeId};
-use crate::params::{
-    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-};
-use crate::resources::{Currency, PackageDimensions, Price, TaxCode, UpTo};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
+use crate::resources::{Currency, Price, TaxCode, UpTo};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Product".
 ///
@@ -102,9 +99,9 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<ProductType>,
 
-    /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
+    /// A label that represents units of this product.
     ///
-    /// When set, this will be included in associated invoice line item descriptions.
+    /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
 
@@ -120,12 +117,14 @@ pub struct Product {
 }
 
 impl Product {
+
     /// Returns a list of your products.
     ///
     /// The products are returned sorted by creation date, with the most recently created products appearing first.
-    pub fn list(client: &Client, params: &ListProducts<'_>) -> Response<List<Product>> {
-        client.get_query("/products", &params)
-    }
+pub fn list(client: &Client, params: &ListProducts<'_>) -> Response<List<Product>> {
+   client.get_query("/products", &params)
+}
+
 
     /// Creates a new product object.
     pub fn create(client: &Client, params: CreateProduct<'_>) -> Response<Product> {
@@ -165,9 +164,26 @@ impl Object for Product {
     }
 }
 
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PackageDimensions {
+
+    /// Height, in inches.
+    pub height: f64,
+
+    /// Length, in inches.
+    pub length: f64,
+
+    /// Weight, in ounces.
+    pub weight: f64,
+
+    /// Width, in inches.
+    pub width: f64,
+}
+
 /// The parameters for `Product::create`.
 #[derive(Clone, Debug, Serialize)]
 pub struct CreateProduct<'a> {
+
     /// Whether the product is currently available for purchase.
     ///
     /// Defaults to `true`.
@@ -258,9 +274,9 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<ProductType>,
 
-    /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
+    /// A label that represents units of this product.
     ///
-    /// When set, this will be included in associated invoice line item descriptions.
+    /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<&'a str>,
 
@@ -297,6 +313,7 @@ impl<'a> CreateProduct<'a> {
 /// The parameters for `Product::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListProducts<'a> {
+
     /// Only return products that are active or inactive (e.g., pass `false` to list all inactive products).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -368,12 +385,12 @@ impl<'a> ListProducts<'a> {
 impl Paginable for ListProducts<'_> {
     type O = Product;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `Product::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateProduct<'a> {
+
     /// Whether the product is available for purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
@@ -448,9 +465,9 @@ pub struct UpdateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 
-    /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
+    /// A label that represents units of this product.
     ///
-    /// When set, this will be included in associated invoice line item descriptions.
+    /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     /// May only be set if `type=service`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<&'a str>,
@@ -485,6 +502,7 @@ impl<'a> UpdateProduct<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceData {
+
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -522,6 +540,7 @@ pub struct CreateProductDefaultPriceData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceDataCurrencyOptions {
+
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount>,
@@ -553,6 +572,7 @@ pub struct CreateProductDefaultPriceDataCurrencyOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceDataRecurring {
+
     /// Specifies billing frequency.
     ///
     /// Either `day`, `week`, `month` or `year`.
@@ -568,6 +588,7 @@ pub struct CreateProductDefaultPriceDataRecurring {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
+
     /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
 
@@ -588,6 +609,7 @@ pub struct CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers {
+
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,

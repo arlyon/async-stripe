@@ -2,12 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{ChargeId, DisputeId, PaymentIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{BalanceTransaction, Charge, Currency, File, PaymentIntent};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Dispute".
 ///
@@ -75,10 +74,12 @@ pub struct Dispute {
 }
 
 impl Dispute {
+
     /// Returns a list of your disputes.
-    pub fn list(client: &Client, params: &ListDisputes<'_>) -> Response<List<Dispute>> {
-        client.get_query("/disputes", &params)
-    }
+pub fn list(client: &Client, params: &ListDisputes<'_>) -> Response<List<Dispute>> {
+   client.get_query("/disputes", &params)
+}
+
 
     /// Retrieves the dispute with the given ID.
     pub fn retrieve(client: &Client, id: &DisputeId, expand: &[&str]) -> Response<Dispute> {
@@ -98,6 +99,7 @@ impl Object for Dispute {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DisputeEvidence {
+
     /// Any server or activity logs showing proof that the customer accessed or downloaded the purchased digital product.
     ///
     /// This information should include IP addresses, corresponding timestamps, and any detailed recorded activity.
@@ -199,6 +201,7 @@ pub struct DisputeEvidence {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct DisputeEvidenceDetails {
+
     /// Date by which evidence must be submitted in order to successfully challenge dispute.
     ///
     /// Will be null if the customer's bank or credit card company doesn't allow a response for this particular dispute.
@@ -222,6 +225,7 @@ pub struct DisputeEvidenceDetails {
 /// The parameters for `Dispute::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListDisputes<'a> {
+
     /// Only return disputes associated to the charge specified by this charge ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub charge: Option<ChargeId>,
@@ -274,9 +278,8 @@ impl<'a> ListDisputes<'a> {
 impl Paginable for ListDisputes<'_> {
     type O = Dispute;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// An enum representing the possible values of an `Dispute`'s `status` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]

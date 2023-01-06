@@ -2,17 +2,11 @@
 // This file was automatically generated.
 // ======================================
 
-use serde::{Deserialize, Serialize};
-
 use crate::client::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PaymentMethodId, PaymentSourceId, PromotionCodeId};
-use crate::params::{
-    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
-};
-use crate::resources::{
-    Address, CashBalance, Currency, Discount, InvoiceSettingRenderingOptions, PaymentMethod,
-    PaymentSource, PaymentSourceParams, Shipping, Subscription, TaxId, TestHelpersTestClock,
-};
+use crate::params::{Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
+use crate::resources::{Address, CashBalance, Currency, Discount, InvoiceSettingRenderingOptions, PaymentMethod, PaymentSource, PaymentSourceParams, Shipping, Subscription, TaxId, TestHelpersTestClock};
+use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "Customer".
 ///
@@ -159,12 +153,14 @@ pub struct Customer {
 }
 
 impl Customer {
+
     /// Returns a list of your customers.
     ///
     /// The customers are returned sorted by creation date, with the most recent customers appearing first.
-    pub fn list(client: &Client, params: &ListCustomers<'_>) -> Response<List<Customer>> {
-        client.get_query("/customers", &params)
-    }
+pub fn list(client: &Client, params: &ListCustomers<'_>) -> Response<List<Customer>> {
+   client.get_query("/customers", &params)
+}
+
 
     /// Creates a new customer object.
     pub fn create(client: &Client, params: CreateCustomer<'_>) -> Response<Customer> {
@@ -183,11 +179,7 @@ impl Customer {
     /// When you update a customer to a new valid card source by passing the **source** parameter: for each of the customer’s current subscriptions, if the subscription bills automatically and is in the `past_due` state, then the latest open invoice for the subscription with automatic collection enabled will be retried.
     /// This retry will not count as an automatic retry, and will not affect the next regularly scheduled payment for the invoice.
     /// Changing the **default_source** for a customer will not trigger this behavior.  This request accepts mostly the same arguments as the customer creation call.
-    pub fn update(
-        client: &Client,
-        id: &CustomerId,
-        params: UpdateCustomer<'_>,
-    ) -> Response<Customer> {
+    pub fn update(client: &Client, id: &CustomerId, params: UpdateCustomer<'_>) -> Response<Customer> {
         client.post_form(&format!("/customers/{}", id), &params)
     }
 
@@ -212,6 +204,7 @@ impl Object for Customer {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerTax {
+
     /// Surfaces if automatic tax computation is possible given the current customer location information.
     pub automatic_tax: CustomerTaxAutomaticTax,
 
@@ -224,6 +217,7 @@ pub struct CustomerTax {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerTaxLocation {
+
     /// The customer's country as identified by Stripe Tax.
     pub country: String,
 
@@ -236,6 +230,7 @@ pub struct CustomerTaxLocation {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomerSetting {
+
     /// Default custom fields to be displayed on invoices for this customer.
     pub custom_fields: Option<Vec<InvoiceSettingCustomField>>,
 
@@ -251,6 +246,7 @@ pub struct InvoiceSettingCustomerSetting {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct InvoiceSettingCustomField {
+
     /// The name of the custom field.
     pub name: String,
 
@@ -261,6 +257,7 @@ pub struct InvoiceSettingCustomField {
 /// The parameters for `Customer::create`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CreateCustomer<'a> {
+
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -405,6 +402,7 @@ impl<'a> CreateCustomer<'a> {
 /// The parameters for `Customer::list`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct ListCustomers<'a> {
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub created: Option<RangeQuery<Timestamp>>,
 
@@ -461,12 +459,12 @@ impl<'a> ListCustomers<'a> {
 impl Paginable for ListCustomers<'_> {
     type O = Customer;
     fn set_last(&mut self, item: Self::O) {
-        self.starting_after = Some(item.id());
-    }
-}
+                self.starting_after = Some(item.id());
+            }}
 /// The parameters for `Customer::update`.
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct UpdateCustomer<'a> {
+
     /// The customer's address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<Address>,
@@ -605,6 +603,7 @@ impl<'a> UpdateCustomer<'a> {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerCashBalance {
+
     /// Settings controlling the behavior of the customer's cash balance,
     /// such as reconciliation of funds received.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -613,6 +612,7 @@ pub struct CreateCustomerCashBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerShipping {
+
     /// Customer shipping address.
     pub address: CreateCustomerShippingAddress,
 
@@ -626,6 +626,7 @@ pub struct CreateCustomerShipping {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerTax {
+
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     ///
     /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
@@ -636,6 +637,7 @@ pub struct CreateCustomerTax {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettings {
+
     /// Default custom fields to be displayed on invoices for this customer.
     ///
     /// When updating, pass an empty string to remove previously-defined fields.
@@ -657,6 +659,7 @@ pub struct CustomerInvoiceSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxIdData {
+
     /// Type of the tax ID, one of `ae_trn`, `au_abn`, `au_arn`, `bg_uic`, `br_cnpj`, `br_cpf`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `ch_vat`, `cl_tin`, `eg_tin`, `es_cif`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `hk_br`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kr_brn`, `li_uid`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `no_vat`, `nz_gst`, `ph_tin`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `th_vat`, `tr_tin`, `tw_vat`, `ua_vat`, `us_ein`, or `za_vat`.
     #[serde(rename = "type")]
     pub type_: TaxIdType,
@@ -667,6 +670,7 @@ pub struct TaxIdData {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerCashBalance {
+
     /// Settings controlling the behavior of the customer's cash balance,
     /// such as reconciliation of funds received.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -675,6 +679,7 @@ pub struct UpdateCustomerCashBalance {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerShipping {
+
     /// Customer shipping address.
     pub address: UpdateCustomerShippingAddress,
 
@@ -688,6 +693,7 @@ pub struct UpdateCustomerShipping {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerTax {
+
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     ///
     /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
@@ -698,9 +704,10 @@ pub struct UpdateCustomerTax {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerCashBalanceSettings {
+
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     ///
-    /// Valid options are `automatic` or `manual`.
+    /// Valid options are `automatic`, `manual`, or `merchant_default`.
     /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<CreateCustomerCashBalanceSettingsReconciliationMode>,
@@ -708,6 +715,7 @@ pub struct CreateCustomerCashBalanceSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCustomerShippingAddress {
+
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
@@ -735,6 +743,7 @@ pub struct CreateCustomerShippingAddress {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettingsCustomFields {
+
     /// The name of the custom field.
     ///
     /// This may be up to 30 characters.
@@ -748,6 +757,7 @@ pub struct CustomerInvoiceSettingsCustomFields {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerInvoiceSettingsRenderingOptions {
+
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     ///
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -759,9 +769,10 @@ pub struct CustomerInvoiceSettingsRenderingOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerCashBalanceSettings {
+
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     ///
-    /// Valid options are `automatic` or `manual`.
+    /// Valid options are `automatic`, `manual`, or `merchant_default`.
     /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<UpdateCustomerCashBalanceSettingsReconciliationMode>,
@@ -769,6 +780,7 @@ pub struct UpdateCustomerCashBalanceSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateCustomerShippingAddress {
+
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub city: Option<String>,
@@ -800,6 +812,7 @@ pub struct UpdateCustomerShippingAddress {
 pub enum CreateCustomerCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
+    MerchantDefault,
 }
 
 impl CreateCustomerCashBalanceSettingsReconciliationMode {
@@ -807,6 +820,7 @@ impl CreateCustomerCashBalanceSettingsReconciliationMode {
         match self {
             CreateCustomerCashBalanceSettingsReconciliationMode::Automatic => "automatic",
             CreateCustomerCashBalanceSettingsReconciliationMode::Manual => "manual",
+            CreateCustomerCashBalanceSettingsReconciliationMode::MerchantDefault => "merchant_default",
         }
     }
 }
@@ -840,9 +854,7 @@ impl CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     pub fn as_str(self) -> &'static str {
         match self {
             CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay::ExcludeTax => "exclude_tax",
-            CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay::IncludeInclusiveTax => {
-                "include_inclusive_tax"
-            }
+            CustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay::IncludeInclusiveTax => "include_inclusive_tax",
         }
     }
 }
@@ -1150,6 +1162,7 @@ impl std::default::Default for TaxIdType {
 pub enum UpdateCustomerCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
+    MerchantDefault,
 }
 
 impl UpdateCustomerCashBalanceSettingsReconciliationMode {
@@ -1157,6 +1170,7 @@ impl UpdateCustomerCashBalanceSettingsReconciliationMode {
         match self {
             UpdateCustomerCashBalanceSettingsReconciliationMode::Automatic => "automatic",
             UpdateCustomerCashBalanceSettingsReconciliationMode::Manual => "manual",
+            UpdateCustomerCashBalanceSettingsReconciliationMode::MerchantDefault => "merchant_default",
         }
     }
 }
