@@ -48,6 +48,8 @@ pub enum ErrorType {
     Authentication,
     #[serde(rename = "card_error")]
     Card,
+    #[serde(rename = "idempotency_error")]
+    IdempotencyError,
     #[serde(rename = "invalid_request_error")]
     InvalidRequest,
     #[serde(rename = "rate_limit_error")]
