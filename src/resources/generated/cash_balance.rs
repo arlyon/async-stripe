@@ -36,6 +36,9 @@ impl Object for CashBalance {
 pub struct CustomerBalanceCustomerBalanceSettings {
     /// The configuration for how funds that land in the customer cash balance are reconciled.
     pub reconciliation_mode: CustomerBalanceCustomerBalanceSettingsReconciliationMode,
+
+    /// A flag to indicate if reconciliation mode returned is the user's default or is specific to this customer cash balance.
+    pub using_merchant_default: bool,
 }
 
 /// An enum representing the possible values of an `CustomerBalanceCustomerBalanceSettings`'s `reconciliation_mode` field.

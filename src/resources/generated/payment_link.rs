@@ -46,6 +46,8 @@ pub struct PaymentLink {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    pub custom_text: PaymentLinksResourceCustomText,
+
     /// Configuration for Customer creation during checkout.
     pub customer_creation: PaymentLinkCustomerCreation,
 
@@ -181,6 +183,21 @@ pub struct PaymentLinksResourceConsentCollection {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCustomText {
+    /// Custom text that should be displayed alongside shipping address collection.
+    pub shipping_address: Option<PaymentLinksResourceCustomTextPosition>,
+
+    /// Custom text that should be displayed alongside the payment confirmation button.
+    pub submit: Option<PaymentLinksResourceCustomTextPosition>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCustomTextPosition {
+    /// Text may be up to 500 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourcePaymentIntentData {
     /// Indicates when the funds will be captured from the customer's account.
     pub capture_method: Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>,
@@ -282,6 +299,10 @@ pub struct CreatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
+    /// Display additional text for your customers using custom text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_text: Option<CreatePaymentLinkCustomText>,
+
     /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_creation: Option<PaymentLinkCustomerCreation>,
@@ -371,6 +392,7 @@ impl<'a> CreatePaymentLink<'a> {
             billing_address_collection: Default::default(),
             consent_collection: Default::default(),
             currency: Default::default(),
+            custom_text: Default::default(),
             customer_creation: Default::default(),
             expand: Default::default(),
             line_items,
@@ -464,6 +486,10 @@ pub struct UpdatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_address_collection: Option<PaymentLinkBillingAddressCollection>,
 
+    /// Display additional text for your customers using custom text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_text: Option<UpdatePaymentLinkCustomText>,
+
     /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_creation: Option<PaymentLinkCustomerCreation>,
@@ -513,6 +539,7 @@ impl<'a> UpdatePaymentLink<'a> {
             allow_promotion_codes: Default::default(),
             automatic_tax: Default::default(),
             billing_address_collection: Default::default(),
+            custom_text: Default::default(),
             customer_creation: Default::default(),
             expand: Default::default(),
             line_items: Default::default(),
@@ -560,6 +587,17 @@ pub struct CreatePaymentLinkConsentCollection {
     /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service: Option<CreatePaymentLinkConsentCollectionTermsOfService>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomText {
+    /// Custom text that should be displayed alongside shipping address collection.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<CreatePaymentLinkCustomTextShippingAddress>,
+
+    /// Custom text that should be displayed alongside the payment confirmation button.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub submit: Option<CreatePaymentLinkCustomTextSubmit>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -677,6 +715,17 @@ pub struct UpdatePaymentLinkAutomaticTax {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomText {
+    /// Custom text that should be displayed alongside shipping address collection.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<UpdatePaymentLinkCustomTextShippingAddress>,
+
+    /// Custom text that should be displayed alongside the payment confirmation button.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub submit: Option<UpdatePaymentLinkCustomTextSubmit>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -715,6 +764,18 @@ pub struct CreatePaymentLinkAfterCompletionRedirect {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomTextShippingAddress {
+    /// Text may be up to 500 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomTextSubmit {
+    /// Text may be up to 500 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItemsAdjustableQuantity {
     /// Set to true if the quantity can be adjusted to any non-negative Integer.
     pub enabled: bool,
@@ -722,14 +783,13 @@ pub struct CreatePaymentLinkLineItemsAdjustableQuantity {
     /// The maximum quantity the customer can purchase.
     ///
     /// By default this value is 99.
-    /// You can specify a value up to 99.
+    /// You can specify a value up to 999.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
 
     /// The minimum quantity the customer can purchase.
     ///
     /// By default this value is 0.
-    /// You can specify a value up to 98.
     /// If there is only one item in the cart then that item's quantity cannot go down to 0.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
@@ -751,6 +811,18 @@ pub struct UpdatePaymentLinkAfterCompletionRedirect {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomTextShippingAddress {
+    /// Text may be up to 500 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomTextSubmit {
+    /// Text may be up to 500 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
     /// Set to true if the quantity can be adjusted to any non-negative Integer.
     pub enabled: bool,
@@ -758,14 +830,13 @@ pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
     /// The maximum quantity the customer can purchase.
     ///
     /// By default this value is 99.
-    /// You can specify a value up to 99.
+    /// You can specify a value up to 999.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maximum: Option<i64>,
 
     /// The minimum quantity the customer can purchase.
     ///
     /// By default this value is 0.
-    /// You can specify a value up to 98.
     /// If there is only one item in the cart then that item's quantity cannot go down to 0.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,

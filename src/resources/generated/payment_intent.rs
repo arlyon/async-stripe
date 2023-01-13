@@ -9,13 +9,9 @@ use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Charge, Currency, Customer, Invoice,
-    LinkedAccountOptionsUsBankAccount, PaymentIntentOffSession,
-    PaymentIntentPaymentMethodOptionsAcssDebit, PaymentIntentPaymentMethodOptionsLink,
-    PaymentIntentPaymentMethodOptionsSepaDebit, PaymentMethod,
-    PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsAlipay,
-    PaymentMethodOptionsBancontact, PaymentMethodOptionsCustomerBalance, PaymentMethodOptionsIdeal,
-    PaymentMethodOptionsKlarna, PaymentMethodOptionsOxxo, PaymentMethodOptionsP24,
-    PaymentMethodOptionsSofort, PaymentMethodOptionsWechatPay, PaymentSource, Review, Shipping,
+    LinkedAccountOptionsUsBankAccount, PaymentIntentOffSession, PaymentMethod,
+    PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsCustomerBalanceEuBankAccount,
+    PaymentSource, Review, Shipping,
 };
 
 /// The resource representing a Stripe "PaymentIntent".
@@ -65,10 +61,6 @@ pub struct PaymentIntent {
     /// Controls when the funds will be captured from the customer's account.
     pub capture_method: PaymentIntentCaptureMethod,
 
-    /// Charges that were created by this PaymentIntent, if any.
-    #[serde(default)]
-    pub charges: List<Charge>,
-
     /// The client secret of this PaymentIntent.
     ///
     /// Used for client-side retrieval using a publishable key.
@@ -108,6 +100,10 @@ pub struct PaymentIntent {
     ///
     /// It will be cleared if the PaymentIntent is later updated for any reason.
     pub last_payment_error: Option<Box<ApiErrors>>,
+
+    /// The latest charge created by this payment intent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub latest_charge: Option<Expandable<Charge>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -564,6 +560,9 @@ pub struct PaymentIntentNextActionPaynowDisplayQrCode {
     /// The raw data string used to generate QR code, it should be used together with QR code library.
     pub data: String,
 
+    /// The URL to the hosted PayNow instructions page, which allows customers to view the PayNow QR code.
+    pub hosted_instructions_url: Option<String>,
+
     /// The image_url_png string used to render QR code.
     pub image_url_png: String,
 
@@ -602,10 +601,10 @@ pub struct PaymentIntentNextActionPromptpayDisplayQrCode {
     /// The URL to the hosted PromptPay instructions page, which allows customers to view the PromptPay QR code.
     pub hosted_instructions_url: String,
 
-    /// The image_url_png string used to render QR code, can be used as <img src="…" />.
+    /// The PNG path used to render the QR code, can be used as the source in an HTML img tag.
     pub image_url_png: String,
 
-    /// The image_url_svg string used to render QR code, can be used as <img src="…" />.
+    /// The SVG path used to render the QR code, can be used as the source in an HTML img tag.
     pub image_url_svg: String,
 }
 
@@ -636,6 +635,9 @@ pub struct PaymentIntentNextActionVerifyWithMicrodeposits {
 pub struct PaymentIntentNextActionWechatPayDisplayQrCode {
     /// The data being used to generate QR code.
     pub data: String,
+
+    /// The URL to the hosted WeChat Pay instructions page, which allows customers to view the WeChat Pay QR code.
+    pub hosted_instructions_url: String,
 
     /// The base64 image data for a pre-generated QR code.
     pub image_data_url: String,
@@ -771,6 +773,24 @@ pub struct PaymentIntentPaymentMethodOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentPaymentMethodOptionsAcssDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage>,
+
+    /// Bank account verification method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_method: Option<PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsAuBecsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -847,6 +867,61 @@ pub struct PaymentIntentPaymentMethodOptionsEps {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<PaymentIntentPaymentMethodOptionsEpsSetupFutureUsage>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentPaymentMethodOptionsLink {
+    /// Controls when the funds will be captured from the customer's account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<PaymentIntentPaymentMethodOptionsLinkCaptureMethod>,
+
+    /// Token used for persistent Link logins.
+    pub persistent_token: Option<String>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
+    /// A URL for custom mandate text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_mandate_url: Option<String>,
+
+    /// Description of the interval.
+    ///
+    /// Only required if the 'payment_schedule' parameter is 'interval' or 'combined'.
+    pub interval_description: Option<String>,
+
+    /// Payment schedule for the mandate.
+    pub payment_schedule:
+        Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule>,
+
+    /// Transaction type of the mandate.
+    pub transaction_type:
+        Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentPaymentMethodOptionsSepaDebit {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentIntentPaymentMethodOptionsMandateOptionsSepaDebit {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
@@ -931,6 +1006,17 @@ pub struct PaymentMethodOptionsAfterpayClearpay {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsAlipay {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsAlipaySetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsBacsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -939,6 +1025,20 @@ pub struct PaymentMethodOptionsBacsDebit {
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<PaymentMethodOptionsBacsDebitSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsBancontact {
+    /// Preferred language of the Bancontact authorization page that the customer is redirected to.
+    pub preferred_language: PaymentMethodOptionsBancontactPreferredLanguage,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsBancontactSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1027,6 +1127,42 @@ pub struct PaymentMethodOptionsCardPresent {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsCustomerBalance {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer: Option<PaymentMethodOptionsCustomerBalanceBankTransfer>,
+
+    /// The funding method type to be used when there are not enough funds in the customer balance.
+    ///
+    /// Permitted values include: `bank_transfer`.
+    pub funding_type: Option<PaymentMethodOptionsCustomerBalanceFundingType>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsCustomerBalanceBankTransfer {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eu_bank_transfer: Option<PaymentMethodOptionsCustomerBalanceEuBankAccount>,
+
+    /// List of address types that should be returned in the financial_addresses response.
+    ///
+    /// If not specified, all valid types will be returned.  Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested_address_types:
+        Option<Vec<PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
+
+    /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    #[serde(rename = "type")]
+    pub type_: Option<PaymentMethodOptionsCustomerBalanceBankTransferType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsFpx {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -1060,7 +1196,36 @@ pub struct PaymentMethodOptionsGrabpay {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsIdeal {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsIdealSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsInteracPresent {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsKlarna {
+    /// Controls when the funds will be captured from the customer's account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<PaymentMethodOptionsKlarnaCaptureMethod>,
+
+    /// Preferred locale of the Klarna checkout page that the customer is redirected to.
+    pub preferred_locale: Option<String>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsKlarnaSetupFutureUsage>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodOptionsKonbini {
@@ -1087,6 +1252,33 @@ pub struct PaymentMethodOptionsKonbini {
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<PaymentMethodOptionsKonbiniSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsOxxo {
+    /// The number of calendar days before an OXXO invoice expires.
+    ///
+    /// For example, if you create an OXXO invoice on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
+    pub expires_after_days: u32,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsOxxoSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsP24 {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsP24SetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1126,6 +1318,39 @@ pub struct PaymentMethodOptionsPromptpay {
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<PaymentMethodOptionsPromptpaySetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsSofort {
+    /// Preferred language of the SOFORT authorization page that the customer is redirected to.
+    pub preferred_language: Option<PaymentMethodOptionsSofortPreferredLanguage>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsSofortSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsWechatPay {
+    /// The app ID registered with WeChat Pay.
+    ///
+    /// Only required when client is ios or android.
+    pub app_id: Option<String>,
+
+    /// The client type that the end customer will pay from.
+    pub client: Option<PaymentMethodOptionsWechatPayClient>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsWechatPaySetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3887,6 +4112,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardMandateOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
+    /// Configuration for the eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eu_bank_transfer:
         Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
@@ -4066,6 +4292,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
+    /// Configuration for the eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eu_bank_transfer:
         Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer>,
@@ -7034,6 +7261,80 @@ impl std::default::Default for PaymentIntentNextActionVerifyWithMicrodepositsMic
     }
 }
 
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsAcssDebit`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+}
+
+impl PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage::None => "none",
+            PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage::OffSession => "off_session",
+            PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage::OnSession => "on_session",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsAcssDebit`'s `verification_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    Automatic,
+    Instant,
+    Microdeposits,
+}
+
+impl PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Automatic => "automatic",
+            PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Instant => "instant",
+            PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod::Microdeposits => {
+                "microdeposits"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn default() -> Self {
+        Self::Automatic
+    }
+}
+
 /// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsAuBecsDebit`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -7255,6 +7556,192 @@ impl std::fmt::Display for PaymentIntentPaymentMethodOptionsEpsSetupFutureUsage 
     }
 }
 impl std::default::Default for PaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsLink`'s `capture_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    Manual,
+}
+
+impl PaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsLinkCaptureMethod::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn default() -> Self {
+        Self::Manual
+    }
+}
+
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsLink`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    None,
+    OffSession,
+}
+
+impl PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage::None => "none",
+            PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage::OffSession => "off_session",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit`'s `payment_schedule` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+    Combined,
+    Interval,
+    Sporadic,
+}
+
+impl PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Combined => {
+                "combined"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Interval => {
+                "interval"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::Sporadic => {
+                "sporadic"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
+{
+    fn default() -> Self {
+        Self::Combined
+    }
+}
+
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit`'s `transaction_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+    Business,
+    Personal,
+}
+
+impl PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Business => {
+                "business"
+            }
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::Personal => {
+                "personal"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType
+{
+    fn default() -> Self {
+        Self::Business
+    }
+}
+
+/// An enum representing the possible values of an `PaymentIntentPaymentMethodOptionsSepaDebit`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+}
+
+impl PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage::None => "none",
+            PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage::OffSession => "off_session",
+            PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage::OnSession => "on_session",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn default() -> Self {
         Self::None
     }
@@ -7612,6 +8099,40 @@ impl std::default::Default for PaymentMethodOptionsAfterpayClearpaySetupFutureUs
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodOptionsAlipay`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsAlipaySetupFutureUsage {
+    None,
+    OffSession,
+}
+
+impl PaymentMethodOptionsAlipaySetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsAlipaySetupFutureUsage::None => "none",
+            PaymentMethodOptionsAlipaySetupFutureUsage::OffSession => "off_session",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsAlipaySetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsAlipaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsAlipaySetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `PaymentMethodOptionsBacsDebit`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -7643,6 +8164,78 @@ impl std::fmt::Display for PaymentMethodOptionsBacsDebitSetupFutureUsage {
     }
 }
 impl std::default::Default for PaymentMethodOptionsBacsDebitSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsBancontact`'s `preferred_language` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsBancontactPreferredLanguage {
+    De,
+    En,
+    Fr,
+    Nl,
+}
+
+impl PaymentMethodOptionsBancontactPreferredLanguage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsBancontactPreferredLanguage::De => "de",
+            PaymentMethodOptionsBancontactPreferredLanguage::En => "en",
+            PaymentMethodOptionsBancontactPreferredLanguage::Fr => "fr",
+            PaymentMethodOptionsBancontactPreferredLanguage::Nl => "nl",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsBancontactPreferredLanguage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsBancontactPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsBancontactPreferredLanguage {
+    fn default() -> Self {
+        Self::De
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsBancontact`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsBancontactSetupFutureUsage {
+    None,
+    OffSession,
+}
+
+impl PaymentMethodOptionsBancontactSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsBancontactSetupFutureUsage::None => "none",
+            PaymentMethodOptionsBancontactSetupFutureUsage::OffSession => "off_session",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsBancontactSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsBancontactSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsBancontactSetupFutureUsage {
     fn default() -> Self {
         Self::None
     }
@@ -7790,6 +8383,162 @@ impl std::default::Default for PaymentMethodOptionsCardMandateOptionsSupportedTy
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodOptionsCustomerBalanceBankTransfer`'s `requested_address_types` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Iban,
+    Sepa,
+    SortCode,
+    Spei,
+    Zengin,
+}
+
+impl PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
+            PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
+            PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => {
+                "sort_code"
+            }
+            PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
+            PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => {
+                "zengin"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn default() -> Self {
+        Self::Iban
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsCustomerBalanceBankTransfer`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCustomerBalanceBankTransferType {
+    EuBankTransfer,
+    GbBankTransfer,
+    JpBankTransfer,
+    MxBankTransfer,
+}
+
+impl PaymentMethodOptionsCustomerBalanceBankTransferType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCustomerBalanceBankTransferType::EuBankTransfer => {
+                "eu_bank_transfer"
+            }
+            PaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => {
+                "gb_bank_transfer"
+            }
+            PaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => {
+                "jp_bank_transfer"
+            }
+            PaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => {
+                "mx_bank_transfer"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn default() -> Self {
+        Self::EuBankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsCustomerBalance`'s `funding_type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCustomerBalanceFundingType {
+    BankTransfer,
+}
+
+impl PaymentMethodOptionsCustomerBalanceFundingType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCustomerBalanceFundingType::BankTransfer => "bank_transfer",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCustomerBalanceFundingType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCustomerBalanceFundingType {
+    fn default() -> Self {
+        Self::BankTransfer
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsCustomerBalance`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    None,
+}
+
+impl PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCustomerBalanceSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `PaymentMethodOptionsFpx`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -7886,6 +8635,104 @@ impl std::default::Default for PaymentMethodOptionsGrabpaySetupFutureUsage {
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodOptionsIdeal`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsIdealSetupFutureUsage {
+    None,
+    OffSession,
+}
+
+impl PaymentMethodOptionsIdealSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsIdealSetupFutureUsage::None => "none",
+            PaymentMethodOptionsIdealSetupFutureUsage::OffSession => "off_session",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsIdealSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsIdealSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsIdealSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsKlarna`'s `capture_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsKlarnaCaptureMethod {
+    Manual,
+}
+
+impl PaymentMethodOptionsKlarnaCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsKlarnaCaptureMethod::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsKlarnaCaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsKlarnaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsKlarnaCaptureMethod {
+    fn default() -> Self {
+        Self::Manual
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsKlarna`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsKlarnaSetupFutureUsage {
+    None,
+}
+
+impl PaymentMethodOptionsKlarnaSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsKlarnaSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `PaymentMethodOptionsKonbini`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -7913,6 +8760,70 @@ impl std::fmt::Display for PaymentMethodOptionsKonbiniSetupFutureUsage {
     }
 }
 impl std::default::Default for PaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsOxxo`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsOxxoSetupFutureUsage {
+    None,
+}
+
+impl PaymentMethodOptionsOxxoSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsOxxoSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsOxxoSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsOxxoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsOxxoSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsP24`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsP24SetupFutureUsage {
+    None,
+}
+
+impl PaymentMethodOptionsP24SetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsP24SetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsP24SetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsP24SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsP24SetupFutureUsage {
     fn default() -> Self {
         Self::None
     }
@@ -8009,6 +8920,152 @@ impl std::fmt::Display for PaymentMethodOptionsPromptpaySetupFutureUsage {
     }
 }
 impl std::default::Default for PaymentMethodOptionsPromptpaySetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsSofort`'s `preferred_language` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsSofortPreferredLanguage {
+    De,
+    En,
+    Es,
+    Fr,
+    It,
+    Nl,
+    Pl,
+}
+
+impl PaymentMethodOptionsSofortPreferredLanguage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsSofortPreferredLanguage::De => "de",
+            PaymentMethodOptionsSofortPreferredLanguage::En => "en",
+            PaymentMethodOptionsSofortPreferredLanguage::Es => "es",
+            PaymentMethodOptionsSofortPreferredLanguage::Fr => "fr",
+            PaymentMethodOptionsSofortPreferredLanguage::It => "it",
+            PaymentMethodOptionsSofortPreferredLanguage::Nl => "nl",
+            PaymentMethodOptionsSofortPreferredLanguage::Pl => "pl",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsSofortPreferredLanguage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsSofortPreferredLanguage {
+    fn default() -> Self {
+        Self::De
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsSofort`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsSofortSetupFutureUsage {
+    None,
+    OffSession,
+}
+
+impl PaymentMethodOptionsSofortSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsSofortSetupFutureUsage::None => "none",
+            PaymentMethodOptionsSofortSetupFutureUsage::OffSession => "off_session",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsSofortSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsSofortSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsSofortSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsWechatPay`'s `client` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsWechatPayClient {
+    Android,
+    Ios,
+    Web,
+}
+
+impl PaymentMethodOptionsWechatPayClient {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsWechatPayClient::Android => "android",
+            PaymentMethodOptionsWechatPayClient::Ios => "ios",
+            PaymentMethodOptionsWechatPayClient::Web => "web",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsWechatPayClient {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsWechatPayClient {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsWechatPayClient {
+    fn default() -> Self {
+        Self::Android
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsWechatPay`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsWechatPaySetupFutureUsage {
+    None,
+}
+
+impl PaymentMethodOptionsWechatPaySetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsWechatPaySetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsWechatPaySetupFutureUsage {
     fn default() -> Self {
         Self::None
     }

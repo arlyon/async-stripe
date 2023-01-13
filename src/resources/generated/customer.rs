@@ -700,7 +700,7 @@ pub struct UpdateCustomerTax {
 pub struct CreateCustomerCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     ///
-    /// Valid options are `automatic` or `manual`.
+    /// Valid options are `automatic`, `manual`, or `merchant_default`.
     /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<CreateCustomerCashBalanceSettingsReconciliationMode>,
@@ -761,7 +761,7 @@ pub struct CustomerInvoiceSettingsRenderingOptions {
 pub struct UpdateCustomerCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     ///
-    /// Valid options are `automatic` or `manual`.
+    /// Valid options are `automatic`, `manual`, or `merchant_default`.
     /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<UpdateCustomerCashBalanceSettingsReconciliationMode>,
@@ -800,6 +800,7 @@ pub struct UpdateCustomerShippingAddress {
 pub enum CreateCustomerCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
+    MerchantDefault,
 }
 
 impl CreateCustomerCashBalanceSettingsReconciliationMode {
@@ -807,6 +808,9 @@ impl CreateCustomerCashBalanceSettingsReconciliationMode {
         match self {
             CreateCustomerCashBalanceSettingsReconciliationMode::Automatic => "automatic",
             CreateCustomerCashBalanceSettingsReconciliationMode::Manual => "manual",
+            CreateCustomerCashBalanceSettingsReconciliationMode::MerchantDefault => {
+                "merchant_default"
+            }
         }
     }
 }
@@ -1150,6 +1154,7 @@ impl std::default::Default for TaxIdType {
 pub enum UpdateCustomerCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
+    MerchantDefault,
 }
 
 impl UpdateCustomerCashBalanceSettingsReconciliationMode {
@@ -1157,6 +1162,9 @@ impl UpdateCustomerCashBalanceSettingsReconciliationMode {
         match self {
             UpdateCustomerCashBalanceSettingsReconciliationMode::Automatic => "automatic",
             UpdateCustomerCashBalanceSettingsReconciliationMode::Manual => "manual",
+            UpdateCustomerCashBalanceSettingsReconciliationMode::MerchantDefault => {
+                "merchant_default"
+            }
         }
     }
 }

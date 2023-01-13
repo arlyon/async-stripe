@@ -58,7 +58,7 @@ pub struct CustomerBalanceTransaction {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
 
-    /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
+    /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, or `unapplied_from_invoice`.
     ///
     /// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
     #[serde(rename = "type")]
@@ -83,6 +83,7 @@ pub enum CustomerBalanceTransactionType {
     AppliedToInvoice,
     CreditNote,
     Initial,
+    InvoiceOverpaid,
     InvoiceTooLarge,
     InvoiceTooSmall,
     Migration,
@@ -97,6 +98,7 @@ impl CustomerBalanceTransactionType {
             CustomerBalanceTransactionType::AppliedToInvoice => "applied_to_invoice",
             CustomerBalanceTransactionType::CreditNote => "credit_note",
             CustomerBalanceTransactionType::Initial => "initial",
+            CustomerBalanceTransactionType::InvoiceOverpaid => "invoice_overpaid",
             CustomerBalanceTransactionType::InvoiceTooLarge => "invoice_too_large",
             CustomerBalanceTransactionType::InvoiceTooSmall => "invoice_too_small",
             CustomerBalanceTransactionType::Migration => "migration",

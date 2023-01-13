@@ -25,7 +25,9 @@ pub struct MerchantData {
     /// Name of the seller.
     pub name: Option<String>,
 
-    /// Identifier assigned to the seller by the card brand.
+    /// Identifier assigned to the seller by the card network.
+    ///
+    /// Different card networks may assign different network_id fields to the same merchant.
     pub network_id: String,
 
     /// Postal code where the seller is located.

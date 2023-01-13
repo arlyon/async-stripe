@@ -278,14 +278,14 @@ impl Object for InvoiceLineItem {
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Order {
-    pub id: OrderId,
+    pub id: (),
 }
 
 #[cfg(not(feature = "orders"))]
 impl Object for Order {
-    type Id = OrderId;
+    type Id = ();
     fn id(&self) -> Self::Id {
-        self.id.clone()
+        self.id
     }
     fn object(&self) -> &'static str {
         "order"
@@ -397,14 +397,14 @@ impl Object for ScheduledQueryRun {
 #[cfg(not(feature = "orders"))]
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Sku {
-    pub id: SkuId,
+    pub id: (),
 }
 
 #[cfg(not(feature = "orders"))]
 impl Object for Sku {
-    type Id = SkuId;
+    type Id = ();
     fn id(&self) -> Self::Id {
-        self.id.clone()
+        self.id
     }
     fn object(&self) -> &'static str {
         "sku"

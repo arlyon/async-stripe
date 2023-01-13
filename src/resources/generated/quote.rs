@@ -129,7 +129,7 @@ pub struct Quote {
     /// The subscription that was created or updated from this quote.
     pub subscription: Option<Expandable<Subscription>>,
 
-    pub subscription_data: QuotesResourceSubscriptionData,
+    pub subscription_data: QuotesResourceSubscriptionDataSubscriptionData,
 
     /// The subscription schedule that was created or updated from this quote.
     pub subscription_schedule: Option<Expandable<SubscriptionSchedule>>,
@@ -242,7 +242,7 @@ pub struct QuotesResourceStatusTransitions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct QuotesResourceSubscriptionData {
+pub struct QuotesResourceSubscriptionDataSubscriptionData {
     /// The subscription's description, meant to be displayable to the customer.
     ///
     /// Use this field to optionally store an explanation of the subscription.

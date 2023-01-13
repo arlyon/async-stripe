@@ -108,6 +108,8 @@ pub struct IssuingCardholderCompany {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividual {
+    pub card_issuing: Option<IssuingCardholderCardIssuing>,
+
     /// The date of birth of this cardholder.
     pub dob: Option<IssuingCardholderIndividualDob>,
 
@@ -119,6 +121,12 @@ pub struct IssuingCardholderIndividual {
 
     /// Government-issued ID document for this cardholder.
     pub verification: Option<IssuingCardholderVerification>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingCardholderCardIssuing {
+    /// Information about cardholder acceptance of [Authorized User Terms](https://stripe.com/docs/issuing/cards).
+    pub user_terms_acceptance: Option<IssuingCardholderUserTermsAcceptance>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -156,6 +164,18 @@ pub struct IssuingCardholderSpendingLimit {
 
     /// Interval (or event) to which the amount applies.
     pub interval: IssuingCardholderSpendingLimitInterval,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct IssuingCardholderUserTermsAcceptance {
+    /// The Unix timestamp marking when the cardholder accepted the Authorized User Terms.
+    pub date: Option<Timestamp>,
+
+    /// The IP address from which the cardholder accepted the Authorized User Terms.
+    pub ip: Option<String>,
+
+    /// The user agent of the browser from which the cardholder accepted the Authorized User Terms.
+    pub user_agent: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
