@@ -58,7 +58,7 @@ body:
     id: lib-version
     attributes:
       label: Library version
-      placeholder: async-stripe 0.15.0
+      placeholder: async-stripe 0.15.1
     validations:
       required: true
   - type: input

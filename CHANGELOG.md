@@ -1,3 +1,27 @@
+# Version 0.15.1 (January 16, 2022)
+
+This is a half-release before we overhaul the codegen in 0.16.
+I want to give a special shoutout to @mzeitlin11 who has been
+doing some excellent work behind the scenes cleaning up the
+codegen.
+
+## Features
+
+- add a number of missing ids to `ids.rs`
+- add a number of missing prefixes to `ids.rs`
+- restore `serde_path_to_error` to give better error messages when
+  parsing responses from the API
+- add api to retrieve checkout session
+- add api to cancel a setup intent
+
+## Fixes
+
+- export the `generated` modules so that overlapping apis can be
+  reached by their path
+- handle the `idempotency_error` error variant
+- allow blocking client to be used in a multithreaded scenario
+- disable connection pooling to prevent API errors
+
 # Version 0.15.0 (June 9, 2022)
 
 This release comes with some improvements to list traversal as well
