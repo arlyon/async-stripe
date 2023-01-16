@@ -81,10 +81,11 @@ pub struct IssuingAuthorization {
     /// This field will only be non-null during an `issuing_authorization.request` webhook.
     pub pending_request: Option<IssuingAuthorizationPendingRequest>,
 
-    /// History of every time `pending_request` was approved/denied, either by you directly or by Stripe (e.g.
+    /// History of every time a `pending_request` authorization was approved/declined, either by you directly or by Stripe (e.g.
     ///
-    /// based on your `spending_controls`).
-    /// If the merchant changes the authorization by performing an [incremental authorization](https://stripe.com/docs/issuing/purchases/authorizations), you can look at this field to see the previous requests for the authorization.
+    /// based on your spending_controls).
+    /// If the merchant changes the authorization by performing an incremental authorization, you can look at this field to see the previous requests for the authorization.
+    /// This field can be helpful in determining why a given authorization was approved/declined.
     pub request_history: Vec<IssuingAuthorizationRequest>,
 
     /// The current status of the authorization in its lifecycle.
@@ -99,9 +100,10 @@ pub struct IssuingAuthorization {
 
     pub verification_data: IssuingAuthorizationVerificationData,
 
-    /// The digital wallet used for this authorization.
+    /// The digital wallet used for this transaction.
     ///
     /// One of `apple_pay`, `google_pay`, or `samsung_pay`.
+    /// Will populate as `null` when no digital wallet was utilized.
     pub wallet: Option<String>,
 }
 
@@ -117,12 +119,9 @@ impl Object for IssuingAuthorization {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorizationNetworkData {
-    /// ID from the network that identifies the acquiring financial institution.
+    /// Identifier assigned to the acquirer by the card network.
     ///
-    /// For Visa and Mastercard credit transactions this is as 6 digit code.
-    /// For Maestro debit transactions this is a 9 digit code.
-    /// Uncommonly, acquiring institution ID is not provided.
-    /// When this occurs, the value will be null.
+    /// Sometimes this value is not provided by the network; in this case, the value will be `null`.
     pub acquiring_institution_id: Option<String>,
 }
 
@@ -187,7 +186,7 @@ pub struct IssuingAuthorizationRequest {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub merchant_currency: Currency,
 
-    /// The reason for the approval or decline.
+    /// When an authorization is approved or declined by you or by Stripe, this field provides additional detail on the reason for the outcome.
     pub reason: IssuingAuthorizationReason,
 
     /// If approve/decline decision is directly responsed to the webhook with json payload and if the response is invalid (e.g., parsing errors), we surface the detailed message via this field.

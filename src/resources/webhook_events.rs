@@ -473,11 +473,6 @@ pub enum EventObject {
     #[serde(rename = "issuing.transaction")]
     IssuingTransaction(IssuingTransaction),
     Mandate(Mandate),
-    Order(Order),
-    //The order return has currently disappeared from the
-    //openAPI.  I believe this may be an error, but for now
-    //we will disable it here
-    //OrderReturn(OrderReturn),
     PaymentIntent(PaymentIntent),
     PaymentLink(PaymentLink),
     PaymentMethod(PaymentMethod),
@@ -491,7 +486,6 @@ pub enum EventObject {
     Refund(Refund),
     Review(Review),
     SetupIntent(SetupIntent),
-    Sku(Sku),
     Subscription(Subscription),
     SubscriptionSchedule(SubscriptionSchedule),
     TaxId(TaxId),

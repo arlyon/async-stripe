@@ -235,6 +235,8 @@ pub struct CreateInvoiceItem<'a> {
     /// The period associated with this invoice item.
     ///
     /// When set to different values, the period will be rendered on the invoice.
+    /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+    /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
 
@@ -432,6 +434,8 @@ pub struct UpdateInvoiceItem<'a> {
     /// The period associated with this invoice item.
     ///
     /// When set to different values, the period will be rendered on the invoice.
+    /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+    /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
 

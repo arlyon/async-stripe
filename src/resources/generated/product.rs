@@ -9,7 +9,7 @@ use crate::ids::{ProductId, TaxCodeId};
 use crate::params::{
     Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
-use crate::resources::{Currency, PackageDimensions, Price, TaxCode, UpTo};
+use crate::resources::{Currency, Price, TaxCode, UpTo};
 
 /// The resource representing a Stripe "Product".
 ///
@@ -102,9 +102,9 @@ pub struct Product {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<ProductType>,
 
-    /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
+    /// A label that represents units of this product.
     ///
-    /// When set, this will be included in associated invoice line item descriptions.
+    /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
 
@@ -163,6 +163,21 @@ impl Object for Product {
     fn object(&self) -> &'static str {
         "product"
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PackageDimensions {
+    /// Height, in inches.
+    pub height: f64,
+
+    /// Length, in inches.
+    pub length: f64,
+
+    /// Weight, in ounces.
+    pub weight: f64,
+
+    /// Width, in inches.
+    pub width: f64,
 }
 
 /// The parameters for `Product::create`.
@@ -258,9 +273,9 @@ pub struct CreateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<ProductType>,
 
-    /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
+    /// A label that represents units of this product.
     ///
-    /// When set, this will be included in associated invoice line item descriptions.
+    /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<&'a str>,
 
@@ -448,9 +463,9 @@ pub struct UpdateProduct<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 
-    /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
+    /// A label that represents units of this product.
     ///
-    /// When set, this will be included in associated invoice line item descriptions.
+    /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     /// May only be set if `type=service`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<&'a str>,

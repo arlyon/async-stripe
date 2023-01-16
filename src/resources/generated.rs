@@ -28,21 +28,8 @@ pub mod core {
     pub mod linked_account_options_us_bank_account;
     pub mod mandate;
     pub mod mandate_options_off_session_details_blik;
-    pub mod package_dimensions;
     pub mod payment_intent;
-    pub mod payment_intent_payment_method_options_acss_debit;
-    pub mod payment_intent_payment_method_options_link;
-    pub mod payment_intent_payment_method_options_sepa_debit;
-    pub mod payment_method_options_alipay;
-    pub mod payment_method_options_bancontact;
-    pub mod payment_method_options_customer_balance;
     pub mod payment_method_options_customer_balance_eu_bank_account;
-    pub mod payment_method_options_ideal;
-    pub mod payment_method_options_klarna;
-    pub mod payment_method_options_oxxo;
-    pub mod payment_method_options_p24;
-    pub mod payment_method_options_sofort;
-    pub mod payment_method_options_wechat_pay;
     pub mod payout;
     pub mod platform_tax_fee;
     pub mod price;
@@ -136,13 +123,6 @@ pub mod issuing {
     pub mod issuing_cardholder;
     pub mod issuing_dispute;
     pub mod issuing_transaction;
-}
-
-#[path = "generated"]
-#[cfg(feature = "orders")]
-pub mod orders {
-    pub mod order;
-    pub mod sku;
 }
 
 #[cfg(feature = "sigma")]

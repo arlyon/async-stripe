@@ -316,7 +316,7 @@ pub struct CardDetails {
     /// Contains information about card networks that can be used to process the payment.
     pub networks: Option<Networks>,
 
-    /// Contains details on how this Card maybe be used for 3D Secure authentication.
+    /// Contains details on how this Card may be used for 3D Secure authentication.
     pub three_d_secure_usage: Option<ThreeDSecureUsage>,
 
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
@@ -831,7 +831,7 @@ impl<'a> CreatePaymentMethod<'a> {
 }
 
 /// The parameters for `PaymentMethod::list`.
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, Default)]
 pub struct ListPaymentMethods<'a> {
     /// The ID of the customer whose PaymentMethods will be retrieved.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -861,20 +861,24 @@ pub struct ListPaymentMethods<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub starting_after: Option<PaymentMethodId>,
 
-    /// A required filter on the list, based on the object `type` field.
+    /// An optional filter on the list, based on the object `type` field.
+    ///
+    /// Without the filter, the list includes all current and future payment method types.
+    /// If your integration expects only one type of payment method in the response, make sure to provide a type value in the request.
     #[serde(rename = "type")]
-    pub type_: PaymentMethodTypeFilter,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<PaymentMethodTypeFilter>,
 }
 
 impl<'a> ListPaymentMethods<'a> {
-    pub fn new(type_: PaymentMethodTypeFilter) -> Self {
+    pub fn new() -> Self {
         ListPaymentMethods {
             customer: Default::default(),
             ending_before: Default::default(),
             expand: Default::default(),
             limit: Default::default(),
             starting_after: Default::default(),
-            type_,
+            type_: Default::default(),
         }
     }
 }

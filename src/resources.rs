@@ -118,22 +118,9 @@ pub use {
         invoice_setting_rendering_options::*,
         mandate::*,
         mandate_options_off_session_details_blik::*,
-        package_dimensions::*,
         payment_intent::*,
         linked_account_options_us_bank_account::*,
-        payment_intent_payment_method_options_acss_debit::*,
-        payment_intent_payment_method_options_sepa_debit::*,
-        payment_intent_payment_method_options_link::*,
-        payment_method_options_alipay::*,
-        payment_method_options_bancontact::*,
-        payment_method_options_customer_balance::*,
         payment_method_options_customer_balance_eu_bank_account::*,
-        payment_method_options_ideal::*,
-        payment_method_options_klarna::*,
-        payment_method_options_oxxo::*,
-        payment_method_options_p24::*,
-        payment_method_options_sofort::*,
-        payment_method_options_wechat_pay::*,
         payout::*,
         platform_tax_fee::*,
         price::*,
@@ -282,10 +269,6 @@ pub use {
 #[cfg(feature = "orders")]
 pub use {
     orders::order_ext::*,
-    generated::orders::{
-        order::*,
-        sku::*
-    },
 };
 
 #[rustfmt::skip]

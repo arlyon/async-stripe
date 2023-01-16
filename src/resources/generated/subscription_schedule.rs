@@ -49,7 +49,8 @@ pub struct SubscriptionSchedule {
 
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
-    /// Possible values are `release` and `cancel`.
+    /// Possible values are `release` or `cancel` with the default being `release`.
+    /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
     pub end_behavior: SubscriptionScheduleEndBehavior,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -256,6 +257,11 @@ pub struct SubscriptionScheduleConfigurationItem {
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
     pub billing_thresholds: Option<SubscriptionItemBillingThresholds>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an item.
+    ///
+    /// Metadata on this item will update the underlying subscription item's `metadata` when the phase is entered.
+    pub metadata: Metadata,
+
     /// ID of the plan to which the customer should be subscribed.
     pub plan: Expandable<Plan>,
 
@@ -338,7 +344,7 @@ pub struct CreateSubscriptionSchedule<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_settings: Option<SubscriptionScheduleDefaultSettingsParams>,
 
-    /// Configures how the subscription schedule behaves when it ends.
+    /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
@@ -476,7 +482,7 @@ pub struct UpdateSubscriptionSchedule<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_settings: Option<SubscriptionScheduleDefaultSettingsParams>,
 
-    /// Configures how the subscription schedule behaves when it ends.
+    /// Behavior of the subscription schedule and underlying subscription when it ends.
     ///
     /// Possible values are `release` or `cancel` with the default being `release`.
     /// `release` will end the subscription schedule and keep the underlying subscription running.`cancel` will end the subscription schedule and cancel the underlying subscription.
@@ -873,6 +879,14 @@ pub struct CreateSubscriptionSchedulePhasesItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<CreateSubscriptionSchedulePhasesItemsBillingThresholds>,
 
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
+    ///
+    /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
+    /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
+    /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
+    #[serde(default)]
+    pub metadata: Metadata,
+
     /// The plan ID to subscribe to.
     ///
     /// You may specify the same ID in `plan` and `price`.
@@ -968,6 +982,14 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
     /// When updating, pass an empty string to remove previously-defined thresholds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_thresholds: Option<UpdateSubscriptionSchedulePhasesItemsBillingThresholds>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
+    ///
+    /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
+    /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
+    /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
+    #[serde(default)]
+    pub metadata: Metadata,
 
     /// The plan ID to subscribe to.
     ///

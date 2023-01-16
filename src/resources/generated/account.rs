@@ -265,6 +265,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal_payments: Option<AccountCapabilitiesIdealPayments>,
 
+    /// The status of the india_international_payments capability of the account, or whether the account can process international charges (non INR) in India.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub india_international_payments: Option<AccountCapabilitiesIndiaInternationalPayments>,
+
     /// The status of the JCB payments capability of the account, or whether the account (Japan only) can directly process JCB credit card charges in JPY currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jcb_payments: Option<CapabilityStatus>,
@@ -1257,6 +1261,10 @@ pub struct CreateAccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal_payments: Option<CreateAccountCapabilitiesIdealPayments>,
 
+    /// The india_international_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub india_international_payments: Option<CreateAccountCapabilitiesIndiaInternationalPayments>,
+
     /// The jcb_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub jcb_payments: Option<CreateAccountCapabilitiesJcbPayments>,
@@ -1530,6 +1538,10 @@ pub struct UpdateAccountCapabilities {
     /// The ideal_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ideal_payments: Option<UpdateAccountCapabilitiesIdealPayments>,
+
+    /// The india_international_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub india_international_payments: Option<UpdateAccountCapabilitiesIndiaInternationalPayments>,
 
     /// The jcb_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1881,6 +1893,16 @@ pub struct CreateAccountCapabilitiesGrabpayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesIdealPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesIndiaInternationalPayments {
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2337,6 +2359,16 @@ pub struct UpdateAccountCapabilitiesGrabpayPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesIdealPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesIndiaInternationalPayments {
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -3167,6 +3199,42 @@ impl std::fmt::Display for AccountCapabilitiesIdealPayments {
     }
 }
 impl std::default::Default for AccountCapabilitiesIdealPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `india_international_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesIndiaInternationalPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesIndiaInternationalPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesIndiaInternationalPayments::Active => "active",
+            AccountCapabilitiesIndiaInternationalPayments::Inactive => "inactive",
+            AccountCapabilitiesIndiaInternationalPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesIndiaInternationalPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesIndiaInternationalPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesIndiaInternationalPayments {
     fn default() -> Self {
         Self::Active
     }

@@ -627,9 +627,9 @@ pub struct CreatePriceProductData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 
-    /// A label that represents units of this product in Stripe and on customers’ receipts and invoices.
+    /// A label that represents units of this product.
     ///
-    /// When set, this will be included in associated invoice line item descriptions.
+    /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
 }

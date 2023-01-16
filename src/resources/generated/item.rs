@@ -5,8 +5,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::ids::CheckoutSessionItemId;
-use crate::params::{Expandable, Object};
-use crate::resources::{Currency, Discount, Price, Product, TaxRate};
+use crate::params::Object;
+use crate::resources::{Currency, Discount, Price, TaxRate};
 
 /// The resource representing a Stripe "LineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -47,12 +47,6 @@ pub struct CheckoutSessionItem {
 
     /// The price used to generate the line item.
     pub price: Option<Price>,
-
-    /// The ID of the product for this line item.
-    ///
-    /// This will always be the same as `price.product`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub product: Option<Expandable<Product>>,
 
     /// The quantity of products being purchased.
     pub quantity: Option<u64>,

@@ -98,7 +98,7 @@ pub struct Charge {
     /// ID of the balance transaction that describes the reversal of the balance on your account due to payment failure.
     pub failure_balance_transaction: Option<Expandable<BalanceTransaction>>,
 
-    /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/api#errors) for a list of codes).
+    /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/error-codes) for a list of codes).
     pub failure_code: Option<String>,
 
     /// Message to user further explaining reason for charge failure if available.
@@ -166,7 +166,6 @@ pub struct Charge {
     pub refunded: bool,
 
     /// A list of refunds that have been applied to the charge.
-    #[serde(default)]
     pub refunds: List<Refund>,
 
     /// ID of the review associated with this charge if one exists.

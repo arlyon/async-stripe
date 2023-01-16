@@ -8,9 +8,10 @@ use crate::client::{Client, Response};
 use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
-    Address, CheckoutSessionItem, Currency, Customer, Discount, LinkedAccountOptionsUsBankAccount,
-    PaymentIntent, PaymentLink, PaymentMethodOptionsCustomerBalanceEuBankAccount, SetupIntent,
-    Shipping, ShippingRate, Subscription, TaxRate,
+    Address, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
+    InvoiceSettingRenderingOptions, LinkedAccountOptionsUsBankAccount, PaymentIntent, PaymentLink,
+    PaymentMethodOptionsCustomerBalanceEuBankAccount, SetupIntent, Shipping, ShippingRate,
+    Subscription, TaxId, TaxRate,
 };
 
 /// The resource representing a Stripe "Session".
@@ -38,8 +39,8 @@ pub struct CheckoutSession {
     /// Describes whether Checkout should collect the customer's billing address.
     pub billing_address_collection: Option<CheckoutSessionBillingAddressCollection>,
 
-    /// The URL the customer will be directed to if they decide to cancel payment and return to your website.
-    pub cancel_url: String,
+    /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
+    pub cancel_url: Option<String>,
 
     /// A unique string to reference the Checkout Session.
     ///
@@ -61,6 +62,8 @@ pub struct CheckoutSession {
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Option<Currency>,
+
+    pub custom_text: PaymentPagesCheckoutSessionCustomText,
 
     /// The ID of the customer for this Session.
     /// For Checkout Sessions in `payment` or `subscription` mode, Checkout
@@ -87,6 +90,12 @@ pub struct CheckoutSession {
 
     /// The timestamp at which the Checkout Session will expire.
     pub expires_at: Timestamp,
+
+    /// ID of the invoice created by the Checkout Session, if it exists.
+    pub invoice: Option<Expandable<Invoice>>,
+
+    /// Details on the state of invoice creation for the Checkout Session.
+    pub invoice_creation: Option<PaymentPagesCheckoutSessionInvoiceCreation>,
 
     /// The line items purchased by the customer.
     #[serde(default)]
@@ -707,6 +716,21 @@ pub struct PaymentPagesCheckoutSessionConsentCollection {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionCustomText {
+    /// Custom text that should be displayed alongside shipping address collection.
+    pub shipping_address: Option<PaymentPagesCheckoutSessionCustomTextPosition>,
+
+    /// Custom text that should be displayed alongside the payment confirmation button.
+    pub submit: Option<PaymentPagesCheckoutSessionCustomTextPosition>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionCustomTextPosition {
+    /// Text may be up to 500 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomerDetails {
     /// The customer's address after a completed Checkout Session.
     ///
@@ -730,6 +754,48 @@ pub struct PaymentPagesCheckoutSessionCustomerDetails {
 
     /// The customer’s tax IDs after a completed Checkout Session.
     pub tax_ids: Option<Vec<PaymentPagesCheckoutSessionTaxId>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionInvoiceCreation {
+    /// Indicates whether invoice creation is enabled for the Checkout Session.
+    pub enabled: bool,
+
+    pub invoice_data: PaymentPagesCheckoutSessionInvoiceSettings,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionInvoiceSettings {
+    /// The account tax IDs associated with the invoice.
+    pub account_tax_ids: Option<Vec<Expandable<TaxId>>>,
+
+    /// Custom fields displayed on the invoice.
+    pub custom_fields: Option<Vec<InvoiceSettingCustomField>>,
+
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    pub description: Option<String>,
+
+    /// Footer displayed on the invoice.
+    pub footer: Option<String>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Metadata,
+
+    /// Options for invoice PDF rendering.
+    pub rendering_options: Option<InvoiceSettingRenderingOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InvoiceSettingCustomField {
+    /// The name of the custom field.
+    pub name: String,
+
+    /// The value of the custom field.
+    pub value: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -853,8 +919,9 @@ pub struct CreateCheckoutSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_address_collection: Option<CheckoutSessionBillingAddressCollection>,
 
-    /// The URL the customer will be directed to if they decide to cancel payment and return to your website.
-    pub cancel_url: &'a str,
+    /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancel_url: Option<&'a str>,
 
     /// A unique string to reference the Checkout Session.
     ///
@@ -872,6 +939,10 @@ pub struct CreateCheckoutSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
+    /// Display additional text for your customers using custom text.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_text: Option<CreateCheckoutSessionCustomText>,
+
     /// ID of an existing Customer, if one exists.
     ///
     /// In `payment` mode, the customer’s most recent card payment method will be used to prefill the email, name, card details, and billing address on the Checkout page.
@@ -885,7 +956,7 @@ pub struct CreateCheckoutSession<'a> {
     /// When a Customer is not created, you can still retrieve email, address, and other customer data entered in Checkout
     /// with [customer_details](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-customer_details).
     ///
-    /// Sessions that don't create Customers instead create [Guest Customers](https://support.stripe.com/questions/guest-customer-faq)
+    /// Sessions that don't create Customers instead are grouped by [guest customers](https://stripe.com/docs/payments/checkout/guest-customers)
     /// in the Dashboard.
     ///
     /// Promotion codes limited to first time customers will return invalid for these Sessions.  Can only be set in `payment` and `setup` mode.
@@ -923,6 +994,10 @@ pub struct CreateCheckoutSession<'a> {
     /// By default, this value is 24 hours from creation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_at: Option<Timestamp>,
+
+    /// Generate a post-purchase Invoice for one-time payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_creation: Option<CreateCheckoutSessionInvoiceCreation>,
 
     /// A list of items the customer is purchasing.
     ///
@@ -1029,16 +1104,17 @@ pub struct CreateCheckoutSession<'a> {
 }
 
 impl<'a> CreateCheckoutSession<'a> {
-    pub fn new(cancel_url: &'a str, success_url: &'a str) -> Self {
+    pub fn new(success_url: &'a str) -> Self {
         CreateCheckoutSession {
             after_expiration: Default::default(),
             allow_promotion_codes: Default::default(),
             automatic_tax: Default::default(),
             billing_address_collection: Default::default(),
-            cancel_url,
+            cancel_url: Default::default(),
             client_reference_id: Default::default(),
             consent_collection: Default::default(),
             currency: Default::default(),
+            custom_text: Default::default(),
             customer: Default::default(),
             customer_creation: Default::default(),
             customer_email: Default::default(),
@@ -1046,6 +1122,7 @@ impl<'a> CreateCheckoutSession<'a> {
             discounts: Default::default(),
             expand: Default::default(),
             expires_at: Default::default(),
+            invoice_creation: Default::default(),
             line_items: Default::default(),
             locale: Default::default(),
             metadata: Default::default(),
@@ -1160,6 +1237,17 @@ pub struct CreateCheckoutSessionConsentCollection {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomText {
+    /// Custom text that should be displayed alongside shipping address collection.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_address: Option<CreateCheckoutSessionCustomTextShippingAddress>,
+
+    /// Custom text that should be displayed alongside the payment confirmation button.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub submit: Option<CreateCheckoutSessionCustomTextSubmit>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomerUpdate {
     /// Describes whether Checkout saves the billing address onto `customer.address`.
     /// To always collect a full billing address, use `billing_address_collection`.
@@ -1194,46 +1282,26 @@ pub struct CreateCheckoutSessionDiscounts {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionInvoiceCreation {
+    /// Set to `true` to enable invoice creation.
+    pub enabled: bool,
+
+    /// Parameters passed when creating invoices for payment-mode Checkout Sessions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_data: Option<CreateCheckoutSessionInvoiceCreationInvoiceData>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during Checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<CreateCheckoutSessionLineItemsAdjustableQuantity>,
-
-    /// [Deprecated] The amount to be collected per unit of the line item.
-    ///
-    /// If specified, must also pass `currency` and `name`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amount: Option<i64>,
-
-    /// [Deprecated] Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
-    ///
-    /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    /// Required if `amount` is passed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency: Option<Currency>,
-
-    /// [Deprecated] The description for the line item, to be displayed on the Checkout page.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
 
     /// The [tax rates](https://stripe.com/docs/api/tax_rates) that will be applied to this line item depending on the customer's billing/shipping address.
     ///
     /// We currently support the following countries: US, GB, AU, and all countries in the EU.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dynamic_tax_rates: Option<Vec<String>>,
-
-    /// [Deprecated] A list of image URLs representing this line item.
-    ///
-    /// Each image can be up to 5 MB in size.
-    /// If passing `price` or `price_data`, specify images on the associated product instead.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub images: Option<Vec<String>>,
-
-    /// [Deprecated] The name for the item to be displayed on the Checkout page.
-    ///
-    /// Required if `amount` is passed.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
 
     /// The ID of the [Price](https://stripe.com/docs/api/prices) or [Plan](https://stripe.com/docs/api/plans) object.
     ///
@@ -1525,12 +1593,6 @@ pub struct CreateCheckoutSessionSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
 
-    /// This parameter is deprecated.
-    ///
-    /// Use the line_items parameter on the Session instead.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<CreateCheckoutSessionSubscriptionDataItems>>,
-
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
@@ -1594,6 +1656,51 @@ pub struct CreateCheckoutSessionAfterExpirationRecovery {
     ///
     /// It will be attached to the Checkout Session object upon expiration.
     pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomTextShippingAddress {
+    /// Text may be up to 500 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomTextSubmit {
+    /// Text may be up to 500 characters in length.
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionInvoiceCreationInvoiceData {
+    /// The account tax IDs associated with the invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_tax_ids: Option<Vec<String>>,
+
+    /// Default custom fields to be displayed on invoices for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_fields: Option<Vec<CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields>>,
+
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    /// Default footer to be displayed on invoices for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub footer: Option<String>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    /// Default options for invoice PDF rendering for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering_options: Option<CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2119,24 +2226,6 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CreateCheckoutSessionSubscriptionDataItems {
-    /// Plan ID for this item.
-    pub plan: String,
-
-    /// The quantity of the subscription item being purchased.
-    ///
-    /// Quantity should not be defined when `recurring.usage_type=metered`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub quantity: Option<u64>,
-
-    /// The tax rates which apply to this item.
-    ///
-    /// When set, the `default_tax_rates` on `subscription_data` do not apply to this item.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_rates: Option<Vec<String>>,
-}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataTransferData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     ///
@@ -2147,6 +2236,31 @@ pub struct CreateCheckoutSessionSubscriptionDataTransferData {
 
     /// ID of an existing, connected Stripe account.
     pub destination: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields {
+    /// The name of the custom field.
+    ///
+    /// This may be up to 30 characters.
+    pub name: String,
+
+    /// The value of the custom field.
+    ///
+    /// This may be up to 30 characters.
+    pub value: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    ///
+    /// One of `exclude_tax` or `include_inclusive_tax`.
+    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_tax_display:
+        Option<CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3960,6 +4074,46 @@ impl std::fmt::Display for CreateCheckoutSessionCustomerUpdateShipping {
 impl std::default::Default for CreateCheckoutSessionCustomerUpdateShipping {
     fn default() -> Self {
         Self::Auto
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions`'s `amount_tax_display` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
+    ExcludeTax,
+    IncludeInclusiveTax,
+}
+
+impl CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::ExcludeTax => "exclude_tax",
+            CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::IncludeInclusiveTax => "include_inclusive_tax",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn default() -> Self {
+        Self::ExcludeTax
     }
 }
 
