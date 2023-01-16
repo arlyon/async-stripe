@@ -9,7 +9,7 @@ members = [
 name = "async-stripe"
 version = "0.15.0"
 description = "API bindings for the Stripe HTTP API"
-rust-version = "1.56.0"
+rust-version = "1.60.0"
 authors = [
   "Anna Baldwin <abaldwin@developers.wyyerd.com>",
   "Kevin Stenerson <kestred@users.noreply.github.com>",
@@ -83,8 +83,6 @@ hyper-client = ["hyper", "http-types/hyperium_http"]
 
 [dependencies]
 async-std = {version = "1.8,<1.11", optional = true}
-# Pin required because of MSRV of 1.59
-async-global-executor = {version = "2.0, <2.1", optional = true}
 
 chrono = { version = "0.4", default-features = false, features = ["serde", "clock"], optional = true }
 thiserror = "1.0.24"
@@ -110,15 +108,12 @@ hmac = { version = "0.12", optional = true }
 sha2 = { version = "0.10", optional = true }
 hex = { version = "0.4", optional = true }
 
-# Has MSRV of 1.59
-time = {version = "0.3,<0.3.10", optional = true}
-
 [dev-dependencies]
 async-std = { version = "1.10.0", features = ["attributes"] }
 httpmock = "0.6.6"
-tokio = { version = "1.2", features = ["rt", "macros"] }
+tokio = { version = "1.24.1", features = ["rt", "macros"] }
 axum = "0.4.8"
-actix-web = "4.0.1"
+actix-web = "4.2.1"
 
 [[example]]
 name = "checkout"
