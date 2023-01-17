@@ -117,18 +117,25 @@ impl Account {
     /// Returns a list of accounts connected to your platform via [Connect](https://stripe.com/docs/connect).
     ///
     /// If you’re not a platform, the list is empty.
-    pub fn list(client: &Client, params: &ListAccounts<'_>) -> Response<List<Account>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListAccounts<'a>,
+    ) -> Response<'a, List<Account>> {
         client.get_query("/accounts", &params)
     }
 
     /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
     /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
-    pub fn create(client: &Client, params: CreateAccount<'_>) -> Response<Account> {
+    pub fn create<'a>(client: &'a Client, params: CreateAccount<'a>) -> Response<'a, Account> {
         client.post_form("/accounts", &params)
     }
 
     /// Retrieves the details of an account.
-    pub fn retrieve(client: &Client, id: &AccountId, expand: &[&str]) -> Response<Account> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a AccountId,
+        expand: &'a [&str],
+    ) -> Response<'a, Account> {
         client.get_query(&format!("/accounts/{}", id), &Expand { expand })
     }
 
@@ -138,7 +145,11 @@ impl Account {
     /// Most parameters can be changed only for Custom accounts.
     /// (These are marked **Custom Only** below.) Parameters marked **Custom and Express** are not supported for Standard accounts.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
     /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
-    pub fn update(client: &Client, id: &AccountId, params: UpdateAccount<'_>) -> Response<Account> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a AccountId,
+        params: UpdateAccount<'a>,
+    ) -> Response<'a, Account> {
         client.post_form(&format!("/accounts/{}", id), &params)
     }
 
@@ -148,7 +159,7 @@ impl Account {
     ///
     /// Standard accounts created using live-mode keys cannot be deleted.
     /// Custom or Express accounts created using live-mode keys can only be deleted once all balances are zero.  If you want to delete your own account, use the [account information tab in your account settings](https://dashboard.stripe.com/account) instead.
-    pub fn delete(client: &Client, id: &AccountId) -> Response<Deleted<AccountId>> {
+    pub fn delete<'a>(client: &'a Client, id: &'a AccountId) -> Response<'a, Deleted<AccountId>> {
         client.delete(&format!("/accounts/{}", id))
     }
 }

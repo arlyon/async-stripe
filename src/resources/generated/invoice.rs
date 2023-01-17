@@ -439,19 +439,26 @@ impl Invoice {
     /// You can list all invoices, or list the invoices for a specific customer.
     ///
     /// The invoices are returned sorted by creation date, with the most recently created invoices appearing first.
-    pub fn list(client: &Client, params: &ListInvoices<'_>) -> Response<List<Invoice>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListInvoices<'a>,
+    ) -> Response<'a, List<Invoice>> {
         client.get_query("/invoices", &params)
     }
 
     /// This endpoint creates a draft invoice for a given customer.
     ///
     /// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
-    pub fn create(client: &Client, params: CreateInvoice<'_>) -> Response<Invoice> {
+    pub fn create<'a>(client: &'a Client, params: CreateInvoice<'a>) -> Response<'a, Invoice> {
         client.post_form("/invoices", &params)
     }
 
     /// Retrieves the invoice with the given ID.
-    pub fn retrieve(client: &Client, id: &InvoiceId, expand: &[&str]) -> Response<Invoice> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a InvoiceId,
+        expand: &'a [&str],
+    ) -> Response<'a, Invoice> {
         client.get_query(&format!("/invoices/{}", id), &Expand { expand })
     }
 
@@ -459,7 +466,7 @@ impl Invoice {
     ///
     /// This cannot be undone.
     /// Attempts to delete invoices that are no longer in a draft state will fail; once an invoice has been finalized or if an invoice is for a subscription, it must be [voided](https://stripe.com/docs/api#void_invoice).
-    pub fn delete(client: &Client, id: &InvoiceId) -> Response<Deleted<InvoiceId>> {
+    pub fn delete<'a>(client: &'a Client, id: &'a InvoiceId) -> Response<'a, Deleted<InvoiceId>> {
         client.delete(&format!("/invoices/{}", id))
     }
 }

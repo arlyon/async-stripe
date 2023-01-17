@@ -87,40 +87,40 @@ pub struct SubscriptionSchedule {
 
 impl SubscriptionSchedule {
     /// Retrieves the list of your subscription schedules.
-    pub fn list(
-        client: &Client,
-        params: &ListSubscriptionSchedules<'_>,
-    ) -> Response<List<SubscriptionSchedule>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListSubscriptionSchedules<'a>,
+    ) -> Response<'a, List<SubscriptionSchedule>> {
         client.get_query("/subscription_schedules", &params)
     }
 
     /// Creates a new subscription schedule object.
     ///
     /// Each customer can have up to 500 active or scheduled subscriptions.
-    pub fn create(
-        client: &Client,
-        params: CreateSubscriptionSchedule<'_>,
-    ) -> Response<SubscriptionSchedule> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateSubscriptionSchedule<'a>,
+    ) -> Response<'a, SubscriptionSchedule> {
         client.post_form("/subscription_schedules", &params)
     }
 
     /// Retrieves the details of an existing subscription schedule.
     ///
     /// You only need to supply the unique subscription schedule identifier that was returned upon subscription schedule creation.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionScheduleId,
-        expand: &[&str],
-    ) -> Response<SubscriptionSchedule> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a SubscriptionScheduleId,
+        expand: &'a [&str],
+    ) -> Response<'a, SubscriptionSchedule> {
         client.get_query(&format!("/subscription_schedules/{}", id), &Expand { expand })
     }
 
     /// Updates an existing subscription schedule.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionScheduleId,
-        params: UpdateSubscriptionSchedule<'_>,
-    ) -> Response<SubscriptionSchedule> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a SubscriptionScheduleId,
+        params: UpdateSubscriptionSchedule<'a>,
+    ) -> Response<'a, SubscriptionSchedule> {
         client.post_form(&format!("/subscription_schedules/{}", id), &params)
     }
 }

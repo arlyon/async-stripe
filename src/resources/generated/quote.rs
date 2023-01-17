@@ -145,12 +145,16 @@ pub struct Quote {
 
 impl Quote {
     /// Returns a list of your quotes.
-    pub fn list(client: &Client, params: &ListQuotes<'_>) -> Response<List<Quote>> {
+    pub fn list<'a>(client: &'a Client, params: &'a ListQuotes<'a>) -> Response<'a, List<Quote>> {
         client.get_query("/quotes", &params)
     }
 
     /// Retrieves the quote with the given ID.
-    pub fn retrieve(client: &Client, id: &QuoteId, expand: &[&str]) -> Response<Quote> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a QuoteId,
+        expand: &'a [&str],
+    ) -> Response<'a, Quote> {
         client.get_query(&format!("/quotes/{}", id), &Expand { expand })
     }
 }

@@ -104,7 +104,7 @@ impl Payout {
     /// Returns a list of existing payouts sent to third-party bank accounts or that Stripe has sent you.
     ///
     /// The payouts are returned in sorted order, with the most recently created payouts appearing first.
-    pub fn list(client: &Client, params: &ListPayouts<'_>) -> Response<List<Payout>> {
+    pub fn list<'a>(client: &'a Client, params: &'a ListPayouts<'a>) -> Response<'a, List<Payout>> {
         client.get_query("/payouts", &params)
     }
 
@@ -112,14 +112,18 @@ impl Payout {
     ///
     /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the payout amount, or you’ll receive an “Insufficient Funds” error.  If your API key is in test mode, money won’t actually be sent, though everything else will occur as if in live mode.  If you are creating a manual payout on a Stripe account that uses multiple payment source types, you’ll need to specify the source type balance that the payout should draw from.
     /// The [balance object](https://stripe.com/docs/api#balance_object) details available and pending amounts by source type.
-    pub fn create(client: &Client, params: CreatePayout<'_>) -> Response<Payout> {
+    pub fn create<'a>(client: &'a Client, params: CreatePayout<'a>) -> Response<'a, Payout> {
         client.post_form("/payouts", &params)
     }
 
     /// Retrieves the details of an existing payout.
     ///
     /// Supply the unique payout ID from either a payout creation request or the payout list, and Stripe will return the corresponding payout information.
-    pub fn retrieve(client: &Client, id: &PayoutId, expand: &[&str]) -> Response<Payout> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a PayoutId,
+        expand: &'a [&str],
+    ) -> Response<'a, Payout> {
         client.get_query(&format!("/payouts/{}", id), &Expand { expand })
     }
 
@@ -127,7 +131,11 @@ impl Payout {
     ///
     /// Any parameters not provided will be left unchanged.
     /// This request accepts only the metadata as arguments.
-    pub fn update(client: &Client, id: &PayoutId, params: UpdatePayout<'_>) -> Response<Payout> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a PayoutId,
+        params: UpdatePayout<'a>,
+    ) -> Response<'a, Payout> {
         client.post_form(&format!("/payouts/{}", id), &params)
     }
 }

@@ -36,12 +36,18 @@ pub struct EphemeralKey {
 
 impl EphemeralKey {
     /// Creates a short-lived API key for a given resource.
-    pub fn create(client: &Client, params: CreateEphemeralKey<'_>) -> Response<EphemeralKey> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateEphemeralKey<'a>,
+    ) -> Response<'a, EphemeralKey> {
         client.post_form("/ephemeral_keys", &params)
     }
 
     /// Invalidates a short-lived API key for a given resource.
-    pub fn delete(client: &Client, id: &EphemeralKeyId) -> Response<Deleted<EphemeralKeyId>> {
+    pub fn delete<'a>(
+        client: &'a Client,
+        id: &'a EphemeralKeyId,
+    ) -> Response<'a, Deleted<EphemeralKeyId>> {
         client.delete(&format!("/ephemeral_keys/{}", id))
     }
 }

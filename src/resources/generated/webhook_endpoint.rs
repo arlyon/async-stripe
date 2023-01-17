@@ -74,10 +74,10 @@ pub struct WebhookEndpoint {
 
 impl WebhookEndpoint {
     /// Returns a list of your webhook endpoints.
-    pub fn list(
-        client: &Client,
-        params: &ListWebhookEndpoints<'_>,
-    ) -> Response<List<WebhookEndpoint>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListWebhookEndpoints<'a>,
+    ) -> Response<'a, List<WebhookEndpoint>> {
         client.get_query("/webhook_endpoints", &params)
     }
 
@@ -86,32 +86,38 @@ impl WebhookEndpoint {
     /// You may optionally specify the Boolean `connect` parameter.
     /// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
     /// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
-    pub fn create(client: &Client, params: CreateWebhookEndpoint<'_>) -> Response<WebhookEndpoint> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateWebhookEndpoint<'a>,
+    ) -> Response<'a, WebhookEndpoint> {
         client.post_form("/webhook_endpoints", &params)
     }
 
     /// Retrieves the webhook endpoint with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &WebhookEndpointId,
-        expand: &[&str],
-    ) -> Response<WebhookEndpoint> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a WebhookEndpointId,
+        expand: &'a [&str],
+    ) -> Response<'a, WebhookEndpoint> {
         client.get_query(&format!("/webhook_endpoints/{}", id), &Expand { expand })
     }
 
     /// Updates the webhook endpoint.
     ///
     /// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
-    pub fn update(
-        client: &Client,
-        id: &WebhookEndpointId,
-        params: UpdateWebhookEndpoint<'_>,
-    ) -> Response<WebhookEndpoint> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a WebhookEndpointId,
+        params: UpdateWebhookEndpoint<'a>,
+    ) -> Response<'a, WebhookEndpoint> {
         client.post_form(&format!("/webhook_endpoints/{}", id), &params)
     }
 
     /// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
-    pub fn delete(client: &Client, id: &WebhookEndpointId) -> Response<Deleted<WebhookEndpointId>> {
+    pub fn delete<'a>(
+        client: &'a Client,
+        id: &'a WebhookEndpointId,
+    ) -> Response<'a, Deleted<WebhookEndpointId>> {
         client.delete(&format!("/webhook_endpoints/{}", id))
     }
 }

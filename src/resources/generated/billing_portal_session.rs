@@ -53,10 +53,10 @@ pub struct BillingPortalSession {
 
 impl BillingPortalSession {
     /// Creates a session of the customer portal.
-    pub fn create(
-        client: &Client,
-        params: CreateBillingPortalSession<'_>,
-    ) -> Response<BillingPortalSession> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateBillingPortalSession<'a>,
+    ) -> Response<'a, BillingPortalSession> {
         client.post_form("/billing_portal/sessions", &params)
     }
 }

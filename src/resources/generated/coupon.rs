@@ -95,7 +95,7 @@ pub struct Coupon {
 
 impl Coupon {
     /// Returns a list of your coupons.
-    pub fn list(client: &Client, params: &ListCoupons<'_>) -> Response<List<Coupon>> {
+    pub fn list<'a>(client: &'a Client, params: &'a ListCoupons<'a>) -> Response<'a, List<Coupon>> {
         client.get_query("/coupons", &params)
     }
 
@@ -104,19 +104,27 @@ impl Coupon {
     /// Coupon creation is also accessible via the API if you need to create coupons on the fly.  A coupon has either a `percent_off` or an `amount_off` and `currency`.
     /// If you set an `amount_off`, that amount will be subtracted from any invoice’s subtotal.
     /// For example, an invoice with a subtotal of $100 will have a final total of $0 if a coupon with an `amount_off` of 20000 is applied to it and an invoice with a subtotal of $300 will have a final total of $100 if a coupon with an `amount_off` of 20000 is applied to it.
-    pub fn create(client: &Client, params: CreateCoupon<'_>) -> Response<Coupon> {
+    pub fn create<'a>(client: &'a Client, params: CreateCoupon<'a>) -> Response<'a, Coupon> {
         client.post_form("/coupons", &params)
     }
 
     /// Retrieves the coupon with the given ID.
-    pub fn retrieve(client: &Client, id: &CouponId, expand: &[&str]) -> Response<Coupon> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a CouponId,
+        expand: &'a [&str],
+    ) -> Response<'a, Coupon> {
         client.get_query(&format!("/coupons/{}", id), &Expand { expand })
     }
 
     /// Updates the metadata of a coupon.
     ///
     /// Other coupon details (currency, duration, amount_off) are, by design, not editable.
-    pub fn update(client: &Client, id: &CouponId, params: UpdateCoupon<'_>) -> Response<Coupon> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a CouponId,
+        params: UpdateCoupon<'a>,
+    ) -> Response<'a, Coupon> {
         client.post_form(&format!("/coupons/{}", id), &params)
     }
 
@@ -124,7 +132,7 @@ impl Coupon {
     ///
     /// However, deleting a coupon does not affect any customers who have already applied the coupon; it means that new customers can’t redeem the coupon.
     /// You can also delete coupons via the API.
-    pub fn delete(client: &Client, id: &CouponId) -> Response<Deleted<CouponId>> {
+    pub fn delete<'a>(client: &'a Client, id: &'a CouponId) -> Response<'a, Deleted<CouponId>> {
         client.delete(&format!("/coupons/{}", id))
     }
 }

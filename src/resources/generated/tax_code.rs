@@ -25,14 +25,21 @@ pub struct TaxCode {
 
 impl TaxCode {
     /// A list of [all tax codes available](https://stripe.com/docs/tax/tax-categories) to add to Products in order to allow specific tax calculations.
-    pub fn list(client: &Client, params: &ListTaxCodes<'_>) -> Response<List<TaxCode>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListTaxCodes<'a>,
+    ) -> Response<'a, List<TaxCode>> {
         client.get_query("/tax_codes", &params)
     }
 
     /// Retrieves the details of an existing tax code.
     ///
     /// Supply the unique tax code ID and Stripe will return the corresponding tax code information.
-    pub fn retrieve(client: &Client, id: &TaxCodeId, expand: &[&str]) -> Response<TaxCode> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a TaxCodeId,
+        expand: &'a [&str],
+    ) -> Response<'a, TaxCode> {
         client.get_query(&format!("/tax_codes/{}", id), &Expand { expand })
     }
 }

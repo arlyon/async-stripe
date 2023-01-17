@@ -45,28 +45,35 @@ pub struct FileLink {
 
 impl FileLink {
     /// Returns a list of file links.
-    pub fn list(client: &Client, params: &ListFileLinks<'_>) -> Response<List<FileLink>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListFileLinks<'a>,
+    ) -> Response<'a, List<FileLink>> {
         client.get_query("/file_links", &params)
     }
 
     /// Creates a new file link object.
-    pub fn create(client: &Client, params: CreateFileLink<'_>) -> Response<FileLink> {
+    pub fn create<'a>(client: &'a Client, params: CreateFileLink<'a>) -> Response<'a, FileLink> {
         client.post_form("/file_links", &params)
     }
 
     /// Retrieves the file link with the given ID.
-    pub fn retrieve(client: &Client, id: &FileLinkId, expand: &[&str]) -> Response<FileLink> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a FileLinkId,
+        expand: &'a [&str],
+    ) -> Response<'a, FileLink> {
         client.get_query(&format!("/file_links/{}", id), &Expand { expand })
     }
 
     /// Updates an existing file link object.
     ///
     /// Expired links can no longer be updated.
-    pub fn update(
-        client: &Client,
-        id: &FileLinkId,
-        params: UpdateFileLink<'_>,
-    ) -> Response<FileLink> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a FileLinkId,
+        params: UpdateFileLink<'a>,
+    ) -> Response<'a, FileLink> {
         client.post_form(&format!("/file_links/{}", id), &params)
     }
 }

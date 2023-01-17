@@ -161,19 +161,23 @@ pub struct Source {
 
 impl Source {
     /// List source transactions for a given source.
-    pub fn list(client: &Client, params: &ListSources<'_>) -> Response<List<Source>> {
+    pub fn list<'a>(client: &'a Client, params: &'a ListSources<'a>) -> Response<'a, List<Source>> {
         client.get_query("/sources/{source}/source_transactions", &params)
     }
 
     /// Creates a new source object.
-    pub fn create(client: &Client, params: CreateSource<'_>) -> Response<Source> {
+    pub fn create<'a>(client: &'a Client, params: CreateSource<'a>) -> Response<'a, Source> {
         client.post_form("/sources", &params)
     }
 
     /// Retrieves an existing source object.
     ///
     /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
-    pub fn retrieve(client: &Client, id: &SourceId, expand: &[&str]) -> Response<Source> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a SourceId,
+        expand: &'a [&str],
+    ) -> Response<'a, Source> {
         client.get_query(&format!("/sources/{}", id), &Expand { expand })
     }
 
@@ -182,7 +186,11 @@ impl Source {
     /// Any parameters not provided will be left unchanged.  This request accepts the `metadata` and `owner` as arguments.
     /// It is also possible to update type specific information for selected payment methods.
     /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
-    pub fn update(client: &Client, id: &SourceId, params: UpdateSource<'_>) -> Response<Source> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a SourceId,
+        params: UpdateSource<'a>,
+    ) -> Response<'a, Source> {
         client.post_form(&format!("/sources/{}", id), &params)
     }
 }

@@ -117,7 +117,10 @@ pub struct SetupIntent {
 
 impl SetupIntent {
     /// Returns a list of SetupIntents.
-    pub fn list(client: &Client, params: &ListSetupIntents<'_>) -> Response<List<SetupIntent>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListSetupIntents<'a>,
+    ) -> Response<'a, List<SetupIntent>> {
         client.get_query("/setup_intents", &params)
     }
 
@@ -125,7 +128,10 @@ impl SetupIntent {
     ///
     /// After the SetupIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/setup_intents/confirm)
     /// to collect any required permissions to charge the payment method later.
-    pub fn create(client: &Client, params: CreateSetupIntent<'_>) -> Response<SetupIntent> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateSetupIntent<'a>,
+    ) -> Response<'a, SetupIntent> {
         client.post_form("/setup_intents", &params)
     }
 
@@ -134,16 +140,20 @@ impl SetupIntent {
     /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
     /// When retrieved with a publishable key, only a subset of properties will be returned.
     /// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
-    pub fn retrieve(client: &Client, id: &SetupIntentId, expand: &[&str]) -> Response<SetupIntent> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a SetupIntentId,
+        expand: &'a [&str],
+    ) -> Response<'a, SetupIntent> {
         client.get_query(&format!("/setup_intents/{}", id), &Expand { expand })
     }
 
     /// Updates a SetupIntent object.
-    pub fn update(
-        client: &Client,
-        id: &SetupIntentId,
-        params: UpdateSetupIntent<'_>,
-    ) -> Response<SetupIntent> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a SetupIntentId,
+        params: UpdateSetupIntent<'a>,
+    ) -> Response<'a, SetupIntent> {
         client.post_form(&format!("/setup_intents/{}", id), &params)
     }
 }

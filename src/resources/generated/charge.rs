@@ -220,7 +220,7 @@ impl Charge {
     /// Returns a list of charges you’ve previously created.
     ///
     /// The charges are returned in sorted order, with the most recent charges appearing first.
-    pub fn list(client: &Client, params: &ListCharges<'_>) -> Response<List<Charge>> {
+    pub fn list<'a>(client: &'a Client, params: &'a ListCharges<'a>) -> Response<'a, List<Charge>> {
         client.get_query("/charges", &params)
     }
 
@@ -228,7 +228,7 @@ impl Charge {
     ///
     /// If your API key is in test mode, the supplied payment source (e.g., card) won’t actually be charged, although everything else will occur as if in live mode.
     /// (Stripe assumes that the charge would have completed successfully).
-    pub fn create(client: &Client, params: CreateCharge<'_>) -> Response<Charge> {
+    pub fn create<'a>(client: &'a Client, params: CreateCharge<'a>) -> Response<'a, Charge> {
         client.post_form("/charges", &params)
     }
 
@@ -236,14 +236,22 @@ impl Charge {
     ///
     /// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
     /// The same information is returned when creating or refunding the charge.
-    pub fn retrieve(client: &Client, id: &ChargeId, expand: &[&str]) -> Response<Charge> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a ChargeId,
+        expand: &'a [&str],
+    ) -> Response<'a, Charge> {
         client.get_query(&format!("/charges/{}", id), &Expand { expand })
     }
 
     /// Updates the specified charge by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.
-    pub fn update(client: &Client, id: &ChargeId, params: UpdateCharge<'_>) -> Response<Charge> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a ChargeId,
+        params: UpdateCharge<'a>,
+    ) -> Response<'a, Charge> {
         client.post_form(&format!("/charges/{}", id), &params)
     }
 }

@@ -53,7 +53,7 @@ impl File {
     /// Returns a list of the files that your account has access to.
     ///
     /// The files are returned sorted by creation date, with the most recently created files appearing first.
-    pub fn list(client: &Client, params: &ListFiles<'_>) -> Response<List<File>> {
+    pub fn list<'a>(client: &'a Client, params: &'a ListFiles<'a>) -> Response<'a, List<File>> {
         client.get_query("/files", &params)
     }
 
@@ -61,7 +61,11 @@ impl File {
     ///
     /// Supply the unique file ID from a file, and Stripe will return the corresponding file object.
     /// To access file contents, see the [File Upload Guide](https://stripe.com/docs/file-upload#download-file-contents).
-    pub fn retrieve(client: &Client, id: &FileId, expand: &[&str]) -> Response<File> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a FileId,
+        expand: &'a [&str],
+    ) -> Response<'a, File> {
         client.get_query(&format!("/files/{}", id), &Expand { expand })
     }
 }

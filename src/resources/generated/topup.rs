@@ -80,21 +80,29 @@ pub struct Topup {
 
 impl Topup {
     /// Returns a list of top-ups.
-    pub fn list(client: &Client, params: &ListTopups<'_>) -> Response<List<Topup>> {
+    pub fn list<'a>(client: &'a Client, params: &'a ListTopups<'a>) -> Response<'a, List<Topup>> {
         client.get_query("/topups", &params)
     }
 
     /// Retrieves the details of a top-up that has previously been created.
     ///
     /// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
-    pub fn retrieve(client: &Client, id: &TopupId, expand: &[&str]) -> Response<Topup> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a TopupId,
+        expand: &'a [&str],
+    ) -> Response<'a, Topup> {
         client.get_query(&format!("/topups/{}", id), &Expand { expand })
     }
 
     /// Updates the metadata of a top-up.
     ///
     /// Other top-up details are not editable by design.
-    pub fn update(client: &Client, id: &TopupId, params: UpdateTopup<'_>) -> Response<Topup> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a TopupId,
+        params: UpdateTopup<'a>,
+    ) -> Response<'a, Topup> {
         client.post_form(&format!("/topups/{}", id), &params)
     }
 }

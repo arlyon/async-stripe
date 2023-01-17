@@ -188,7 +188,10 @@ pub struct PaymentIntent {
 
 impl PaymentIntent {
     /// Returns a list of PaymentIntents.
-    pub fn list(client: &Client, params: &ListPaymentIntents<'_>) -> Response<List<PaymentIntent>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListPaymentIntents<'a>,
+    ) -> Response<'a, List<PaymentIntent>> {
         client.get_query("/payment_intents", &params)
     }
 
@@ -199,7 +202,10 @@ impl PaymentIntent {
     ///
     /// You can read more about the different payment flows available via the Payment Intents API [here](https://stripe.com/docs/payments/payment-intents).  When `confirm=true` is used during creation, it is equivalent to creating and confirming the PaymentIntent in the same call.
     /// You may use any parameters available in the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) when `confirm=true` is supplied.
-    pub fn create(client: &Client, params: CreatePaymentIntent<'_>) -> Response<PaymentIntent> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreatePaymentIntent<'a>,
+    ) -> Response<'a, PaymentIntent> {
         client.post_form("/payment_intents", &params)
     }
 
@@ -208,11 +214,11 @@ impl PaymentIntent {
     /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
     /// When retrieved with a publishable key, only a subset of properties will be returned.
     /// Please refer to the [payment intent](https://stripe.com/docs/api#payment_intent_object) object reference for more details.
-    pub fn retrieve(
-        client: &Client,
-        id: &PaymentIntentId,
-        expand: &[&str],
-    ) -> Response<PaymentIntent> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a PaymentIntentId,
+        expand: &'a [&str],
+    ) -> Response<'a, PaymentIntent> {
         client.get_query(&format!("/payment_intents/{}", id), &Expand { expand })
     }
 
@@ -223,11 +229,11 @@ impl PaymentIntent {
     ///
     /// For example, updating the `payment_method` will always require you to confirm the PaymentIntent again.
     /// If you prefer to update and confirm at the same time, we recommend updating properties via the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) instead.
-    pub fn update(
-        client: &Client,
-        id: &PaymentIntentId,
-        params: UpdatePaymentIntent<'_>,
-    ) -> Response<PaymentIntent> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a PaymentIntentId,
+        params: UpdatePaymentIntent<'a>,
+    ) -> Response<'a, PaymentIntent> {
         client.post_form(&format!("/payment_intents/{}", id), &params)
     }
 }

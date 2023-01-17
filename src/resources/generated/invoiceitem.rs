@@ -133,37 +133,50 @@ impl InvoiceItem {
     /// Returns a list of your invoice items.
     ///
     /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
-    pub fn list(client: &Client, params: &ListInvoiceItems<'_>) -> Response<List<InvoiceItem>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListInvoiceItems<'a>,
+    ) -> Response<'a, List<InvoiceItem>> {
         client.get_query("/invoiceitems", &params)
     }
 
     /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
     ///
     /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
-    pub fn create(client: &Client, params: CreateInvoiceItem<'_>) -> Response<InvoiceItem> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateInvoiceItem<'a>,
+    ) -> Response<'a, InvoiceItem> {
         client.post_form("/invoiceitems", &params)
     }
 
     /// Retrieves the invoice item with the given ID.
-    pub fn retrieve(client: &Client, id: &InvoiceItemId, expand: &[&str]) -> Response<InvoiceItem> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a InvoiceItemId,
+        expand: &'a [&str],
+    ) -> Response<'a, InvoiceItem> {
         client.get_query(&format!("/invoiceitems/{}", id), &Expand { expand })
     }
 
     /// Updates the amount or description of an invoice item on an upcoming invoice.
     ///
     /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
-    pub fn update(
-        client: &Client,
-        id: &InvoiceItemId,
-        params: UpdateInvoiceItem<'_>,
-    ) -> Response<InvoiceItem> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a InvoiceItemId,
+        params: UpdateInvoiceItem<'a>,
+    ) -> Response<'a, InvoiceItem> {
         client.post_form(&format!("/invoiceitems/{}", id), &params)
     }
 
     /// Deletes an invoice item, removing it from an invoice.
     ///
     /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
-    pub fn delete(client: &Client, id: &InvoiceItemId) -> Response<Deleted<InvoiceItemId>> {
+    pub fn delete<'a>(
+        client: &'a Client,
+        id: &'a InvoiceItemId,
+    ) -> Response<'a, Deleted<InvoiceItemId>> {
         client.delete(&format!("/invoiceitems/{}", id))
     }
 }

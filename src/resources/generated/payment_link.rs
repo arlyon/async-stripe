@@ -106,26 +106,36 @@ pub struct PaymentLink {
 
 impl PaymentLink {
     /// Returns a list of your payment links.
-    pub fn list(client: &Client, params: &ListPaymentLinks<'_>) -> Response<List<PaymentLink>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListPaymentLinks<'a>,
+    ) -> Response<'a, List<PaymentLink>> {
         client.get_query("/payment_links", &params)
     }
 
     /// Creates a payment link.
-    pub fn create(client: &Client, params: CreatePaymentLink<'_>) -> Response<PaymentLink> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreatePaymentLink<'a>,
+    ) -> Response<'a, PaymentLink> {
         client.post_form("/payment_links", &params)
     }
 
     /// Retrieve a payment link.
-    pub fn retrieve(client: &Client, id: &PaymentLinkId, expand: &[&str]) -> Response<PaymentLink> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a PaymentLinkId,
+        expand: &'a [&str],
+    ) -> Response<'a, PaymentLink> {
         client.get_query(&format!("/payment_links/{}", id), &Expand { expand })
     }
 
     /// Updates a payment link.
-    pub fn update(
-        client: &Client,
-        id: &PaymentLinkId,
-        params: UpdatePaymentLink<'_>,
-    ) -> Response<PaymentLink> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a PaymentLinkId,
+        params: UpdatePaymentLink<'a>,
+    ) -> Response<'a, PaymentLink> {
         client.post_form(&format!("/payment_links/{}", id), &params)
     }
 }

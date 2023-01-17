@@ -47,12 +47,16 @@ impl Token {
     /// This token can be used with any API method in place of a bank account dictionary.
     ///
     /// This token can be used only once, by attaching it to a [Custom account](https://stripe.com/docs/api#accounts).
-    pub fn create(client: &Client, params: CreateToken<'_>) -> Response<Token> {
+    pub fn create<'a>(client: &'a Client, params: CreateToken<'a>) -> Response<'a, Token> {
         client.post_form("/tokens", &params)
     }
 
     /// Retrieves the token with the given ID.
-    pub fn retrieve(client: &Client, id: &TokenId, expand: &[&str]) -> Response<Token> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a TokenId,
+        expand: &'a [&str],
+    ) -> Response<'a, Token> {
         client.get_query(&format!("/tokens/{}", id), &Expand { expand })
     }
 }

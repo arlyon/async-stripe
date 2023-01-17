@@ -202,23 +202,29 @@ impl Subscription {
     /// By default, returns a list of subscriptions that have not been canceled.
     ///
     /// In order to list canceled subscriptions, specify `status=canceled`.
-    pub fn list(client: &Client, params: &ListSubscriptions<'_>) -> Response<List<Subscription>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListSubscriptions<'a>,
+    ) -> Response<'a, List<Subscription>> {
         client.get_query("/subscriptions", &params)
     }
 
     /// Creates a new subscription on an existing customer.
     ///
     /// Each customer can have up to 500 active or scheduled subscriptions.  When you create a subscription with `collection_method=charge_automatically`, the first invoice is finalized as part of the request. The `payment_behavior` parameter determines the exact behavior of the initial payment.  To start subscriptions where the first invoice always begins in a `draft` status, use [subscription schedules](https://stripe.com/docs/billing/subscriptions/subscription-schedules#managing) instead. Schedules provide the flexibility to model more complex billing configurations that change over time.
-    pub fn create(client: &Client, params: CreateSubscription<'_>) -> Response<Subscription> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateSubscription<'a>,
+    ) -> Response<'a, Subscription> {
         client.post_form("/subscriptions", &params)
     }
 
     /// Retrieves the subscription with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionId,
-        expand: &[&str],
-    ) -> Response<Subscription> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a SubscriptionId,
+        expand: &'a [&str],
+    ) -> Response<'a, Subscription> {
         client.get_query(&format!("/subscriptions/{}", id), &Expand { expand })
     }
 
@@ -226,11 +232,11 @@ impl Subscription {
     ///
     /// When changing plans or quantities, we will optionally prorate the price we charge next month to make up for any price changes.
     /// To preview how the proration will be calculated, use the [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionId,
-        params: UpdateSubscription<'_>,
-    ) -> Response<Subscription> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a SubscriptionId,
+        params: UpdateSubscription<'a>,
+    ) -> Response<'a, Subscription> {
         client.post_form(&format!("/subscriptions/{}", id), &params)
     }
 
@@ -242,7 +248,10 @@ impl Subscription {
     /// This is intended to prevent unexpected payment attempts after the customer has canceled a subscription.
     /// However, you can resume automatic collection of the invoices manually after subscription cancellation to have us proceed.
     /// Or, you could check for unpaid invoices before allowing the customer to cancel the subscription at all.
-    pub fn delete(client: &Client, id: &SubscriptionId) -> Response<Deleted<SubscriptionId>> {
+    pub fn delete<'a>(
+        client: &'a Client,
+        id: &'a SubscriptionId,
+    ) -> Response<'a, Deleted<SubscriptionId>> {
         client.delete(&format!("/subscriptions/{}", id))
     }
 }

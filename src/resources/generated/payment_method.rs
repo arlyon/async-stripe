@@ -144,36 +144,42 @@ impl PaymentMethod {
     /// Returns a list of PaymentMethods for Treasury flows.
     ///
     /// If you want to list the PaymentMethods attached to a Customer for payments, you should use the [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list) API instead.
-    pub fn list(client: &Client, params: &ListPaymentMethods<'_>) -> Response<List<PaymentMethod>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListPaymentMethods<'a>,
+    ) -> Response<'a, List<PaymentMethod>> {
         client.get_query("/payment_methods", &params)
     }
 
     /// Creates a PaymentMethod object.
     ///
     /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.  Instead of creating a PaymentMethod directly, we recommend using the [PaymentIntents](https://stripe.com/docs/payments/accept-a-payment) API to accept a payment immediately or the [SetupIntent](https://stripe.com/docs/payments/save-and-reuse) API to collect payment method details ahead of a future payment.
-    pub fn create(client: &Client, params: CreatePaymentMethod<'_>) -> Response<PaymentMethod> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreatePaymentMethod<'a>,
+    ) -> Response<'a, PaymentMethod> {
         client.post_form("/payment_methods", &params)
     }
 
     /// Retrieves a PaymentMethod object attached to the StripeAccount.
     ///
     /// To retrieve a payment method attached to a Customer, you should use [Retrieve a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer).
-    pub fn retrieve(
-        client: &Client,
-        id: &PaymentMethodId,
-        expand: &[&str],
-    ) -> Response<PaymentMethod> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a PaymentMethodId,
+        expand: &'a [&str],
+    ) -> Response<'a, PaymentMethod> {
         client.get_query(&format!("/payment_methods/{}", id), &Expand { expand })
     }
 
     /// Updates a PaymentMethod object.
     ///
     /// A PaymentMethod must be attached a customer to be updated.
-    pub fn update(
-        client: &Client,
-        id: &PaymentMethodId,
-        params: UpdatePaymentMethod<'_>,
-    ) -> Response<PaymentMethod> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a PaymentMethodId,
+        params: UpdatePaymentMethod<'a>,
+    ) -> Response<'a, PaymentMethod> {
         client.post_form(&format!("/payment_methods/{}", id), &params)
     }
 }

@@ -162,17 +162,24 @@ impl Customer {
     /// Returns a list of your customers.
     ///
     /// The customers are returned sorted by creation date, with the most recent customers appearing first.
-    pub fn list(client: &Client, params: &ListCustomers<'_>) -> Response<List<Customer>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListCustomers<'a>,
+    ) -> Response<'a, List<Customer>> {
         client.get_query("/customers", &params)
     }
 
     /// Creates a new customer object.
-    pub fn create(client: &Client, params: CreateCustomer<'_>) -> Response<Customer> {
+    pub fn create<'a>(client: &'a Client, params: CreateCustomer<'a>) -> Response<'a, Customer> {
         client.post_form("/customers", &params)
     }
 
     /// Retrieves a Customer object.
-    pub fn retrieve(client: &Client, id: &CustomerId, expand: &[&str]) -> Response<Customer> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a CustomerId,
+        expand: &'a [&str],
+    ) -> Response<'a, Customer> {
         client.get_query(&format!("/customers/{}", id), &Expand { expand })
     }
 
@@ -183,11 +190,11 @@ impl Customer {
     /// When you update a customer to a new valid card source by passing the **source** parameter: for each of the customer’s current subscriptions, if the subscription bills automatically and is in the `past_due` state, then the latest open invoice for the subscription with automatic collection enabled will be retried.
     /// This retry will not count as an automatic retry, and will not affect the next regularly scheduled payment for the invoice.
     /// Changing the **default_source** for a customer will not trigger this behavior.  This request accepts mostly the same arguments as the customer creation call.
-    pub fn update(
-        client: &Client,
-        id: &CustomerId,
-        params: UpdateCustomer<'_>,
-    ) -> Response<Customer> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a CustomerId,
+        params: UpdateCustomer<'a>,
+    ) -> Response<'a, Customer> {
         client.post_form(&format!("/customers/{}", id), &params)
     }
 
@@ -195,7 +202,7 @@ impl Customer {
     ///
     /// It cannot be undone.
     /// Also immediately cancels any active subscriptions on the customer.
-    pub fn delete(client: &Client, id: &CustomerId) -> Response<Deleted<CustomerId>> {
+    pub fn delete<'a>(client: &'a Client, id: &'a CustomerId) -> Response<'a, Deleted<CustomerId>> {
         client.delete(&format!("/customers/{}", id))
     }
 }

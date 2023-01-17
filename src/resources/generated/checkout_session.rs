@@ -191,15 +191,18 @@ pub struct CheckoutSession {
 
 impl CheckoutSession {
     /// Returns a list of Checkout Sessions.
-    pub fn list(
-        client: &Client,
-        params: &ListCheckoutSessions<'_>,
-    ) -> Response<List<CheckoutSession>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListCheckoutSessions<'a>,
+    ) -> Response<'a, List<CheckoutSession>> {
         client.get_query("/checkout/sessions", &params)
     }
 
     /// Creates a Session object.
-    pub fn create(client: &Client, params: CreateCheckoutSession<'_>) -> Response<CheckoutSession> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateCheckoutSession<'a>,
+    ) -> Response<'a, CheckoutSession> {
         client.post_form("/checkout/sessions", &params)
     }
 }

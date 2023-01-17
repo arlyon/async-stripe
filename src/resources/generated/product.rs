@@ -123,26 +123,37 @@ impl Product {
     /// Returns a list of your products.
     ///
     /// The products are returned sorted by creation date, with the most recently created products appearing first.
-    pub fn list(client: &Client, params: &ListProducts<'_>) -> Response<List<Product>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListProducts<'a>,
+    ) -> Response<'a, List<Product>> {
         client.get_query("/products", &params)
     }
 
     /// Creates a new product object.
-    pub fn create(client: &Client, params: CreateProduct<'_>) -> Response<Product> {
+    pub fn create<'a>(client: &'a Client, params: CreateProduct<'a>) -> Response<'a, Product> {
         client.post_form("/products", &params)
     }
 
     /// Retrieves the details of an existing product.
     ///
     /// Supply the unique product ID from either a product creation request or the product list, and Stripe will return the corresponding product information.
-    pub fn retrieve(client: &Client, id: &ProductId, expand: &[&str]) -> Response<Product> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a ProductId,
+        expand: &'a [&str],
+    ) -> Response<'a, Product> {
         client.get_query(&format!("/products/{}", id), &Expand { expand })
     }
 
     /// Updates the specific product by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.
-    pub fn update(client: &Client, id: &ProductId, params: UpdateProduct<'_>) -> Response<Product> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a ProductId,
+        params: UpdateProduct<'a>,
+    ) -> Response<'a, Product> {
         client.post_form(&format!("/products/{}", id), &params)
     }
 
@@ -150,7 +161,7 @@ impl Product {
     ///
     /// Deleting a product is only possible if it has no prices associated with it.
     /// Additionally, deleting a product with `type=good` is only possible if it has no SKUs associated with it.
-    pub fn delete(client: &Client, id: &ProductId) -> Response<Deleted<ProductId>> {
+    pub fn delete<'a>(client: &'a Client, id: &'a ProductId) -> Response<'a, Deleted<ProductId>> {
         client.delete(&format!("/products/{}", id))
     }
 }

@@ -133,12 +133,16 @@ pub struct Plan {
 
 impl Plan {
     /// Returns a list of your plans.
-    pub fn list(client: &Client, params: &ListPlans<'_>) -> Response<List<Plan>> {
+    pub fn list<'a>(client: &'a Client, params: &'a ListPlans<'a>) -> Response<'a, List<Plan>> {
         client.get_query("/plans", &params)
     }
 
     /// Retrieves the plan with the given ID.
-    pub fn retrieve(client: &Client, id: &PlanId, expand: &[&str]) -> Response<Plan> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a PlanId,
+        expand: &'a [&str],
+    ) -> Response<'a, Plan> {
         client.get_query(&format!("/plans/{}", id), &Expand { expand })
     }
 
@@ -146,14 +150,18 @@ impl Plan {
     ///
     /// Any parameters not provided are left unchanged.
     /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
-    pub fn update(client: &Client, id: &PlanId, params: UpdatePlan<'_>) -> Response<Plan> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a PlanId,
+        params: UpdatePlan<'a>,
+    ) -> Response<'a, Plan> {
         client.post_form(&format!("/plans/{}", id), &params)
     }
 
     /// Deleting plans means new subscribers can’t be added.
     ///
     /// Existing subscribers aren’t affected.
-    pub fn delete(client: &Client, id: &PlanId) -> Response<Deleted<PlanId>> {
+    pub fn delete<'a>(client: &'a Client, id: &'a PlanId) -> Response<'a, Deleted<PlanId>> {
         client.delete(&format!("/plans/{}", id))
     }
 }

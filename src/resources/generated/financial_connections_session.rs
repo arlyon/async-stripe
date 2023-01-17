@@ -44,7 +44,7 @@ impl FinancialConnectionsSession {
     /// To launch the Financial Connections authorization flow, create a `Session`.
     ///
     /// The session’s `client_secret` can be used to launch the flow using Stripe.js.
-    pub fn create(client: &Client, params: CreateFinancialConnectionsSession<'_>) -> Response<FinancialConnectionsSession> {
+    pub fn create<'a>(client: &'a Client, params: CreateFinancialConnectionsSession<'a>) -> Response<'a, FinancialConnectionsSession> {
         client.post_form("/financial_connections/sessions", &params)
     }
 }

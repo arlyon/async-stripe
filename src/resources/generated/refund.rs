@@ -98,24 +98,32 @@ impl Refund {
     ///
     /// The refunds are returned in sorted order, with the most recent refunds appearing first.
     /// For convenience, the 10 most recent refunds are always available by default on the charge object.
-    pub fn list(client: &Client, params: &ListRefunds<'_>) -> Response<List<Refund>> {
+    pub fn list<'a>(client: &'a Client, params: &'a ListRefunds<'a>) -> Response<'a, List<Refund>> {
         client.get_query("/refunds", &params)
     }
 
     /// Create a refund.
-    pub fn create(client: &Client, params: CreateRefund<'_>) -> Response<Refund> {
+    pub fn create<'a>(client: &'a Client, params: CreateRefund<'a>) -> Response<'a, Refund> {
         client.post_form("/refunds", &params)
     }
 
     /// Retrieves the details of an existing refund.
-    pub fn retrieve(client: &Client, id: &RefundId, expand: &[&str]) -> Response<Refund> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a RefundId,
+        expand: &'a [&str],
+    ) -> Response<'a, Refund> {
         client.get_query(&format!("/refunds/{}", id), &Expand { expand })
     }
 
     /// Updates the specified refund by setting the values of the parameters passed.
     ///
     /// Any parameters not provided will be left unchanged.  This request only accepts `metadata` as an argument.
-    pub fn update(client: &Client, id: &RefundId, params: UpdateRefund<'_>) -> Response<Refund> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a RefundId,
+        params: UpdateRefund<'a>,
+    ) -> Response<'a, Refund> {
         client.post_form(&format!("/refunds/{}", id), &params)
     }
 }

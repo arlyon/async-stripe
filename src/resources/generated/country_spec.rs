@@ -44,13 +44,12 @@ pub struct CountrySpec {
 impl CountrySpec {
 
     /// Lists all Country Spec objects available in the API.
-pub fn list(client: &Client, params: &ListCountrySpecs<'_>) -> Response<List<CountrySpec>> {
-   client.get_query("/country_specs", &params)
-}
-
+    pub fn list<'a>(client: &'a Client, params: &'a ListCountrySpecs<'a>) -> Response<'a, List<CountrySpec>> {
+        client.get_query("/country_specs", &params)
+    }
 
     /// Returns a Country Spec for a given Country code.
-    pub fn retrieve(client: &Client, id: &CountrySpecId, expand: &[&str]) -> Response<CountrySpec> {
+    pub fn retrieve<'a>(client: &'a Client, id: &'a CountrySpecId, expand: &'a [&str]) -> Response<'a, CountrySpec> {
         client.get_query(&format!("/country_specs/{}", id), &Expand { expand })
     }
 }

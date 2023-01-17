@@ -67,30 +67,36 @@ pub struct ShippingRate {
 
 impl ShippingRate {
     /// Returns a list of your shipping rates.
-    pub fn list(client: &Client, params: &ListShippingRates<'_>) -> Response<List<ShippingRate>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListShippingRates<'a>,
+    ) -> Response<'a, List<ShippingRate>> {
         client.get_query("/shipping_rates", &params)
     }
 
     /// Creates a new shipping rate object.
-    pub fn create(client: &Client, params: CreateShippingRate<'_>) -> Response<ShippingRate> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateShippingRate<'a>,
+    ) -> Response<'a, ShippingRate> {
         client.post_form("/shipping_rates", &params)
     }
 
     /// Returns the shipping rate object with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &ShippingRateId,
-        expand: &[&str],
-    ) -> Response<ShippingRate> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a ShippingRateId,
+        expand: &'a [&str],
+    ) -> Response<'a, ShippingRate> {
         client.get_query(&format!("/shipping_rates/{}", id), &Expand { expand })
     }
 
     /// Updates an existing shipping rate object.
-    pub fn update(
-        client: &Client,
-        id: &ShippingRateId,
-        params: UpdateShippingRate<'_>,
-    ) -> Response<ShippingRate> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a ShippingRateId,
+        params: UpdateShippingRate<'a>,
+    ) -> Response<'a, ShippingRate> {
         client.post_form(&format!("/shipping_rates/{}", id), &params)
     }
 }

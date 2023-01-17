@@ -60,48 +60,48 @@ pub struct SubscriptionItem {
 
 impl SubscriptionItem {
     /// Returns a list of your subscription items for a given subscription.
-    pub fn list(
-        client: &Client,
-        params: &ListSubscriptionItems<'_>,
-    ) -> Response<List<SubscriptionItem>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListSubscriptionItems<'a>,
+    ) -> Response<'a, List<SubscriptionItem>> {
         client.get_query("/subscription_items", &params)
     }
 
     /// Adds a new item to an existing subscription.
     ///
     /// No existing items will be changed or replaced.
-    pub fn create(
-        client: &Client,
-        params: CreateSubscriptionItem<'_>,
-    ) -> Response<SubscriptionItem> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateSubscriptionItem<'a>,
+    ) -> Response<'a, SubscriptionItem> {
         client.post_form("/subscription_items", &params)
     }
 
     /// Retrieves the subscription item with the given ID.
-    pub fn retrieve(
-        client: &Client,
-        id: &SubscriptionItemId,
-        expand: &[&str],
-    ) -> Response<SubscriptionItem> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a SubscriptionItemId,
+        expand: &'a [&str],
+    ) -> Response<'a, SubscriptionItem> {
         client.get_query(&format!("/subscription_items/{}", id), &Expand { expand })
     }
 
     /// Updates the plan or quantity of an item on a current subscription.
-    pub fn update(
-        client: &Client,
-        id: &SubscriptionItemId,
-        params: UpdateSubscriptionItem<'_>,
-    ) -> Response<SubscriptionItem> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a SubscriptionItemId,
+        params: UpdateSubscriptionItem<'a>,
+    ) -> Response<'a, SubscriptionItem> {
         client.post_form(&format!("/subscription_items/{}", id), &params)
     }
 
     /// Deletes an item from the subscription.
     ///
     /// Removing a subscription item from a subscription will not cancel the subscription.
-    pub fn delete(
-        client: &Client,
-        id: &SubscriptionItemId,
-    ) -> Response<Deleted<SubscriptionItemId>> {
+    pub fn delete<'a>(
+        client: &'a Client,
+        id: &'a SubscriptionItemId,
+    ) -> Response<'a, Deleted<SubscriptionItemId>> {
         client.delete(&format!("/subscription_items/{}", id))
     }
 }

@@ -76,12 +76,19 @@ pub struct Dispute {
 
 impl Dispute {
     /// Returns a list of your disputes.
-    pub fn list(client: &Client, params: &ListDisputes<'_>) -> Response<List<Dispute>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListDisputes<'a>,
+    ) -> Response<'a, List<Dispute>> {
         client.get_query("/disputes", &params)
     }
 
     /// Retrieves the dispute with the given ID.
-    pub fn retrieve(client: &Client, id: &DisputeId, expand: &[&str]) -> Response<Dispute> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a DisputeId,
+        expand: &'a [&str],
+    ) -> Response<'a, Dispute> {
         client.get_query(&format!("/disputes/{}", id), &Expand { expand })
     }
 }

@@ -27,7 +27,10 @@ pub struct AccountLink {
 
 impl AccountLink {
     /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
-    pub fn create(client: &Client, params: CreateAccountLink<'_>) -> Response<AccountLink> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateAccountLink<'a>,
+    ) -> Response<'a, AccountLink> {
         client.post_form("/account_links", &params)
     }
 }
