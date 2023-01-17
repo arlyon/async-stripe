@@ -8,7 +8,7 @@
       "@semantic-release-cargo/semantic-release-cargo",
       {
         "features": {
-          "async_stripe": ["runtime-tokio-hyper"]
+          "async-stripe": ["runtime-tokio-hyper"]
         }
       }
     ],
