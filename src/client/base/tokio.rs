@@ -19,7 +19,7 @@ mod connector {
     pub fn create() -> HttpsConnector<HttpConnector<GaiResolver>> {
         HttpsConnectorBuilder::new()
             .with_native_roots()
-            .https_only()
+            .https_or_http()
             .enable_http1()
             .enable_http2()
             .build()
@@ -35,10 +35,20 @@ mod connector {
     pub fn create() -> HttpsConnector<HttpConnector<GaiResolver>> {
         HttpsConnectorBuilder::new()
             .with_webpki_roots()
-            .https_only()
+            .https_or_http()
             .enable_http1()
             .enable_http2()
             .build()
+    }
+}
+
+#[cfg(feature = "hyper-tls")]
+mod connector {
+    use hyper::client::{connect::dns::GaiResolver, HttpConnector};
+    pub use hyper_tls::HttpsConnector;
+
+    pub fn create() -> HttpsConnector<HttpConnector<GaiResolver>> {
+        HttpsConnector::new()
     }
 }
 
