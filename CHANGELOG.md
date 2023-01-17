@@ -1,3 +1,15 @@
+# [0.16.0](https://github.com/arlyon/async-stripe/compare/v0.15.2...v0.16.0) (2023-01-17)
+
+
+### Bug Fixes
+
+* prevent freeze when hitting network errors in a retry strategy ([d423be2](https://github.com/arlyon/async-stripe/commit/d423be225b457c5c08cc173e85e2dd2a2f3b04d8))
+
+
+### Features
+
+* add support for webpki (alt. to native-certs) ([c994b1c](https://github.com/arlyon/async-stripe/commit/c994b1caea19b5d7a4e8c0784cfa937127d54462))
+
 ## [0.15.2](https://github.com/arlyon/async-stripe/compare/v0.15.1...v0.15.2) (2023-01-17)
 
 
