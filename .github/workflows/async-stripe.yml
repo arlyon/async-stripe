@@ -59,8 +59,10 @@ jobs:
             async-std-surf,
             tokio-hyper,
             tokio-hyper-rustls,
+            tokio-hyper-rustls-webpki,
             blocking,
             blocking-rustls,
+            blocking-rustls-webpki,
           ]
     steps:
       - uses: actions/checkout@v2
@@ -93,8 +95,10 @@ jobs:
             async-std-surf,
             tokio-hyper,
             tokio-hyper-rustls,
+            tokio-hyper-rustls-webpki,
             blocking,
             blocking-rustls,
+            blocking-rustls-webpki,
           ]
     services:
       stripe-mock:
