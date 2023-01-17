@@ -1,3 +1,10 @@
+## [0.15.2](https://github.com/arlyon/async-stripe/compare/v0.15.1...v0.15.2) (2023-01-17)
+
+
+### Bug Fixes
+
+* add automated release config ([ac5a87a](https://github.com/arlyon/async-stripe/commit/ac5a87a65d3e78b02cc1624b424fad32c7cd36a6))
+
 # Version 0.15.1 (January 16, 2022)
 
 This is a half-release before we overhaul the codegen in 0.16.
