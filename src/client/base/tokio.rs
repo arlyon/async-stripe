@@ -10,13 +10,35 @@ use tokio::time::sleep;
 use crate::client::request_strategy::{Outcome, RequestStrategy};
 use crate::error::{ErrorResponse, StripeError};
 
-#[cfg(feature = "hyper-rustls")]
+#[cfg(feature = "hyper-rustls-native")]
 mod connector {
     use hyper::client::{connect::dns::GaiResolver, HttpConnector};
     pub use hyper_rustls::HttpsConnector;
+    use hyper_rustls::HttpsConnectorBuilder;
 
     pub fn create() -> HttpsConnector<HttpConnector<GaiResolver>> {
-        HttpsConnector::with_native_roots()
+        HttpsConnectorBuilder::new()
+            .with_native_roots()
+            .https_or_http()
+            .enable_http1()
+            .enable_http2()
+            .build()
+    }
+}
+
+#[cfg(feature = "hyper-rustls-webpki")]
+mod connector {
+    use hyper::client::{connect::dns::GaiResolver, HttpConnector};
+    pub use hyper_rustls::HttpsConnector;
+    use hyper_rustls::HttpsConnectorBuilder;
+
+    pub fn create() -> HttpsConnector<HttpConnector<GaiResolver>> {
+        HttpsConnectorBuilder::new()
+            .with_webpki_roots()
+            .https_or_http()
+            .enable_http1()
+            .enable_http2()
+            .build()
     }
 }
 
@@ -115,6 +137,7 @@ async fn send_inner(
                     Ok(response) => response,
                     Err(err) => {
                         last_error = StripeError::from(err);
+                        tries += 1;
                         continue;
                     }
                 };

@@ -5,25 +5,39 @@ mod base {
     #[cfg(any(
         feature = "runtime-tokio-hyper",
         feature = "runtime-tokio-hyper-rustls",
+        feature = "runtime-tokio-hyper-rustls-webpki",
         feature = "runtime-blocking",
         feature = "runtime-blocking-rustls",
+        feature = "runtime-blocking-rustls-webpki",
     ))]
     pub mod tokio;
 
     #[cfg(feature = "runtime-async-std-surf")]
     pub mod async_std;
 
-    #[cfg(any(feature = "runtime-blocking", feature = "runtime-blocking-rustls"))]
+    #[cfg(any(
+        feature = "runtime-blocking",
+        feature = "runtime-blocking-rustls",
+        feature = "runtime-blocking-rustls-webpki"
+    ))]
     pub mod tokio_blocking;
 }
 
-#[cfg(any(feature = "runtime-blocking", feature = "runtime-blocking-rustls"))]
+#[cfg(any(
+    feature = "runtime-blocking",
+    feature = "runtime-blocking-rustls",
+    feature = "runtime-blocking-rustls-webpki"
+))]
 pub(crate) mod config {
     pub(crate) use super::base::tokio_blocking::{err, ok};
     pub use super::base::tokio_blocking::{Response, TokioBlockingClient as BaseClient};
 }
 
-#[cfg(any(feature = "runtime-tokio-hyper", feature = "runtime-tokio-hyper-rustls"))]
+#[cfg(any(
+    feature = "runtime-tokio-hyper",
+    feature = "runtime-tokio-hyper-rustls",
+    feature = "runtime-tokio-hyper-rustls-webpki"
+))]
 pub(crate) mod config {
     pub(crate) use super::base::tokio::{err, ok};
     pub use super::base::tokio::{Response, TokioClient as BaseClient};
