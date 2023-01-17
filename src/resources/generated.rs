@@ -76,7 +76,6 @@ pub mod billing {
     pub mod invoice_payment_method_options_customer_balance;
     pub mod invoice_payment_method_options_konbini;
     pub mod invoice_payment_method_options_us_bank_account;
-    pub mod invoice_setting_rendering_options;
     pub mod invoiceitem;
     pub mod line_item;
     pub mod plan;

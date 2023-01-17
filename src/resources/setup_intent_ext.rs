@@ -42,11 +42,11 @@ impl SetupIntent {
     /// A SetupIntent object can be canceled when it is in one of these statuses: requires_payment_method, requires_confirmation, or requires_action.
     ///
     /// For more details see <https://stripe.com/docs/api/setup_intents/cancel>.
-    pub fn cancel(
-        client: &Client,
-        setup_id: &SetupIntentId,
+    pub fn cancel<'a>(
+        client: &'a Client,
+        setup_id: &'_ SetupIntentId,
         params: CancelSetupIntent,
-    ) -> Response<SetupIntent> {
+    ) -> Response<'a, SetupIntent> {
         client.post_form(&format!("/setup_intents/{}/cancel", setup_id), params)
     }
 }

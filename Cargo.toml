@@ -108,6 +108,8 @@ hmac = { version = "0.12", optional = true }
 sha2 = { version = "0.10", optional = true }
 hex = { version = "0.4", optional = true }
 
+rocket = { version = "0.4", optional = true }
+
 [dev-dependencies]
 async-std = { version = "1.10.0", features = ["attributes"] }
 httpmock = "0.6.6"
@@ -151,3 +153,7 @@ required-features = ["async"]
 [[example]]
 name = "webhook-actix"
 required-features = ["async"]
+
+[[example]]
+name = "webhook-rocket"
+required-features = ["rocket"]
