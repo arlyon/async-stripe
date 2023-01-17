@@ -137,6 +137,7 @@ async fn send_inner(
                     Ok(response) => response,
                     Err(err) => {
                         last_error = StripeError::from(err);
+                        tries += 1;
                         continue;
                     }
                 };
