@@ -23,6 +23,12 @@ jobs:
           token: ${{ secrets.REPO_SCOPED_TOKEN }}
       - uses: dtolnay/rust-toolchain@1.60
       - uses: cycjimmy/semantic-release-action@v3
+        with:
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+            @semantic-release/github
+            @semantic-release-cargo/semantic-release-cargo@2.1
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_TOKEN }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
