@@ -16,11 +16,7 @@ jobs:
           profile: minimal
           toolchain: nightly
           components: rustfmt
-      - name: install cargo-make
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: --debug cargo-make
+      - uses: davidB/rust-cargo-make@v1
       - name: regenerate openapi
         uses: actions-rs/cargo@v1
         with:
@@ -36,11 +32,7 @@ jobs:
           profile: minimal
           toolchain: nightly
           components: rustfmt
-      - name: install cargo-make
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: --debug cargo-make
+      - uses: davidB/rust-cargo-make@v1
       - name: regenerate openapi
         uses: actions-rs/cargo@v1
         with:
@@ -124,11 +116,7 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-test-${{ hashFiles('**/Cargo.lock') }}
-      - name: install cargo-make
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: cargo-llvm-cov
+      - uses: taiki-e/install-action@cargo-llvm-cov
       - name: Test and gather coverage
         run: cargo llvm-cov --lcov --output-path lcov.info --features runtime-${{ matrix.runtime }}
       - name: Upload to codecov.io
