@@ -563,6 +563,10 @@ pub enum EventFilter {
     RecipientDeleted,
     #[serde(rename = "recipient.updated")]
     RecipientUpdated,
+    #[serde(rename = "refund.created")]
+    RefundCreated,
+    #[serde(rename = "refund.updated")]
+    RefundUpdated,
     #[serde(rename = "reporting.report_run.failed")]
     ReportingReportRunFailed,
     #[serde(rename = "reporting.report_run.succeeded")]
@@ -899,6 +903,8 @@ impl EventFilter {
             EventFilter::RecipientCreated => "recipient.created",
             EventFilter::RecipientDeleted => "recipient.deleted",
             EventFilter::RecipientUpdated => "recipient.updated",
+            EventFilter::RefundCreated => "refund.created",
+            EventFilter::RefundUpdated => "refund.updated",
             EventFilter::ReportingReportRunFailed => "reporting.report_run.failed",
             EventFilter::ReportingReportRunSucceeded => "reporting.report_run.succeeded",
             EventFilter::ReportingReportTypeUpdated => "reporting.report_type.updated",

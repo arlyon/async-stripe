@@ -70,6 +70,10 @@ pub struct CreateEphemeralKey<'a> {
     /// The ID of the Issuing Card you'd like to access using the resulting ephemeral key.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuing_card: Option<IssuingCardId>,
+
+    /// The ID of the Identity VerificationSession you'd like to access using the resulting ephemeral key.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verification_session: Option<&'a str>,
 }
 
 impl<'a> CreateEphemeralKey<'a> {
@@ -78,6 +82,7 @@ impl<'a> CreateEphemeralKey<'a> {
             customer: Default::default(),
             expand: Default::default(),
             issuing_card: Default::default(),
+            verification_session: Default::default(),
         }
     }
 }

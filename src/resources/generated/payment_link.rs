@@ -193,7 +193,7 @@ pub struct PaymentLinksResourceCustomText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourceCustomTextPosition {
-    /// Text may be up to 500 characters in length.
+    /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
@@ -765,13 +765,13 @@ pub struct CreatePaymentLinkAfterCompletionRedirect {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomTextShippingAddress {
-    /// Text may be up to 500 characters in length.
+    /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkCustomTextSubmit {
-    /// Text may be up to 500 characters in length.
+    /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
@@ -812,13 +812,13 @@ pub struct UpdatePaymentLinkAfterCompletionRedirect {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomTextShippingAddress {
-    /// Text may be up to 500 characters in length.
+    /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomTextSubmit {
-    /// Text may be up to 500 characters in length.
+    /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
