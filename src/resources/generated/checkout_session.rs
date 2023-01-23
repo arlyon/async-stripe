@@ -726,7 +726,7 @@ pub struct PaymentPagesCheckoutSessionCustomText {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomTextPosition {
-    /// Text may be up to 500 characters in length.
+    /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
@@ -1660,13 +1660,13 @@ pub struct CreateCheckoutSessionAfterExpirationRecovery {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomTextShippingAddress {
-    /// Text may be up to 500 characters in length.
+    /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionCustomTextSubmit {
-    /// Text may be up to 500 characters in length.
+    /// Text may be up to 1000 characters in length.
     pub message: String,
 }
 
