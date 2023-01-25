@@ -11,7 +11,7 @@ use crate::resources::{Account, CheckoutSessionItem, Currency, ShippingRate};
 
 /// The resource representing a Stripe "PaymentLink".
 ///
-/// For more details see <https://stripe.com/docs/api/payment_links/object>
+/// For more details see <https://stripe.com/docs/api/payment_links/payment_links>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLink {
     /// Unique identifier for the object.
