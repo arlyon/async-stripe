@@ -33,7 +33,7 @@ pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransfer {
 pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
     /// The desired country code of the bank account information.
     ///
-    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
+    /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry,
 }
 
@@ -41,6 +41,8 @@ pub struct InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer 
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
+    #[serde(rename = "BE")]
+    Be,
     #[serde(rename = "DE")]
     De,
     #[serde(rename = "ES")]
@@ -56,6 +58,7 @@ pub enum InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCou
 impl InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry {
     pub fn as_str(self) -> &'static str {
         match self {
+            InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::Be => "BE",
             InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::De => "DE",
             InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::Es => "ES",
             InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry::Fr => "FR",
@@ -82,7 +85,7 @@ impl std::default::Default
     for InvoicePaymentMethodOptionsCustomerBalanceBankTransferEuBankTransferCountry
 {
     fn default() -> Self {
-        Self::De
+        Self::Be
     }
 }
 

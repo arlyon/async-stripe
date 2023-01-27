@@ -4359,7 +4359,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
 pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
     /// The desired country code of the bank account information.
     ///
-    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
+    /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: String,
 }
 
@@ -4381,7 +4381,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
 pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
     /// The desired country code of the bank account information.
     ///
-    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
+    /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: String,
 }
 
@@ -6203,6 +6203,8 @@ impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsKlarnaCapt
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    #[serde(rename = "cs-CZ")]
+    CsCz,
     #[serde(rename = "da-DK")]
     DaDk,
     #[serde(rename = "de-AT")]
@@ -6211,6 +6213,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     DeCh,
     #[serde(rename = "de-DE")]
     DeDe,
+    #[serde(rename = "el-GR")]
+    ElGr,
     #[serde(rename = "en-AT")]
     EnAt,
     #[serde(rename = "en-AU")]
@@ -6221,6 +6225,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnCa,
     #[serde(rename = "en-CH")]
     EnCh,
+    #[serde(rename = "en-CZ")]
+    EnCz,
     #[serde(rename = "en-DE")]
     EnDe,
     #[serde(rename = "en-DK")]
@@ -6233,6 +6239,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnFr,
     #[serde(rename = "en-GB")]
     EnGb,
+    #[serde(rename = "en-GR")]
+    EnGr,
     #[serde(rename = "en-IE")]
     EnIe,
     #[serde(rename = "en-IT")]
@@ -6288,21 +6296,25 @@ pub enum CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
 impl CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     pub fn as_str(self) -> &'static str {
         match self {
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::CsCz => "cs-CZ",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DaDk => "da-DK",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeAt => "de-AT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeCh => "de-CH",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeDe => "de-DE",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::ElGr => "el-GR",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCa => "en-CA",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCh => "en-CH",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCz => "en-CZ",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnFi => "en-FI",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnFr => "en-FR",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnGb => "en-GB",
+            CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnGr => "en-GR",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnIe => "en-IE",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnIt => "en-IT",
             CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
@@ -6345,7 +6357,7 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferre
 }
 impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     fn default() -> Self {
-        Self::DaDk
+        Self::CsCz
     }
 }
 
@@ -10855,6 +10867,8 @@ impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsKlarnaCapt
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    #[serde(rename = "cs-CZ")]
+    CsCz,
     #[serde(rename = "da-DK")]
     DaDk,
     #[serde(rename = "de-AT")]
@@ -10863,6 +10877,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     DeCh,
     #[serde(rename = "de-DE")]
     DeDe,
+    #[serde(rename = "el-GR")]
+    ElGr,
     #[serde(rename = "en-AT")]
     EnAt,
     #[serde(rename = "en-AU")]
@@ -10873,6 +10889,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnCa,
     #[serde(rename = "en-CH")]
     EnCh,
+    #[serde(rename = "en-CZ")]
+    EnCz,
     #[serde(rename = "en-DE")]
     EnDe,
     #[serde(rename = "en-DK")]
@@ -10885,6 +10903,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     EnFr,
     #[serde(rename = "en-GB")]
     EnGb,
+    #[serde(rename = "en-GR")]
+    EnGr,
     #[serde(rename = "en-IE")]
     EnIe,
     #[serde(rename = "en-IT")]
@@ -10940,21 +10960,25 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
 impl UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     pub fn as_str(self) -> &'static str {
         match self {
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::CsCz => "cs-CZ",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DaDk => "da-DK",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeAt => "de-AT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeCh => "de-CH",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::DeDe => "de-DE",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::ElGr => "el-GR",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAt => "en-AT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnAu => "en-AU",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnBe => "en-BE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCa => "en-CA",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCh => "en-CH",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnCz => "en-CZ",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDe => "en-DE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnDk => "en-DK",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnEs => "en-ES",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnFi => "en-FI",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnFr => "en-FR",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnGb => "en-GB",
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnGr => "en-GR",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnIe => "en-IE",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnIt => "en-IT",
             UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale::EnNl => "en-NL",
@@ -10997,7 +11021,7 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferre
 }
 impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     fn default() -> Self {
-        Self::DaDk
+        Self::CsCz
     }
 }
 

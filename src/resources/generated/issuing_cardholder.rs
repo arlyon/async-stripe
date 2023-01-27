@@ -114,9 +114,13 @@ pub struct IssuingCardholderIndividual {
     pub dob: Option<IssuingCardholderIndividualDob>,
 
     /// The first name of this cardholder.
+    ///
+    /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
     pub first_name: String,
 
     /// The last name of this cardholder.
+    ///
+    /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
     pub last_name: String,
 
     /// Government-issued ID document for this cardholder.
