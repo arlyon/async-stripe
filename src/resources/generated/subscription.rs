@@ -564,7 +564,6 @@ pub struct CreateSubscription<'a> {
 
     /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
     ///
-    /// This will always overwrite any trials that might apply via a subscribed plan.
     /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
     /// The special value `now` can be provided to end the customer's trial immediately.
     /// Can be at most two years from `billing_cycle_anchor`.
@@ -1591,7 +1590,7 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceB
 {
     /// The desired country code of the bank account information.
     ///
-    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
+    /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: String,
 }
 
@@ -1600,7 +1599,7 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceB
 {
     /// The desired country code of the bank account information.
     ///
-    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
+    /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: String,
 }
 

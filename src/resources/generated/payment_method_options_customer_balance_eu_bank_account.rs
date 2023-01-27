@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 pub struct PaymentMethodOptionsCustomerBalanceEuBankAccount {
     /// The desired country code of the bank account information.
     ///
-    /// Permitted values include: `DE`, `ES`, `FR`, `IE`, or `NL`.
+    /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: PaymentMethodOptionsCustomerBalanceEuBankAccountCountry,
 }
 
@@ -17,6 +17,8 @@ pub struct PaymentMethodOptionsCustomerBalanceEuBankAccount {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodOptionsCustomerBalanceEuBankAccountCountry {
+    #[serde(rename = "BE")]
+    Be,
     #[serde(rename = "DE")]
     De,
     #[serde(rename = "ES")]
@@ -32,6 +34,7 @@ pub enum PaymentMethodOptionsCustomerBalanceEuBankAccountCountry {
 impl PaymentMethodOptionsCustomerBalanceEuBankAccountCountry {
     pub fn as_str(self) -> &'static str {
         match self {
+            PaymentMethodOptionsCustomerBalanceEuBankAccountCountry::Be => "BE",
             PaymentMethodOptionsCustomerBalanceEuBankAccountCountry::De => "DE",
             PaymentMethodOptionsCustomerBalanceEuBankAccountCountry::Es => "ES",
             PaymentMethodOptionsCustomerBalanceEuBankAccountCountry::Fr => "FR",
@@ -54,6 +57,6 @@ impl std::fmt::Display for PaymentMethodOptionsCustomerBalanceEuBankAccountCount
 }
 impl std::default::Default for PaymentMethodOptionsCustomerBalanceEuBankAccountCountry {
     fn default() -> Self {
-        Self::De
+        Self::Be
     }
 }
