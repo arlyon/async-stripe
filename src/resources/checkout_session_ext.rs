@@ -14,4 +14,11 @@ impl CheckoutSession {
     ) -> Response<CheckoutSession> {
         client.get_query(&format!("/checkout/sessions/{}", id), &Expand { expand })
     }
+
+    /// Expires a checkout session.
+    ///
+    /// For more details see <https://stripe.com/docs/api/checkout/sessions/expire>.
+    pub fn expire(client: &Client, id: &CheckoutSessionId) -> Response<CheckoutSession> {
+        client.post(&format!("/checkout/sessions/{}/expire", id))
+    }
 }
