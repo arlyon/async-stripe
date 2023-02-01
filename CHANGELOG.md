@@ -1,3 +1,10 @@
+# [0.17.0](https://github.com/arlyon/async-stripe/compare/v0.16.0...v0.17.0) (2023-02-01)
+
+
+### Features
+
+* improve api doc code to fix / add more coverage ([fecaa2e](https://github.com/arlyon/async-stripe/commit/fecaa2e17b4fb443e44b1f470beddd6659eeb107))
+
 # [0.16.0](https://github.com/arlyon/async-stripe/compare/v0.15.2...v0.16.0) (2023-01-17)
 
 
