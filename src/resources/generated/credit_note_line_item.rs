@@ -8,6 +8,8 @@ use crate::resources::{Discount, TaxRate};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CreditNoteLineItem".
+///
+/// For more details see <https://stripe.com/docs/api/credit_notes/line_item>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreditNoteLineItem {
     /// Unique identifier for the object.

@@ -8,6 +8,8 @@ use crate::resources::{Account};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "AccountCapability".
+///
+/// For more details see <https://stripe.com/docs/api/capabilities/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Capability {
     /// The identifier for the capability.

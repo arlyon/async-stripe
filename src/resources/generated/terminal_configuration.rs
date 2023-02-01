@@ -9,6 +9,8 @@ use crate::params::{Expandable, Object};
 use crate::resources::File;
 
 /// The resource representing a Stripe "TerminalConfigurationConfiguration".
+///
+/// For more details see <https://stripe.com/docs/api/terminal/configuration/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalConfiguration {
     /// Unique identifier for the object.

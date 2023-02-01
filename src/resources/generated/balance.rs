@@ -10,6 +10,8 @@ use crate::params::{Expand, List, Object, RangeQuery, Timestamp};
 use crate::resources::Currency;
 
 /// The resource representing a Stripe "Balance".
+///
+/// For more details see <https://stripe.com/docs/api/balance/balance_object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Balance {
     /// Funds that are available to be transferred or paid out, whether automatically by Stripe or explicitly via the [Transfers API](https://stripe.com/docs/api#transfers) or [Payouts API](https://stripe.com/docs/api#payouts).

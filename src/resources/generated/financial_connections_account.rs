@@ -8,6 +8,8 @@ use crate::resources::{BankConnectionsResourceAccountholder, FinancialConnection
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "BankConnectionsResourceLinkedAccount".
+///
+/// For more details see <https://stripe.com/docs/api/financial_connections/accounts/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct FinancialConnectionsAccount {
     /// Unique identifier for the object.

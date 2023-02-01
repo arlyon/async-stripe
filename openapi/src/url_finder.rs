@@ -7,7 +7,7 @@ const APP_USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb
 
 #[derive(Debug)]
 pub struct UrlFinder {
-    html: String,
+    flattened_api_sections: serde_json::Map<String, serde_json::Value>,
 }
 
 impl UrlFinder {
@@ -17,8 +17,16 @@ impl UrlFinder {
 
         if resp.status().is_success() {
             let text = resp.text()?;
-            if text.contains("title: 'Stripe API Reference'") {
-                Ok(Self { html: text })
+            if let Some(line) = text.lines().find(|l| l.contains("flattenedAPISections: {")) {
+                println!("{}", line);
+                Ok(Self {
+                    flattened_api_sections: serde_json::from_str(
+                        line.trim()
+                            .trim_start_matches("flattenedAPISections: ")
+                            .trim_end_matches(","),
+                    )
+                    .expect("should be valid json"),
+                })
             } else {
                 Err(anyhow!("stripe api returned unexpected document"))
             }
@@ -30,12 +38,19 @@ impl UrlFinder {
 
     pub fn url_for_object(&self, object: &str) -> Option<String> {
         let object_name = object.replace('.', "_").to_snake_case();
-        let doc_url = format!("/{}s/object", object_name);
-        if self.html.contains(&doc_url) {
-            Some(format!("https://stripe.com/docs/api{}", doc_url))
-        } else {
-            log::warn!("{} not in html", doc_url);
-            None
+        let object_names = [format!("{}_object", object_name), object_name];
+        for name in object_names {
+            if let Some(path) = self
+                .flattened_api_sections
+                .get(&name)
+                .and_then(|o| o.as_object().expect("this should be an object").get("path"))
+                .and_then(|s| s.as_str())
+            {
+                return Some(format!("https://stripe.com/docs/api{}", path));
+            }
         }
+
+        log::warn!("{} not in html", object);
+        None
     }
 }

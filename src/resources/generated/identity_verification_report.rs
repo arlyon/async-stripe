@@ -8,6 +8,8 @@ use crate::resources::{Address};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "GelatoVerificationReport".
+///
+/// For more details see <https://stripe.com/docs/api/identity/verification_reports/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IdentityVerificationReport {
     /// Unique identifier for the object.

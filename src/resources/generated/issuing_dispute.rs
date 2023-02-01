@@ -11,6 +11,8 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "IssuingDispute".
+///
+/// For more details see <https://stripe.com/docs/api/issuing/disputes/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingDispute {
     /// Unique identifier for the object.

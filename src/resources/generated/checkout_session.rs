@@ -14,6 +14,8 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "Session".
+///
+/// For more details see <https://stripe.com/docs/api/checkout/sessions/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CheckoutSession {
     /// Unique identifier for the object.

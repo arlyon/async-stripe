@@ -13,6 +13,8 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "IssuingAuthorization".
+///
+/// For more details see <https://stripe.com/docs/api/issuing/authorizations/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingAuthorization {
     /// Unique identifier for the object.

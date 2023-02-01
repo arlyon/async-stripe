@@ -8,6 +8,8 @@ use crate::resources::{Currency, File};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "reporting_report_run".
+///
+/// For more details see <https://stripe.com/docs/api/reporting/report_run/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct ReportingReportRun {
     /// Unique identifier for the object.
