@@ -8,6 +8,8 @@ use crate::resources::{Currency, Customer, PaymentIntent, Refund};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CustomerCashBalanceTransaction".
+///
+/// For more details see <https://stripe.com/docs/api/cash_balance_transactions/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerCashBalanceTransaction {
     /// Unique identifier for the object.

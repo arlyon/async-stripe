@@ -12,6 +12,8 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "IssuingCard".
+///
+/// For more details see <https://stripe.com/docs/api/issuing/cards/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCard {
     /// Unique identifier for the object.

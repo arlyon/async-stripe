@@ -7,6 +7,8 @@ use serde::{Deserialize, Serialize};
 use crate::params::{Object, Timestamp};
 
 /// The resource representing a Stripe "LoginLink".
+///
+/// For more details see <https://stripe.com/docs/api/account/login_link>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct LoginLink {
     /// Time at which the object was created.

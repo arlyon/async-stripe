@@ -9,6 +9,8 @@ use crate::params::{Expandable, Metadata, Object, Timestamp};
 use crate::resources::{Address, Currency, File, MerchantCategory};
 
 /// The resource representing a Stripe "IssuingCardholder".
+///
+/// For more details see <https://stripe.com/docs/api/issuing/cardholders/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholder {
     /// Unique identifier for the object.

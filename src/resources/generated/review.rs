@@ -11,7 +11,7 @@ use crate::resources::{Charge, PaymentIntent, ReviewReason};
 
 /// The resource representing a Stripe "RadarReview".
 ///
-/// For more details see <https://stripe.com/docs/api/reviews/object>
+/// For more details see <https://stripe.com/docs/api/radar/reviews/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Review {
     /// Unique identifier for the object.

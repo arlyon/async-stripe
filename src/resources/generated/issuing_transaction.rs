@@ -12,6 +12,8 @@ use crate::resources::{
 };
 
 /// The resource representing a Stripe "IssuingTransaction".
+///
+/// For more details see <https://stripe.com/docs/api/issuing/transactions/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingTransaction {
     /// Unique identifier for the object.

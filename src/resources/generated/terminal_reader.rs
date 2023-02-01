@@ -9,6 +9,8 @@ use crate::params::{Expandable, Metadata, Object};
 use crate::resources::{Currency, PaymentIntent, SetupIntent, TerminalLocation};
 
 /// The resource representing a Stripe "TerminalReaderReader".
+///
+/// For more details see <https://stripe.com/docs/api/terminal/readers/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReader {
     /// Unique identifier for the object.
