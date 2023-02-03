@@ -172,6 +172,7 @@ impl std::default::Default for CustomerBalanceResourceCashBalanceTransactionReso
 pub enum CustomerCashBalanceTransactionType {
     AppliedToPayment,
     Funded,
+    FundingReversed,
     RefundedFromPayment,
     ReturnCanceled,
     ReturnInitiated,
@@ -183,6 +184,7 @@ impl CustomerCashBalanceTransactionType {
         match self {
             CustomerCashBalanceTransactionType::AppliedToPayment => "applied_to_payment",
             CustomerCashBalanceTransactionType::Funded => "funded",
+            CustomerCashBalanceTransactionType::FundingReversed => "funding_reversed",
             CustomerCashBalanceTransactionType::RefundedFromPayment => "refunded_from_payment",
             CustomerCashBalanceTransactionType::ReturnCanceled => "return_canceled",
             CustomerCashBalanceTransactionType::ReturnInitiated => "return_initiated",

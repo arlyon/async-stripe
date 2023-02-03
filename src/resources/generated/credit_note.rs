@@ -5,7 +5,7 @@
 use crate::client::{Client, Response};
 use crate::ids::{CreditNoteId, CustomerId, InvoiceId, RefundId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
-use crate::resources::{CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice, Refund, TaxRate};
+use crate::resources::{CreditNoteLineItem, Currency, Customer, CustomerBalanceTransaction, Discount, Invoice, InvoicesShippingCost, Refund, TaxRate};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "CreditNote".
@@ -18,6 +18,9 @@ pub struct CreditNote {
 
     /// The integer amount in %s representing the total amount of the credit note, including tax.
     pub amount: i64,
+
+    /// This is the sum of all the shipping amounts.
+    pub amount_shipping: i64,
 
     /// Time at which the object was created.
     ///
@@ -72,6 +75,9 @@ pub struct CreditNote {
 
     /// Refund related to this credit note.
     pub refund: Option<Expandable<Refund>>,
+
+    /// The details of the cost of shipping, including the ShippingRate applied to the invoice.
+    pub shipping_cost: Option<InvoicesShippingCost>,
 
     /// Status of this credit note, one of `issued` or `void`.
     ///
@@ -218,6 +224,10 @@ pub struct CreateCreditNote<'a> {
     /// If set, a refund will be created for the charge associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_amount: Option<i64>,
+
+    /// When shipping_cost contains the shipping_rate from the invoice, the shipping_cost is included in the credit note.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_cost: Option<CreateCreditNoteShippingCost>,
 }
 
 impl<'a> CreateCreditNote<'a> {
@@ -234,6 +244,7 @@ impl<'a> CreateCreditNote<'a> {
             reason: Default::default(),
             refund: Default::default(),
             refund_amount: Default::default(),
+            shipping_cost: Default::default(),
         }
     }
 }
@@ -370,6 +381,14 @@ pub struct CreateCreditNoteLines {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCreditNoteShippingCost {
+
+    /// The ID of the shipping rate to use for this order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_rate: Option<String>,
 }
 
 /// An enum representing the possible values of an `CreateCreditNoteLines`'s `type` field.

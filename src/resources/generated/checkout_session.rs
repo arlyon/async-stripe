@@ -5,7 +5,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
-use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, SubscriptionId};
+use crate::ids::{CheckoutSessionId, CustomerId, PaymentIntentId, PaymentLinkId, SubscriptionId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
     Address, CheckoutSessionItem, Currency, Customer, Discount, Invoice,
@@ -1178,6 +1178,10 @@ pub struct ListCheckoutSessions<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<PaymentIntentId>,
 
+    /// Only return the Checkout Sessions for the Payment Link specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_link: Option<PaymentLinkId>,
+
     /// A cursor for use in pagination.
     ///
     /// `starting_after` is an object ID that defines your place in the list.
@@ -1199,6 +1203,7 @@ impl<'a> ListCheckoutSessions<'a> {
             expand: Default::default(),
             limit: Default::default(),
             payment_intent: Default::default(),
+            payment_link: Default::default(),
             starting_after: Default::default(),
             subscription: Default::default(),
         }
@@ -1631,6 +1636,10 @@ pub struct CreateCheckoutSessionSubscriptionData {
     /// Has to be at least 1.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
+
+    /// Settings related to subscription trials.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_settings: Option<CreateCheckoutSessionSubscriptionDataTrialSettings>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2241,6 +2250,12 @@ pub struct CreateCheckoutSessionSubscriptionDataTransferData {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionSubscriptionDataTrialSettings {
+    /// Defines how the subscription should behave when the user's free trial ends.
+    pub end_behavior: CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields {
     /// The name of the custom field.
     ///
@@ -2439,6 +2454,13 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options:
         Option<CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior {
+    /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
+    pub missing_payment_method:
+        CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -6529,6 +6551,48 @@ impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataT
 impl std::default::Default for CreateCheckoutSessionShippingOptionsShippingRateDataType {
     fn default() -> Self {
         Self::FixedAmount
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior`'s `missing_payment_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+    Cancel,
+    CreateInvoice,
+    Pause,
+}
+
+impl CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::Cancel => "cancel",
+            CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::CreateInvoice => "create_invoice",
+            CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod::Pause => "pause",
+        }
+    }
+}
+
+impl AsRef<str>
+    for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn default() -> Self {
+        Self::Cancel
     }
 }
 
