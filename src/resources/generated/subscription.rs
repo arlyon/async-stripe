@@ -194,6 +194,10 @@ pub struct Subscription {
     /// If the subscription has a trial, the end of that trial.
     pub trial_end: Option<Timestamp>,
 
+    /// Settings related to subscription trials.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_settings: Option<SubscriptionsTrialsResourceTrialSettings>,
+
     /// If the subscription has a trial, the beginning of that trial.
     pub trial_start: Option<Timestamp>,
 }
@@ -381,6 +385,18 @@ pub struct SubscriptionsResourcePendingUpdate {
     /// Setting this flag to `true` together with `trial_end` is not allowed.
     /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     pub trial_from_plan: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SubscriptionsTrialsResourceTrialSettings {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_behavior: Option<SubscriptionsTrialsResourceEndBehavior>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SubscriptionsTrialsResourceEndBehavior {
+    /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
+    pub missing_payment_method: SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod,
 }
 
 /// The parameters for `Subscription::create`.
@@ -585,6 +601,10 @@ pub struct CreateSubscription<'a> {
     /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
+
+    /// Settings related to subscription trials.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_settings: Option<CreateSubscriptionTrialSettings>,
 }
 
 impl<'a> CreateSubscription<'a> {
@@ -621,6 +641,7 @@ impl<'a> CreateSubscription<'a> {
             trial_end: Default::default(),
             trial_from_plan: Default::default(),
             trial_period_days: Default::default(),
+            trial_settings: Default::default(),
         }
     }
 }
@@ -910,6 +931,10 @@ pub struct UpdateSubscription<'a> {
     /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_from_plan: Option<bool>,
+
+    /// Settings related to subscription trials.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub trial_settings: Option<UpdateSubscriptionTrialSettings>,
 }
 
 impl<'a> UpdateSubscription<'a> {
@@ -944,6 +969,7 @@ impl<'a> UpdateSubscription<'a> {
             transfer_data: Default::default(),
             trial_end: Default::default(),
             trial_from_plan: Default::default(),
+            trial_settings: Default::default(),
         }
     }
 }
@@ -1064,6 +1090,12 @@ pub struct CreateSubscriptionTransferData {
 
     /// ID of an existing, connected Stripe account.
     pub destination: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionTrialSettings {
+    /// Defines how the subscription should behave when the user's free trial ends.
+    pub end_behavior: CreateSubscriptionTrialSettingsEndBehavior,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1190,6 +1222,12 @@ pub struct UpdateSubscriptionTransferData {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionTrialSettings {
+    /// Defines how the subscription should behave when the user's free trial ends.
+    pub end_behavior: UpdateSubscriptionTrialSettingsEndBehavior,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionItemsBillingThresholds {
     /// Usage threshold that triggers the subscription to advance to a new billing period.
     pub usage_gte: i64,
@@ -1221,6 +1259,12 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSubscriptionTrialSettingsEndBehavior {
+    /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
+    pub missing_payment_method: CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1308,6 +1352,12 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
     /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccount>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionTrialSettingsEndBehavior {
+    /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
+    pub missing_payment_method: UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2063,6 +2113,44 @@ impl std::default::Default for CreateSubscriptionPaymentSettingsSaveDefaultPayme
     }
 }
 
+/// An enum representing the possible values of an `CreateSubscriptionTrialSettingsEndBehavior`'s `missing_payment_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
+    Cancel,
+    CreateInvoice,
+    Pause,
+}
+
+impl CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod::Cancel => "cancel",
+            CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod::CreateInvoice => {
+                "create_invoice"
+            }
+            CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod::Pause => "pause",
+        }
+    }
+}
+
+impl AsRef<str> for CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
+    fn default() -> Self {
+        Self::Cancel
+    }
+}
+
 /// An enum representing the possible values of an `InvoiceItemPriceData`'s `tax_behavior` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2408,6 +2496,7 @@ pub enum SubscriptionStatus {
     Incomplete,
     IncompleteExpired,
     PastDue,
+    Paused,
     Trialing,
     Unpaid,
 }
@@ -2420,6 +2509,7 @@ impl SubscriptionStatus {
             SubscriptionStatus::Incomplete => "incomplete",
             SubscriptionStatus::IncompleteExpired => "incomplete_expired",
             SubscriptionStatus::PastDue => "past_due",
+            SubscriptionStatus::Paused => "paused",
             SubscriptionStatus::Trialing => "trialing",
             SubscriptionStatus::Unpaid => "unpaid",
         }
@@ -2454,6 +2544,7 @@ pub enum SubscriptionStatusFilter {
     Incomplete,
     IncompleteExpired,
     PastDue,
+    Paused,
     Trialing,
     Unpaid,
 }
@@ -2468,6 +2559,7 @@ impl SubscriptionStatusFilter {
             SubscriptionStatusFilter::Incomplete => "incomplete",
             SubscriptionStatusFilter::IncompleteExpired => "incomplete_expired",
             SubscriptionStatusFilter::PastDue => "past_due",
+            SubscriptionStatusFilter::Paused => "paused",
             SubscriptionStatusFilter::Trialing => "trialing",
             SubscriptionStatusFilter::Unpaid => "unpaid",
         }
@@ -2642,6 +2734,44 @@ impl std::fmt::Display for SubscriptionsResourcePaymentSettingsSaveDefaultPaymen
 impl std::default::Default for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
     fn default() -> Self {
         Self::Off
+    }
+}
+
+/// An enum representing the possible values of an `SubscriptionsTrialsResourceEndBehavior`'s `missing_payment_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
+    Cancel,
+    CreateInvoice,
+    Pause,
+}
+
+impl SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::Cancel => "cancel",
+            SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::CreateInvoice => {
+                "create_invoice"
+            }
+            SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::Pause => "pause",
+        }
+    }
+}
+
+impl AsRef<str> for SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
+    fn default() -> Self {
+        Self::Cancel
     }
 }
 
@@ -3138,5 +3268,43 @@ impl std::fmt::Display for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMe
 impl std::default::Default for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
     fn default() -> Self {
         Self::Off
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSubscriptionTrialSettingsEndBehavior`'s `missing_payment_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
+    Cancel,
+    CreateInvoice,
+    Pause,
+}
+
+impl UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod::Cancel => "cancel",
+            UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod::CreateInvoice => {
+                "create_invoice"
+            }
+            UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod::Pause => "pause",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
+    fn default() -> Self {
+        Self::Cancel
     }
 }

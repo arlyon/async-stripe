@@ -192,6 +192,7 @@ pub use {
         invoice_payment_method_options_customer_balance::*,
         invoice_payment_method_options_us_bank_account::*,
         invoiceitem::*,
+        invoices_shipping_cost::*,
         line_item::*,
         plan::*,
         plan::PlanInterval,

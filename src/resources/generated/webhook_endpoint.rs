@@ -373,10 +373,14 @@ pub enum EventFilter {
     CustomerSubscriptionCreated,
     #[serde(rename = "customer.subscription.deleted")]
     CustomerSubscriptionDeleted,
+    #[serde(rename = "customer.subscription.paused")]
+    CustomerSubscriptionPaused,
     #[serde(rename = "customer.subscription.pending_update_applied")]
     CustomerSubscriptionPendingUpdateApplied,
     #[serde(rename = "customer.subscription.pending_update_expired")]
     CustomerSubscriptionPendingUpdateExpired,
+    #[serde(rename = "customer.subscription.resumed")]
+    CustomerSubscriptionResumed,
     #[serde(rename = "customer.subscription.trial_will_end")]
     CustomerSubscriptionTrialWillEnd,
     #[serde(rename = "customer.subscription.updated")]
@@ -776,12 +780,14 @@ impl EventFilter {
             EventFilter::CustomerSourceUpdated => "customer.source.updated",
             EventFilter::CustomerSubscriptionCreated => "customer.subscription.created",
             EventFilter::CustomerSubscriptionDeleted => "customer.subscription.deleted",
+            EventFilter::CustomerSubscriptionPaused => "customer.subscription.paused",
             EventFilter::CustomerSubscriptionPendingUpdateApplied => {
                 "customer.subscription.pending_update_applied"
             }
             EventFilter::CustomerSubscriptionPendingUpdateExpired => {
                 "customer.subscription.pending_update_expired"
             }
+            EventFilter::CustomerSubscriptionResumed => "customer.subscription.resumed",
             EventFilter::CustomerSubscriptionTrialWillEnd => "customer.subscription.trial_will_end",
             EventFilter::CustomerSubscriptionUpdated => "customer.subscription.updated",
             EventFilter::CustomerTaxIdCreated => "customer.tax_id.created",

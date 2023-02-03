@@ -7,7 +7,9 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::PaymentLinkId;
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable};
-use crate::resources::{Account, CheckoutSessionItem, Currency, ShippingRate};
+use crate::resources::{
+    Account, CheckoutSessionItem, Currency, InvoiceSettingRenderingOptions, ShippingRate, TaxId,
+};
 
 /// The resource representing a Stripe "PaymentLink".
 ///
@@ -50,6 +52,9 @@ pub struct PaymentLink {
 
     /// Configuration for Customer creation during checkout.
     pub customer_creation: PaymentLinkCustomerCreation,
+
+    /// Configuration for creating invoice for payment mode payment links.
+    pub invoice_creation: Option<PaymentLinksResourceInvoiceCreation>,
 
     /// The line items representing what is being sold.
     #[serde(default)]
@@ -198,6 +203,51 @@ pub struct PaymentLinksResourceCustomTextPosition {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceInvoiceCreation {
+    /// Enable creating an invoice on successful payment.
+    pub enabled: bool,
+
+    /// Configuration for the invoice.
+    ///
+    /// Default invoice values will be used if unspecified.
+    pub invoice_data: Option<PaymentLinksResourceInvoiceSettings>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceInvoiceSettings {
+    /// The account tax IDs associated with the invoice.
+    pub account_tax_ids: Option<Vec<Expandable<TaxId>>>,
+
+    /// A list of up to 4 custom fields to be displayed on the invoice.
+    pub custom_fields: Option<Vec<InvoiceSettingCustomField>>,
+
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    pub description: Option<String>,
+
+    /// Footer to be displayed on the invoice.
+    pub footer: Option<String>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Metadata,
+
+    /// Options for invoice PDF rendering.
+    pub rendering_options: Option<InvoiceSettingRenderingOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct InvoiceSettingCustomField {
+    /// The name of the custom field.
+    pub name: String,
+
+    /// The value of the custom field.
+    pub value: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentLinksResourcePaymentIntentData {
     /// Indicates when the funds will be captured from the customer's account.
     pub capture_method: Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>,
@@ -311,6 +361,10 @@ pub struct CreatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
+    /// Generate a post-purchase Invoice for one-time payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_creation: Option<CreatePaymentLinkInvoiceCreation>,
+
     /// The line items representing what is being sold.
     ///
     /// Each line item represents an item being sold.
@@ -395,6 +449,7 @@ impl<'a> CreatePaymentLink<'a> {
             custom_text: Default::default(),
             customer_creation: Default::default(),
             expand: Default::default(),
+            invoice_creation: Default::default(),
             line_items,
             metadata: Default::default(),
             on_behalf_of: Default::default(),
@@ -498,6 +553,10 @@ pub struct UpdatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
+    /// Generate a post-purchase Invoice for one-time payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_creation: Option<UpdatePaymentLinkInvoiceCreation>,
+
     /// The line items representing what is being sold.
     ///
     /// Each line item represents an item being sold.
@@ -542,6 +601,7 @@ impl<'a> UpdatePaymentLink<'a> {
             custom_text: Default::default(),
             customer_creation: Default::default(),
             expand: Default::default(),
+            invoice_creation: Default::default(),
             line_items: Default::default(),
             metadata: Default::default(),
             payment_method_collection: Default::default(),
@@ -598,6 +658,16 @@ pub struct CreatePaymentLinkCustomText {
     /// Custom text that should be displayed alongside the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit: Option<CreatePaymentLinkCustomTextSubmit>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkInvoiceCreation {
+    /// Whether the feature is enabled.
+    pub enabled: bool,
+
+    /// Invoice PDF configuration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_data: Option<CreatePaymentLinkInvoiceCreationInvoiceData>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -726,6 +796,16 @@ pub struct UpdatePaymentLinkCustomText {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkInvoiceCreation {
+    /// Whether the feature is enabled.
+    pub enabled: bool,
+
+    /// Invoice PDF configuration.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub invoice_data: Option<UpdatePaymentLinkInvoiceCreationInvoiceData>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -776,6 +856,39 @@ pub struct CreatePaymentLinkCustomTextSubmit {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkInvoiceCreationInvoiceData {
+    /// The account tax IDs associated with the invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_tax_ids: Option<Vec<String>>,
+
+    /// Default custom fields to be displayed on invoices for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_fields: Option<Vec<CreatePaymentLinkInvoiceCreationInvoiceDataCustomFields>>,
+
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    /// Default footer to be displayed on invoices for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub footer: Option<String>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    /// Default options for invoice PDF rendering for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering_options: Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkLineItemsAdjustableQuantity {
     /// Set to true if the quantity can be adjusted to any non-negative Integer.
     pub enabled: bool,
@@ -823,6 +936,39 @@ pub struct UpdatePaymentLinkCustomTextSubmit {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkInvoiceCreationInvoiceData {
+    /// The account tax IDs associated with the invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_tax_ids: Option<Vec<String>>,
+
+    /// Default custom fields to be displayed on invoices for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_fields: Option<Vec<UpdatePaymentLinkInvoiceCreationInvoiceDataCustomFields>>,
+
+    /// An arbitrary string attached to the object.
+    ///
+    /// Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    /// Default footer to be displayed on invoices for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub footer: Option<String>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    /// Default options for invoice PDF rendering for this customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rendering_options: Option<UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
     /// Set to true if the quantity can be adjusted to any non-negative Integer.
     pub enabled: bool,
@@ -840,6 +986,56 @@ pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
     /// If there is only one item in the cart then that item's quantity cannot go down to 0.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
+    /// The name of the custom field.
+    ///
+    /// This may be up to 30 characters.
+    pub name: String,
+
+    /// The value of the custom field.
+    ///
+    /// This may be up to 30 characters.
+    pub value: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    ///
+    /// One of `exclude_tax` or `include_inclusive_tax`.
+    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_tax_display:
+        Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
+    /// The name of the custom field.
+    ///
+    /// This may be up to 30 characters.
+    pub name: String,
+
+    /// The value of the custom field.
+    ///
+    /// This may be up to 30 characters.
+    pub value: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
+    /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
+    ///
+    /// One of `exclude_tax` or `include_inclusive_tax`.
+    /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
+    /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_tax_display:
+        Option<UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
 }
 
 /// An enum representing the possible values of an `CreatePaymentLinkAfterCompletion`'s `type` field.
@@ -941,6 +1137,44 @@ impl std::fmt::Display for CreatePaymentLinkConsentCollectionTermsOfService {
 impl std::default::Default for CreatePaymentLinkConsentCollectionTermsOfService {
     fn default() -> Self {
         Self::None
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions`'s `amount_tax_display` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
+    ExcludeTax,
+    IncludeInclusiveTax,
+}
+
+impl CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::ExcludeTax => "exclude_tax",
+            CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::IncludeInclusiveTax => "include_inclusive_tax",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn default() -> Self {
+        Self::ExcludeTax
     }
 }
 
@@ -2995,6 +3229,44 @@ impl std::fmt::Display for UpdatePaymentLinkAfterCompletionType {
 impl std::default::Default for UpdatePaymentLinkAfterCompletionType {
     fn default() -> Self {
         Self::HostedConfirmation
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions`'s `amount_tax_display` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
+    ExcludeTax,
+    IncludeInclusiveTax,
+}
+
+impl UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::ExcludeTax => "exclude_tax",
+            UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay::IncludeInclusiveTax => "include_inclusive_tax",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn default() -> Self {
+        Self::ExcludeTax
     }
 }
 

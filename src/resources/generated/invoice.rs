@@ -13,8 +13,8 @@ use crate::resources::{
     Account, Address, ApiErrors, Application, Charge, Currency, Customer, Discount,
     InvoiceLineItem, InvoicePaymentMethodOptionsAcssDebit, InvoicePaymentMethodOptionsBancontact,
     InvoicePaymentMethodOptionsCustomerBalance, InvoicePaymentMethodOptionsKonbini,
-    InvoicePaymentMethodOptionsUsBankAccount, InvoiceSettingRenderingOptions, PaymentIntent,
-    PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
+    InvoicePaymentMethodOptionsUsBankAccount, InvoiceSettingRenderingOptions, InvoicesShippingCost,
+    PaymentIntent, PaymentMethod, PaymentSource, Quote, Shipping, Subscription, TaxId, TaxRate,
     TestHelpersTestClock,
 };
 
@@ -59,6 +59,10 @@ pub struct Invoice {
     /// The difference between amount_due and amount_paid, in %s.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_remaining: Option<i64>,
+
+    /// This is the sum of all the shipping amounts.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_shipping: Option<i64>,
 
     /// ID of the Connect Application that created the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -351,6 +355,16 @@ pub struct Invoice {
     /// Options for invoice PDF rendering.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<InvoiceSettingRenderingOptions>,
+
+    /// The details of the cost of shipping, including the ShippingRate applied on the invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_cost: Option<InvoicesShippingCost>,
+
+    /// Shipping details for the invoice.
+    ///
+    /// The Invoice PDF will use the `shipping_details` value if it is set, otherwise the PDF will render the shipping address from the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_details: Option<Shipping>,
 
     /// Starting customer balance before the invoice is finalized.
     ///
@@ -773,6 +787,16 @@ pub struct CreateInvoice<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<CreateInvoiceRenderingOptions>,
 
+    /// Settings for the cost of shipping for this invoice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_cost: Option<CreateInvoiceShippingCost>,
+
+    /// Shipping details for the invoice.
+    ///
+    /// The Invoice PDF will use the `shipping_details` value if it is set, otherwise the PDF will render the shipping address from the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_details: Option<CreateInvoiceShippingDetails>,
+
     /// Extra information about a charge for the customer's credit card statement.
     ///
     /// It must contain at least one letter.
@@ -818,6 +842,8 @@ impl<'a> CreateInvoice<'a> {
             payment_settings: Default::default(),
             pending_invoice_items_behavior: Default::default(),
             rendering_options: Default::default(),
+            shipping_cost: Default::default(),
+            shipping_details: Default::default(),
             statement_descriptor: Default::default(),
             subscription: Default::default(),
             transfer_data: Default::default(),
@@ -976,6 +1002,30 @@ pub struct CreateInvoiceRenderingOptions {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceShippingCost {
+    /// The ID of the shipping rate to use for this order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_rate: Option<String>,
+
+    /// Parameters to create a new ad-hoc shipping rate for this order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shipping_rate_data: Option<CreateInvoiceShippingCostShippingRateData>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceShippingDetails {
+    /// Shipping address.
+    pub address: CreateInvoiceShippingDetailsAddress,
+
+    /// Recipient name.
+    pub name: String,
+
+    /// Recipient phone (including extension).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub phone: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoiceTransferData {
     /// The amount that will be transferred automatically when the invoice is paid.
     ///
@@ -1012,6 +1062,80 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceShippingCostShippingRateData {
+    /// The estimated range for how long shipping will take, meant to be displayable to the customer.
+    ///
+    /// This will appear on CheckoutSessions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delivery_estimate: Option<CreateInvoiceShippingCostShippingRateDataDeliveryEstimate>,
+
+    /// The name of the shipping rate, meant to be displayable to the customer.
+    ///
+    /// This will appear on CheckoutSessions.
+    pub display_name: String,
+
+    /// Describes a fixed amount to charge for shipping.
+    ///
+    /// Must be present if type is `fixed_amount`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fixed_amount: Option<CreateInvoiceShippingCostShippingRateDataFixedAmount>,
+
+    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    ///
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(default)]
+    pub metadata: Metadata,
+
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior: Option<CreateInvoiceShippingCostShippingRateDataTaxBehavior>,
+
+    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    ///
+    /// The Shipping tax code is `txcd_92010001`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_code: Option<String>,
+
+    /// The type of calculation to use on the shipping rate.
+    ///
+    /// Can only be `fixed_amount` for now.
+    #[serde(rename = "type")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub type_: Option<CreateInvoiceShippingCostShippingRateDataType>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceShippingDetailsAddress {
+    /// City, district, suburb, town, or village.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub city: Option<String>,
+
+    /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
+    /// Address line 1 (e.g., street, PO Box, or company name).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line1: Option<String>,
+
+    /// Address line 2 (e.g., apartment, suite, unit, or building).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub line2: Option<String>,
+
+    /// ZIP or postal code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub postal_code: Option<String>,
+
+    /// State, county, province, or region.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1083,6 +1207,39 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceShippingCostShippingRateDataDeliveryEstimate {
+    /// The upper bound of the estimated range.
+    ///
+    /// If empty, represents no upper bound i.e., infinite.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximum>,
+
+    /// The lower bound of the estimated range.
+    ///
+    /// If empty, represents no lower bound.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimum>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceShippingCostShippingRateDataFixedAmount {
+    /// A non-negative integer in cents representing how much to charge.
+    pub amount: i64,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Currency,
+
+    /// Shipping rates defined in each available currency option.
+    ///
+    /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_options:
+        Option<CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1128,6 +1285,37 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancia
     /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<Vec<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximum {
+    /// A unit of time.
+    pub unit: CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit,
+
+    /// Must be greater than 0.
+    pub value: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimum {
+    /// A unit of time.
+    pub unit: CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit,
+
+    /// Must be greater than 0.
+    pub value: i64,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions {
+    /// A non-negative integer in cents representing how much to charge.
+    pub amount: i64,
+
+    /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
+    ///
+    /// One of `inclusive`, `exclusive`, or `unspecified`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_behavior:
+        Option<CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1687,6 +1875,202 @@ impl std::fmt::Display for CreateInvoiceRenderingOptionsAmountTaxDisplay {
 impl std::default::Default for CreateInvoiceRenderingOptionsAmountTaxDisplay {
     fn default() -> Self {
         Self::ExcludeTax
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximum`'s `unit` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
+    BusinessDay,
+    Day,
+    Hour,
+    Month,
+    Week,
+}
+
+impl CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit::BusinessDay => {
+                "business_day"
+            }
+            CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit::Day => "day",
+            CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit::Hour => "hour",
+            CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit::Month => "month",
+            CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit::Week => "week",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMaximumUnit
+{
+    fn default() -> Self {
+        Self::BusinessDay
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimum`'s `unit` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
+    BusinessDay,
+    Day,
+    Hour,
+    Month,
+    Week,
+}
+
+impl CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit::BusinessDay => {
+                "business_day"
+            }
+            CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit::Day => "day",
+            CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit::Hour => "hour",
+            CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit::Month => "month",
+            CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit::Week => "week",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateInvoiceShippingCostShippingRateDataDeliveryEstimateMinimumUnit
+{
+    fn default() -> Self {
+        Self::BusinessDay
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Exclusive => "exclusive",
+            CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Inclusive => "inclusive",
+            CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display
+    for CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default
+    for CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
+{
+    fn default() -> Self {
+        Self::Exclusive
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoiceShippingCostShippingRateData`'s `tax_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceShippingCostShippingRateDataTaxBehavior {
+    Exclusive,
+    Inclusive,
+    Unspecified,
+}
+
+impl CreateInvoiceShippingCostShippingRateDataTaxBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceShippingCostShippingRateDataTaxBehavior::Exclusive => "exclusive",
+            CreateInvoiceShippingCostShippingRateDataTaxBehavior::Inclusive => "inclusive",
+            CreateInvoiceShippingCostShippingRateDataTaxBehavior::Unspecified => "unspecified",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceShippingCostShippingRateDataTaxBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceShippingCostShippingRateDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateInvoiceShippingCostShippingRateDataTaxBehavior {
+    fn default() -> Self {
+        Self::Exclusive
+    }
+}
+
+/// An enum representing the possible values of an `CreateInvoiceShippingCostShippingRateData`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateInvoiceShippingCostShippingRateDataType {
+    FixedAmount,
+}
+
+impl CreateInvoiceShippingCostShippingRateDataType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateInvoiceShippingCostShippingRateDataType::FixedAmount => "fixed_amount",
+        }
+    }
+}
+
+impl AsRef<str> for CreateInvoiceShippingCostShippingRateDataType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateInvoiceShippingCostShippingRateDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateInvoiceShippingCostShippingRateDataType {
+    fn default() -> Self {
+        Self::FixedAmount
     }
 }
 
