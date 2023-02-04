@@ -1,3 +1,10 @@
+## [0.18.2](https://github.com/arlyon/async-stripe/compare/v0.18.1...v0.18.2) (2023-02-04)
+
+
+### Bug Fixes
+
+* prevent publishing the benchmark crate ([e4be54d](https://github.com/arlyon/async-stripe/commit/e4be54d0dbdec799ddab698f2941fc031b511fd1))
+
 ## [0.18.1](https://github.com/arlyon/async-stripe/compare/v0.18.0...v0.18.1) (2023-02-04)
 
 
