@@ -1,3 +1,10 @@
+# [0.18.0](https://github.com/arlyon/async-stripe/compare/v0.17.0...v0.18.0) (2023-02-04)
+
+
+### Features
+
+* fn to expire checkout sessions ([0368c79](https://github.com/arlyon/async-stripe/commit/0368c79f065cfc179855bc7fc60fa157ac758d1f))
+
 # [0.17.0](https://github.com/arlyon/async-stripe/compare/v0.16.0...v0.17.0) (2023-02-01)
 
 
