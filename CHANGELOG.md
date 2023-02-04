@@ -1,3 +1,10 @@
+## [0.18.1](https://github.com/arlyon/async-stripe/compare/v0.18.0...v0.18.1) (2023-02-04)
+
+
+### Bug Fixes
+
+* prevent publishing the openapi crate ([6de846e](https://github.com/arlyon/async-stripe/commit/6de846e922dcf4cf828202f26a085aee6a2147ae))
+
 # [0.18.0](https://github.com/arlyon/async-stripe/compare/v0.17.0...v0.18.0) (2023-02-04)
 
 
