@@ -203,12 +203,14 @@ pub use {
         subscription_item::PlanInterval as SubscriptionItemInterval,
         subscription_item::SubscriptionItemPriceDataRecurring as SubscriptionItemPriceDataRecurring,
         subscription_item::SubscriptionItemPriceData as SubscriptionItemPriceData,
+        subscription_item::SubscriptionPaymentBehavior as SubscriptionItemPaymentBehavior,
         // need to import this afterwards so that the SubscriptionItemPriceDataRecurring
         // isn't silently ignored
         subscription::*,
         subscription::PlanInterval as SubscriptionInterval,
         subscription::SubscriptionItemPriceDataRecurring as SubscriptionPriceDataRecurring,
         subscription::SubscriptionItemPriceData as SubscriptionPriceData,
+        subscription::SubscriptionPaymentBehavior as SubscriptionPaymentBehavior,
         subscription_schedule::*,
         subscription_billing_thresholds::*,
         subscription_item_billing_thresholds::*,
