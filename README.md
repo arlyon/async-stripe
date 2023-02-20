@@ -6,12 +6,12 @@
 
 Convenient rust bindings and types for the Stripe HTTP API aiming to support
 the entire API surface. Not the case? Please open an issue. We update our
-defitions [every week](https://github.com/arlyon/async-stripe/actions/workflows/openapi.yml) to ensure that we are up to date.
-Want to see a changelog of the stripe api? [Look no further](https://stripe.com/docs/changelog).
+definitions [every week](https://github.com/arlyon/async-stripe/actions/workflows/openapi.yml) to ensure that we are up to date.
+Want to see a changelog of the Stripe API? [Look no further](https://stripe.com/docs/changelog).
 
 ## Documentation
 
-See the [rust api docs](https://docs.rs/async-stripe), the [examples](/examples), or [payments.rs](https://payments.rs).
+See the [Rust API docs](https://docs.rs/async-stripe), the [examples](/examples), or [payments.rs](https://payments.rs).
 
 ## Installation
 
@@ -74,7 +74,7 @@ We would not be here without them! :)
 
 Licensed under either of
 
-- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or https://www.apache.org/licenses/LICENSE-2.0)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
+- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or <https://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or <https://opensource.org/licenses/MIT>)
 
 at your option.
