@@ -48,6 +48,11 @@ pub struct PaymentLink {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Currency,
 
+    /// Collect additional information from your customer using custom fields.
+    ///
+    /// Up to 2 fields are supported.
+    pub custom_fields: Vec<PaymentLinksResourceCustomFields>,
+
     pub custom_text: PaymentLinksResourceCustomText,
 
     /// Configuration for Customer creation during checkout.
@@ -185,6 +190,61 @@ pub struct PaymentLinksResourceConsentCollection {
     ///
     /// If set to `none`, customers won't be shown a checkbox to accept the terms of service.
     pub terms_of_service: Option<PaymentLinksResourceConsentCollectionTermsOfService>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCustomFields {
+    /// Configuration for `type=dropdown` fields.
+    pub dropdown: Option<PaymentLinksResourceCustomFieldsDropdown>,
+
+    /// String of your choice that your integration can use to reconcile this field.
+    ///
+    /// Must be unique to this field, alphanumeric, and up to 200 characters.
+    pub key: String,
+
+    pub label: PaymentLinksResourceCustomFieldsLabel,
+
+    /// Whether the customer is required to complete the field before completing the Checkout Session.
+    ///
+    /// Defaults to `false`.
+    pub optional: bool,
+
+    /// The type of the field.
+    #[serde(rename = "type")]
+    pub type_: PaymentLinksResourceCustomFieldsType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCustomFieldsDropdown {
+    /// The options available for the customer to select.
+    ///
+    /// Up to 200 options allowed.
+    pub options: Vec<PaymentLinksResourceCustomFieldsDropdownOption>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCustomFieldsDropdownOption {
+    /// The label for the option, displayed to the customer.
+    ///
+    /// Up to 100 characters.
+    pub label: String,
+
+    /// The value for this option, not displayed to the customer, used by your integration to reconcile the option selected by the customer.
+    ///
+    /// Must be unique to this option, alphanumeric, and up to 100 characters.
+    pub value: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentLinksResourceCustomFieldsLabel {
+    /// Custom text for the label, displayed to the customer.
+    ///
+    /// Up to 50 characters.
+    pub custom: Option<String>,
+
+    /// The type of the label.
+    #[serde(rename = "type")]
+    pub type_: PaymentLinksResourceCustomFieldsLabelType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -349,6 +409,12 @@ pub struct CreatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
+    /// Collect additional information from your customer using custom fields.
+    ///
+    /// Up to 2 fields are supported.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_fields: Option<Vec<CreatePaymentLinkCustomFields>>,
+
     /// Display additional text for your customers using custom text.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_text: Option<CreatePaymentLinkCustomText>,
@@ -446,6 +512,7 @@ impl<'a> CreatePaymentLink<'a> {
             billing_address_collection: Default::default(),
             consent_collection: Default::default(),
             currency: Default::default(),
+            custom_fields: Default::default(),
             custom_text: Default::default(),
             customer_creation: Default::default(),
             expand: Default::default(),
@@ -541,6 +608,12 @@ pub struct UpdatePaymentLink<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_address_collection: Option<PaymentLinkBillingAddressCollection>,
 
+    /// Collect additional information from your customer using custom fields.
+    ///
+    /// Up to 2 fields are supported.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_fields: Option<Vec<UpdatePaymentLinkCustomFields>>,
+
     /// Display additional text for your customers using custom text.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_text: Option<UpdatePaymentLinkCustomText>,
@@ -598,6 +671,7 @@ impl<'a> UpdatePaymentLink<'a> {
             allow_promotion_codes: Default::default(),
             automatic_tax: Default::default(),
             billing_address_collection: Default::default(),
+            custom_fields: Default::default(),
             custom_text: Default::default(),
             customer_creation: Default::default(),
             expand: Default::default(),
@@ -647,6 +721,31 @@ pub struct CreatePaymentLinkConsentCollection {
     /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service: Option<CreatePaymentLinkConsentCollectionTermsOfService>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomFields {
+    /// Configuration for `type=dropdown` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dropdown: Option<CreatePaymentLinkCustomFieldsDropdown>,
+
+    /// String of your choice that your integration can use to reconcile this field.
+    ///
+    /// Must be unique to this field, alphanumeric, and up to 200 characters.
+    pub key: String,
+
+    /// The label for the field, displayed to the customer.
+    pub label: CreatePaymentLinkCustomFieldsLabel,
+
+    /// Whether the customer is required to complete the field before completing the Checkout Session.
+    ///
+    /// Defaults to `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+
+    /// The type of the field.
+    #[serde(rename = "type")]
+    pub type_: CreatePaymentLinkCustomFieldsType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -785,6 +884,31 @@ pub struct UpdatePaymentLinkAutomaticTax {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomFields {
+    /// Configuration for `type=dropdown` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dropdown: Option<UpdatePaymentLinkCustomFieldsDropdown>,
+
+    /// String of your choice that your integration can use to reconcile this field.
+    ///
+    /// Must be unique to this field, alphanumeric, and up to 200 characters.
+    pub key: String,
+
+    /// The label for the field, displayed to the customer.
+    pub label: UpdatePaymentLinkCustomFieldsLabel,
+
+    /// Whether the customer is required to complete the field before completing the Checkout Session.
+    ///
+    /// Defaults to `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+
+    /// The type of the field.
+    #[serde(rename = "type")]
+    pub type_: UpdatePaymentLinkCustomFieldsType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomText {
     /// Custom text that should be displayed alongside shipping address collection.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -841,6 +965,26 @@ pub struct CreatePaymentLinkAfterCompletionRedirect {
     ///
     /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
     pub url: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomFieldsDropdown {
+    /// The options available for the customer to select.
+    ///
+    /// Up to 200 options allowed.
+    pub options: Vec<CreatePaymentLinkCustomFieldsDropdownOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomFieldsLabel {
+    /// Custom text for the label, displayed to the customer.
+    ///
+    /// Up to 50 characters.
+    pub custom: String,
+
+    /// The type of the label.
+    #[serde(rename = "type")]
+    pub type_: CreatePaymentLinkCustomFieldsLabelType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -924,6 +1068,26 @@ pub struct UpdatePaymentLinkAfterCompletionRedirect {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomFieldsDropdown {
+    /// The options available for the customer to select.
+    ///
+    /// Up to 200 options allowed.
+    pub options: Vec<UpdatePaymentLinkCustomFieldsDropdownOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomFieldsLabel {
+    /// Custom text for the label, displayed to the customer.
+    ///
+    /// Up to 50 characters.
+    pub custom: String,
+
+    /// The type of the label.
+    #[serde(rename = "type")]
+    pub type_: UpdatePaymentLinkCustomFieldsLabelType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentLinkCustomTextShippingAddress {
     /// Text may be up to 1000 characters in length.
     pub message: String,
@@ -989,6 +1153,19 @@ pub struct UpdatePaymentLinkLineItemsAdjustableQuantity {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentLinkCustomFieldsDropdownOptions {
+    /// The label for the option, displayed to the customer.
+    ///
+    /// Up to 100 characters.
+    pub label: String,
+
+    /// The value for this option, not displayed to the customer, used by your integration to reconcile the option selected by the customer.
+    ///
+    /// Must be unique to this option, alphanumeric, and up to 100 characters.
+    pub value: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataCustomFields {
     /// The name of the custom field.
     ///
@@ -1011,6 +1188,19 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_tax_display:
         Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentLinkCustomFieldsDropdownOptions {
+    /// The label for the option, displayed to the customer.
+    ///
+    /// Up to 100 characters.
+    pub label: String,
+
+    /// The value for this option, not displayed to the customer, used by your integration to reconcile the option selected by the customer.
+    ///
+    /// Must be unique to this option, alphanumeric, and up to 100 characters.
+    pub value: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1137,6 +1327,74 @@ impl std::fmt::Display for CreatePaymentLinkConsentCollectionTermsOfService {
 impl std::default::Default for CreatePaymentLinkConsentCollectionTermsOfService {
     fn default() -> Self {
         Self::None
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkCustomFieldsLabel`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkCustomFieldsLabelType {
+    Custom,
+}
+
+impl CreatePaymentLinkCustomFieldsLabelType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkCustomFieldsLabelType::Custom => "custom",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkCustomFieldsLabelType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkCustomFieldsLabelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkCustomFieldsLabelType {
+    fn default() -> Self {
+        Self::Custom
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentLinkCustomFields`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentLinkCustomFieldsType {
+    Dropdown,
+    Numeric,
+    Text,
+}
+
+impl CreatePaymentLinkCustomFieldsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentLinkCustomFieldsType::Dropdown => "dropdown",
+            CreatePaymentLinkCustomFieldsType::Numeric => "numeric",
+            CreatePaymentLinkCustomFieldsType::Text => "text",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentLinkCustomFieldsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentLinkCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentLinkCustomFieldsType {
+    fn default() -> Self {
+        Self::Dropdown
     }
 }
 
@@ -2389,6 +2647,74 @@ impl std::default::Default for PaymentLinksResourceConsentCollectionTermsOfServi
     }
 }
 
+/// An enum representing the possible values of an `PaymentLinksResourceCustomFieldsLabel`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinksResourceCustomFieldsLabelType {
+    Custom,
+}
+
+impl PaymentLinksResourceCustomFieldsLabelType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinksResourceCustomFieldsLabelType::Custom => "custom",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinksResourceCustomFieldsLabelType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinksResourceCustomFieldsLabelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinksResourceCustomFieldsLabelType {
+    fn default() -> Self {
+        Self::Custom
+    }
+}
+
+/// An enum representing the possible values of an `PaymentLinksResourceCustomFields`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentLinksResourceCustomFieldsType {
+    Dropdown,
+    Numeric,
+    Text,
+}
+
+impl PaymentLinksResourceCustomFieldsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentLinksResourceCustomFieldsType::Dropdown => "dropdown",
+            PaymentLinksResourceCustomFieldsType::Numeric => "numeric",
+            PaymentLinksResourceCustomFieldsType::Text => "text",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentLinksResourceCustomFieldsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentLinksResourceCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentLinksResourceCustomFieldsType {
+    fn default() -> Self {
+        Self::Dropdown
+    }
+}
+
 /// An enum representing the possible values of an `PaymentLinksResourcePaymentIntentData`'s `capture_method` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -3229,6 +3555,74 @@ impl std::fmt::Display for UpdatePaymentLinkAfterCompletionType {
 impl std::default::Default for UpdatePaymentLinkAfterCompletionType {
     fn default() -> Self {
         Self::HostedConfirmation
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentLinkCustomFieldsLabel`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkCustomFieldsLabelType {
+    Custom,
+}
+
+impl UpdatePaymentLinkCustomFieldsLabelType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkCustomFieldsLabelType::Custom => "custom",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkCustomFieldsLabelType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentLinkCustomFieldsLabelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkCustomFieldsLabelType {
+    fn default() -> Self {
+        Self::Custom
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentLinkCustomFields`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentLinkCustomFieldsType {
+    Dropdown,
+    Numeric,
+    Text,
+}
+
+impl UpdatePaymentLinkCustomFieldsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentLinkCustomFieldsType::Dropdown => "dropdown",
+            UpdatePaymentLinkCustomFieldsType::Numeric => "numeric",
+            UpdatePaymentLinkCustomFieldsType::Text => "text",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentLinkCustomFieldsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentLinkCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentLinkCustomFieldsType {
+    fn default() -> Self {
+        Self::Dropdown
     }
 }
 

@@ -310,6 +310,7 @@ impl<'a> UpdateTaxRate<'a> {
 pub enum TaxRateTaxType {
     Gst,
     Hst,
+    Igst,
     Jct,
     Pst,
     Qst,
@@ -323,6 +324,7 @@ impl TaxRateTaxType {
         match self {
             TaxRateTaxType::Gst => "gst",
             TaxRateTaxType::Hst => "hst",
+            TaxRateTaxType::Igst => "igst",
             TaxRateTaxType::Jct => "jct",
             TaxRateTaxType::Pst => "pst",
             TaxRateTaxType::Qst => "qst",

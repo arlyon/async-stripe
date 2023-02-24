@@ -110,6 +110,7 @@ pub struct IssuingCardholderCompany {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividual {
+    /// Information related to the card_issuing program for this cardholder.
     pub card_issuing: Option<IssuingCardholderCardIssuing>,
 
     /// The date of birth of this cardholder.
@@ -117,11 +118,13 @@ pub struct IssuingCardholderIndividual {
 
     /// The first name of this cardholder.
     ///
+    /// Required before activating Cards.
     /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
     pub first_name: Option<String>,
 
     /// The last name of this cardholder.
     ///
+    /// Required before activating Cards.
     /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
     pub last_name: Option<String>,
 
@@ -175,9 +178,13 @@ pub struct IssuingCardholderSpendingLimit {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderUserTermsAcceptance {
     /// The Unix timestamp marking when the cardholder accepted the Authorized User Terms.
+    ///
+    /// Required for Celtic Spend Card users.
     pub date: Option<Timestamp>,
 
     /// The IP address from which the cardholder accepted the Authorized User Terms.
+    ///
+    /// Required for Celtic Spend Card users.
     pub ip: Option<String>,
 
     /// The user agent of the browser from which the cardholder accepted the Authorized User Terms.

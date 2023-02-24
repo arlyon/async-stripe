@@ -49,7 +49,7 @@ pub struct Refund {
 
     /// If the refund failed, the reason for refund failure if known.
     ///
-    /// Possible values are `lost_or_stolen_card`, `expired_or_canceled_card`, or `unknown`.
+    /// Possible values are `lost_or_stolen_card`, `expired_or_canceled_card`, `charge_for_pending_refund_disputed`, `insufficient_funds`, `declined`, `merchant_request` or `unknown`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_reason: Option<String>,
 

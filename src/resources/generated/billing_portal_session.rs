@@ -27,6 +27,8 @@ pub struct BillingPortalSession {
     pub customer: String,
 
     /// Information about a specific flow for the customer to go through.
+    ///
+    /// See the [docs](https://stripe.com/docs/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
     pub flow: Option<PortalFlowsFlow>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -131,6 +133,8 @@ pub struct CreateBillingPortalSession<'a> {
     pub expand: &'a [&'a str],
 
     /// Information about a specific flow for the customer to go through.
+    ///
+    /// See the [docs](https://stripe.com/docs/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flow_data: Option<CreateBillingPortalSessionFlowData>,
 

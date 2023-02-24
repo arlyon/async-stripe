@@ -87,6 +87,9 @@ pub struct IssuingCard {
     pub spending_controls: IssuingCardAuthorizationControls,
 
     /// Whether authorizations can be approved on this card.
+    ///
+    /// May be blocked from activating cards depending on past-due Cardholder requirements.
+    /// Defaults to `inactive`.
     pub status: IssuingCardStatus,
 
     /// The type of the card.

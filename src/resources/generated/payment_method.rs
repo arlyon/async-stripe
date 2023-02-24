@@ -478,7 +478,7 @@ pub struct PaymentMethodGrabpay {}
 pub struct PaymentMethodIdeal {
     /// The customer's bank, if provided.
     ///
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
     pub bank: Option<PaymentMethodIdealBank>,
 
     /// The Bank Identifier Code of the customer's bank, if the bank was provided.
@@ -1408,6 +1408,7 @@ pub enum CreatePaymentMethodIdealBank {
     SnsBank,
     TriodosBank,
     VanLanschot,
+    Yoursafe,
 }
 
 impl CreatePaymentMethodIdealBank {
@@ -1426,6 +1427,7 @@ impl CreatePaymentMethodIdealBank {
             CreatePaymentMethodIdealBank::SnsBank => "sns_bank",
             CreatePaymentMethodIdealBank::TriodosBank => "triodos_bank",
             CreatePaymentMethodIdealBank::VanLanschot => "van_lanschot",
+            CreatePaymentMethodIdealBank::Yoursafe => "yoursafe",
         }
     }
 }
@@ -1866,6 +1868,7 @@ pub enum PaymentMethodIdealBank {
     SnsBank,
     TriodosBank,
     VanLanschot,
+    Yoursafe,
 }
 
 impl PaymentMethodIdealBank {
@@ -1884,6 +1887,7 @@ impl PaymentMethodIdealBank {
             PaymentMethodIdealBank::SnsBank => "sns_bank",
             PaymentMethodIdealBank::TriodosBank => "triodos_bank",
             PaymentMethodIdealBank::VanLanschot => "van_lanschot",
+            PaymentMethodIdealBank::Yoursafe => "yoursafe",
         }
     }
 }
@@ -1913,6 +1917,8 @@ pub enum PaymentMethodIdealBic {
     Abnanl2a,
     #[serde(rename = "ASNBNL21")]
     Asnbnl21,
+    #[serde(rename = "BITSNL2A")]
+    Bitsnl2a,
     #[serde(rename = "BUNQNL2A")]
     Bunqnl2a,
     #[serde(rename = "FVLBNL22")]
@@ -1942,6 +1948,7 @@ impl PaymentMethodIdealBic {
         match self {
             PaymentMethodIdealBic::Abnanl2a => "ABNANL2A",
             PaymentMethodIdealBic::Asnbnl21 => "ASNBNL21",
+            PaymentMethodIdealBic::Bitsnl2a => "BITSNL2A",
             PaymentMethodIdealBic::Bunqnl2a => "BUNQNL2A",
             PaymentMethodIdealBic::Fvlbnl22 => "FVLBNL22",
             PaymentMethodIdealBic::Handnl2a => "HANDNL2A",

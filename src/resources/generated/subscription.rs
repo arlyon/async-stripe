@@ -195,7 +195,6 @@ pub struct Subscription {
     pub trial_end: Option<Timestamp>,
 
     /// Settings related to subscription trials.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_settings: Option<SubscriptionsTrialsResourceTrialSettings>,
 
     /// If the subscription has a trial, the beginning of that trial.
@@ -389,8 +388,7 @@ pub struct SubscriptionsResourcePendingUpdate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionsTrialsResourceTrialSettings {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub end_behavior: Option<SubscriptionsTrialsResourceEndBehavior>,
+    pub end_behavior: SubscriptionsTrialsResourceEndBehavior,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1229,7 +1227,7 @@ pub struct UpdateSubscriptionTrialSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionItemsBillingThresholds {
-    /// Usage threshold that triggers the subscription to advance to a new billing period.
+    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
     pub usage_gte: i64,
 }
 

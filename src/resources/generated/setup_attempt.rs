@@ -202,7 +202,7 @@ pub struct SetupAttemptPaymentMethodDetailsCardPresent {
 pub struct SetupAttemptPaymentMethodDetailsIdeal {
     /// The customer's bank.
     ///
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
     pub bank: Option<SetupAttemptPaymentMethodDetailsIdealBank>,
 
     /// The Bank Identifier Code of the customer's bank.
@@ -412,6 +412,7 @@ pub enum SetupAttemptPaymentMethodDetailsIdealBank {
     SnsBank,
     TriodosBank,
     VanLanschot,
+    Yoursafe,
 }
 
 impl SetupAttemptPaymentMethodDetailsIdealBank {
@@ -430,6 +431,7 @@ impl SetupAttemptPaymentMethodDetailsIdealBank {
             SetupAttemptPaymentMethodDetailsIdealBank::SnsBank => "sns_bank",
             SetupAttemptPaymentMethodDetailsIdealBank::TriodosBank => "triodos_bank",
             SetupAttemptPaymentMethodDetailsIdealBank::VanLanschot => "van_lanschot",
+            SetupAttemptPaymentMethodDetailsIdealBank::Yoursafe => "yoursafe",
         }
     }
 }
@@ -459,6 +461,8 @@ pub enum SetupAttemptPaymentMethodDetailsIdealBic {
     Abnanl2a,
     #[serde(rename = "ASNBNL21")]
     Asnbnl21,
+    #[serde(rename = "BITSNL2A")]
+    Bitsnl2a,
     #[serde(rename = "BUNQNL2A")]
     Bunqnl2a,
     #[serde(rename = "FVLBNL22")]
@@ -488,6 +492,7 @@ impl SetupAttemptPaymentMethodDetailsIdealBic {
         match self {
             SetupAttemptPaymentMethodDetailsIdealBic::Abnanl2a => "ABNANL2A",
             SetupAttemptPaymentMethodDetailsIdealBic::Asnbnl21 => "ASNBNL21",
+            SetupAttemptPaymentMethodDetailsIdealBic::Bitsnl2a => "BITSNL2A",
             SetupAttemptPaymentMethodDetailsIdealBic::Bunqnl2a => "BUNQNL2A",
             SetupAttemptPaymentMethodDetailsIdealBic::Fvlbnl22 => "FVLBNL22",
             SetupAttemptPaymentMethodDetailsIdealBic::Handnl2a => "HANDNL2A",
