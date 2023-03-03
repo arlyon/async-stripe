@@ -110,6 +110,7 @@ pub struct IssuingCardholderCompany {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderIndividual {
+    /// Information related to the card_issuing program for this cardholder.
     pub card_issuing: Option<IssuingCardholderCardIssuing>,
 
     /// The date of birth of this cardholder.
@@ -117,11 +118,13 @@ pub struct IssuingCardholderIndividual {
 
     /// The first name of this cardholder.
     ///
+    /// Required before activating Cards.
     /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
     pub first_name: Option<String>,
 
     /// The last name of this cardholder.
     ///
+    /// Required before activating Cards.
     /// This field cannot contain any numbers, special characters (except periods, commas, hyphens, spaces and apostrophes) or non-latin letters.
     pub last_name: Option<String>,
 
@@ -175,9 +178,13 @@ pub struct IssuingCardholderSpendingLimit {
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct IssuingCardholderUserTermsAcceptance {
     /// The Unix timestamp marking when the cardholder accepted the Authorized User Terms.
+    ///
+    /// Required for Celtic Spend Card users.
     pub date: Option<Timestamp>,
 
     /// The IP address from which the cardholder accepted the Authorized User Terms.
+    ///
+    /// Required for Celtic Spend Card users.
     pub ip: Option<String>,
 
     /// The user agent of the browser from which the cardholder accepted the Authorized User Terms.
@@ -403,11 +410,13 @@ pub enum IssuingCardholderSpendingLimitCategories {
     EatingPlacesRestaurants,
     EducationalServices,
     ElectricRazorStores,
+    ElectricVehicleCharging,
     ElectricalPartsAndEquipment,
     ElectricalServices,
     ElectronicsRepairShops,
     ElectronicsStores,
     ElementarySecondarySchools,
+    EmergencyServicesGcasVisaUseOnly,
     EmploymentTempAgencies,
     EquipmentRental,
     ExterminatingServices,
@@ -430,6 +439,10 @@ pub enum IssuingCardholderSpendingLimitCategories {
     GlassPaintAndWallpaperStores,
     GlasswareCrystalStores,
     GolfCoursesPublic,
+    GovernmentLicensedHorseDogRacingUsRegionOnly,
+    GovernmentLicensedOnlineCasionsOnlineGamblingUsRegionOnly,
+    GovernmentOwnedLotteriesNonUsRegion,
+    GovernmentOwnedLotteriesUsRegionOnly,
     GovernmentServices,
     GroceryStoresSupermarkets,
     HardwareEquipmentAndSupplies,
@@ -457,6 +470,7 @@ pub enum IssuingCardholderSpendingLimitCategories {
     LumberBuildingMaterialsStores,
     ManualCashDisburse,
     MarinasServiceAndSupplies,
+    Marketplaces,
     MasonryStoneworkAndPlaster,
     MassageParlors,
     MedicalAndDentalLabs,
@@ -698,11 +712,13 @@ impl IssuingCardholderSpendingLimitCategories {
             IssuingCardholderSpendingLimitCategories::EatingPlacesRestaurants => "eating_places_restaurants",
             IssuingCardholderSpendingLimitCategories::EducationalServices => "educational_services",
             IssuingCardholderSpendingLimitCategories::ElectricRazorStores => "electric_razor_stores",
+            IssuingCardholderSpendingLimitCategories::ElectricVehicleCharging => "electric_vehicle_charging",
             IssuingCardholderSpendingLimitCategories::ElectricalPartsAndEquipment => "electrical_parts_and_equipment",
             IssuingCardholderSpendingLimitCategories::ElectricalServices => "electrical_services",
             IssuingCardholderSpendingLimitCategories::ElectronicsRepairShops => "electronics_repair_shops",
             IssuingCardholderSpendingLimitCategories::ElectronicsStores => "electronics_stores",
             IssuingCardholderSpendingLimitCategories::ElementarySecondarySchools => "elementary_secondary_schools",
+            IssuingCardholderSpendingLimitCategories::EmergencyServicesGcasVisaUseOnly => "emergency_services_gcas_visa_use_only",
             IssuingCardholderSpendingLimitCategories::EmploymentTempAgencies => "employment_temp_agencies",
             IssuingCardholderSpendingLimitCategories::EquipmentRental => "equipment_rental",
             IssuingCardholderSpendingLimitCategories::ExterminatingServices => "exterminating_services",
@@ -725,6 +741,10 @@ impl IssuingCardholderSpendingLimitCategories {
             IssuingCardholderSpendingLimitCategories::GlassPaintAndWallpaperStores => "glass_paint_and_wallpaper_stores",
             IssuingCardholderSpendingLimitCategories::GlasswareCrystalStores => "glassware_crystal_stores",
             IssuingCardholderSpendingLimitCategories::GolfCoursesPublic => "golf_courses_public",
+            IssuingCardholderSpendingLimitCategories::GovernmentLicensedHorseDogRacingUsRegionOnly => "government_licensed_horse_dog_racing_us_region_only",
+            IssuingCardholderSpendingLimitCategories::GovernmentLicensedOnlineCasionsOnlineGamblingUsRegionOnly => "government_licensed_online_casions_online_gambling_us_region_only",
+            IssuingCardholderSpendingLimitCategories::GovernmentOwnedLotteriesNonUsRegion => "government_owned_lotteries_non_us_region",
+            IssuingCardholderSpendingLimitCategories::GovernmentOwnedLotteriesUsRegionOnly => "government_owned_lotteries_us_region_only",
             IssuingCardholderSpendingLimitCategories::GovernmentServices => "government_services",
             IssuingCardholderSpendingLimitCategories::GroceryStoresSupermarkets => "grocery_stores_supermarkets",
             IssuingCardholderSpendingLimitCategories::HardwareEquipmentAndSupplies => "hardware_equipment_and_supplies",
@@ -751,6 +771,7 @@ impl IssuingCardholderSpendingLimitCategories {
             IssuingCardholderSpendingLimitCategories::LumberBuildingMaterialsStores => "lumber_building_materials_stores",
             IssuingCardholderSpendingLimitCategories::ManualCashDisburse => "manual_cash_disburse",
             IssuingCardholderSpendingLimitCategories::MarinasServiceAndSupplies => "marinas_service_and_supplies",
+            IssuingCardholderSpendingLimitCategories::Marketplaces => "marketplaces",
             IssuingCardholderSpendingLimitCategories::MasonryStoneworkAndPlaster => "masonry_stonework_and_plaster",
             IssuingCardholderSpendingLimitCategories::MassageParlors => "massage_parlors",
             IssuingCardholderSpendingLimitCategories::MedicalAndDentalLabs => "medical_and_dental_labs",

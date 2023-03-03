@@ -77,6 +77,9 @@ pub struct Payout {
     /// If the payout reverses another, this is the ID of the original payout.
     pub original_payout: Option<Expandable<Payout>>,
 
+    /// If `completed`, the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) may be used to list all Balance Transactions that were paid out in this payout.
+    pub reconciliation_status: PayoutReconciliationStatus,
+
     /// If the payout was reversed, this is the ID of the payout that reverses this payout.
     pub reversed_by: Option<Expandable<Payout>>,
 
@@ -333,6 +336,42 @@ impl std::fmt::Display for PayoutMethod {
 impl std::default::Default for PayoutMethod {
     fn default() -> Self {
         Self::Instant
+    }
+}
+
+/// An enum representing the possible values of an `Payout`'s `reconciliation_status` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PayoutReconciliationStatus {
+    Completed,
+    InProgress,
+    NotApplicable,
+}
+
+impl PayoutReconciliationStatus {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PayoutReconciliationStatus::Completed => "completed",
+            PayoutReconciliationStatus::InProgress => "in_progress",
+            PayoutReconciliationStatus::NotApplicable => "not_applicable",
+        }
+    }
+}
+
+impl AsRef<str> for PayoutReconciliationStatus {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PayoutReconciliationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PayoutReconciliationStatus {
+    fn default() -> Self {
+        Self::Completed
     }
 }
 

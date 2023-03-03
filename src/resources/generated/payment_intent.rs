@@ -4658,6 +4658,7 @@ pub enum CreatePaymentIntentPaymentMethodDataIdealBank {
     SnsBank,
     TriodosBank,
     VanLanschot,
+    Yoursafe,
 }
 
 impl CreatePaymentIntentPaymentMethodDataIdealBank {
@@ -4676,6 +4677,7 @@ impl CreatePaymentIntentPaymentMethodDataIdealBank {
             CreatePaymentIntentPaymentMethodDataIdealBank::SnsBank => "sns_bank",
             CreatePaymentIntentPaymentMethodDataIdealBank::TriodosBank => "triodos_bank",
             CreatePaymentIntentPaymentMethodDataIdealBank::VanLanschot => "van_lanschot",
+            CreatePaymentIntentPaymentMethodDataIdealBank::Yoursafe => "yoursafe",
         }
     }
 }
@@ -9322,6 +9324,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataIdealBank {
     SnsBank,
     TriodosBank,
     VanLanschot,
+    Yoursafe,
 }
 
 impl UpdatePaymentIntentPaymentMethodDataIdealBank {
@@ -9340,6 +9343,7 @@ impl UpdatePaymentIntentPaymentMethodDataIdealBank {
             UpdatePaymentIntentPaymentMethodDataIdealBank::SnsBank => "sns_bank",
             UpdatePaymentIntentPaymentMethodDataIdealBank::TriodosBank => "triodos_bank",
             UpdatePaymentIntentPaymentMethodDataIdealBank::VanLanschot => "van_lanschot",
+            UpdatePaymentIntentPaymentMethodDataIdealBank::Yoursafe => "yoursafe",
         }
     }
 }

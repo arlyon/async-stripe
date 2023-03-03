@@ -73,11 +73,15 @@ pub struct FinancialReportingFinanceReportRunRunParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
-    /// Ending timestamp of data to be included in the report run (exclusive).
+    /// Ending timestamp of data to be included in the report run.
+    ///
+    /// Can be any UTC timestamp between 1 second after the user specified `interval_start` and 1 second before this report's last `data_available_end` value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_end: Option<Timestamp>,
 
     /// Starting timestamp of data to be included in the report run.
+    ///
+    /// Can be any UTC timestamp between 1 second after this report's `data_available_start` and 1 second before the user specified `interval_end` value.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_start: Option<Timestamp>,
 

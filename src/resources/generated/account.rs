@@ -123,6 +123,11 @@ impl Account {
 
     /// With [Connect](https://stripe.com/docs/connect), you can create Stripe accounts for your users.
     /// To do this, you’ll first need to [register your platform](https://dashboard.stripe.com/account/applications/settings).
+    ///
+    /// If you’ve already collected information for your connected accounts, you [can pre-fill that information](https://stripe.com/docs/connect/best-practices#onboarding) when
+    /// creating the account.
+    ///
+    /// Connect Onboarding won’t ask for the pre-filled information during account onboarding. You can pre-fill any information on the account.
     pub fn create(client: &Client, params: CreateAccount<'_>) -> Response<Account> {
         client.post_form("/accounts", &params)
     }
@@ -134,9 +139,10 @@ impl Account {
 
     /// Updates a [connected account](https://stripe.com/docs/connect/accounts) by setting the values of the parameters passed.
     ///
-    /// Any parameters not provided are left unchanged.
-    /// Most parameters can be changed only for Custom accounts.
-    /// (These are marked **Custom Only** below.) Parameters marked **Custom and Express** are not supported for Standard accounts.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
+    /// Any parameters not provided are left unchanged.  For Custom accounts, you can update any information on the account.
+    /// For other accounts, you can update all information until that account has started to go through Connect Onboarding.
+    /// Once you create an [Account Link](https://stripe.com/docs/api/account_links) for a Standard or Express account, some parameters can no longer be changed.
+    /// These are marked as **Custom Only** or **Custom and Express** below.  To update your own account, use the [Dashboard](https://dashboard.stripe.com/account).
     /// Refer to our [Connect](https://stripe.com/docs/connect/updating-accounts) documentation to learn more about updating accounts.
     pub fn update(client: &Client, id: &AccountId, params: UpdateAccount<'_>) -> Response<Account> {
         client.post_form(&format!("/accounts/{}", id), &params)
