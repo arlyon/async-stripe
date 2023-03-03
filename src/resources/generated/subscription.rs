@@ -57,6 +57,9 @@ pub struct Subscription {
     /// If the subscription was canceled with `cancel_at_period_end`, `canceled_at` will reflect the time of the most recent update request, not the end of the subscription period when the subscription is automatically moved to a canceled state.
     pub canceled_at: Option<Timestamp>,
 
+    /// Details about why this subscription was cancelled.
+    pub cancellation_details: Option<CancellationDetails>,
+
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
@@ -195,7 +198,6 @@ pub struct Subscription {
     pub trial_end: Option<Timestamp>,
 
     /// Settings related to subscription trials.
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_settings: Option<SubscriptionsTrialsResourceTrialSettings>,
 
     /// If the subscription has a trial, the beginning of that trial.
@@ -259,6 +261,18 @@ impl Object for Subscription {
     fn object(&self) -> &'static str {
         "subscription"
     }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CancellationDetails {
+    /// Additional comments about why the user canceled the subscription, if the subscription was cancelled explicitly by the user.
+    pub comment: Option<String>,
+
+    /// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
+    pub feedback: Option<CancellationDetailsFeedback>,
+
+    /// Why this subscription was cancelled.
+    pub reason: Option<CancellationDetailsReason>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -389,8 +403,7 @@ pub struct SubscriptionsResourcePendingUpdate {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SubscriptionsTrialsResourceTrialSettings {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub end_behavior: Option<SubscriptionsTrialsResourceEndBehavior>,
+    pub end_behavior: SubscriptionsTrialsResourceEndBehavior,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -788,6 +801,10 @@ pub struct UpdateSubscription<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cancel_at_period_end: Option<bool>,
 
+    /// Details about why this subscription was cancelled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cancellation_details: Option<UpdateSubscriptionCancellationDetails>,
+
     /// Either `charge_automatically`, or `send_invoice`.
     ///
     /// When charging automatically, Stripe will attempt to pay this subscription at the end of the cycle using the default source attached to the customer.
@@ -947,6 +964,7 @@ impl<'a> UpdateSubscription<'a> {
             billing_thresholds: Default::default(),
             cancel_at: Default::default(),
             cancel_at_period_end: Default::default(),
+            cancellation_details: Default::default(),
             collection_method: Default::default(),
             coupon: Default::default(),
             days_until_due: Default::default(),
@@ -1105,6 +1123,17 @@ pub struct UpdateSubscriptionAutomaticTax {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSubscriptionCancellationDetails {
+    /// Additional comments about why the user canceled the subscription, if the subscription was cancelled explicitly by the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub comment: Option<String>,
+
+    /// The customer submitted reason for why they cancelled, if the subscription was cancelled explicitly by the user.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub feedback: Option<UpdateSubscriptionCancellationDetailsFeedback>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSubscriptionItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     ///
@@ -1229,7 +1258,7 @@ pub struct UpdateSubscriptionTrialSettings {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSubscriptionItemsBillingThresholds {
-    /// Usage threshold that triggers the subscription to advance to a new billing period.
+    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
     pub usage_gte: i64,
 }
 
@@ -1651,6 +1680,88 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCustomerBalanceB
     ///
     /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
     pub country: String,
+}
+
+/// An enum representing the possible values of an `CancellationDetails`'s `feedback` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CancellationDetailsFeedback {
+    CustomerService,
+    LowQuality,
+    MissingFeatures,
+    Other,
+    SwitchedService,
+    TooComplex,
+    TooExpensive,
+    Unused,
+}
+
+impl CancellationDetailsFeedback {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CancellationDetailsFeedback::CustomerService => "customer_service",
+            CancellationDetailsFeedback::LowQuality => "low_quality",
+            CancellationDetailsFeedback::MissingFeatures => "missing_features",
+            CancellationDetailsFeedback::Other => "other",
+            CancellationDetailsFeedback::SwitchedService => "switched_service",
+            CancellationDetailsFeedback::TooComplex => "too_complex",
+            CancellationDetailsFeedback::TooExpensive => "too_expensive",
+            CancellationDetailsFeedback::Unused => "unused",
+        }
+    }
+}
+
+impl AsRef<str> for CancellationDetailsFeedback {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CancellationDetailsFeedback {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CancellationDetailsFeedback {
+    fn default() -> Self {
+        Self::CustomerService
+    }
+}
+
+/// An enum representing the possible values of an `CancellationDetails`'s `reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CancellationDetailsReason {
+    CancellationRequested,
+    PaymentDisputed,
+    PaymentFailed,
+}
+
+impl CancellationDetailsReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CancellationDetailsReason::CancellationRequested => "cancellation_requested",
+            CancellationDetailsReason::PaymentDisputed => "payment_disputed",
+            CancellationDetailsReason::PaymentFailed => "payment_failed",
+        }
+    }
+}
+
+impl AsRef<str> for CancellationDetailsReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CancellationDetailsReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CancellationDetailsReason {
+    fn default() -> Self {
+        Self::CancellationRequested
+    }
 }
 
 /// An enum representing the possible values of an `CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions`'s `transaction_type` field.
@@ -2772,6 +2883,52 @@ impl std::fmt::Display for SubscriptionsTrialsResourceEndBehaviorMissingPaymentM
 impl std::default::Default for SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
     fn default() -> Self {
         Self::Cancel
+    }
+}
+
+/// An enum representing the possible values of an `UpdateSubscriptionCancellationDetails`'s `feedback` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateSubscriptionCancellationDetailsFeedback {
+    CustomerService,
+    LowQuality,
+    MissingFeatures,
+    Other,
+    SwitchedService,
+    TooComplex,
+    TooExpensive,
+    Unused,
+}
+
+impl UpdateSubscriptionCancellationDetailsFeedback {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdateSubscriptionCancellationDetailsFeedback::CustomerService => "customer_service",
+            UpdateSubscriptionCancellationDetailsFeedback::LowQuality => "low_quality",
+            UpdateSubscriptionCancellationDetailsFeedback::MissingFeatures => "missing_features",
+            UpdateSubscriptionCancellationDetailsFeedback::Other => "other",
+            UpdateSubscriptionCancellationDetailsFeedback::SwitchedService => "switched_service",
+            UpdateSubscriptionCancellationDetailsFeedback::TooComplex => "too_complex",
+            UpdateSubscriptionCancellationDetailsFeedback::TooExpensive => "too_expensive",
+            UpdateSubscriptionCancellationDetailsFeedback::Unused => "unused",
+        }
+    }
+}
+
+impl AsRef<str> for UpdateSubscriptionCancellationDetailsFeedback {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdateSubscriptionCancellationDetailsFeedback {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdateSubscriptionCancellationDetailsFeedback {
+    fn default() -> Self {
+        Self::CustomerService
     }
 }
 

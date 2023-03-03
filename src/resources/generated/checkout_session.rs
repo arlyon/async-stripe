@@ -20,8 +20,6 @@ use crate::resources::{
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CheckoutSession {
     /// Unique identifier for the object.
-    ///
-    /// Used to pass to `redirectToCheckout` in Stripe.js.
     pub id: CheckoutSessionId,
 
     /// When set, provides configuration for actions to take if this Checkout Session expires.
@@ -64,6 +62,11 @@ pub struct CheckoutSession {
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Option<Currency>,
+
+    /// Collect additional information from your customer using custom fields.
+    ///
+    /// Up to 2 fields are supported.
+    pub custom_fields: Vec<PaymentPagesCheckoutSessionCustomFields>,
 
     pub custom_text: PaymentPagesCheckoutSessionCustomText,
 
@@ -718,6 +721,84 @@ pub struct PaymentPagesCheckoutSessionConsentCollection {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionCustomFields {
+    /// Configuration for `type=dropdown` fields.
+    pub dropdown: Option<PaymentPagesCheckoutSessionCustomFieldsDropdown>,
+
+    /// String of your choice that your integration can use to reconcile this field.
+    ///
+    /// Must be unique to this field, alphanumeric, and up to 200 characters.
+    pub key: String,
+
+    pub label: PaymentPagesCheckoutSessionCustomFieldsLabel,
+
+    /// Configuration for `type=numeric` fields.
+    pub numeric: Option<PaymentPagesCheckoutSessionCustomFieldsNumeric>,
+
+    /// Whether the customer is required to complete the field before completing the Checkout Session.
+    ///
+    /// Defaults to `false`.
+    pub optional: bool,
+
+    /// Configuration for `type=text` fields.
+    pub text: Option<PaymentPagesCheckoutSessionCustomFieldsText>,
+
+    /// The type of the field.
+    #[serde(rename = "type")]
+    pub type_: PaymentPagesCheckoutSessionCustomFieldsType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionCustomFieldsDropdown {
+    /// The options available for the customer to select.
+    ///
+    /// Up to 200 options allowed.
+    pub options: Vec<PaymentPagesCheckoutSessionCustomFieldsOption>,
+
+    /// The option selected by the customer.
+    ///
+    /// This will be the `value` for the option.
+    pub value: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionCustomFieldsLabel {
+    /// Custom text for the label, displayed to the customer.
+    ///
+    /// Up to 50 characters.
+    pub custom: Option<String>,
+
+    /// The type of the label.
+    #[serde(rename = "type")]
+    pub type_: PaymentPagesCheckoutSessionCustomFieldsLabelType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionCustomFieldsNumeric {
+    /// The value entered by the customer, containing only digits.
+    pub value: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionCustomFieldsOption {
+    /// The label for the option, displayed to the customer.
+    ///
+    /// Up to 100 characters.
+    pub label: String,
+
+    /// The value for this option, not displayed to the customer, used by your integration to reconcile the option selected by the customer.
+    ///
+    /// Must be unique to this option, alphanumeric, and up to 100 characters.
+    pub value: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionCustomFieldsText {
+    /// The value entered by the customer.
+    pub value: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomText {
     /// Custom text that should be displayed alongside shipping address collection.
     pub shipping_address: Option<PaymentPagesCheckoutSessionCustomTextPosition>,
@@ -941,6 +1022,12 @@ pub struct CreateCheckoutSession<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency: Option<Currency>,
 
+    /// Collect additional information from your customer using custom fields.
+    ///
+    /// Up to 2 fields are supported.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom_fields: Option<Vec<CreateCheckoutSessionCustomFields>>,
+
     /// Display additional text for your customers using custom text.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_text: Option<CreateCheckoutSessionCustomText>,
@@ -1116,6 +1203,7 @@ impl<'a> CreateCheckoutSession<'a> {
             client_reference_id: Default::default(),
             consent_collection: Default::default(),
             currency: Default::default(),
+            custom_fields: Default::default(),
             custom_text: Default::default(),
             customer: Default::default(),
             customer_creation: Default::default(),
@@ -1241,6 +1329,31 @@ pub struct CreateCheckoutSessionConsentCollection {
     /// There must be a valid terms of service URL set in your [Dashboard settings](https://dashboard.stripe.com/settings/public).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service: Option<CreateCheckoutSessionConsentCollectionTermsOfService>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomFields {
+    /// Configuration for `type=dropdown` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dropdown: Option<CreateCheckoutSessionCustomFieldsDropdown>,
+
+    /// String of your choice that your integration can use to reconcile this field.
+    ///
+    /// Must be unique to this field, alphanumeric, and up to 200 characters.
+    pub key: String,
+
+    /// The label for the field, displayed to the customer.
+    pub label: CreateCheckoutSessionCustomFieldsLabel,
+
+    /// Whether the customer is required to complete the field before completing the Checkout Session.
+    ///
+    /// Defaults to `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+
+    /// The type of the field.
+    #[serde(rename = "type")]
+    pub type_: CreateCheckoutSessionCustomFieldsType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1667,6 +1780,26 @@ pub struct CreateCheckoutSessionAfterExpirationRecovery {
     ///
     /// It will be attached to the Checkout Session object upon expiration.
     pub enabled: bool,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomFieldsDropdown {
+    /// The options available for the customer to select.
+    ///
+    /// Up to 200 options allowed.
+    pub options: Vec<CreateCheckoutSessionCustomFieldsDropdownOptions>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomFieldsLabel {
+    /// Custom text for the label, displayed to the customer.
+    ///
+    /// Up to 50 characters.
+    pub custom: String,
+
+    /// The type of the label.
+    #[serde(rename = "type")]
+    pub type_: CreateCheckoutSessionCustomFieldsLabelType,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2253,6 +2386,19 @@ pub struct CreateCheckoutSessionSubscriptionDataTransferData {
 pub struct CreateCheckoutSessionSubscriptionDataTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomFieldsDropdownOptions {
+    /// The label for the option, displayed to the customer.
+    ///
+    /// Up to 100 characters.
+    pub label: String,
+
+    /// The value for this option, not displayed to the customer, used by your integration to reconcile the option selected by the customer.
+    ///
+    /// Must be unique to this option, alphanumeric, and up to 100 characters.
+    pub value: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3996,6 +4142,74 @@ impl std::fmt::Display for CreateCheckoutSessionConsentCollectionTermsOfService 
 impl std::default::Default for CreateCheckoutSessionConsentCollectionTermsOfService {
     fn default() -> Self {
         Self::None
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionCustomFieldsLabel`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionCustomFieldsLabelType {
+    Custom,
+}
+
+impl CreateCheckoutSessionCustomFieldsLabelType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionCustomFieldsLabelType::Custom => "custom",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionCustomFieldsLabelType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionCustomFieldsLabelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionCustomFieldsLabelType {
+    fn default() -> Self {
+        Self::Custom
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionCustomFields`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionCustomFieldsType {
+    Dropdown,
+    Numeric,
+    Text,
+}
+
+impl CreateCheckoutSessionCustomFieldsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionCustomFieldsType::Dropdown => "dropdown",
+            CreateCheckoutSessionCustomFieldsType::Numeric => "numeric",
+            CreateCheckoutSessionCustomFieldsType::Text => "text",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionCustomFieldsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionCustomFieldsType {
+    fn default() -> Self {
+        Self::Dropdown
     }
 }
 
@@ -6765,6 +6979,74 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionConsentTermsOfService {
 impl std::default::Default for PaymentPagesCheckoutSessionConsentTermsOfService {
     fn default() -> Self {
         Self::Accepted
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionCustomFieldsLabel`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionCustomFieldsLabelType {
+    Custom,
+}
+
+impl PaymentPagesCheckoutSessionCustomFieldsLabelType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionCustomFieldsLabelType::Custom => "custom",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionCustomFieldsLabelType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionCustomFieldsLabelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentPagesCheckoutSessionCustomFieldsLabelType {
+    fn default() -> Self {
+        Self::Custom
+    }
+}
+
+/// An enum representing the possible values of an `PaymentPagesCheckoutSessionCustomFields`'s `type` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentPagesCheckoutSessionCustomFieldsType {
+    Dropdown,
+    Numeric,
+    Text,
+}
+
+impl PaymentPagesCheckoutSessionCustomFieldsType {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentPagesCheckoutSessionCustomFieldsType::Dropdown => "dropdown",
+            PaymentPagesCheckoutSessionCustomFieldsType::Numeric => "numeric",
+            PaymentPagesCheckoutSessionCustomFieldsType::Text => "text",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentPagesCheckoutSessionCustomFieldsType {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentPagesCheckoutSessionCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentPagesCheckoutSessionCustomFieldsType {
+    fn default() -> Self {
+        Self::Dropdown
     }
 }
 

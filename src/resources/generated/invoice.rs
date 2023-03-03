@@ -275,7 +275,7 @@ pub struct Invoice {
 
     /// The individual line items that make up the invoice.
     ///
-    /// `lines` is sorted as follows: invoice items in reverse chronological order, followed by the subscription, if any.
+    /// `lines` is sorted as follows: (1) pending invoice items (including prorations) in reverse chronological order, (2) subscription items in reverse chronological order, and (3) invoice items added after invoice creation in chronological order.
     #[serde(default)]
     pub lines: List<InvoiceLineItem>,
 

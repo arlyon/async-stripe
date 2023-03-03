@@ -77,7 +77,7 @@ pub struct InvoiceLineItem {
     /// The subscription that the invoice item pertains to, if any.
     pub subscription: Option<String>,
 
-    /// The subscription item that generated this invoice item.
+    /// The subscription item that generated this line item.
     ///
     /// Left empty if the line item is not an explicit result of a subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
