@@ -1,3 +1,10 @@
+## [0.18.4](https://github.com/arlyon/async-stripe/compare/v0.18.3...v0.18.4) (2023-03-05)
+
+
+### Bug Fixes
+
+* add missing prefix for CheckoutSessionItemId ([c6bdb57](https://github.com/arlyon/async-stripe/commit/c6bdb572920d466d6db73d4445e2b1921c01acff))
+
 ## [0.18.3](https://github.com/arlyon/async-stripe/compare/v0.18.2...v0.18.3) (2023-02-20)
 
 
