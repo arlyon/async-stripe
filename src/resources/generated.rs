@@ -69,6 +69,9 @@ pub mod billing {
     pub mod billing_portal_configuration;
     pub mod billing_portal_session;
     pub mod coupon;
+    pub mod credit_note;
+    pub mod credit_note_line_item;
+    pub mod customer_balance_transaction;
     pub mod discount;
     pub mod invoice;
     pub mod invoice_payment_method_options_acss_debit;
