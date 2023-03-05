@@ -1,3 +1,10 @@
+# [0.19.0](https://github.com/arlyon/async-stripe/compare/v0.18.4...v0.19.0) (2023-03-05)
+
+
+### Features
+
+* add CreditNote and CustomerBalanceTransaction ([dc82e59](https://github.com/arlyon/async-stripe/commit/dc82e59cd6e4e2f84b311d8e38c1299e96f5726d))
+
 ## [0.18.4](https://github.com/arlyon/async-stripe/compare/v0.18.3...v0.18.4) (2023-03-05)
 
 
