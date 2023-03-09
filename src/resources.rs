@@ -40,6 +40,8 @@ mod webhook_events;
 #[path = "resources"]
 #[cfg(feature = "billing")]
 mod billing {
+    pub mod credit_note_ext;
+    pub mod customer_balance_transaction_ext;
     pub mod invoice_ext;
     pub mod line_item_ext;
     pub mod subscription_ext;
@@ -176,6 +178,7 @@ pub use {
 #[cfg(feature = "billing")]
 pub use {
     billing::{
+        customer_balance_transaction_ext::*,
         invoice_ext::*,
         line_item_ext::*,
         subscription_ext::*,
@@ -185,6 +188,9 @@ pub use {
         billing_portal_session::*,
         billing_portal_configuration::*,
         coupon::*,
+        credit_note::*,
+        credit_note_line_item::*,
+        customer_balance_transaction::*,
         discount::*,
         invoice::*,
         invoice_payment_method_options_acss_debit::*,
@@ -204,12 +210,14 @@ pub use {
         subscription_item::PlanInterval as SubscriptionItemInterval,
         subscription_item::SubscriptionItemPriceDataRecurring as SubscriptionItemPriceDataRecurring,
         subscription_item::SubscriptionItemPriceData as SubscriptionItemPriceData,
+        subscription_item::SubscriptionPaymentBehavior as SubscriptionItemPaymentBehavior,
         // need to import this afterwards so that the SubscriptionItemPriceDataRecurring
         // isn't silently ignored
         subscription::*,
         subscription::PlanInterval as SubscriptionInterval,
         subscription::SubscriptionItemPriceDataRecurring as SubscriptionPriceDataRecurring,
         subscription::SubscriptionItemPriceData as SubscriptionPriceData,
+        subscription::SubscriptionPaymentBehavior as SubscriptionPaymentBehavior,
         subscription_schedule::*,
         subscription_billing_thresholds::*,
         subscription_item_billing_thresholds::*,

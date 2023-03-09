@@ -1042,7 +1042,7 @@ pub struct PaymentMethodDetailsGrabpay {
 pub struct PaymentMethodDetailsIdeal {
     /// The customer's bank.
     ///
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, or `van_lanschot`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `handelsbanken`, `ing`, `knab`, `moneyou`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
     pub bank: Option<PaymentMethodDetailsIdealBank>,
 
     /// The Bank Identifier Code of the customer's bank.
@@ -2182,6 +2182,7 @@ pub enum PaymentMethodDetailsIdealBank {
     SnsBank,
     TriodosBank,
     VanLanschot,
+    Yoursafe,
 }
 
 impl PaymentMethodDetailsIdealBank {
@@ -2200,6 +2201,7 @@ impl PaymentMethodDetailsIdealBank {
             PaymentMethodDetailsIdealBank::SnsBank => "sns_bank",
             PaymentMethodDetailsIdealBank::TriodosBank => "triodos_bank",
             PaymentMethodDetailsIdealBank::VanLanschot => "van_lanschot",
+            PaymentMethodDetailsIdealBank::Yoursafe => "yoursafe",
         }
     }
 }
@@ -2229,6 +2231,8 @@ pub enum PaymentMethodDetailsIdealBic {
     Abnanl2a,
     #[serde(rename = "ASNBNL21")]
     Asnbnl21,
+    #[serde(rename = "BITSNL2A")]
+    Bitsnl2a,
     #[serde(rename = "BUNQNL2A")]
     Bunqnl2a,
     #[serde(rename = "FVLBNL22")]
@@ -2258,6 +2262,7 @@ impl PaymentMethodDetailsIdealBic {
         match self {
             PaymentMethodDetailsIdealBic::Abnanl2a => "ABNANL2A",
             PaymentMethodDetailsIdealBic::Asnbnl21 => "ASNBNL21",
+            PaymentMethodDetailsIdealBic::Bitsnl2a => "BITSNL2A",
             PaymentMethodDetailsIdealBic::Bunqnl2a => "BUNQNL2A",
             PaymentMethodDetailsIdealBic::Fvlbnl22 => "FVLBNL22",
             PaymentMethodDetailsIdealBic::Handnl2a => "HANDNL2A",

@@ -6,12 +6,12 @@
 
 Convenient rust bindings and types for the Stripe HTTP API aiming to support
 the entire API surface. Not the case? Please open an issue. We update our
-defitions [every week](https://github.com/arlyon/async-stripe/actions/workflows/openapi.yml) to ensure that we are up to date.
-Want to see a changelog of the stripe api? [Look no further](https://stripe.com/docs/changelog).
+definitions [every week](https://github.com/arlyon/async-stripe/actions/workflows/openapi.yml) to ensure that we are up to date.
+Want to see a changelog of the Stripe API? [Look no further](https://stripe.com/docs/changelog).
 
 ## Documentation
 
-See the [rust api docs](https://docs.rs/async-stripe), the [examples](/examples), or [payments.rs](https://payments.rs).
+See the [Rust API docs](https://docs.rs/async-stripe), the [examples](/examples), or [payments.rs](https://payments.rs).
 
 ## Installation
 
@@ -58,7 +58,7 @@ If you don't see the specific version you are on, prefer the next available vers
 
 ## MSRV
 
-We currently have `1.60.0` pinned in CI, so any version of rustc newer than that should work.
+We currently have `1.63.0` pinned in CI, so any version of rustc newer than that should work.
 If this is not the case, please open an issue. As a policy, we permit MSRV increases in non-breaking releases.
 If you have a compelling usecase for bumping it, we are usually open to do so, as long as
 the rust version is not too new (generally 3 releases).
@@ -74,7 +74,7 @@ We would not be here without them! :)
 
 Licensed under either of
 
-- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or https://www.apache.org/licenses/LICENSE-2.0)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
+- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or <https://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or <https://opensource.org/licenses/MIT>)
 
 at your option.

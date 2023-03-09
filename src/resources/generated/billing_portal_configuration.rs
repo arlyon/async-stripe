@@ -193,6 +193,7 @@ pub struct PortalSubscriptionUpdateProduct {
 pub enum PortalCustomerUpdateAllowedUpdates {
     Address,
     Email,
+    Name,
     Phone,
     Shipping,
     TaxId,
@@ -203,6 +204,7 @@ impl PortalCustomerUpdateAllowedUpdates {
         match self {
             PortalCustomerUpdateAllowedUpdates::Address => "address",
             PortalCustomerUpdateAllowedUpdates::Email => "email",
+            PortalCustomerUpdateAllowedUpdates::Name => "name",
             PortalCustomerUpdateAllowedUpdates::Phone => "phone",
             PortalCustomerUpdateAllowedUpdates::Shipping => "shipping",
             PortalCustomerUpdateAllowedUpdates::TaxId => "tax_id",
