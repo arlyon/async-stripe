@@ -1,3 +1,10 @@
+# [0.20.0](https://github.com/arlyon/async-stripe/compare/v0.19.0...v0.20.0) (2023-03-09)
+
+
+### Features
+
+* Implement Balance retrieve ([7509c98](https://github.com/arlyon/async-stripe/commit/7509c9878f9c85b91949e7dfeb1e1890a63f9fc2))
+
 # [0.19.0](https://github.com/arlyon/async-stripe/compare/v0.18.4...v0.19.0) (2023-03-05)
 
 
