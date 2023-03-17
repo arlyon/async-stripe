@@ -417,6 +417,9 @@ pub struct PaymentMethodDetails {
     pub card_present: Option<PaymentMethodDetailsCardPresent>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<PaymentMethodDetailsCashapp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<PaymentMethodDetailsCustomerBalance>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -982,6 +985,9 @@ pub struct PaymentMethodDetailsCardWalletVisaCheckout {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsCashapp {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCustomerBalance {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1207,7 +1213,11 @@ pub struct PaymentMethodDetailsKonbiniStore {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsLink {}
+pub struct PaymentMethodDetailsLink {
+    /// Two-letter ISO code representing the funding source country beneath the Link payment.
+    /// You could use this attribute to get a sense of international fees.
+    pub country: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsMultibanco {

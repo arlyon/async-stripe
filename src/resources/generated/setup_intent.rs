@@ -9,7 +9,8 @@ use crate::ids::{CustomerId, PaymentMethodId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Currency, Customer, LinkedAccountOptionsUsBankAccount,
-    Mandate, MandateOptionsOffSessionDetailsBlik, PaymentMethod, SetupAttempt,
+    Mandate, MandateOptionsOffSessionDetailsBlik,
+    PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode, PaymentMethod, SetupAttempt,
 };
 
 /// The resource representing a Stripe "SetupIntent".
@@ -160,6 +161,10 @@ impl Object for SetupIntent {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupIntentNextAction {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp_handle_redirect_or_display_qr_code:
+        Option<PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redirect_to_url: Option<SetupIntentNextActionRedirectToUrl>,
 
@@ -693,6 +698,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreateSetupIntentPaymentMethodDataBoleto>,
 
+    /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<CreateSetupIntentPaymentMethodDataCashapp>,
+
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<CreateSetupIntentPaymentMethodDataCustomerBalance>,
@@ -874,6 +883,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<UpdateSetupIntentPaymentMethodDataBoleto>,
+
+    /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<UpdateSetupIntentPaymentMethodDataCashapp>,
 
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1094,6 +1107,9 @@ pub struct CreateSetupIntentPaymentMethodDataBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers).
     pub tax_id: String,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataCashapp {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataCustomerBalance {}
@@ -1373,6 +1389,9 @@ pub struct UpdateSetupIntentPaymentMethodDataBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers).
     pub tax_id: String,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataCashapp {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataCustomerBalance {}
@@ -2390,6 +2409,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     Bancontact,
     Blik,
     Boleto,
+    Cashapp,
     CustomerBalance,
     Eps,
     Fpx,
@@ -2422,6 +2442,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             CreateSetupIntentPaymentMethodDataType::Bancontact => "bancontact",
             CreateSetupIntentPaymentMethodDataType::Blik => "blik",
             CreateSetupIntentPaymentMethodDataType::Boleto => "boleto",
+            CreateSetupIntentPaymentMethodDataType::Cashapp => "cashapp",
             CreateSetupIntentPaymentMethodDataType::CustomerBalance => "customer_balance",
             CreateSetupIntentPaymentMethodDataType::Eps => "eps",
             CreateSetupIntentPaymentMethodDataType::Fpx => "fpx",
@@ -4032,6 +4053,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     Bancontact,
     Blik,
     Boleto,
+    Cashapp,
     CustomerBalance,
     Eps,
     Fpx,
@@ -4064,6 +4086,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             UpdateSetupIntentPaymentMethodDataType::Bancontact => "bancontact",
             UpdateSetupIntentPaymentMethodDataType::Blik => "blik",
             UpdateSetupIntentPaymentMethodDataType::Boleto => "boleto",
+            UpdateSetupIntentPaymentMethodDataType::Cashapp => "cashapp",
             UpdateSetupIntentPaymentMethodDataType::CustomerBalance => "customer_balance",
             UpdateSetupIntentPaymentMethodDataType::Eps => "eps",
             UpdateSetupIntentPaymentMethodDataType::Fpx => "fpx",

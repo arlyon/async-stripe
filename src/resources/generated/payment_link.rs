@@ -1441,6 +1441,7 @@ impl std::default::Default
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentLinkPaymentIntentDataCaptureMethod {
     Automatic,
+    AutomaticAsync,
     Manual,
 }
 
@@ -1448,6 +1449,7 @@ impl CreatePaymentLinkPaymentIntentDataCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             CreatePaymentLinkPaymentIntentDataCaptureMethod::Automatic => "automatic",
+            CreatePaymentLinkPaymentIntentDataCaptureMethod::AutomaticAsync => "automatic_async",
             CreatePaymentLinkPaymentIntentDataCaptureMethod::Manual => "manual",
         }
     }
@@ -1517,6 +1519,7 @@ pub enum CreatePaymentLinkPaymentMethodTypes {
     Blik,
     Boleto,
     Card,
+    Cashapp,
     Eps,
     Fpx,
     Giropay,
@@ -1547,6 +1550,7 @@ impl CreatePaymentLinkPaymentMethodTypes {
             CreatePaymentLinkPaymentMethodTypes::Blik => "blik",
             CreatePaymentLinkPaymentMethodTypes::Boleto => "boleto",
             CreatePaymentLinkPaymentMethodTypes::Card => "card",
+            CreatePaymentLinkPaymentMethodTypes::Cashapp => "cashapp",
             CreatePaymentLinkPaymentMethodTypes::Eps => "eps",
             CreatePaymentLinkPaymentMethodTypes::Fpx => "fpx",
             CreatePaymentLinkPaymentMethodTypes::Giropay => "giropay",
@@ -2440,6 +2444,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     Blik,
     Boleto,
     Card,
+    Cashapp,
     Eps,
     Fpx,
     Giropay,
@@ -2470,6 +2475,7 @@ impl PaymentLinkPaymentMethodTypes {
             PaymentLinkPaymentMethodTypes::Blik => "blik",
             PaymentLinkPaymentMethodTypes::Boleto => "boleto",
             PaymentLinkPaymentMethodTypes::Card => "card",
+            PaymentLinkPaymentMethodTypes::Cashapp => "cashapp",
             PaymentLinkPaymentMethodTypes::Eps => "eps",
             PaymentLinkPaymentMethodTypes::Fpx => "fpx",
             PaymentLinkPaymentMethodTypes::Giropay => "giropay",
@@ -2720,6 +2726,7 @@ impl std::default::Default for PaymentLinksResourceCustomFieldsType {
 #[serde(rename_all = "snake_case")]
 pub enum PaymentLinksResourcePaymentIntentDataCaptureMethod {
     Automatic,
+    AutomaticAsync,
     Manual,
 }
 
@@ -2727,6 +2734,7 @@ impl PaymentLinksResourcePaymentIntentDataCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             PaymentLinksResourcePaymentIntentDataCaptureMethod::Automatic => "automatic",
+            PaymentLinksResourcePaymentIntentDataCaptureMethod::AutomaticAsync => "automatic_async",
             PaymentLinksResourcePaymentIntentDataCaptureMethod::Manual => "manual",
         }
     }
@@ -3677,6 +3685,7 @@ pub enum UpdatePaymentLinkPaymentMethodTypes {
     Blik,
     Boleto,
     Card,
+    Cashapp,
     Eps,
     Fpx,
     Giropay,
@@ -3707,6 +3716,7 @@ impl UpdatePaymentLinkPaymentMethodTypes {
             UpdatePaymentLinkPaymentMethodTypes::Blik => "blik",
             UpdatePaymentLinkPaymentMethodTypes::Boleto => "boleto",
             UpdatePaymentLinkPaymentMethodTypes::Card => "card",
+            UpdatePaymentLinkPaymentMethodTypes::Cashapp => "cashapp",
             UpdatePaymentLinkPaymentMethodTypes::Eps => "eps",
             UpdatePaymentLinkPaymentMethodTypes::Fpx => "fpx",
             UpdatePaymentLinkPaymentMethodTypes::Giropay => "giropay",

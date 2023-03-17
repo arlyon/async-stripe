@@ -2120,6 +2120,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    Cashapp,
     CustomerBalance,
     Fpx,
     Giropay,
@@ -2149,6 +2150,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Card => "card",
+            CreateSubscriptionPaymentSettingsPaymentMethodTypes::Cashapp => "cashapp",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::CustomerBalance => {
                 "customer_balance"
             }
@@ -2742,6 +2744,7 @@ pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    Cashapp,
     CustomerBalance,
     Fpx,
     Giropay,
@@ -2771,6 +2774,7 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Card => "card",
+            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Cashapp => "cashapp",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::CustomerBalance => {
                 "customer_balance"
             }
@@ -3324,6 +3328,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    Cashapp,
     CustomerBalance,
     Fpx,
     Giropay,
@@ -3353,6 +3358,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Card => "card",
+            UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Cashapp => "cashapp",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::CustomerBalance => {
                 "customer_balance"
             }
