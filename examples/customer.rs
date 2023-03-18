@@ -22,9 +22,10 @@ async fn main() {
             description: Some(
                 "A fake customer that is used to illustrate the examples in async-stripe.",
             ),
-            metadata: Some(
-                [("async-stripe".to_string(), "true".to_string())].iter().cloned().collect(),
-            ),
+            metadata: Some(std::collections::HashMap::from([(
+                String::from("async-stripe"),
+                String::from("true"),
+            )])),
 
             ..Default::default()
         },
@@ -42,9 +43,10 @@ async fn main() {
             description: Some(
                 "A fake customer that is used to illustrate the examples in async-stripe.",
             ),
-            metadata: Some(
-                [("async-stripe".to_string(), "true".to_string())].iter().cloned().collect(),
-            ),
+            metadata: Some(std::collections::HashMap::from([(
+                String::from("async-stripe"),
+                String::from("true"),
+            )])),
 
             ..Default::default()
         },
