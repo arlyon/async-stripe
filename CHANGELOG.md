@@ -1,3 +1,10 @@
+## [0.20.1](https://github.com/arlyon/async-stripe/compare/v0.20.0...v0.20.1) (2023-03-23)
+
+
+### Bug Fixes
+
+* Use `HashMap::from` ([0c8dc9d](https://github.com/arlyon/async-stripe/commit/0c8dc9d89267a034c0901e7da15adc79c30050c3))
+
 # [0.20.0](https://github.com/arlyon/async-stripe/compare/v0.19.0...v0.20.0) (2023-03-09)
 
 
