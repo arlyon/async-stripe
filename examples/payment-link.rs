@@ -20,8 +20,10 @@ async fn main() {
     // create a new example project
     let product = {
         let mut create_product = CreateProduct::new("T-Shirt");
-        create_product.metadata =
-            Some([("async-stripe".to_string(), "true".to_string())].iter().cloned().collect());
+        create_product.metadata = Some(std::collections::HashMap::from([(
+            String::from("async-stripe"),
+            String::from("true"),
+        )]));
         Product::create(&client, create_product).await.unwrap()
     };
 
@@ -29,8 +31,10 @@ async fn main() {
     let price = {
         let mut create_price = CreatePrice::new(Currency::USD);
         create_price.product = Some(IdOrCreate::Id(&product.id));
-        create_price.metadata =
-            Some([("async-stripe".to_string(), "true".to_string())].iter().cloned().collect());
+        create_price.metadata = Some(std::collections::HashMap::from([(
+            String::from("async-stripe"),
+            String::from("true"),
+        )]));
         create_price.unit_amount = Some(1000);
         create_price.expand = &["product"];
         Price::create(&client, create_price).await.unwrap()
