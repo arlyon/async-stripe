@@ -251,6 +251,10 @@ pub struct AccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cartes_bancaires_payments: Option<AccountCapabilitiesCartesBancairesPayments>,
 
+    /// The status of the Cash App Pay capability of the account, or whether the account can directly process Cash App Pay payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp_payments: Option<AccountCapabilitiesCashappPayments>,
+
     /// The status of the EPS payments capability of the account, or whether the account can directly process EPS charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps_payments: Option<AccountCapabilitiesEpsPayments>,
@@ -1247,6 +1251,10 @@ pub struct CreateAccountCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cartes_bancaires_payments: Option<CreateAccountCapabilitiesCartesBancairesPayments>,
 
+    /// The cashapp_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp_payments: Option<CreateAccountCapabilitiesCashappPayments>,
+
     /// The eps_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eps_payments: Option<CreateAccountCapabilitiesEpsPayments>,
@@ -1524,6 +1532,10 @@ pub struct UpdateAccountCapabilities {
     /// The cartes_bancaires_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cartes_bancaires_payments: Option<UpdateAccountCapabilitiesCartesBancairesPayments>,
+
+    /// The cashapp_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp_payments: Option<UpdateAccountCapabilitiesCashappPayments>,
 
     /// The eps_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1849,6 +1861,16 @@ pub struct CreateAccountCapabilitiesCardPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountCapabilitiesCartesBancairesPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesCashappPayments {
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -2315,6 +2337,16 @@ pub struct UpdateAccountCapabilitiesCardPayments {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesCartesBancairesPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesCashappPayments {
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -3025,6 +3057,42 @@ impl std::fmt::Display for AccountCapabilitiesCartesBancairesPayments {
     }
 }
 impl std::default::Default for AccountCapabilitiesCartesBancairesPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `cashapp_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesCashappPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesCashappPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesCashappPayments::Active => "active",
+            AccountCapabilitiesCashappPayments::Inactive => "inactive",
+            AccountCapabilitiesCashappPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesCashappPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesCashappPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesCashappPayments {
     fn default() -> Self {
         Self::Active
     }
