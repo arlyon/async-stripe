@@ -1441,6 +1441,7 @@ impl std::default::Default
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentLinkPaymentIntentDataCaptureMethod {
     Automatic,
+    AutomaticAsync,
     Manual,
 }
 
@@ -1448,6 +1449,7 @@ impl CreatePaymentLinkPaymentIntentDataCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             CreatePaymentLinkPaymentIntentDataCaptureMethod::Automatic => "automatic",
+            CreatePaymentLinkPaymentIntentDataCaptureMethod::AutomaticAsync => "automatic_async",
             CreatePaymentLinkPaymentIntentDataCaptureMethod::Manual => "manual",
         }
     }
@@ -1517,6 +1519,7 @@ pub enum CreatePaymentLinkPaymentMethodTypes {
     Blik,
     Boleto,
     Card,
+    Cashapp,
     Eps,
     Fpx,
     Giropay,
@@ -1524,6 +1527,7 @@ pub enum CreatePaymentLinkPaymentMethodTypes {
     Ideal,
     Klarna,
     Konbini,
+    Link,
     Oxxo,
     P24,
     Paynow,
@@ -1547,6 +1551,7 @@ impl CreatePaymentLinkPaymentMethodTypes {
             CreatePaymentLinkPaymentMethodTypes::Blik => "blik",
             CreatePaymentLinkPaymentMethodTypes::Boleto => "boleto",
             CreatePaymentLinkPaymentMethodTypes::Card => "card",
+            CreatePaymentLinkPaymentMethodTypes::Cashapp => "cashapp",
             CreatePaymentLinkPaymentMethodTypes::Eps => "eps",
             CreatePaymentLinkPaymentMethodTypes::Fpx => "fpx",
             CreatePaymentLinkPaymentMethodTypes::Giropay => "giropay",
@@ -1554,6 +1559,7 @@ impl CreatePaymentLinkPaymentMethodTypes {
             CreatePaymentLinkPaymentMethodTypes::Ideal => "ideal",
             CreatePaymentLinkPaymentMethodTypes::Klarna => "klarna",
             CreatePaymentLinkPaymentMethodTypes::Konbini => "konbini",
+            CreatePaymentLinkPaymentMethodTypes::Link => "link",
             CreatePaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             CreatePaymentLinkPaymentMethodTypes::P24 => "p24",
             CreatePaymentLinkPaymentMethodTypes::Paynow => "paynow",
@@ -2440,6 +2446,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     Blik,
     Boleto,
     Card,
+    Cashapp,
     Eps,
     Fpx,
     Giropay,
@@ -2447,6 +2454,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     Ideal,
     Klarna,
     Konbini,
+    Link,
     Oxxo,
     P24,
     Paynow,
@@ -2470,6 +2478,7 @@ impl PaymentLinkPaymentMethodTypes {
             PaymentLinkPaymentMethodTypes::Blik => "blik",
             PaymentLinkPaymentMethodTypes::Boleto => "boleto",
             PaymentLinkPaymentMethodTypes::Card => "card",
+            PaymentLinkPaymentMethodTypes::Cashapp => "cashapp",
             PaymentLinkPaymentMethodTypes::Eps => "eps",
             PaymentLinkPaymentMethodTypes::Fpx => "fpx",
             PaymentLinkPaymentMethodTypes::Giropay => "giropay",
@@ -2477,6 +2486,7 @@ impl PaymentLinkPaymentMethodTypes {
             PaymentLinkPaymentMethodTypes::Ideal => "ideal",
             PaymentLinkPaymentMethodTypes::Klarna => "klarna",
             PaymentLinkPaymentMethodTypes::Konbini => "konbini",
+            PaymentLinkPaymentMethodTypes::Link => "link",
             PaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             PaymentLinkPaymentMethodTypes::P24 => "p24",
             PaymentLinkPaymentMethodTypes::Paynow => "paynow",
@@ -2720,6 +2730,7 @@ impl std::default::Default for PaymentLinksResourceCustomFieldsType {
 #[serde(rename_all = "snake_case")]
 pub enum PaymentLinksResourcePaymentIntentDataCaptureMethod {
     Automatic,
+    AutomaticAsync,
     Manual,
 }
 
@@ -2727,6 +2738,7 @@ impl PaymentLinksResourcePaymentIntentDataCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             PaymentLinksResourcePaymentIntentDataCaptureMethod::Automatic => "automatic",
+            PaymentLinksResourcePaymentIntentDataCaptureMethod::AutomaticAsync => "automatic_async",
             PaymentLinksResourcePaymentIntentDataCaptureMethod::Manual => "manual",
         }
     }
@@ -3677,6 +3689,7 @@ pub enum UpdatePaymentLinkPaymentMethodTypes {
     Blik,
     Boleto,
     Card,
+    Cashapp,
     Eps,
     Fpx,
     Giropay,
@@ -3684,6 +3697,7 @@ pub enum UpdatePaymentLinkPaymentMethodTypes {
     Ideal,
     Klarna,
     Konbini,
+    Link,
     Oxxo,
     P24,
     Paynow,
@@ -3707,6 +3721,7 @@ impl UpdatePaymentLinkPaymentMethodTypes {
             UpdatePaymentLinkPaymentMethodTypes::Blik => "blik",
             UpdatePaymentLinkPaymentMethodTypes::Boleto => "boleto",
             UpdatePaymentLinkPaymentMethodTypes::Card => "card",
+            UpdatePaymentLinkPaymentMethodTypes::Cashapp => "cashapp",
             UpdatePaymentLinkPaymentMethodTypes::Eps => "eps",
             UpdatePaymentLinkPaymentMethodTypes::Fpx => "fpx",
             UpdatePaymentLinkPaymentMethodTypes::Giropay => "giropay",
@@ -3714,6 +3729,7 @@ impl UpdatePaymentLinkPaymentMethodTypes {
             UpdatePaymentLinkPaymentMethodTypes::Ideal => "ideal",
             UpdatePaymentLinkPaymentMethodTypes::Klarna => "klarna",
             UpdatePaymentLinkPaymentMethodTypes::Konbini => "konbini",
+            UpdatePaymentLinkPaymentMethodTypes::Link => "link",
             UpdatePaymentLinkPaymentMethodTypes::Oxxo => "oxxo",
             UpdatePaymentLinkPaymentMethodTypes::P24 => "p24",
             UpdatePaymentLinkPaymentMethodTypes::Paynow => "paynow",

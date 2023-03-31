@@ -54,6 +54,9 @@ pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_present: Option<CardPresent>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<PaymentMethodCashapp>,
+
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -445,6 +448,9 @@ pub struct WalletVisaCheckout {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodCashapp {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodCustomerBalance {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -676,6 +682,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreatePaymentMethodCardUnion>,
 
+    /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<CreatePaymentMethodCashapp>,
+
     /// The `Customer` to whom the original PaymentMethod is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<CustomerId>,
@@ -801,6 +811,7 @@ impl<'a> CreatePaymentMethod<'a> {
             blik: Default::default(),
             boleto: Default::default(),
             card: Default::default(),
+            cashapp: Default::default(),
             customer: Default::default(),
             customer_balance: Default::default(),
             eps: Default::default(),
@@ -929,6 +940,12 @@ pub struct UpdatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateApiParam>,
 
+    /// This is a legacy parameter that will be removed in the future.
+    ///
+    /// It is a hash that does not accept any keys.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<UpdatePaymentMethodCashapp>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -966,6 +983,7 @@ impl<'a> UpdatePaymentMethod<'a> {
             billing_details: Default::default(),
             blik: Default::default(),
             card: Default::default(),
+            cashapp: Default::default(),
             expand: Default::default(),
             link: Default::default(),
             metadata: Default::default(),
@@ -1029,6 +1047,9 @@ pub struct CreatePaymentMethodBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers).
     pub tax_id: String,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodCashapp {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodCustomerBalance {}
@@ -1159,6 +1180,9 @@ pub struct UpdatePaymentMethodBacsDebit {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentMethodBlik {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodCashapp {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentMethodLink {}
@@ -2076,6 +2100,7 @@ pub enum PaymentMethodType {
     Boleto,
     Card,
     CardPresent,
+    Cashapp,
     CustomerBalance,
     Eps,
     Fpx,
@@ -2111,6 +2136,7 @@ impl PaymentMethodType {
             PaymentMethodType::Boleto => "boleto",
             PaymentMethodType::Card => "card",
             PaymentMethodType::CardPresent => "card_present",
+            PaymentMethodType::Cashapp => "cashapp",
             PaymentMethodType::CustomerBalance => "customer_balance",
             PaymentMethodType::Eps => "eps",
             PaymentMethodType::Fpx => "fpx",
@@ -2166,6 +2192,7 @@ pub enum PaymentMethodTypeFilter {
     Boleto,
     Card,
     CardPresent,
+    Cashapp,
     CustomerBalance,
     Eps,
     Fpx,
@@ -2200,6 +2227,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Boleto => "boleto",
             PaymentMethodTypeFilter::Card => "card",
             PaymentMethodTypeFilter::CardPresent => "card_present",
+            PaymentMethodTypeFilter::Cashapp => "cashapp",
             PaymentMethodTypeFilter::CustomerBalance => "customer_balance",
             PaymentMethodTypeFilter::Eps => "eps",
             PaymentMethodTypeFilter::Fpx => "fpx",
