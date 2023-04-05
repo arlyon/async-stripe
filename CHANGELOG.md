@@ -1,3 +1,10 @@
+## [0.20.2](https://github.com/arlyon/async-stripe/compare/v0.20.1...v0.20.2) (2023-04-05)
+
+
+### Bug Fixes
+
+* generate api version from the codegen ([3006688](https://github.com/arlyon/async-stripe/commit/3006688bfadd5af84691c82f39abeb54dfdb859a))
+
 ## [0.20.1](https://github.com/arlyon/async-stripe/compare/v0.20.0...v0.20.1) (2023-03-23)
 
 
