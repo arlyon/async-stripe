@@ -140,6 +140,20 @@ impl<'a> Metadata<'a> {
         write(&out_path.as_ref().join("placeholders.rs"), out.as_bytes()).unwrap();
     }
 
+    pub fn write_version<T>(&self, out_path: T)
+    where
+        T: AsRef<Path>,
+    {
+        let mut out = String::new();
+        out.push_str("use crate::ApiVersion;\n\n");
+        out.push_str(&format!(
+            "pub const VERSION: ApiVersion = ApiVersion::V{};",
+            self.spec.version().replace('-', "_")
+        ));
+
+        write(&out_path.as_ref().join("version.rs"), out.as_bytes()).unwrap();
+    }
+
     #[tracing::instrument(skip_all)]
     pub fn get_files(&self) -> Vec<FileGenerator> {
         self.objects
