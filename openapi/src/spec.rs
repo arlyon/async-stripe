@@ -13,6 +13,10 @@ impl Spec {
         Self(spec)
     }
 
+    pub fn version(&self) -> &str {
+        self.0.info.version.as_str()
+    }
+
     fn components(&self) -> &Components {
         self.0.components.as_ref().expect("Spec did not contain `components`!")
     }

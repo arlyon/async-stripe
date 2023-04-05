@@ -45,6 +45,7 @@ pub mod core {
     pub mod tax_deducted_at_source;
     pub mod test_helpers_test_clock;
     pub mod token;
+    pub mod version;
 }
 
 #[path = "generated"]

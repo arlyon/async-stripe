@@ -55,6 +55,7 @@ fn main() -> Result<()> {
     let url_finder = UrlFinder::new().context("couldn't initialize url finder")?;
 
     meta.write_placeholders(&out_path);
+    meta.write_version(&out_path);
 
     // write files and get those files referenced
     let shared_objects = meta
