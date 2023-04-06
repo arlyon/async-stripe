@@ -44,7 +44,10 @@ pub fn gen_struct(
     let schema = meta.spec.get_schema_unwrapped(object).as_item().expect("Expected item");
     let obj = as_object_type(schema).expect("Expected object type");
     let schema_title = schema.schema_data.title.as_ref().expect("No title found");
+
     let deleted_schema = meta.spec.component_schemas().get(&format!("deleted_{}", object));
+    let deleted_properties =
+        deleted_schema.and_then(|schema| schema.as_item()).and_then(as_object_properties);
 
     log::trace!("struct {} {{...}}", struct_name);
 
@@ -78,14 +81,15 @@ pub fn gen_struct(
         out.push_str(id_type);
         out.push_str(",\n");
     }
+
     let mut did_emit_deleted = false;
-    for (key, field) in &obj.properties {
-        if key == "id" {
-            continue;
-        }
-        if key == "object" {
-            continue;
-        }
+    for (key, field) in obj
+        .properties
+        .iter()
+        // we handle id and object separately
+        .filter(|(key, _)| !["id", "object"].contains(&key.as_str()))
+    {
+        // emit deleted in the appropirate place alphabetically
         if !did_emit_deleted
             && deleted_schema.is_some()
             && key.as_str().cmp("deleted") == std::cmp::Ordering::Greater
@@ -96,25 +100,13 @@ pub fn gen_struct(
             out.push_str("    pub deleted: bool,\n");
             did_emit_deleted = true;
         }
-        let required = obj.required.contains(key);
-        let force_optional = if let Some(properties) =
-            deleted_schema.and_then(|schema| schema.as_item()).and_then(as_object_properties)
-        {
-            !properties.contains_key(key)
-        } else {
-            false
-        };
+
+        // in the required list and not in the deleted list
+        let required = obj.required.contains(key)
+            && deleted_properties.map(|map| map.contains_key(key)).unwrap_or(true);
+
         out.push('\n');
-        out.push_str(&gen_field(
-            state,
-            meta,
-            object,
-            key,
-            field,
-            required && !force_optional,
-            false,
-            shared_objects,
-        ));
+        out.push_str(&gen_field(state, meta, object, key, field, required, false, shared_objects));
     }
     out.push_str("}\n");
 }
