@@ -36,7 +36,7 @@ pub fn handle_webhook(req: HttpRequest, payload: web::Bytes) -> Result<(), Webho
     let stripe_signature = get_header_value(&req, "Stripe-Signature").unwrap_or_default();
 
     if let Ok(event) = Webhook::construct_event(payload_str, stripe_signature, "whsec_xxxxx") {
-        match event.event_type {
+        match event.type_ {
             EventType::AccountUpdated => {
                 if let EventObject::Account(account) = event.data.object {
                     handle_account_updated(account)?;
@@ -48,7 +48,7 @@ pub fn handle_webhook(req: HttpRequest, payload: web::Bytes) -> Result<(), Webho
                 }
             }
             _ => {
-                println!("Unknown event encountered in webhook: {:?}", event.event_type);
+                println!("Unknown event encountered in webhook: {:?}", event.type_);
             }
         }
     } else {

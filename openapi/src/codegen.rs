@@ -187,6 +187,7 @@ pub fn gen_generated_schemas(
     while let Some(schema_name) =
         state.generated_schemas.iter().find_map(|(k, &v)| if !v { Some(k) } else { None }).cloned()
     {
+        log::trace!("generating schema {}", schema_name);
         let struct_name = meta.schema_to_rust_type(&schema_name);
         out.push('\n');
         out.push_str("#[derive(Clone, Debug, Default, Deserialize, Serialize)]\n");
@@ -1237,6 +1238,9 @@ pub fn gen_field_rust_type<T: Borrow<Schema>>(
         } else {
             "Timestamp".into()
         };
+    } else if field_name == "type" && object == "event" {
+        state.use_resources.insert("EventType".into());
+        return "EventType".into();
     }
 
     let ty = gen_schema_or_ref_type(
