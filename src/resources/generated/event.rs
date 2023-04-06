@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::EventId;
 use crate::params::{Expand, List, Object, Paginable, RangeQuery, Timestamp};
-use crate::resources::NotificationEventData;
+use crate::resources::{EventType, NotificationEventData};
 
 /// The resource representing a Stripe "NotificationEvent".
 ///
@@ -44,7 +44,7 @@ pub struct Event {
 
     /// Description of the event (e.g., `invoice.created` or `charge.refunded`).
     #[serde(rename = "type")]
-    pub type_: String,
+    pub type_: EventType,
 }
 
 impl Event {
