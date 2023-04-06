@@ -40,13 +40,13 @@ dependencies = ["openapi-delete-out"]
 cwd = "openapi"
 command = "cargo"
 args = ["run", "spec3.sdk.json", "--fetch", "current"]
-dependencies = ["openapi-delete"]
+dependencies = ["openapi-delete-out"]
 
 [tasks.openapi-generate-latest]
 cwd = "openapi"
 command = "cargo"
 args = ["run", "spec3.sdk.json", "--fetch", "latest"]
-dependencies = ["openapi-delete"]
+dependencies = ["openapi-delete-out"]
 
 [tasks.openapi-copy]
 cwd = "openapi"
