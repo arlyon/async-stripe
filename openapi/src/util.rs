@@ -86,6 +86,7 @@ fn format_doc_comment(doc: &str) -> String {
         static ref AMOUNT_CLOSE_TAG: Regex = Regex::new("</amount>").unwrap();
         static ref CURRENCY_OPEN_TAG: Regex = Regex::new("<currency>").unwrap();
         static ref CURRENCY_CLOSE_TAG: Regex = Regex::new("</currency>").unwrap();
+        static ref HYPERLINK: Regex = Regex::new(r#"([^\(])(https?://(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))([^\)])"#).unwrap();
     }
     let doc = P_TAG.replace_all(doc, "");
     let doc = BR_TAG.replace_all(&doc, "\n");
@@ -99,6 +100,7 @@ fn format_doc_comment(doc: &str) -> String {
     let doc = AMOUNT_CLOSE_TAG.replace_all(&doc, "00"); // add cents to get correct "integer" argument
     let doc = CURRENCY_OPEN_TAG.replace_all(&doc, "$"); // add locale formatting (we can only support one easily in our rust docs...)
     let doc = CURRENCY_CLOSE_TAG.replace_all(&doc, "");
+    let doc = HYPERLINK.replace_all(&doc, "$1<$2>$5"); // replace all hyperlinks that are not already in markdown with rust doc links
     doc.trim().into()
 }
 
