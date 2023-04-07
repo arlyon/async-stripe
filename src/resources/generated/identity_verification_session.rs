@@ -44,7 +44,8 @@ pub struct IdentityVerificationSession {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
 
-    pub options: GelatoVerificationSessionOptions,
+    /// A set of options for the session’s verification checks.
+    pub options: Option<GelatoVerificationSessionOptions>,
 
     /// Redaction status of this VerificationSession.
     ///
@@ -58,7 +59,7 @@ pub struct IdentityVerificationSession {
 
     /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
     #[serde(rename = "type")]
-    pub type_: IdentityVerificationSessionType,
+    pub type_: Option<IdentityVerificationSessionType>,
 
     /// The short-lived URL that you use to redirect a user to Stripe to submit their identity information.
     ///

@@ -519,6 +519,8 @@ pub enum EventFilter {
     PayoutFailed,
     #[serde(rename = "payout.paid")]
     PayoutPaid,
+    #[serde(rename = "payout.reconciliation_completed")]
+    PayoutReconciliationCompleted,
     #[serde(rename = "payout.updated")]
     PayoutUpdated,
     #[serde(rename = "person.created")]
@@ -885,6 +887,7 @@ impl EventFilter {
             EventFilter::PayoutCreated => "payout.created",
             EventFilter::PayoutFailed => "payout.failed",
             EventFilter::PayoutPaid => "payout.paid",
+            EventFilter::PayoutReconciliationCompleted => "payout.reconciliation_completed",
             EventFilter::PayoutUpdated => "payout.updated",
             EventFilter::PersonCreated => "person.created",
             EventFilter::PersonDeleted => "person.deleted",

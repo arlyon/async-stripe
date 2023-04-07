@@ -9,9 +9,9 @@ use crate::ids::{CustomerId, MandateId, PaymentIntentId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
     Account, ApiErrors, Application, Charge, Currency, Customer, Invoice,
-    LinkedAccountOptionsUsBankAccount, PaymentIntentOffSession, PaymentMethod,
-    PaymentMethodDetailsCardInstallmentsPlan, PaymentMethodOptionsCustomerBalanceEuBankAccount,
-    PaymentSource, Review, Shipping,
+    LinkedAccountOptionsUsBankAccount, PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode,
+    PaymentIntentOffSession, PaymentMethod, PaymentMethodDetailsCardInstallmentsPlan,
+    PaymentMethodOptionsCustomerBalanceEuBankAccount, PaymentSource, Review, Shipping,
 };
 
 /// The resource representing a Stripe "PaymentIntent".
@@ -271,6 +271,10 @@ pub struct PaymentIntentNextAction {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_await_notification: Option<PaymentIntentNextActionCardAwaitNotification>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp_handle_redirect_or_display_qr_code:
+        Option<PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_bank_transfer_instructions:
@@ -715,6 +719,9 @@ pub struct PaymentIntentPaymentMethodOptions {
     pub card_present: Option<PaymentMethodOptionsCardPresent>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<PaymentMethodOptionsCashapp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<PaymentMethodOptionsCustomerBalance>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -975,6 +982,10 @@ pub struct PaymentMethodOptionsAffirm {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<PaymentMethodOptionsAffirmCaptureMethod>,
 
+    /// Preferred language of the Affirm authorization page that the customer is redirected to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_locale: Option<String>,
+
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
@@ -1124,6 +1135,21 @@ pub struct PaymentMethodOptionsCardPresent {
     ///
     /// Check [incremental_authorization_supported](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details-card_present-incremental_authorization_supported) in the [Confirm](https://stripe.com/docs/api/payment_intents/confirm) response to verify support.
     pub request_incremental_authorization_support: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsCashapp {
+    /// Controls when the funds will be captured from the customer's account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<PaymentMethodOptionsCashappCaptureMethod>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsCashappSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1846,6 +1872,10 @@ pub struct CreatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<CreatePaymentIntentPaymentMethodDataBoleto>,
 
+    /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<CreatePaymentIntentPaymentMethodDataCashapp>,
+
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<CreatePaymentIntentPaymentMethodDataCustomerBalance>,
@@ -1989,6 +2019,10 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_present: Option<CreatePaymentIntentPaymentMethodOptionsCardPresent>,
+
+    /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<CreatePaymentIntentPaymentMethodOptionsCashapp>,
 
     /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2159,6 +2193,10 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub boleto: Option<UpdatePaymentIntentPaymentMethodDataBoleto>,
 
+    /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<UpdatePaymentIntentPaymentMethodDataCashapp>,
+
     /// If this is a `customer_balance` PaymentMethod, this hash contains details about the CustomerBalance payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<UpdatePaymentIntentPaymentMethodDataCustomerBalance>,
@@ -2302,6 +2340,10 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_present: Option<UpdatePaymentIntentPaymentMethodOptionsCardPresent>,
+
+    /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<UpdatePaymentIntentPaymentMethodOptionsCashapp>,
 
     /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2506,6 +2548,9 @@ pub struct CreatePaymentIntentPaymentMethodDataBoleto {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataCashapp {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataCustomerBalance {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2651,6 +2696,10 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAffirm {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod>,
+
+    /// Preferred language of the Affirm authorization page that the customer is redirected to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_locale: Option<String>,
 
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -2854,6 +2903,25 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {
     /// Check [incremental_authorization_supported](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details-card_present-incremental_authorization_supported) in the [Confirm](https://stripe.com/docs/api/payment_intents/confirm) response to verify support.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_incremental_authorization_support: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsCashapp {
+    /// Controls when the funds will be captured from the customer's account.
+    ///
+    /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3275,6 +3343,9 @@ pub struct UpdatePaymentIntentPaymentMethodDataBoleto {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataCashapp {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataCustomerBalance {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3420,6 +3491,10 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAffirm {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod>,
+
+    /// Preferred language of the Affirm authorization page that the customer is redirected to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_locale: Option<String>,
 
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3623,6 +3698,25 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {
     /// Check [incremental_authorization_supported](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details-card_present-incremental_authorization_supported) in the [Confirm](https://stripe.com/docs/api/payment_intents/confirm) response to verify support.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_incremental_authorization_support: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsCashapp {
+    /// Controls when the funds will be captured from the customer's account.
+    ///
+    /// If provided, this parameter will override the top-level `capture_method` when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter will unset the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -4846,6 +4940,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
     Bancontact,
     Blik,
     Boleto,
+    Cashapp,
     CustomerBalance,
     Eps,
     Fpx,
@@ -4878,6 +4973,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
             CreatePaymentIntentPaymentMethodDataType::Bancontact => "bancontact",
             CreatePaymentIntentPaymentMethodDataType::Blik => "blik",
             CreatePaymentIntentPaymentMethodDataType::Boleto => "boleto",
+            CreatePaymentIntentPaymentMethodDataType::Cashapp => "cashapp",
             CreatePaymentIntentPaymentMethodDataType::CustomerBalance => "customer_balance",
             CreatePaymentIntentPaymentMethodDataType::Eps => "eps",
             CreatePaymentIntentPaymentMethodDataType::Fpx => "fpx",
@@ -5846,6 +5942,78 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardSetupFutur
     }
 }
 impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsCashapp`'s `capture_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    Manual,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn default() -> Self {
+        Self::Manual
+    }
+}
+
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsCashapp`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage::None => "none",
+            CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage::OffSession => {
+                "off_session"
+            }
+            CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage::OnSession => {
+                "on_session"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
     fn default() -> Self {
         Self::None
     }
@@ -7130,6 +7298,7 @@ impl std::default::Default for PaymentIntentCancellationReason {
 #[serde(rename_all = "snake_case")]
 pub enum PaymentIntentCaptureMethod {
     Automatic,
+    AutomaticAsync,
     Manual,
 }
 
@@ -7137,6 +7306,7 @@ impl PaymentIntentCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             PaymentIntentCaptureMethod::Automatic => "automatic",
+            PaymentIntentCaptureMethod::AutomaticAsync => "automatic_async",
             PaymentIntentCaptureMethod::Manual => "manual",
         }
     }
@@ -8397,6 +8567,74 @@ impl std::default::Default for PaymentMethodOptionsCardMandateOptionsSupportedTy
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodOptionsCashapp`'s `capture_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCashappCaptureMethod {
+    Manual,
+}
+
+impl PaymentMethodOptionsCashappCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCashappCaptureMethod::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCashappCaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCashappCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCashappCaptureMethod {
+    fn default() -> Self {
+        Self::Manual
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodOptionsCashapp`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsCashappSetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+}
+
+impl PaymentMethodOptionsCashappSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsCashappSetupFutureUsage::None => "none",
+            PaymentMethodOptionsCashappSetupFutureUsage::OffSession => "off_session",
+            PaymentMethodOptionsCashappSetupFutureUsage::OnSession => "on_session",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsCashappSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsCashappSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsCashappSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `PaymentMethodOptionsCustomerBalanceBankTransfer`'s `requested_address_types` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -9512,6 +9750,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
     Bancontact,
     Blik,
     Boleto,
+    Cashapp,
     CustomerBalance,
     Eps,
     Fpx,
@@ -9544,6 +9783,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
             UpdatePaymentIntentPaymentMethodDataType::Bancontact => "bancontact",
             UpdatePaymentIntentPaymentMethodDataType::Blik => "blik",
             UpdatePaymentIntentPaymentMethodDataType::Boleto => "boleto",
+            UpdatePaymentIntentPaymentMethodDataType::Cashapp => "cashapp",
             UpdatePaymentIntentPaymentMethodDataType::CustomerBalance => "customer_balance",
             UpdatePaymentIntentPaymentMethodDataType::Eps => "eps",
             UpdatePaymentIntentPaymentMethodDataType::Fpx => "fpx",
@@ -10512,6 +10752,78 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutur
     }
 }
 impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsCashapp`'s `capture_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    Manual,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn default() -> Self {
+        Self::Manual
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsCashapp`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage::None => "none",
+            UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage::OffSession => {
+                "off_session"
+            }
+            UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage::OnSession => {
+                "on_session"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
     fn default() -> Self {
         Self::None
     }

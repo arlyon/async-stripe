@@ -97,6 +97,9 @@ pub struct MandatePaymentMethodDetails {
     pub card: Option<CardMandatePaymentMethodDetails>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<MandateCashapp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<MandateLink>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -168,6 +171,9 @@ pub struct MandateBlik {
     #[serde(rename = "type")]
     pub type_: Option<MandateBlikType>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct MandateCashapp {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct MandateLink {}
