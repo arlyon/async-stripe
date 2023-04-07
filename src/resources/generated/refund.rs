@@ -53,7 +53,7 @@ pub struct Refund {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub failure_reason: Option<String>,
 
-    /// Email to which refund instructions, if required, are sent to.
+    /// For payment methods without native refund support (e.g., Konbini, PromptPay), email for the customer to receive refund instructions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instructions_email: Option<String>,
 
@@ -181,7 +181,7 @@ pub struct CreateRefund<'a> {
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
 
-    /// Address to send refund email, use customer email if not specified.
+    /// For payment methods without native refund support (e.g., Konbini, PromptPay), use this email from the customer to receive refund instructions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instructions_email: Option<&'a str>,
 

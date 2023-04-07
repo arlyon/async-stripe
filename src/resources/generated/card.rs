@@ -62,7 +62,7 @@ pub struct Card {
 
     /// Card brand.
     ///
-    /// Can be `American Express`, `Diners Club`, `Discover`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
+    /// Can be `American Express`, `Diners Club`, `Discover`, `Eftpos Australia`, `JCB`, `MasterCard`, `UnionPay`, `Visa`, or `Unknown`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub brand: Option<String>,
 

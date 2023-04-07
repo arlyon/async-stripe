@@ -1306,8 +1306,9 @@ pub struct InvoiceItemPriceData {
     /// The ID of the product that this price will belong to.
     pub product: String,
 
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     ///
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1337,8 +1338,9 @@ pub struct SubscriptionItemPriceData {
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: SubscriptionItemPriceDataRecurring,
 
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     ///
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2120,6 +2122,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    Cashapp,
     CustomerBalance,
     Fpx,
     Giropay,
@@ -2149,6 +2152,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Card => "card",
+            CreateSubscriptionPaymentSettingsPaymentMethodTypes::Cashapp => "cashapp",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::CustomerBalance => {
                 "customer_balance"
             }
@@ -2742,6 +2746,7 @@ pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    Cashapp,
     CustomerBalance,
     Fpx,
     Giropay,
@@ -2771,6 +2776,7 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Card => "card",
+            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Cashapp => "cashapp",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::CustomerBalance => {
                 "customer_balance"
             }
@@ -3324,6 +3330,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    Cashapp,
     CustomerBalance,
     Fpx,
     Giropay,
@@ -3353,6 +3360,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Card => "card",
+            UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Cashapp => "cashapp",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::CustomerBalance => {
                 "customer_balance"
             }

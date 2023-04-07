@@ -63,6 +63,10 @@ pub struct CheckoutSession {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Option<Currency>,
 
+    /// Currency conversion details for automatic currency conversion sessions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency_conversion: Option<PaymentPagesCheckoutSessionCurrencyConversion>,
+
     /// Collect additional information from your customer using custom fields.
     ///
     /// Up to 2 fields are supported.
@@ -247,6 +251,9 @@ pub struct CheckoutSessionPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CheckoutCardPaymentMethodOptions>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<CheckoutCashappPaymentMethodOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<CheckoutCustomerBalancePaymentMethodOptions>,
@@ -459,6 +466,17 @@ pub struct CheckoutCardInstallmentsOptions {
     /// Indicates if installments are enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CheckoutCashappPaymentMethodOptions {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CheckoutCashappPaymentMethodOptionsSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -718,6 +736,21 @@ pub struct PaymentPagesCheckoutSessionConsentCollection {
 
     /// If set to `required`, it requires customers to accept the terms of service before being able to pay.
     pub terms_of_service: Option<PaymentPagesCheckoutSessionConsentCollectionTermsOfService>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentPagesCheckoutSessionCurrencyConversion {
+    /// Total of all items in source currency before discounts or taxes are applied.
+    pub amount_subtotal: i64,
+
+    /// Total of all items in source currency after discounts and taxes are applied.
+    pub amount_total: i64,
+
+    /// Exchange rate used to convert source currency amounts to customer currency amounts.
+    pub fx_rate: String,
+
+    /// Creation currency of the CheckoutSession before localization.
+    pub source_currency: Currency,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1572,6 +1605,10 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateCheckoutSessionPaymentMethodOptionsCard>,
 
+    /// contains details about the Cashapp Pay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<CreateCheckoutSessionPaymentMethodOptionsCashapp>,
+
     /// contains details about the Customer Balance payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalance>,
@@ -1891,8 +1928,9 @@ pub struct CreateCheckoutSessionLineItemsPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateCheckoutSessionLineItemsPriceDataRecurring>,
 
-    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
+    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     ///
+    /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2092,6 +2130,18 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCard {
     /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix_kanji: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsCashapp {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage:
+        Option<CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3090,6 +3140,38 @@ impl std::fmt::Display for CheckoutCardPaymentMethodOptionsSetupFutureUsage {
     }
 }
 impl std::default::Default for CheckoutCardPaymentMethodOptionsSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `CheckoutCashappPaymentMethodOptions`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CheckoutCashappPaymentMethodOptionsSetupFutureUsage {
+    None,
+}
+
+impl CheckoutCashappPaymentMethodOptionsSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CheckoutCashappPaymentMethodOptionsSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for CheckoutCashappPaymentMethodOptionsSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CheckoutCashappPaymentMethodOptionsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CheckoutCashappPaymentMethodOptionsSetupFutureUsage {
     fn default() -> Self {
         Self::None
     }
@@ -4434,6 +4516,7 @@ impl std::default::Default for CreateCheckoutSessionLineItemsPriceDataTaxBehavio
 #[serde(rename_all = "snake_case")]
 pub enum CreateCheckoutSessionPaymentIntentDataCaptureMethod {
     Automatic,
+    AutomaticAsync,
     Manual,
 }
 
@@ -4441,6 +4524,9 @@ impl CreateCheckoutSessionPaymentIntentDataCaptureMethod {
     pub fn as_str(self) -> &'static str {
         match self {
             CreateCheckoutSessionPaymentIntentDataCaptureMethod::Automatic => "automatic",
+            CreateCheckoutSessionPaymentIntentDataCaptureMethod::AutomaticAsync => {
+                "automatic_async"
+            }
             CreateCheckoutSessionPaymentIntentDataCaptureMethod::Manual => "manual",
         }
     }
@@ -4984,6 +5070,46 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardSetupFut
 impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage {
     fn default() -> Self {
         Self::OffSession
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsCashapp`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage::None => "none",
+            CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage::OffSession => {
+                "off_session"
+            }
+            CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage::OnSession => {
+                "on_session"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
     }
 }
 
@@ -5749,6 +5875,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Blik,
     Boleto,
     Card,
+    Cashapp,
     CustomerBalance,
     Eps,
     Fpx,
@@ -5757,6 +5884,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Ideal,
     Klarna,
     Konbini,
+    Link,
     Oxxo,
     P24,
     Paynow,
@@ -5781,6 +5909,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             CreateCheckoutSessionPaymentMethodTypes::Blik => "blik",
             CreateCheckoutSessionPaymentMethodTypes::Boleto => "boleto",
             CreateCheckoutSessionPaymentMethodTypes::Card => "card",
+            CreateCheckoutSessionPaymentMethodTypes::Cashapp => "cashapp",
             CreateCheckoutSessionPaymentMethodTypes::CustomerBalance => "customer_balance",
             CreateCheckoutSessionPaymentMethodTypes::Eps => "eps",
             CreateCheckoutSessionPaymentMethodTypes::Fpx => "fpx",
@@ -5789,6 +5918,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             CreateCheckoutSessionPaymentMethodTypes::Ideal => "ideal",
             CreateCheckoutSessionPaymentMethodTypes::Klarna => "klarna",
             CreateCheckoutSessionPaymentMethodTypes::Konbini => "konbini",
+            CreateCheckoutSessionPaymentMethodTypes::Link => "link",
             CreateCheckoutSessionPaymentMethodTypes::Oxxo => "oxxo",
             CreateCheckoutSessionPaymentMethodTypes::P24 => "p24",
             CreateCheckoutSessionPaymentMethodTypes::Paynow => "paynow",
