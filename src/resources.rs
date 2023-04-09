@@ -160,6 +160,7 @@ pub use {
 #[cfg(feature = "events")]
 pub use {
     webhook_events::*,
+    webhook_events::NotificationEventData,
     generated::event::*,
 };
 

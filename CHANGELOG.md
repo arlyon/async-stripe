@@ -1,3 +1,15 @@
+# [0.21.0](https://github.com/arlyon/async-stripe/compare/v0.20.2...v0.21.0) (2023-04-06)
+
+
+### Bug Fixes
+
+* **#342:** add documentation regarding idempotency to the main readme ([d28f7df](https://github.com/arlyon/async-stripe/commit/d28f7df6754738884049335e5b40684ff3093236)), closes [#342](https://github.com/arlyon/async-stripe/issues/342)
+
+
+### Features
+
+* use codegen version of WebhookEvent rather than overriding manually ([8347a6d](https://github.com/arlyon/async-stripe/commit/8347a6d600b11fe8d9e5d82217b9df56f9c800c8))
+
 ## [0.20.2](https://github.com/arlyon/async-stripe/compare/v0.20.1...v0.20.2) (2023-04-05)
 
 

@@ -898,7 +898,7 @@ pub struct ListInvoices<'a> {
     ///
     /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub status: Option<InvoiceStatusFilter>,
+    pub status: Option<InvoiceStatus>,
 
     /// Only return invoices for the subscription specified by this subscription ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1776,6 +1776,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    Cashapp,
     CustomerBalance,
     Fpx,
     Giropay,
@@ -1805,6 +1806,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             CreateInvoicePaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Card => "card",
+            CreateInvoicePaymentSettingsPaymentMethodTypes::Cashapp => "cashapp",
             CreateInvoicePaymentSettingsPaymentMethodTypes::CustomerBalance => "customer_balance",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Fpx => "fpx",
             CreateInvoicePaymentSettingsPaymentMethodTypes::Giropay => "giropay",
@@ -2234,7 +2236,6 @@ impl std::default::Default for InvoicePendingInvoiceItemsBehavior {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum InvoiceStatus {
-    Deleted,
     Draft,
     Open,
     Paid,
@@ -2245,7 +2246,6 @@ pub enum InvoiceStatus {
 impl InvoiceStatus {
     pub fn as_str(self) -> &'static str {
         match self {
-            InvoiceStatus::Deleted => "deleted",
             InvoiceStatus::Draft => "draft",
             InvoiceStatus::Open => "open",
             InvoiceStatus::Paid => "paid",
@@ -2268,46 +2268,6 @@ impl std::fmt::Display for InvoiceStatus {
 }
 impl std::default::Default for InvoiceStatus {
     fn default() -> Self {
-        Self::Deleted
-    }
-}
-
-/// An enum representing the possible values of an `ListInvoices`'s `status` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum InvoiceStatusFilter {
-    Draft,
-    Open,
-    Paid,
-    Uncollectible,
-    Void,
-}
-
-impl InvoiceStatusFilter {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            InvoiceStatusFilter::Draft => "draft",
-            InvoiceStatusFilter::Open => "open",
-            InvoiceStatusFilter::Paid => "paid",
-            InvoiceStatusFilter::Uncollectible => "uncollectible",
-            InvoiceStatusFilter::Void => "void",
-        }
-    }
-}
-
-impl AsRef<str> for InvoiceStatusFilter {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for InvoiceStatusFilter {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for InvoiceStatusFilter {
-    fn default() -> Self {
         Self::Draft
     }
 }
@@ -2324,6 +2284,7 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     Bancontact,
     Boleto,
     Card,
+    Cashapp,
     CustomerBalance,
     Fpx,
     Giropay,
@@ -2351,6 +2312,7 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             InvoicesPaymentSettingsPaymentMethodTypes::Bancontact => "bancontact",
             InvoicesPaymentSettingsPaymentMethodTypes::Boleto => "boleto",
             InvoicesPaymentSettingsPaymentMethodTypes::Card => "card",
+            InvoicesPaymentSettingsPaymentMethodTypes::Cashapp => "cashapp",
             InvoicesPaymentSettingsPaymentMethodTypes::CustomerBalance => "customer_balance",
             InvoicesPaymentSettingsPaymentMethodTypes::Fpx => "fpx",
             InvoicesPaymentSettingsPaymentMethodTypes::Giropay => "giropay",

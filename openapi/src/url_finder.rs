@@ -18,7 +18,6 @@ impl UrlFinder {
         if resp.status().is_success() {
             let text = resp.text()?;
             if let Some(line) = text.lines().find(|l| l.contains("flattenedAPISections: {")) {
-                println!("{}", line);
                 Ok(Self {
                     flattened_api_sections: serde_json::from_str(
                         line.trim()

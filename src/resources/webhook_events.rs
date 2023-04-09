@@ -4,12 +4,12 @@ use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "webhook-events")]
 use sha2::Sha256;
+use smart_default::SmartDefault;
 
 use crate::error::WebhookError;
-use crate::ids::EventId;
-use crate::{resources::*, AccountId, Timestamp};
+use crate::resources::*;
 
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq, Hash, SmartDefault)]
 pub enum EventType {
     #[serde(rename = "account.application.authorized")]
     AccountApplicationAuthorized,
@@ -391,47 +391,23 @@ pub enum EventType {
     TransferReversed,
     #[serde(rename = "transfer.updated")]
     TransferUpdated,
+    #[serde(other)]
+    #[default]
+    Unknown,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct WebhookEvent {
-    /// Unique identifier for the object.
-    pub id: EventId,
-
-    /// Description of the event (e.g., `invoice.created` or `charge.refunded`).
-    #[serde(rename = "type")]
-    pub event_type: EventType,
-
-    /// The connected account that originated the event.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub account: Option<AccountId>,
-
-    /// The Stripe API version used to render `data`.
-    ///
-    /// *Note: This property is populated only for events on or after October 31, 2014*.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub api_version: Option<String>,
-
-    /// Time at which the object was created.
-    ///
-    /// Measured in seconds since the Unix epoch.
-    pub created: Timestamp,
-
-    pub data: EventData,
-
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
-    pub livemode: bool,
-
-    /// Number of webhooks that have yet to be successfully delivered (i.e., to return a 20x response) to the URLs you've specified.
-    pub pending_webhooks: i64,
-
-    /// Information on the API request that instigated the event.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub request: Option<NotificationEventRequest>,
+impl std::fmt::Display for EventType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&serde_json::to_string(self).unwrap())
+    }
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct EventData {
+/// The resource representing a Stripe "NotificationEventData".
+///
+/// note: this is a manual override of the generated code;
+///       see notification_event_data.rs for the (broken) codegen
+#[derive(Clone, Debug, Deserialize, Serialize, Default)]
+pub struct NotificationEventData {
     pub object: EventObject,
     // previous_attributes: ...
 }
@@ -496,6 +472,12 @@ pub enum EventObject {
     Transfer(Transfer),
 }
 
+impl Default for EventObject {
+    fn default() -> Self {
+        EventObject::Account(Account::default())
+    }
+}
+
 #[cfg(feature = "webhook-events")]
 pub struct Webhook {
     current_timestamp: i64,
@@ -509,11 +491,7 @@ impl Webhook {
     ///  - the provided signature is invalid
     ///  - the provided secret is invalid
     ///  - the signature timestamp is older than 5 minutes
-    pub fn construct_event(
-        payload: &str,
-        sig: &str,
-        secret: &str,
-    ) -> Result<WebhookEvent, WebhookError> {
+    pub fn construct_event(payload: &str, sig: &str, secret: &str) -> Result<Event, WebhookError> {
         Self { current_timestamp: Utc::now().timestamp() }.do_construct_event(payload, sig, secret)
     }
 
@@ -522,7 +500,7 @@ impl Webhook {
         payload: &str,
         sig: &str,
         secret: &str,
-    ) -> Result<WebhookEvent, WebhookError> {
+    ) -> Result<Event, WebhookError> {
         // Get Stripe signature from header
         let signature = Signature::parse(sig)?;
         let signed_payload = format!("{}.{}", signature.t, payload);
@@ -534,6 +512,7 @@ impl Webhook {
         mac.update(signed_payload.as_bytes());
 
         let sig = hex::decode(signature.v1).map_err(|_| WebhookError::BadSignature)?;
+
         mac.verify_slice(sig.as_slice()).map_err(|_| WebhookError::BadSignature)?;
 
         // Get current timestamp to compare to signature timestamp
@@ -626,10 +605,8 @@ mod tests {
         "start": 1533204620,
         "end": 1533204620
       },
-      "plan": null,
       "proration": false,
-      "quantity": null,
-      "subscription": null
+      "quantity": 3
     }
   },
   "livemode": false,
@@ -643,7 +620,7 @@ mod tests {
 "#;
         let event_timestamp = 1533204620;
         let secret = "webhook_secret".to_string();
-        let signature = format!("t={},v1=f0bdba6d4eacbd8ad8a3bbadd7248e633ec1477f7899c124c51b39405fa36613,v0=63f3a72374a733066c4be69ed7f8e5ac85c22c9f0a6a612ab9a025a9e4ee7eef", event_timestamp);
+        let signature = format!("t={},v1=82216eca827bcb7b34b8055eb2d2d9e6bc13b9ac39ded14a61e69f70c565f53a,v0=63f3a72374a733066c4be69ed7f8e5ac85c22c9f0a6a612ab9a025a9e4ee7eef", event_timestamp);
 
         let webhook = super::Webhook { current_timestamp: event_timestamp };
 
@@ -651,7 +628,7 @@ mod tests {
             .do_construct_event(payload, &signature, &secret)
             .expect("Failed to construct event");
 
-        assert_eq!(event.event_type, super::EventType::InvoiceItemCreated);
+        assert_eq!(event.type_, super::EventType::InvoiceItemCreated);
         assert_eq!(event.id, "evt_123".parse::<crate::EventId>().unwrap());
         assert_eq!(event.account, "acct_123".parse().ok());
         assert_eq!(event.created, 1533204620);
