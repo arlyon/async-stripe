@@ -77,9 +77,6 @@ impl Object for TaxCalculation {
 /// For more details see <https://stripe.com/docs/api/tax/calculations/object>
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateTaxCalculation<'a> {
-    /// Total after taxes.
-    pub amount_total: i64,
-
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
