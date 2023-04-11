@@ -574,6 +574,8 @@ def_id!(TaxIdId, "txi_");
 def_id!(TaxCodeId, "txcd_");
 def_id!(TaxDeductedAtSourceId, "itds");
 def_id!(TaxRateId, "txr_");
+def_id!(TaxCalculationId, "taxcalc_");
+def_id!(TaxCalculationLineItemId, "tax_li_");
 def_id!(TerminalConfigurationId, "tmc_");
 def_id!(TerminalLocationId, "tml_");
 def_id!(TerminalReaderId, "tmr_");

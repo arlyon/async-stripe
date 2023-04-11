@@ -43,7 +43,11 @@ pub mod core {
     pub mod shipping;
     pub mod shipping_rate;
     pub mod tax_code;
+    pub mod tax_calculation;
+    pub mod tax_calculation_line_item;
     pub mod tax_deducted_at_source;
+    pub mod tax_product_resource_customer_details;
+    pub mod tax_product_resource_shipping_cost;
     pub mod test_helpers_test_clock;
     pub mod token;
     pub mod version;
