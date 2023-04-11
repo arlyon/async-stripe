@@ -2,7 +2,7 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TaxCalculationId};
+use crate::ids::{TaxCalculationId, CustomerId};
 use crate::client::{Client, Response};
 use crate::params::{List, Object, Timestamp};
 use crate::resources::{Currency, TaxCalculationLineItem, TaxProductResourceCustomerDetails, TaxProductResourceShippingCost};
@@ -25,7 +25,7 @@ pub struct TaxCalculation {
     pub currency: Currency,
 
     /// The ID of an existing [Customer](https://stripe.com/docs/api/customers/object) used for the resource.
-    pub customer: Option<String>,
+    pub customer: Option<CustomerId>,
 
     pub customer_details: TaxProductResourceCustomerDetails,
 
@@ -83,7 +83,7 @@ pub struct CreateTaxCalculation<'a> {
     pub currency: Option<&'a str>,
 
     /// The ID of an existing [Customer](https://stripe.com/docs/api/customers/object) used for the resource.
-    pub customer: Option<&'a str>,
+    pub customer: Option<CustomerId>,
 
     pub customer_details: Option<TaxProductResourceCustomerDetails>,
 
