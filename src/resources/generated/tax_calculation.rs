@@ -92,7 +92,7 @@ pub struct CreateTaxCalculation<'a> {
     pub customer_details: Option<TaxProductResourceCustomerDetails>,
 
     /// The list of items the customer is purchasing.
-    pub line_items: List<CreateTaxCalculationLineItem<'a>>,
+    pub line_items: List<CreateTaxCalculationLineItem>,
 
     /// The shipping cost details for the calculation.
     pub shipping_cost: Option<TaxProductResourceShippingCost>,
