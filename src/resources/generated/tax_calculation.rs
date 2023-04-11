@@ -3,6 +3,7 @@
 // ======================================
 
 use crate::ids::{TaxCalculationId};
+use crate::client::{Client, Response};
 use crate::params::{List, Object, Timestamp};
 use crate::resources::{Currency, TaxCalculationLineItem, TaxProductResourceCustomerDetails, TaxProductResourceShippingCost};
 use serde::{Deserialize, Serialize};
@@ -52,6 +53,14 @@ pub struct TaxCalculation {
     /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
     pub tax_date: Timestamp,
 }
+impl TaxCalculation {
+    /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
+    ///
+    /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
+    pub fn create(client: &Client, params: CreateTaxCalculation<'_>) -> Response<TaxCalculation> {
+        client.post_form("/tax/calculations", &params)
+    }
+}
 
 impl Object for TaxCalculation {
     type Id = TaxCalculationId;
@@ -61,6 +70,34 @@ impl Object for TaxCalculation {
     fn object(&self) -> &'static str {
         "tax.calculation"
     }
+}
+
+/// The parameters for `TaxCalculation::create`
+///
+/// For more details see <https://stripe.com/docs/api/tax/calculations/object>
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateTaxCalculation<'a> {
+    /// Total after taxes.
+    pub amount_total: i64,
+
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub currency: Option<&'a str>,
+
+    /// The ID of an existing [Customer](https://stripe.com/docs/api/customers/object) used for the resource.
+    pub customer: Option<&'a str>,
+
+    pub customer_details: Option<TaxProductResourceCustomerDetails>,
+
+    /// The list of items the customer is purchasing.
+    pub line_items: List<TaxCalculationLineItem>,
+
+    /// The shipping cost details for the calculation.
+    pub shipping_cost: Option<TaxProductResourceShippingCost>,
+
+    /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
+    pub tax_date: Timestamp,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
