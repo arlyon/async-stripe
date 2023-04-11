@@ -2,11 +2,15 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TaxCalculationId, CustomerId};
-use crate::client::{Client, Response};
-use crate::params::{List, Object, Timestamp};
-use crate::resources::{Currency, TaxCalculationLineItem, TaxProductResourceCustomerDetails, TaxProductResourceShippingCost};
 use serde::{Deserialize, Serialize};
+
+use crate::client::{Client, Response};
+use crate::ids::{CustomerId, TaxCalculationId};
+use crate::params::{Expand, List, Object, Timestamp};
+use crate::resources::{
+    CreateTaxCalculationLineItem, Currency, TaxCalculationLineItem,
+    TaxProductResourceCustomerDetails, TaxProductResourceShippingCost,
+};
 
 /// The resource representing a Stripe "TaxProductResourceTaxCalculation".
 ///
@@ -75,7 +79,7 @@ impl Object for TaxCalculation {
 /// The parameters for `TaxCalculation::create`
 ///
 /// For more details see <https://stripe.com/docs/api/tax/calculations/object>
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct CreateTaxCalculation<'a> {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
@@ -88,18 +92,21 @@ pub struct CreateTaxCalculation<'a> {
     pub customer_details: Option<TaxProductResourceCustomerDetails>,
 
     /// The list of items the customer is purchasing.
-    pub line_items: List<TaxCalculationLineItem>,
+    pub line_items: List<CreateTaxCalculationLineItem<'a>>,
 
     /// The shipping cost details for the calculation.
     pub shipping_cost: Option<TaxProductResourceShippingCost>,
 
     /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
-    pub tax_date: Timestamp,
+    pub tax_date: Option<Timestamp>,
+
+    /// Specifies which fields in the response should be expanded.
+    #[serde(skip_serializing_if = "Expand::is_empty")]
+    pub expand: &'a [&'a str],
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceTaxBreakdown {
-
     /// The amount of tax, in integer cents.
     pub amount: i64,
 
@@ -114,7 +121,6 @@ pub struct TaxProductResourceTaxBreakdown {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceTaxRateDetails {
-
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     pub country: Option<String>,
 
