@@ -4,7 +4,8 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::ids::TaxIdId;
+use crate::client::{Client, Response};
+use crate::ids::{CustomerId, TaxIdId};
 use crate::params::{Expandable, Object, Timestamp};
 use crate::resources::Customer;
 
@@ -53,6 +54,18 @@ pub struct TaxId {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<TaxIdVerification>,
 }
+impl TaxId {
+    /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
+    ///
+    /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
+    pub fn create(
+        client: &Client,
+        customer_id: &CustomerId,
+        params: CreateTaxId<'_>,
+    ) -> Response<TaxId> {
+        client.post_form(&format!("/customers/{}/tax_ids", customer_id.to_string()), &params)
+    }
+}
 
 impl Object for TaxId {
     type Id = TaxIdId;
@@ -62,6 +75,12 @@ impl Object for TaxId {
     fn object(&self) -> &'static str {
         "tax_id"
     }
+}
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct CreateTaxId<'a> {
+    pub type_: TaxIdType,
+    pub value: &'a str,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
