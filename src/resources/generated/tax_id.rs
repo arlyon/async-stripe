@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, TaxIdId};
-use crate::params::{Expandable, Object, Timestamp};
+use crate::params::{Deleted, Expandable, Object, Timestamp};
 use crate::resources::Customer;
 
 /// The resource representing a Stripe "tax_id".
@@ -63,7 +63,15 @@ impl TaxId {
         customer_id: &CustomerId,
         params: CreateTaxId<'_>,
     ) -> Response<TaxId> {
-        client.post_form(&format!("/customers/{}/tax_ids", customer_id.to_string()), &params)
+        client.post_form(&format!("/customers/{}/tax_ids", customer_id), &params)
+    }
+
+    pub fn delete(
+        client: &Client,
+        customer_id: &CustomerId,
+        tax_id_id: &TaxIdId,
+    ) -> Response<Deleted<TaxIdId>> {
+        client.delete(&format!("/customers/{}/tax_ids/{}", customer_id, tax_id_id))
     }
 }
 
