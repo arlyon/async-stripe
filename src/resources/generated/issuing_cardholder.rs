@@ -62,6 +62,8 @@ pub struct IssuingCardholder {
     pub status: IssuingCardholderStatus,
 
     /// One of `individual` or `company`.
+    ///
+    /// See [Choose a cardholder type](https://stripe.com/docs/issuing/other/choose-cardholder) for more details.
     #[serde(rename = "type")]
     pub type_: IssuingCardholderType,
 }
@@ -213,6 +215,8 @@ pub enum IssuingCardholderRequirementsDisabledReason {
     Listed,
     #[serde(rename = "rejected.listed")]
     RejectedListed,
+    #[serde(rename = "requirements.past_due")]
+    RequirementsPastDue,
     UnderReview,
 }
 
@@ -221,6 +225,9 @@ impl IssuingCardholderRequirementsDisabledReason {
         match self {
             IssuingCardholderRequirementsDisabledReason::Listed => "listed",
             IssuingCardholderRequirementsDisabledReason::RejectedListed => "rejected.listed",
+            IssuingCardholderRequirementsDisabledReason::RequirementsPastDue => {
+                "requirements.past_due"
+            }
             IssuingCardholderRequirementsDisabledReason::UnderReview => "under_review",
         }
     }
@@ -249,6 +256,10 @@ impl std::default::Default for IssuingCardholderRequirementsDisabledReason {
 pub enum IssuingCardholderRequirementsPastDue {
     #[serde(rename = "company.tax_id")]
     CompanyTaxId,
+    #[serde(rename = "individual.card_issuing.user_terms_acceptance.date")]
+    IndividualCardIssuingUserTermsAcceptanceDate,
+    #[serde(rename = "individual.card_issuing.user_terms_acceptance.ip")]
+    IndividualCardIssuingUserTermsAcceptanceIp,
     #[serde(rename = "individual.dob.day")]
     IndividualDobDay,
     #[serde(rename = "individual.dob.month")]
@@ -267,6 +278,12 @@ impl IssuingCardholderRequirementsPastDue {
     pub fn as_str(self) -> &'static str {
         match self {
             IssuingCardholderRequirementsPastDue::CompanyTaxId => "company.tax_id",
+            IssuingCardholderRequirementsPastDue::IndividualCardIssuingUserTermsAcceptanceDate => {
+                "individual.card_issuing.user_terms_acceptance.date"
+            }
+            IssuingCardholderRequirementsPastDue::IndividualCardIssuingUserTermsAcceptanceIp => {
+                "individual.card_issuing.user_terms_acceptance.ip"
+            }
             IssuingCardholderRequirementsPastDue::IndividualDobDay => "individual.dob.day",
             IssuingCardholderRequirementsPastDue::IndividualDobMonth => "individual.dob.month",
             IssuingCardholderRequirementsPastDue::IndividualDobYear => "individual.dob.year",

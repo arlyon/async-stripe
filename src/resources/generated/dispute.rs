@@ -201,7 +201,7 @@ pub struct DisputeEvidence {
 pub struct DisputeEvidenceDetails {
     /// Date by which evidence must be submitted in order to successfully challenge dispute.
     ///
-    /// Will be null if the customer's bank or credit card company doesn't allow a response for this particular dispute.
+    /// Will be 0 if the customer's bank or credit card company doesn't allow a response for this particular dispute.
     pub due_by: Option<Timestamp>,
 
     /// Whether evidence has been staged for this dispute.
