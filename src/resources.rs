@@ -140,6 +140,8 @@ pub use {
         tax_deducted_at_source::*,
         tax_calculation::*,
         tax_calculation_line_item::*,
+        tax_transaction::*,
+        tax_transaction_line_item::*,
         tax_product_resource_customer_details::*,
         tax_product_resource_shipping_cost::*,
         test_helpers_test_clock::*,
