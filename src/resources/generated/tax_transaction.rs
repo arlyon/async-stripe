@@ -2,9 +2,13 @@
 // This file was automatically generated.
 // ======================================
 
-use crate::ids::{TaxTransactionId};
+use crate::client::{Client, Response};
+use crate::ids::{TaxCalculationId, TaxTransactionId};
 use crate::params::{List, Metadata, Object, Timestamp};
-use crate::resources::{Currency, TaxProductResourceCustomerDetails, TaxProductResourceShippingCost, TaxTransactionLineItem};
+use crate::resources::{
+    Currency, TaxProductResourceCustomerDetails, TaxProductResourceShippingCost,
+    TaxTransactionLineItem,
+};
 use serde::{Deserialize, Serialize};
 
 /// The resource representing a Stripe "TaxProductResourceTaxTransaction".
@@ -57,6 +61,17 @@ pub struct TaxTransaction {
     #[serde(rename = "type")]
     pub type_: TaxTransactionType,
 }
+impl TaxTransaction {
+    /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
+    ///
+    /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
+    pub fn create(
+        client: &Client,
+        params: CreateFromTaxCalculation<'_>,
+    ) -> Response<TaxTransaction> {
+        client.post_form("/tax/transactions/create_from_calculation", &params)
+    }
+}
 
 impl Object for TaxTransaction {
     type Id = TaxTransactionId;
@@ -68,9 +83,24 @@ impl Object for TaxTransaction {
     }
 }
 
+/// The parameters for `TaxCalculation::create`
+///
+/// For more details see <https://stripe.com/docs/api/tax/calculations/object>
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct CreateFromTaxCalculation<'a> {
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    ///
+    /// Must be a [supported currency](https://stripe.com/docs/currencies).
+    pub calculation: Option<TaxCalculationId>,
+
+    /// The ID of an existing [Customer](https://stripe.com/docs/api/customers/object) used for the resource.
+    pub reference: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+}
+
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TaxProductResourceTaxTransactionResourceReversal {
-
     /// The `id` of the reversed `Transaction` object.
     pub original_transaction: Option<String>,
 }
