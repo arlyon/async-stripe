@@ -54,6 +54,9 @@ pub struct PaymentMethod {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_present: Option<CardPresent>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<PaymentMethodCashapp>,
+
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -263,7 +266,7 @@ pub struct PaymentMethodBoleto {
 pub struct CardDetails {
     /// Card brand.
     ///
-    /// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: String,
 
     /// Checks on Card address and CVC if provided.
@@ -367,7 +370,7 @@ pub struct WalletDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub samsung_pay: Option<WalletSamsungPay>,
 
-    /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, or `visa_checkout`.
+    /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, `visa_checkout`, or `link`.
     ///
     /// An additional hash is included on the Wallet subhash with a name matching this value.
     /// It contains additional information specific to the card wallet type.
@@ -445,6 +448,9 @@ pub struct WalletVisaCheckout {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodCashapp {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodCustomerBalance {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -511,6 +517,12 @@ pub struct PaymentMethodKonbini {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodLink {
+    /// Two-letter ISO code representing the funding source (i.e.
+    ///
+    /// card, bank) country beneath the Link payment method. You could use this attribute to get a sense of the international breakdown of funding sources you've collected.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub country: Option<String>,
+
     /// Account owner's email address.
     pub email: Option<String>,
 
@@ -596,6 +608,25 @@ pub struct PaymentMethodUsBankAccount {
 
     /// Routing number of the bank account.
     pub routing_number: Option<String>,
+
+    /// Contains information about the future reusability of this PaymentMethod.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status_details: Option<PaymentMethodUsBankAccountStatusDetails>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodUsBankAccountStatusDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blocked: Option<PaymentMethodUsBankAccountBlocked>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodUsBankAccountBlocked {
+    /// The ACH network code that resulted in this block.
+    pub network_code: Option<PaymentMethodUsBankAccountBlockedNetworkCode>,
+
+    /// The reason why this PaymentMethod's fingerprint has been blocked.
+    pub reason: Option<PaymentMethodUsBankAccountBlockedReason>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -675,6 +706,10 @@ pub struct CreatePaymentMethod<'a> {
     /// We strongly recommend using Stripe.js instead of interacting with this API directly.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreatePaymentMethodCardUnion>,
+
+    /// If this is a `cashapp` PaymentMethod, this hash contains details about the Cash App Pay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<CreatePaymentMethodCashapp>,
 
     /// The `Customer` to whom the original PaymentMethod is attached.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -801,6 +836,7 @@ impl<'a> CreatePaymentMethod<'a> {
             blik: Default::default(),
             boleto: Default::default(),
             card: Default::default(),
+            cashapp: Default::default(),
             customer: Default::default(),
             customer_balance: Default::default(),
             eps: Default::default(),
@@ -929,6 +965,12 @@ pub struct UpdatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateApiParam>,
 
+    /// This is a legacy parameter that will be removed in the future.
+    ///
+    /// It is a hash that does not accept any keys.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<UpdatePaymentMethodCashapp>,
+
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
     pub expand: &'a [&'a str],
@@ -966,6 +1008,7 @@ impl<'a> UpdatePaymentMethod<'a> {
             billing_details: Default::default(),
             blik: Default::default(),
             card: Default::default(),
+            cashapp: Default::default(),
             expand: Default::default(),
             link: Default::default(),
             metadata: Default::default(),
@@ -1029,6 +1072,9 @@ pub struct CreatePaymentMethodBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers).
     pub tax_id: String,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodCashapp {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodCustomerBalance {}
@@ -1159,6 +1205,9 @@ pub struct UpdatePaymentMethodBacsDebit {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentMethodBlik {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodCashapp {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentMethodLink {}
@@ -1935,6 +1984,8 @@ pub enum PaymentMethodIdealBic {
     Rabonl2u,
     #[serde(rename = "RBRBNL21")]
     Rbrbnl21,
+    #[serde(rename = "REVOIE23")]
+    Revoie23,
     #[serde(rename = "REVOLT21")]
     Revolt21,
     #[serde(rename = "SNSBNL2A")]
@@ -1957,6 +2008,7 @@ impl PaymentMethodIdealBic {
             PaymentMethodIdealBic::Moyonl21 => "MOYONL21",
             PaymentMethodIdealBic::Rabonl2u => "RABONL2U",
             PaymentMethodIdealBic::Rbrbnl21 => "RBRBNL21",
+            PaymentMethodIdealBic::Revoie23 => "REVOIE23",
             PaymentMethodIdealBic::Revolt21 => "REVOLT21",
             PaymentMethodIdealBic::Snsbnl2a => "SNSBNL2A",
             PaymentMethodIdealBic::Trionl2u => "TRIONL2U",
@@ -2076,6 +2128,7 @@ pub enum PaymentMethodType {
     Boleto,
     Card,
     CardPresent,
+    Cashapp,
     CustomerBalance,
     Eps,
     Fpx,
@@ -2111,6 +2164,7 @@ impl PaymentMethodType {
             PaymentMethodType::Boleto => "boleto",
             PaymentMethodType::Card => "card",
             PaymentMethodType::CardPresent => "card_present",
+            PaymentMethodType::Cashapp => "cashapp",
             PaymentMethodType::CustomerBalance => "customer_balance",
             PaymentMethodType::Eps => "eps",
             PaymentMethodType::Fpx => "fpx",
@@ -2166,6 +2220,7 @@ pub enum PaymentMethodTypeFilter {
     Boleto,
     Card,
     CardPresent,
+    Cashapp,
     CustomerBalance,
     Eps,
     Fpx,
@@ -2200,6 +2255,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Boleto => "boleto",
             PaymentMethodTypeFilter::Card => "card",
             PaymentMethodTypeFilter::CardPresent => "card_present",
+            PaymentMethodTypeFilter::Cashapp => "cashapp",
             PaymentMethodTypeFilter::CustomerBalance => "customer_balance",
             PaymentMethodTypeFilter::Eps => "eps",
             PaymentMethodTypeFilter::Fpx => "fpx",
@@ -2307,6 +2363,118 @@ impl std::default::Default for PaymentMethodUsBankAccountAccountType {
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodUsBankAccountBlocked`'s `network_code` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodUsBankAccountBlockedNetworkCode {
+    #[serde(rename = "R02")]
+    R02,
+    #[serde(rename = "R03")]
+    R03,
+    #[serde(rename = "R04")]
+    R04,
+    #[serde(rename = "R05")]
+    R05,
+    #[serde(rename = "R07")]
+    R07,
+    #[serde(rename = "R08")]
+    R08,
+    #[serde(rename = "R10")]
+    R10,
+    #[serde(rename = "R11")]
+    R11,
+    #[serde(rename = "R16")]
+    R16,
+    #[serde(rename = "R20")]
+    R20,
+    #[serde(rename = "R29")]
+    R29,
+    #[serde(rename = "R31")]
+    R31,
+}
+
+impl PaymentMethodUsBankAccountBlockedNetworkCode {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodUsBankAccountBlockedNetworkCode::R02 => "R02",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R03 => "R03",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R04 => "R04",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R05 => "R05",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R07 => "R07",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R08 => "R08",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R10 => "R10",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R11 => "R11",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R16 => "R16",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R20 => "R20",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R29 => "R29",
+            PaymentMethodUsBankAccountBlockedNetworkCode::R31 => "R31",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodUsBankAccountBlockedNetworkCode {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodUsBankAccountBlockedNetworkCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodUsBankAccountBlockedNetworkCode {
+    fn default() -> Self {
+        Self::R02
+    }
+}
+
+/// An enum representing the possible values of an `PaymentMethodUsBankAccountBlocked`'s `reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodUsBankAccountBlockedReason {
+    BankAccountClosed,
+    BankAccountFrozen,
+    BankAccountInvalidDetails,
+    BankAccountRestricted,
+    BankAccountUnusable,
+    DebitNotAuthorized,
+}
+
+impl PaymentMethodUsBankAccountBlockedReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodUsBankAccountBlockedReason::BankAccountClosed => "bank_account_closed",
+            PaymentMethodUsBankAccountBlockedReason::BankAccountFrozen => "bank_account_frozen",
+            PaymentMethodUsBankAccountBlockedReason::BankAccountInvalidDetails => {
+                "bank_account_invalid_details"
+            }
+            PaymentMethodUsBankAccountBlockedReason::BankAccountRestricted => {
+                "bank_account_restricted"
+            }
+            PaymentMethodUsBankAccountBlockedReason::BankAccountUnusable => "bank_account_unusable",
+            PaymentMethodUsBankAccountBlockedReason::DebitNotAuthorized => "debit_not_authorized",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodUsBankAccountBlockedReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodUsBankAccountBlockedReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodUsBankAccountBlockedReason {
+    fn default() -> Self {
+        Self::BankAccountClosed
+    }
+}
+
 /// An enum representing the possible values of an `UpdatePaymentMethodUsBankAccount`'s `account_holder_type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2382,6 +2550,7 @@ pub enum WalletDetailsType {
     AmexExpressCheckout,
     ApplePay,
     GooglePay,
+    Link,
     Masterpass,
     SamsungPay,
     VisaCheckout,
@@ -2393,6 +2562,7 @@ impl WalletDetailsType {
             WalletDetailsType::AmexExpressCheckout => "amex_express_checkout",
             WalletDetailsType::ApplePay => "apple_pay",
             WalletDetailsType::GooglePay => "google_pay",
+            WalletDetailsType::Link => "link",
             WalletDetailsType::Masterpass => "masterpass",
             WalletDetailsType::SamsungPay => "samsung_pay",
             WalletDetailsType::VisaCheckout => "visa_checkout",

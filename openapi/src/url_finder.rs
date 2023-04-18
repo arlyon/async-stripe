@@ -30,7 +30,7 @@ impl UrlFinder {
                 Err(anyhow!("stripe api returned unexpected document"))
             }
         } else {
-            log::error!("{}", resp.text()?);
+            tracing::error!("{}", resp.text()?);
             Err(anyhow!("request to stripe api returned non-200 status code"))
         }
     }
@@ -49,7 +49,7 @@ impl UrlFinder {
             }
         }
 
-        log::warn!("{} not in html", object);
+        tracing::warn!("{} not in html", object);
         None
     }
 }

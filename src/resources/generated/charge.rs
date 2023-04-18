@@ -417,6 +417,9 @@ pub struct PaymentMethodDetails {
     pub card_present: Option<PaymentMethodDetailsCardPresent>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp: Option<PaymentMethodDetailsCashapp>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_balance: Option<PaymentMethodDetailsCustomerBalance>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -663,7 +666,7 @@ pub struct PaymentMethodDetailsBoleto {
 pub struct PaymentMethodDetailsCard {
     /// Card brand.
     ///
-    /// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: Option<String>,
 
     /// Check results by Card networks on Card address and CVC at time of payment.
@@ -727,7 +730,7 @@ pub struct PaymentMethodDetailsCard {
 
     /// Identifies which network this charge was processed on.
     ///
-    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
 
     /// Populated if this transaction used 3D Secure authentication.
@@ -762,7 +765,7 @@ pub struct PaymentMethodDetailsCardPresent {
 
     /// Card brand.
     ///
-    /// Can be `amex`, `diners`, `discover`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub brand: Option<String>,
 
     /// When using manual capture, a future timestamp after which the charge will be automatically refunded if uncaptured.
@@ -834,7 +837,7 @@ pub struct PaymentMethodDetailsCardPresent {
 
     /// Identifies which network this charge was processed on.
     ///
-    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
 
     /// Defines whether the authorized amount can be over-captured or not.
@@ -904,7 +907,7 @@ pub struct PaymentMethodDetailsCardWallet {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub samsung_pay: Option<PaymentMethodDetailsCardWalletSamsungPay>,
 
-    /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, or `visa_checkout`.
+    /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, `visa_checkout`, or `link`.
     ///
     /// An additional hash is included on the Wallet subhash with a name matching this value.
     /// It contains additional information specific to the card wallet type.
@@ -980,6 +983,9 @@ pub struct PaymentMethodDetailsCardWalletVisaCheckout {
     /// They cannot be set or mutated.
     pub shipping_address: Option<Address>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsCashapp {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCustomerBalance {}
@@ -1131,7 +1137,7 @@ pub struct PaymentMethodDetailsInteracPresent {
 
     /// Identifies which network this charge was processed on.
     ///
-    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
 
     /// EMV tag 5F2D.
@@ -1207,7 +1213,11 @@ pub struct PaymentMethodDetailsKonbiniStore {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsLink {}
+pub struct PaymentMethodDetailsLink {
+    /// Two-letter ISO code representing the funding source country beneath the Link payment.
+    /// You could use this attribute to get a sense of international fees.
+    pub country: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsMultibanco {
@@ -1924,6 +1934,7 @@ pub enum PaymentMethodDetailsCardWalletType {
     AmexExpressCheckout,
     ApplePay,
     GooglePay,
+    Link,
     Masterpass,
     SamsungPay,
     VisaCheckout,
@@ -1935,6 +1946,7 @@ impl PaymentMethodDetailsCardWalletType {
             PaymentMethodDetailsCardWalletType::AmexExpressCheckout => "amex_express_checkout",
             PaymentMethodDetailsCardWalletType::ApplePay => "apple_pay",
             PaymentMethodDetailsCardWalletType::GooglePay => "google_pay",
+            PaymentMethodDetailsCardWalletType::Link => "link",
             PaymentMethodDetailsCardWalletType::Masterpass => "masterpass",
             PaymentMethodDetailsCardWalletType::SamsungPay => "samsung_pay",
             PaymentMethodDetailsCardWalletType::VisaCheckout => "visa_checkout",
@@ -2249,6 +2261,8 @@ pub enum PaymentMethodDetailsIdealBic {
     Rabonl2u,
     #[serde(rename = "RBRBNL21")]
     Rbrbnl21,
+    #[serde(rename = "REVOIE23")]
+    Revoie23,
     #[serde(rename = "REVOLT21")]
     Revolt21,
     #[serde(rename = "SNSBNL2A")]
@@ -2271,6 +2285,7 @@ impl PaymentMethodDetailsIdealBic {
             PaymentMethodDetailsIdealBic::Moyonl21 => "MOYONL21",
             PaymentMethodDetailsIdealBic::Rabonl2u => "RABONL2U",
             PaymentMethodDetailsIdealBic::Rbrbnl21 => "RBRBNL21",
+            PaymentMethodDetailsIdealBic::Revoie23 => "REVOIE23",
             PaymentMethodDetailsIdealBic::Revolt21 => "REVOLT21",
             PaymentMethodDetailsIdealBic::Snsbnl2a => "SNSBNL2A",
             PaymentMethodDetailsIdealBic::Trionl2u => "TRIONL2U",
