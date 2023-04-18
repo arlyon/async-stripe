@@ -986,7 +986,11 @@ fn gen_schema_ref(
             state.use_resources.insert(type_name.clone());
             shared_objects.insert(FileGenerator::new(schema_name.to_string()));
         } else if !state.generated_schemas.contains_key(schema_name) {
-            state.generated_schemas.insert(schema_name.into(), false);
+            // for some reason, this field causes clashes, so just skip it
+            // until the new codegen is ready
+            if schema_name != "invoice_setting_subscription_schedule_setting" {
+                state.generated_schemas.insert(schema_name.into(), false);
+            }
         }
     }
     type_name
