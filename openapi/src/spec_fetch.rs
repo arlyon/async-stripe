@@ -67,7 +67,7 @@ pub fn fetch_spec(version: SpecVersion, in_path: &str) -> anyhow::Result<Value> 
         SpecVersion::Version(v) => v,
     };
 
-    log::info!("fetching OpenAPI spec version {}", desired_version);
+    tracing::info!("fetching OpenAPI spec version {}", desired_version);
 
     if let Some(value) = fs::File::open(in_path)
         .ok()
@@ -96,7 +96,7 @@ pub fn fetch_spec(version: SpecVersion, in_path: &str) -> anyhow::Result<Value> 
 
     let writer = fs::File::create(in_path)?;
     serde_json::to_writer_pretty(writer, &spec)?;
-    log::info!("Wrote OpenAPI spec to {}", in_path);
+    tracing::info!("Wrote OpenAPI spec to {}", in_path);
 
     let version_file_writer = fs::File::create(VERSION_FILE_PATH)?;
     serde_json::to_writer_pretty(version_file_writer, &VersionFile { version: desired_version })?;

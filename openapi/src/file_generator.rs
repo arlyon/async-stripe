@@ -10,10 +10,10 @@ use heck::SnakeCase;
 use crate::codegen::{gen_enums, gen_objects, gen_prelude, gen_unions};
 use crate::spec::{as_first_enum_value, as_object_properties};
 use crate::{
-    codegen::gen_emitted_structs,
     codegen::gen_generated_schemas,
     codegen::gen_impl_requests,
     codegen::gen_inferred_params,
+    codegen::gen_inferred_structs,
     codegen::gen_struct,
     metadata::Metadata,
     types::InferredEnum,
@@ -76,7 +76,7 @@ impl FileGenerator {
         let path = self.get_path();
         let (out, additional) = self.generate(meta, url_finder)?;
         let pathbuf = base.as_ref().join(path);
-        log::debug!("writing object {} to {:?}", self.name, pathbuf);
+        tracing::debug!("writing object {} to {:?}", self.name, pathbuf);
         write(&pathbuf, out.as_bytes())?;
         Ok(additional)
     }
@@ -114,7 +114,7 @@ impl FileGenerator {
 
         gen_inferred_params(&mut out, self, meta, &mut shared_objects);
 
-        gen_emitted_structs(&mut out, self, meta, &mut shared_objects);
+        gen_inferred_structs(&mut out, self, meta, &mut shared_objects);
 
         gen_unions(&mut out, &self.inferred_unions, meta);
 
