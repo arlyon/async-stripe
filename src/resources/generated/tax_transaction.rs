@@ -91,7 +91,7 @@ pub struct CreateFromTaxCalculation<'a> {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub calculation: Option<TaxCalculationId>,
+    pub calculation: TaxCalculationId,
 
     /// The ID of an existing [Customer](https://stripe.com/docs/api/customers/object) used for the resource.
     pub reference: &'a str,
