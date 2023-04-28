@@ -35,4 +35,7 @@ pub struct MerchantData {
 
     /// State where the seller is located.
     pub state: Option<String>,
+
+    /// An ID assigned by the seller to the location of the sale.
+    pub terminal_id: Option<String>,
 }

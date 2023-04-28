@@ -1730,6 +1730,10 @@ pub struct CreateCheckoutSessionSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
 
+    /// A future timestamp to anchor the subscription's billing cycle for new subscriptions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor: Option<Timestamp>,
+
     /// The ID of the coupon to apply to this subscription.
     ///
     /// A coupon applied to a subscription will only affect invoices created for that particular subscription.
@@ -1760,6 +1764,12 @@ pub struct CreateCheckoutSessionSubscriptionData {
     /// The account on behalf of which to charge, for each of the subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
+
+    /// Determines how to handle prorations resulting from the `billing_cycle_anchor`.
+    ///
+    /// If no value is passed, the default is `create_prorations`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proration_behavior: Option<CreateCheckoutSessionSubscriptionDataProrationBehavior>,
 
     /// If specified, the funds from the subscription's invoices will be transferred to the destination and the ID of the resulting transfers will be found on the resulting charges.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6894,6 +6904,42 @@ impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataT
 impl std::default::Default for CreateCheckoutSessionShippingOptionsShippingRateDataType {
     fn default() -> Self {
         Self::FixedAmount
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionSubscriptionData`'s `proration_behavior` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionSubscriptionDataProrationBehavior {
+    CreateProrations,
+    None,
+}
+
+impl CreateCheckoutSessionSubscriptionDataProrationBehavior {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionSubscriptionDataProrationBehavior::CreateProrations => {
+                "create_prorations"
+            }
+            CreateCheckoutSessionSubscriptionDataProrationBehavior::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionSubscriptionDataProrationBehavior {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionSubscriptionDataProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionSubscriptionDataProrationBehavior {
+    fn default() -> Self {
+        Self::CreateProrations
     }
 }
 

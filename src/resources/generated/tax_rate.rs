@@ -54,7 +54,9 @@ pub struct TaxRate {
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Metadata,
 
-    /// This represents the tax rate percent out of 100.
+    /// Tax rate percentage out of 100.
+    ///
+    /// For tax calculations with automatic_tax[enabled]=true, this percentage includes the statutory tax rate of non-taxable jurisdictions.
     pub percentage: f64,
 
     /// [ISO 3166-2 subdivision code](https://en.wikipedia.org/wiki/ISO_3166-2:US), without country prefix.

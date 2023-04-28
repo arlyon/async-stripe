@@ -8,8 +8,8 @@ use crate::client::{Client, Response};
 use crate::ids::{SetupAttemptId, SetupIntentId};
 use crate::params::{Expand, Expandable, List, Object, Paginable, RangeQuery, Timestamp};
 use crate::resources::{
-    Account, ApiErrors, Application, Customer, Mandate, PaymentMethod, SetupIntent,
-    ThreeDSecureDetails,
+    Account, ApiErrors, Application, Customer, Mandate, PaymentMethod,
+    PaymentMethodDetailsCardChecks, SetupIntent, ThreeDSecureDetails,
 };
 
 /// The resource representing a Stripe "PaymentFlowsSetupIntentSetupAttempt".
@@ -191,6 +191,9 @@ pub struct SetupAttemptPaymentMethodDetailsBoleto {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsCard {
+    /// Check results by Card networks on Card address and CVC at time of payment.
+    pub checks: Option<PaymentMethodDetailsCardChecks>,
+
     /// Populated if this authorization used 3D Secure authentication.
     pub three_d_secure: Option<ThreeDSecureDetails>,
 }
