@@ -6,7 +6,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::ids::InvoiceLineItemId;
 use crate::params::{Expandable, Metadata, Object};
-use crate::resources::{Currency, Discount, Period, Plan, Price, TaxRate};
+use crate::resources::{
+    Currency, Discount, InvoiceItem, Period, Plan, Price, Subscription, SubscriptionItem, TaxRate,
+};
 
 /// The resource representing a Stripe "InvoiceLineItem".
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -46,7 +48,7 @@ pub struct InvoiceLineItem {
 
     /// The ID of the [invoice item](https://stripe.com/docs/api/invoiceitems) associated with this line item if any.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_item: Option<String>,
+    pub invoice_item: Option<Expandable<InvoiceItem>>,
 
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
@@ -75,13 +77,13 @@ pub struct InvoiceLineItem {
     pub quantity: Option<u64>,
 
     /// The subscription that the invoice item pertains to, if any.
-    pub subscription: Option<String>,
+    pub subscription: Option<Expandable<Subscription>>,
 
     /// The subscription item that generated this line item.
     ///
     /// Left empty if the line item is not an explicit result of a subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub subscription_item: Option<String>,
+    pub subscription_item: Option<Expandable<SubscriptionItem>>,
 
     /// The amount of tax calculated per tax rate for this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
