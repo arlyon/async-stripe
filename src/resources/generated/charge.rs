@@ -11,7 +11,8 @@ use crate::resources::{
     Account, Address, Application, ApplicationFee, BalanceTransaction, BillingDetails,
     ChargeSourceParams, Currency, Customer, Dispute, Invoice, Mandate, PaymentIntent,
     PaymentMethod, PaymentMethodDetailsCardChecks, PaymentMethodDetailsCardInstallmentsPlan,
-    PaymentSource, RadarRadarOptions, Refund, Review, Shipping, ThreeDSecureDetails, Transfer,
+    PaymentMethodDetailsCardWalletApplePay, PaymentMethodDetailsCardWalletGooglePay, PaymentSource,
+    RadarRadarOptions, Refund, Review, Shipping, ThreeDSecureDetails, Transfer,
 };
 
 /// The resource representing a Stripe "Charge".
@@ -908,12 +909,6 @@ pub struct PaymentMethodDetailsCardWallet {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWalletAmexExpressCheckout {}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsCardWalletApplePay {}
-
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentMethodDetailsCardWalletGooglePay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodDetailsCardWalletMasterpass {
