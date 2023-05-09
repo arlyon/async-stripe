@@ -125,6 +125,8 @@ pub use {
         payment_intent_next_action_cashapp_handle_redirect_or_display_qr_code::*,
         linked_account_options_us_bank_account::*,
         payment_method_details_card_checks::*,
+        payment_method_details_card_wallet_apple_pay::*,
+        payment_method_details_card_wallet_google_pay::*,
         payment_method_options_customer_balance_eu_bank_account::*,
         payout::*,
         platform_tax_fee::*,

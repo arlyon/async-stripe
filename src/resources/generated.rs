@@ -31,6 +31,8 @@ pub mod core {
     pub mod payment_intent;
     pub mod payment_intent_next_action_cashapp_handle_redirect_or_display_qr_code;
     pub mod payment_method_details_card_checks;
+    pub mod payment_method_details_card_wallet_apple_pay;
+    pub mod payment_method_details_card_wallet_google_pay;
     pub mod payment_method_options_customer_balance_eu_bank_account;
     pub mod payout;
     pub mod platform_tax_fee;
