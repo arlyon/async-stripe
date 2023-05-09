@@ -1,3 +1,10 @@
+## [0.22.1](https://github.com/arlyon/async-stripe/compare/v0.22.0...v0.22.1) (2023-05-09)
+
+
+### Bug Fixes
+
+* Move feature check to `build.rs` ([8d06be0](https://github.com/arlyon/async-stripe/commit/8d06be0f45aa645ce0e491a21cae33d4acc08b43))
+
 # [0.22.0](https://github.com/arlyon/async-stripe/compare/v0.21.0...v0.22.0) (2023-04-18)
 
 
