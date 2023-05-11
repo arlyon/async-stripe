@@ -1,3 +1,10 @@
+## [0.22.2](https://github.com/arlyon/async-stripe/compare/v0.22.1...v0.22.2) (2023-05-11)
+
+
+### Bug Fixes
+
+* Add sis_ id prefix for usage record summaries ([1042493](https://github.com/arlyon/async-stripe/commit/10424938736b0ce87d3be99fccb053855f3ddd3c))
+
 ## [0.22.1](https://github.com/arlyon/async-stripe/compare/v0.22.0...v0.22.1) (2023-05-09)
 
 
