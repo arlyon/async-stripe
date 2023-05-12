@@ -921,7 +921,7 @@ pub struct UpdateSubscription<'a> {
 
     /// If set, the proration will be calculated as though the subscription was updated at the given time.
     ///
-    /// This can be used to apply exactly the same proration that was previewed with [upcoming invoice](https://stripe.com/docs/api#retrieve_customer_invoice) endpoint.
+    /// This can be used to apply exactly the same proration that was previewed with [upcoming invoice](https://stripe.com/docs/api#upcoming_invoice) endpoint.
     /// It can also be used to implement custom proration logic, such as prorating by day instead of by second, by providing the time that you wish to use for proration calculations.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_date: Option<Timestamp>,
@@ -1941,6 +1941,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
     CartesBancaires,
     Diners,
     Discover,
+    EftposAu,
     Interac,
     Jcb,
     Mastercard,
@@ -1959,6 +1960,9 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
             CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Diners => "diners",
             CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Discover => {
                 "discover"
+            }
+            CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::EftposAu => {
+                "eftpos_au"
             }
             CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Interac => "interac",
             CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Jcb => "jcb",
@@ -2131,6 +2135,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     Konbini,
     Link,
     Paynow,
+    Paypal,
     Promptpay,
     SepaCreditTransfer,
     SepaDebit,
@@ -2163,6 +2168,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Konbini => "konbini",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Link => "link",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Paynow => "paynow",
+            CreateSubscriptionPaymentSettingsPaymentMethodTypes::Paypal => "paypal",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::Promptpay => "promptpay",
             CreateSubscriptionPaymentSettingsPaymentMethodTypes::SepaCreditTransfer => {
                 "sepa_credit_transfer"
@@ -2490,6 +2496,7 @@ pub enum SubscriptionPaymentMethodOptionsCardNetwork {
     CartesBancaires,
     Diners,
     Discover,
+    EftposAu,
     Interac,
     Jcb,
     Mastercard,
@@ -2505,6 +2512,7 @@ impl SubscriptionPaymentMethodOptionsCardNetwork {
             SubscriptionPaymentMethodOptionsCardNetwork::CartesBancaires => "cartes_bancaires",
             SubscriptionPaymentMethodOptionsCardNetwork::Diners => "diners",
             SubscriptionPaymentMethodOptionsCardNetwork::Discover => "discover",
+            SubscriptionPaymentMethodOptionsCardNetwork::EftposAu => "eftpos_au",
             SubscriptionPaymentMethodOptionsCardNetwork::Interac => "interac",
             SubscriptionPaymentMethodOptionsCardNetwork::Jcb => "jcb",
             SubscriptionPaymentMethodOptionsCardNetwork::Mastercard => "mastercard",
@@ -2755,6 +2763,7 @@ pub enum SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
     Konbini,
     Link,
     Paynow,
+    Paypal,
     Promptpay,
     SepaCreditTransfer,
     SepaDebit,
@@ -2787,6 +2796,7 @@ impl SubscriptionsResourcePaymentSettingsPaymentMethodTypes {
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Konbini => "konbini",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Link => "link",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Paynow => "paynow",
+            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Paypal => "paypal",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::Promptpay => "promptpay",
             SubscriptionsResourcePaymentSettingsPaymentMethodTypes::SepaCreditTransfer => {
                 "sepa_credit_transfer"
@@ -3149,6 +3159,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
     CartesBancaires,
     Diners,
     Discover,
+    EftposAu,
     Interac,
     Jcb,
     Mastercard,
@@ -3167,6 +3178,9 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork {
             UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Diners => "diners",
             UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Discover => {
                 "discover"
+            }
+            UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::EftposAu => {
+                "eftpos_au"
             }
             UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Interac => "interac",
             UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork::Jcb => "jcb",
@@ -3339,6 +3353,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     Konbini,
     Link,
     Paynow,
+    Paypal,
     Promptpay,
     SepaCreditTransfer,
     SepaDebit,
@@ -3371,6 +3386,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Konbini => "konbini",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Link => "link",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Paynow => "paynow",
+            UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Paypal => "paypal",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::Promptpay => "promptpay",
             UpdateSubscriptionPaymentSettingsPaymentMethodTypes::SepaCreditTransfer => {
                 "sepa_credit_transfer"

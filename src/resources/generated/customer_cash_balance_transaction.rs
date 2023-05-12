@@ -91,6 +91,12 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactio
     #[serde(skip_serializing_if = "Option::is_none")]
     pub eu_bank_transfer: Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceEuBankTransfer>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gb_bank_transfer: Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceGbBankTransfer>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jp_bank_transfer: Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransfer>,
+
     /// The user-supplied reference field on the bank transfer.
     pub reference: Option<String>,
 
@@ -109,6 +115,32 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactio
 
     /// The last 4 digits of the IBAN of the sender of the funding.
     pub iban_last4: Option<String>,
+
+    /// The full name of the sender, as supplied by the sending bank.
+    pub sender_name: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceGbBankTransfer {
+
+    /// The last 4 digits of the account number of the sender of the funding.
+    pub account_number_last4: Option<String>,
+
+    /// The full name of the sender, as supplied by the sending bank.
+    pub sender_name: Option<String>,
+
+    /// The sort code of the bank of the sender of the funding.
+    pub sort_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceJpBankTransfer {
+
+    /// The name of the bank of the sender of the funding.
+    pub sender_bank: Option<String>,
+
+    /// The name of the bank branch of the sender of the funding.
+    pub sender_branch: Option<String>,
 
     /// The full name of the sender, as supplied by the sending bank.
     pub sender_name: Option<String>,

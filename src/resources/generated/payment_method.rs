@@ -8,7 +8,8 @@ use crate::client::{Client, Response};
 use crate::ids::{CustomerId, PaymentMethodId};
 use crate::params::{Expand, Expandable, List, Metadata, Object, Paginable, Timestamp};
 use crate::resources::{
-    Address, BillingDetails, Charge, Customer, RadarRadarOptions, SetupAttempt,
+    Address, BillingDetails, Charge, Customer, PaymentMethodCardPresentNetworks, RadarRadarOptions,
+    SetupAttempt,
 };
 
 /// The resource representing a Stripe "PaymentMethod".
@@ -113,6 +114,9 @@ pub struct PaymentMethod {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<PaymentMethodPaynow>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<PaymentMethodPaypal>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pix: Option<PaymentMethodPix>,
@@ -348,7 +352,50 @@ pub struct PaymentMethodCardChecks {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CardPresent {}
+pub struct CardPresent {
+    /// Card brand.
+    ///
+    /// Can be `amex`, `diners`, `discover`, `eftpos_au`, `jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.
+    pub brand: Option<String>,
+
+    /// The cardholder name as read from the card, in [ISO 7813](https://en.wikipedia.org/wiki/ISO/IEC_7813) format.
+    ///
+    /// May include alphanumeric characters, special characters and first/last name separator (`/`).
+    /// In some cases, the cardholder name may not be available depending on how the issuer has configured the card.
+    /// Cardholder name is typically not available on swipe or contactless payments, such as those made with Apple Pay and Google Pay.
+    pub cardholder_name: Option<String>,
+
+    /// Two-letter ISO code representing the country of the card.
+    ///
+    /// You could use this attribute to get a sense of the international breakdown of cards you've collected.
+    pub country: Option<String>,
+
+    /// Two-digit number representing the card's expiration month.
+    pub exp_month: i64,
+
+    /// Four-digit number representing the card's expiration year.
+    pub exp_year: i64,
+
+    /// Uniquely identifies this particular card number.
+    ///
+    /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
+    pub fingerprint: Option<String>,
+
+    /// Card funding type.
+    ///
+    /// Can be `credit`, `debit`, `prepaid`, or `unknown`.
+    pub funding: Option<String>,
+
+    /// The last four digits of the card.
+    pub last4: Option<String>,
+
+    /// Contains information about card networks that can be used to process the payment.
+    pub networks: Option<PaymentMethodCardPresentNetworks>,
+
+    /// How card details were read in this transaction.
+    pub read_method: Option<CardPresentReadMethod>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct WalletDetails {
@@ -492,7 +539,55 @@ pub struct PaymentMethodIdeal {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct PaymentMethodInteracPresent {}
+pub struct PaymentMethodInteracPresent {
+    /// Card brand.
+    ///
+    /// Can be `interac`, `mastercard` or `visa`.
+    pub brand: Option<String>,
+
+    /// The cardholder name as read from the card, in [ISO 7813](https://en.wikipedia.org/wiki/ISO/IEC_7813) format.
+    ///
+    /// May include alphanumeric characters, special characters and first/last name separator (`/`).
+    /// In some cases, the cardholder name may not be available depending on how the issuer has configured the card.
+    /// Cardholder name is typically not available on swipe or contactless payments, such as those made with Apple Pay and Google Pay.
+    pub cardholder_name: Option<String>,
+
+    /// Two-letter ISO code representing the country of the card.
+    ///
+    /// You could use this attribute to get a sense of the international breakdown of cards you've collected.
+    pub country: Option<String>,
+
+    /// Two-digit number representing the card's expiration month.
+    pub exp_month: i64,
+
+    /// Four-digit number representing the card's expiration year.
+    pub exp_year: i64,
+
+    /// Uniquely identifies this particular card number.
+    ///
+    /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
+    /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.  *Starting May 1, 2021, card fingerprint in India for Connect will change to allow two fingerprints for the same card --- one for India and one for the rest of the world.*.
+    pub fingerprint: Option<String>,
+
+    /// Card funding type.
+    ///
+    /// Can be `credit`, `debit`, `prepaid`, or `unknown`.
+    pub funding: Option<String>,
+
+    /// The last four digits of the card.
+    pub last4: Option<String>,
+
+    /// Contains information about card networks that can be used to process the payment.
+    pub networks: Option<PaymentMethodCardPresentNetworks>,
+
+    /// EMV tag 5F2D.
+    ///
+    /// Preferred languages specified by the integrated circuit chip.
+    pub preferred_locales: Option<Vec<String>>,
+
+    /// How card details were read in this transaction.
+    pub read_method: Option<PaymentMethodInteracPresentReadMethod>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodKlarna {
@@ -542,6 +637,15 @@ pub struct PaymentMethodP24 {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodPaynow {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodPaypal {
+    /// PayPal account PayerID.
+    ///
+    /// This identifier uniquely identifies the PayPal customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payer_id: Option<String>,
+}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodPix {}
@@ -783,6 +887,10 @@ pub struct CreatePaymentMethod<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<CreatePaymentMethodPaynow>,
 
+    /// If this is a `paypal` PaymentMethod, this hash contains details about the PayPal payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<CreatePaymentMethodPaypal>,
+
     /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pix: Option<CreatePaymentMethodPix>,
@@ -854,6 +962,7 @@ impl<'a> CreatePaymentMethod<'a> {
             p24: Default::default(),
             payment_method: Default::default(),
             paynow: Default::default(),
+            paypal: Default::default(),
             pix: Default::default(),
             promptpay: Default::default(),
             radar_options: Default::default(),
@@ -1139,6 +1248,9 @@ pub struct CreatePaymentMethodP24 {
 pub struct CreatePaymentMethodPaynow {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodPaypal {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodPix {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1232,6 +1344,46 @@ pub struct CreatePaymentMethodKlarnaDob {
 
     /// The four-digit year of birth.
     pub year: i64,
+}
+
+/// An enum representing the possible values of an `CardPresent`'s `read_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CardPresentReadMethod {
+    ContactEmv,
+    ContactlessEmv,
+    ContactlessMagstripeMode,
+    MagneticStripeFallback,
+    MagneticStripeTrack2,
+}
+
+impl CardPresentReadMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CardPresentReadMethod::ContactEmv => "contact_emv",
+            CardPresentReadMethod::ContactlessEmv => "contactless_emv",
+            CardPresentReadMethod::ContactlessMagstripeMode => "contactless_magstripe_mode",
+            CardPresentReadMethod::MagneticStripeFallback => "magnetic_stripe_fallback",
+            CardPresentReadMethod::MagneticStripeTrack2 => "magnetic_stripe_track2",
+        }
+    }
+}
+
+impl AsRef<str> for CardPresentReadMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CardPresentReadMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CardPresentReadMethod {
+    fn default() -> Self {
+        Self::ContactEmv
+    }
 }
 
 /// An enum representing the possible values of an `CreatePaymentMethodEps`'s `bank` field.
@@ -2033,6 +2185,50 @@ impl std::default::Default for PaymentMethodIdealBic {
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodInteracPresent`'s `read_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodInteracPresentReadMethod {
+    ContactEmv,
+    ContactlessEmv,
+    ContactlessMagstripeMode,
+    MagneticStripeFallback,
+    MagneticStripeTrack2,
+}
+
+impl PaymentMethodInteracPresentReadMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodInteracPresentReadMethod::ContactEmv => "contact_emv",
+            PaymentMethodInteracPresentReadMethod::ContactlessEmv => "contactless_emv",
+            PaymentMethodInteracPresentReadMethod::ContactlessMagstripeMode => {
+                "contactless_magstripe_mode"
+            }
+            PaymentMethodInteracPresentReadMethod::MagneticStripeFallback => {
+                "magnetic_stripe_fallback"
+            }
+            PaymentMethodInteracPresentReadMethod::MagneticStripeTrack2 => "magnetic_stripe_track2",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodInteracPresentReadMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodInteracPresentReadMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodInteracPresentReadMethod {
+    fn default() -> Self {
+        Self::ContactEmv
+    }
+}
+
 /// An enum representing the possible values of an `PaymentMethodP24`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -2142,6 +2338,7 @@ pub enum PaymentMethodType {
     Oxxo,
     P24,
     Paynow,
+    Paypal,
     Pix,
     Promptpay,
     SepaDebit,
@@ -2178,6 +2375,7 @@ impl PaymentMethodType {
             PaymentMethodType::Oxxo => "oxxo",
             PaymentMethodType::P24 => "p24",
             PaymentMethodType::Paynow => "paynow",
+            PaymentMethodType::Paypal => "paypal",
             PaymentMethodType::Pix => "pix",
             PaymentMethodType::Promptpay => "promptpay",
             PaymentMethodType::SepaDebit => "sepa_debit",
@@ -2233,6 +2431,7 @@ pub enum PaymentMethodTypeFilter {
     Oxxo,
     P24,
     Paynow,
+    Paypal,
     Pix,
     Promptpay,
     SepaDebit,
@@ -2268,6 +2467,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Oxxo => "oxxo",
             PaymentMethodTypeFilter::P24 => "p24",
             PaymentMethodTypeFilter::Paynow => "paynow",
+            PaymentMethodTypeFilter::Paypal => "paypal",
             PaymentMethodTypeFilter::Pix => "pix",
             PaymentMethodTypeFilter::Promptpay => "promptpay",
             PaymentMethodTypeFilter::SepaDebit => "sepa_debit",

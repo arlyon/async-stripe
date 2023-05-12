@@ -130,6 +130,14 @@ pub struct TaxAmount {
 
     /// The tax rate that was applied to get this tax amount.
     pub tax_rate: Expandable<TaxRate>,
+
+    /// The reasoning behind this tax, for example, if the product is tax exempt.
+    ///
+    /// The possible values for this field may be extended as new tax rules are supported.
+    pub taxability_reason: Option<TaxAmountTaxabilityReason>,
+
+    /// The amount on which tax is calculated, in %s.
+    pub taxable_amount: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -179,5 +187,65 @@ impl std::fmt::Display for InvoiceLineItemType {
 impl std::default::Default for InvoiceLineItemType {
     fn default() -> Self {
         Self::InvoiceItem
+    }
+}
+
+/// An enum representing the possible values of an `TaxAmount`'s `taxability_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TaxAmountTaxabilityReason {
+    CustomerExempt,
+    NotCollecting,
+    NotSubjectToTax,
+    NotSupported,
+    PortionProductExempt,
+    PortionReducedRated,
+    PortionStandardRated,
+    ProductExempt,
+    ProductExemptHoliday,
+    ProportionallyRated,
+    ReducedRated,
+    ReverseCharge,
+    StandardRated,
+    TaxableBasisReduced,
+    ZeroRated,
+}
+
+impl TaxAmountTaxabilityReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            TaxAmountTaxabilityReason::CustomerExempt => "customer_exempt",
+            TaxAmountTaxabilityReason::NotCollecting => "not_collecting",
+            TaxAmountTaxabilityReason::NotSubjectToTax => "not_subject_to_tax",
+            TaxAmountTaxabilityReason::NotSupported => "not_supported",
+            TaxAmountTaxabilityReason::PortionProductExempt => "portion_product_exempt",
+            TaxAmountTaxabilityReason::PortionReducedRated => "portion_reduced_rated",
+            TaxAmountTaxabilityReason::PortionStandardRated => "portion_standard_rated",
+            TaxAmountTaxabilityReason::ProductExempt => "product_exempt",
+            TaxAmountTaxabilityReason::ProductExemptHoliday => "product_exempt_holiday",
+            TaxAmountTaxabilityReason::ProportionallyRated => "proportionally_rated",
+            TaxAmountTaxabilityReason::ReducedRated => "reduced_rated",
+            TaxAmountTaxabilityReason::ReverseCharge => "reverse_charge",
+            TaxAmountTaxabilityReason::StandardRated => "standard_rated",
+            TaxAmountTaxabilityReason::TaxableBasisReduced => "taxable_basis_reduced",
+            TaxAmountTaxabilityReason::ZeroRated => "zero_rated",
+        }
+    }
+}
+
+impl AsRef<str> for TaxAmountTaxabilityReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for TaxAmountTaxabilityReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for TaxAmountTaxabilityReason {
+    fn default() -> Self {
+        Self::CustomerExempt
     }
 }

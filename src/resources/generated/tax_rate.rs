@@ -37,6 +37,11 @@ pub struct TaxRate {
     /// The display name of the tax rates as it will appear to your customer on their receipt email, PDF, and the hosted invoice page.
     pub display_name: String,
 
+    /// Actual/effective tax rate percentage out of 100.
+    ///
+    /// For tax calculations with automatic_tax[enabled]=true, this percentage does not include the statutory tax rate of non-taxable jurisdictions.
+    pub effective_percentage: Option<f64>,
+
     /// This specifies if the tax rate is inclusive or exclusive.
     pub inclusive: bool,
 
