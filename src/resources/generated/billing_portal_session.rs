@@ -80,6 +80,12 @@ pub struct PortalFlowsFlow {
     /// Configuration when `flow.type=subscription_cancel`.
     pub subscription_cancel: Option<PortalFlowsFlowSubscriptionCancel>,
 
+    /// Configuration when `flow.type=subscription_update`.
+    pub subscription_update: Option<PortalFlowsFlowSubscriptionUpdate>,
+
+    /// Configuration when `flow.type=subscription_update_confirm`.
+    pub subscription_update_confirm: Option<PortalFlowsFlowSubscriptionUpdateConfirm>,
+
     /// Type of flow that the customer will go through.
     #[serde(rename = "type")]
     pub type_: PortalFlowsFlowType,
@@ -114,6 +120,52 @@ pub struct PortalFlowsAfterCompletionRedirect {
 pub struct PortalFlowsFlowSubscriptionCancel {
     /// The ID of the subscription to be canceled.
     pub subscription: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsFlowSubscriptionUpdate {
+    /// The ID of the subscription to be updated.
+    pub subscription: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsFlowSubscriptionUpdateConfirm {
+    /// The coupon or promotion code to apply to this subscription update.
+    ///
+    /// Currently, only up to one may be specified.
+    pub discounts: Option<Vec<PortalFlowsSubscriptionUpdateConfirmDiscount>>,
+
+    /// The [subscription item](https://stripe.com/docs/api/subscription_items) to be updated through this flow.
+    ///
+    /// Currently, only up to one may be specified and subscriptions with multiple items are not updatable.
+    pub items: Vec<PortalFlowsSubscriptionUpdateConfirmItem>,
+
+    /// The ID of the subscription to be updated.
+    pub subscription: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsSubscriptionUpdateConfirmDiscount {
+    /// The ID of the coupon to apply to this subscription update.
+    pub coupon: Option<String>,
+
+    /// The ID of a promotion code to apply to this subscription update.
+    pub promotion_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PortalFlowsSubscriptionUpdateConfirmItem {
+    /// The ID of the [subscription item](https://stripe.com/docs/api/subscriptions/object#subscription_object-items-data-id) to be updated.
+    pub id: Option<String>,
+
+    /// The price the customer should subscribe to through this flow.
+    ///
+    /// The price must also be included in the configuration's [`features.subscription_update.products`](docs/api/customer_portal/configuration#portal_configuration_object-features-subscription_update-products).
+    pub price: Option<String>,
+
+    /// [Quantity](https://stripe.com/docs/subscriptions/quantities) for this item that the customer should subscribe to through this flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
 }
 
 /// The parameters for `BillingPortalSession::create`.
@@ -181,6 +233,15 @@ pub struct CreateBillingPortalSessionFlowData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_cancel: Option<CreateBillingPortalSessionFlowDataSubscriptionCancel>,
 
+    /// Configuration when `flow_data.type=subscription_update`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_update: Option<CreateBillingPortalSessionFlowDataSubscriptionUpdate>,
+
+    /// Configuration when `flow_data.type=subscription_update_confirm`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subscription_update_confirm:
+        Option<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm>,
+
     /// Type of flow that the customer will go through.
     #[serde(rename = "type")]
     pub type_: CreateBillingPortalSessionFlowDataType,
@@ -209,6 +270,30 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionCancel {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdate {
+    /// The ID of the subscription to be updated.
+    pub subscription: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
+    /// The coupon or promotion code to apply to this subscription update.
+    ///
+    /// Currently, only up to one may be specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discounts:
+        Option<Vec<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts>>,
+
+    /// The [subscription item](https://stripe.com/docs/api/subscription_items) to be updated through this flow.
+    ///
+    /// Currently, only up to one may be specified and subscriptions with multiple items are not updatable.
+    pub items: Vec<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems>,
+
+    /// The ID of the subscription to be updated.
+    pub subscription: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation {
     /// A custom message to display to the customer after the flow is completed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -219,6 +304,33 @@ pub struct CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation {
 pub struct CreateBillingPortalSessionFlowDataAfterCompletionRedirect {
     /// The URL the customer will be redirected to after the flow is completed.
     pub return_url: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts {
+    /// The ID of the coupon to apply to this subscription update.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+
+    /// The ID of a promotion code to apply to this subscription update.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
+    /// The ID of the [subscription item](https://stripe.com/docs/api/subscriptions/object#subscription_object-items-data-id) to be updated.
+    pub id: String,
+
+    /// The price the customer should subscribe to through this flow.
+    ///
+    /// The price must also be included in the configuration's [`features.subscription_update.products`](https://stripe.com/docs/api/customer_portal/configuration#portal_configuration_object-features-subscription_update-products).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<String>,
+
+    /// [Quantity](https://stripe.com/docs/subscriptions/quantities) for this item that the customer should subscribe to through this flow.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity: Option<u64>,
 }
 
 /// An enum representing the possible values of an `BillingPortalSession`'s `locale` field.
@@ -403,6 +515,8 @@ impl std::default::Default for CreateBillingPortalSessionFlowDataAfterCompletion
 pub enum CreateBillingPortalSessionFlowDataType {
     PaymentMethodUpdate,
     SubscriptionCancel,
+    SubscriptionUpdate,
+    SubscriptionUpdateConfirm,
 }
 
 impl CreateBillingPortalSessionFlowDataType {
@@ -410,6 +524,10 @@ impl CreateBillingPortalSessionFlowDataType {
         match self {
             CreateBillingPortalSessionFlowDataType::PaymentMethodUpdate => "payment_method_update",
             CreateBillingPortalSessionFlowDataType::SubscriptionCancel => "subscription_cancel",
+            CreateBillingPortalSessionFlowDataType::SubscriptionUpdate => "subscription_update",
+            CreateBillingPortalSessionFlowDataType::SubscriptionUpdateConfirm => {
+                "subscription_update_confirm"
+            }
         }
     }
 }
@@ -473,6 +591,8 @@ impl std::default::Default for PortalFlowsFlowAfterCompletionType {
 pub enum PortalFlowsFlowType {
     PaymentMethodUpdate,
     SubscriptionCancel,
+    SubscriptionUpdate,
+    SubscriptionUpdateConfirm,
 }
 
 impl PortalFlowsFlowType {
@@ -480,6 +600,8 @@ impl PortalFlowsFlowType {
         match self {
             PortalFlowsFlowType::PaymentMethodUpdate => "payment_method_update",
             PortalFlowsFlowType::SubscriptionCancel => "subscription_cancel",
+            PortalFlowsFlowType::SubscriptionUpdate => "subscription_update",
+            PortalFlowsFlowType::SubscriptionUpdateConfirm => "subscription_update_confirm",
         }
     }
 }

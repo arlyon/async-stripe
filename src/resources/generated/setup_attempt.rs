@@ -128,6 +128,9 @@ pub struct SetupAttemptPaymentMethodDetails {
     pub link: Option<SetupAttemptPaymentMethodDetailsLink>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<SetupAttemptPaymentMethodDetailsPaypal>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<SetupAttemptPaymentMethodDetailsSepaDebit>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -312,6 +315,9 @@ pub struct SetupAttemptPaymentMethodDetailsKlarna {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsLink {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct SetupAttemptPaymentMethodDetailsPaypal {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SetupAttemptPaymentMethodDetailsSepaDebit {}
