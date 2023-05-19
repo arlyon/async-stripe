@@ -153,7 +153,8 @@ time-core = "<=0.1.0"
 async-std = { version = "1.10.0", features = ["attributes"] }
 httpmock = "0.6.6"
 tokio = { version = "1.24.1", features = ["rt", "macros"] }
-axum = "0.4.8"
+axum = { version = "0.6.18", features = ["macros"] }
+async-trait = "0.1"
 actix-web = "4.2.1"
 
 [[example]]
