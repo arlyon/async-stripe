@@ -156,6 +156,7 @@ pub use {
         card::*,
         bank_account::*,
         payment_method::*,
+        payment_method_card_present_networks::*,
         source::*,
     },
 };

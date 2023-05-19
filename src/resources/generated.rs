@@ -57,6 +57,7 @@ pub mod payment {
     pub mod bank_account;
     pub mod card;
     pub mod payment_method;
+    pub mod payment_method_card_present_networks;
     pub mod source;
 }
 
