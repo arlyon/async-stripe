@@ -970,6 +970,14 @@ pub struct LineItemsTaxAmount {
     pub amount: i64,
 
     pub rate: TaxRate,
+
+    /// The reasoning behind this tax, for example, if the product is tax exempt.
+    ///
+    /// The possible values for this field may be extended as new tax rules are supported.
+    pub taxability_reason: Option<LineItemsTaxAmountTaxabilityReason>,
+
+    /// The amount on which tax is calculated, in %s.
+    pub taxable_amount: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1670,6 +1678,10 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow: Option<CreateCheckoutSessionPaymentMethodOptionsPaynow>,
 
+    /// contains details about the PayPal payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paypal: Option<CreateCheckoutSessionPaymentMethodOptionsPaypal>,
+
     /// contains details about the Pix payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pix: Option<CreateCheckoutSessionPaymentMethodOptionsPix>,
@@ -2332,6 +2344,35 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsPaynow {
     /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsPaypal {
+    /// Controls when the funds will be captured from the customer's account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod>,
+
+    /// [Preferred locale](https://stripe.com/docs/payments/paypal/supported-locales) of the PayPal checkout page that the customer is redirected to.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preferred_locale: Option<CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale>,
+
+    /// A reference of the PayPal transaction visible to customer which is mapped to PayPal's invoice ID.
+    ///
+    /// This must be a globally unique ID if you have configured in your PayPal settings to block multiple payments per invoice ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+
+    /// The risk correlation ID for an on-session payment using a saved PayPal payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub risk_correlation_id: Option<String>,
+
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -5701,6 +5742,167 @@ impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsPaynowSe
     }
 }
 
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsPaypal`'s `capture_method` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod {
+    Manual,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod::Manual => "manual",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod {
+    fn default() -> Self {
+        Self::Manual
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsPaypal`'s `preferred_locale` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
+    #[serde(rename = "cs-CZ")]
+    CsCz,
+    #[serde(rename = "da-DK")]
+    DaDk,
+    #[serde(rename = "de-AT")]
+    DeAt,
+    #[serde(rename = "de-DE")]
+    DeDe,
+    #[serde(rename = "de-LU")]
+    DeLu,
+    #[serde(rename = "el-GR")]
+    ElGr,
+    #[serde(rename = "en-GB")]
+    EnGb,
+    #[serde(rename = "en-US")]
+    EnUs,
+    #[serde(rename = "es-ES")]
+    EsEs,
+    #[serde(rename = "fi-FI")]
+    FiFi,
+    #[serde(rename = "fr-BE")]
+    FrBe,
+    #[serde(rename = "fr-FR")]
+    FrFr,
+    #[serde(rename = "fr-LU")]
+    FrLu,
+    #[serde(rename = "hu-HU")]
+    HuHu,
+    #[serde(rename = "it-IT")]
+    ItIt,
+    #[serde(rename = "nl-BE")]
+    NlBe,
+    #[serde(rename = "nl-NL")]
+    NlNl,
+    #[serde(rename = "pl-PL")]
+    PlPl,
+    #[serde(rename = "pt-PT")]
+    PtPt,
+    #[serde(rename = "sk-SK")]
+    SkSk,
+    #[serde(rename = "sv-SE")]
+    SvSe,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::CsCz => "cs-CZ",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::DaDk => "da-DK",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::DeAt => "de-AT",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::DeDe => "de-DE",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::DeLu => "de-LU",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::ElGr => "el-GR",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::EnGb => "en-GB",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::EnUs => "en-US",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::EsEs => "es-ES",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::FiFi => "fi-FI",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::FrBe => "fr-BE",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::FrFr => "fr-FR",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::FrLu => "fr-LU",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::HuHu => "hu-HU",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::ItIt => "it-IT",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::NlBe => "nl-BE",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::NlNl => "nl-NL",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::PlPl => "pl-PL",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::PtPt => "pt-PT",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::SkSk => "sk-SK",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale::SvSe => "sv-SE",
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
+    fn default() -> Self {
+        Self::CsCz
+    }
+}
+
+/// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsPaypal`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage {
+    None,
+    OffSession,
+}
+
+impl CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage::None => "none",
+            CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage::OffSession => {
+                "off_session"
+            }
+        }
+    }
+}
+
+impl AsRef<str> for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `CreateCheckoutSessionPaymentMethodOptionsSepaDebit`'s `setup_future_usage` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -5996,6 +6198,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Oxxo,
     P24,
     Paynow,
+    Paypal,
     Pix,
     Promptpay,
     SepaDebit,
@@ -6030,6 +6233,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             CreateCheckoutSessionPaymentMethodTypes::Oxxo => "oxxo",
             CreateCheckoutSessionPaymentMethodTypes::P24 => "p24",
             CreateCheckoutSessionPaymentMethodTypes::Paynow => "paynow",
+            CreateCheckoutSessionPaymentMethodTypes::Paypal => "paypal",
             CreateCheckoutSessionPaymentMethodTypes::Pix => "pix",
             CreateCheckoutSessionPaymentMethodTypes::Promptpay => "promptpay",
             CreateCheckoutSessionPaymentMethodTypes::SepaDebit => "sepa_debit",
@@ -7081,6 +7285,74 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::Cancel
+    }
+}
+
+/// An enum representing the possible values of an `LineItemsTaxAmount`'s `taxability_reason` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum LineItemsTaxAmountTaxabilityReason {
+    CustomerExempt,
+    ExcludedTerritory,
+    JurisdictionUnsupported,
+    NotCollecting,
+    NotSubjectToTax,
+    NotSupported,
+    PortionProductExempt,
+    PortionReducedRated,
+    PortionStandardRated,
+    ProductExempt,
+    ProductExemptHoliday,
+    ProportionallyRated,
+    ReducedRated,
+    ReverseCharge,
+    StandardRated,
+    TaxableBasisReduced,
+    VatExempt,
+    ZeroRated,
+}
+
+impl LineItemsTaxAmountTaxabilityReason {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            LineItemsTaxAmountTaxabilityReason::CustomerExempt => "customer_exempt",
+            LineItemsTaxAmountTaxabilityReason::ExcludedTerritory => "excluded_territory",
+            LineItemsTaxAmountTaxabilityReason::JurisdictionUnsupported => {
+                "jurisdiction_unsupported"
+            }
+            LineItemsTaxAmountTaxabilityReason::NotCollecting => "not_collecting",
+            LineItemsTaxAmountTaxabilityReason::NotSubjectToTax => "not_subject_to_tax",
+            LineItemsTaxAmountTaxabilityReason::NotSupported => "not_supported",
+            LineItemsTaxAmountTaxabilityReason::PortionProductExempt => "portion_product_exempt",
+            LineItemsTaxAmountTaxabilityReason::PortionReducedRated => "portion_reduced_rated",
+            LineItemsTaxAmountTaxabilityReason::PortionStandardRated => "portion_standard_rated",
+            LineItemsTaxAmountTaxabilityReason::ProductExempt => "product_exempt",
+            LineItemsTaxAmountTaxabilityReason::ProductExemptHoliday => "product_exempt_holiday",
+            LineItemsTaxAmountTaxabilityReason::ProportionallyRated => "proportionally_rated",
+            LineItemsTaxAmountTaxabilityReason::ReducedRated => "reduced_rated",
+            LineItemsTaxAmountTaxabilityReason::ReverseCharge => "reverse_charge",
+            LineItemsTaxAmountTaxabilityReason::StandardRated => "standard_rated",
+            LineItemsTaxAmountTaxabilityReason::TaxableBasisReduced => "taxable_basis_reduced",
+            LineItemsTaxAmountTaxabilityReason::VatExempt => "vat_exempt",
+            LineItemsTaxAmountTaxabilityReason::ZeroRated => "zero_rated",
+        }
+    }
+}
+
+impl AsRef<str> for LineItemsTaxAmountTaxabilityReason {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for LineItemsTaxAmountTaxabilityReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for LineItemsTaxAmountTaxabilityReason {
+    fn default() -> Self {
+        Self::CustomerExempt
     }
 }
 
