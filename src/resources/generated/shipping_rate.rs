@@ -143,7 +143,7 @@ pub struct ShippingRateFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<ShippingRateCurrencyOption>>,
+    pub currency_options: Option<Map<Currency, ShippingRateCurrencyOption>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -360,7 +360,7 @@ pub struct CreateShippingRateFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<CreateShippingRateFixedAmountCurrencyOptions>>,
+    pub currency_options: Option<Map<Currency, CreateShippingRateFixedAmountCurrencyOptions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -369,7 +369,7 @@ pub struct UpdateShippingRateFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<UpdateShippingRateFixedAmountCurrencyOptions>>,
+    pub currency_options: Option<Map<Currency, UpdateShippingRateFixedAmountCurrencyOptions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

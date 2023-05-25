@@ -2727,8 +2727,12 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options:
-        Option<Map<CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions>>,
+    pub currency_options: Option<
+        Map<
+            Currency,
+            CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions,
+        >,
+    >,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

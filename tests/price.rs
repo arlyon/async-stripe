@@ -5,7 +5,7 @@ mod mock;
 #[test]
 #[cfg(feature = "blocking")]
 fn deserialize_currency_options() {
-    use stripe::{CurrencyOptionTaxBehavior, Price};
+    use stripe::{Currency, CurrencyOptionTaxBehavior, Price};
 
     let fixture = r#"
     {
@@ -58,11 +58,10 @@ fn deserialize_currency_options() {
     assert!(&price.currency_options.is_some());
 
     let currency_options = price.currency_options.unwrap();
-    let mut currency_options_keys = currency_options.keys().collect::<Vec<&String>>();
-    currency_options_keys.sort();
-    assert_eq!(vec!("eur", "usd"), currency_options_keys);
+    assert!(currency_options.contains_key(&Currency::USD));
+    assert!(currency_options.contains_key(&Currency::EUR));
 
-    let usd_option = currency_options.get("usd").unwrap();
+    let usd_option = currency_options.get(&Currency::USD).unwrap();
     assert!(usd_option.custom_unit_amount.is_none());
     assert_eq!(Some(14388), usd_option.unit_amount);
     assert_eq!(Some(CurrencyOptionTaxBehavior::Exclusive), usd_option.tax_behavior);

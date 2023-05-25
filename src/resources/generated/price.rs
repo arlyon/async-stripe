@@ -47,7 +47,7 @@ pub struct Price {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<CurrencyOption>>,
+    pub currency_options: Option<Map<Currency, CurrencyOption>>,
 
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -280,7 +280,7 @@ pub struct CreatePrice<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<CreatePriceCurrencyOptions>>,
+    pub currency_options: Option<Map<Currency, CreatePriceCurrencyOptions>>,
 
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -485,7 +485,7 @@ pub struct UpdatePrice<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<Option<Map<UpdatePriceCurrencyOptions>>>>,
+    pub currency_options: Option<Map<Currency, Option<Map<Currency, UpdatePriceCurrencyOptions>>>>,
 
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Expand::is_empty")]
