@@ -359,6 +359,7 @@ where
     }
 }
 
+pub type Map<T> = HashMap<String, T>;
 pub type Metadata = HashMap<String, String>;
 pub type Timestamp = i64;
 

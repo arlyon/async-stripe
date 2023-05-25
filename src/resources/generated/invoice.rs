@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::{CustomerId, InvoiceId, SubscriptionId};
 use crate::params::{
-    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+    Deleted, Expand, Expandable, List, Map, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{
     Account, Address, ApiErrors, Application, Charge, Currency, Customer, Discount,
@@ -1244,7 +1244,7 @@ pub struct CreateInvoiceShippingCostShippingRateDataFixedAmount {
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options:
-        Option<CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions>,
+        Option<Map<CreateInvoiceShippingCostShippingRateDataFixedAmountCurrencyOptions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

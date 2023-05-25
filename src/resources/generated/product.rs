@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::{ProductId, TaxCodeId};
 use crate::params::{
-    Deleted, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
+    Deleted, Expand, Expandable, List, Map, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{Currency, Price, TaxCode, UpTo};
 
@@ -509,7 +509,7 @@ pub struct CreateProductDefaultPriceData {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CreateProductDefaultPriceDataCurrencyOptions>,
+    pub currency_options: Option<Map<CreateProductDefaultPriceDataCurrencyOptions>>,
 
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
