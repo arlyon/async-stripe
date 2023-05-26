@@ -833,6 +833,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<CreateSetupIntentPaymentMethodDataWechatPay>,
+
+    /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<CreateSetupIntentPaymentMethodDataZip>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1027,6 +1031,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<UpdateSetupIntentPaymentMethodDataWechatPay>,
+
+    /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<UpdateSetupIntentPaymentMethodDataZip>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1276,6 +1284,9 @@ pub struct CreateSetupIntentPaymentMethodDataUsBankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodDataWechatPay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateSetupIntentPaymentMethodDataZip {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateSetupIntentPaymentMethodOptionsAcssDebit {
@@ -1570,6 +1581,9 @@ pub struct UpdateSetupIntentPaymentMethodDataUsBankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodDataWechatPay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateSetupIntentPaymentMethodDataZip {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateSetupIntentPaymentMethodOptionsAcssDebit {
@@ -2500,6 +2514,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     Sofort,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl CreateSetupIntentPaymentMethodDataType {
@@ -2534,6 +2549,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             CreateSetupIntentPaymentMethodDataType::Sofort => "sofort",
             CreateSetupIntentPaymentMethodDataType::UsBankAccount => "us_bank_account",
             CreateSetupIntentPaymentMethodDataType::WechatPay => "wechat_pay",
+            CreateSetupIntentPaymentMethodDataType::Zip => "zip",
         }
     }
 }
@@ -4150,6 +4166,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     Sofort,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl UpdateSetupIntentPaymentMethodDataType {
@@ -4184,6 +4201,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             UpdateSetupIntentPaymentMethodDataType::Sofort => "sofort",
             UpdateSetupIntentPaymentMethodDataType::UsBankAccount => "us_bank_account",
             UpdateSetupIntentPaymentMethodDataType::WechatPay => "wechat_pay",
+            UpdateSetupIntentPaymentMethodDataType::Zip => "zip",
         }
     }
 }
