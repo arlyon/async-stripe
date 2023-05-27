@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::{CouponId, CustomerId, PromotionCodeId};
 use crate::params::{
-    Expand, Expandable, List, Map, Metadata, Object, Paginable, RangeQuery, Timestamp,
+    CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{Coupon, Currency, Customer};
 
@@ -104,7 +104,7 @@ pub struct PromotionCodesResourceRestrictions {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<Currency, PromotionCodeCurrencyOption>>,
+    pub currency_options: Option<CurrencyMap<PromotionCodeCurrencyOption>>,
 
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
     pub first_time_transaction: bool,
@@ -236,7 +236,7 @@ pub struct UpdatePromotionCodeRestrictions {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<Currency, UpdatePromotionCodeRestrictionsCurrencyOptions>>,
+    pub currency_options: Option<CurrencyMap<UpdatePromotionCodeRestrictionsCurrencyOptions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

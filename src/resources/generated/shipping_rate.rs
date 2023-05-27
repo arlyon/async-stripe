@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use crate::client::{Client, Response};
 use crate::ids::{ShippingRateId, TaxCodeId};
 use crate::params::{
-    Expand, Expandable, List, Map, Metadata, Object, Paginable, RangeQuery, Timestamp,
+    CurrencyMap, Expand, Expandable, List, Metadata, Object, Paginable, RangeQuery, Timestamp,
 };
 use crate::resources::{Currency, TaxCode};
 
@@ -143,7 +143,7 @@ pub struct ShippingRateFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<Currency, ShippingRateCurrencyOption>>,
+    pub currency_options: Option<CurrencyMap<ShippingRateCurrencyOption>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -360,7 +360,7 @@ pub struct CreateShippingRateFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<Currency, CreateShippingRateFixedAmountCurrencyOptions>>,
+    pub currency_options: Option<CurrencyMap<CreateShippingRateFixedAmountCurrencyOptions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -369,7 +369,7 @@ pub struct UpdateShippingRateFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<Map<Currency, UpdateShippingRateFixedAmountCurrencyOptions>>,
+    pub currency_options: Option<CurrencyMap<UpdateShippingRateFixedAmountCurrencyOptions>>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
