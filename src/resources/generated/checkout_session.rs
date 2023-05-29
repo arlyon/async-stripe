@@ -6205,6 +6205,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Sofort,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl CreateCheckoutSessionPaymentMethodTypes {
@@ -6240,6 +6241,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             CreateCheckoutSessionPaymentMethodTypes::Sofort => "sofort",
             CreateCheckoutSessionPaymentMethodTypes::UsBankAccount => "us_bank_account",
             CreateCheckoutSessionPaymentMethodTypes::WechatPay => "wechat_pay",
+            CreateCheckoutSessionPaymentMethodTypes::Zip => "zip",
         }
     }
 }

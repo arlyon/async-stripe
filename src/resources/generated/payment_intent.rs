@@ -780,6 +780,9 @@ pub struct PaymentIntentPaymentMethodOptions {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<PaymentMethodOptionsWechatPay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<PaymentMethodOptionsZip>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1407,6 +1410,17 @@ pub struct PaymentMethodOptionsWechatPay {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodOptionsZip {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<PaymentMethodOptionsZipSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TransferData {
     /// Amount intended to be collected by this PaymentIntent.
     ///
@@ -2003,6 +2017,10 @@ pub struct CreatePaymentIntentPaymentMethodData {
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<CreatePaymentIntentPaymentMethodDataWechatPay>,
+
+    /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<CreatePaymentIntentPaymentMethodDataZip>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2134,6 +2152,10 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<CreatePaymentIntentPaymentMethodOptionsWechatPay>,
+
+    /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<CreatePaymentIntentPaymentMethodOptionsZip>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2332,6 +2354,10 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<UpdatePaymentIntentPaymentMethodDataWechatPay>,
+
+    /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<UpdatePaymentIntentPaymentMethodDataZip>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2463,6 +2489,10 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<UpdatePaymentIntentPaymentMethodOptionsWechatPay>,
+
+    /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<UpdatePaymentIntentPaymentMethodOptionsZip>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2711,6 +2741,9 @@ pub struct CreatePaymentIntentPaymentMethodDataUsBankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataWechatPay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataZip {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
@@ -3317,6 +3350,17 @@ pub struct CreatePaymentIntentPaymentMethodOptionsWechatPay {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsZip {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentIntentShippingAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3538,6 +3582,9 @@ pub struct UpdatePaymentIntentPaymentMethodDataUsBankAccount {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataWechatPay {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataZip {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
@@ -4141,6 +4188,17 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsWechatPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsZip {
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// Providing this parameter will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    ///
+    /// If no Customer was provided, the payment method can still be [attached](https://stripe.com/docs/api/payment_methods/attach) to a Customer after the transaction completes.  When processing card payments, Stripe also uses `setup_future_usage` to dynamically optimize your payment flow and comply with regional legislation and network rules, such as [SCA](https://stripe.com/docs/strong-customer-authentication).  If `setup_future_usage` is already set and you are performing a request using a publishable key, you may only update the value from `on_session` to `off_session`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -5067,6 +5125,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
     Sofort,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl CreatePaymentIntentPaymentMethodDataType {
@@ -5101,6 +5160,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
             CreatePaymentIntentPaymentMethodDataType::Sofort => "sofort",
             CreatePaymentIntentPaymentMethodDataType::UsBankAccount => "us_bank_account",
             CreatePaymentIntentPaymentMethodDataType::WechatPay => "wechat_pay",
+            CreatePaymentIntentPaymentMethodDataType::Zip => "zip",
         }
     }
 }
@@ -7443,6 +7503,38 @@ impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsWechatPayS
     }
 }
 
+/// An enum representing the possible values of an `CreatePaymentIntentPaymentMethodOptionsZip`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    None,
+}
+
+impl CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `FundingInstructionsBankTransferFinancialAddress`'s `supported_networks` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -9663,6 +9755,38 @@ impl std::default::Default for PaymentMethodOptionsWechatPaySetupFutureUsage {
     }
 }
 
+/// An enum representing the possible values of an `PaymentMethodOptionsZip`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum PaymentMethodOptionsZipSetupFutureUsage {
+    None,
+}
+
+impl PaymentMethodOptionsZipSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            PaymentMethodOptionsZipSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for PaymentMethodOptionsZipSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for PaymentMethodOptionsZipSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for PaymentMethodOptionsZipSetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 /// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodDataEps`'s `bank` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -10110,6 +10234,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
     Sofort,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl UpdatePaymentIntentPaymentMethodDataType {
@@ -10144,6 +10269,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
             UpdatePaymentIntentPaymentMethodDataType::Sofort => "sofort",
             UpdatePaymentIntentPaymentMethodDataType::UsBankAccount => "us_bank_account",
             UpdatePaymentIntentPaymentMethodDataType::WechatPay => "wechat_pay",
+            UpdatePaymentIntentPaymentMethodDataType::Zip => "zip",
         }
     }
 }
@@ -12481,6 +12607,38 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetup
     }
 }
 impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
+/// An enum representing the possible values of an `UpdatePaymentIntentPaymentMethodOptionsZip`'s `setup_future_usage` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    None,
+}
+
+impl UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage::None => "none",
+        }
+    }
+}
+
+impl AsRef<str> for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
     fn default() -> Self {
         Self::None
     }

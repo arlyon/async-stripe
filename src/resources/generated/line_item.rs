@@ -71,7 +71,7 @@ pub struct InvoiceLineItem {
     pub proration: bool,
 
     /// Additional details for proration line items.
-    pub proration_details: Option<InvoicesLineItemsProrationDetails>,
+    pub proration_details: Option<InvoicesResourceLineItemsProrationDetails>,
 
     /// The quantity of the subscription, if the line item is a subscription or a proration.
     pub quantity: Option<u64>,
@@ -141,13 +141,13 @@ pub struct TaxAmount {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InvoicesLineItemsProrationDetails {
+pub struct InvoicesResourceLineItemsProrationDetails {
     /// For a credit proration `line_item`, the original debit line_items to which the credit proration applies.
-    pub credited_items: Option<InvoicesLineItemsCreditedItems>,
+    pub credited_items: Option<InvoicesResourceLineItemsCreditedItems>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct InvoicesLineItemsCreditedItems {
+pub struct InvoicesResourceLineItemsCreditedItems {
     /// Invoice containing the credited invoice line items.
     pub invoice: String,
 

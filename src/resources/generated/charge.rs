@@ -225,10 +225,10 @@ impl Charge {
         client.get_query("/charges", &params)
     }
 
-    /// To charge a credit card or other payment source, you create a `Charge` object.
+    /// Use the [Payment Intents API](https://stripe.com/docs/api/payment_intents) to initiate a new payment instead
+    /// of using this method.
     ///
-    /// If your API key is in test mode, the supplied payment source (e.g., card) won’t actually be charged, although everything else will occur as if in live mode.
-    /// (Stripe assumes that the charge would have completed successfully).
+    /// Confirmation of the PaymentIntent creates the `Charge` object used to request payment, so this method is limited to legacy integrations.
     pub fn create(client: &Client, params: CreateCharge<'_>) -> Response<Charge> {
         client.post_form("/charges", &params)
     }
@@ -497,6 +497,9 @@ pub struct PaymentMethodDetails {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<PaymentMethodDetailsWechatPay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<PaymentMethodDetailsZip>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1421,6 +1424,9 @@ pub struct PaymentMethodDetailsWechatPay {
     /// Transaction ID of this particular WeChat Pay transaction.
     pub transaction_id: Option<String>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodDetailsZip {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaypalSellerProtection {

@@ -145,6 +145,9 @@ pub struct PaymentMethod {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<PaymentMethodWechatPay>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<PaymentMethodZip>,
 }
 
 impl PaymentMethod {
@@ -751,6 +754,9 @@ pub struct PaymentMethodUsBankAccountBlocked {
 pub struct PaymentMethodWechatPay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct PaymentMethodZip {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct SepaDebitGeneratedFrom {
     /// The ID of the Charge that generated this PaymentMethod, if any.
     pub charge: Option<Expandable<Charge>>,
@@ -942,6 +948,10 @@ pub struct CreatePaymentMethod<'a> {
     /// If this is an `wechat_pay` PaymentMethod, this hash contains details about the wechat_pay payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<CreatePaymentMethodWechatPay>,
+
+    /// If this is a `zip` PaymentMethod, this hash contains details about the Zip payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<CreatePaymentMethodZip>,
 }
 
 impl<'a> CreatePaymentMethod<'a> {
@@ -985,6 +995,7 @@ impl<'a> CreatePaymentMethod<'a> {
             type_: Default::default(),
             us_bank_account: Default::default(),
             wechat_pay: Default::default(),
+            zip: Default::default(),
         }
     }
 }
@@ -1119,6 +1130,12 @@ pub struct UpdatePaymentMethod<'a> {
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<UpdatePaymentMethodUsBankAccount>,
+
+    /// This is a legacy parameter that will be removed in the future.
+    ///
+    /// It is a hash that does not accept any keys.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip: Option<UpdatePaymentMethodZip>,
 }
 
 impl<'a> UpdatePaymentMethod<'a> {
@@ -1137,6 +1154,7 @@ impl<'a> UpdatePaymentMethod<'a> {
             metadata: Default::default(),
             sepa_debit: Default::default(),
             us_bank_account: Default::default(),
+            zip: Default::default(),
         }
     }
 }
@@ -1318,6 +1336,9 @@ pub struct CreatePaymentMethodUsBankAccount {
 pub struct CreatePaymentMethodWechatPay {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreatePaymentMethodZip {}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdatePaymentMethodAcssDebit {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1347,6 +1368,9 @@ pub struct UpdatePaymentMethodUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<UpdatePaymentMethodUsBankAccountAccountHolderType>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdatePaymentMethodZip {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreatePaymentMethodKlarnaDob {
@@ -2359,6 +2383,7 @@ pub enum PaymentMethodType {
     Sofort,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl PaymentMethodType {
@@ -2396,6 +2421,7 @@ impl PaymentMethodType {
             PaymentMethodType::Sofort => "sofort",
             PaymentMethodType::UsBankAccount => "us_bank_account",
             PaymentMethodType::WechatPay => "wechat_pay",
+            PaymentMethodType::Zip => "zip",
         }
     }
 }
@@ -2452,6 +2478,7 @@ pub enum PaymentMethodTypeFilter {
     Sofort,
     UsBankAccount,
     WechatPay,
+    Zip,
 }
 
 impl PaymentMethodTypeFilter {
@@ -2488,6 +2515,7 @@ impl PaymentMethodTypeFilter {
             PaymentMethodTypeFilter::Sofort => "sofort",
             PaymentMethodTypeFilter::UsBankAccount => "us_bank_account",
             PaymentMethodTypeFilter::WechatPay => "wechat_pay",
+            PaymentMethodTypeFilter::Zip => "zip",
         }
     }
 }

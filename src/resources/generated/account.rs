@@ -71,7 +71,7 @@ pub struct Account {
 
     /// An email address associated with the account.
     ///
-    /// You can treat this as metadata: it is not used for authentication or messaging account holders.
+    /// It's not used for authentication and Stripe doesn't market to this field without explicit approval from the platform.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
 
@@ -342,6 +342,10 @@ pub struct AccountCapabilities {
     /// The status of the US bank account ACH payments capability of the account, or whether the account can directly process US bank account charges.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account_ach_payments: Option<AccountCapabilitiesUsBankAccountAchPayments>,
+
+    /// The status of the Zip capability of the account, or whether the account can directly process Zip charges.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip_payments: Option<AccountCapabilitiesZipPayments>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1358,6 +1362,10 @@ pub struct CreateAccountCapabilities {
     /// The us_bank_account_ach_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account_ach_payments: Option<CreateAccountCapabilitiesUsBankAccountAchPayments>,
+
+    /// The zip_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip_payments: Option<CreateAccountCapabilitiesZipPayments>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -1640,6 +1648,10 @@ pub struct UpdateAccountCapabilities {
     /// The us_bank_account_ach_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account_ach_payments: Option<UpdateAccountCapabilitiesUsBankAccountAchPayments>,
+
+    /// The zip_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip_payments: Option<UpdateAccountCapabilitiesZipPayments>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -2116,6 +2128,16 @@ pub struct CreateAccountCapabilitiesUsBankAccountAchPayments {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateAccountCapabilitiesZipPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CreateAccountDocumentsBankAccountOwnershipVerification {
     /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2583,6 +2605,16 @@ pub struct UpdateAccountCapabilitiesTreasury {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct UpdateAccountCapabilitiesUsBankAccountAchPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    ///
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct UpdateAccountCapabilitiesZipPayments {
     /// Passing true requests the capability for the account, if it is not already requested.
     ///
     /// A requested capability may not immediately become active.
@@ -3722,6 +3754,42 @@ impl std::fmt::Display for AccountCapabilitiesUsBankAccountAchPayments {
     }
 }
 impl std::default::Default for AccountCapabilitiesUsBankAccountAchPayments {
+    fn default() -> Self {
+        Self::Active
+    }
+}
+
+/// An enum representing the possible values of an `AccountCapabilities`'s `zip_payments` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum AccountCapabilitiesZipPayments {
+    Active,
+    Inactive,
+    Pending,
+}
+
+impl AccountCapabilitiesZipPayments {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            AccountCapabilitiesZipPayments::Active => "active",
+            AccountCapabilitiesZipPayments::Inactive => "inactive",
+            AccountCapabilitiesZipPayments::Pending => "pending",
+        }
+    }
+}
+
+impl AsRef<str> for AccountCapabilitiesZipPayments {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for AccountCapabilitiesZipPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for AccountCapabilitiesZipPayments {
     fn default() -> Self {
         Self::Active
     }
