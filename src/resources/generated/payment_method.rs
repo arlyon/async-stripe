@@ -373,6 +373,12 @@ pub struct CardPresent {
     /// You could use this attribute to get a sense of the international breakdown of cards you've collected.
     pub country: Option<String>,
 
+    /// A high-level description of the type of cards issued in this range.
+    ///
+    /// (For internal use only and not typically available in standard API requests.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
     /// Two-digit number representing the card's expiration month.
     pub exp_month: i64,
 
@@ -389,6 +395,18 @@ pub struct CardPresent {
     ///
     /// Can be `credit`, `debit`, `prepaid`, or `unknown`.
     pub funding: Option<String>,
+
+    /// Issuer identification number of the card.
+    ///
+    /// (For internal use only and not typically available in standard API requests.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iin: Option<String>,
+
+    /// The name of the card's issuing bank.
+    ///
+    /// (For internal use only and not typically available in standard API requests.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<String>,
 
     /// The last four digits of the card.
     pub last4: Option<String>,
@@ -574,6 +592,12 @@ pub struct PaymentMethodInteracPresent {
     /// You could use this attribute to get a sense of the international breakdown of cards you've collected.
     pub country: Option<String>,
 
+    /// A high-level description of the type of cards issued in this range.
+    ///
+    /// (For internal use only and not typically available in standard API requests.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
     /// Two-digit number representing the card's expiration month.
     pub exp_month: i64,
 
@@ -590,6 +614,18 @@ pub struct PaymentMethodInteracPresent {
     ///
     /// Can be `credit`, `debit`, `prepaid`, or `unknown`.
     pub funding: Option<String>,
+
+    /// Issuer identification number of the card.
+    ///
+    /// (For internal use only and not typically available in standard API requests.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iin: Option<String>,
+
+    /// The name of the card's issuing bank.
+    ///
+    /// (For internal use only and not typically available in standard API requests.).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<String>,
 
     /// The last four digits of the card.
     pub last4: Option<String>,
@@ -657,6 +693,13 @@ pub struct PaymentMethodPaynow {}
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentMethodPaypal {
+    /// Owner's email.
+    ///
+    /// Values are provided by PayPal directly (if supported) at the time of authorization or settlement.
+    /// They cannot be set or mutated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payer_email: Option<String>,
+
     /// PayPal account PayerID.
     ///
     /// This identifier uniquely identifies the PayPal customer.
