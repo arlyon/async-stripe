@@ -26,7 +26,6 @@ pub fn id_prefixes() -> HashMap<&'static str, &'static str> {
         ("billing_portal.session", "bps"),
         ("billing_portal.configuration", "bpc"),
         ("payment_intent", "pi"),
-        ("usage_record_summary", "urs"),
         ("test_helpers.test_clock", "clock"),
         ("price", "price"),
         ("invoice", "in"),
@@ -44,6 +43,9 @@ pub fn id_prefixes() -> HashMap<&'static str, &'static str> {
         ("setup_attempt", "setatt"),
         ("balance_transaction", "txn"),
         ("subscription", "sub"),
+        ("credit_note", "cn"),
+        ("credit_note_line_item", "cnli"),
+        ("customer_balance_transaction", "cbtxn"),
         ("subscription_item", "si"),
         ("event", "evt"),
         ("setup_intent", "seti"),
@@ -70,8 +72,9 @@ pub fn id_prefixes() -> HashMap<&'static str, &'static str> {
 pub fn complex_id_prefixes() -> HashMap<&'static str, &'static [&'static str]> {
     // NB: done differently with temporary here because of type inference. Having to specify
     // length is also annoying but `from` doesn't accept slices
-    let prefixes: [(&'static str, &'static [&'static str]); 5] = [
+    let prefixes: [(&'static str, &'static [&'static str]); 6] = [
         ("refund", &["re", "pyr"]),
+        ("usage_record_summary", &["urs", "sis"]),
         ("payment_method", &["pm", "card", "src", "ba"]),
         ("dispute", &["dp", "du"]),
         ("bank_account", &["ba", "card"]),

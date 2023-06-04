@@ -78,14 +78,14 @@ fn main() -> Result<()> {
     } else {
         UrlFinder::stub()
     };
-    log::info!("Initialized URL finder");
+    tracing::info!("Initialized URL finder");
 
     let codegen = CodeGen::new(spec, url_finder)?;
 
     if args.graph {
         let graph = codegen.get_graphviz_dep_graph();
         File::create("graph.txt")?.write_all(graph.as_ref())?;
-        log::info!("Wrote graph to graph.txt");
+        tracing::info!("Wrote graph to graph.txt");
         return Ok(());
     }
 

@@ -150,7 +150,7 @@ pub fn parse_requests(
     let mut req_details = Vec::with_capacity(operations.len());
     for op in &operations {
         if should_skip_request(op) {
-            log::warn!("Skipping request at path {} with name {}", op.path, op.method_name);
+            tracing::warn!("Skipping request at path {} with name {}", op.path, op.method_name);
             continue;
         }
         req_details.push(get_req_details(op, spec)?);
