@@ -12,14 +12,23 @@ pub enum StripeError {
     Stripe(#[from] RequestError),
     #[error("error serializing or deserializing a querystring: {0}")]
     QueryStringSerialize(#[from] serde_path_to_error::Error<serde_qs::Error>),
-    #[error("error serializing or deserializing a request")]
+    #[error("error serializing a request")]
     JSONSerialize(#[from] serde_path_to_error::Error<serde_json::Error>),
+    #[error("error deserializing a request: {0}")]
+    JSONDeserialize(String),
     #[error("attempted to access an unsupported version of the api")]
     UnsupportedVersion,
     #[error("error communicating with stripe: {0}")]
     ClientError(String),
     #[error("timeout communicating with stripe")]
     Timeout,
+}
+
+#[cfg(feature = "min-ser")]
+impl From<miniserde::Error> for StripeError {
+    fn from(_: miniserde::Error) -> Self {
+        Self::JSONDeserialize("Could not deserialize".into())
+    }
 }
 
 #[cfg(feature = "hyper")]

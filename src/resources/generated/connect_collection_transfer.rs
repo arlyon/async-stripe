@@ -1,40 +1,64 @@
-// ======================================
-// This file was automatically generated.
-// ======================================
-
-use serde::{Deserialize, Serialize};
-
-use crate::ids::ConnectCollectionTransferId;
-use crate::params::{Expandable, Object};
-use crate::resources::{Account, Currency};
-
-/// The resource representing a Stripe "ConnectCollectionTransfer".
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct ConnectCollectionTransfer {
-    /// Unique identifier for the object.
-    pub id: ConnectCollectionTransferId,
-
     /// Amount transferred, in %s.
     pub amount: i64,
-
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
-    pub currency: Currency,
-
+    pub currency: crate::Currency,
     /// ID of the account that funds are being collected for.
-    pub destination: Expandable<Account>,
-
+    pub destination: crate::Expandable<crate::account::Account>,
+    /// Unique identifier for the object.
+    pub id: crate::connect_collection_transfer::ConnectCollectionTransferId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+    /// String representing the object's type.
+    ///
+    /// Objects of the same type share the same value.
+    pub object: ConnectCollectionTransferObject,
+}
+#[cfg(feature = "min-ser")]
+impl miniserde::Deserialize for ConnectCollectionTransfer {
+    fn begin(_out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        todo!()
+    }
 }
 
-impl Object for ConnectCollectionTransfer {
-    type Id = ConnectCollectionTransferId;
+/// String representing the object's type.
+///
+/// Objects of the same type share the same value.
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
+#[cfg_attr(feature = "min-ser", derive(miniserde::Deserialize))]
+#[serde(rename_all = "snake_case")]
+pub enum ConnectCollectionTransferObject {
+    ConnectCollectionTransfer,
+}
+
+impl ConnectCollectionTransferObject {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::ConnectCollectionTransfer => "connect_collection_transfer",
+        }
+    }
+}
+
+impl AsRef<str> for ConnectCollectionTransferObject {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for ConnectCollectionTransferObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl crate::Object for ConnectCollectionTransfer {
+    type Id = crate::connect_collection_transfer::ConnectCollectionTransferId;
     fn id(&self) -> Self::Id {
         self.id.clone()
     }
-    fn object(&self) -> &'static str {
-        "connect_collection_transfer"
-    }
 }
+crate::def_id!(ConnectCollectionTransferId, "connct_");

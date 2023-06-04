@@ -62,8 +62,11 @@
 // https://github.com/rust-lang/rust/issues/68838
 
 mod client;
+mod currency;
+pub(crate) mod deser;
 mod error;
 mod ids;
+mod pagination;
 mod params;
 mod resources;
 
@@ -75,9 +78,9 @@ mod resources;
 // See https://github.com/wyyerd/stripe-rs/issues/24#issuecomment-451514187
 // See https://github.com/rust-lang/rust/issues/44265
 pub use crate::client::*;
+pub use crate::currency::*;
 pub use crate::error::{ErrorCode, ErrorType, RequestError, StripeError, WebhookError};
 pub use crate::ids::*;
-pub use crate::params::{
-    Expandable, Headers, IdOrCreate, List, Metadata, Object, RangeBounds, RangeQuery, Timestamp,
-};
+pub use crate::pagination::*;
+pub use crate::params::{Headers, IdOrCreate, Metadata, RangeBoundsTs, RangeQueryTs, Timestamp};
 pub use crate::resources::*;

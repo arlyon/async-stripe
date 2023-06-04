@@ -7,6 +7,7 @@ publish = false
 
 [dependencies]
 heck = "0.3"
+petgraph = "0.6.2"
 lazy_static = "1"
 reqwest = { version = "0.11", features = ["blocking", "json"] }
 regex = "1"

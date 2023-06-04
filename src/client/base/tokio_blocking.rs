@@ -1,7 +1,7 @@
 use std::{sync::Arc, time::Duration};
 
 use http_types::Request;
-use serde::de::DeserializeOwned;
+use miniserde::Deserialize;
 
 use crate::client::base::tokio::TokioClient;
 use crate::client::request_strategy::RequestStrategy;
@@ -43,7 +43,7 @@ impl TokioBlockingClient {
         TokioBlockingClient { inner, runtime: Arc::new(runtime) }
     }
 
-    pub fn execute<T: DeserializeOwned + Send + 'static>(
+    pub fn execute<T: Deserialize + Send + 'static>(
         &self,
         request: Request,
         strategy: &RequestStrategy,

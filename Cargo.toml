@@ -31,31 +31,9 @@ features = ["runtime-tokio-hyper"]
 name = "stripe"
 
 [features]
-default = ["full", "webhook-events", "uuid", "stream"]
-full = [
-  "checkout",
-  "billing",
-  "connect",
-  "fraud",
-  "issuing",
-  "orders",
-  "sigma",
-  "terminal",
-  "webhook-endpoints",
-]
+default = ["webhook-events", "uuid", "stream"]
 
 stream = []
-
-# stripe feature groups
-checkout = ["billing"]
-billing = []
-connect = []
-fraud = []
-issuing = []
-orders = []
-sigma = []
-terminal = []
-webhook-endpoints = []
 
 # deserialize events from webhooks
 webhook-events = ["events", "hmac", "sha2", "chrono", "hex"]
@@ -116,6 +94,7 @@ hyper-client = ["hyper", "http-types/hyperium_http"]
 
 hyper-rustls-native = ["hyper-rustls", "hyper-rustls/native-tokio"]
 hyper-rustls-webpki = ["hyper-rustls", "hyper-rustls/webpki-tokio"]
+min-ser = ["miniserde"]
 
 [dependencies]
 async-std = {version = "1.8,<1.11", optional = true}
@@ -126,6 +105,7 @@ http-types = { version = "2.12.0", default-features = false }
 hyper = { version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true }
 hyper-tls = { version = "0.5", optional = true }
 hyper-rustls = { version = "0.23", default-features = false, features = ["http1", "http2", "tls12", "logging"], optional = true }
+miniserde = { version = "0.1.30", optional = true }
 serde = {version = ">=1.0.79", features = ["derive"] } # we use `serde(other)` which was introduced in 1.0.79
 serde_json = "1.0"
 serde_qs = "0.10.1"
@@ -133,7 +113,6 @@ serde_path_to_error = "0.1.8"
 smol_str = "0.1"
 surf = { version = "2.1", optional = true }
 tokio = { version = "1.2", optional = true }
-smart-default = "0.6.0"
 uuid = { version = "0.8", optional=true, features=["v4"] }
 
 # stream for lists

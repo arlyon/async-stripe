@@ -4,10 +4,10 @@ use std::pin::Pin;
 use http_types::{Request, StatusCode};
 use hyper::http;
 use hyper::{client::HttpConnector, Body};
-use serde::de::DeserializeOwned;
 use tokio::time::sleep;
 
 use crate::client::request_strategy::{Outcome, RequestStrategy};
+use crate::deser::StripeDeserialize;
 use crate::error::{ErrorResponse, StripeError};
 
 #[cfg(feature = "hyper-rustls-native")]
@@ -83,7 +83,7 @@ impl TokioClient {
         }
     }
 
-    pub fn execute<T: DeserializeOwned + Send + 'static>(
+    pub fn execute<T: StripeDeserialize + Send + 'static>(
         &self,
         request: Request,
         strategy: &RequestStrategy,
@@ -95,8 +95,9 @@ impl TokioClient {
 
         Box::pin(async move {
             let bytes = send_inner(&client, request, &strategy).await?;
-            let json_deserializer = &mut serde_json::Deserializer::from_slice(&bytes);
-            serde_path_to_error::deserialize(json_deserializer).map_err(StripeError::from)
+            let str = std::str::from_utf8(bytes.as_ref())
+                .map_err(|_| StripeError::JSONDeserialize("Response was not valid UTF-8".into()))?;
+            T::deserialize(str)
         })
     }
 }

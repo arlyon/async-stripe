@@ -1,2 +1,5 @@
 cache/
 out/
+# For any graphviz files
+*.svg
+graph.txt
