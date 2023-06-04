@@ -77,7 +77,7 @@ impl crate::quote::Quote {
     ) -> Response<crate::List<crate::line_item::LineItem>> {
         client.get_query(&format!("/quotes/{quote}/line_items", quote = quote), params)
     }
-    /// When retrieving a quote, there is an includable <a href="https://stripe.com/docs/api/quotes/object#quote_object-computed-upfront-line_items">**computed.upfront.line_items**</a> property containing the first handful of those items.
+    /// When retrieving a quote, there is an includable <a href="<https://stripe.com/docs/api/quotes/object#quote_object-computed-upfront-line_items>">**computed.upfront.line_items**</a> property containing the first handful of those items.
     ///
     /// There is also a URL where you can retrieve the full (paginated) list of upfront line items.
     pub fn list_computed_upfront_line_items(
