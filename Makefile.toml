@@ -3,11 +3,6 @@ cwd = "openapi"
 command = "rm"
 args = ["-rf", "spec3.sdk.json", "out"]
 
-[tasks.openapi-delete-out]
-cwd = "openapi"
-command = "rm"
-args = ["-rf", "out"]
-
 # verifies if all the apis are exported, and reports which are missing
 [tasks.verify]
 script = '''
@@ -34,7 +29,6 @@ rg -N --no-filename -i '^pub (struct|enum) ([A-Z][a-zA-z0-9]+).*?$'  src/resourc
 cwd = "openapi"
 command = "cargo"
 args = ["run", "spec3.sdk.json"]
-dependencies = ["openapi-delete-out"]
 
 [tasks.openapi-generate]
 cwd = "openapi"

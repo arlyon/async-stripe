@@ -35,6 +35,12 @@ impl UrlFinder {
         }
     }
 
+    /// Create a stub `UrlFinder` which does not require a network request. Only meant to
+    /// be used for testing since no `doc_url`'s will be found.
+    pub fn stub() -> Self {
+        Self { flattened_api_sections: serde_json::Map::new() }
+    }
+
     pub fn url_for_object(&self, object: &str) -> Option<String> {
         let object_name = object.replace('.', "_").to_snake_case();
         let object_names = [format!("{}_object", object_name), object_name];
@@ -48,7 +54,6 @@ impl UrlFinder {
                 return Some(format!("https://stripe.com/docs/api{}", path));
             }
         }
-
         tracing::warn!("{} not in html", object);
         None
     }

@@ -3,7 +3,7 @@ use std::pin::Pin;
 
 use async_std::task::sleep;
 use http_types::{Request, StatusCode};
-use serde::de::DeserializeOwned;
+use miniserde::Deserialize;
 
 use crate::client::request_strategy::{Outcome, RequestStrategy};
 use crate::error::{ErrorResponse, StripeError};
@@ -33,7 +33,7 @@ impl AsyncStdClient {
         Self { client: surf::Client::new() }
     }
 
-    pub fn execute<T: DeserializeOwned + Send + 'static>(
+    pub fn execute<T: Deserialize + Send + 'static>(
         &self,
         request: Request,
         strategy: &RequestStrategy,

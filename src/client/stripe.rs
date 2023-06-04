@@ -1,6 +1,9 @@
 use http_types::{Body, Method, Request, Url};
-use serde::{de::DeserializeOwned, Serialize};
+use serde::Serialize;
 
+use crate::account::AccountId;
+use crate::application::ApplicationId;
+use crate::deser::StripeDeserialize;
 use crate::{
     client::{request_strategy::RequestStrategy, BaseClient, Response},
     config::err,
@@ -82,13 +85,12 @@ impl Client {
     }
 
     /// Make a `GET` http request with just a path
-    pub fn get<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
-        let url = self.url(path);
-        self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy)
+    pub fn get<T: StripeDeserialize + Send + 'static>(&self, path: &str) -> Response<T> {
+        self.send(path, Method::Get)
     }
 
     /// Make a `GET` http request with url query parameters
-    pub fn get_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
+    pub fn get_query<T: StripeDeserialize + Send + 'static, P: Serialize>(
         &self,
         path: &str,
         params: P,
@@ -100,39 +102,52 @@ impl Client {
         self.client.execute::<T>(self.create_request(Method::Get, url), &self.strategy)
     }
 
-    /// Make a `DELETE` http request with just a path
-    pub fn delete<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
-        let url = self.url(path);
-        self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy)
-    }
-
-    /// Make a `DELETE` http request with url query parameters
-    pub fn delete_query<T: DeserializeOwned + Send + 'static, P: Serialize>(
+    pub fn send<T: StripeDeserialize + Send + 'static>(
         &self,
         path: &str,
-        params: P,
+        method: Method,
     ) -> Response<T> {
-        let url = match self.url_with_params(path, params) {
-            Err(e) => return err(e),
-            Ok(ok) => ok,
-        };
-        self.client.execute::<T>(self.create_request(Method::Delete, url), &self.strategy)
+        let url = self.url(path);
+        self.client.execute::<T>(self.create_request(method, url), &self.strategy)
+    }
+
+    /// Make a `DELETE` http request with just a path
+    pub fn delete<T: StripeDeserialize + Send + 'static>(&self, path: &str) -> Response<T> {
+        self.send(path, Method::Delete)
     }
 
     /// Make a `POST` http request with just a path
-    pub fn post<T: DeserializeOwned + Send + 'static>(&self, path: &str) -> Response<T> {
-        let url = self.url(path);
-        self.client.execute::<T>(self.create_request(Method::Post, url), &self.strategy)
+    pub fn post<T: StripeDeserialize + Send + 'static>(&self, path: &str) -> Response<T> {
+        self.send(path, Method::Post)
     }
 
     /// Make a `POST` http request with urlencoded body
-    pub fn post_form<T: DeserializeOwned + Send + 'static, F: Serialize>(
+    pub fn post_form<T: StripeDeserialize + Send + 'static, F: Serialize>(
         &self,
         path: &str,
         form: F,
     ) -> Response<T> {
+        self.send_form(path, form, Method::Post)
+    }
+
+    /// Make a `DELETE` http request with urlencoded body
+    pub fn delete_form<T: StripeDeserialize + Send + 'static, F: Serialize>(
+        &self,
+        path: &str,
+        form: F,
+    ) -> Response<T> {
+        self.send_form(path, form, Method::Delete)
+    }
+
+    /// Make an http request with urlencoded body
+    pub fn send_form<T: StripeDeserialize + Send + 'static, F: Serialize>(
+        &self,
+        path: &str,
+        form: F,
+        method: Method,
+    ) -> Response<T> {
         let url = self.url(path);
-        let mut req = self.create_request(Method::Post, url);
+        let mut req = self.create_request(method, url);
 
         let mut params_buffer = Vec::new();
         let qs_ser = &mut serde_qs::Serializer::new(&mut params_buffer);
