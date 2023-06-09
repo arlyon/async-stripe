@@ -512,7 +512,7 @@ pub struct CheckoutCustomerBalanceBankTransferPaymentMethodOptions {
     pub requested_address_types:
         Option<Vec<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes>>,
 
-    /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: Option<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType>,
 }
@@ -821,6 +821,12 @@ pub struct PaymentPagesCheckoutSessionCustomFieldsLabel {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomFieldsNumeric {
+    /// The maximum character length constraint for the customer's input.
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    pub minimum_length: Option<i64>,
+
     /// The value entered by the customer, containing only digits.
     pub value: Option<String>,
 }
@@ -840,6 +846,12 @@ pub struct PaymentPagesCheckoutSessionCustomFieldsOption {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct PaymentPagesCheckoutSessionCustomFieldsText {
+    /// The maximum character length constraint for the customer's input.
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    pub minimum_length: Option<i64>,
+
     /// The value entered by the customer.
     pub value: Option<String>,
 }
@@ -1399,11 +1411,19 @@ pub struct CreateCheckoutSessionCustomFields {
     /// The label for the field, displayed to the customer.
     pub label: CreateCheckoutSessionCustomFieldsLabel,
 
+    /// Configuration for `type=numeric` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub numeric: Option<CreateCheckoutSessionCustomFieldsNumeric>,
+
     /// Whether the customer is required to complete the field before completing the Checkout Session.
     ///
     /// Defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+
+    /// Configuration for `type=text` fields.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<CreateCheckoutSessionCustomFieldsText>,
 
     /// The type of the field.
     #[serde(rename = "type")]
@@ -1876,6 +1896,28 @@ pub struct CreateCheckoutSessionCustomFieldsLabel {
     /// The type of the label.
     #[serde(rename = "type")]
     pub type_: CreateCheckoutSessionCustomFieldsLabelType,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomFieldsNumeric {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CreateCheckoutSessionCustomFieldsText {
+    /// The maximum character length constraint for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum_length: Option<i64>,
+
+    /// The minimum character length requirement for the customer's input.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum_length: Option<i64>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -3260,20 +3302,24 @@ impl std::default::Default for CheckoutCashappPaymentMethodOptionsSetupFutureUsa
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
+    Aba,
     Iban,
     Sepa,
     SortCode,
     Spei,
+    Swift,
     Zengin,
 }
 
 impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::Aba => "aba",
             CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::Iban => "iban",
             CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::Sepa => "sepa",
             CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::SortCode => "sort_code",
             CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::Spei => "spei",
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::Swift => "swift",
             CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::Zengin => "zengin",
         }
     }
@@ -3296,7 +3342,7 @@ impl std::default::Default
     for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
 {
     fn default() -> Self {
-        Self::Iban
+        Self::Aba
     }
 }
 
@@ -3308,6 +3354,7 @@ pub enum CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
@@ -3324,6 +3371,9 @@ impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
             }
             CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::MxBankTransfer => {
                 "mx_bank_transfer"
+            }
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::UsBankTransfer => {
+                "us_bank_transfer"
             }
         }
     }
@@ -5230,20 +5280,24 @@ impl std::default::Default for CreateCheckoutSessionPaymentMethodOptionsCashappS
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Aba,
     Iban,
     Sepa,
     SortCode,
     Spei,
+    Swift,
     Zengin,
 }
 
 impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Aba => "aba",
             CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
             CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
             CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
             CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Swift => "swift",
             CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
@@ -5268,7 +5322,7 @@ impl std::default::Default
     for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
     fn default() -> Self {
-        Self::Iban
+        Self::Aba
     }
 }
 
@@ -5280,6 +5334,7 @@ pub enum CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferTyp
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -5289,6 +5344,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
             CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
             CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
             CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType::UsBankTransfer => "us_bank_transfer",
         }
     }
 }

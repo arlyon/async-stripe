@@ -51,6 +51,11 @@ pub struct IssuingCardholder {
     /// See the [3D Secure documentation](https://stripe.com/docs/issuing/3d-secure#when-is-3d-secure-applied) for more details.
     pub phone_number: Option<String>,
 
+    /// The cardholder’s preferred locales (languages), ordered by preference.
+    ///
+    /// Locales can be `de`, `en`, `es`, `fr`, or `it`.  This changes the language of the [3D Secure flow](https://stripe.com/docs/issuing/3d-secure) and one-time password messages sent to the cardholder.
+    pub preferred_locales: Option<Vec<IssuingCardholderPreferredLocales>>,
+
     pub requirements: IssuingCardholderRequirements,
 
     /// Rules that control spending across this cardholder's cards.
@@ -206,6 +211,46 @@ pub struct IssuingCardholderIdDocument {
 
     /// The front of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
     pub front: Option<Expandable<File>>,
+}
+
+/// An enum representing the possible values of an `IssuingCardholder`'s `preferred_locales` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum IssuingCardholderPreferredLocales {
+    De,
+    En,
+    Es,
+    Fr,
+    It,
+}
+
+impl IssuingCardholderPreferredLocales {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            IssuingCardholderPreferredLocales::De => "de",
+            IssuingCardholderPreferredLocales::En => "en",
+            IssuingCardholderPreferredLocales::Es => "es",
+            IssuingCardholderPreferredLocales::Fr => "fr",
+            IssuingCardholderPreferredLocales::It => "it",
+        }
+    }
+}
+
+impl AsRef<str> for IssuingCardholderPreferredLocales {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for IssuingCardholderPreferredLocales {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for IssuingCardholderPreferredLocales {
+    fn default() -> Self {
+        Self::De
+    }
 }
 
 /// An enum representing the possible values of an `IssuingCardholderRequirements`'s `disabled_reason` field.
