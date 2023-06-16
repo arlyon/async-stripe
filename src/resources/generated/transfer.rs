@@ -75,7 +75,7 @@ pub struct Transfer {
 
     /// A string that identifies this transaction as part of a group.
     ///
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
 }
 
@@ -141,7 +141,7 @@ pub struct CreateTransfer<'a> {
 
     /// The ID of a connected Stripe account.
     ///
-    /// [See the Connect documentation](https://stripe.com/docs/connect/charges-transfers) for details.
+    /// [See the Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
     pub destination: String,
 
     /// Specifies which fields in the response should be expanded.
@@ -159,7 +159,7 @@ pub struct CreateTransfer<'a> {
     /// You can use this parameter to transfer funds from a charge before they are added to your available balance.
     ///
     /// A pending balance will transfer immediately but the funds will not become available until the original charge becomes available.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-availability) for details.
+    /// [See the Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-availability) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source_transaction: Option<ChargeId>,
 
@@ -172,7 +172,7 @@ pub struct CreateTransfer<'a> {
 
     /// A string that identifies this transaction as part of a group.
     ///
-    /// See the [Connect documentation](https://stripe.com/docs/connect/charges-transfers#transfer-options) for details.
+    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<&'a str>,
 }

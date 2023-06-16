@@ -42,7 +42,7 @@ pub struct BillingPortalSession {
     /// The account for which the session was created on behalf of.
     ///
     /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
-    /// For more information, see the [docs](https://stripe.com/docs/connect/charges-transfers#on-behalf-of).
+    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#on-behalf-of).
     /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
     pub on_behalf_of: Option<String>,
 
@@ -199,7 +199,7 @@ pub struct CreateBillingPortalSession<'a> {
     /// The `on_behalf_of` account to use for this session.
     ///
     /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
-    /// For more information, see the [docs](https://stripe.com/docs/connect/charges-transfers#on-behalf-of).
+    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#on-behalf-of).
     /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<&'a str>,

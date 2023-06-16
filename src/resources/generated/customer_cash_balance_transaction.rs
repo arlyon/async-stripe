@@ -102,9 +102,12 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactio
 
     /// The funding method type used to fund the customer balance.
     ///
-    /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_transfer: Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransfer>,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -147,6 +150,17 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactio
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransfer {
+
+    /// The banking network used for this funding.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub network: Option<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork>,
+
+    /// The full name of the sender, as supplied by the sending bank.
+    pub sender_name: Option<String>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction {
 
     /// The [Refund](https://stripe.com/docs/api/refunds/object) that moved these funds into the customer's cash balance.
@@ -160,6 +174,42 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPay
     pub payment_intent: Expandable<PaymentIntent>,
 }
 
+/// An enum representing the possible values of an `CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransfer`'s `network` field.
+#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork {
+    Ach,
+    DomesticWireUs,
+    Swift,
+}
+
+impl CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork::Ach => "ach",
+            CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork::DomesticWireUs => "domestic_wire_us",
+            CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork::Swift => "swift",
+        }
+    }
+}
+
+impl AsRef<str> for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
+}
+
+impl std::fmt::Display for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        self.as_str().fmt(f)
+    }
+}
+impl std::default::Default for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork {
+    fn default() -> Self {
+        Self::Ach
+    }
+}
+
 /// An enum representing the possible values of an `CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransfer`'s `type` field.
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
@@ -168,6 +218,7 @@ pub enum CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionR
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
@@ -177,6 +228,7 @@ impl CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResou
             CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::GbBankTransfer => "gb_bank_transfer",
             CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::JpBankTransfer => "jp_bank_transfer",
             CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::MxBankTransfer => "mx_bank_transfer",
+            CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::UsBankTransfer => "us_bank_transfer",
         }
     }
 }
