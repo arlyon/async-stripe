@@ -1189,7 +1189,7 @@ pub struct PaymentMethodOptionsCustomerBalanceBankTransfer {
     pub requested_address_types:
         Option<Vec<PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes>>,
 
-    /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: Option<PaymentMethodOptionsCustomerBalanceBankTransferType>,
 }
@@ -4386,7 +4386,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
         >,
     >,
 
-    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
@@ -4566,7 +4566,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
         >,
     >,
 
-    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, or `mx_bank_transfer`.
+    /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 }
@@ -6194,20 +6194,24 @@ impl std::default::Default for CreatePaymentIntentPaymentMethodOptionsCashappSet
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Aba,
     Iban,
     Sepa,
     SortCode,
     Spei,
+    Swift,
     Zengin,
 }
 
 impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Aba => "aba",
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Swift => "swift",
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
@@ -6232,7 +6236,7 @@ impl std::default::Default
     for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
     fn default() -> Self {
-        Self::Iban
+        Self::Aba
     }
 }
 
@@ -6244,6 +6248,7 @@ pub enum CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType 
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -6253,6 +6258,7 @@ impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
             CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::UsBankTransfer => "us_bank_transfer",
         }
     }
 }
@@ -7735,6 +7741,7 @@ pub enum PaymentIntentNextActionDisplayBankTransferInstructionsType {
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl PaymentIntentNextActionDisplayBankTransferInstructionsType {
@@ -7751,6 +7758,9 @@ impl PaymentIntentNextActionDisplayBankTransferInstructionsType {
             }
             PaymentIntentNextActionDisplayBankTransferInstructionsType::MxBankTransfer => {
                 "mx_bank_transfer"
+            }
+            PaymentIntentNextActionDisplayBankTransferInstructionsType::UsBankTransfer => {
+                "us_bank_transfer"
             }
         }
     }
@@ -9005,22 +9015,26 @@ impl std::default::Default for PaymentMethodOptionsCashappSetupFutureUsage {
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Aba,
     Iban,
     Sepa,
     SortCode,
     Spei,
+    Swift,
     Zengin,
 }
 
 impl PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Aba => "aba",
             PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
             PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
             PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => {
                 "sort_code"
             }
             PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
+            PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Swift => "swift",
             PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => {
                 "zengin"
             }
@@ -9043,7 +9057,7 @@ impl std::default::Default
     for PaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
     fn default() -> Self {
-        Self::Iban
+        Self::Aba
     }
 }
 
@@ -9055,6 +9069,7 @@ pub enum PaymentMethodOptionsCustomerBalanceBankTransferType {
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl PaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -9071,6 +9086,9 @@ impl PaymentMethodOptionsCustomerBalanceBankTransferType {
             }
             PaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => {
                 "mx_bank_transfer"
+            }
+            PaymentMethodOptionsCustomerBalanceBankTransferType::UsBankTransfer => {
+                "us_bank_transfer"
             }
         }
     }
@@ -11303,20 +11321,24 @@ impl std::default::Default for UpdatePaymentIntentPaymentMethodOptionsCashappSet
 #[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
+    Aba,
     Iban,
     Sepa,
     SortCode,
     Spei,
+    Swift,
     Zengin,
 }
 
 impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes {
     pub fn as_str(self) -> &'static str {
         match self {
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Aba => "aba",
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Iban => "iban",
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Sepa => "sepa",
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::SortCode => "sort_code",
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Spei => "spei",
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Swift => "swift",
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes::Zengin => "zengin",
         }
     }
@@ -11341,7 +11363,7 @@ impl std::default::Default
     for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
     fn default() -> Self {
-        Self::Iban
+        Self::Aba
     }
 }
 
@@ -11353,6 +11375,7 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType 
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
+    UsBankTransfer,
 }
 
 impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -11362,6 +11385,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::GbBankTransfer => "gb_bank_transfer",
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::JpBankTransfer => "jp_bank_transfer",
             UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::MxBankTransfer => "mx_bank_transfer",
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType::UsBankTransfer => "us_bank_transfer",
         }
     }
 }
