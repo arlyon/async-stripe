@@ -4,7 +4,7 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
 use crate::error::StripeError;
-use crate::resources::ApiVersion;
+use crate::resources::{ApiVersion, Currency};
 use crate::{
     client::{
         config::{err, ok},
@@ -359,6 +359,7 @@ where
     }
 }
 
+pub type CurrencyMap<V> = HashMap<Currency, V>;
 pub type Metadata = HashMap<String, String>;
 pub type Timestamp = i64;
 

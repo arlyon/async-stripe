@@ -1276,6 +1276,12 @@ pub fn gen_field_rust_type<T: Borrow<Schema>>(
         return ty;
     }
 
+    // currency_options field is represented by an optional HashMap<String, T>, where the String is the currency code in ISO 4217 format.
+    if field_name == "currency_options" {
+        state.use_params.insert("CurrencyMap");
+        return format!("Option<CurrencyMap<{}>>", ty);
+    }
+
     let optional = !required || is_nullable;
     let should_box = ty.as_str() == "ApiErrors";
 
