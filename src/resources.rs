@@ -235,6 +235,16 @@ pub use {
 };
 
 #[rustfmt::skip]
+#[cfg(feature = "tax-calculation")]
+pub use {
+    generated::tax_calculation::{
+        tax_calculation::*,
+        tax_calculation_line_item::*,
+        tax_product_resource_customer_details::*,
+    }
+};
+
+#[rustfmt::skip]
 #[cfg(feature = "connect")]
 pub use {
     connect::{
