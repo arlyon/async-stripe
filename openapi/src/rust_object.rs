@@ -2,34 +2,39 @@ use std::fmt::{Debug, Display, Formatter};
 
 use crate::object_context::PrintableType;
 use crate::rust_type::RustType;
-use crate::types::{ComponentPath, RustIdent};
+use crate::types::RustIdent;
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub enum RustObjectData {
+pub enum RustObject {
     Struct(Vec<StructField>),
     Enum(RustEnum),
     FieldedEnum(Vec<FieldedEnumVariant>),
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub struct RustObject {
-    pub doc_comment: Option<String>,
+pub struct ObjectMetadata {
     pub ident: RustIdent,
-    pub data: RustObjectData,
+    pub doc: Option<String>,
+    pub title: Option<String>,
 }
 
-impl RustObjectData {
-    pub fn schema_deps(&self) -> Vec<&ComponentPath> {
-        let mut deps = vec![];
-        self.add_schema_deps(&mut deps);
-        deps
+impl ObjectMetadata {
+    pub fn new(ident: RustIdent) -> Self {
+        Self { ident, doc: None, title: None }
     }
 
+    pub fn doc(mut self, doc: String) -> Self {
+        self.doc = Some(doc);
+        self
+    }
+}
+
+impl RustObject {
     pub fn is_copy(&self) -> bool {
         match self {
-            RustObjectData::Struct(fields) => fields.iter().all(|f| f.rust_type.is_copy()),
-            RustObjectData::Enum(_) => true,
-            RustObjectData::FieldedEnum(variants) => variants.iter().all(|f| match &f.rust_type {
+            Self::Struct(fields) => fields.iter().all(|f| f.rust_type.is_copy()),
+            Self::Enum(_) => true,
+            Self::FieldedEnum(variants) => variants.iter().all(|f| match &f.rust_type {
                 None => true,
                 Some(typ) => typ.is_copy(),
             }),
@@ -38,34 +43,12 @@ impl RustObjectData {
 
     pub fn has_borrow(&self) -> bool {
         match self {
-            RustObjectData::Struct(fields) => fields.iter().any(|f| f.rust_type.has_borrow()),
-            RustObjectData::Enum(_) => false,
-            RustObjectData::FieldedEnum(variants) => variants.iter().any(|v| match &v.rust_type {
+            Self::Struct(fields) => fields.iter().any(|f| f.rust_type.has_borrow()),
+            Self::Enum(_) => false,
+            Self::FieldedEnum(variants) => variants.iter().any(|v| match &v.rust_type {
                 None => false,
                 Some(typ) => typ.has_borrow(),
             }),
-        }
-    }
-
-    fn add_schema_deps<'a>(&'a self, deps: &mut Vec<&'a ComponentPath>) {
-        match self {
-            Self::Struct(fields) => {
-                for field in fields {
-                    if let Some(component_path) = field.rust_type.as_reference_path() {
-                        deps.push(component_path);
-                    }
-                }
-            }
-            Self::FieldedEnum(variants) => {
-                for variant in variants {
-                    if let Some(typ) = &variant.rust_type {
-                        if let Some(component_path) = typ.as_reference_path() {
-                            deps.push(component_path);
-                        }
-                    }
-                }
-            }
-            Self::Enum(_) => {}
         }
     }
 }
@@ -120,28 +103,6 @@ pub struct EnumVariant {
     pub wire_name: String,
     /// Identifier for this variant
     pub variant_name: RustIdent,
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct RustObjectBuilder {
-    pub doc_comment: Option<String>,
-}
-
-impl RustObjectBuilder {
-    pub fn new() -> Self {
-        Self { doc_comment: None }
-    }
-
-    pub fn maybe_doc<T: Display>(mut self, doc_comment: Option<T>) -> Self {
-        if let Some(doc) = &doc_comment {
-            self.doc_comment = Some(doc.to_string());
-        }
-        self
-    }
-
-    pub fn build(self, data: RustObjectData, ident: RustIdent) -> RustObject {
-        RustObject { doc_comment: self.doc_comment, data, ident }
-    }
 }
 
 /// Specification for a field in a struct

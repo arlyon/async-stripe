@@ -4,6 +4,9 @@ use openapiv3::{
     SchemaKind, StatusCode, Type,
 };
 
+use crate::stripe_object::OperationType;
+use crate::types::ComponentPath;
+
 #[derive(Debug, Clone)]
 pub struct Spec(OpenAPI);
 
@@ -20,12 +23,30 @@ impl Spec {
         self.0.components.as_ref().expect("Spec did not contain `components`!")
     }
 
+    pub fn get_component_schema(&self, path: &ComponentPath) -> &Schema {
+        let schema_or_ref =
+            &self.components().schemas.get(path.as_ref()).expect("Schema not found");
+        schema_or_ref.as_item().expect("Expected top level component to be an item")
+    }
+
     pub fn component_schemas(&self) -> &IndexMap<String, ReferenceOr<Schema>> {
         &self.components().schemas
     }
 
     pub fn get_request(&self, path: &str) -> Option<&ReferenceOr<PathItem>> {
         self.0.paths.paths.get(path)
+    }
+
+    pub fn get_request_operation(&self, path: &str, op: OperationType) -> Option<&Operation> {
+        let item = self.get_request(path)?.as_item().expect("Expected Stripe requests to be items");
+        let operation = match op {
+            OperationType::Get => &item.get,
+            OperationType::Post => &item.post,
+            OperationType::Delete => &item.delete,
+        }
+        .as_ref()
+        .expect("No operation found on request");
+        Some(operation)
     }
 }
 

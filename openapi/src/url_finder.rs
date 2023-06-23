@@ -22,7 +22,7 @@ impl UrlFinder {
                     flattened_api_sections: serde_json::from_str(
                         line.trim()
                             .trim_start_matches("flattenedAPISections: ")
-                            .trim_end_matches(","),
+                            .trim_end_matches(','),
                     )
                     .expect("should be valid json"),
                 })
@@ -54,7 +54,11 @@ impl UrlFinder {
                 return Some(format!("https://stripe.com/docs/api{}", path));
             }
         }
-        tracing::warn!("{} not in html", object);
+        // Only warn if not the stub `UrlFinder`
+        if !self.flattened_api_sections.is_empty() {
+            tracing::warn!("{} not in html", object);
+        }
+
         None
     }
 }

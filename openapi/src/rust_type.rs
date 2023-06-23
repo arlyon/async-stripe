@@ -1,14 +1,20 @@
 use std::fmt::{Debug, Display, Formatter};
 
-use crate::rust_object::{DeserDefault, RustObject, RustObjectData};
-use crate::types::ComponentPath;
+use crate::rust_object::{DeserDefault, ObjectMetadata, RustObject};
+use crate::types::{ComponentPath, RustIdent};
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+pub enum RefType {
+    Component(ComponentPath),
+    ObjectId(ComponentPath),
+    Stripe(RustIdent),
+}
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum RustType {
-    Object(RustObject),
+    Object(RustObject, ObjectMetadata),
     Simple(SimpleType),
-    Ref(ComponentPath),
-    ObjectId { path: ComponentPath, borrowed: bool },
+    Ref { typ: RefType, borrowed: bool, has_borrow: bool, is_copy: bool },
     Compound(CompoundTypeKind, Box<RustType>),
 }
 
@@ -55,11 +61,9 @@ impl RustType {
 
     pub fn as_id_path(&self) -> Option<&ComponentPath> {
         match self {
-            RustType::Object(_) => None,
-            RustType::Simple(_) => None,
-            RustType::Ref(_) => None,
-            RustType::ObjectId { path, .. } => Some(path),
+            RustType::Ref { typ: RefType::ObjectId(path), .. } => Some(path),
             RustType::Compound(_, inner) => inner.as_id_path(),
+            _ => None,
         }
     }
 
@@ -70,10 +74,9 @@ impl RustType {
     /// Can this type derive `Copy`?
     pub fn is_copy(&self) -> bool {
         match self {
-            RustType::Object(obj) => obj.data.is_copy(),
+            RustType::Object(obj, ..) => obj.is_copy(),
             RustType::Simple(typ) => typ.is_copy(),
-            RustType::Ref(_) => false,
-            RustType::ObjectId { borrowed, .. } => *borrowed,
+            RustType::Ref { is_copy, .. } => *is_copy,
             RustType::Compound(kind, typ) => match kind {
                 CompoundTypeKind::List
                 | CompoundTypeKind::Expandable
@@ -87,10 +90,9 @@ impl RustType {
 
     pub fn has_borrow(&self) -> bool {
         match self {
-            RustType::Object(obj) => obj.data.has_borrow(),
+            RustType::Object(obj, ..) => obj.has_borrow(),
             RustType::Simple(typ) => typ.is_borrowed(),
-            RustType::Ref(_) => false,
-            RustType::ObjectId { borrowed, .. } => *borrowed,
+            RustType::Ref { has_borrow, .. } => *has_borrow,
             RustType::Compound(kind, inner) => {
                 if kind.has_borrow() {
                     return true;
@@ -100,18 +102,17 @@ impl RustType {
         }
     }
 
-    pub fn from_ref(reference: &str) -> Self {
-        let path = ComponentPath::from_reference(reference);
-        Self::Ref(path)
+    pub fn component_path(path: ComponentPath) -> Self {
+        Self::Ref {
+            typ: RefType::Component(path),
+            borrowed: false,
+            has_borrow: false,
+            is_copy: false,
+        }
     }
 
-    /// Should we box this type?
-    pub fn should_box(&self) -> bool {
-        match self {
-            // Without a box, we end up with an infinitely sized type
-            Self::Ref(path) => path.as_ref() == "api_errors",
-            _ => false,
-        }
+    pub fn object_id(id_path: ComponentPath, borrowed: bool) -> Self {
+        Self::Ref { typ: RefType::ObjectId(id_path), borrowed, is_copy: false, has_borrow: false }
     }
 
     pub fn into_nullable(self) -> Self {
@@ -131,29 +132,29 @@ impl RustType {
     pub fn as_reference_path(&self) -> Option<&ComponentPath> {
         match self {
             Self::Compound(_, typ) => typ.as_reference_path(),
-            Self::Ref(path) => Some(path),
+            Self::Ref { typ: RefType::Component(path), .. } => Some(path),
             _ => None,
         }
     }
 
-    pub fn as_rust_obj(&self) -> Option<&RustObject> {
+    pub fn as_object(&self) -> Option<(&RustObject, &ObjectMetadata)> {
         match self {
-            Self::Object(obj) => Some(obj),
-            Self::Simple(_) | Self::Ref(_) | Self::ObjectId { .. } => None,
-            Self::Compound(_, typ) => typ.as_rust_obj(),
+            Self::Object(obj, meta) => Some((obj, meta)),
+            Self::Simple(_) | Self::Ref { .. } => None,
+            Self::Compound(_, typ) => typ.as_object(),
         }
     }
 
-    pub fn into_rust_obj(self) -> Option<RustObject> {
+    pub fn into_object(self) -> Option<(RustObject, ObjectMetadata)> {
         match self {
-            Self::Object(obj) => Some(obj),
-            Self::Simple(_) | Self::Ref(_) | Self::ObjectId { .. } => None,
-            Self::Compound(_, typ) => typ.into_rust_obj(),
+            Self::Object(obj, meta) => Some((obj, meta)),
+            Self::Simple(_) | Self::Ref { .. } => None,
+            Self::Compound(_, typ) => typ.into_object(),
         }
     }
 
-    pub fn as_rust_obj_data(&self) -> Option<&RustObjectData> {
-        self.as_rust_obj().map(|r| &r.data)
+    pub fn as_rust_object(&self) -> Option<&RustObject> {
+        self.as_object().map(|r| r.0)
     }
 
     pub fn as_deser_default(&self) -> Option<DeserDefault> {
@@ -274,7 +275,7 @@ impl ExtType {
     pub const fn import_from(self) -> &'static str {
         match self {
             Self::RangeQueryTs | Self::Metadata { .. } | Self::Timestamp | Self::Currency => {
-                "crate"
+                "stripe_types"
             }
         }
     }

@@ -10,7 +10,7 @@ pub fn write_object_trait(out: &mut String, ident: &RustIdent, id_type: &Printab
     let _ = writedoc!(
         out,
         r#"
-            impl crate::Object for {ident} {{
+            impl stripe_types::Object for {ident} {{
                 type Id = {id_type};
                 fn id(&self) -> Self::Id {{
                     self.id.clone()
@@ -33,7 +33,7 @@ pub fn write_object_trait_for_enum(
     let _ = writedoc!(
         out,
         r#"
-            impl crate::Object for {ident} {{
+            impl stripe_types::Object for {ident} {{
                 type Id = {id_type};
                 fn id(&self) -> Self::Id {{
                     match self {{

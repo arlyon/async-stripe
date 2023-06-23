@@ -9,9 +9,16 @@ publish = false
 
 [features]
 full = ["async-stripe/webhook-events"]
-runtime-blocking = ["async-stripe/runtime-blocking"]
-runtime-async = ["async-stripe/runtime-async-std-surf", "async-std"]
+blocking = []
+async = ["async-std"]
+runtime-tokio-hyper = ["async-stripe/runtime-tokio-hyper", "async"]
+runtime-tokio-hyper-rustls = ["async-stripe/runtime-tokio-hyper-rustls", "async"]
+runtime-tokio-hyper-rustls-webpki = ["async-stripe/runtime-tokio-hyper-rustls-webpki", "async"]
+runtime-async-std-surf = ["async-stripe/runtime-async-std-surf", "async"]
+runtime-blocking = ["async-stripe/runtime-blocking", "blocking"]
+runtime-blocking-rustls = ["async-stripe/runtime-blocking-rustls", "blocking"]
+runtime-blocking-rustls-webpki = ["async-stripe/runtime-blocking-rustls-webpki", "blocking"]
 
 [dependencies]
-async-stripe = { path = "../../", default-features = false }
+async-stripe = { path = "../../async-stripe", default-features = false }
 async-std = { version = "1.7.0", features = ["attributes"], optional = true }

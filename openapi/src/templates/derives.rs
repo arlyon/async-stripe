@@ -22,7 +22,7 @@ impl Derives {
         }
     }
 
-    pub fn new_deser() -> Self {
+    pub fn deser() -> Self {
         Self {
             copy: false,
             default: false,
@@ -50,11 +50,6 @@ impl Derives {
 
     pub fn serialize(mut self, serialize: bool) -> Self {
         self.serialize = serialize;
-        self
-    }
-
-    pub fn deserialize(mut self, deserialize: bool) -> Self {
-        self.deserialize = deserialize;
         self
     }
 

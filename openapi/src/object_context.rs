@@ -3,14 +3,13 @@ use std::fmt::{Debug, Display, Formatter, Write};
 
 use indoc::formatdoc;
 
-use crate::components::Components;
-use crate::ids::write_object_id;
+use crate::components::{Components, PathInfo};
+use crate::ids::{write_object_id, IDS_IN_STRIPE};
 use crate::rust_object::{
-    FieldedEnumVariant, PrintableFieldedEnumVariant, PrintableStructField, RustObject,
-    RustObjectData,
+    FieldedEnumVariant, ObjectMetadata, PrintableFieldedEnumVariant, PrintableStructField,
+    RustObject,
 };
 use crate::rust_type::{CompoundTypeKind, RustType, SimpleType};
-use crate::spec_inference::infer_id_name;
 use crate::stripe_object::{RequestSpec, StripeObject};
 use crate::templates::derives::Derives;
 use crate::templates::deserialize::{
@@ -43,24 +42,30 @@ impl ObjectGenInfo {
 
 impl Components {
     fn write_rust_type_objs(&self, typ: &RustType, info: ObjectGenInfo, out: &mut String) {
-        let Some(obj) = typ.as_rust_obj() else {
+        let Some((obj, meta)) = typ.as_object() else {
             return;
         };
-        self.write_object(obj, info, out);
+        self.write_object(obj, meta, info, out);
     }
 
-    fn write_object(&self, obj: &RustObject, info: ObjectGenInfo, out: &mut String) {
-        let has_borrow = obj.data.has_borrow();
+    pub fn write_object(
+        &self,
+        obj: &RustObject,
+        metadata: &ObjectMetadata,
+        info: ObjectGenInfo,
+        out: &mut String,
+    ) {
+        let has_borrow = obj.has_borrow();
         let lifetime = if has_borrow { Some(Lifetime::new()) } else { None };
-        let should_derive_copy = obj.data.is_copy();
-        let ident = &obj.ident;
+        let should_derive_copy = obj.is_copy();
+        let ident = &metadata.ident;
 
-        if let Some(doc) = &obj.doc_comment {
+        if let Some(doc) = &metadata.doc {
             let comment = write_doc_comment(doc, 0);
             let _ = write!(out, "{comment}");
         }
-        match &obj.data {
-            RustObjectData::Struct(fields) => {
+        match obj {
+            RustObject::Struct(fields) => {
                 let should_derive_default = fields.iter().all(|field| field.rust_type.is_option());
                 let printable_fields = fields
                     .iter()
@@ -90,15 +95,13 @@ impl Components {
                 }
 
                 for field in fields {
-                    if let Some(obj) = field.rust_type.as_rust_obj() {
-                        self.write_object(obj, info, out);
+                    if let Some((obj, meta)) = field.rust_type.as_object() {
+                        self.write_object(obj, meta, info, out);
                     }
                 }
             }
-            RustObjectData::Enum(enum_) => {
-                enum_.write_definition_and_methods(out, ident, info.derives)
-            }
-            RustObjectData::FieldedEnum(variants) => {
+            RustObject::Enum(enum_) => enum_.write_definition_and_methods(out, ident, info.derives),
+            RustObject::FieldedEnum(variants) => {
                 let printable_variants = variants
                     .iter()
                     .map(|v| {
@@ -121,8 +124,8 @@ impl Components {
                 }
                 for variant in variants {
                     if let Some(typ) = &variant.rust_type {
-                        if let Some(obj) = typ.as_rust_obj() {
-                            self.write_object(obj, info, out);
+                        if let Some((obj, meta)) = typ.as_object() {
+                            self.write_object(obj, meta, info, out);
                         }
                     }
                 }
@@ -201,6 +204,32 @@ impl<'a> PrintableWithLifetime<'a> {
     }
 }
 
+#[derive(Debug, Copy, Clone)]
+struct PathWithIdent<'a> {
+    path: &'a Option<PathInfo>,
+    ident: &'a RustIdent,
+}
+
+impl<'a> PathWithIdent<'a> {
+    fn new(path: &'a Option<PathInfo>, ident: &'a RustIdent) -> Self {
+        Self { path, ident }
+    }
+}
+
+impl<'a> Display for PathWithIdent<'a> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        if let Some(path) = self.path {
+            if let Some(krate) = path.krate {
+                write!(f, "{}::", krate.name())?;
+            }
+            if let Some(path) = &path.path {
+                write!(f, "{path}::")?;
+            }
+        }
+        write!(f, "{}", self.ident)
+    }
+}
+
 impl<'a> Display for PrintableWithLifetime<'a> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let Some(lifetime) = self.lifetime else {
@@ -208,14 +237,15 @@ impl<'a> Display for PrintableWithLifetime<'a> {
         };
 
         match &self.typ {
-            PrintableType::QualifiedPath { path, has_borrow, is_borrowed } => {
+            PrintableType::QualifiedPath { path, has_borrow, is_borrowed, ident } => {
+                let full_path = PathWithIdent::new(path, ident);
                 if *is_borrowed {
                     write!(f, "&{lifetime} ")?;
                 }
                 if *has_borrow {
-                    write!(f, "{path}<{lifetime}>")
+                    write!(f, "{full_path}<{lifetime}>")
                 } else {
-                    write!(f, "{path}")
+                    write!(f, "{full_path}")
                 }
             }
             PrintableType::Simple(typ) => {
@@ -231,7 +261,7 @@ impl<'a> Display for PrintableWithLifetime<'a> {
                 let inner = PrintableWithLifetime::new(inner, Some(lifetime));
                 match kind {
                     CompoundTypeKind::List => {
-                        write!(f, "crate::List<{inner}>")
+                        write!(f, "stripe_types::List<{inner}>")
                     }
                     CompoundTypeKind::Vec => {
                         write!(f, "Vec<{inner}>")
@@ -240,7 +270,7 @@ impl<'a> Display for PrintableWithLifetime<'a> {
                         write!(f, "&{lifetime} [{inner}]")
                     }
                     CompoundTypeKind::Expandable => {
-                        write!(f, "crate::Expandable<{inner}>")
+                        write!(f, "stripe_types::Expandable<{inner}>")
                     }
                     CompoundTypeKind::Option => {
                         write!(f, "Option<{inner}>")
@@ -257,11 +287,12 @@ impl<'a> Display for PrintableWithLifetime<'a> {
 impl Display for PrintableType {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            PrintableType::QualifiedPath { path, is_borrowed, .. } => {
+            PrintableType::QualifiedPath { path, is_borrowed, ident, .. } => {
+                let full_path = PathWithIdent::new(path, ident);
                 if *is_borrowed {
                     f.write_char('&')?;
                 }
-                write!(f, "{path}")
+                write!(f, "{full_path}")
             }
             PrintableType::Simple(typ) => {
                 if typ.is_borrowed() {
@@ -274,7 +305,7 @@ impl Display for PrintableType {
             }
             PrintableType::Compound(kind, inner) => match kind {
                 CompoundTypeKind::List => {
-                    write!(f, "crate::List<{inner}>")
+                    write!(f, "stripe_types::List<{inner}>")
                 }
                 CompoundTypeKind::Vec => {
                     write!(f, "Vec<{inner}>")
@@ -283,7 +314,7 @@ impl Display for PrintableType {
                     write!(f, "&[{inner}]")
                 }
                 CompoundTypeKind::Expandable => {
-                    write!(f, "crate::Expandable<{inner}>")
+                    write!(f, "stripe_types::Expandable<{inner}>")
                 }
                 CompoundTypeKind::Option => {
                     write!(f, "Option<{inner}>")
@@ -298,25 +329,31 @@ impl Display for PrintableType {
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum PrintableType {
-    QualifiedPath { path: String, has_borrow: bool, is_borrowed: bool },
+    QualifiedPath { path: Option<PathInfo>, ident: RustIdent, has_borrow: bool, is_borrowed: bool },
     Simple(SimpleType),
     Compound(CompoundTypeKind, Box<PrintableType>),
 }
 
-pub fn write_obj(obj: &RustObject, comp: &StripeObject, components: &Components) -> String {
-    let gen_info = ObjectGenInfo::new(Derives::new_deser());
+pub fn write_obj(
+    obj: &RustObject,
+    meta: &ObjectMetadata,
+    comp: &StripeObject,
+    components: &Components,
+) -> String {
+    let gen_info = ObjectGenInfo::new(Derives::deser());
     let mut out = String::with_capacity(128);
-    components.write_object(obj, gen_info, &mut out);
 
-    let ident = &obj.ident;
+    components.write_object(obj, meta, gen_info, &mut out);
+
+    let ident = &meta.ident;
     if let Some(id_typ) = comp.id_type() {
         let id_type = components.construct_printable_type(id_typ);
-        match &obj.data {
-            RustObjectData::Struct(_) => write_object_trait(&mut out, ident, &id_type),
-            RustObjectData::FieldedEnum(variants) => {
+        match obj {
+            RustObject::Struct(_) => write_object_trait(&mut out, ident, &id_type),
+            RustObject::FieldedEnum(variants) => {
                 write_object_trait_for_enum(&mut out, ident, &id_type, variants)
             }
-            RustObjectData::Enum(_) => {
+            RustObject::Enum(_) => {
                 panic!("Did not expect enum to have an id");
             }
         }
@@ -325,9 +362,8 @@ pub fn write_obj(obj: &RustObject, comp: &StripeObject, components: &Components)
             // Only generate the id definition if the paths match - e.g. if we're generating
             // `DeletedAccount`, we don't want to duplicate `AccountId` since `DeletedAccount`
             // uses that same id
-            if path == &comp.path {
-                let id_ident = infer_id_name(path);
-                write_object_id(&mut out, path, &id_ident)
+            if path == comp.path() && !IDS_IN_STRIPE.contains(path) {
+                write_object_id(&mut out, path)
             }
         }
     }
@@ -355,20 +391,20 @@ pub fn write_requests(
             method_name: &req.method_name,
             request_path: &req.req_path,
             param_type: req.params.as_ref().map(|typ| components.construct_printable_type(typ)),
-
             returned: components.construct_printable_type(&req.returned),
             method_type: req.method_type,
         };
         printable.gen_code(&mut req_bodies);
     }
 
-    let component_ident = components.resolve_path_with_ident(&component.path, component.ident());
+    let impl_for_typ = RustType::component_path(component.path().clone());
+    let impl_for = components.construct_printable_type(&impl_for_typ);
 
     let mut out = formatdoc! {
         r#"
-        use crate::{{Client, Response}};
+        use stripe::{{Client, Response}};
         
-        impl {component_ident} {{
+        impl {impl_for} {{
             {req_bodies} 
         }}
         "#
@@ -377,7 +413,7 @@ pub fn write_requests(
     for req in specs {
         components.write_rust_type_objs(
             &req.returned,
-            ObjectGenInfo::new(Derives::new_deser()),
+            ObjectGenInfo::new(Derives::deser()),
             &mut out,
         );
         if let Some(typ) = &req.params {
@@ -398,9 +434,9 @@ fn parse_as_deleted_or_not<'a>(
     if components.len() != 2 {
         return None;
     }
-    let deleted_index = components.iter().position(|c| c.path.starts_with("deleted_"))?;
-    let not_deleted_path = components[deleted_index].path.trim_start_matches("deleted_");
-    let not_deleted_index = components.iter().position(|c| c.path.as_ref() == not_deleted_path)?;
+    let deleted_index = components.iter().position(|c| c.path().is_deleted())?;
+    let not_deleted_path = components[deleted_index].path().as_not_deleted();
+    let not_deleted_index = components.iter().position(|c| c.path() == &not_deleted_path)?;
     Some(DeletedOrNot {
         deleted_variant: &variants[deleted_index].variant,
         variant: &variants[not_deleted_index].variant,

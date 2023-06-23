@@ -1,9 +1,11 @@
 use std::collections::HashMap;
 use std::fmt::Write;
 
+use indexmap::IndexSet;
 use lazy_static::lazy_static;
 
-use crate::types::{ComponentPath, RustIdent};
+use crate::spec_inference::infer_id_name;
+use crate::types::ComponentPath;
 
 pub fn id_prefixes() -> HashMap<&'static str, &'static str> {
     HashMap::from([
@@ -87,16 +89,27 @@ lazy_static! {
     pub static ref ID_PREFIXES: HashMap<&'static str, &'static str> = id_prefixes();
     pub static ref COMPLEX_ID_PREFIXES: HashMap<&'static str, &'static [&'static str]> =
         complex_id_prefixes();
+    pub static ref IDS_IN_STRIPE: IndexSet<ComponentPath> = ids_in_stripe();
 }
 
-pub fn write_object_id(out: &mut String, path: &ComponentPath, ident: &RustIdent) {
+pub fn write_object_id(out: &mut String, path: &ComponentPath) {
+    let crate_name = "stripe_types";
+    let ident = infer_id_name(path);
     if let Some(prefix) = ID_PREFIXES.get(path.as_ref()) {
-        let _ = writeln!(out, r#"crate::def_id!({ident}, "{prefix}_");"#);
+        let _ = writeln!(out, r#"{crate_name}::def_id!({ident}, "{prefix}_");"#);
     } else if let Some(multi_prefix) = COMPLEX_ID_PREFIXES.get(path.as_ref()) {
         let prefix_arg =
             multi_prefix.iter().map(|p| format!(r#""{p}_""#)).collect::<Vec<_>>().join("|");
-        let _ = writeln!(out, "crate::def_id!({ident}, {prefix_arg});");
+        let _ = writeln!(out, "{crate_name}::def_id!({ident}, {prefix_arg});");
     } else {
-        let _ = writeln!(out, "crate::def_id!({ident});");
+        let _ = writeln!(out, "{crate_name}::def_id!({ident});");
     }
+}
+
+fn ids_in_stripe() -> IndexSet<ComponentPath> {
+    let mut res = IndexSet::new();
+    for comp in ["account", "application"] {
+        res.insert(ComponentPath::new(comp.to_string()));
+    }
+    res
 }

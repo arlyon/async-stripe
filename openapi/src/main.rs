@@ -1,17 +1,22 @@
+use std::fmt::Debug;
 use std::fs;
 use std::fs::File;
 use std::io::Write;
+use std::path::Path;
 
 use anyhow::{anyhow, Context, Result};
+use petgraph::dot::{Config, Dot};
 use structopt::StructOpt;
 
 use crate::codegen::CodeGen;
+use crate::crate_inference::Crate;
 use crate::spec::Spec;
 use crate::spec_fetch::fetch_spec;
 use crate::url_finder::UrlFinder;
 
 mod codegen;
 mod components;
+mod crate_inference;
 mod graph;
 mod ids;
 mod object_context;
@@ -83,38 +88,60 @@ fn main() -> Result<()> {
     let codegen = CodeGen::new(spec, url_finder)?;
 
     if args.graph {
-        let graph = codegen.get_graphviz_dep_graph();
-        File::create("graph.txt")?.write_all(graph.as_ref())?;
-        tracing::info!("Wrote graph to graph.txt");
+        let mod_graph = codegen.components.gen_module_dep_graph();
+        let graph_txt = format!("{:?}", Dot::with_config(&mod_graph, &[Config::EdgeNoLabel]));
+        write_graph(&graph_txt, "mod_graph.txt")?;
+
+        let crate_graph = codegen.components.gen_crate_dep_graph();
+        let graph_txt = format!("{:?}", Dot::with_config(&crate_graph, &[Config::EdgeNoLabel]));
+        write_graph(&graph_txt, "crate_graph.txt")?;
         return Ok(());
     }
 
     codegen.write_files()?;
 
-    let out = std::process::Command::new("cargo")
-        .arg("+nightly")
-        .arg("fmt")
-        .arg("--")
-        .arg("out/mod.rs")
-        .output()?;
+    let mut fmt_cmd = std::process::Command::new("cargo");
+    fmt_cmd.arg("+nightly").arg("fmt").arg("--");
+    for krate in Crate::all() {
+        fmt_cmd.arg(format!(
+            "out/{}",
+            if *krate == Crate::Types {
+                format!("{}/mod.rs", krate.generated_out_path())
+            } else {
+                format!("{}/src/lib.rs", krate.generated_out_path())
+            }
+        ));
+    }
+
+    let out = fmt_cmd.output()?;
     if !out.status.success() {
         return Err(anyhow!("Rustfmt failed with outputs {:?}", out));
     }
 
-    // If not a dry run, copy files from out/ to generated/.
-    // --delete so that generated files don't stick around when not
-    // generated anymore, see https://github.com/arlyon/async-stripe/issues/229
     if !args.dry_run {
-        let out = std::process::Command::new("rsync")
-            .arg("-a")
-            .arg("--delete-during")
-            .arg("out/")
-            .arg("../src/resources/generated")
-            .output()?;
-
-        if !out.status.success() {
-            return Err(anyhow!("rsync failed with outputs {:?}", out));
-        }
+        run_rsync("out/crates/", "../generated/")?;
+        run_rsync("out/stripe_types/", "../stripe_types/src/generated/")?;
     }
+    Ok(())
+}
+// --delete-during so that generated files don't stick around when not
+// generated anymore, see https://github.com/arlyon/async-stripe/issues/229
+fn run_rsync(src: &str, dest: &str) -> Result<()> {
+    let out = std::process::Command::new("rsync")
+        .arg("-a")
+        .arg("--delete-during")
+        .arg(src)
+        .arg(dest)
+        .output()?;
+
+    if !out.status.success() {
+        return Err(anyhow!("rsync failed with outputs {:?}", out));
+    }
+    Ok(())
+}
+
+fn write_graph<P: AsRef<Path>>(graph_str: &str, outfile: P) -> Result<()> {
+    File::create(outfile.as_ref())?.write_all(graph_str.as_ref())?;
+    tracing::info!("Wrote graph to {}", outfile.as_ref().display());
     Ok(())
 }

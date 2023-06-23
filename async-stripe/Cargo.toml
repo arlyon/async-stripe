@@ -1,0 +1,159 @@
+[package]
+name = "async-stripe"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[package.metadata.docs.rs]
+features = ["runtime-tokio-hyper"]
+
+[lib]
+name = "stripe"
+
+[features]
+default = ["webhook-events", "uuid", "stream"]
+
+stream = []
+
+# deserialize events from webhooks
+webhook-events = ["events", "hmac", "sha2", "chrono", "hex"]
+events = []
+
+# runtimes
+async = ["futures-util"]
+blocking = []
+
+runtime-tokio-hyper = [
+    "tokio",
+    "hyper-client",
+    "hyper-tls",
+    "async",
+]
+runtime-tokio-hyper-rustls = [
+    "tokio",
+    "hyper-client",
+    "hyper-rustls",
+    "hyper-rustls-native",
+    "async",
+]
+runtime-tokio-hyper-rustls-webpki = [
+    "tokio",
+    "hyper-client",
+    "hyper-rustls-webpki",
+    "async",
+]
+runtime-blocking = [
+    "tokio",
+    "tokio/rt",
+    "hyper-client",
+    "hyper-tls",
+    "blocking",
+]
+runtime-blocking-rustls = [
+    "tokio",
+    "tokio/rt",
+    "hyper-client",
+    "hyper-rustls-native",
+    "blocking",
+]
+runtime-blocking-rustls-webpki = [
+    "tokio",
+    "tokio/rt",
+    "hyper-client",
+    "hyper-rustls-webpki",
+    "blocking",
+]
+runtime-async-std-surf = [
+    "async-std",
+    "surf",
+    "async",
+]
+
+# we need the compat crate if using hyper
+hyper-client = ["hyper", "http-types/hyperium_http"]
+
+hyper-rustls-native = ["hyper-rustls", "hyper-rustls/native-tokio"]
+hyper-rustls-webpki = ["hyper-rustls", "hyper-rustls/webpki-tokio"]
+min-ser = ["miniserde"]
+
+[dependencies]
+stripe_types = {path = "../stripe_types"}
+async-std = {version = "1.8,<1.11", optional = true}
+
+chrono = { version = "0.4", default-features = false, features = ["serde", "clock"], optional = true }
+thiserror = "1.0.24"
+hyper = { version = "0.14", default-features = false, features = ["http1", "http2", "client", "tcp"], optional = true }
+hyper-tls = { version = "0.5", optional = true }
+hyper-rustls = { version = "0.23", default-features = false, features = ["http1", "http2", "tls12", "logging"], optional = true }
+serde_json = "1.0"
+serde_qs = "0.10.1"
+serde_path_to_error = "0.1.8"
+surf = { version = "2.1", optional = true }
+tokio = { version = "1.2", optional = true }
+uuid = { version = "0.8", optional=true, features=["v4"] }
+
+miniserde = { workspace = true, optional = true }
+serde = {workspace = true }
+http-types.workspace = true
+smol_str.workspace = true
+
+# stream for lists
+futures-util = { version = "0.3.21", optional = true }
+
+# webhook support
+hmac = { version = "0.12", optional = true }
+sha2 = { version = "0.10", optional = true }
+hex = { version = "0.4", optional = true }
+
+rocket = { version = "0.4", optional = true }
+
+# msrv pin
+time-core = "<=0.1.0"
+
+[dev-dependencies]
+async-std = { version = "1.10.0", features = ["attributes"] }
+httpmock = "0.6.6"
+tokio = { version = "1.24.1", features = ["rt", "macros"] }
+axum = { version = "0.6.18", features = ["macros"] }
+async-trait = "0.1"
+actix-web = "4.2.1"
+
+[[example]]
+name = "checkout"
+required-features = ["async"]
+
+[[example]]
+name = "connect"
+required-features = ["async"]
+
+[[example]]
+name = "customer"
+required-features = ["async"]
+
+[[example]]
+name = "payment-intent"
+required-features = ["async"]
+
+[[example]]
+name = "payment-link"
+required-features = ["async"]
+
+[[example]]
+name = "strategy"
+required-features = ["async"]
+
+[[example]]
+name = "subscriptions"
+required-features = ["async"]
+
+[[example]]
+name = "webhook-axum"
+required-features = ["async"]
+
+[[example]]
+name = "webhook-actix"
+required-features = ["async"]
+
+[[example]]
+name = "webhook-rocket"
+required-features = ["rocket"]

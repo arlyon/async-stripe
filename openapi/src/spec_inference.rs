@@ -9,7 +9,7 @@ use openapiv3::{
 };
 
 use crate::rust_object::{
-    EnumVariant, FieldedEnumVariant, RustEnum, RustObjectBuilder, RustObjectData, StructField,
+    EnumVariant, FieldedEnumVariant, ObjectMetadata, RustEnum, RustObject, StructField,
 };
 use crate::rust_type::{CompoundTypeKind, ExtType, IntType, RustType, SimpleType};
 use crate::spec::{
@@ -24,6 +24,7 @@ pub struct Inference<'a> {
     curr_ident: &'a RustIdent,
     field_name: Option<&'a str>,
     description: Option<&'a str>,
+    title: Option<&'a str>,
     required: bool,
 }
 
@@ -36,6 +37,7 @@ impl<'a> Inference<'a> {
             required: false,
             curr_ident: ident,
             id_path: None,
+            title: None,
         }
     }
 
@@ -49,11 +51,6 @@ impl<'a> Inference<'a> {
         self
     }
 
-    pub fn description(mut self, desc: &'a str) -> Self {
-        self.description = Some(desc);
-        self
-    }
-
     pub fn maybe_description(mut self, desc: Option<&'a str>) -> Self {
         self.description = desc;
         self
@@ -61,6 +58,11 @@ impl<'a> Inference<'a> {
 
     pub fn id_path(mut self, path: &'a ComponentPath) -> Self {
         self.id_path = Some(path);
+        self
+    }
+
+    pub fn title(mut self, title: Option<&'a str>) -> Self {
+        self.title = title;
         self
     }
 
@@ -82,13 +84,20 @@ impl<'a> Inference<'a> {
         }
     }
 
-    fn build_object_type(self, data: RustObjectData, ident: RustIdent) -> RustType {
-        RustType::Object(RustObjectBuilder::new().maybe_doc(self.description).build(data, ident))
+    fn build_object_type(self, data: RustObject, ident: RustIdent) -> RustType {
+        RustType::Object(
+            data,
+            ObjectMetadata {
+                ident,
+                doc: self.description.map(|d| d.to_string()),
+                title: self.title.map(|t| t.to_string()),
+            },
+        )
     }
 
-    pub fn infer_schema_type(&self, field: &Schema) -> RustType {
-        let base_type = self.infer_base_type(field);
-        let is_nullable = field.schema_data.nullable;
+    pub fn infer_schema_type(&self, schema: &Schema) -> RustType {
+        let base_type = self.title(schema.schema_data.title.as_deref()).infer_base_type(schema);
+        let is_nullable = schema.schema_data.nullable;
         if !self.required || is_nullable {
             base_type.into_nullable()
         } else {
@@ -155,7 +164,7 @@ impl<'a> Inference<'a> {
             for variant in variants {
                 enum_obj.add_variant(variant);
             }
-            return self.build_object_type(RustObjectData::Enum(enum_obj), self.next_ident());
+            return self.build_object_type(RustObject::Enum(enum_obj), self.next_ident());
         }
         if let Some(f_name) = self.field_name {
             if f_name == "currency" || f_name.ends_with("_currency") {
@@ -174,7 +183,7 @@ impl<'a> Inference<'a> {
 
         if !for_pagination && self.should_infer_as_id_type() {
             if let Some(id_path) = self.id_path {
-                return RustType::ObjectId { path: id_path.clone(), borrowed: self.can_borrow };
+                return RustType::object_id(id_path.clone(), self.can_borrow);
             }
         }
 
@@ -211,7 +220,7 @@ impl<'a> Inference<'a> {
                     .build_struct_field(prop_field_name, field_spec),
             );
         }
-        self.build_object_type(RustObjectData::Struct(fields), next_ident)
+        self.build_object_type(RustObject::Struct(fields), next_ident)
     }
 
     fn infer_any_or_one_of(&self, fields: &[ReferenceOr<Schema>], field: &Schema) -> RustType {
@@ -229,14 +238,22 @@ impl<'a> Inference<'a> {
             RustType::ext(ExtType::RangeQueryTs)
         } else {
             let enum_ = self.build_fielded_enum(fields).expect("Could not build enum with fields");
-            self.build_object_type(RustObjectData::FieldedEnum(enum_), self.next_ident())
+            self.build_object_type(RustObject::FieldedEnum(enum_), self.next_ident())
         }
     }
 
     pub fn infer_schema_or_ref_type<T: Borrow<Schema>>(&self, field: &ReferenceOr<T>) -> RustType {
-        let typ = match field {
+        match field {
             ReferenceOr::Reference { reference } => {
-                let mut typ = RustType::from_ref(reference);
+                let path = ComponentPath::from_reference(reference);
+                // Must box `ApiErrors`, otherwise we end up with an infinitely
+                // sized type
+                let should_box = path.as_ref() == "api_errors";
+                let mut typ = RustType::component_path(path);
+
+                if should_box {
+                    typ = RustType::boxed(typ);
+                }
                 if !self.required {
                     typ = typ.into_nullable();
                 }
@@ -246,11 +263,6 @@ impl<'a> Inference<'a> {
                 let schema = schema.borrow();
                 self.infer_schema_type(schema)
             }
-        };
-        if typ.should_box() {
-            RustType::boxed(typ)
-        } else {
-            typ
         }
     }
 
@@ -285,7 +297,7 @@ impl<'a> Inference<'a> {
                     let schema_path = ComponentPath::from_reference(reference);
                     variants.push(FieldedEnumVariant::new(
                         RustIdent::create(&schema_path),
-                        RustType::from_ref(reference),
+                        RustType::component_path(schema_path),
                     ));
                 }
                 ReferenceOr::Item(item) => {
@@ -295,7 +307,7 @@ impl<'a> Inference<'a> {
                         ctx = ctx.field_name(name);
                     }
                     let rust_type = ctx.required(true).infer_schema_type(item);
-                    if let Some(RustObjectData::Enum(enum_)) = rust_type.as_rust_obj_data() {
+                    if let Some(RustObject::Enum(enum_)) = rust_type.as_rust_object() {
                         for variant in &enum_.variants {
                             variants
                                 .push(FieldedEnumVariant::fieldless(variant.variant_name.clone()));
@@ -359,7 +371,8 @@ fn parse_expansion_resources(resources: &serde_json::Value) -> anyhow::Result<Ru
     let ReferenceOr::Reference {reference} = one_of.first().unwrap() else {
         return Err(anyhow!("Expected expansion resource to only contain a schema reference"));
     };
-    Ok(RustType::Compound(CompoundTypeKind::Expandable, Box::new(RustType::from_ref(reference))))
+    let path = ComponentPath::from_reference(reference);
+    Ok(RustType::Compound(CompoundTypeKind::Expandable, Box::new(RustType::component_path(path))))
 }
 
 fn build_enum_variants(options: &[Option<String>]) -> Vec<EnumVariant> {

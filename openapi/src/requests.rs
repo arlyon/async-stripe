@@ -4,7 +4,7 @@ use anyhow::{anyhow, Context};
 use heck::SnakeCase;
 use openapiv3::{Parameter, ParameterData, ParameterSchemaOrContent, ReferenceOr, Schema};
 
-use crate::rust_object::{RustObjectBuilder, RustObjectData};
+use crate::rust_object::{ObjectMetadata, RustObject};
 use crate::rust_type::{RustType, SimpleType};
 use crate::spec::{get_ok_response_schema, get_request_form_parameters, Spec};
 use crate::spec_inference::Inference;
@@ -44,7 +44,7 @@ fn infer_method_names<'a>(operations: &'a [RequestDetails]) -> HashMap<RequestKe
                 if has_path_params {
                     "retrieve"
                 } else {
-                    "retrieve_many"
+                    "retrieve_for_my_account"
                 }
             }
             other => other,
@@ -84,18 +84,9 @@ fn get_req_details<'a>(
     op: &'a StripeOperation,
     spec: &'a Spec,
 ) -> anyhow::Result<RequestDetails<'a>> {
-    let item = spec
-        .get_request(&op.path)
-        .context("Request path not found")?
-        .as_item()
-        .context("Expected item")?;
-    let operation = match op.operation_type {
-        OperationType::Get => &item.get,
-        OperationType::Post => &item.post,
-        OperationType::Delete => &item.delete,
-    }
-    .as_ref()
-    .context("Operation data not present")?;
+    let operation = spec
+        .get_request_operation(&op.path, op.operation_type)
+        .context("Request path not found")?;
     let mut path_params = vec![];
     let mut query_params = vec![];
     for param in &operation.parameters {
@@ -217,8 +208,8 @@ fn build_request(
                     struct_fields.push(struct_field);
                 }
                 Some(RustType::Object(
-                    RustObjectBuilder::new()
-                        .build(RustObjectData::Struct(struct_fields), params_ident.clone()),
+                    RustObject::Struct(struct_fields),
+                    ObjectMetadata::new(params_ident.clone()),
                 ))
             }
         },
@@ -239,7 +230,7 @@ fn build_request(
             return Err(anyhow!("Expected path parameter to be a string"));
         }
         if let Some(id_path) = path_id_map.get(param.name.as_str()) {
-            rust_type = RustType::ObjectId { borrowed: true, path: id_path.clone() };
+            rust_type = RustType::object_id(id_path.clone(), true);
         }
 
         path_params.push(PathParam { name: param.name.clone(), rust_type })
