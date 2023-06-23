@@ -25,6 +25,10 @@ pub struct Mandate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub multi_use: Option<MandateMultiUse>,
 
+    /// The account (if any) for which the mandate is intended.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub on_behalf_of: Option<String>,
+
     /// ID of the payment method associated with this mandate.
     pub payment_method: Expandable<PaymentMethod>,
 
