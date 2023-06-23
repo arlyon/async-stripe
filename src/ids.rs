@@ -571,6 +571,8 @@ def_id!(SubscriptionItemId, "si_");
 def_id!(SubscriptionLineId, "sli_");
 def_id!(SubscriptionScheduleId, "sub_sched_");
 def_id!(TaxIdId, "txi_");
+def_id!(TaxCalculationId: String);
+def_id!(TaxCalculationLineItemId: String);
 def_id!(TaxCodeId, "txcd_");
 def_id!(TaxDeductedAtSourceId, "itds");
 def_id!(TaxRateId, "txr_");

@@ -70,6 +70,14 @@ pub mod checkout {
 }
 
 #[path = "generated"]
+#[cfg(feature = "tax-calculation")]
+pub mod tax_calculation {
+    pub mod tax_calculation;
+    pub mod tax_calculation_line_item;
+    pub mod tax_product_resource_customer_details;
+}
+
+#[path = "generated"]
 #[cfg(feature = "billing")]
 pub mod billing {
     pub mod billing_portal_configuration;
