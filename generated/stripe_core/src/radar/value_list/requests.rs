@@ -120,7 +120,7 @@ pub struct CreateValueList<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The human-readable name of the value list.
     pub name: &'a str,
 }
@@ -192,7 +192,7 @@ pub struct UpdateValueList<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The human-readable name of the value list.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<&'a str>,

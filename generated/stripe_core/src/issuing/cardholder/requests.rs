@@ -175,7 +175,7 @@ pub struct CreateCardholder<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The cardholder's name.
     ///
     /// This will be printed on cards issued to them.
@@ -2474,7 +2474,7 @@ pub struct UpdateCardholder<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The cardholder's phone number.
     ///
     /// This is required for all cardholders who will be creating EU cards.

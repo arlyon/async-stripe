@@ -57,7 +57,7 @@ pub struct Customer {
     /// They solely track amounts that have yet to be successfully applied to any invoice.
     /// A balance in a particular currency is only applied to any invoice as an invoice in that currency is finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_credit_balance: Option<i64>,
+    pub invoice_credit_balance: Option<std::collections::HashMap<String, i64>>,
     /// The prefix for the customer used to generate unique invoice numbers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_prefix: Option<String>,
@@ -69,7 +69,7 @@ pub struct Customer {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<stripe_types::Metadata>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The customer's full name or business name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

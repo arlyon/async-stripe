@@ -239,7 +239,7 @@ pub struct CreateCharge<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The Stripe account ID for which these funds are intended.
     ///
     /// Automatically set if you use the `destination` parameter.
@@ -444,7 +444,7 @@ pub struct UpdateCharge<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// This is the email address that the receipt for this charge will be sent to.
     ///
     /// If this field is updated, then a new email receipt will be sent to the updated address.

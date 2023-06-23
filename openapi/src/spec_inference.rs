@@ -11,7 +11,7 @@ use openapiv3::{
 use crate::rust_object::{
     EnumVariant, FieldedEnumVariant, ObjectMetadata, RustEnum, RustObject, StructField,
 };
-use crate::rust_type::{CompoundTypeKind, ExtType, IntType, RustType, SimpleType};
+use crate::rust_type::{ExtType, IntType, RustType, SimpleType};
 use crate::spec::{
     as_data_array_item, as_object_enum_name, is_enum_with_just_empty_string, ExpansionResources,
 };
@@ -41,8 +41,8 @@ impl<'a> Inference<'a> {
         }
     }
 
-    pub fn can_borrow(mut self) -> Self {
-        self.can_borrow = true;
+    pub fn can_borrow(mut self, can_borrow: bool) -> Self {
+        self.can_borrow = can_borrow;
         self
     }
 
@@ -127,12 +127,6 @@ impl<'a> Inference<'a> {
     }
 
     fn infer_base_type(&self, field: &Schema) -> RustType {
-        if self.field_name == Some("metadata") {
-            return RustType::Simple(SimpleType::Ext(ExtType::Metadata {
-                borrowed: self.can_borrow,
-            }));
-        }
-
         match &field.schema_kind {
             SchemaKind::Type(Type::Boolean {}) => RustType::bool(),
             SchemaKind::Type(Type::Number(_)) => RustType::float(),
@@ -204,7 +198,13 @@ impl<'a> Inference<'a> {
         }
 
         if let Some(AdditionalProperties::Schema(additional)) = &typ.additional_properties {
-            return self.infer_schema_or_ref_type(additional);
+            let map_value_typ =
+                self.required(true).can_borrow(false).infer_schema_or_ref_type(additional);
+            return if should_infer_currency_key_from_desc(self.description) {
+                RustType::currency_map(map_value_typ, self.can_borrow)
+            } else {
+                RustType::str_map(map_value_typ, self.can_borrow)
+            };
         }
         // Generate the struct type
         let mut fields = vec![];
@@ -358,6 +358,13 @@ impl<'a> Inference<'a> {
     }
 }
 
+fn should_infer_currency_key_from_desc(desc: Option<&str>) -> bool {
+    let Some(desc) = desc else {
+        return false;
+    };
+    desc.contains("Each key must be a three-letter [ISO currency code]")
+}
+
 fn parse_expansion_resources(resources: &serde_json::Value) -> anyhow::Result<RustType> {
     let expansion_resources = serde_json::from_value::<ExpansionResources>(resources.clone())?;
 
@@ -372,7 +379,7 @@ fn parse_expansion_resources(resources: &serde_json::Value) -> anyhow::Result<Ru
         return Err(anyhow!("Expected expansion resource to only contain a schema reference"));
     };
     let path = ComponentPath::from_reference(reference);
-    Ok(RustType::Compound(CompoundTypeKind::Expandable, Box::new(RustType::component_path(path))))
+    Ok(RustType::expandable(RustType::component_path(path)))
 }
 
 fn build_enum_variants(options: &[Option<String>]) -> Vec<EnumVariant> {

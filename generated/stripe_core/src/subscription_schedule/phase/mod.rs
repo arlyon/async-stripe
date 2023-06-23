@@ -56,7 +56,7 @@ pub struct Phase {
     ///
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered.
     /// Updating the underlying subscription's `metadata` directly will not affect the current phase's `metadata`.
-    pub metadata: Option<stripe_types::Metadata>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The account (if any) the charge was made on behalf of for charges associated with the schedule's subscription.
     ///
     /// See the Connect documentation for details.

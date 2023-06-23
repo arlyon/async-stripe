@@ -56,7 +56,7 @@ pub struct Account {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<stripe_types::Metadata>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.

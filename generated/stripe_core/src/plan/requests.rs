@@ -140,7 +140,7 @@ pub struct CreatePlan<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// A brief description of the plan, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<&'a str>,
@@ -324,7 +324,7 @@ pub struct CreatePlanInlineProductParams<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The product's name, meant to be displayable to the customer.
     pub name: &'a str,
     /// An arbitrary string to be displayed on your customer's credit card or bank statement.
@@ -536,7 +536,7 @@ pub struct UpdatePlan<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// A brief description of the plan, hidden from customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<&'a str>,

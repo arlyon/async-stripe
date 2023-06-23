@@ -37,7 +37,7 @@ pub struct Card {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: stripe_types::Metadata,
+    pub metadata: std::collections::HashMap<String, String>,
     /// The full unredacted card number.
     ///
     /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).

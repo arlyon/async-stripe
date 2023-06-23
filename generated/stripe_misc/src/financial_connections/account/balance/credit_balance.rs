@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
+#[derive(Clone, Debug, Default, serde::Serialize)]
 #[cfg_attr(not(feature = "min-ser"), derive(serde::Deserialize))]
 pub struct CreditBalance {
     /// The credit that has been used by the account holder.
@@ -9,7 +9,7 @@ pub struct CreditBalance {
     ///
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
-    pub used: Option<i64>,
+    pub used: Option<std::collections::HashMap<String, i64>>,
 }
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for CreditBalance {

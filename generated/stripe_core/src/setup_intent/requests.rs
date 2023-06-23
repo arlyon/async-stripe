@@ -134,7 +134,7 @@ pub struct CreateSetupIntent<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The Stripe account ID for which this SetupIntent is created.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<&'a str>,
@@ -369,7 +369,7 @@ pub struct CreateSetupIntentPaymentMethodData<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<CreateSetupIntentPaymentMethodDataOxxo>,
@@ -2159,7 +2159,7 @@ pub struct UpdateSetupIntent<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// ID of the payment method (a PaymentMethod, Card, or saved Source object) to attach to this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method: Option<&'a str>,
@@ -2285,7 +2285,7 @@ pub struct UpdateSetupIntentPaymentMethodData<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<UpdateSetupIntentPaymentMethodDataOxxo>,
@@ -4195,7 +4195,7 @@ pub struct ConfirmSetupIntentPaymentMethodData<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// If this is an `oxxo` PaymentMethod, this hash contains details about the OXXO payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub oxxo: Option<ConfirmSetupIntentPaymentMethodDataOxxo>,

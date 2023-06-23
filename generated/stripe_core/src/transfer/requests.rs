@@ -69,7 +69,7 @@ pub struct CreateTransfer<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// You can use this parameter to transfer funds from a charge before they are added to your available balance.
     ///
     /// A pending balance will transfer immediately but the funds will not become available until the original charge becomes available.
@@ -199,7 +199,7 @@ pub struct UpdateTransfer<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> UpdateTransfer<'a> {
     pub fn new() -> Self {

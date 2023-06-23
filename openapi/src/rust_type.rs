@@ -15,7 +15,7 @@ pub enum RustType {
     Object(RustObject, ObjectMetadata),
     Simple(SimpleType),
     Ref { typ: RefType, borrowed: bool, has_borrow: bool, is_copy: bool },
-    Compound(CompoundTypeKind, Box<RustType>),
+    Compound(CompoundType),
 }
 
 impl RustType {
@@ -40,35 +40,51 @@ impl RustType {
     }
 
     pub fn option(typ: RustType) -> Self {
-        Self::Compound(CompoundTypeKind::Option, Box::new(typ))
+        Self::Compound(CompoundType::Option(Box::new(typ)))
     }
 
     pub fn boxed(typ: RustType) -> Self {
-        Self::Compound(CompoundTypeKind::Box, Box::new(typ))
+        Self::Compound(CompoundType::Box(Box::new(typ)))
     }
 
     pub fn list(typ: RustType) -> Self {
-        Self::Compound(CompoundTypeKind::List, Box::new(typ))
+        Self::Compound(CompoundType::List(Box::new(typ)))
+    }
+
+    pub fn expandable(typ: RustType) -> Self {
+        Self::Compound(CompoundType::Expandable(Box::new(typ)))
+    }
+
+    pub fn str_map(value: RustType, borrowed: bool) -> Self {
+        Self::Compound(CompoundType::Map { key: MapKey::String, value: Box::new(value), borrowed })
+    }
+
+    pub fn currency_map(value: RustType, borrowed: bool) -> Self {
+        Self::Compound(CompoundType::Map {
+            key: MapKey::Currency,
+            value: Box::new(value),
+            borrowed,
+        })
     }
 
     pub fn vec(typ: RustType) -> Self {
-        Self::Compound(CompoundTypeKind::Vec, Box::new(typ))
+        Self::Compound(CompoundType::Vec(Box::new(typ)))
     }
 
     pub fn slice(typ: RustType) -> Self {
-        Self::Compound(CompoundTypeKind::Slice, Box::new(typ))
+        Self::Compound(CompoundType::Slice(Box::new(typ)))
     }
 
     pub fn as_id_path(&self) -> Option<&ComponentPath> {
         match self {
             RustType::Ref { typ: RefType::ObjectId(path), .. } => Some(path),
-            RustType::Compound(_, inner) => inner.as_id_path(),
+            RustType::Compound(typ) => typ.value_typ().as_id_path(),
             _ => None,
         }
     }
 
     pub const fn is_option(&self) -> bool {
-        matches!(self, Self::Compound(CompoundTypeKind::Option, _))
+        matches!(self, Self::Compound(CompoundType::Option(_)))
     }
 
     /// Can this type derive `Copy`?
@@ -77,13 +93,14 @@ impl RustType {
             RustType::Object(obj, ..) => obj.is_copy(),
             RustType::Simple(typ) => typ.is_copy(),
             RustType::Ref { is_copy, .. } => *is_copy,
-            RustType::Compound(kind, typ) => match kind {
-                CompoundTypeKind::List
-                | CompoundTypeKind::Expandable
-                | CompoundTypeKind::Vec
-                | CompoundTypeKind::Box => false,
-                CompoundTypeKind::Slice => true,
-                _ => typ.is_copy(),
+            RustType::Compound(typ) => match typ {
+                CompoundType::List(_) => false,
+                CompoundType::Vec(_) => false,
+                CompoundType::Slice(_) => true,
+                CompoundType::Expandable(_) => false,
+                CompoundType::Option(inner) => inner.is_copy(),
+                CompoundType::Box(inner) => inner.is_copy(),
+                CompoundType::Map { borrowed, .. } => *borrowed,
             },
         }
     }
@@ -93,12 +110,11 @@ impl RustType {
             RustType::Object(obj, ..) => obj.has_borrow(),
             RustType::Simple(typ) => typ.is_borrowed(),
             RustType::Ref { has_borrow, .. } => *has_borrow,
-            RustType::Compound(kind, inner) => {
-                if kind.has_borrow() {
-                    return true;
-                }
-                inner.has_borrow()
-            }
+            RustType::Compound(typ) => match typ {
+                CompoundType::Slice(_) => true,
+                CompoundType::Map { borrowed: true, .. } => true,
+                _ => typ.value_typ().has_borrow(),
+            },
         }
     }
 
@@ -117,21 +133,21 @@ impl RustType {
 
     pub fn into_nullable(self) -> Self {
         match self {
-            Self::Compound(CompoundTypeKind::List | CompoundTypeKind::Option, _) => self,
+            Self::Compound(CompoundType::List(_)) | Self::Compound(CompoundType::Option(_)) => self,
             _ => Self::option(self),
         }
     }
 
     pub fn as_skip_serializing(&self) -> Option<&'static str> {
         match self {
-            Self::Compound(CompoundTypeKind::Option, _) => Some("Option::is_none"),
+            Self::Compound(CompoundType::Option(_)) => Some("Option::is_none"),
             _ => None,
         }
     }
 
     pub fn as_reference_path(&self) -> Option<&ComponentPath> {
         match self {
-            Self::Compound(_, typ) => typ.as_reference_path(),
+            Self::Compound(typ) => typ.value_typ().as_reference_path(),
             Self::Ref { typ: RefType::Component(path), .. } => Some(path),
             _ => None,
         }
@@ -141,7 +157,7 @@ impl RustType {
         match self {
             Self::Object(obj, meta) => Some((obj, meta)),
             Self::Simple(_) | Self::Ref { .. } => None,
-            Self::Compound(_, typ) => typ.as_object(),
+            Self::Compound(typ) => typ.value_typ().as_object(),
         }
     }
 
@@ -149,7 +165,7 @@ impl RustType {
         match self {
             Self::Object(obj, meta) => Some((obj, meta)),
             Self::Simple(_) | Self::Ref { .. } => None,
-            Self::Compound(_, typ) => typ.into_object(),
+            Self::Compound(typ) => typ.into_value_typ().into_object(),
         }
     }
 
@@ -160,27 +176,76 @@ impl RustType {
     pub fn as_deser_default(&self) -> Option<DeserDefault> {
         match self {
             Self::Simple(SimpleType::Bool)
-            | Self::Compound(CompoundTypeKind::Vec | CompoundTypeKind::List, _) => {
-                Some(DeserDefault::Default)
-            }
+            | Self::Compound(CompoundType::Vec(_))
+            | Self::Compound(CompoundType::List(_)) => Some(DeserDefault::Default),
             _ => None,
         }
     }
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
-pub enum CompoundTypeKind {
-    List,
-    Vec,
-    Slice,
-    Expandable,
-    Option,
-    Box,
+pub enum MapKey {
+    String,
+    Currency,
 }
 
-impl CompoundTypeKind {
-    pub const fn has_borrow(self) -> bool {
-        matches!(self, Self::Slice)
+impl Display for MapKey {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let as_str = match self {
+            MapKey::String => "String",
+            MapKey::Currency => "stripe_types::Currency",
+        };
+        f.write_str(as_str)
+    }
+}
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+pub enum CompoundType {
+    List(Box<RustType>),
+    Vec(Box<RustType>),
+    Slice(Box<RustType>),
+    Expandable(Box<RustType>),
+    Option(Box<RustType>),
+    Box(Box<RustType>),
+    Map { key: MapKey, value: Box<RustType>, borrowed: bool },
+}
+
+impl CompoundType {
+    pub fn value_typ(&self) -> &RustType {
+        match self {
+            CompoundType::List(typ) => typ,
+            CompoundType::Vec(typ) => typ,
+            CompoundType::Slice(typ) => typ,
+            CompoundType::Expandable(typ) => typ,
+            CompoundType::Option(typ) => typ,
+            CompoundType::Box(typ) => typ,
+            CompoundType::Map { value, .. } => value,
+        }
+    }
+
+    pub fn into_value_typ(self) -> RustType {
+        let res = match self {
+            CompoundType::List(typ) => typ,
+            CompoundType::Vec(typ) => typ,
+            CompoundType::Slice(typ) => typ,
+            CompoundType::Expandable(typ) => typ,
+            CompoundType::Option(typ) => typ,
+            CompoundType::Box(typ) => typ,
+            CompoundType::Map { value, .. } => value,
+        };
+        *res
+    }
+
+    pub fn value_typ_mut(&mut self) -> &mut RustType {
+        match self {
+            CompoundType::List(typ) => typ,
+            CompoundType::Vec(typ) => typ,
+            CompoundType::Slice(typ) => typ,
+            CompoundType::Expandable(typ) => typ,
+            CompoundType::Option(typ) => typ,
+            CompoundType::Box(typ) => typ,
+            CompoundType::Map { value, .. } => value,
+        }
     }
 }
 
@@ -197,19 +262,11 @@ pub enum SimpleType {
 impl SimpleType {
     /// Does this type implement `Copy`?
     pub const fn is_copy(self) -> bool {
-        match self {
-            Self::Bool | SimpleType::Float | SimpleType::Int(_) | SimpleType::Str => true,
-            Self::String => false,
-            Self::Ext(typ) => typ.is_copy(),
-        }
+        !matches!(self, Self::String)
     }
 
     pub const fn is_borrowed(self) -> bool {
-        match self {
-            SimpleType::Str => true,
-            SimpleType::Ext(typ) => typ.is_borrowed(),
-            _ => false,
-        }
+        matches!(self, SimpleType::Str)
     }
 
     pub const fn ident(self) -> &'static str {
@@ -267,16 +324,13 @@ impl Display for IntType {
 pub enum ExtType {
     Currency,
     RangeQueryTs,
-    Metadata { borrowed: bool },
     Timestamp,
 }
 
 impl ExtType {
     pub const fn import_from(self) -> &'static str {
         match self {
-            Self::RangeQueryTs | Self::Metadata { .. } | Self::Timestamp | Self::Currency => {
-                "stripe_types"
-            }
+            Self::RangeQueryTs | Self::Timestamp | Self::Currency => "stripe_types",
         }
     }
 
@@ -285,22 +339,6 @@ impl ExtType {
             Self::Currency => "Currency",
             Self::RangeQueryTs => "RangeQueryTs",
             Self::Timestamp => "Timestamp",
-            Self::Metadata { .. } => "Metadata",
         }
-    }
-
-    /// Does the corresponding type implement `Copy`?
-    pub const fn is_copy(self) -> bool {
-        matches!(
-            self,
-            Self::Currency
-                | Self::RangeQueryTs
-                | Self::Timestamp
-                | Self::Metadata { borrowed: true }
-        )
-    }
-
-    pub const fn is_borrowed(self) -> bool {
-        matches!(self, Self::Metadata { borrowed: true })
     }
 }

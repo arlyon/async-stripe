@@ -19,7 +19,7 @@ pub struct Balance {
     ///
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
-    pub current: i64,
+    pub current: std::collections::HashMap<String, i64>,
     /// The `type` of the balance.
     ///
     /// An additional hash is included on the balance with a name matching this value.

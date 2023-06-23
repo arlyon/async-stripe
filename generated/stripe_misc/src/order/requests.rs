@@ -113,7 +113,7 @@ pub struct CreateOrder<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Payment information associated with the order, including payment settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment: Option<CreateOrderPayment<'a>>,
@@ -409,7 +409,7 @@ pub struct CreateOrderLineItemsProductData<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The product's name, meant to be displayable to the customer.
     pub name: &'a str,
     /// The dimensions of this product for shipping purposes.
@@ -2096,14 +2096,14 @@ pub struct CreateOrderShippingCostShippingRateData<'a> {
     ///
     /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<CreateOrderShippingCostShippingRateDataFixedAmount>,
+    pub fixed_amount: Option<CreateOrderShippingCostShippingRateDataFixedAmount<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -2263,7 +2263,7 @@ impl std::fmt::Display for CreateOrderShippingCostShippingRateDataDeliveryEstima
 ///
 /// Must be present if type is `fixed_amount`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateOrderShippingCostShippingRateDataFixedAmount {
+pub struct CreateOrderShippingCostShippingRateDataFixedAmount<'a> {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -2274,9 +2274,14 @@ pub struct CreateOrderShippingCostShippingRateDataFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            CreateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions,
+        >,
+    >,
 }
-impl CreateOrderShippingCostShippingRateDataFixedAmount {
+impl<'a> CreateOrderShippingCostShippingRateDataFixedAmount<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
         Self { amount, currency, currency_options: Default::default() }
     }
@@ -2715,7 +2720,7 @@ pub struct UpdateOrder<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Payment information associated with the order, including payment settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment: Option<UpdateOrderPayment<'a>>,
@@ -2998,7 +3003,7 @@ pub struct UpdateOrderLineItemsProductData<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The product's name, meant to be displayable to the customer.
     pub name: &'a str,
     /// The dimensions of this product for shipping purposes.
@@ -4685,14 +4690,14 @@ pub struct UpdateOrderShippingCostShippingRateData<'a> {
     ///
     /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<UpdateOrderShippingCostShippingRateDataFixedAmount>,
+    pub fixed_amount: Option<UpdateOrderShippingCostShippingRateDataFixedAmount<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -4852,7 +4857,7 @@ impl std::fmt::Display for UpdateOrderShippingCostShippingRateDataDeliveryEstima
 ///
 /// Must be present if type is `fixed_amount`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateOrderShippingCostShippingRateDataFixedAmount {
+pub struct UpdateOrderShippingCostShippingRateDataFixedAmount<'a> {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -4863,9 +4868,14 @@ pub struct UpdateOrderShippingCostShippingRateDataFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            UpdateOrderShippingCostShippingRateDataFixedAmountCurrencyOptions,
+        >,
+    >,
 }
-impl UpdateOrderShippingCostShippingRateDataFixedAmount {
+impl<'a> UpdateOrderShippingCostShippingRateDataFixedAmount<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
         Self { amount, currency, currency_options: Default::default() }
     }

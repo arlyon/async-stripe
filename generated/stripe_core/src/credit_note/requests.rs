@@ -92,7 +92,7 @@ pub struct CreateCreditNote<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The integer amount in cents (or local equivalent) representing the amount that is credited outside of Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub out_of_band_amount: Option<i64>,
@@ -265,7 +265,7 @@ pub struct PreviewCreditNote<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The integer amount in cents (or local equivalent) representing the amount that is credited outside of Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub out_of_band_amount: Option<i64>,
@@ -472,7 +472,7 @@ pub struct UpdateCreditNote<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> UpdateCreditNote<'a> {
     pub fn new() -> Self {
@@ -526,7 +526,7 @@ pub struct PreviewLinesCreditNote<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The integer amount in cents (or local equivalent) representing the amount that is credited outside of Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub out_of_band_amount: Option<i64>,

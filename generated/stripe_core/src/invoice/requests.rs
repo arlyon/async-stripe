@@ -814,7 +814,7 @@ pub struct UpcomingInvoiceInvoiceItems<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
     ///
     /// When set to different values, the period will be rendered on the invoice.
@@ -1029,7 +1029,7 @@ pub struct UpcomingInvoiceSubscriptionItems<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Plan ID for this item, as a string.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<&'a str>,
@@ -1330,7 +1330,7 @@ pub struct CreateInvoice<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The account (if any) for which the funds of the invoice payment are intended.
     ///
     /// If set, the invoice will be presented with the branding and support information of the specified account.
@@ -2275,7 +2275,7 @@ pub struct UpdateInvoice<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The account (if any) for which the funds of the invoice payment are intended.
     ///
     /// If set, the invoice will be presented with the branding and support information of the specified account.
@@ -3580,7 +3580,7 @@ pub struct UpcomingLinesInvoiceInvoiceItems<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
     ///
     /// When set to different values, the period will be rendered on the invoice.
@@ -3795,7 +3795,7 @@ pub struct UpcomingLinesInvoiceSubscriptionItems<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Plan ID for this item, as a string.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<&'a str>,

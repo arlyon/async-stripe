@@ -35,7 +35,7 @@ pub struct InvoiceLineItem {
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Note that for line items with `type=subscription` this will reflect the metadata of the subscription that caused the line item to be created.
-    pub metadata: stripe_types::Metadata,
+    pub metadata: std::collections::HashMap<String, String>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.

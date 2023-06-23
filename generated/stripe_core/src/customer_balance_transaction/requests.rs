@@ -123,7 +123,7 @@ pub struct CreateCustomerBalanceTransaction<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> CreateCustomerBalanceTransaction<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
@@ -152,7 +152,7 @@ pub struct UpdateCustomerBalanceTransaction<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> UpdateCustomerBalanceTransaction<'a> {
     pub fn new() -> Self {

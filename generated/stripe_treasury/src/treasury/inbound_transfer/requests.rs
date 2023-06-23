@@ -117,7 +117,7 @@ pub struct CreateInboundTransfer<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The origin payment method to be debited for the InboundTransfer.
     pub origin_payment_method: &'a str,
     /// The complete description that appears on your customers' statements.

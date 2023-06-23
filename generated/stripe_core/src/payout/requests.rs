@@ -149,7 +149,7 @@ pub struct CreatePayout<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The method used to send this payout, which can be `standard` or `instant`.
     ///
     /// `instant` is only supported for payouts to debit cards.
@@ -263,7 +263,7 @@ pub struct UpdatePayout<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> UpdatePayout<'a> {
     pub fn new() -> Self {
@@ -292,7 +292,7 @@ pub struct ReversePayout<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> ReversePayout<'a> {
     pub fn new() -> Self {

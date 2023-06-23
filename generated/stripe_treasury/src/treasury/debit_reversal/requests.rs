@@ -39,7 +39,7 @@ pub struct CreateDebitReversal<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The ReceivedDebit to reverse.
     pub received_debit: &'a str,
 }

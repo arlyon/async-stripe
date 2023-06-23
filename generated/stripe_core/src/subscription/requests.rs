@@ -422,7 +422,7 @@ pub struct CreateSubscription<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Indicates if a customer is on or off-session while an invoice payment is attempted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub off_session: Option<bool>,
@@ -700,7 +700,7 @@ pub struct CreateSubscriptionItems<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Plan ID for this item, as a string.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<&'a str>,
@@ -1759,7 +1759,7 @@ pub struct UpdateSubscription<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Indicates if a customer is on or off-session while an invoice payment is attempted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub off_session: Option<bool>,
@@ -2046,7 +2046,7 @@ pub struct UpdateSubscriptionItems<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Plan ID for this item, as a string.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<&'a str>,

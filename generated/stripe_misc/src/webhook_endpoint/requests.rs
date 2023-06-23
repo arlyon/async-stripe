@@ -120,7 +120,7 @@ pub struct CreateWebhookEndpoint<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The URL of the webhook endpoint.
     pub url: &'a str,
 }
@@ -869,7 +869,7 @@ pub struct UpdateWebhookEndpoint<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The URL of the webhook endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<&'a str>,

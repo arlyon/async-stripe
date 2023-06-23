@@ -147,7 +147,7 @@ pub struct CreateSource<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate: Option<CreateSourceMandate<'a>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The source to share.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub original_source: Option<&'a str>,
@@ -770,7 +770,7 @@ pub struct UpdateSource<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Information about the owner of the payment instrument that may be used or required by particular source types.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub owner: Option<UpdateSourceOwner<'a>>,

@@ -204,7 +204,7 @@ pub struct CreateSession<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The mode of the Checkout Session.
     ///
     /// Pass `subscription` if the Checkout Session includes at least one recurring item.
@@ -792,7 +792,7 @@ pub struct CreateSessionLineItemsPriceDataProductData<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The product's name, meant to be displayable to the customer.
     pub name: &'a str,
     /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
@@ -1065,7 +1065,7 @@ pub struct CreateSessionPaymentIntentData<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The Stripe account ID for which these funds are intended.
     ///
     /// For details, see the PaymentIntents [use case for connected accounts](/docs/payments/connected-accounts).
@@ -3173,7 +3173,7 @@ pub struct CreateSessionSetupIntentData<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The Stripe account for which the setup is intended.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<&'a str>,
@@ -3968,14 +3968,14 @@ pub struct CreateSessionShippingOptionsShippingRateData<'a> {
     ///
     /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<CreateSessionShippingOptionsShippingRateDataFixedAmount>,
+    pub fixed_amount: Option<CreateSessionShippingOptionsShippingRateDataFixedAmount<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -4135,7 +4135,7 @@ impl std::fmt::Display for CreateSessionShippingOptionsShippingRateDataDeliveryE
 ///
 /// Must be present if type is `fixed_amount`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateSessionShippingOptionsShippingRateDataFixedAmount {
+pub struct CreateSessionShippingOptionsShippingRateDataFixedAmount<'a> {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -4146,10 +4146,14 @@ pub struct CreateSessionShippingOptionsShippingRateDataFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options:
-        Option<CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            CreateSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions,
+        >,
+    >,
 }
-impl CreateSessionShippingOptionsShippingRateDataFixedAmount {
+impl<'a> CreateSessionShippingOptionsShippingRateDataFixedAmount<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
         Self { amount, currency, currency_options: Default::default() }
     }
@@ -4341,7 +4345,7 @@ pub struct CreateSessionSubscriptionData<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The account on behalf of which to charge, for each of the subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<&'a str>,

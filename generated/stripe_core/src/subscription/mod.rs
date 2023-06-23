@@ -93,7 +93,7 @@ pub struct Subscription {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: stripe_types::Metadata,
+    pub metadata: std::collections::HashMap<String, String>,
     /// Specifies the approximate timestamp on which any pending invoice items will be billed according to the schedule provided at `pending_invoice_item_interval`.
     pub next_pending_invoice_item_invoice: Option<stripe_types::Timestamp>,
     /// String representing the object's type.

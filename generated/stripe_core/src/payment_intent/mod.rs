@@ -78,7 +78,7 @@ pub livemode: bool,
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// For more information, see the [documentation](https://stripe.com/docs/payments/payment-intents/creating-payment-intents#storing-information-in-metadata).
-pub metadata: stripe_types::Metadata,
+pub metadata: std::collections::HashMap<String, String>,
     /// If present, this property tells you what actions you need to take in order for your customer to fulfill a payment using the provided source.
 pub next_action: Option<stripe_core::payment_intent::next_action::NextAction>,
     /// String representing the object's type.

@@ -100,7 +100,7 @@ pub struct CreateVerificationSession<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// A set of options for the session’s verification checks.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<CreateVerificationSessionOptions<'a>>,
@@ -332,7 +332,7 @@ pub struct UpdateVerificationSession<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// A set of options for the session’s verification checks.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<UpdateVerificationSessionOptions<'a>>,

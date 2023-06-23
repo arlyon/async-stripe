@@ -72,7 +72,7 @@ pub struct Quote {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: stripe_types::Metadata,
+    pub metadata: std::collections::HashMap<String, String>,
     /// A unique number that identifies this particular quote.
     ///
     /// This number is assigned once the quote is [finalized](https://stripe.com/docs/quotes/overview#finalize).

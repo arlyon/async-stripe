@@ -95,7 +95,7 @@ pub struct CreateFinancialAccount<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub platform_restrictions: Option<CreateFinancialAccountPlatformRestrictions>,
@@ -389,7 +389,7 @@ pub struct UpdateFinancialAccount<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The set of functionalities that the platform can restrict on the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub platform_restrictions: Option<UpdateFinancialAccountPlatformRestrictions>,

@@ -47,7 +47,7 @@ pub struct Authorization {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: stripe_types::Metadata,
+    pub metadata: std::collections::HashMap<String, String>,
     /// Details about the authorization, such as identifiers, set by the card network.
     pub network_data: Option<stripe_core::issuing::authorization::network_data::NetworkData>,
     /// String representing the object's type.

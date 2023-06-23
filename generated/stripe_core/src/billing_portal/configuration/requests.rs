@@ -105,7 +105,7 @@ pub struct CreateConfiguration<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> CreateConfiguration<'a> {
     pub fn new(
@@ -546,7 +546,7 @@ pub struct UpdateConfiguration<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> UpdateConfiguration<'a> {
     pub fn new() -> Self {

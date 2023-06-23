@@ -186,7 +186,7 @@ pub struct CreateProduct<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The product's name, meant to be displayable to the customer.
     pub name: &'a str,
     /// The dimensions of this product for shipping purposes.
@@ -259,7 +259,12 @@ pub struct CreateProductDefaultPriceData<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CreateProductDefaultPriceDataCurrencyOptions<'a>>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            CreateProductDefaultPriceDataCurrencyOptions,
+        >,
+    >,
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateProductDefaultPriceDataRecurring>,
@@ -295,8 +300,8 @@ impl<'a> CreateProductDefaultPriceData<'a> {
 /// Prices defined in each available currency option.
 ///
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreateProductDefaultPriceDataCurrencyOptions<'a> {
+#[derive(Clone, Debug, Default, serde::Serialize)]
+pub struct CreateProductDefaultPriceDataCurrencyOptions {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CreateProductDefaultPriceDataCurrencyOptionsCustomUnitAmount>,
@@ -311,7 +316,7 @@ pub struct CreateProductDefaultPriceDataCurrencyOptions<'a> {
     /// This parameter requires `billing_scheme` to be set to `tiered`.
     /// See also the documentation for `billing_scheme`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub tiers: Option<&'a [CreateProductDefaultPriceDataCurrencyOptionsTiers<'a>]>,
+    pub tiers: Option<Vec<CreateProductDefaultPriceDataCurrencyOptionsTiers>>,
     /// A positive integer in cents (or local equivalent) (or 0 for a free price) representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
@@ -319,9 +324,9 @@ pub struct CreateProductDefaultPriceDataCurrencyOptions<'a> {
     ///
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
 }
-impl<'a> CreateProductDefaultPriceDataCurrencyOptions<'a> {
+impl CreateProductDefaultPriceDataCurrencyOptions {
     pub fn new() -> Self {
         Self::default()
     }
@@ -390,8 +395,8 @@ impl std::fmt::Display for CreateProductDefaultPriceDataCurrencyOptionsTaxBehavi
 ///
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers<'a> {
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub flat_amount: Option<i64>,
@@ -399,7 +404,7 @@ pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers<'a> {
     ///
     /// Only one of `flat_amount` and `flat_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub flat_amount_decimal: Option<&'a str>,
+    pub flat_amount_decimal: Option<String>,
     /// The per unit billing amount for each individual unit for which this tier applies.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount: Option<i64>,
@@ -407,14 +412,14 @@ pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers<'a> {
     ///
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub unit_amount_decimal: Option<&'a str>,
+    pub unit_amount_decimal: Option<String>,
     /// Specifies the upper bound of this tier.
     ///
     /// The lower bound of a tier is the upper bound of the previous tier adding one.
     /// Use `inf` to define a fallback tier.
     pub up_to: CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo,
 }
-impl<'a> CreateProductDefaultPriceDataCurrencyOptionsTiers<'a> {
+impl CreateProductDefaultPriceDataCurrencyOptionsTiers {
     pub fn new(up_to: CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo) -> Self {
         Self {
             flat_amount: Default::default(),
@@ -630,7 +635,7 @@ pub struct UpdateProduct<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The product's name, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<&'a str>,

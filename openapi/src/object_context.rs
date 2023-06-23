@@ -9,7 +9,7 @@ use crate::rust_object::{
     FieldedEnumVariant, ObjectMetadata, PrintableFieldedEnumVariant, PrintableStructField,
     RustObject,
 };
-use crate::rust_type::{CompoundTypeKind, RustType, SimpleType};
+use crate::rust_type::{MapKey, RustType, SimpleType};
 use crate::stripe_object::{RequestSpec, StripeObject};
 use crate::templates::derives::Derives;
 use crate::templates::deserialize::{
@@ -257,29 +257,39 @@ impl<'a> Display for PrintableWithLifetime<'a> {
                 }
                 f.write_str(typ.ident())
             }
-            PrintableType::Compound(kind, inner) => {
-                let inner = PrintableWithLifetime::new(inner, Some(lifetime));
-                match kind {
-                    CompoundTypeKind::List => {
-                        write!(f, "stripe_types::List<{inner}>")
-                    }
-                    CompoundTypeKind::Vec => {
-                        write!(f, "Vec<{inner}>")
-                    }
-                    CompoundTypeKind::Slice => {
-                        write!(f, "&{lifetime} [{inner}]")
-                    }
-                    CompoundTypeKind::Expandable => {
-                        write!(f, "stripe_types::Expandable<{inner}>")
-                    }
-                    CompoundTypeKind::Option => {
-                        write!(f, "Option<{inner}>")
-                    }
-                    CompoundTypeKind::Box => {
-                        write!(f, "Box<{inner}>")
-                    }
+            PrintableType::Compound(typ) => match typ {
+                PrintableCompoundType::List(inner) => {
+                    let inner = PrintableWithLifetime::new(inner, Some(lifetime));
+                    write!(f, "stripe_types::List<{inner}>")
                 }
-            }
+                PrintableCompoundType::Vec(inner) => {
+                    let inner = PrintableWithLifetime::new(inner, Some(lifetime));
+                    write!(f, "Vec<{inner}>")
+                }
+                PrintableCompoundType::Slice(inner) => {
+                    let inner = PrintableWithLifetime::new(inner, Some(lifetime));
+                    write!(f, "&{lifetime} [{inner}]")
+                }
+                PrintableCompoundType::Expandable(inner) => {
+                    let inner = PrintableWithLifetime::new(inner, Some(lifetime));
+                    write!(f, "stripe_types::Expandable<{inner}>")
+                }
+                PrintableCompoundType::Option(inner) => {
+                    let inner = PrintableWithLifetime::new(inner, Some(lifetime));
+                    write!(f, "Option<{inner}>")
+                }
+                PrintableCompoundType::Box(inner) => {
+                    let inner = PrintableWithLifetime::new(inner, Some(lifetime));
+                    write!(f, "Box<{inner}>")
+                }
+                PrintableCompoundType::Map { key, borrowed, value } => {
+                    let value = PrintableWithLifetime::new(value, Some(lifetime));
+                    if *borrowed {
+                        write!(f, "&{lifetime} ")?;
+                    }
+                    write!(f, "std::collections::HashMap<{key}, {value}>")
+                }
+            },
         }
     }
 }
@@ -303,24 +313,30 @@ impl Display for PrintableType {
                 }
                 f.write_str(typ.ident())
             }
-            PrintableType::Compound(kind, inner) => match kind {
-                CompoundTypeKind::List => {
+            PrintableType::Compound(typ) => match typ {
+                PrintableCompoundType::List(inner) => {
                     write!(f, "stripe_types::List<{inner}>")
                 }
-                CompoundTypeKind::Vec => {
+                PrintableCompoundType::Vec(inner) => {
                     write!(f, "Vec<{inner}>")
                 }
-                CompoundTypeKind::Slice => {
+                PrintableCompoundType::Slice(inner) => {
                     write!(f, "&[{inner}]")
                 }
-                CompoundTypeKind::Expandable => {
+                PrintableCompoundType::Expandable(inner) => {
                     write!(f, "stripe_types::Expandable<{inner}>")
                 }
-                CompoundTypeKind::Option => {
+                PrintableCompoundType::Option(inner) => {
                     write!(f, "Option<{inner}>")
                 }
-                CompoundTypeKind::Box => {
+                PrintableCompoundType::Box(inner) => {
                     write!(f, "Box<{inner}>")
+                }
+                PrintableCompoundType::Map { key, value, borrowed } => {
+                    if *borrowed {
+                        f.write_char('&')?;
+                    }
+                    write!(f, "std::collections::HashMap<{key}, {value}>")
                 }
             },
         }
@@ -331,7 +347,18 @@ impl Display for PrintableType {
 pub enum PrintableType {
     QualifiedPath { path: Option<PathInfo>, ident: RustIdent, has_borrow: bool, is_borrowed: bool },
     Simple(SimpleType),
-    Compound(CompoundTypeKind, Box<PrintableType>),
+    Compound(PrintableCompoundType),
+}
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
+pub enum PrintableCompoundType {
+    List(Box<PrintableType>),
+    Vec(Box<PrintableType>),
+    Slice(Box<PrintableType>),
+    Expandable(Box<PrintableType>),
+    Option(Box<PrintableType>),
+    Box(Box<PrintableType>),
+    Map { key: MapKey, value: Box<PrintableType>, borrowed: bool },
 }
 
 pub fn write_obj(

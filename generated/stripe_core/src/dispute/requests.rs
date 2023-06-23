@@ -113,7 +113,7 @@ pub struct UpdateDispute<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Whether to immediately submit evidence to the bank.
     ///
     /// If `false`, evidence is staged on the dispute.

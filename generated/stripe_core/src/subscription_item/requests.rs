@@ -133,7 +133,7 @@ pub struct CreateSubscriptionItem<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
     ///
     /// This allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
@@ -425,7 +425,7 @@ pub struct UpdateSubscriptionItem<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Indicates if a customer is on or off-session while an invoice payment is attempted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub off_session: Option<bool>,

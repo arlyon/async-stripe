@@ -11,7 +11,7 @@ pub struct Sku {
     /// A dictionary of attributes and values for the attributes defined by the product.
     ///
     /// If, for example, a product's attributes are `["size", "gender"]`, a valid SKU has the following dictionary of attributes: `{"size": "Medium", "gender": "Unisex"}`.
-    pub attributes: String,
+    pub attributes: std::collections::HashMap<String, String>,
     /// Time at which the object was created.
     ///
     /// Measured in seconds since the Unix epoch.
@@ -30,7 +30,7 @@ pub struct Sku {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: stripe_types::Metadata,
+    pub metadata: std::collections::HashMap<String, String>,
     /// String representing the object's type.
     ///
     /// Objects of the same type share the same value.

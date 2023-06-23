@@ -82,7 +82,7 @@ pub struct ListSku<'a> {
     /// Can be specified only if `product` is also supplied.
     /// For instance, if the associated product has attributes `["color", "size"]`, passing in `attributes[color]=red` returns all the SKUs for this product that have `color` set to `red`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<&'a str>,
+    pub attributes: Option<&'a std::collections::HashMap<String, String>>,
     /// A cursor for use in pagination.
     ///
     /// `ending_before` is an object ID that defines your place in the list.
@@ -131,7 +131,7 @@ pub struct UpdateSku<'a> {
     ///
     /// When specified, `attributes` will partially update the existing attributes dictionary on the product, with the postcondition that a value must be present for each attribute key on the product.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<&'a str>,
+    pub attributes: Option<&'a std::collections::HashMap<String, String>>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -152,7 +152,7 @@ pub struct UpdateSku<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The dimensions of this SKU for shipping purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<UpdateSkuPackageDimensions>,
@@ -297,7 +297,7 @@ pub struct CreateSku<'a> {
     ///
     /// If, for example, a product's attributes are `["size", "gender"]`, a valid SKU has the following dictionary of attributes: `{"size": "Medium", "gender": "Unisex"}`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<&'a str>,
+    pub attributes: Option<&'a std::collections::HashMap<String, String>>,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     ///
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -322,7 +322,7 @@ pub struct CreateSku<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The dimensions of this SKU for shipping purposes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub package_dimensions: Option<CreateSkuPackageDimensions>,

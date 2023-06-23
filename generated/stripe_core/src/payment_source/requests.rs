@@ -91,7 +91,7 @@ pub struct CreatePaymentSource<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Please refer to full [documentation](https://stripe.com/docs/api) instead.
     pub source: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -49,7 +49,7 @@ pub struct Payout {
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
-    pub metadata: Option<stripe_types::Metadata>,
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The method used to send this payout, which can be `standard` or `instant`.
     ///
     /// `instant` is only supported for payouts to debit cards.

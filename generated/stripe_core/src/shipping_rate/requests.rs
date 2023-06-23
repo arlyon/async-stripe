@@ -113,14 +113,14 @@ pub struct CreateShippingRate<'a> {
     ///
     /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<CreateShippingRateFixedAmount>,
+    pub fixed_amount: Option<CreateShippingRateFixedAmount<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -275,7 +275,7 @@ impl std::fmt::Display for CreateShippingRateDeliveryEstimateMinimumUnit {
 ///
 /// Must be present if type is `fixed_amount`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateShippingRateFixedAmount {
+pub struct CreateShippingRateFixedAmount<'a> {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -286,9 +286,14 @@ pub struct CreateShippingRateFixedAmount {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CreateShippingRateFixedAmountCurrencyOptions>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            CreateShippingRateFixedAmountCurrencyOptions,
+        >,
+    >,
 }
-impl CreateShippingRateFixedAmount {
+impl<'a> CreateShippingRateFixedAmount<'a> {
     pub fn new(amount: i64, currency: stripe_types::Currency) -> Self {
         Self { amount, currency, currency_options: Default::default() }
     }
@@ -417,14 +422,14 @@ pub struct UpdateShippingRate<'a> {
     ///
     /// Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub fixed_amount: Option<UpdateShippingRateFixedAmount>,
+    pub fixed_amount: Option<UpdateShippingRateFixedAmount<'a>>,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     ///
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     ///
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -440,14 +445,19 @@ impl<'a> UpdateShippingRate<'a> {
 ///
 /// Must be present if type is `fixed_amount`.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdateShippingRateFixedAmount {
+pub struct UpdateShippingRateFixedAmount<'a> {
     /// Shipping rates defined in each available currency option.
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<UpdateShippingRateFixedAmountCurrencyOptions>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            UpdateShippingRateFixedAmountCurrencyOptions,
+        >,
+    >,
 }
-impl UpdateShippingRateFixedAmount {
+impl<'a> UpdateShippingRateFixedAmount<'a> {
     pub fn new() -> Self {
         Self::default()
     }

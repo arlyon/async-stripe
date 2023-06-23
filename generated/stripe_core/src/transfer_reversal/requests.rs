@@ -81,7 +81,7 @@ pub struct CreateTransferReversal<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Boolean indicating whether the application fee should be refunded when reversing this transfer.
     ///
     /// If a full transfer reversal is given, the full application fee will be refunded.
@@ -144,7 +144,7 @@ pub struct UpdateTransferReversal<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> UpdateTransferReversal<'a> {
     pub fn new() -> Self {

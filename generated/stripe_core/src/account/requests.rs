@@ -179,7 +179,7 @@ pub struct UpdateAccount<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Options for customizing how the account functions within Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub settings: Option<UpdateAccountSettings<'a>>,
@@ -1358,7 +1358,7 @@ pub struct UpdateAccountIndividual<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The individual's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<&'a str>,
@@ -2034,7 +2034,7 @@ pub struct CreateAccount<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Options for customizing how the account functions within Stripe.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub settings: Option<CreateAccountSettings<'a>>,
@@ -3219,7 +3219,7 @@ pub struct CreateAccountIndividual<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The individual's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<&'a str>,

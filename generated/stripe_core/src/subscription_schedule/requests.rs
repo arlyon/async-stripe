@@ -147,7 +147,7 @@ pub struct CreateSubscriptionSchedule<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// List representing phases of the subscription schedule.
     ///
     /// Each phase can be customized to have different durations, plans, and coupons.
@@ -467,7 +467,7 @@ pub struct CreateSubscriptionSchedulePhases<'a> {
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<&'a str>,
@@ -984,7 +984,7 @@ pub struct UpdateSubscriptionSchedule<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// List representing phases of the subscription schedule.
     ///
     /// Each phase can be customized to have different durations, plans, and coupons.
@@ -1305,7 +1305,7 @@ pub struct UpdateSubscriptionSchedulePhases<'a> {
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<&'a str>,

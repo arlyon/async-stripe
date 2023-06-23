@@ -73,7 +73,7 @@ pub struct CreateTopup<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The ID of a source to transfer funds from.
     ///
     /// For most users, this should be left unspecified which will use the bank account that was set up in the dashboard for the specified currency.
@@ -205,7 +205,7 @@ pub struct UpdateTopup<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
 }
 impl<'a> UpdateTopup<'a> {
     pub fn new() -> Self {

@@ -97,7 +97,8 @@ pub struct CreateCoupon<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CreateCouponCurrencyOptions>,
+    pub currency_options:
+        Option<&'a std::collections::HashMap<stripe_types::Currency, CreateCouponCurrencyOptions>>,
     /// Specifies how long the discount will be in effect if used on a subscription.
     ///
     /// Defaults to `once`.
@@ -125,7 +126,7 @@ pub struct CreateCoupon<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Name of the coupon displayed to customers on, for instance invoices, or receipts.
     ///
     /// By default the `id` is shown if `name` is not set.
@@ -219,7 +220,8 @@ pub struct UpdateCoupon<'a> {
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<UpdateCouponCurrencyOptions>,
+    pub currency_options:
+        Option<&'a std::collections::HashMap<stripe_types::Currency, UpdateCouponCurrencyOptions>>,
     /// Specifies which fields in the response should be expanded.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expand: Option<&'a [&'a str]>,
@@ -229,7 +231,7 @@ pub struct UpdateCoupon<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Name of the coupon displayed to customers on, for instance invoices, or receipts.
     ///
     /// By default the `id` is shown if `name` is not set.

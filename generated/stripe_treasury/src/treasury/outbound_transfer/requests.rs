@@ -128,7 +128,7 @@ pub struct CreateOutboundTransfer<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Statement descriptor to be shown on the receiving end of an OutboundTransfer.
     ///
     /// Maximum 10 characters for `ach` transfers or 140 characters for `wire` transfers.

@@ -15,7 +15,7 @@ pub struct ExchangeRate {
     /// Objects of the same type share the same value.
     pub object: ExchangeRateObject,
     /// Hash where the keys are supported currencies and the values are the exchange rate at which the base id currency converts to the key currency.
-    pub rates: f64,
+    pub rates: std::collections::HashMap<String, f64>,
 }
 #[cfg(feature = "min-ser")]
 impl miniserde::Deserialize for ExchangeRate {

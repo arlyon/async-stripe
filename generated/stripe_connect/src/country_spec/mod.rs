@@ -19,7 +19,7 @@ pub struct CountrySpec {
     /// Objects of the same type share the same value.
     pub object: CountrySpecObject,
     /// Currencies that can be accepted in the specific country (for transfers).
-    pub supported_bank_account_currencies: Vec<String>,
+    pub supported_bank_account_currencies: std::collections::HashMap<String, Vec<String>>,
     /// Currencies that can be accepted in the specified country (for payments).
     pub supported_payment_currencies: Vec<String>,
     /// Payment methods available in the specified country.

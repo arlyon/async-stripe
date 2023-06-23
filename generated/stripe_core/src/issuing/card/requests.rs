@@ -222,7 +222,7 @@ pub struct CreateCard<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The card this is meant to be a replacement for (if any).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub replacement_for: Option<&'a str>,
@@ -2553,7 +2553,7 @@ pub struct UpdateCard<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// The desired new PIN for this card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pin: Option<UpdateCardPin<'a>>,

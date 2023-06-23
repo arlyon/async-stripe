@@ -9,7 +9,7 @@ pub struct CashBalance {
     ///
     /// You cannot delete a customer with any cash balances, even if the balance is 0.
     /// Amounts are represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
-    pub available: Option<i64>,
+    pub available: Option<std::collections::HashMap<String, i64>>,
     /// The ID of the customer whose cash balance this object represents.
     pub customer: String,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.

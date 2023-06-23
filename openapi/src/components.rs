@@ -10,10 +10,10 @@ use petgraph::algo::is_cyclic_directed;
 
 use crate::crate_inference::Crate;
 use crate::ids::IDS_IN_STRIPE;
-use crate::object_context::PrintableType;
+use crate::object_context::{PrintableCompoundType, PrintableType};
 use crate::requests::parse_requests;
 use crate::rust_object::RustObject;
-use crate::rust_type::{RefType, RustType};
+use crate::rust_type::{CompoundType, RefType, RustType};
 use crate::spec::{as_object_properties, get_request_form_parameters, Spec};
 use crate::spec_inference::{infer_id_name, Inference};
 use crate::stripe_object::{
@@ -177,9 +177,20 @@ impl Components {
                 }
             }
             RustType::Simple(typ) => PrintableType::Simple(*typ),
-            RustType::Compound(kind, typ) => {
-                let inner = self.construct_printable_type(typ);
-                PrintableType::Compound(*kind, Box::new(inner))
+            RustType::Compound(typ) => {
+                let inner = Box::new(self.construct_printable_type(typ.value_typ()));
+                let printable = match typ {
+                    CompoundType::List(_) => PrintableCompoundType::List(inner),
+                    CompoundType::Vec(_) => PrintableCompoundType::Vec(inner),
+                    CompoundType::Slice(_) => PrintableCompoundType::Slice(inner),
+                    CompoundType::Expandable(_) => PrintableCompoundType::Expandable(inner),
+                    CompoundType::Option(_) => PrintableCompoundType::Option(inner),
+                    CompoundType::Box(_) => PrintableCompoundType::Box(inner),
+                    CompoundType::Map { key, borrowed, .. } => {
+                        PrintableCompoundType::Map { key: *key, borrowed: *borrowed, value: inner }
+                    }
+                };
+                PrintableType::Compound(printable)
             }
         }
     }
@@ -233,7 +244,7 @@ impl Components {
             RustType::Ref { typ: RefType::Component(path), .. } => {
                 deps.insert(path);
             }
-            RustType::Compound(_, typ) => self.add_deps_from_typ(deps, typ),
+            RustType::Compound(inner) => self.add_deps_from_typ(deps, inner.value_typ()),
             _ => {}
         }
     }
@@ -458,8 +469,8 @@ impl Overrides {
             }
             RustType::Simple(_) => {}
             RustType::Ref { .. } => {}
-            RustType::Compound(_, inner) => {
-                self.replace(inner);
+            RustType::Compound(inner) => {
+                self.replace(inner.value_typ_mut());
             }
         }
     }

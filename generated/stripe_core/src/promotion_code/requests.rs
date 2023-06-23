@@ -93,10 +93,10 @@ pub struct CreatePromotionCode<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Settings that restrict the redemption of the promotion code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub restrictions: Option<CreatePromotionCodeRestrictions>,
+    pub restrictions: Option<CreatePromotionCodeRestrictions<'a>>,
 }
 impl<'a> CreatePromotionCode<'a> {
     pub fn new(coupon: &'a str) -> Self {
@@ -115,12 +115,17 @@ impl<'a> CreatePromotionCode<'a> {
 }
 /// Settings that restrict the redemption of the promotion code.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct CreatePromotionCodeRestrictions {
+pub struct CreatePromotionCodeRestrictions<'a> {
     /// Promotion codes defined in each available currency option.
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<CreatePromotionCodeRestrictionsCurrencyOptions>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            CreatePromotionCodeRestrictionsCurrencyOptions,
+        >,
+    >,
     /// A Boolean indicating if the Promotion Code should only be redeemed for Customers without any successful payments or invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub first_time_transaction: Option<bool>,
@@ -131,7 +136,7 @@ pub struct CreatePromotionCodeRestrictions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_amount_currency: Option<stripe_types::Currency>,
 }
-impl CreatePromotionCodeRestrictions {
+impl<'a> CreatePromotionCodeRestrictions<'a> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -166,10 +171,10 @@ pub struct UpdatePromotionCode<'a> {
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<&'a stripe_types::Metadata>,
+    pub metadata: Option<&'a std::collections::HashMap<String, String>>,
     /// Settings that restrict the redemption of the promotion code.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub restrictions: Option<UpdatePromotionCodeRestrictions>,
+    pub restrictions: Option<UpdatePromotionCodeRestrictions<'a>>,
 }
 impl<'a> UpdatePromotionCode<'a> {
     pub fn new() -> Self {
@@ -178,14 +183,19 @@ impl<'a> UpdatePromotionCode<'a> {
 }
 /// Settings that restrict the redemption of the promotion code.
 #[derive(Copy, Clone, Debug, Default, serde::Serialize)]
-pub struct UpdatePromotionCodeRestrictions {
+pub struct UpdatePromotionCodeRestrictions<'a> {
     /// Promotion codes defined in each available currency option.
     ///
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub currency_options: Option<UpdatePromotionCodeRestrictionsCurrencyOptions>,
+    pub currency_options: Option<
+        &'a std::collections::HashMap<
+            stripe_types::Currency,
+            UpdatePromotionCodeRestrictionsCurrencyOptions,
+        >,
+    >,
 }
-impl UpdatePromotionCodeRestrictions {
+impl<'a> UpdatePromotionCodeRestrictions<'a> {
     pub fn new() -> Self {
         Self::default()
     }
